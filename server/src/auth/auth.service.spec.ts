@@ -34,7 +34,7 @@ describe('AuthService', () => {
   });
 
   it('validateUser shoule be true', async () => {
-    const res = await service.validateUser('milvus', 'milvus-em');
+    const res = await service.validateUser('milvus', 'milvus-admin');
     expect(res).toEqual({ userId: 1, username: 'milvus' });
   });
 
@@ -48,7 +48,7 @@ describe('AuthService', () => {
     expect(res).toHaveProperty('access_token');
   });
 
-  it('local validate', async function() {
+  it('local validate', async () => {
     try {
       await localStrategy.validate('notexist', 'asd');
     } catch (e) {
