@@ -5,9 +5,12 @@ import { AppService } from './app.service';
 import { ErrorInterceptor, TransformResInterceptor } from './interceptors';
 import { MilvusModule } from './milvus/milvus.module';
 import { CollectionsModule } from './collections/collections.module';
+import { UsersService } from './users/users.service';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [MilvusModule, CollectionsModule],
+  imports: [MilvusModule, CollectionsModule, UsersModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,
@@ -20,6 +23,7 @@ import { CollectionsModule } from './collections/collections.module';
       provide: APP_INTERCEPTOR,
       useClass: TransformResInterceptor,
     },
+    UsersService,
   ],
 })
 export class AppModule {}
