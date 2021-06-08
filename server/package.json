@@ -26,6 +26,7 @@
     "@nestjs/jwt": "^7.2.0",
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.6.15",
+    "@nestjs/serve-static": "^2.1.4",
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
     "class-transformer": "^0.4.0",
