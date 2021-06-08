@@ -1,9 +1,9 @@
-import Dashboard from '../pages/dashboard/Dashboard';
+import Overview from '../pages/overview/Overview';
 
 const RouterConfig = [
   {
     path: '/',
-    component: Dashboard,
+    component: Overview,
     auth: true,
   },
 ];
