@@ -5,71 +5,19 @@ import commonCn from './cn/common';
 import commonEn from './en/common';
 import buttonEn from './en/button';
 import buttonCn from './cn/button';
-import databaseCn from './cn/database';
-import databaseEn from './en/database';
-import signUpCn from './cn/signUp';
-import signUpEn from './en/signUp';
 import warningCn from './cn/warning';
 import warningEn from './en/warning';
-import verifyCn from './cn/verify';
-import verifyEn from './en/verify';
-import helpCn from './cn/help';
-import helpEn from './en/help';
-import queryCn from './cn/query';
-import queryEn from './en/query';
-import collectionCn from './cn/collection';
-import collectionEn from './en/collection';
-import partitionCn from './cn/partition';
-import partitionEn from './en/partition';
-import indexCn from './cn/index';
-import indexEn from './en/index';
-import cardCn from './cn/card';
-import cardEn from './en/card';
-import dataCn from './cn/data';
-import dataEn from './en/data';
-import dialogCn from './cn/dialog';
-import dialogEn from './en/dialog';
-import passwordCn from './cn/password';
-import passwordEn from './en/password';
-import connectCn from './cn/connect';
-import connectEn from './en/connect';
 
 export const resources = {
   cn: {
     translation: commonCn,
-    signUp: signUpCn,
     btn: buttonCn,
     warning: warningCn,
-    verify: verifyCn,
-    help: helpCn,
-    database: databaseCn,
-    query: queryCn,
-    collection: collectionCn,
-    partition: partitionCn,
-    index: indexCn,
-    card: cardCn,
-    data: dataCn,
-    dialog: dialogCn,
-    password: passwordCn,
-    connect: connectCn,
   },
   en: {
     translation: commonEn,
-    signUp: signUpEn,
     btn: buttonEn,
     warning: warningEn,
-    verify: verifyEn,
-    help: helpEn,
-    database: databaseEn,
-    query: queryEn,
-    collection: collectionEn,
-    partition: partitionEn,
-    index: indexEn,
-    card: cardEn,
-    data: dataEn,
-    dialog: dialogEn,
-    password: passwordEn,
-    connect: connectEn,
   },
 };
 

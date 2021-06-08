@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
     active: {
       color: theme.palette.common.black,
       opacity: 0.6,
-      backgroundColor: theme.palette.zilliz.light,
+      backgroundColor: theme.palette.primary.light,
     },
     typoButton: {
       textTransform: 'none',

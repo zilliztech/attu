@@ -55,7 +55,6 @@ const useStyles = makeStyles(theme => ({
   },
   rowHover: {
     '&:hover': {
-      // backgroundColor: `${theme.palette.zilliz.light} !important`,
       backgroundColor: `#f3fcfe`,
       '& td': {
         background: 'inherit',

@@ -28,7 +28,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     textTransform: 'capitalize',
 
     '&:hover': {
-      backgroundColor: theme.palette.zilliz.light,
+      backgroundColor: theme.palette.primary.light,
     },
   },
   menuPaper: {
