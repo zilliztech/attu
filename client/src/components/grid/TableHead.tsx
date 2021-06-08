@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import * as React from 'react';
+import React from 'react';
 import { TableHeadType } from './Types';
 import {
   TableHead,

@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import { FC } from 'react';
-import * as React from 'react';
+import React from 'react';
 import icons from '../icons/Icons';
 import { ICustomCardProps, IMenu } from './Types';
 

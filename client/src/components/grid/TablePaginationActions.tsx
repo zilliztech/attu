@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import * as React from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TablePaginationActionsProps } from './Types';
 

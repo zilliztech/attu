@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { IconsType } from './Types';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
@@ -7,7 +7,6 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ClearIcon from '@material-ui/icons/Clear';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import AppsIcon from '@material-ui/icons/Apps';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -24,7 +23,6 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   invisible: (props = {}) => <VisibilityOff {...props} />,
   error: (props = {}) => <CancelIcon {...props} />,
   clear: (props = {}) => <ClearIcon {...props} />,
-  filter: (props = {}) => <FilterListIcon {...props} />,
   more: (props = {}) => <MoreVertIcon {...props} />,
   app: (props = {}) => <AppsIcon {...props} />,
   success: (props = {}) => <CheckCircleIcon {...props} />,

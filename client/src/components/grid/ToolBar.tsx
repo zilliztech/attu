@@ -10,7 +10,6 @@ import {
 import CustomButton from '../customButton/CustomButton';
 import Icons from '../icons/Icons';
 import { ToolBarConfig, ToolBarType } from './Types';
-import Filter from '../filter/Filter';
 import SearchInput from '../textField/SearchInput';
 import TableSwitch from './TableSwitch';
 import { throwErrorForDev } from '../../utils/Common';
@@ -38,13 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const CustomToolBar: FC<ToolBarType> = props => {
-  const {
-    toolbarConfigs,
-    filterOptions = [],
-    onFilter,
-    filterTitle,
-    selected = [],
-  } = props;
+  const { toolbarConfigs, selected = [] } = props;
   const classes = useStyles();
 
   // remove hidden button
@@ -107,13 +100,6 @@ const CustomToolBar: FC<ToolBarType> = props => {
 
             return isIcon ? iconBtn : btn;
           })}
-          {filterOptions.length && onFilter ? (
-            <Filter
-              filterOptions={filterOptions}
-              onFilter={onFilter}
-              filterTitle={filterTitle}
-            ></Filter>
-          ) : null}
         </Grid>
 
         {rightConfigs.length > 0 && (
