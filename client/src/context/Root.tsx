@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import {
-  createMuiTheme,
+  // for strict mode
+  unstable_createMuiStrictModeTheme as createMuiTheme,
   ThemeProvider,
   makeStyles,
 } from '@material-ui/core/styles';
