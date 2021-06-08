@@ -12,7 +12,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import Icons from '../icons/Icons';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import {
   IAdornmentConfig,
   IIconConfig,

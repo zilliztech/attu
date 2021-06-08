@@ -7,7 +7,7 @@ import {
   Select,
   Theme,
 } from '@material-ui/core';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { GroupOption, ICustomGroupSelect } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({

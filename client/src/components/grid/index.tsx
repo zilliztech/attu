@@ -1,4 +1,5 @@
-import React, { FC, MouseEvent } from 'react';
+import { FC, MouseEvent } from 'react';
+import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';

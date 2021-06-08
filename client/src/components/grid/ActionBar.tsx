@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { IconButton, makeStyles, Theme, createStyles } from '@material-ui/core';
 import Icons from '../icons/Icons';
 import { ActionBarType } from './Types';

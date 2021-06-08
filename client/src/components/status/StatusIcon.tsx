@@ -1,5 +1,5 @@
 import { CircularProgress, makeStyles, Theme } from '@material-ui/core';
-import React, { FC, ReactElement } from 'react';
+import { FC, ReactElement } from 'react';
 import { getStatusType } from '../../utils/Status';
 import icons from '../icons/Icons';
 import { StatusEnum, StatusType } from './Types';

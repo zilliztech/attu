@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { IconsType } from './Types';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';

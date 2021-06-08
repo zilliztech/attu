@@ -1,4 +1,5 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
+import * as React from 'react';
 import CustomButton from '../customButton/CustomButton';
 import ICONS from '../icons/Icons';
 import {

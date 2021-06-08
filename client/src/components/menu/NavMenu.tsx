@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -96,8 +96,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const NavMenu: FC<NavMenuType> = props => {
   const { width, data, defaultActive = '', defaultOpen = {} } = props;
   const classes = useStyles({ width });
-  const [open, setOpen] = React.useState<{ [x: string]: boolean }>(defaultOpen);
-  const [active, setActive] = React.useState<string>(defaultActive);
+  const [open, setOpen] = useState<{ [x: string]: boolean }>(defaultOpen);
+  const [active, setActive] = useState<string>(defaultActive);
   const location = useLocation();
 
   const handleClick = (label: string) => {

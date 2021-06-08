@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import backgroundPath from '../../assets/imgs/background.png';
 
 const getContainerStyles = makeStyles((theme: Theme) => ({

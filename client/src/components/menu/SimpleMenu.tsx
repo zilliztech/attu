@@ -1,4 +1,5 @@
-import React, { FC, useMemo } from 'react';
+import { FC, useMemo } from 'react';
+import * as React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { generateId } from '../../utils/Common';
