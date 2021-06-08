@@ -1,0 +1,7 @@
+export enum CODE_STATUS {
+  SUCCESS = 0,
+  UNAUTHORIZED = 401,
+  UNVERIFIED = 20305,
+}
+
+export const START_LOADING_TIME = 350;
