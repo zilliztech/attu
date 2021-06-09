@@ -5,13 +5,12 @@ import {
   CallHandler,
   HttpStatus,
   BadRequestException,
-  NotFoundException,
 } from '@nestjs/common';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 export interface Response<T> {
-  code: number;
+  statusCode: number;
   data: T;
 }
 
@@ -26,7 +25,9 @@ export class TransformResInterceptor<T>
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response<T>> {
-    return next.handle().pipe(map((data) => ({ code: HttpStatus.OK, data })));
+    return next
+      .handle()
+      .pipe(map((data) => ({ statusCode: HttpStatus.OK, data })));
   }
 }
 
@@ -39,28 +40,11 @@ export class ErrorInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        console.error(err);
-
-        if (err.isAxiosError && err.response) {
-          const errContent = err.response.data || 'Bad Request';
-          // from milvus http service
-          const status = err.response.status || 400;
-
-          // operationId is milvus operation id, client need it in response
-          err.operationId &&
-            errContent instanceof Object &&
-            (errContent.operationId = err.operationId);
-          switch (status) {
-            case 400:
-              return throwError(new BadRequestException(errContent));
-            case 404:
-              return throwError(new NotFoundException('Not Found Api'));
-            default:
-              return throwError(new BadRequestException(errContent));
-          }
+        console.error('---error interceptor---', err.response);
+        if (err.response) {
+          return throwError(err);
         }
-
-        return throwError(err);
+        return throwError(new BadRequestException(err.toString()));
       }),
     );
   }
