@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
+import React from 'react';
 import { TableHeadType } from './Types';
 import {
   TableHead,

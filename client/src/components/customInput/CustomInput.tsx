@@ -12,7 +12,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import Icons from '../icons/Icons';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import {
   IAdornmentConfig,
   IIconConfig,
@@ -148,14 +148,8 @@ const getIconInput = (
   checkValid: Function,
   validInfo: IValidInfo
 ): ReactElement => {
-  const {
-    icon,
-    inputType,
-    inputConfig,
-    containerClass,
-    spacing,
-    alignItems,
-  } = config;
+  const { icon, inputType, inputConfig, containerClass, spacing, alignItems } =
+    config;
   return (
     <Grid
       classes={{ container: `${containerClass || {}}` }}

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { StatusType, StatusEnum } from './Types';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';

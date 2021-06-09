@@ -1,4 +1,4 @@
-export default {
+const btnTrans = {
   cancel: '取消',
   save: '保存',
   reset: '重置',
@@ -8,18 +8,6 @@ export default {
   connect: '连接',
   import: '导入',
   delete: '删除',
-  export: '导出',
-  verify: '验证邮件',
-  login: '登录',
-  resendEmail: '重发邮件',
-  createAccount: '创建账号',
-  signIn: '登录',
-  new: '新增',
-  signOut: '退出',
-  filter: '筛选',
-  print: '打印',
-  downloadCSV: '下载 csv 文件',
-  drop: 'Drop',
-  terminate: '停止',
-  send: '发送',
 };
+
+export default btnTrans;

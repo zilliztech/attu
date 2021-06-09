@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IValidation } from '../components/textField/Types';
+import { IValidation } from '../components/customInput/Types';
 import { checkIsEmpty, getCheckResult } from '../utils/Validation';
 
 export interface IForm {
@@ -47,8 +47,6 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
       }),
       {}
     );
-
-  console.log('init validation', initValidation);
 
   // validation detail about form item
   const [validation, setValidation] = useState(initValidation);

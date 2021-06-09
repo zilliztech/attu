@@ -1,4 +1,4 @@
-export default {
+const btnTrans = {
   cancel: 'Cancel',
   save: 'Save',
   create: 'Create',
@@ -9,19 +9,6 @@ export default {
   connect: 'Connect',
   import: 'Import',
   delete: 'Delete',
-  export: 'Export',
-  verify: 'Verify email',
-  login: 'Back to sign in',
-  signIn: 'Sign in',
-  resendEmail: 'Resend email',
-  createAccount: 'Create account',
-  forgetPassword: 'Forget password?',
-  new: 'New',
-  signOut: 'Sign out',
-  filter: 'Filter',
-  print: 'Print',
-  downloadCSV: 'Download CSV File',
-  drop: 'Drop',
-  terminate: 'Terminate',
-  send: 'Send',
 };
+
+export default btnTrans;

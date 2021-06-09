@@ -15,14 +15,13 @@ jest.mock('../../customButton/CustomButton', () => {
   };
 });
 
-jest.mock('../../textField/SearchInput', () => {
+jest.mock('../../customInput/SearchInput', () => {
   return props => {
     return <div>{props.children}</div>;
   };
 });
 
 jest.mock('@material-ui/core/TextField', () => {
-  console.log('test enter');
   return props => {
     return <input {...props} className="input" />;
   };

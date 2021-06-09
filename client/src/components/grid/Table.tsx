@@ -1,4 +1,5 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -54,7 +55,6 @@ const useStyles = makeStyles(theme => ({
   },
   rowHover: {
     '&:hover': {
-      // backgroundColor: `${theme.palette.zilliz.light} !important`,
       backgroundColor: `#f3fcfe`,
       '& td': {
         background: 'inherit',

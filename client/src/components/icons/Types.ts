@@ -8,7 +8,7 @@ export type IconsType =
   | 'invisible'
   | 'error'
   | 'clear'
-  | 'filter'
   | 'app'
   | 'more'
-  | 'success';
+  | 'success'
+  | 'milvus';

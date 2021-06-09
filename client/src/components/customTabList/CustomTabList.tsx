@@ -1,5 +1,5 @@
 import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { ITabListProps, ITabPanel } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

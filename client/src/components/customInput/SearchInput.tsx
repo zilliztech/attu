@@ -1,5 +1,5 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
-import React, { FC, useState } from 'react';
+import { useRef, FC, useState } from 'react';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -60,7 +60,7 @@ const SearchInput: FC<SearchType> = props => {
 
   const classes = useSearchStyles({ searched, showInput });
 
-  const inputRef = React.useRef<any>(null);
+  const inputRef = useRef<any>(null);
 
   const onIconClick = () => {
     setShowInput(true);

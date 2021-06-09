@@ -20,7 +20,7 @@ const RouterWrapper = () => {
               return (
                 <Redirect
                   to={{
-                    pathname: '/',
+                    pathname: '/connect',
                   }}
                 />
               );

@@ -1,6 +1,5 @@
 import { IconsType } from '../icons/Types';
-import { FilterType } from '../filter/Types';
-import { SearchType } from '../textField/Types';
+import { SearchType } from '../customInput/Types';
 import { ReactElement } from 'react';
 
 export type IconConfigType = {
@@ -12,7 +11,7 @@ export type ColorType = 'default' | 'inherit' | 'primary' | 'secondary';
 /**
  * selected: selected data in table checkbox
  */
-export type ToolBarType = FilterType & {
+export type ToolBarType = {
   toolbarConfigs: ToolBarConfig[];
   selected?: any[];
   setSelected?: (selected: any[]) => void;

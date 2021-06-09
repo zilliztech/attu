@@ -5,7 +5,6 @@ export type RootContextType = {
   dialog: DialogType;
   setDialog: (params: DialogType) => void;
   handleCloseDialog: () => void;
-  setGlobalLoading: (loading: boolean) => void;
   setDrawer: (params: any) => void;
 };
 

@@ -1,6 +1,11 @@
 import { render } from '@testing-library/react';
 import { IForm, useFormValidation } from '../Form';
 
+// jest.mock('react', () => ({
+//   ...jest.requireActual('react'),
+//   useState: jest.fn().mockReturnValue([[], jest.fn]),
+// }));
+
 const mockForm: IForm[] = [
   {
     key: 'username',
@@ -30,7 +35,7 @@ test('test useFormValidation hook', () => {
   const { checkFormValid, checkIsValid, validation } = setupUseFormValidation();
 
   expect(checkFormValid(mockForm)).toBeFalsy();
-  expect(validation).toEqual([]);
+  expect(Object.keys(validation)).toEqual(['username']);
   expect(
     checkIsValid({
       value: '',

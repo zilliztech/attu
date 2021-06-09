@@ -7,12 +7,14 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ClearIcon from '@material-ui/icons/Clear';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import AppsIcon from '@material-ui/icons/Apps';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
+import { SvgIcon } from '@material-ui/core';
+import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -24,10 +26,12 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   invisible: (props = {}) => <VisibilityOff {...props} />,
   error: (props = {}) => <CancelIcon {...props} />,
   clear: (props = {}) => <ClearIcon {...props} />,
-  filter: (props = {}) => <FilterListIcon {...props} />,
   more: (props = {}) => <MoreVertIcon {...props} />,
   app: (props = {}) => <AppsIcon {...props} />,
   success: (props = {}) => <CheckCircleIcon {...props} />,
+  milvus: (props = {}) => (
+    <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />
+  ),
 };
 
 export default icons;

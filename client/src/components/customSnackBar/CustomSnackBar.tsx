@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent } from 'react';
+import { forwardRef, FC, SyntheticEvent } from 'react';
 import { CustomSnackBarType } from './Types';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Snackbar, makeStyles, Theme, createStyles } from '@material-ui/core';
@@ -7,7 +7,7 @@ import { TransitionProps } from '@material-ui/core/transitions/transition';
 
 // if we need to use slide component
 // snackbar content must use forwardRef to wrapper it
-const Alert = React.forwardRef((props: { [x: string]: any }, ref) => {
+const Alert = forwardRef((props: { [x: string]: any }, ref) => {
   return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
 });
 

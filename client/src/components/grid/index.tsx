@@ -1,4 +1,5 @@
-import React, { FC, MouseEvent } from 'react';
+import { FC, MouseEvent } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -98,9 +99,6 @@ const MilvusGrid: FC<MilvusGridType> = props => {
     openCheckBox = true,
     disableSelect = false,
     noData = t('grid.noData'),
-    filterOptions = [],
-    onFilter,
-    filterTitle,
     showHoverStyle = true,
     selected = [],
     setSelected = () => {},
@@ -189,9 +187,6 @@ const MilvusGrid: FC<MilvusGridType> = props => {
         <Grid item>
           <CustomToolbar
             toolbarConfigs={toolbarConfigs}
-            filterOptions={filterOptions}
-            onFilter={onFilter}
-            filterTitle={filterTitle}
             selected={selected}
           ></CustomToolbar>
         </Grid>

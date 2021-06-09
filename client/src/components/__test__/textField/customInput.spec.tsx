@@ -1,12 +1,12 @@
 import { fireEvent } from '@testing-library/react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import CustomInput from '../../textField/CustomInput';
+import CustomInput from '../../customInput/CustomInput';
 import {
   IAdornmentConfig,
   IIconConfig,
   ITextfieldConfig,
-} from '../../textField/Types';
+} from '../../customInput/Types';
 
 let container: any = null;
 

@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import React from 'react';
 import axiosInstance from '../../http/Axios';
 import { rootContext } from '../../context/Root';
 import { CODE_STATUS } from '../../consts/Http';

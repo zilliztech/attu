@@ -1,5 +1,5 @@
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import Icons from '../icons/Icons';
 import { TableSwitchType } from './Types';
 

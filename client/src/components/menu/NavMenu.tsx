@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,9 +8,9 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { NavMenuItem, NavMenuType } from './Types';
-import logoPath from '../../assets/imgs/logo.png';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import icons from '../icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -96,8 +96,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const NavMenu: FC<NavMenuType> = props => {
   const { width, data, defaultActive = '', defaultOpen = {} } = props;
   const classes = useStyles({ width });
-  const [open, setOpen] = React.useState<{ [x: string]: boolean }>(defaultOpen);
-  const [active, setActive] = React.useState<string>(defaultActive);
+  const [open, setOpen] = useState<{ [x: string]: boolean }>(defaultOpen);
+  const [active, setActive] = useState<string>(defaultActive);
   const location = useLocation();
 
   const handleClick = (label: string) => {
@@ -108,14 +108,14 @@ const NavMenu: FC<NavMenuType> = props => {
   };
 
   const { t } = useTranslation();
-  const navTrans: { [key in string]: string | object } = t('nav');
+  // const navTrans: { [key in string]: string | object } = t('nav');
 
-  useEffect(() => {
-    const activeLabel = location.pathname.includes('queries')
-      ? (navTrans.query as string)
-      : (navTrans.database as string);
-    setActive(activeLabel);
-  }, [location.pathname, navTrans.query, navTrans.database]);
+  // useEffect(() => {
+  //   const activeLabel = location.pathname.includes('queries')
+  //     ? (navTrans.query as string)
+  //     : (navTrans.database as string);
+  //   setActive(activeLabel);
+  // }, [location.pathname, navTrans.query, navTrans.database]);
 
   const NestList = (props: { data: NavMenuItem[]; className?: string }) => {
     const { className, data } = props;
@@ -170,14 +170,16 @@ const NavMenu: FC<NavMenuType> = props => {
     );
   };
 
+  const Logo = icons.milvus;
+
   return (
     <List component="nav" className={classes.root}>
       <div>
         <div className={classes.logoWrapper}>
-          <img className={classes.logo} src={logoPath} alt="cloud logo" />
+          <Logo classes={{ root: classes.logo }} />
         </div>
 
-        <NestList data={data} />
+        {/* <NestList data={data} /> */}
       </div>
     </List>
   );
