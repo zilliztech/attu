@@ -10,4 +10,5 @@ export type IconsType =
   | 'clear'
   | 'app'
   | 'more'
-  | 'success';
+  | 'success'
+  | 'milvus';

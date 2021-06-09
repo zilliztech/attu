@@ -1,5 +1,5 @@
 import { IconsType } from '../icons/Types';
-import { SearchType } from '../textField/Types';
+import { SearchType } from '../customInput/Types';
 import { ReactElement } from 'react';
 
 export type IconConfigType = {

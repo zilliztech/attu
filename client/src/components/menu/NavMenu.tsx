@@ -8,9 +8,9 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { NavMenuItem, NavMenuType } from './Types';
-import logoPath from '../../assets/imgs/logo.png';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
+import icons from '../icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -170,11 +170,13 @@ const NavMenu: FC<NavMenuType> = props => {
     );
   };
 
+  const Logo = icons.milvus;
+
   return (
     <List component="nav" className={classes.root}>
       <div>
         <div className={classes.logoWrapper}>
-          <img className={classes.logo} src={logoPath} alt="cloud logo" />
+          <Logo classes={{ root: classes.logo }} />
         </div>
 
         <NestList data={data} />

@@ -10,7 +10,7 @@ import {
 import CustomButton from '../customButton/CustomButton';
 import Icons from '../icons/Icons';
 import { ToolBarConfig, ToolBarType } from './Types';
-import SearchInput from '../textField/SearchInput';
+import SearchInput from '../customInput/SearchInput';
 import TableSwitch from './TableSwitch';
 import { throwErrorForDev } from '../../utils/Common';
 import CustomIconButton from '../customButton/CustomIconButton';

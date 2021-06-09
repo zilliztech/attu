@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { ReactElement } from 'react';
-import backgroundPath from '../../assets/imgs/background.png';
+import backgroundPath from '../../assets/imgs/connectContainer/background.png';
 
 const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -23,15 +23,15 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-// used for user login process
-const UserContainer = ({ children }: { children: ReactElement }) => {
+// used for user connect process
+const ConnectContainer = ({ children }: { children: ReactElement }) => {
   const classes = getContainerStyles();
 
   return (
-    <section className={classes.wrapper}>
-      <div className={classes.card}>{children}</div>
-    </section>
+    <main className={classes.wrapper}>
+      <section className={classes.card}>{children}</section>
+    </main>
   );
 };
 
-export default UserContainer;
+export default ConnectContainer;

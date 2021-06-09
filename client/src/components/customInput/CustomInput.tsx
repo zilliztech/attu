@@ -148,14 +148,8 @@ const getIconInput = (
   checkValid: Function,
   validInfo: IValidInfo
 ): ReactElement => {
-  const {
-    icon,
-    inputType,
-    inputConfig,
-    containerClass,
-    spacing,
-    alignItems,
-  } = config;
+  const { icon, inputType, inputConfig, containerClass, spacing, alignItems } =
+    config;
   return (
     <Grid
       classes={{ container: `${containerClass || {}}` }}
