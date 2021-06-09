@@ -11,4 +11,9 @@ export type IconsType =
   | 'app'
   | 'more'
   | 'success'
-  | 'milvus';
+  | 'milvus'
+  | 'navOverview'
+  | 'navCollection'
+  | 'navConsole'
+  | 'expandLess'
+  | 'expandMore';

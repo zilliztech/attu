@@ -1,4 +1,6 @@
+import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
+import Console from '../pages/console/Console';
 import Overview from '../pages/overview/Overview';
 
 const RouterConfig = [
@@ -11,6 +13,16 @@ const RouterConfig = [
     path: '/connect',
     component: Connect,
     auth: false,
+  },
+  {
+    path: '/collections',
+    component: Collections,
+    auth: true,
+  },
+  {
+    path: '/console',
+    component: Console,
+    auth: true,
   },
 ];
 

@@ -1,18 +1,38 @@
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import routerConfig from './Config';
 import Layout from '../components/layout/Layout';
+import { useContext } from 'react';
+import { rootContext } from '../context/Root';
 /**
  * Global responsible for global effect
  * Layout responsible for ui view
  *
  */
 const RouterWrapper = () => {
+  const { isAuth } = useContext(rootContext);
+
   return (
     <BrowserRouter>
       <Layout>
         <Switch>
           {routerConfig.map(v => (
-            <Route key={v.path} exact path={v.path} component={v.component} />
+            <Route
+              exact
+              key={v.path}
+              path={v.path}
+              render={() => {
+                const Page = v.component;
+                return isAuth || !v.auth ? (
+                  <Page />
+                ) : (
+                  <Redirect
+                    to={{
+                      pathname: '/connect',
+                    }}
+                  />
+                );
+              }}
+            />
           ))}
 
           <Route

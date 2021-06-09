@@ -7,17 +7,21 @@ import buttonEn from './en/button';
 import buttonCn from './cn/button';
 import warningCn from './cn/warning';
 import warningEn from './en/warning';
+import navCn from './cn/nav';
+import navEn from './en/nav';
 
 export const resources = {
   cn: {
     translation: commonCn,
     btn: buttonCn,
     warning: warningCn,
+    nav: navCn,
   },
   en: {
     translation: commonEn,
     btn: buttonEn,
     warning: warningEn,
+    nav: navEn,
   },
 };
 

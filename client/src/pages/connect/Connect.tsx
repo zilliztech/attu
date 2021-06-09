@@ -4,11 +4,12 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import icons from '../../components/icons/Icons';
 import ConnectContainer from './ConnectContainer';
 import CustomInput from '../../components/customInput/CustomInput';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
 import { useHistory } from 'react-router-dom';
+import { rootContext } from '../../context/Root';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Connect = () => {
   const history = useHistory();
-
+  const { setIsAuth } = useContext(rootContext);
   const classes = useStyles();
   const { t } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
@@ -63,7 +64,7 @@ const Connect = () => {
   };
 
   const handleConnect = () => {
-    console.log('connect address', form.address);
+    setIsAuth(true);
     history.push('/');
   };
 

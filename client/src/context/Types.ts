@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { Dispatch, ReactElement, SetStateAction } from 'react';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;
@@ -6,6 +6,8 @@ export type RootContextType = {
   setDialog: (params: DialogType) => void;
   handleCloseDialog: () => void;
   setDrawer: (params: any) => void;
+  isAuth: boolean;
+  setIsAuth: Dispatch<SetStateAction<boolean>>;
 };
 
 // this is for any custom dialog
