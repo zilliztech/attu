@@ -60,7 +60,7 @@ const GlobalToolbar = (props: { width: String }) => {
   const { t } = useTranslation();
   const classes = useStyles(props);
   const { t: btnTrans } = useTranslation('btn');
-  const navTrans: any = t('nav');
+  // const navTrans: any = t('nav');
 
   // const SearchIcon = icons.search;
   const AddIcon = icons.add;

@@ -108,14 +108,14 @@ const NavMenu: FC<NavMenuType> = props => {
   };
 
   const { t } = useTranslation();
-  const navTrans: { [key in string]: string | object } = t('nav');
+  // const navTrans: { [key in string]: string | object } = t('nav');
 
-  useEffect(() => {
-    const activeLabel = location.pathname.includes('queries')
-      ? (navTrans.query as string)
-      : (navTrans.database as string);
-    setActive(activeLabel);
-  }, [location.pathname, navTrans.query, navTrans.database]);
+  // useEffect(() => {
+  //   const activeLabel = location.pathname.includes('queries')
+  //     ? (navTrans.query as string)
+  //     : (navTrans.database as string);
+  //   setActive(activeLabel);
+  // }, [location.pathname, navTrans.query, navTrans.database]);
 
   const NestList = (props: { data: NavMenuItem[]; className?: string }) => {
     const { className, data } = props;
@@ -179,7 +179,7 @@ const NavMenu: FC<NavMenuType> = props => {
           <Logo classes={{ root: classes.logo }} />
         </div>
 
-        <NestList data={data} />
+        {/* <NestList data={data} /> */}
       </div>
     </List>
   );

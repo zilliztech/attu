@@ -16,6 +16,10 @@ const commonTrans = {
     nextLabel: 'next page',
     prevLabel: 'prev page',
   },
+  copy: {
+    copy: 'Copy',
+    copied: 'Copied',
+  },
 };
 
 export default commonTrans;
