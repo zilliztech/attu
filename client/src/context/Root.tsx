@@ -34,8 +34,6 @@ export const rootContext = React.createContext<RootContextType>({
   setDialog: params => {},
   handleCloseDialog: () => {},
   setDrawer: (params: any) => {},
-  isAuth: false,
-  setIsAuth: () => {},
 });
 
 const { Provider } = rootContext;
@@ -66,8 +64,6 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     open: false,
     child: <></>,
   });
-
-  const [isAuth, setIsAuth] = useState<boolean>(false);
 
   const handleSnackBarClose = () => {
     setSnackBar(v => ({ ...v, open: false }));
@@ -118,8 +114,6 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         setDialog,
         handleCloseDialog,
         setDrawer,
-        isAuth,
-        setIsAuth,
       }}
     >
       <ThemeProvider theme={theme}>

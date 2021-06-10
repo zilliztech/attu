@@ -4,10 +4,10 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import NavMenu from '../menu/NavMenu';
 import { NavMenuItem } from '../menu/Types';
 import { useContext } from 'react';
-import { rootContext } from '../../context/Root';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import { authContext } from '../../context/Auth';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Layout = (props: any) => {
   const history = useHistory();
-  const { isAuth } = useContext(rootContext);
+  const { isAuth } = useContext(authContext);
   const { t } = useTranslation('nav');
   const classes = useStyles();
 

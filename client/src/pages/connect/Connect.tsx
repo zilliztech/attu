@@ -9,7 +9,7 @@ import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
 import { useHistory } from 'react-router-dom';
-import { rootContext } from '../../context/Root';
+import { authContext } from '../../context/Auth';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Connect = () => {
   const history = useHistory();
-  const { setIsAuth } = useContext(rootContext);
+  const { setIsAuth, setAddress } = useContext(authContext);
   const classes = useStyles();
   const { t } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
@@ -65,6 +65,7 @@ const Connect = () => {
 
   const handleConnect = () => {
     setIsAuth(true);
+    setAddress(form.address);
     history.push('/');
   };
 

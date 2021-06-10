@@ -74,14 +74,6 @@ const useStyles = makeStyles((theme: Theme) =>
     logo: {
       marginRight: theme.spacing(1),
     },
-
-    feedback: {
-      color: theme.palette.primary.main,
-
-      '&:hover': {
-        backgroundColor: '#fff',
-      },
-    },
   })
 );
 

@@ -14,7 +14,8 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
 import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
@@ -36,6 +37,8 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   success: (props = {}) => <CheckCircleIcon {...props} />,
   expandLess: (props = {}) => <ExpandLess {...props} />,
   expandMore: (props = {}) => <ExpandMore {...props} />,
+  back: (props = {}) => <ArrowBackIosIcon {...props} />,
+  logout: (props = {}) => <ExitToAppIcon {...props} />,
 
   milvus: (props = {}) => (
     <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />

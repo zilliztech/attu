@@ -16,4 +16,6 @@ export type IconsType =
   | 'navCollection'
   | 'navConsole'
   | 'expandLess'
-  | 'expandMore';
+  | 'expandMore'
+  | 'back'
+  | 'logout';

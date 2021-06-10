@@ -2,14 +2,14 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import routerConfig from './Config';
 import Layout from '../components/layout/Layout';
 import { useContext } from 'react';
-import { rootContext } from '../context/Root';
+import { authContext } from '../context/Auth';
 /**
  * Global responsible for global effect
  * Layout responsible for ui view
  *
  */
 const RouterWrapper = () => {
-  const { isAuth } = useContext(rootContext);
+  const { isAuth } = useContext(authContext);
 
   return (
     <BrowserRouter>
