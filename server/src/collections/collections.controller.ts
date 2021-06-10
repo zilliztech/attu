@@ -21,11 +21,6 @@ export class CollectionsController {
     return await this.collectionsService.showCollections();
   }
 
-  @Get('statistics')
-  async getCollectionsIndexStatus() {
-    return await this.collectionsService.getCollectionsIndexStatus();
-  }
-
   @Post()
   @UsePipes(new ValidationPipe())
   async createCollection(@Body() data: CreateCollection) {
