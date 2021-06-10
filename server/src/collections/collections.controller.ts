@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -37,6 +38,32 @@ export class CollectionsController {
   @Get(':name')
   async describeCollection(@Param('name') name: string) {
     return await this.collectionsService.describeCollection({
+      collection_name: name,
+    });
+  }
+
+  @Get(':name/statistics')
+  async getCollectionStatistics(@Param('name') name: string) {
+    return await this.collectionsService.getCollectionStatistics({
+      collection_name: name,
+    });
+  }
+
+  @Get('indexes/status')
+  async getCollectionsIndexState() {
+    return await this.collectionsService.getCollectionsIndexStatus();
+  }
+
+  @Put(':name/load')
+  async loadCollection(@Param('name') name: string) {
+    return await this.collectionsService.loadCollection({
+      collection_name: name,
+    });
+  }
+
+  @Put(':name/release')
+  async releaseCollection(@Param('name') name: string) {
+    return await this.collectionsService.releaseCollection({
       collection_name: name,
     });
   }
