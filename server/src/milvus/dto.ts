@@ -7,3 +7,11 @@ export class ConnectMilvus {
   })
   readonly address: string;
 }
+
+export class CheckMilvus {
+  @IsString()
+  @IsNotEmpty({
+    message: 'address is empty',
+  })
+  readonly address: string;
+}

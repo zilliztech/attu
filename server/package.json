@@ -29,6 +29,7 @@
     "@nestjs/serve-static": "^2.1.4",
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
+    "@zilliz/milvus-sdk-node-dev": "^0.1.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "passport": "^0.4.1",
