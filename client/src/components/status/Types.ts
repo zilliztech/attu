@@ -1,6 +1,6 @@
 export enum StatusEnum {
-  'creating',
-  'running',
+  'unloaded',
+  'loaded',
   'error',
 }
 export type StatusType = {

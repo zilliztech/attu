@@ -11,8 +11,8 @@ jest.mock('react-i18next', () => {
       return {
         t: name => {
           return {
-            creating: 'creating',
-            running: 'running',
+            loaded: 'loaded',
+            unloaded: 'unloaded',
             error: 'error',
           };
         },
@@ -41,15 +41,15 @@ describe('Test Status', () => {
 
   it('Test props status', () => {
     act(() => {
-      render(<Status status={StatusEnum.creating} />, container);
+      render(<Status status={StatusEnum.loaded} />, container);
     });
 
-    expect(container.querySelector('.label').textContent).toEqual('creating');
+    expect(container.querySelector('.label').textContent).toEqual('loaded');
 
     act(() => {
-      render(<Status status={StatusEnum.running} />, container);
+      render(<Status status={StatusEnum.unloaded} />, container);
     });
 
-    expect(container.querySelector('.label').textContent).toEqual('running');
+    expect(container.querySelector('.label').textContent).toEqual('unloaded');
   });
 });

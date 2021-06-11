@@ -21,7 +21,6 @@ axiosInstance.interceptors.request.use(
     // Do something before request is sent
     const session = window.localStorage.getItem(SESSION);
 
-    // console.log('in----', token);
     session && (config.headers[SESSION] = session);
 
     return config;

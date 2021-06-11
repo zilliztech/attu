@@ -8,6 +8,7 @@ import Collapse from '@material-ui/core/Collapse';
 import { NavMenuItem, NavMenuType } from './Types';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
       marginBottom: theme.spacing(8),
 
-      '& h3': {
+      '& .title': {
         margin: 0,
         fontSize: '16px',
         lineHeight: '19px',
@@ -159,7 +160,9 @@ const NavMenu: FC<NavMenuType> = props => {
       <div>
         <div className={classes.logoWrapper}>
           <Logo classes={{ root: classes.logo }} />
-          <h3>{milvusTrans.admin}</h3>
+          <Typography variant="h3" className="title">
+            {milvusTrans.admin}
+          </Typography>
         </div>
 
         <NestList data={data} />

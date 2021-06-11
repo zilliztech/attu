@@ -18,4 +18,7 @@ export type IconsType =
   | 'expandLess'
   | 'expandMore'
   | 'back'
-  | 'logout';
+  | 'logout'
+  | 'rightArrow'
+  | 'info'
+  | 'release';

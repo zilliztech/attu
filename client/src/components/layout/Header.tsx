@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
     navigation: {
       display: 'flex',
       alignItems: 'center',
-      fontWeight: 'bold',
     },
     icon: {
       color: theme.palette.primary.main,
@@ -38,10 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
       '& .text': {
         marginRight: theme.spacing(3),
-
-        '& p': {
-          margin: 0,
-        },
 
         '& .address': {
           fontSize: '14px',
@@ -97,8 +92,8 @@ const Header: FC<HeaderType> = props => {
 
         <div className={classes.addressWrapper}>
           <div className="text">
-            <p className="address">{address}</p>
-            <p className="status">{statusTrans.running}</p>
+            <Typography className="address">{address}</Typography>
+            <Typography className="status">{statusTrans.running}</Typography>
           </div>
           <LogoutIcon classes={{ root: classes.icon }} onClick={handleLogout} />
         </div>

@@ -1,4 +1,4 @@
-import { Theme, makeStyles } from '@material-ui/core';
+import { Theme, makeStyles, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import icons from '../../components/icons/Icons';
@@ -24,9 +24,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(3),
     margin: '0 auto',
 
-    '& h2': {
+    '& .title': {
       margin: 0,
       color: '#323232',
+      fontWeight: 'bold',
     },
   },
   logo: {
@@ -90,7 +91,9 @@ const Connect = () => {
       <section className={classes.wrapper}>
         <div className={classes.titleWrapper}>
           <Logo classes={{ root: classes.logo }} />
-          <h2>{milvusTrans.admin}</h2>
+          <Typography variant="h2" className="title">
+            {milvusTrans.admin}
+          </Typography>
         </div>
         <CustomInput
           type="text"

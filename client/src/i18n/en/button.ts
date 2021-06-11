@@ -9,6 +9,7 @@ const btnTrans = {
   connect: 'Connect',
   import: 'Import',
   delete: 'Delete',
+  release: 'Release',
 };
 
 export default btnTrans;

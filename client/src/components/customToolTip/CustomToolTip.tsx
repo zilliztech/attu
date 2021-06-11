@@ -20,8 +20,9 @@ const CustomToolTip: FC<CustomToolTipType> = props => {
       leaveDelay={leaveDelay}
       title={title}
       placement={placement}
+      arrow
     >
-      <span>{children}</span>
+      <span className="flex-center">{children}</span>
     </Tooltip>
   );
 };

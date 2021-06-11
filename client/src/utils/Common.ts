@@ -22,8 +22,7 @@ export const generateId = (prefix = 'id') =>
   `${prefix}_${Math.random().toString(36).substr(2, 16)}`;
 
 export const formatNumber = (number: number): string => {
-  const n = number / 100;
-  return (Math.floor(n * 100) / 100).toFixed(2);
+  return new Intl.NumberFormat().format(number);
 };
 
 /**

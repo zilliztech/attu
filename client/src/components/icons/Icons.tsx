@@ -16,11 +16,14 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
 import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
 import { ReactComponent as CollectionIcon } from '../../assets/icons/collecion.svg';
 import { ReactComponent as ConsoleIcon } from '../../assets/icons/console.svg';
+import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { ReactComponent as ReleaseIcon } from '../../assets/icons/release.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -39,6 +42,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   expandMore: (props = {}) => <ExpandMore {...props} />,
   back: (props = {}) => <ArrowBackIosIcon {...props} />,
   logout: (props = {}) => <ExitToAppIcon {...props} />,
+  rightArrow: (props = {}) => <ArrowForwardIosIcon {...props} />,
 
   milvus: (props = {}) => (
     <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />
@@ -51,6 +55,12 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   navConsole: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={ConsoleIcon} {...props} />
+  ),
+  info: (props = {}) => (
+    <SvgIcon viewBox="0 0 16 16" component={InfoIcon} {...props} />
+  ),
+  release: (props = {}) => (
+    <SvgIcon viewBox="0 0 16 16" component={ReleaseIcon} {...props} />
   ),
 };
 

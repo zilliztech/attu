@@ -9,6 +9,10 @@ import warningCn from './cn/warning';
 import warningEn from './en/warning';
 import navCn from './cn/nav';
 import navEn from './en/nav';
+import overviewCn from './cn/overview';
+import overviewEn from './en/overview';
+import collectionCn from './cn/collection';
+import collectionEn from './en/collection';
 
 export const resources = {
   cn: {
@@ -16,12 +20,16 @@ export const resources = {
     btn: buttonCn,
     warning: warningCn,
     nav: navCn,
+    overview: overviewCn,
+    collection: collectionCn,
   },
   en: {
     translation: commonEn,
     btn: buttonEn,
     warning: warningEn,
     nav: navEn,
+    overview: overviewEn,
+    collection: collectionEn,
   },
 };
 

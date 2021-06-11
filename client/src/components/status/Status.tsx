@@ -10,8 +10,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     label: {
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
+      color: '#82838e',
+      textTransform: 'capitalize',
     },
     circle: {
       backgroundColor: (props: any) => props.color,
@@ -45,15 +45,15 @@ const Status: FC<StatusType> = props => {
   const statusTrans: { [key in string]: string } = t('status');
   const { label, color } = useMemo(() => {
     switch (status) {
-      case StatusEnum.creating:
+      case StatusEnum.unloaded:
         return {
-          label: statusTrans.creating,
+          label: statusTrans.unloaded,
           color: '#06aff2',
         };
 
-      case StatusEnum.running:
+      case StatusEnum.loaded:
         return {
-          label: statusTrans.running,
+          label: statusTrans.loaded,
           color: '#06f3af',
         };
       case StatusEnum.error:
@@ -76,7 +76,7 @@ const Status: FC<StatusType> = props => {
     <div className={classes.root}>
       <div
         className={`${classes.circle} ${
-          status === StatusEnum.creating ? classes.flash : ''
+          status === StatusEnum.unloaded ? classes.flash : ''
         }`}
       ></div>
       <Typography variant="body2" className={classes.label}>
