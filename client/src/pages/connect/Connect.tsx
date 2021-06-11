@@ -1,14 +1,15 @@
-import { Theme, makeStyles } from '@material-ui/core';
+import { Theme, makeStyles, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import icons from '../../components/icons/Icons';
 import ConnectContainer from './ConnectContainer';
 import CustomInput from '../../components/customInput/CustomInput';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
 import { useHistory } from 'react-router-dom';
+import { authContext } from '../../context/Auth';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -23,9 +24,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(3),
     margin: '0 auto',
 
-    '& h2': {
+    '& .title': {
       margin: 0,
       color: '#323232',
+      fontWeight: 'bold',
     },
   },
   logo: {
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Connect = () => {
   const history = useHistory();
-
+  const { setIsAuth, setAddress } = useContext(authContext);
   const classes = useStyles();
   const { t } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
@@ -63,7 +65,8 @@ const Connect = () => {
   };
 
   const handleConnect = () => {
-    console.log('connect address', form.address);
+    setIsAuth(true);
+    setAddress(form.address);
     history.push('/');
   };
 
@@ -88,7 +91,9 @@ const Connect = () => {
       <section className={classes.wrapper}>
         <div className={classes.titleWrapper}>
           <Logo classes={{ root: classes.logo }} />
-          <h2>{milvusTrans.admin}</h2>
+          <Typography variant="h2" className="title">
+            {milvusTrans.admin}
+          </Typography>
         </div>
         <CustomInput
           type="text"

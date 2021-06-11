@@ -8,6 +8,7 @@ const btnTrans = {
   connect: '连接',
   import: '导入',
   delete: '删除',
+  release: 'Release',
 };
 
 export default btnTrans;

@@ -1,16 +1,14 @@
-import { useState, FC, useEffect } from 'react';
+import { useState, FC } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
 import { NavMenuItem, NavMenuType } from './Types';
-import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
 import icons from '../icons/Icons';
+import { useTranslation } from 'react-i18next';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,39 +30,26 @@ const useStyles = makeStyles((theme: Theme) =>
 
       width: 'initial',
       color: '#82838e',
-
-      '& svg': {
-        width: '20px',
-        height: '20px',
-
-        '& path': {
-          stroke: '#82838e',
-        },
-
-        '& .st0': {
-          fill: '#82838e',
-        },
-      },
     },
     itemIcon: {
       minWidth: '20px',
       marginRight: theme.spacing(1),
+
+      '& .icon': {
+        fill: 'transparent',
+
+        '& path': {
+          stroke: '#82838e',
+        },
+      },
     },
     active: {
       color: theme.palette.primary.main,
       borderRight: `2px solid ${theme.palette.primary.main}`,
 
-      '& svg': {
+      '& .icon': {
         '& path': {
           stroke: theme.palette.primary.main,
-
-          transition: 'all 0.2s',
-        },
-
-        '& .st0': {
-          fill: theme.palette.primary.main,
-
-          transition: 'all 0.2s',
         },
       },
     },
@@ -75,20 +60,20 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
 
-      marginTop: '30px',
+      marginTop: theme.spacing(3),
 
-      marginBottom: '65px',
+      marginBottom: theme.spacing(8),
+
+      '& .title': {
+        margin: 0,
+        fontSize: '16px',
+        lineHeight: '19px',
+        letterSpacing: '0.15px',
+        color: '#323232',
+      },
     },
     logo: {
-      width: '150px',
-    },
-
-    feedback: {
-      color: theme.palette.primary.main,
-
-      '&:hover': {
-        backgroundColor: '#fff',
-      },
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -98,7 +83,12 @@ const NavMenu: FC<NavMenuType> = props => {
   const classes = useStyles({ width });
   const [open, setOpen] = useState<{ [x: string]: boolean }>(defaultOpen);
   const [active, setActive] = useState<string>(defaultActive);
-  const location = useLocation();
+
+  const { t } = useTranslation();
+  const milvusTrans: { [key in string]: string } = t('milvus');
+
+  const ExpandLess = icons.expandLess;
+  const ExpandMore = icons.expandMore;
 
   const handleClick = (label: string) => {
     setOpen(v => ({
@@ -107,31 +97,26 @@ const NavMenu: FC<NavMenuType> = props => {
     }));
   };
 
-  const { t } = useTranslation();
-  // const navTrans: { [key in string]: string | object } = t('nav');
-
-  // useEffect(() => {
-  //   const activeLabel = location.pathname.includes('queries')
-  //     ? (navTrans.query as string)
-  //     : (navTrans.database as string);
-  //   setActive(activeLabel);
-  // }, [location.pathname, navTrans.query, navTrans.database]);
-
   const NestList = (props: { data: NavMenuItem[]; className?: string }) => {
     const { className, data } = props;
     return (
       <>
-        {data.map((v: any) => {
+        {data.map((v: NavMenuItem) => {
           const IconComponent = v.icon;
+          const isActive = active === v.label;
+          const iconClass =
+            v.iconActiveClass && v.iconNormalClass
+              ? isActive
+                ? v.iconActiveClass
+                : v.iconNormalClass
+              : 'icon';
           if (v.children) {
             return (
               <div key={v.label}>
                 <ListItem button onClick={() => handleClick(v.label)}>
-                  {v.icon && (
-                    <ListItemIcon>
-                      <IconComponent />
-                    </ListItemIcon>
-                  )}
+                  <ListItemIcon>
+                    <IconComponent classes={{ root: iconClass }} />
+                  </ListItemIcon>
 
                   <ListItemText primary={v.label} />
                   {open[v.label] ? <ExpandLess /> : <ExpandMore />}
@@ -149,18 +134,16 @@ const NavMenu: FC<NavMenuType> = props => {
               button
               key={v.label}
               className={`${className || ''} ${classes.item} ${
-                active === v.label ? classes.active : ''
+                isActive ? classes.active : ''
               }`}
               onClick={() => {
                 setActive(v.label);
                 v.onClick && v.onClick();
               }}
             >
-              {v.icon && (
-                <ListItemIcon className={classes.itemIcon}>
-                  <IconComponent />
-                </ListItemIcon>
-              )}
+              <ListItemIcon className={classes.itemIcon}>
+                <IconComponent classes={{ root: iconClass }} />
+              </ListItemIcon>
 
               <ListItemText primary={v.label} />
             </ListItem>
@@ -177,9 +160,12 @@ const NavMenu: FC<NavMenuType> = props => {
       <div>
         <div className={classes.logoWrapper}>
           <Logo classes={{ root: classes.logo }} />
+          <Typography variant="h3" className="title">
+            {milvusTrans.admin}
+          </Typography>
         </div>
 
-        {/* <NestList data={data} /> */}
+        <NestList data={data} />
       </div>
     </List>
   );

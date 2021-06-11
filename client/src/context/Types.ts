@@ -1,4 +1,5 @@
-import { ReactElement } from 'react';
+import { Dispatch, ReactElement, SetStateAction } from 'react';
+import { NavInfo } from '../router/Types';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;
@@ -31,6 +32,7 @@ export type DialogType = {
     containerClass?: string;
   };
 };
+
 export type SnackBarType = {
   open: boolean;
   message: string | ReactElement;
@@ -49,3 +51,15 @@ export type OpenSnackBarType = (
     vertical: 'bottom' | 'top';
   }
 ) => void;
+
+export type AuthContextType = {
+  isAuth: boolean;
+  setIsAuth: Dispatch<SetStateAction<boolean>>;
+  address: string;
+  setAddress: Dispatch<SetStateAction<string>>;
+};
+
+export type NavContextType = {
+  navInfo: NavInfo;
+  setNavInfo: (param: NavInfo) => void;
+};

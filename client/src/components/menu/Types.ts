@@ -12,7 +12,9 @@ export type NavMenuItem = {
   icon: (
     props?: any
   ) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
-  label: String;
+  iconActiveClass?: string;
+  iconNormalClass?: string;
+  label: string;
   onClick?: () => void;
   children?: NavMenuItem[];
 };

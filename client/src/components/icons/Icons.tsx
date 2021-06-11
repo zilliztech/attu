@@ -12,9 +12,18 @@ import AppsIcon from '@material-ui/icons/Apps';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
+import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
+import { ReactComponent as CollectionIcon } from '../../assets/icons/collecion.svg';
+import { ReactComponent as ConsoleIcon } from '../../assets/icons/console.svg';
+import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
+import { ReactComponent as ReleaseIcon } from '../../assets/icons/release.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -29,8 +38,29 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   more: (props = {}) => <MoreVertIcon {...props} />,
   app: (props = {}) => <AppsIcon {...props} />,
   success: (props = {}) => <CheckCircleIcon {...props} />,
+  expandLess: (props = {}) => <ExpandLess {...props} />,
+  expandMore: (props = {}) => <ExpandMore {...props} />,
+  back: (props = {}) => <ArrowBackIosIcon {...props} />,
+  logout: (props = {}) => <ExitToAppIcon {...props} />,
+  rightArrow: (props = {}) => <ArrowForwardIosIcon {...props} />,
+
   milvus: (props = {}) => (
     <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />
+  ),
+  navOverview: (props = {}) => (
+    <SvgIcon viewBox="0 0 20 20" component={OverviewIcon} {...props} />
+  ),
+  navCollection: (props = {}) => (
+    <SvgIcon viewBox="0 0 20 20" component={CollectionIcon} {...props} />
+  ),
+  navConsole: (props = {}) => (
+    <SvgIcon viewBox="0 0 20 20" component={ConsoleIcon} {...props} />
+  ),
+  info: (props = {}) => (
+    <SvgIcon viewBox="0 0 16 16" component={InfoIcon} {...props} />
+  ),
+  release: (props = {}) => (
+    <SvgIcon viewBox="0 0 16 16" component={ReleaseIcon} {...props} />
   ),
 };
 

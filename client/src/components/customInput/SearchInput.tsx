@@ -38,10 +38,6 @@ const useSearchStyles = makeStyles(theme => ({
     cursor: 'pointer',
   },
   iconWrapper: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-
     opacity: (props: any) => `${props.searched ? 1 : 0}`,
     transition: 'opacity 0.2s',
   },
@@ -94,7 +90,7 @@ const SearchInput: FC<SearchType> = props => {
           endAdornment: (
             <InputAdornment position="end">
               <span
-                className={classes.iconWrapper}
+                className={`flex-center ${classes.iconWrapper}`}
                 onClick={e => {
                   setSearchValue('');
                   inputRef.current.focus();

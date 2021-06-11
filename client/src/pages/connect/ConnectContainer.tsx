@@ -9,10 +9,6 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     backgroundImage: `url(${backgroundPath})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   card: {
     width: '480px',
@@ -28,7 +24,7 @@ const ConnectContainer = ({ children }: { children: ReactElement }) => {
   const classes = getContainerStyles();
 
   return (
-    <main className={classes.wrapper}>
+    <main className={`flex-center ${classes.wrapper}`}>
       <section className={classes.card}>{children}</section>
     </main>
   );
