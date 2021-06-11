@@ -7,6 +7,7 @@ const commonTrans = {
     loaded: 'loaded',
     unloaded: 'unloaded',
     error: 'error',
+    running: 'running',
   },
   grid: {
     action: 'action',
