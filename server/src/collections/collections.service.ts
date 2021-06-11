@@ -9,7 +9,9 @@ import {
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
 } from '@zilliz/milvus-sdk-node-dev/dist/milvus/types'; // todo: need improve like export types in root file.
-import { throwErrorFromSDK } from 'src/utils/Error';
+import { throwErrorFromSDK } from '../utils/Error';
+import { findKeyValue } from '../utils/Helper';
+import { ROW_COUNT } from '../utils/Const';
 @Injectable()
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -25,13 +27,9 @@ export class CollectionsService {
   }
 
   async createCollection(data: CreateCollectionReq) {
-    try {
-      const res = await this.milvusClient.createCollection(data);
-      throwErrorFromSDK(res);
-      return res;
-    } catch (error) {
-      throw new Error(error);
-    }
+    const res = await this.milvusClient.createCollection(data);
+    throwErrorFromSDK(res);
+    return res;
   }
 
   async describeCollection(data: DescribeCollectionReq) {
@@ -73,6 +71,7 @@ export class CollectionsService {
    */
   async getIndexStatus(data: GetIndexStateReq) {
     const res = await this.milvusClient.getIndexState(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 
@@ -92,9 +91,7 @@ export class CollectionsService {
           // schema: collectionInfo.schema,
           description: collectionInfo.schema.description,
           autoID: collectionInfo.schema.autoID,
-          rowCount: collectionStatistics.stats.find(
-            (v) => v.key === 'row_count',
-          ).value,
+          rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           // id: collectionInfo.collectionId
         });
       }
