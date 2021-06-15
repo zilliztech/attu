@@ -24,32 +24,51 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.common.black,
       opacity: 0.15,
     },
+    hoverType: {
+      marginRight: 0,
+
+      '& button': {
+        color: '#fff',
+      },
+    },
   })
 );
 
 const ActionBar: FC<ActionBarType> = props => {
   const classes = useStyles();
-  const { configs, row } = props;
+  const { configs, row, isHoverType = false } = props;
 
   return (
     <>
-      {configs.map(v => (
-        <span className={`${classes.root} ${v.className}`} key={v.icon}>
-          <CustomToolTip title={v.label || ''} placement="top">
-            <IconButton
-              aria-label={v.label || ''}
-              onClickCapture={e => {
-                e.stopPropagation();
-                v.onClick(e, row);
-              }}
-              disabled={v.disabled ? v.disabled(row) : false}
-              classes={{ disabled: classes.disabled }}
-            >
-              {Icons[v.icon]()}
-            </IconButton>
-          </CustomToolTip>
-        </span>
-      ))}
+      {configs.map(v => {
+        const label = v.getLabel ? v.getLabel(row) : v.label;
+        return (
+          <span
+            className={`${classes.root} ${v.className} ${
+              isHoverType ? classes.hoverType : ''
+            }`}
+            key={label}
+          >
+            <CustomToolTip title={label || ''} placement="bottom">
+              <IconButton
+                aria-label={label || ''}
+                onClickCapture={e => {
+                  e.stopPropagation();
+                  v.onClick(e, row);
+                }}
+                disabled={v.disabled ? v.disabled(row) : false}
+                classes={{
+                  disabled: classes.disabled,
+                }}
+              >
+                {v.showIconMethod === 'renderFn'
+                  ? v.renderIconFn && v.renderIconFn(row)
+                  : Icons[v.icon]()}
+              </IconButton>
+            </CustomToolTip>
+          </span>
+        );
+      })}
     </>
   );
 };

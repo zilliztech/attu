@@ -1,4 +1,9 @@
 import { BYTE_UNITS } from '../consts/Util';
+import {
+  CreateFieldType,
+  DataTypeEnum,
+  Field,
+} from '../pages/collections/Types';
 import { KeyValuePair } from '../types/Common';
 
 /**
@@ -92,4 +97,17 @@ export const getKeyValueListFromJSON = (
 // BinarySubstructure includes Superstructure and Substructure
 export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
   return metricLabel === 'Superstructure' || metricLabel === 'Substructure';
+};
+
+export const getCreateFieldType = (config: Field): CreateFieldType => {
+  if (config.isPrimaryKey) {
+    return 'primaryKey';
+  }
+
+  const vectorTypes = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
+  if (vectorTypes.includes(config.type)) {
+    return 'vector';
+  }
+
+  return 'number';
 };

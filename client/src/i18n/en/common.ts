@@ -4,7 +4,7 @@ const commonTrans = {
     address: 'Milvus Address',
   },
   status: {
-    loaded: 'loaded',
+    loaded: 'loaded for search',
     unloaded: 'unloaded',
     error: 'error',
     running: 'running',
