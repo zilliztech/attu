@@ -88,7 +88,7 @@ export class CollectionsService {
         });
         data.push({
           collection_name: name,
-          // schema: collectionInfo.schema,
+          schema: collectionInfo.schema,
           description: collectionInfo.schema.description,
           autoID: collectionInfo.schema.autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
