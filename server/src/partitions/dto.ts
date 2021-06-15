@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsString,
@@ -11,6 +12,7 @@ export enum ManageType {
   CREATE = 'create',
 }
 export class GetPartitionsInfo {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
@@ -19,29 +21,34 @@ export class GetPartitionsInfo {
 }
 
 export class ManagePartition {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty({
     message: 'partition_name is empty',
   })
   readonly partition_name: string;
 
+  @ApiProperty()
   @IsEnum(ManageType, { message: 'Type allow delete and create' })
   readonly type: ManageType;
 }
 
 export class LoadPartitions {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
+  @ApiProperty()
   @IsArray()
   @ArrayNotEmpty()
   @IsNotEmpty({
