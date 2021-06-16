@@ -43,10 +43,10 @@ export const ALL_OPTIONS: KeyValuePair[] = [
 export const AUTO_ID_OPTIONS: KeyValuePair[] = [
   {
     label: 'On',
-    value: 'On',
+    value: 'true',
   },
   {
     label: 'Off',
-    value: 'Off',
+    value: 'false',
   },
 ];

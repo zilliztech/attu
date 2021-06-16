@@ -171,9 +171,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
         <CustomSelector
           label={t('autoId')}
           options={AUTO_ID_OPTIONS}
-          value={autoID ? 'On' : 'Off'}
+          value={autoID ? 'true' : 'false'}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            const autoId = e.target.value === 'On';
+            const autoId = e.target.value === 'true';
             setAutoID(autoId);
           }}
           variant="filled"
