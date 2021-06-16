@@ -35,7 +35,7 @@ export class ManagePartition {
   })
   readonly partition_name: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: ManageType })
   @IsEnum(ManageType, { message: 'Type allow delete and create' })
   readonly type: ManageType;
 }

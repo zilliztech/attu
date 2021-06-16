@@ -6,6 +6,7 @@ import {
   GetIndexBuildProgressReq,
   GetIndexStateReq,
 } from '@zilliz/milvus-sdk-node-dev/dist/milvus/types';
+import { throwErrorFromSDK } from 'src/utils/Error';
 import { MilvusService } from '../milvus/milvus.service';
 
 @Injectable()
@@ -28,6 +29,7 @@ export class SchemaService {
 
   async dropIndex(data: DropIndexReq) {
     const res = await this.milvusClient.dropIndex(data);
+    throwErrorFromSDK(res);
     return res;
   }
 
