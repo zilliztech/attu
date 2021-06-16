@@ -152,7 +152,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
     setFields(newFields);
   };
 
-  const generatePrimaryKeyRow = (field: Field): ReactElement => {
+  const generatePrimaryKeyRow = (
+    field: Field,
+    autoID: boolean
+  ): ReactElement => {
     return (
       <div className={`${classes.rowWrapper} ${classes.mb3}`}>
         {getInput(
@@ -284,11 +287,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateFieldRow = (field: Field) => {
+  const generateFieldRow = (field: Field, autoID: boolean) => {
     const createType: CreateFieldType = getCreateFieldType(field);
     switch (createType) {
       case 'primaryKey': {
-        return generatePrimaryKeyRow(field);
+        return generatePrimaryKeyRow(field, autoID);
       }
       case 'defaultVector': {
         return generateDefaultVectorRow(field);
@@ -306,7 +309,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   return (
     <>
       {fields.map((field, index) => (
-        <Fragment key={index}>{generateFieldRow(field)}</Fragment>
+        <Fragment key={index}>{generateFieldRow(field, autoID)}</Fragment>
       ))}
     </>
   );
