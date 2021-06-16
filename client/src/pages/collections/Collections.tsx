@@ -16,6 +16,7 @@ import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -51,6 +52,8 @@ const Collections = () => {
 
   const { setDialog, handleCloseDialog } = useContext(rootContext);
   const { t } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
+  const { t: dialogTrans } = useTranslation('dialog');
 
   const classes = useStyles();
 
@@ -101,6 +104,10 @@ const Collections = () => {
   const handleRelease = async (data: CollectionView) => {};
 
   const handleLoad = async (data: CollectionView) => {};
+
+  const handleDelete = async () => {
+    console.log('selected', selectedCollections);
+  };
 
   const handleAction = (data: CollectionView) => {
     const actionType: 'release' | 'load' =
@@ -162,7 +169,20 @@ const Collections = () => {
     {
       type: 'iconBtn',
       onClick: () => {
-        console.log('delete collections');
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('delete')}
+                title={dialogTrans('deleteTitle', { type: t('collection') })}
+                text={t('deleteWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
       },
       label: t('delete'),
       icon: 'delete',

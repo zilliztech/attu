@@ -8,6 +8,8 @@ const collectionTrans = {
   create: 'Create Collection',
   delete: 'delete',
 
+  collection: 'Collection',
+
   // table
   id: 'ID',
   name: 'Name',
@@ -37,6 +39,10 @@ const collectionTrans = {
   releaseContent:
     'You are trying to release a collection with data. Please be aware that the data will no longer be available for search.',
   releaseConfirmLabel: 'Release',
+
+  // delete dialog
+  deleteWarning:
+    'You are trying to delete a collection with data. This action cannot be undone.',
 };
 
 export default collectionTrans;
