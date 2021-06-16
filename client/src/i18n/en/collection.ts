@@ -25,6 +25,18 @@ const collectionTrans = {
   autoId: 'Auto ID',
   dimension: 'Dimension',
   newBtn: 'add new field',
+
+  // load dialog
+  loadTitle: 'Load Collection',
+  loadContent:
+    'You are trying to load a collection with data. Only loaded collection can be searched.',
+  loadConfirmLabel: 'Load',
+
+  // release dialog
+  releaseTitle: 'Release Collection',
+  releaseContent:
+    'You are trying to release a collection with data. Please be aware that the data will no longer be available for search.',
+  releaseConfirmLabel: 'Release',
 };
 
 export default collectionTrans;

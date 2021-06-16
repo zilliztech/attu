@@ -22,8 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '8px',
       padding: 0,
     },
+    noticePaper: {
+      maxWidth: '480px',
+    },
     paperSm: {
       maxWidth: '80%',
+    },
+    dialogContent: {
+      marginTop: theme.spacing(4),
     },
     title: {
       // padding: theme.spacing(4),
@@ -84,8 +90,10 @@ const CustomDialog: FC<CustomDialogType> = props => {
   return (
     <Dialog
       classes={{
-        paper: classes.paper,
-        paperWidthSm: classes.paperSm,
+        paper: `${classes.paper} ${
+          type === 'notice' ? classes.noticePaper : ''
+        }`,
+        paperWidthSm: type === 'notice' ? '' : classes.paperSm,
         container: `${containerClass}`,
       }}
       open={open}
@@ -99,7 +107,11 @@ const CustomDialog: FC<CustomDialogType> = props => {
           >
             <Typography variant="body1">{title}</Typography>
           </CustomDialogTitle>
-          {component && <DialogContent>{component}</DialogContent>}
+          {component && (
+            <DialogContent classes={{ root: classes.dialogContent }}>
+              {component}
+            </DialogContent>
+          )}
           <DialogActions classes={{ spacing: classes.padding }}>
             <CustomButton
               onClick={() => handleCancel()}

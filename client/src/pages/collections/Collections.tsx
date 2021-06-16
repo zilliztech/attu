@@ -11,7 +11,7 @@ import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
 import { StatusEnum } from '../../components/status/Types';
-import { makeStyles, Theme, Link } from '@material-ui/core';
+import { makeStyles, Theme, Link, Typography } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
@@ -25,6 +25,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
+  },
+
+  dialogContent: {
+    lineHeight: '24px',
+    fontSize: '16px',
   },
 }));
 
@@ -91,6 +96,51 @@ const Collections = () => {
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
     handleCloseDialog();
+  };
+
+  const handleRelease = async (data: CollectionView) => {};
+
+  const handleLoad = async (data: CollectionView) => {};
+
+  const handleAction = (data: CollectionView) => {
+    const actionType: 'release' | 'load' =
+      data.status === StatusEnum.loaded ? 'release' : 'load';
+
+    const actionsMap = {
+      release: {
+        title: t('releaseTitle'),
+        component: (
+          <Typography className={classes.dialogContent}>
+            {t('releaseContent')}
+          </Typography>
+        ),
+        confirmLabel: t('releaseConfirmLabel'),
+        confirm: () => handleRelease(data),
+      },
+      load: {
+        title: t('loadTitle'),
+        component: (
+          <Typography className={classes.dialogContent}>
+            {t('loadContent')}
+          </Typography>
+        ),
+        confirmLabel: t('loadConfirmLabel'),
+        confirm: () => handleLoad(data),
+      },
+    };
+
+    const { title, component, confirmLabel, confirm } = actionsMap[actionType];
+
+    setDialog({
+      open: true,
+      type: 'notice',
+      params: {
+        title,
+        component,
+        confirmLabel,
+        confirm,
+      },
+    });
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -173,7 +223,7 @@ const Collections = () => {
       actionBarConfigs: [
         {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
-            console.log('action row', row);
+            handleAction(row);
           },
           icon: 'load',
           label: 'load',
