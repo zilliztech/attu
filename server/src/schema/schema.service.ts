@@ -19,11 +19,13 @@ export class SchemaService {
 
   async createIndex(data: CreateIndexReq) {
     const res = await this.milvusClient.createIndex(data);
+    throwErrorFromSDK(res);
     return res;
   }
 
   async describeIndex(data: DescribeIndexReq) {
     const res = await this.milvusClient.describeIndex(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 
@@ -35,11 +37,13 @@ export class SchemaService {
 
   async getIndexState(data: GetIndexStateReq) {
     const res = await this.milvusClient.getIndexState(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 
   async getIndexBuildProgress(data: GetIndexBuildProgressReq) {
     const res = await this.milvusClient.getIndexBuildProgress(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 }
