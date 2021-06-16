@@ -9,6 +9,7 @@ const btnTrans = {
   import: '导入',
   delete: '删除',
   release: 'Release',
+  create: 'Create',
 };
 
 export default btnTrans;

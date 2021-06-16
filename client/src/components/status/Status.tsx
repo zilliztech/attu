@@ -74,11 +74,7 @@ const Status: FC<StatusType> = props => {
 
   return (
     <div className={classes.root}>
-      <div
-        className={`${classes.circle} ${
-          status === StatusEnum.unloaded ? classes.flash : ''
-        }`}
-      ></div>
+      {status === StatusEnum.loaded && <div className={classes.circle}></div>}
       <Typography variant="body2" className={classes.label}>
         {label}
       </Typography>

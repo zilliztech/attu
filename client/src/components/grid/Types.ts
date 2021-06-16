@@ -75,6 +75,8 @@ export type ColDefinitionsType = {
   label: React.ReactNode;
   needCopy?: boolean;
   showActionCell?: boolean;
+  isHoverAction?: boolean;
+  notSort?: boolean;
   onClick?: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     data?: any
@@ -113,12 +115,16 @@ export type ActionBarType = {
   configs: ActionBarConfig[];
   row: any;
   showLabel?: boolean;
+  isHoverType?: boolean;
 };
 
 type ActionBarConfig = {
   onClick: (e: React.MouseEvent, row: any) => void;
   icon: IconsType;
+  showIconMethod?: 'iconType' | 'renderFn';
+  renderIconFn?: (row: any) => ReactElement;
   label?: string;
+  getLabel?: (row: any) => string;
   className?: string;
   disabled?: (row: any) => boolean;
 };

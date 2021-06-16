@@ -12,26 +12,11 @@ import StatisticsCard from './statisticsCard/StatisticsCard';
 import { StatisticsCardProps } from './statisticsCard/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    margin: theme.spacing(2, 5),
-  },
   collectionTitle: {
     margin: theme.spacing(2, 0),
     lineHeight: '20px',
     fontSize: '14px',
     color: '#82838e',
-  },
-  empty: {
-    flexGrow: 1,
-  },
-  emptyIcon: {
-    width: '48px',
-    height: '48px',
-    fill: 'transparent',
-
-    '& path': {
-      stroke: '#aeaebb',
-    },
   },
   cardsWrapper: {
     display: 'grid',
@@ -107,7 +92,7 @@ const Overview = () => {
   const CollectionIcon = icons.navCollection;
 
   return (
-    <section className={`page-wrapper ${classes.wrapper}`}>
+    <section className="page-wrapper">
       <StatisticsCard data={mockStatistics.data} />
       <Typography className={classes.collectionTitle}>{t('load')}</Typography>
       {mockCollections.length > 0 ? (
@@ -118,8 +103,8 @@ const Overview = () => {
         </div>
       ) : (
         <EmptyCard
-          wrapperClass={classes.empty}
-          icon={<CollectionIcon classes={{ root: classes.emptyIcon }} />}
+          wrapperClass="page-empty-card"
+          icon={<CollectionIcon />}
           text={collectionTrans('noLoadData')}
         />
       )}

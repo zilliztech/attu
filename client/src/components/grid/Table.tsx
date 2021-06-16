@@ -50,14 +50,30 @@ const useStyles = makeStyles(theme => ({
     background: theme.palette.common.white,
     paddingLeft: theme.spacing(2),
   },
+  hoverActionCell: {
+    transition: '0.2s all',
+    padding: 0,
+    width: '50px',
+    backgroundColor: '#fff',
+    '& span': {
+      opacity: 0,
+    },
+  },
   checkbox: {
     background: theme.palette.common.white,
   },
   rowHover: {
     '&:hover': {
-      backgroundColor: `#f3fcfe`,
+      backgroundColor: '#f3fcfe !important',
       '& td': {
         background: 'inherit',
+      },
+
+      '& $hoverActionCell': {
+        backgroundColor: theme.palette.primary.main,
+        '& span': {
+          opacity: 1,
+        },
       },
     },
   },
@@ -167,16 +183,16 @@ const EnhancedTable: FC<TableType> = props => {
 
                     return (
                       <TableRow
-                        hover
+                        hover={showHoverStyle}
                         key={'row' + row[primaryKey] + index}
                         onClick={event => onSelected(event, row)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         selected={isItemSelected && !disableSelect}
-                        classes={
-                          showHoverStyle ? { hover: classes.rowHover } : {}
-                        }
+                        classes={{
+                          hover: classes.rowHover,
+                        }}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                       >
@@ -201,13 +217,20 @@ const EnhancedTable: FC<TableType> = props => {
                             : {};
                           return colDef.showActionCell ? (
                             <TableCell
-                              className={`${classes.cell} ${classes.tableCell}`}
+                              className={`${classes.cell} ${
+                                classes.tableCell
+                              } ${
+                                colDef.isHoverAction
+                                  ? classes.hoverActionCell
+                                  : ''
+                              }`}
                               key="manage"
                               style={cellStyle}
                             >
                               <ActionBar
                                 showLabel={tableMouseStatus[index]}
                                 configs={actionBarConfigs}
+                                isHoverType={colDef.isHoverAction}
                                 row={row}
                               ></ActionBar>
                             </TableCell>

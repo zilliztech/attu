@@ -77,7 +77,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
             sortDirection={orderBy === headCell.id ? order : false}
             className={classes.tableCell}
           >
-            {headCell.label ? (
+            {headCell.label && !headCell.notSort ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
                 direction={orderBy === headCell.id ? order : 'asc'}

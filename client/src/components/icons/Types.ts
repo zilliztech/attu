@@ -21,4 +21,5 @@ export type IconsType =
   | 'logout'
   | 'rightArrow'
   | 'info'
-  | 'release';
+  | 'release'
+  | 'load';

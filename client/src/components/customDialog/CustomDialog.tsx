@@ -16,9 +16,10 @@ import CustomDialogTitle from './CustomDialogTitle';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      maxWidth: '480px',
-      width: '100%',
-      borderRadius: '0px',
+      // maxWidth: '480px',
+      minWidth: '480px',
+      // width: '100%',
+      borderRadius: '8px',
       padding: 0,
     },
     title: {

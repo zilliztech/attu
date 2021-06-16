@@ -59,7 +59,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid container>
         <Grid item xs={8}>
           {leftConfigs.map((c, i) => {
             const isSelect = c.type === 'select' || c.type === 'groupSelect';

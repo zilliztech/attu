@@ -1,8 +1,6 @@
 import { CircularProgress, makeStyles, Theme } from '@material-ui/core';
 import { FC, ReactElement } from 'react';
-import { getStatusType } from '../../utils/Status';
-import icons from '../icons/Icons';
-import { StatusEnum, StatusType } from './Types';
+import { ChildrenStatusType, StatusIconType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -16,14 +14,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const StatusIcon: FC<StatusType> = props => {
+const StatusIcon: FC<StatusIconType> = props => {
   const classes = useStyles();
-  const { status } = props;
+  const { type } = props;
 
-  const getElement = (status: StatusEnum): ReactElement => {
-    const type = getStatusType(status);
+  const getElement = (type: ChildrenStatusType): ReactElement => {
     switch (type) {
-      case 'loading':
+      case 'creating':
         return (
           <CircularProgress
             size={24}
@@ -31,14 +28,14 @@ const StatusIcon: FC<StatusType> = props => {
             classes={{ svg: classes.svg }}
           />
         );
-      case 'success':
-        return icons.success({ style: { color: '#34b78f' } });
+      case 'finish':
+        return <></>;
       default:
-        return icons.error({ style: { color: '#fc4c02' } });
+        return <></>;
     }
   };
 
-  return <div className={classes.wrapper}>{getElement(status)}</div>;
+  return <div className={classes.wrapper}>{getElement(type)}</div>;
 };
 
 export default StatusIcon;
