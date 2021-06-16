@@ -44,7 +44,7 @@ const Collections = () => {
     CollectionView[]
   >([]);
 
-  const { setDialog } = useContext(rootContext);
+  const { setDialog, handleCloseDialog } = useContext(rootContext);
   const { t } = useTranslation('collection');
 
   const classes = useStyles();
@@ -90,7 +90,7 @@ const Collections = () => {
   }, []);
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
-    console.log('===== param', param);
+    handleCloseDialog();
   };
 
   const toolbarConfigs: ToolBarConfig[] = [

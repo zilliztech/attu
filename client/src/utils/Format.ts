@@ -4,7 +4,6 @@ import {
   DataTypeEnum,
   Field,
 } from '../pages/collections/Types';
-import { KeyValuePair } from '../types/Common';
 
 /**
  * transform large capacity to capacity in b.
@@ -102,6 +101,10 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
 export const getCreateFieldType = (config: Field): CreateFieldType => {
   if (config.isPrimaryKey) {
     return 'primaryKey';
+  }
+
+  if (config.isDefault) {
+    return 'defaultVector';
   }
 
   const vectorTypes = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];

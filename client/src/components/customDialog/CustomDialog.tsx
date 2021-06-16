@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '8px',
       padding: 0,
     },
+    paperSm: {
+      maxWidth: '80%',
+    },
     title: {
       // padding: theme.spacing(4),
       '& p': {
@@ -80,7 +83,11 @@ const CustomDialog: FC<CustomDialogType> = props => {
 
   return (
     <Dialog
-      classes={{ paper: classes.paper, container: `${containerClass}` }}
+      classes={{
+        paper: classes.paper,
+        paperWidthSm: classes.paperSm,
+        container: `${containerClass}`,
+      }}
       open={open}
       onClose={handleCancel}
     >

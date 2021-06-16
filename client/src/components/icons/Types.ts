@@ -22,4 +22,5 @@ export type IconsType =
   | 'rightArrow'
   | 'info'
   | 'release'
-  | 'load';
+  | 'load'
+  | 'remove';
