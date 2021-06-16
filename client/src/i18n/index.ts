@@ -13,6 +13,8 @@ import overviewCn from './cn/overview';
 import overviewEn from './en/overview';
 import collectionCn from './cn/collection';
 import collectionEn from './en/collection';
+import dialogCn from './cn/dialog';
+import dialogEn from './en/dialog';
 
 export const resources = {
   cn: {
@@ -22,6 +24,7 @@ export const resources = {
     nav: navCn,
     overview: overviewCn,
     collection: collectionCn,
+    dialog: dialogCn,
   },
   en: {
     translation: commonEn,
@@ -30,6 +33,7 @@ export const resources = {
     nav: navEn,
     overview: overviewEn,
     collection: collectionEn,
+    dialog: dialogEn,
   },
 };
 

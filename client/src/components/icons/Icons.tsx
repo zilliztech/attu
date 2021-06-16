@@ -17,6 +17,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
 import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
@@ -44,6 +45,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   back: (props = {}) => <ArrowBackIosIcon {...props} />,
   logout: (props = {}) => <ExitToAppIcon {...props} />,
   rightArrow: (props = {}) => <ArrowForwardIosIcon {...props} />,
+  remove: (props = {}) => <RemoveCircleOutlineIcon {...props} />,
 
   milvus: (props = {}) => (
     <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />

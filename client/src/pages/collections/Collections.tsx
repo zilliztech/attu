@@ -11,11 +11,12 @@ import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
 import { StatusEnum } from '../../components/status/Types';
-import { makeStyles, Theme, Link } from '@material-ui/core';
+import { makeStyles, Theme, Link, Typography } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -25,6 +26,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
+  },
+
+  dialogContent: {
+    lineHeight: '24px',
+    fontSize: '16px',
   },
 }));
 
@@ -44,8 +50,10 @@ const Collections = () => {
     CollectionView[]
   >([]);
 
-  const { setDialog } = useContext(rootContext);
+  const { setDialog, handleCloseDialog } = useContext(rootContext);
   const { t } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
+  const { t: dialogTrans } = useTranslation('dialog');
 
   const classes = useStyles();
 
@@ -90,7 +98,56 @@ const Collections = () => {
   }, []);
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
-    console.log('===== param', param);
+    handleCloseDialog();
+  };
+
+  const handleRelease = async (data: CollectionView) => {};
+
+  const handleLoad = async (data: CollectionView) => {};
+
+  const handleDelete = async () => {
+    console.log('selected', selectedCollections);
+  };
+
+  const handleAction = (data: CollectionView) => {
+    const actionType: 'release' | 'load' =
+      data.status === StatusEnum.loaded ? 'release' : 'load';
+
+    const actionsMap = {
+      release: {
+        title: t('releaseTitle'),
+        component: (
+          <Typography className={classes.dialogContent}>
+            {t('releaseContent')}
+          </Typography>
+        ),
+        confirmLabel: t('releaseConfirmLabel'),
+        confirm: () => handleRelease(data),
+      },
+      load: {
+        title: t('loadTitle'),
+        component: (
+          <Typography className={classes.dialogContent}>
+            {t('loadContent')}
+          </Typography>
+        ),
+        confirmLabel: t('loadConfirmLabel'),
+        confirm: () => handleLoad(data),
+      },
+    };
+
+    const { title, component, confirmLabel, confirm } = actionsMap[actionType];
+
+    setDialog({
+      open: true,
+      type: 'notice',
+      params: {
+        title,
+        component,
+        confirmLabel,
+        confirm,
+      },
+    });
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -112,7 +169,20 @@ const Collections = () => {
     {
       type: 'iconBtn',
       onClick: () => {
-        console.log('delete collections');
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('delete')}
+                title={dialogTrans('deleteTitle', { type: t('collection') })}
+                text={t('deleteWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
       },
       label: t('delete'),
       icon: 'delete',
@@ -173,7 +243,7 @@ const Collections = () => {
       actionBarConfigs: [
         {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
-            console.log('action row', row);
+            handleAction(row);
           },
           icon: 'load',
           label: 'load',

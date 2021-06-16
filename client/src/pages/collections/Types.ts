@@ -41,12 +41,19 @@ export interface Field {
   desc: string;
   dimension?: number | string;
   isDefault?: boolean;
+  id: string;
 }
 
-export type CreateFieldType = 'primaryKey' | 'vector' | 'number';
+export type CreateFieldType =
+  | 'primaryKey'
+  | 'defaultVector'
+  | 'vector'
+  | 'number';
 
 export interface CreateFieldsProps {
   fields: Field[];
   setFields: Dispatch<SetStateAction<Field[]>>;
   setfieldsAllValid: Dispatch<SetStateAction<boolean>>;
+  autoID: boolean;
+  setAutoID: (value: boolean) => void;
 }

@@ -39,3 +39,14 @@ export const ALL_OPTIONS: KeyValuePair[] = [
     value: DataTypeEnum.Double,
   },
 ];
+
+export const AUTO_ID_OPTIONS: KeyValuePair[] = [
+  {
+    label: 'On',
+    value: 'true',
+  },
+  {
+    label: 'Off',
+    value: 'false',
+  },
+];
