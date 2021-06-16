@@ -28,6 +28,7 @@ export class MilvusService {
       });
       return { address: this.milvusAddress };
     } catch (error) {
+      console.log(error);
       throw new Error('Connect milvus failed, check your milvus address.');
     }
   }
