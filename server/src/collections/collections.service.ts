@@ -8,7 +8,7 @@ import {
   GetIndexStateReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
-} from '@zilliz/milvus-sdk-node-dev/dist/milvus/types'; // todo: need improve like export types in root file.
+} from '@zilliz/milvus-sdk-node-dev/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils/Const';
@@ -71,7 +71,6 @@ export class CollectionsService {
    */
   async getIndexStatus(data: GetIndexStateReq) {
     const res = await this.milvusClient.getIndexState(data);
-    throwErrorFromSDK(res.status);
     return res;
   }
 
