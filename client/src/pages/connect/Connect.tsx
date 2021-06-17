@@ -10,6 +10,9 @@ import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
 import { useHistory } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
+import { MilvusHttp } from '../../http/Milvus';
+import { rootContext } from '../../context/Root';
+import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -42,12 +45,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Connect = () => {
   const history = useHistory();
-  const { setIsAuth, setAddress } = useContext(authContext);
+  const { setAddress } = useContext(authContext);
+  const { openSnackBar } = useContext(rootContext);
   const classes = useStyles();
   const { t } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
   const milvusTrans: { [key in string]: string } = t('milvus');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: successTrans } = useTranslation('success');
 
   const [form, setForm] = useState({
     address: '',
@@ -64,9 +69,11 @@ const Connect = () => {
     setForm({ address: value });
   };
 
-  const handleConnect = () => {
-    setIsAuth(true);
+  const handleConnect = async () => {
+    await MilvusHttp.connect(form.address);
+    openSnackBar(successTrans('connect'));
     setAddress(form.address);
+    window.localStorage.setItem(MILVUS_ADDRESS, form.address);
     history.push('/');
   };
 

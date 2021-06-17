@@ -21,6 +21,7 @@ const RouterWrapper = () => {
               key={v.path}
               path={v.path}
               render={() => {
+                console.log('isauth', isAuth);
                 const Page = v.component;
                 return isAuth || !v.auth ? (
                   <Page />

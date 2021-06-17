@@ -8,7 +8,7 @@ export class MilvusService {
   constructor() {
     this.milvusAddress = '';
     // todo: this is easy for test. need delete it before publish
-    this.milvusClient = new MilvusNode('127.0.0.1:19530');
+    // this.milvusClient = new MilvusNode('127.0.0.1:19530');
   }
 
   get milvusAddressGetter() {
@@ -28,7 +28,6 @@ export class MilvusService {
       });
       return { address: this.milvusAddress };
     } catch (error) {
-      console.log(error);
       throw new Error('Connect milvus failed, check your milvus address.');
     }
   }
