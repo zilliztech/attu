@@ -45,7 +45,7 @@ const Overview = () => {
       },
       {
         label: t('data'),
-        value: t('rows', { number: formatNumber(209379100) }),
+        value: t('rows', { number: formatNumber(209379100) }) as string,
         valueColor: '#0689d2',
       },
     ],

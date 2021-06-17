@@ -1,6 +1,6 @@
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
-import Console from '../pages/console/Console';
+// import Console from '../pages/console/Console';
 import Overview from '../pages/overview/Overview';
 
 const RouterConfig = [
@@ -19,11 +19,11 @@ const RouterConfig = [
     component: Collections,
     auth: true,
   },
-  {
-    path: '/console',
-    component: Console,
-    auth: true,
-  },
+  // {
+  //   path: '/console',
+  //   component: Console,
+  //   auth: true,
+  // },
 ];
 
 export default RouterConfig;
