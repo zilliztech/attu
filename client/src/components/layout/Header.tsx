@@ -6,6 +6,7 @@ import icons from '../icons/Icons';
 import { useHistory } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { useTranslation } from 'react-i18next';
+import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,6 +72,7 @@ const Header: FC<HeaderType> = props => {
 
   const handleLogout = () => {
     setAddress('');
+    window.localStorage.removeItem(MILVUS_ADDRESS);
   };
 
   return (

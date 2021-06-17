@@ -1,5 +1,5 @@
 const successTrans = {
-  connect: 'Connet milvus {{address}} success',
+  connect: 'Connet milvus success',
 };
 
 export default successTrans;

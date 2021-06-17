@@ -1,5 +1,5 @@
 export enum CODE_STATUS {
-  SUCCESS = 2000,
+  SUCCESS = 200,
   UNAUTHORIZED = 401,
 }
 
