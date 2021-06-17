@@ -8,9 +8,8 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { PartitionView } from '../partitions/Types';
 import { parseLocationSearch } from '../../utils/Format';
-import { StatusEnum } from '../../components/status/Types';
 import Status from '../../components/status/Status';
-import { formatNumber } from '../../utils/Common';
+import { PartitionHttp } from '../../http/Partition';
 
 const Collection = () => {
   const { collectionName = '' } =
@@ -20,7 +19,7 @@ const Collection = () => {
 
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
   const [partitions, setPartitions] = useState<PartitionView[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const history = useHistory();
   const location = useLocation();
@@ -42,21 +41,26 @@ const Collection = () => {
   const handleTabChange = (activeIndex: number) => {
     const path = location.pathname;
     history.push(`${path}?activeIndex=${activeIndex}`);
+
+    // fetch data
+    if (activeIndex === TAB_EMUM.partition) {
+      fetchPartitions(collectionName);
+    }
+  };
+
+  const fetchPartitions = async (collectionName: string) => {
+    const res = await PartitionHttp.getPartitions(collectionName);
+
+    const partitons: PartitionView[] = res.map(p =>
+      Object.assign(p, { _statusElement: <Status status={p._status} /> })
+    );
+    setLoading(false);
+    setPartitions(partitons);
   };
 
   useEffect(() => {
-    const mockPartitions: PartitionView[] = [
-      {
-        id: '1',
-        name: 'partition',
-        status: StatusEnum.unloaded,
-        statusElement: <Status status={StatusEnum.unloaded} />,
-        rowCount: formatNumber(11223),
-      },
-    ];
-
-    setPartitions(mockPartitions);
-  }, []);
+    fetchPartitions(collectionName);
+  }, [collectionName]);
 
   const tabs: ITab[] = [
     {

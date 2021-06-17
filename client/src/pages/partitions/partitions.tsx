@@ -54,25 +54,25 @@ const Partitions: FC<{ data: PartitionView[]; loading: boolean }> = ({
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'id',
+      id: '_id',
       align: 'left',
       disablePadding: true,
       label: t('id'),
     },
     {
-      id: 'name',
+      id: '_name',
       align: 'left',
       disablePadding: false,
       label: t('name'),
     },
     {
-      id: 'statusElement',
+      id: '_statusElement',
       align: 'left',
       disablePadding: false,
       label: t('status'),
     },
     {
-      id: 'rowCount',
+      id: '_rowCount',
       align: 'left',
       disablePadding: false,
       label: (

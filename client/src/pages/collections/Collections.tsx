@@ -68,15 +68,15 @@ const Collections = () => {
   useEffect(() => {
     const mockCollections: CollectionView[] = [
       {
-        name: 'collection',
+        name: 'collection_1',
         nameElement: (
           <Link
             component="button"
-            onClick={() => history.push(`/collection/collection`)}
+            onClick={() => history.push(`/collection/collection_1`)}
             underline="always"
             color="textPrimary"
           >
-            collection
+            collection_1
           </Link>
         ),
         id: 'c1',
