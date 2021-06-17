@@ -1,15 +1,18 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
 import { StatusEnum } from '../../components/status/Types';
 
-export interface CollectionView {
-  name: string;
-  nameElement: ReactElement;
-  id: string;
-  status: StatusEnum;
-  statusElement: ReactElement;
-  rowCount: string;
-  desc: string;
-  indexCreatingElement: ReactElement;
+export interface CollectionData {
+  _name: string;
+  _id: string;
+  _status: StatusEnum;
+  _rowCount: string;
+  _desc: string;
+}
+
+export interface CollectionView extends CollectionData {
+  nameElement?: ReactElement;
+  statusElement?: ReactElement;
+  indexCreatingElement?: ReactElement;
 }
 
 export interface CollectionCreateProps {

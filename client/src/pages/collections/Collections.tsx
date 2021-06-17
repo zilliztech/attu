@@ -17,6 +17,7 @@ import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import { CollectionHttp } from '../../http/Collection';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -63,38 +64,27 @@ const Collections = () => {
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
 
+  const fetchData = async () => {
+    const res = await CollectionHttp.getCollections();
+    setCollections(
+      res.map(v => {
+        Object.assign(v, {
+          nameElement: (
+            <Link href="/overview" underline="always" color="textPrimary">
+              {v._name}
+            </Link>
+          ),
+          statusElement: <Status status={v._status} />,
+          indexCreatingElement: <StatusIcon type="creating" />,
+        });
+
+        return v;
+      })
+    );
+  };
+
   useEffect(() => {
-    const mockCollections: CollectionView[] = [
-      {
-        name: 'collection',
-        nameElement: (
-          <Link href="/overview" underline="always" color="textPrimary">
-            collection
-          </Link>
-        ),
-        id: 'c1',
-        status: StatusEnum.unloaded,
-        statusElement: <Status status={StatusEnum.unloaded} />,
-        rowCount: '200,000',
-        desc: 'description',
-        indexCreatingElement: <StatusIcon type="creating" />,
-      },
-      {
-        name: 'collection 2',
-        nameElement: (
-          <Link href="/overview" underline="always" color="textPrimary">
-            collection 2
-          </Link>
-        ),
-        id: 'c2',
-        status: StatusEnum.loaded,
-        statusElement: <Status status={StatusEnum.loaded} />,
-        rowCount: '300,000',
-        desc: 'description 2',
-        indexCreatingElement: <StatusIcon type="finish" />,
-      },
-    ];
-    setCollections(mockCollections);
+    fetchData();
   }, []);
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
@@ -111,7 +101,7 @@ const Collections = () => {
 
   const handleAction = (data: CollectionView) => {
     const actionType: 'release' | 'load' =
-      data.status === StatusEnum.loaded ? 'release' : 'load';
+      data._status === StatusEnum.loaded ? 'release' : 'load';
 
     const actionsMap = {
       release: {
@@ -191,7 +181,7 @@ const Collections = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'id',
+      id: '_id',
       align: 'left',
       disablePadding: true,
       label: t('id'),
@@ -209,7 +199,7 @@ const Collections = () => {
       label: t('status'),
     },
     {
-      id: 'rowCount',
+      id: '_rowCount',
       align: 'left',
       disablePadding: false,
       label: (
@@ -222,7 +212,7 @@ const Collections = () => {
       ),
     },
     {
-      id: 'desc',
+      id: '_desc',
       align: 'left',
       disablePadding: false,
       label: t('desc'),
@@ -249,9 +239,9 @@ const Collections = () => {
           label: 'load',
           showIconMethod: 'renderFn',
           getLabel: (row: CollectionView) =>
-            row.status === StatusEnum.loaded ? 'release' : 'load',
+            row._status === StatusEnum.loaded ? 'release' : 'load',
           renderIconFn: (row: CollectionView) =>
-            row.status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
+            row._status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
         },
       ],
     },
