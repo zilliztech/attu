@@ -1,9 +1,11 @@
+import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
 // import Console from '../pages/console/Console';
 import Overview from '../pages/overview/Overview';
+import { RouterConfigType } from './Types';
 
-const RouterConfig = [
+const RouterConfig: RouterConfigType[] = [
   {
     path: '/',
     component: Overview,
@@ -17,6 +19,11 @@ const RouterConfig = [
   {
     path: '/collections',
     component: Collections,
+    auth: true,
+  },
+  {
+    path: '/collection/:collectionName',
+    component: Collection,
     auth: true,
   },
   // {
