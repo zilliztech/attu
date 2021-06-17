@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { StatusEnum } from '../../components/status/Types';
+import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
 
 export interface CollectionData {
   _name: string;
@@ -7,6 +7,7 @@ export interface CollectionData {
   _status: StatusEnum;
   _rowCount: string;
   _desc: string;
+  _indexState: ChildrenStatusType;
 }
 
 export interface CollectionView extends CollectionData {

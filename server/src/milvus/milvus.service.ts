@@ -22,10 +22,10 @@ export class MilvusService {
   async connectMilvus(address: string) {
     try {
       this.milvusClient = new MilvusNode(address);
-      this.milvusAddress = address;
       await this.milvusClient.hasCollection({
         collection_name: 'not_exist',
       });
+      this.milvusAddress = address;
       return { address: this.milvusAddress };
     } catch (error) {
       throw new Error('Connect milvus failed, check your milvus address.');
@@ -33,8 +33,12 @@ export class MilvusService {
   }
 
   async checkConnect(address: string) {
+    if (address !== this.milvusAddress) {
+      return { connected: false };
+    }
+    const res = await this.connectMilvus(address);
     return {
-      connected: this.milvusAddress ? this.milvusAddress === address : false,
+      connected: res.address ? true : false,
     };
   }
 }

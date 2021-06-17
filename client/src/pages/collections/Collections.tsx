@@ -10,7 +10,7 @@ import icons from '../../components/icons/Icons';
 import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
-import { StatusEnum } from '../../components/status/Types';
+import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
 import { makeStyles, Theme, Link, Typography } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
@@ -66,8 +66,11 @@ const Collections = () => {
 
   const fetchData = async () => {
     const res = await CollectionHttp.getCollections();
+    const statusRes = await CollectionHttp.getCollectionsIndexState();
     setCollections(
       res.map(v => {
+        const indexStatus = statusRes.find(item => item._name === v._name);
+        console.log(indexStatus);
         Object.assign(v, {
           nameElement: (
             <Link href="/overview" underline="always" color="textPrimary">
@@ -75,7 +78,11 @@ const Collections = () => {
             </Link>
           ),
           statusElement: <Status status={v._status} />,
-          indexCreatingElement: <StatusIcon type="creating" />,
+          indexCreatingElement: (
+            <StatusIcon
+              type={indexStatus?._indexState || ChildrenStatusType.FINISH}
+            />
+          ),
         });
 
         return v;
