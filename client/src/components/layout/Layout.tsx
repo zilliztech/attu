@@ -55,13 +55,13 @@ const Layout = (props: any) => {
       label: t('collection'),
       onClick: () => history.push('/collections'),
     },
-    {
-      icon: icons.navConsole,
-      label: t('console'),
-      onClick: () => history.push('/console'),
-      iconActiveClass: classes.activeConsole,
-      iconNormalClass: classes.normalConsole,
-    },
+    // {
+    //   icon: icons.navConsole,
+    //   label: t('console'),
+    //   onClick: () => history.push('/console'),
+    //   iconActiveClass: classes.activeConsole,
+    //   iconNormalClass: classes.normalConsole,
+    // },
   ];
 
   return (
