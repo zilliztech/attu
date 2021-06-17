@@ -22,7 +22,7 @@ const RouterConfig: RouterConfigType[] = [
     auth: true,
   },
   {
-    path: '/collection/:collectionName',
+    path: '/collections/:collectionName',
     component: Collection,
     auth: true,
   },

@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MilvusGrid from '../../components/grid';
@@ -11,7 +12,7 @@ import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
 import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
-import { makeStyles, Theme, Link, Typography } from '@material-ui/core';
+import { makeStyles, Theme, Typography } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
@@ -33,10 +34,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '24px',
     fontSize: '16px',
   },
+  link: {
+    color: theme.palette.common.black,
+  },
 }));
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
+
   const {
     pageSize,
     currentPage,
@@ -64,16 +69,15 @@ const Collections = () => {
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const res = await CollectionHttp.getCollections();
     const statusRes = await CollectionHttp.getCollectionsIndexState();
     setCollections(
       res.map(v => {
         const indexStatus = statusRes.find(item => item._name === v._name);
-        console.log(indexStatus);
         Object.assign(v, {
           nameElement: (
-            <Link href="/overview" underline="always" color="textPrimary">
+            <Link to={`/collections/${v._name}`} className={classes.link}>
               {v._name}
             </Link>
           ),
@@ -88,11 +92,11 @@ const Collections = () => {
         return v;
       })
     );
-  };
+  }, [classes.link]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
     handleCloseDialog();
