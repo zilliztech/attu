@@ -23,7 +23,6 @@ const Partitions: FC<{ data: PartitionView[]; loading: boolean }> = ({
   const classes = useStyles();
   const { t } = useTranslation('partition');
   const InfoIcon = icons.info;
-  console.log('==== data', data, 'loading', loading);
 
   const {
     pageSize,
