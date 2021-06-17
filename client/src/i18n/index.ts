@@ -15,6 +15,8 @@ import collectionCn from './cn/collection';
 import collectionEn from './en/collection';
 import dialogCn from './cn/dialog';
 import dialogEn from './en/dialog';
+import successEn from './en/success';
+import successCn from './cn/success';
 
 export const resources = {
   cn: {
@@ -25,6 +27,7 @@ export const resources = {
     overview: overviewCn,
     collection: collectionCn,
     dialog: dialogCn,
+    success: successCn,
   },
   en: {
     translation: commonEn,
@@ -34,6 +37,7 @@ export const resources = {
     overview: overviewEn,
     collection: collectionEn,
     dialog: dialogEn,
+    success: successEn,
   },
 };
 

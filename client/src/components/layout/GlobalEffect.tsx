@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import React from 'react';
+import React, { useContext } from 'react';
 import axiosInstance from '../../http/Axios';
 import { rootContext } from '../../context/Root';
 import { CODE_STATUS } from '../../consts/Http';
@@ -14,7 +13,7 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
   if (axiosResInterceptor === null) {
     axiosResInterceptor = axiosInstance.interceptors.response.use(
       function (res: any) {
-        if (res.data && res.data.code !== CODE_STATUS.SUCCESS) {
+        if (res.statusCode && res.statusCode !== CODE_STATUS.SUCCESS) {
           openSnackBar(res.data.message, 'warning');
           return Promise.reject(res.data);
         }

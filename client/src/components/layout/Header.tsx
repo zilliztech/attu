@@ -6,6 +6,7 @@ import icons from '../icons/Icons';
 import { useHistory } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { useTranslation } from 'react-i18next';
+import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
-  const { address, setIsAuth, setAddress } = useContext(authContext);
+  const { address, setAddress } = useContext(authContext);
   const history = useHistory();
   const { t } = useTranslation();
   const statusTrans: { [key in string]: string } = t('status');
@@ -71,7 +72,7 @@ const Header: FC<HeaderType> = props => {
 
   const handleLogout = () => {
     setAddress('');
-    setIsAuth(false);
+    window.localStorage.removeItem(MILVUS_ADDRESS);
   };
 
   return (

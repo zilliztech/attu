@@ -33,9 +33,9 @@ server/coverage
 server/documentation
 
 
-package.lock.json
-server/package.lock.json
-client/yarn.lock
-client/package.lock.json
+# package.lock.json
+# server/package.lock.json
+# client/yarn.lock
+# client/package.lock.json
 
 coverage
