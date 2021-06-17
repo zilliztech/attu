@@ -17,7 +17,6 @@ import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -51,7 +50,6 @@ const Collections = () => {
     CollectionView[]
   >([]);
 
-  const history = useHistory();
   const { setDialog, handleCloseDialog } = useContext(rootContext);
   const { t } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -71,8 +69,7 @@ const Collections = () => {
         name: 'collection_1',
         nameElement: (
           <Link
-            component="button"
-            onClick={() => history.push(`/collection/collection_1`)}
+            href="/collection/collection_1"
             underline="always"
             color="textPrimary"
           >
@@ -90,8 +87,7 @@ const Collections = () => {
         name: 'collection_2',
         nameElement: (
           <Link
-            component="button"
-            onClick={() => history.push(`/collection/collection_2`)}
+            href="/collection/collection_2"
             underline="always"
             color="textPrimary"
           >
@@ -107,7 +103,7 @@ const Collections = () => {
       },
     ];
     setCollections(mockCollections);
-  }, [history]);
+  }, []);
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
     handleCloseDialog();

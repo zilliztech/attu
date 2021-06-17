@@ -11,6 +11,11 @@ import { parseLocationSearch } from '../../utils/Format';
 import Status from '../../components/status/Status';
 import { PartitionHttp } from '../../http/Partition';
 
+enum TAB_EMUM {
+  'partition',
+  'structure',
+}
+
 const Collection = () => {
   const { collectionName = '' } =
     useParams<{
@@ -25,11 +30,6 @@ const Collection = () => {
   const location = useLocation();
 
   const { t } = useTranslation('collection');
-
-  enum TAB_EMUM {
-    'partition',
-    'structure',
-  }
 
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
