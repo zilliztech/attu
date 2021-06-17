@@ -7,7 +7,12 @@ export type StatusType = {
   status: StatusEnum;
 };
 
-export type ChildrenStatusType = 'creating' | 'finish' | 'error';
+// @todo need rename
+export enum ChildrenStatusType {
+  CREATING = 'creating',
+  FINISH = 'finish',
+  ERROR = 'error',
+}
 
 export type StatusIconType = {
   type: ChildrenStatusType;

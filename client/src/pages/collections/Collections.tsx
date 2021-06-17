@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MilvusGrid from '../../components/grid';
@@ -10,13 +11,14 @@ import icons from '../../components/icons/Icons';
 import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
-import { StatusEnum } from '../../components/status/Types';
-import { makeStyles, Theme, Link, Typography } from '@material-ui/core';
+import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
+import { makeStyles, Theme, Typography } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import { CollectionHttp } from '../../http/Collection';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -32,10 +34,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '24px',
     fontSize: '16px',
   },
+  link: {
+    color: theme.palette.common.black,
+  },
 }));
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
+
   const {
     pageSize,
     currentPage,
@@ -63,47 +69,34 @@ const Collections = () => {
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
 
+  const fetchData = useCallback(async () => {
+    const res = await CollectionHttp.getCollections();
+    const statusRes = await CollectionHttp.getCollectionsIndexState();
+    setCollections(
+      res.map(v => {
+        const indexStatus = statusRes.find(item => item._name === v._name);
+        Object.assign(v, {
+          nameElement: (
+            <Link to={`/collections/${v._name}`} className={classes.link}>
+              {v._name}
+            </Link>
+          ),
+          statusElement: <Status status={v._status} />,
+          indexCreatingElement: (
+            <StatusIcon
+              type={indexStatus?._indexState || ChildrenStatusType.FINISH}
+            />
+          ),
+        });
+
+        return v;
+      })
+    );
+  }, [classes.link]);
+
   useEffect(() => {
-    const mockCollections: CollectionView[] = [
-      {
-        name: 'collection_1',
-        nameElement: (
-          <Link
-            href="/collection/collection_1"
-            underline="always"
-            color="textPrimary"
-          >
-            collection_1
-          </Link>
-        ),
-        id: 'c1',
-        status: StatusEnum.unloaded,
-        statusElement: <Status status={StatusEnum.unloaded} />,
-        rowCount: '200,000',
-        desc: 'description',
-        indexCreatingElement: <StatusIcon type="creating" />,
-      },
-      {
-        name: 'collection_2',
-        nameElement: (
-          <Link
-            href="/collection/collection_2"
-            underline="always"
-            color="textPrimary"
-          >
-            collection_2
-          </Link>
-        ),
-        id: 'c2',
-        status: StatusEnum.loaded,
-        statusElement: <Status status={StatusEnum.loaded} />,
-        rowCount: '300,000',
-        desc: 'description 2',
-        indexCreatingElement: <StatusIcon type="finish" />,
-      },
-    ];
-    setCollections(mockCollections);
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   const handleCreateCollection = (param: CollectionCreateParam) => {
     handleCloseDialog();
@@ -119,7 +112,7 @@ const Collections = () => {
 
   const handleAction = (data: CollectionView) => {
     const actionType: 'release' | 'load' =
-      data.status === StatusEnum.loaded ? 'release' : 'load';
+      data._status === StatusEnum.loaded ? 'release' : 'load';
 
     const actionsMap = {
       release: {
@@ -199,7 +192,7 @@ const Collections = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'id',
+      id: '_id',
       align: 'left',
       disablePadding: true,
       label: t('id'),
@@ -217,7 +210,7 @@ const Collections = () => {
       label: t('status'),
     },
     {
-      id: 'rowCount',
+      id: '_rowCount',
       align: 'left',
       disablePadding: false,
       label: (
@@ -230,7 +223,7 @@ const Collections = () => {
       ),
     },
     {
-      id: 'desc',
+      id: '_desc',
       align: 'left',
       disablePadding: false,
       label: t('desc'),
@@ -257,9 +250,9 @@ const Collections = () => {
           label: 'load',
           showIconMethod: 'renderFn',
           getLabel: (row: CollectionView) =>
-            row.status === StatusEnum.loaded ? 'release' : 'load',
+            row._status === StatusEnum.loaded ? 'release' : 'load',
           renderIconFn: (row: CollectionView) =>
-            row.status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
+            row._status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
         },
       ],
     },
