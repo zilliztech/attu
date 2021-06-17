@@ -43,6 +43,10 @@ const collectionTrans = {
   // delete dialog
   deleteWarning:
     'You are trying to delete a collection with data. This action cannot be undone.',
+
+  // collection tabs
+  partitionTab: 'Partitions',
+  structureTab: 'Structure',
 };
 
 export default collectionTrans;

@@ -66,10 +66,14 @@ const Collections = () => {
   useEffect(() => {
     const mockCollections: CollectionView[] = [
       {
-        name: 'collection',
+        name: 'collection_1',
         nameElement: (
-          <Link href="/overview" underline="always" color="textPrimary">
-            collection
+          <Link
+            href="/collection/collection_1"
+            underline="always"
+            color="textPrimary"
+          >
+            collection_1
           </Link>
         ),
         id: 'c1',
@@ -80,10 +84,14 @@ const Collections = () => {
         indexCreatingElement: <StatusIcon type="creating" />,
       },
       {
-        name: 'collection 2',
+        name: 'collection_2',
         nameElement: (
-          <Link href="/overview" underline="always" color="textPrimary">
-            collection 2
+          <Link
+            href="/collection/collection_2"
+            underline="always"
+            color="textPrimary"
+          >
+            collection_2
           </Link>
         ),
         id: 'c2',

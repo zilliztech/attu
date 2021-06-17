@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     // minHeight: '29vh',
     width: '100%',
     flexGrow: 1,
-    flexBasis: 0,
+    // flexBasis: 0,
 
     // change scrollbar style
     '&::-webkit-scrollbar': {

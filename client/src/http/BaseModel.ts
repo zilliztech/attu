@@ -27,7 +27,7 @@ export default class BaseModel {
     };
 
     const res = await http(httpConfig);
-    let list = res.data.data.data || [];
+    let list = res.data.data || [];
     if (!Array.isArray(list)) {
       return list;
     }
