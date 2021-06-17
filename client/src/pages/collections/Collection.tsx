@@ -36,7 +36,7 @@ const Collection = () => {
       ? parseLocationSearch(location.search)
       : { activeIndex: TAB_EMUM.partition };
     return Number(activeIndex);
-  }, [location, TAB_EMUM]);
+  }, [location]);
 
   const handleTabChange = (activeIndex: number) => {
     const path = location.pathname;

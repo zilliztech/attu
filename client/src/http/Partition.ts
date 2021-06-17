@@ -25,7 +25,7 @@ export class PartitionHttp extends BaseModel implements PartitionView {
   }
 
   get _name() {
-    return this.name;
+    return this.name === '_default' ? 'Default partition' : this.name;
   }
 
   get _rowCount() {
