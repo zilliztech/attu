@@ -109,8 +109,7 @@ const Collections = () => {
       ...v,
       type_params: [{ key: 'dim', value: v.dimension }],
     }));
-    const res = await CollectionHttp.createCollection(data);
-    console.log(res);
+    await CollectionHttp.createCollection(data);
     handleCloseDialog();
     openSnackBar(successTrans('create', { name: t('collection') }));
     fetchData();
