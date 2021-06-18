@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
-  const { handleAction } = useDialogHook({ type: 'partition' });
+  const { handleAction } = useDialogHook({ type: 'collection' });
   const [collections, setCollections] = useState<CollectionView[]>([]);
   const {
     pageSize,
@@ -116,9 +116,19 @@ const Collections = () => {
     fetchData();
   };
 
-  const handleRelease = async (data: CollectionView) => {};
+  const handleRelease = async (data: CollectionView) => {
+    const res = await CollectionHttp.releaseCollection(data._name);
+    openSnackBar(successTrans('release', { name: t('collection') }));
+    fetchData();
+    return res;
+  };
 
-  const handleLoad = async (data: CollectionView) => {};
+  const handleLoad = async (data: CollectionView) => {
+    const res = await CollectionHttp.loadCollection(data._name);
+    openSnackBar(successTrans('load', { name: t('collection') }));
+    fetchData();
+    return res;
+  };
 
   const handleDelete = async () => {
     for (const item of selectedCollections) {
