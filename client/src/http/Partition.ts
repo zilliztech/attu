@@ -1,5 +1,9 @@
 import { StatusEnum } from '../components/status/Types';
-import { PartitionManageParam, PartitionView } from '../pages/partitions/Types';
+import {
+  PartitionManageParam,
+  PartitionParam,
+  PartitionView,
+} from '../pages/partitions/Types';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 
@@ -31,6 +35,18 @@ export class PartitionHttp extends BaseModel implements PartitionView {
         collection_name: collectionName,
         partition_name: partitionName,
         type,
+      },
+    });
+  }
+
+  static loadPartition(param: PartitionParam) {
+    const { collectionName, partitionNames } = param;
+    const path = `${this.URL_BASE}/load`;
+    return super.update({
+      path,
+      data: {
+        collection_name: collectionName,
+        partition_names: partitionNames,
       },
     });
   }

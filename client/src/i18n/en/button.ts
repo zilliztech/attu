@@ -10,6 +10,7 @@ const btnTrans = {
   import: 'Import',
   delete: 'Delete',
   release: 'Release',
+  load: 'Load',
 };
 
 export default btnTrans;

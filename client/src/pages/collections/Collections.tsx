@@ -12,13 +12,14 @@ import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
 import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
+import { useDialogHook } from '../../hooks/Dialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
-
+  const { handleAction } = useDialogHook({ type: 'partition' });
   const [collections, setCollections] = useState<CollectionView[]>([]);
   const {
     pageSize,
@@ -121,47 +122,6 @@ const Collections = () => {
 
   const handleDelete = async () => {
     console.log('selected', selectedCollections);
-  };
-
-  const handleAction = (data: CollectionView) => {
-    const actionType: 'release' | 'load' =
-      data._status === StatusEnum.loaded ? 'release' : 'load';
-
-    const actionsMap = {
-      release: {
-        title: t('releaseTitle'),
-        component: (
-          <Typography className={classes.dialogContent}>
-            {t('releaseContent')}
-          </Typography>
-        ),
-        confirmLabel: t('releaseConfirmLabel'),
-        confirm: () => handleRelease(data),
-      },
-      load: {
-        title: t('loadTitle'),
-        component: (
-          <Typography className={classes.dialogContent}>
-            {t('loadContent')}
-          </Typography>
-        ),
-        confirmLabel: t('loadConfirmLabel'),
-        confirm: () => handleLoad(data),
-      },
-    };
-
-    const { title, component, confirmLabel, confirm } = actionsMap[actionType];
-
-    setDialog({
-      open: true,
-      type: 'notice',
-      params: {
-        title,
-        component,
-        confirmLabel,
-        confirm,
-      },
-    });
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -257,7 +217,9 @@ const Collections = () => {
       actionBarConfigs: [
         {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
-            handleAction(row);
+            const cb =
+              row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
+            handleAction(row as CollectionView, cb);
           },
           icon: 'load',
           label: 'load',
