@@ -24,6 +24,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.findAll({ path: this.COLLECTIONS_URL, params: {} });
   }
 
+  static createCollection(data: any) {
+    return super.create({ path: this.COLLECTIONS_URL, data });
+  }
+
   static getCollectionsIndexState(): Promise<CollectionHttp[]> {
     return super.findAll({
       path: this.COLLECTIONS_INDEX_STATUS_URL,

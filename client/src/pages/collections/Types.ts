@@ -21,8 +21,8 @@ export interface CollectionCreateProps {
 }
 
 export interface CollectionCreateParam {
-  name: string;
-  desc: string;
+  collection_name: string;
+  description: string;
   autoID: boolean;
   fields: Field[];
 }
@@ -40,12 +40,13 @@ export enum DataTypeEnum {
 
 export interface Field {
   name: string;
-  type: DataTypeEnum;
-  isPrimaryKey: boolean;
-  desc: string;
+  data_type: DataTypeEnum;
+  is_primary_key: boolean;
+  description: string;
   dimension?: number | string;
   isDefault?: boolean;
   id: string;
+  type_params?: { key: string; value: any }[];
 }
 
 export type CreateFieldType =

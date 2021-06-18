@@ -56,10 +56,12 @@ const Collections = () => {
     CollectionView[]
   >([]);
 
-  const { setDialog, handleCloseDialog } = useContext(rootContext);
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
   const { t } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
+  const { t: successTrans } = useTranslation('success');
 
   const classes = useStyles();
 
@@ -98,8 +100,17 @@ const Collections = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleCreateCollection = (param: CollectionCreateParam) => {
+  const handleCreateCollection = async (param: CollectionCreateParam) => {
+    const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
+    data.fields = data.fields.map(v => ({
+      ...v,
+      type_params: [{ key: 'dim', value: v.dimension }],
+    }));
+    const res = await CollectionHttp.createCollection(data);
+    console.log(res);
     handleCloseDialog();
+    openSnackBar(successTrans('createCollection'));
+    fetchData();
   };
 
   const handleRelease = async (data: CollectionView) => {};
