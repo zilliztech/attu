@@ -42,16 +42,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
 
+  const [collections, setCollections] = useState<CollectionView[]>([]);
   const {
     pageSize,
     currentPage,
     handleCurrentPage,
-    // offset,
     total,
-    // setTotal
-  } = usePaginationHook();
-  const [collections, setCollections] = useState<CollectionView[]>([]);
-  // const [loading, setLoading] = useState<boolean>(false);
+    data: collectionList,
+  } = usePaginationHook(collections);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedCollections, setSelectedCollections] = useState<
     CollectionView[]
   >([]);
@@ -63,8 +62,6 @@ const Collections = () => {
 
   const classes = useStyles();
 
-  const loading = false;
-
   const LoadIcon = icons.load;
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
@@ -72,6 +69,7 @@ const Collections = () => {
   const fetchData = useCallback(async () => {
     const res = await CollectionHttp.getCollections();
     const statusRes = await CollectionHttp.getCollectionsIndexState();
+    setLoading(false);
     setCollections(
       res.map(v => {
         const indexStatus = statusRes.find(item => item._name === v._name);
@@ -275,7 +273,7 @@ const Collections = () => {
         <MilvusGrid
           toolbarConfigs={toolbarConfigs}
           colDefinitions={colDefinitions}
-          rows={collections}
+          rows={collectionList}
           rowCount={total}
           primaryKey="id"
           openCheckBox={true}
@@ -285,7 +283,7 @@ const Collections = () => {
           page={currentPage}
           onChangePage={handlePageChange}
           rowsPerPage={pageSize}
-          // isLoading={loading}
+          isLoading={loading}
         />
       ) : (
         <>

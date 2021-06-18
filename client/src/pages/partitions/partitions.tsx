@@ -29,6 +29,10 @@ const Partitions: FC<{
   const { t } = useTranslation('partition');
   const InfoIcon = icons.info;
 
+  const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
+    []
+  );
+  const [partitions, setPartitions] = useState<PartitionView[]>([]);
   const {
     pageSize,
     currentPage,
@@ -36,12 +40,8 @@ const Partitions: FC<{
     // offset,
     total,
     // setTotal
-  } = usePaginationHook();
-
-  const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
-    []
-  );
-  const [partitions, setPartitions] = useState<PartitionView[]>([]);
+    data: partitionList,
+  } = usePaginationHook(partitions);
   const [loading, setLoading] = useState<boolean>(true);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -141,6 +141,8 @@ const Partitions: FC<{
 
     openSnackBar('create partition success');
     handleCloseDialog();
+    // refresh partitions
+    fetchPartitions(collectionName);
   };
 
   return (
@@ -148,7 +150,7 @@ const Partitions: FC<{
       <MilvusGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={partitions}
+        rows={partitionList}
         rowCount={total}
         primaryKey="id"
         openCheckBox={true}
