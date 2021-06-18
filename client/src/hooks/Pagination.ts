@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const PAGE_SIZE = 15;
-export const usePaginationHook = () => {
-  const [offset, setOffset] = useState(0);
+const PAGE_SIZE = 10;
+export const usePaginationHook = (list: any[]) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [total, setTotal] = useState(0);
+
+  const total = list.length;
+  const { data, offset } = useMemo(() => {
+    const offset = PAGE_SIZE * currentPage;
+    return {
+      offset,
+      data: list.slice(offset, offset + PAGE_SIZE),
+    };
+  }, [list, currentPage]);
 
   const handleCurrentPage = (page: number) => {
     setCurrentPage(page);
-    setOffset(PAGE_SIZE * page);
   };
 
   return {
@@ -17,6 +23,6 @@ export const usePaginationHook = () => {
     pageSize: PAGE_SIZE,
     handleCurrentPage,
     total,
-    setTotal,
+    data,
   };
 };

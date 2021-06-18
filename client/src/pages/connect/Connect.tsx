@@ -83,7 +83,7 @@ const Connect = () => {
     onChange: handleInputChange,
     variant: 'filled',
     className: classes.input,
-    placeholder: milvusTrans.addaress,
+    placeholder: milvusTrans.address,
     fullWidth: true,
     validations: [
       {
