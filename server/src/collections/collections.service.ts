@@ -105,8 +105,8 @@ export class CollectionsService {
       for (const name of res.collection_names) {
         const indexRes = await this.getIndexStatus({ collection_name: name });
         data.push({
-          collectionName: name,
-          indexState: indexRes.state,
+          collection_name: name,
+          index_state: indexRes.state,
         });
       }
     }

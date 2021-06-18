@@ -19,9 +19,14 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   useEffect(() => {
     const check = async () => {
       const milvusAddress = window.localStorage.getItem(MILVUS_ADDRESS) || '';
-      const res = await MilvusHttp.check(milvusAddress);
-      setAddress(res.data.connected ? milvusAddress : '');
-      if (!res.data.connected) {
+      try {
+        const res = await MilvusHttp.check(milvusAddress);
+        setAddress(res.data.connected ? milvusAddress : '');
+        if (!res.data.connected) {
+          window.localStorage.removeItem(MILVUS_ADDRESS);
+        }
+      } catch (error) {
+        setAddress('');
         window.localStorage.removeItem(MILVUS_ADDRESS);
       }
     };
