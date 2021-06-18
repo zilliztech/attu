@@ -14,6 +14,7 @@ import Status from '../../components/status/Status';
 import { ManageRequestMethods } from '../../types/Common';
 import { StatusEnum } from '../../components/status/Types';
 import { useDialogHook } from '../../hooks/Dialog';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -31,6 +32,9 @@ const Partitions: FC<{
   const classes = useStyles();
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
+  const { t: warningTrans } = useTranslation('warning');
+  const { t: btnTrans } = useTranslation('btn');
+  const { t: dialogTrans } = useTranslation('dialog');
   const InfoIcon = icons.info;
   const LoadIcon = icons.load;
   const ReleaseIcon = icons.release;
@@ -69,6 +73,21 @@ const Partitions: FC<{
     }
   };
 
+  const handleDelete = async () => {
+    for (const partition of selectedPartitions) {
+      const param: PartitionManageParam = {
+        partitionName: partition._name,
+        collectionName,
+        type: ManageRequestMethods.DELETE,
+      };
+      await PartitionHttp.managePartition(param);
+    }
+
+    openSnackBar(successTrans('delete', { name: t('partition') }));
+    fetchPartitions(collectionName);
+    handleCloseDialog();
+  };
+
   const handleRelease = async (data: PartitionView) => {};
 
   const handleLoad = async (data: PartitionView) => {
@@ -103,9 +122,31 @@ const Partitions: FC<{
     },
     {
       type: 'iconBtn',
-      onClick: () => {},
-      label: t('delete'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('delete')}
+                title={dialogTrans('deleteTitle', { type: t('partition') })}
+                text={t('deleteWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
+      },
+      label: '',
       icon: 'delete',
+      // can't delete default partition
+      disabled: () =>
+        selectedPartitions.length === 0 ||
+        selectedPartitions.some(p => p._name === '_default'),
+      tooltip: selectedPartitions.some(p => p._name === '_default')
+        ? warningTrans('deletePartition')
+        : '',
     },
   ];
 
@@ -183,7 +224,7 @@ const Partitions: FC<{
       type: ManageRequestMethods.CREATE,
     };
 
-    await PartitionHttp.createPartition(param);
+    await PartitionHttp.managePartition(param);
 
     openSnackBar(successTrans('create', { name: t('partition') }));
     handleCloseDialog();

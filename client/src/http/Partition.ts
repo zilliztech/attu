@@ -26,8 +26,8 @@ export class PartitionHttp extends BaseModel implements PartitionView {
     return super.findAll({ path, params: { collection_name: collectionName } });
   }
 
-  static createPartition(createParam: PartitionManageParam) {
-    const { collectionName, partitionName, type } = createParam;
+  static managePartition(param: PartitionManageParam) {
+    const { collectionName, partitionName, type } = param;
     const path = this.URL_BASE;
     return super.create({
       path,

@@ -5,6 +5,8 @@ const warningTrans = {
   positive: '{{name}} should be positive',
   integer: '{{name}} should be integers',
   range: 'range is {{min}} ~ {{max}}',
+
+  deletePartition: 'default partition cannot be deleted',
 };
 
 export default warningTrans;
