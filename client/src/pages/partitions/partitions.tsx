@@ -28,6 +28,7 @@ const Partitions: FC<{
 }> = ({ collectionName }) => {
   const classes = useStyles();
   const { t } = useTranslation('partition');
+  const { t: successTrans } = useTranslation('success');
   const InfoIcon = icons.info;
 
   const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
@@ -142,7 +143,7 @@ const Partitions: FC<{
 
     await PartitionHttp.createPartition(param);
 
-    openSnackBar(t('createSuccess'));
+    openSnackBar(successTrans('create', { name: t('partition') }));
     handleCloseDialog();
     // refresh partitions
     fetchPartitions(collectionName);

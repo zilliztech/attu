@@ -4,12 +4,13 @@ const PAGE_SIZE = 10;
 export const usePaginationHook = (list: any[]) => {
   const [currentPage, setCurrentPage] = useState(0);
 
-  const offset = useMemo(() => PAGE_SIZE * currentPage, [currentPage]);
   const total = list.length;
-  const data = useMemo(() => {
+  const { data, offset } = useMemo(() => {
     const offset = PAGE_SIZE * currentPage;
-    const test = list.slice(offset, offset + PAGE_SIZE);
-    return test;
+    return {
+      offset,
+      data: list.slice(offset, offset + PAGE_SIZE),
+    };
   }, [list, currentPage]);
 
   const handleCurrentPage = (page: number) => {
