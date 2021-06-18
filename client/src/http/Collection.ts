@@ -39,6 +39,18 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.delete({ path: `${this.COLLECTIONS_URL}/${collectionName}` });
   }
 
+  static loadCollection(collectionName: string) {
+    return super.update({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/load`,
+    });
+  }
+
+  static releaseCollection(collectionName: string) {
+    return super.update({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/release`,
+    });
+  }
+
   get _autoId() {
     return this.autoID;
   }
