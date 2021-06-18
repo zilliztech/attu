@@ -123,7 +123,7 @@ const Collections = () => {
     for (const item of selectedCollections) {
       await CollectionHttp.deleteCollection(item._name);
     }
-    openSnackBar('Delete success');
+    openSnackBar(successTrans('delete', { name: t('collection') }));
     fetchData();
     handleCloseDialog();
     setSelectedCollections([]);
