@@ -99,7 +99,7 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
 };
 
 export const getCreateFieldType = (config: Field): CreateFieldType => {
-  if (config.isPrimaryKey) {
+  if (config.is_primary_key) {
     return 'primaryKey';
   }
 
@@ -108,7 +108,7 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
   }
 
   const vectorTypes = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
-  if (vectorTypes.includes(config.type)) {
+  if (vectorTypes.includes(config.data_type)) {
     return 'vector';
   }
 

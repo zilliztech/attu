@@ -48,25 +48,25 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   const { t: warningTrans } = useTranslation('warning');
 
   const [form, setForm] = useState({
-    name: '',
-    desc: '',
+    collection_name: '',
+    description: '',
     autoID: true,
   });
   const [fields, setFields] = useState<Field[]>([
     {
-      type: DataTypeEnum.Int64,
-      isPrimaryKey: true,
+      data_type: DataTypeEnum.Int64,
+      is_primary_key: true,
       name: '',
-      desc: '',
+      description: '',
       isDefault: true,
       id: generateId(),
     },
     {
-      type: DataTypeEnum.FloatVector,
-      isPrimaryKey: false,
+      data_type: DataTypeEnum.FloatVector,
+      is_primary_key: false,
       name: '',
       dimension: '',
-      desc: '',
+      description: '',
       isDefault: true,
       id: generateId(),
     },
@@ -74,8 +74,8 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   const [fieldsAllValid, setFieldsAllValid] = useState<boolean>(true);
 
   const checkedForm = useMemo(() => {
-    const { name } = form;
-    return formatForm({ name });
+    const { collection_name } = form;
+    return formatForm({ collection_name });
   }, [form]);
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
@@ -94,8 +94,8 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     {
       label: t('name'),
       key: 'name',
-      value: form.name,
-      onChange: (value: string) => handleInputChange('name', value),
+      value: form.collection_name,
+      onChange: (value: string) => handleInputChange('collection_name', value),
       variant: 'filled',
       validations: [
         {
@@ -108,8 +108,8 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     {
       label: t('description'),
       key: 'description',
-      value: form.desc,
-      onChange: (value: string) => handleInputChange('desc', value),
+      value: form.description,
+      onChange: (value: string) => handleInputChange('description', value),
       variant: 'filled',
       validations: [],
       className: classes.input,

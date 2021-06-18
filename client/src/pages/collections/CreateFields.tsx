@@ -138,9 +138,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const handleAddNewField = () => {
     const newDefaultItem: Field = {
       name: '',
-      type: DataTypeEnum.Int16,
-      isPrimaryKey: false,
-      desc: '',
+      data_type: DataTypeEnum.Int16,
+      is_primary_key: false,
+      description: '',
       isDefault: false,
       id: generateId(),
     };
@@ -185,8 +185,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         {getInput(
           t('description'),
-          field.desc,
-          (value: string) => changeFields(field.id, 'desc', value),
+          field.description,
+          (value: string) => changeFields(field.id, 'description', value),
           classes.descInput
         )}
       </div>
@@ -200,8 +200,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
           {getSelector(
             'vector',
             t('fieldType'),
-            field.type,
-            (value: DataTypeEnum) => changeFields(field.id, 'type', value)
+            field.data_type,
+            (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
           )}
 
           {getInput(t('fieldName'), field.name, (value: string) =>
@@ -217,8 +217,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
           {getInput(
             t('description'),
-            field.desc,
-            (value: string) => changeFields(field.id, 'desc', value),
+            field.description,
+            (value: string) => changeFields(field.id, 'description', value),
             classes.descInput
           )}
         </div>
@@ -244,13 +244,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {getInput(t('fieldName'), field.name, (value: string) =>
           changeFields(field.id, 'name', value)
         )}
-        {getSelector('all', t('fieldType'), field.type, (value: DataTypeEnum) =>
-          changeFields(field.id, 'type', value)
+        {getSelector(
+          'all',
+          t('fieldType'),
+          field.data_type,
+          (value: DataTypeEnum) => changeFields(field.id, 'type', value)
         )}
 
         {getInput(
           t('description'),
-          field.desc,
+          field.description,
           (value: string) => changeFields(field.id, 'desc', value),
           classes.descInput
         )}
@@ -267,8 +270,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {getInput(t('fieldName'), field.name, (value: string) =>
           changeFields(field.id, 'name', value)
         )}
-        {getSelector('all', t('fieldType'), field.type, (value: DataTypeEnum) =>
-          changeFields(field.id, 'type', value)
+        {getSelector(
+          'all',
+          t('fieldType'),
+          field.data_type,
+          (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
         )}
         {getInput(
           t('dimension'),
@@ -279,8 +285,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         {getInput(
           t('description'),
-          field.desc,
-          (value: string) => changeFields(field.id, 'desc', value),
+          field.description,
+          (value: string) => changeFields(field.id, 'description', value),
           classes.descInput
         )}
       </div>
