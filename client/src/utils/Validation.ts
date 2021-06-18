@@ -12,7 +12,8 @@ export type ValidType =
   | 'positiveNumber'
   | 'collectionName'
   | 'dimension'
-  | 'multiple';
+  | 'multiple'
+  | 'partitionName';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
@@ -84,12 +85,14 @@ export const checkClusterName = (value: string): boolean => {
 };
 
 export const checkIP = (value: string): boolean => {
-  const re = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  const re =
+    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
   return re.test(value);
 };
 
 export const checkCIDR = (value: string): boolean => {
-  const re = /^(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\/([0-9]|[1-2]\d|3[0-2])$/;
+  const re =
+    /^(?:(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\/([0-9]|[1-2]\d|3[0-2])$/;
   return re.test(value);
 };
 
@@ -114,6 +117,10 @@ export const checkCollectionName = (value: string): boolean => {
 
   const re = /^[0-9,a-z,A-Z$_]+$/;
   return re.test(value);
+};
+
+export const checkPartitionName = (value: string): boolean => {
+  return value !== '_default';
 };
 
 export const checkMultiple = (param: {
@@ -168,6 +175,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       value,
       multipleNumber: extraParam?.multipleNumber,
     }),
+    partitionName: checkPartitionName(value),
   };
 
   return checkMap[rule];

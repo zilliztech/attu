@@ -1,6 +1,6 @@
 const successTrans = {
   connect: 'Connet milvus success',
-  createCollection: 'Create collection success',
+  create: `{{name}} has been created`,
 };
 
 export default successTrans;

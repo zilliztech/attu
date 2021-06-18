@@ -20,3 +20,8 @@ export interface IPaginationRes {
   offset: number;
   total_count: number;
 }
+
+export enum ManageRequestMethods {
+  DELETE = 'delete',
+  CREATE = 'create',
+}
