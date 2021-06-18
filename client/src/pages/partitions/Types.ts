@@ -8,7 +8,7 @@ export interface PartitionView {
   _status: StatusEnum;
   _statusElement?: ReactElement;
   _rowCount: string;
-  name?: string;
+  _formatName: string;
 }
 
 // delete and create

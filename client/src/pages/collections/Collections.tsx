@@ -219,7 +219,7 @@ const Collections = () => {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
             const cb =
               row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
-            handleAction(row as CollectionView, cb);
+            handleAction(row, cb);
           },
           icon: 'load',
           label: 'load',

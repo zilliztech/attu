@@ -8,10 +8,10 @@ import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 
 export class PartitionHttp extends BaseModel implements PartitionView {
-  id!: string;
-  name!: string;
-  rowCount!: string;
-  status!: StatusEnum;
+  private id!: string;
+  private name!: string;
+  private rowCount!: string;
+  private status!: StatusEnum;
 
   constructor(props: {}) {
     super(props);
@@ -56,6 +56,10 @@ export class PartitionHttp extends BaseModel implements PartitionView {
   }
 
   get _name() {
+    return this.name;
+  }
+
+  get _formatName() {
     return this.name === '_default' ? 'Default partition' : this.name;
   }
 

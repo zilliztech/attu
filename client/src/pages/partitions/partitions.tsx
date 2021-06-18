@@ -74,7 +74,7 @@ const Partitions: FC<{
   const handleLoad = async (data: PartitionView) => {
     const param: PartitionParam = {
       collectionName,
-      partitionNames: [data.name!],
+      partitionNames: [data._name!],
     };
     const res = await PartitionHttp.loadPartition(param);
     openSnackBar(successTrans('load', { name: t('partition') }));
@@ -117,7 +117,7 @@ const Partitions: FC<{
       label: t('id'),
     },
     {
-      id: '_name',
+      id: '_formatName',
       align: 'left',
       disablePadding: false,
       label: t('name'),
@@ -153,7 +153,7 @@ const Partitions: FC<{
           onClick: (e: React.MouseEvent, row: PartitionView) => {
             const cb =
               row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
-            handleAction(row as PartitionView, cb);
+            handleAction(row, cb);
           },
           icon: 'load',
           label: 'load',
