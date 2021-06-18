@@ -5,11 +5,8 @@ import CustomTabList from '../../components/customTabList/CustomTabList';
 import { ITab } from '../../components/customTabList/Types';
 import Partitions from '../partitions/partitions';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
-import { PartitionView } from '../partitions/Types';
+import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
-import Status from '../../components/status/Status';
-import { PartitionHttp } from '../../http/Partition';
 
 enum TAB_EMUM {
   'partition',
@@ -23,8 +20,6 @@ const Collection = () => {
     }>();
 
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
-  const [partitions, setPartitions] = useState<PartitionView[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const history = useHistory();
   const location = useLocation();
@@ -41,31 +36,12 @@ const Collection = () => {
   const handleTabChange = (activeIndex: number) => {
     const path = location.pathname;
     history.push(`${path}?activeIndex=${activeIndex}`);
-
-    // fetch data
-    if (activeIndex === TAB_EMUM.partition) {
-      fetchPartitions(collectionName);
-    }
   };
-
-  const fetchPartitions = async (collectionName: string) => {
-    const res = await PartitionHttp.getPartitions(collectionName);
-
-    const partitons: PartitionView[] = res.map(p =>
-      Object.assign(p, { _statusElement: <Status status={p._status} /> })
-    );
-    setLoading(false);
-    setPartitions(partitons);
-  };
-
-  useEffect(() => {
-    fetchPartitions(collectionName);
-  }, [collectionName]);
 
   const tabs: ITab[] = [
     {
       label: t('partitionTab'),
-      component: <Partitions data={partitions} loading={loading} />,
+      component: <Partitions collectionName={collectionName} />,
     },
     {
       label: t('structureTab'),

@@ -20,3 +20,5 @@ export interface IPaginationRes {
   offset: number;
   total_count: number;
 }
+
+export type ManageRequestMethods = 'delete' | 'create';

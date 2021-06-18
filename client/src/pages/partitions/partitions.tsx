@@ -1,25 +1,30 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useState } from 'react';
-import { PartitionView } from './Types';
+import { FC, useContext, useEffect, useState } from 'react';
+import { PartitionManageParam, PartitionView } from './Types';
 import MilvusGrid from '../../components/grid';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
+import { rootContext } from '../../context/Root';
+import CreatePartition from './Create';
+import { PartitionHttp } from '../../http/Partition';
+import Status from '../../components/status/Status';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {},
+  wrapper: {
+    height: '100%',
+  },
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
   },
 }));
 
-const Partitions: FC<{ data: PartitionView[]; loading: boolean }> = ({
-  data,
-  loading,
-}) => {
+const Partitions: FC<{
+  collectionName: string;
+}> = ({ collectionName }) => {
   const classes = useStyles();
   const { t } = useTranslation('partition');
   const InfoIcon = icons.info;
@@ -36,11 +41,42 @@ const Partitions: FC<{ data: PartitionView[]; loading: boolean }> = ({
   const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
     []
   );
+  const [partitions, setPartitions] = useState<PartitionView[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
+
+  useEffect(() => {
+    fetchPartitions(collectionName);
+  }, [collectionName]);
+
+  const fetchPartitions = async (collectionName: string) => {
+    const res = await PartitionHttp.getPartitions(collectionName);
+
+    const partitons: PartitionView[] = res.map(p =>
+      Object.assign(p, { _statusElement: <Status status={p._status} /> })
+    );
+    setLoading(false);
+    setPartitions(partitons);
+  };
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: t('create'),
-      onClick: () => {},
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <CreatePartition
+                handleCreate={handleCreatePartition}
+                handleClose={handleCloseDialog}
+              />
+            ),
+          },
+        });
+      },
       icon: 'add',
     },
     {
@@ -94,12 +130,25 @@ const Partitions: FC<{ data: PartitionView[]; loading: boolean }> = ({
     setSelectedPartitions([]);
   };
 
+  const handleCreatePartition = async (name: string) => {
+    const param: PartitionManageParam = {
+      partitionName: name,
+      collectionName,
+      type: 'create',
+    };
+
+    await PartitionHttp.createPartition(param);
+
+    openSnackBar('create partition success');
+    handleCloseDialog();
+  };
+
   return (
     <section className={classes.wrapper}>
       <MilvusGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={data}
+        rows={partitions}
         rowCount={total}
         primaryKey="id"
         openCheckBox={true}

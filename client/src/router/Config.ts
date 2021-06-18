@@ -1,7 +1,6 @@
 import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
-// import Console from '../pages/console/Console';
 import Overview from '../pages/overview/Overview';
 import { RouterConfigType } from './Types';
 
@@ -26,11 +25,6 @@ const RouterConfig: RouterConfigType[] = [
     component: Collection,
     auth: true,
   },
-  // {
-  //   path: '/console',
-  //   component: Console,
-  //   auth: true,
-  // },
 ];
 
 export default RouterConfig;
