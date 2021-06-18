@@ -120,7 +120,13 @@ const Collections = () => {
   const handleLoad = async (data: CollectionView) => {};
 
   const handleDelete = async () => {
-    console.log('selected', selectedCollections);
+    for (const item of selectedCollections) {
+      await CollectionHttp.deleteCollection(item._name);
+    }
+    openSnackBar('Delete success');
+    fetchData();
+    handleCloseDialog();
+    setSelectedCollections([]);
   };
 
   const handleAction = (data: CollectionView) => {
@@ -200,6 +206,7 @@ const Collections = () => {
       },
       label: t('delete'),
       icon: 'delete',
+      disabled: data => data.length === 0,
     },
   ];
 
@@ -290,7 +297,7 @@ const Collections = () => {
           colDefinitions={colDefinitions}
           rows={collectionList}
           rowCount={total}
-          primaryKey="id"
+          primaryKey="_name"
           openCheckBox={true}
           showHoverStyle={true}
           selected={selectedCollections}
