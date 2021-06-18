@@ -67,29 +67,34 @@ const Collections = () => {
   const InfoIcon = icons.info;
 
   const fetchData = useCallback(async () => {
-    const res = await CollectionHttp.getCollections();
-    const statusRes = await CollectionHttp.getCollectionsIndexState();
-    setLoading(false);
-    setCollections(
-      res.map(v => {
-        const indexStatus = statusRes.find(item => item._name === v._name);
-        Object.assign(v, {
-          nameElement: (
-            <Link to={`/collections/${v._name}`} className={classes.link}>
-              {v._name}
-            </Link>
-          ),
-          statusElement: <Status status={v._status} />,
-          indexCreatingElement: (
-            <StatusIcon
-              type={indexStatus?._indexState || ChildrenStatusType.FINISH}
-            />
-          ),
-        });
+    try {
+      const res = await CollectionHttp.getCollections();
+      const statusRes = await CollectionHttp.getCollectionsIndexState();
+      setLoading(false);
 
-        return v;
-      })
-    );
+      setCollections(
+        res.map(v => {
+          const indexStatus = statusRes.find(item => item._name === v._name);
+          Object.assign(v, {
+            nameElement: (
+              <Link to={`/collections/${v._name}`} className={classes.link}>
+                {v._name}
+              </Link>
+            ),
+            statusElement: <Status status={v._status} />,
+            indexCreatingElement: (
+              <StatusIcon
+                type={indexStatus?._indexState || ChildrenStatusType.FINISH}
+              />
+            ),
+          });
+
+          return v;
+        })
+      );
+    } catch (err) {
+      setLoading(false);
+    }
   }, [classes.link]);
 
   useEffect(() => {

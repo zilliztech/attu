@@ -21,4 +21,7 @@ export interface IPaginationRes {
   total_count: number;
 }
 
-export type ManageRequestMethods = 'delete' | 'create';
+export enum ManageRequestMethods {
+  DELETE = 'delete',
+  CREATE = 'create',
+}

@@ -1,26 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 export const usePaginationHook = (list: any[]) => {
-  const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (list.length > 0) {
-      setTotal(list.length);
-      setData(list.slice(0, PAGE_SIZE));
-    }
-  }, [list]);
+  const offset = useMemo(() => PAGE_SIZE * currentPage, [currentPage]);
+  const total = list.length;
+  const data = useMemo(() => {
+    const offset = PAGE_SIZE * currentPage;
+    const test = list.slice(offset, offset + PAGE_SIZE);
+    return test;
+  }, [list, currentPage]);
 
   const handleCurrentPage = (page: number) => {
     setCurrentPage(page);
-    const offset = PAGE_SIZE * page;
-    setOffset(offset);
-
-    const data = list.slice(offset, offset + PAGE_SIZE);
-    setData(data);
   };
 
   return {
@@ -29,7 +22,6 @@ export const usePaginationHook = (list: any[]) => {
     pageSize: PAGE_SIZE,
     handleCurrentPage,
     total,
-    setTotal,
     data,
   };
 };

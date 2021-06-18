@@ -11,6 +11,7 @@ import { rootContext } from '../../context/Root';
 import CreatePartition from './Create';
 import { PartitionHttp } from '../../http/Partition';
 import Status from '../../components/status/Status';
+import { ManageRequestMethods } from '../../types/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -37,9 +38,7 @@ const Partitions: FC<{
     pageSize,
     currentPage,
     handleCurrentPage,
-    // offset,
     total,
-    // setTotal
     data: partitionList,
   } = usePaginationHook(partitions);
   const [loading, setLoading] = useState<boolean>(true);
@@ -51,13 +50,17 @@ const Partitions: FC<{
   }, [collectionName]);
 
   const fetchPartitions = async (collectionName: string) => {
-    const res = await PartitionHttp.getPartitions(collectionName);
+    try {
+      const res = await PartitionHttp.getPartitions(collectionName);
 
-    const partitons: PartitionView[] = res.map(p =>
-      Object.assign(p, { _statusElement: <Status status={p._status} /> })
-    );
-    setLoading(false);
-    setPartitions(partitons);
+      const partitons: PartitionView[] = res.map(p =>
+        Object.assign(p, { _statusElement: <Status status={p._status} /> })
+      );
+      setLoading(false);
+      setPartitions(partitons);
+    } catch (err) {
+      setLoading(false);
+    }
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -134,12 +137,12 @@ const Partitions: FC<{
     const param: PartitionManageParam = {
       partitionName: name,
       collectionName,
-      type: 'create',
+      type: ManageRequestMethods.CREATE,
     };
 
     await PartitionHttp.createPartition(param);
 
-    openSnackBar('create partition success');
+    openSnackBar(t('createSuccess'));
     handleCloseDialog();
     // refresh partitions
     fetchPartitions(collectionName);
