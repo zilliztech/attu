@@ -48,25 +48,25 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   const { t: warningTrans } = useTranslation('warning');
 
   const [form, setForm] = useState({
-    collection_name: 'collection_2',
-    description: 'collection desc',
+    collection_name: '',
+    description: '',
     autoID: true,
   });
   const [fields, setFields] = useState<Field[]>([
     {
       data_type: DataTypeEnum.Int64,
       is_primary_key: true,
-      name: 'age',
-      description: 'primary key',
+      name: '',
+      description: '',
       isDefault: true,
       id: generateId(),
     },
     {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
-      name: 'vector_1',
-      dimension: '20',
-      description: 'float vector',
+      name: '',
+      dimension: '',
+      description: '',
       isDefault: true,
       id: generateId(),
     },
