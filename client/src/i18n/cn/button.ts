@@ -10,6 +10,7 @@ const btnTrans = {
   delete: '删除',
   release: 'Release',
   create: 'Create',
+  load: 'Load',
 };
 
 export default btnTrans;

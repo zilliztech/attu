@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useContext, useEffect, useState } from 'react';
-import { PartitionManageParam, PartitionView } from './Types';
+import { PartitionManageParam, PartitionParam, PartitionView } from './Types';
 import MilvusGrid from '../../components/grid';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,8 @@ import CreatePartition from './Create';
 import { PartitionHttp } from '../../http/Partition';
 import Status from '../../components/status/Status';
 import { ManageRequestMethods } from '../../types/Common';
+import { StatusEnum } from '../../components/status/Types';
+import { useDialogHook } from '../../hooks/Dialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -30,7 +32,10 @@ const Partitions: FC<{
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
   const InfoIcon = icons.info;
+  const LoadIcon = icons.load;
+  const ReleaseIcon = icons.release;
 
+  const { handleAction } = useDialogHook({ type: 'partition' });
   const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
     []
   );
@@ -62,6 +67,19 @@ const Partitions: FC<{
     } catch (err) {
       setLoading(false);
     }
+  };
+
+  const handleRelease = async (data: PartitionView) => {};
+
+  const handleLoad = async (data: PartitionView) => {
+    const param: PartitionParam = {
+      collectionName,
+      partitionNames: [data._name!],
+    };
+    const res = await PartitionHttp.loadPartition(param);
+    openSnackBar(successTrans('load', { name: t('partition') }));
+    fetchPartitions(collectionName);
+    return res;
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -99,7 +117,7 @@ const Partitions: FC<{
       label: t('id'),
     },
     {
-      id: '_name',
+      id: '_formatName',
       align: 'left',
       disablePadding: false,
       label: t('name'),
@@ -122,6 +140,30 @@ const Partitions: FC<{
           </CustomToolTip>
         </span>
       ),
+    },
+    {
+      id: 'action',
+      align: 'center',
+      disablePadding: false,
+      label: '',
+      showActionCell: true,
+      isHoverAction: true,
+      actionBarConfigs: [
+        {
+          onClick: (e: React.MouseEvent, row: PartitionView) => {
+            const cb =
+              row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
+            handleAction(row, cb);
+          },
+          icon: 'load',
+          label: 'load',
+          showIconMethod: 'renderFn',
+          getLabel: (row: PartitionView) =>
+            row._status === StatusEnum.loaded ? 'release' : 'load',
+          renderIconFn: (row: PartitionView) =>
+            row._status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
+        },
+      ],
     },
   ];
 

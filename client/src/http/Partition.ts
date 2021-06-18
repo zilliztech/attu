@@ -1,13 +1,17 @@
 import { StatusEnum } from '../components/status/Types';
-import { PartitionManageParam, PartitionView } from '../pages/partitions/Types';
+import {
+  PartitionManageParam,
+  PartitionParam,
+  PartitionView,
+} from '../pages/partitions/Types';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 
 export class PartitionHttp extends BaseModel implements PartitionView {
-  id!: string;
-  name!: string;
-  rowCount!: string;
-  status!: StatusEnum;
+  private id!: string;
+  private name!: string;
+  private rowCount!: string;
+  private status!: StatusEnum;
 
   constructor(props: {}) {
     super(props);
@@ -35,11 +39,27 @@ export class PartitionHttp extends BaseModel implements PartitionView {
     });
   }
 
+  static loadPartition(param: PartitionParam) {
+    const { collectionName, partitionNames } = param;
+    const path = `${this.URL_BASE}/load`;
+    return super.update({
+      path,
+      data: {
+        collection_name: collectionName,
+        partition_names: partitionNames,
+      },
+    });
+  }
+
   get _id() {
     return this.id;
   }
 
   get _name() {
+    return this.name;
+  }
+
+  get _formatName() {
     return this.name === '_default' ? 'Default partition' : this.name;
   }
 
