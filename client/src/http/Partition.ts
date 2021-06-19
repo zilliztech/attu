@@ -51,6 +51,18 @@ export class PartitionHttp extends BaseModel implements PartitionView {
     });
   }
 
+  static releasePartition(param: PartitionParam) {
+    const { collectionName, partitionNames } = param;
+    const path = `${this.URL_BASE}/release`;
+    return super.update({
+      path,
+      data: {
+        collection_name: collectionName,
+        partition_names: partitionNames,
+      },
+    });
+  }
+
   get _id() {
     return this.id;
   }
