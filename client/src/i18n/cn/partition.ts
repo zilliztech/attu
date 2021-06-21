@@ -15,6 +15,7 @@ const partitionTrans = {
 
   deleteWarning:
     'You are trying to delete partition. This action cannot be undone.',
+  deletePartitionError: 'default partition cannot be deleted',
 };
 
 export default partitionTrans;

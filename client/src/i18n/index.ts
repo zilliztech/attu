@@ -19,6 +19,8 @@ import partitionCn from './cn/partition';
 import partitionEn from './en/partition';
 import successEn from './en/success';
 import successCn from './cn/success';
+import indexEn from './en/index';
+import indexCn from './cn/index';
 
 export const resources = {
   cn: {
@@ -31,6 +33,7 @@ export const resources = {
     dialog: dialogCn,
     partition: partitionCn,
     success: successCn,
+    index: indexCn,
   },
   en: {
     translation: commonEn,
@@ -42,6 +45,7 @@ export const resources = {
     dialog: dialogEn,
     partition: partitionEn,
     success: successEn,
+    index: indexEn,
   },
 };
 

@@ -7,6 +7,7 @@ import Partitions from '../partitions/partitions';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
+import Structure from '../structure/Structure';
 
 enum TAB_EMUM {
   'partition',
@@ -45,7 +46,7 @@ const Collection = () => {
     },
     {
       label: t('structureTab'),
-      component: <section>structure section</section>,
+      component: <Structure collectionName={collectionName} />,
     },
   ];
 

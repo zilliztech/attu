@@ -79,18 +79,20 @@ const CreateFields: FC<CreateFieldsProps> = ({
     label: string,
     value: number,
     onChange: (value: DataTypeEnum) => void
-  ) => (
-    <CustomSelector
-      options={type === 'all' ? ALL_OPTIONS : VECTOR_FIELDS_OPTIONS}
-      onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-        onChange(e.target.value as DataTypeEnum);
-      }}
-      value={value}
-      variant="filled"
-      label={label}
-      classes={{ root: classes.select }}
-    />
-  );
+  ) => {
+    return (
+      <CustomSelector
+        options={type === 'all' ? ALL_OPTIONS : VECTOR_FIELDS_OPTIONS}
+        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+          onChange(e.target.value as DataTypeEnum);
+        }}
+        value={value}
+        variant="filled"
+        label={label}
+        classes={{ root: classes.select }}
+      />
+    );
+  };
 
   const getInput = (
     label: string,
@@ -131,7 +133,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         [key]: value,
       };
     });
-
     setFields(newFields);
   };
 
@@ -248,7 +249,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           'all',
           t('fieldType'),
           field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id, 'type', value)
+          (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
         )}
 
         {getInput(
