@@ -9,6 +9,8 @@ import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { FieldHttp } from '../../http/Field';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
+import { DataType } from '../collections/Types';
+import { IndexHttp } from '../../http/Index';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -65,18 +67,38 @@ const Structure: FC<{
     data: structureList,
   } = usePaginationHook(fields);
 
+  const fetchStructureListWithIndex = async (
+    collectionName: string
+  ): Promise<FieldView[]> => {
+    const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
+    const indexList = await IndexHttp.getIndexInfo(collectionName);
+    const structureList = [...(await FieldHttp.getFields(collectionName))];
+    let fields: FieldView[] = [];
+    for (const structure of structureList) {
+      if (vectorTypes.includes(structure.data_type)) {
+        const index = indexList.find(i => i._fieldName === structure.name);
+        structure._indexParameterPairs = index?._indexParameterPairs || [];
+        structure._indexType = index?._indexType || '';
+        structure._createIndexDisabled = indexList.length > 0;
+      }
+
+      fields = [...fields, structure];
+    }
+    return fields;
+  };
+
   const fetchFields = useCallback(
     async (collectionName: string) => {
       const KeyIcon = icons.key;
 
       try {
-        const list = await FieldHttp.getStructureListWithIndex(collectionName);
+        const list = await fetchStructureListWithIndex(collectionName);
         const fields: FieldView[] = list.map(f =>
           Object.assign(f, {
             _fieldNameElement: (
               <div className={classes.nameWrapper}>
                 {f._fieldName}
-                {f.is_primary_key && <KeyIcon classes={{ root: 'key' }} />}
+                {f._isPrimaryKey && <KeyIcon classes={{ root: 'key' }} />}
               </div>
             ),
             _indexParamElement: (

@@ -13,14 +13,17 @@ export enum INDEX_TYPES_ENUM {
   RNSG = 'RNSG',
 }
 
-export interface FieldView extends IndexView {
+export interface FieldData {
   _fieldId: string;
   _isPrimaryKey: boolean;
   _fieldName: string;
   _fieldNameElement?: ReactElement;
   _fieldType: DataType;
   _dimension: string;
-  _createIndexDisabled: boolean;
+}
+
+export interface FieldView extends FieldData, IndexView {
+  _createIndexDisabled?: boolean;
 }
 
 export interface Index {
