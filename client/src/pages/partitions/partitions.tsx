@@ -32,7 +32,6 @@ const Partitions: FC<{
   const classes = useStyles();
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
-  const { t: warningTrans } = useTranslation('warning');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const InfoIcon = icons.info;
@@ -154,7 +153,7 @@ const Partitions: FC<{
         selectedPartitions.length === 0 ||
         selectedPartitions.some(p => p._name === '_default'),
       tooltip: selectedPartitions.some(p => p._name === '_default')
-        ? warningTrans('deletePartition')
+        ? t('deletePartitionError')
         : '',
     },
   ];
