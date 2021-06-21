@@ -72,17 +72,22 @@ const Structure: FC<{
   ): Promise<FieldView[]> => {
     const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
     const indexList = await IndexHttp.getIndexInfo(collectionName);
-    const structureList = [...(await FieldHttp.getFields(collectionName))];
+    const structureList = await FieldHttp.getFields(collectionName);
     let fields: FieldView[] = [];
     for (const structure of structureList) {
+      let field: FieldView = Object.assign(structure, {
+        _indexParameterPairs: [],
+        _indexType: '',
+      });
       if (vectorTypes.includes(structure.data_type)) {
         const index = indexList.find(i => i._fieldName === structure.name);
-        structure._indexParameterPairs = index?._indexParameterPairs || [];
-        structure._indexType = index?._indexType || '';
-        structure._createIndexDisabled = indexList.length > 0;
+
+        field._indexParameterPairs = index?._indexParameterPairs || [];
+        field._indexType = index?._indexType || '';
+        field._createIndexDisabled = indexList.length > 0;
       }
 
-      fields = [...fields, structure];
+      fields = [...fields, field];
     }
     return fields;
   };

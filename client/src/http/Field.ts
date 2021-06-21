@@ -1,6 +1,5 @@
 import { DataType } from '../pages/collections/Types';
 import { FieldData } from '../pages/structure/Types';
-import { IndexState } from '../types/Milvus';
 import BaseModel from './BaseModel';
 
 export class FieldHttp extends BaseModel implements FieldData {
@@ -9,12 +8,6 @@ export class FieldHttp extends BaseModel implements FieldData {
   type_params!: { key: string; value: string }[];
   is_primary_key!: true;
   name!: string;
-
-  // index
-  _indexType!: string;
-  _indexParameterPairs!: { key: string; value: string }[];
-  _indexStatus!: IndexState;
-  _createIndexDisabled!: boolean;
 
   constructor(props: {}) {
     super(props);
