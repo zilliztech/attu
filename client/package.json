@@ -1,6 +1,9 @@
 {
-  "name": "milvus-admin",
+  "name": "milvus-insight-client",
   "version": "0.1.0",
+  "description": "Milvus insight UI Client",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/milvus-io/milvus-insight/issues",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
