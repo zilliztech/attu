@@ -26,6 +26,7 @@ const collectionTrans = {
   fieldName: 'Field Name',
   autoId: 'Auto ID',
   dimension: 'Dimension',
+  dimensionTooltip: 'Only vector type has dimension',
   newBtn: 'add new field',
 
   // load dialog

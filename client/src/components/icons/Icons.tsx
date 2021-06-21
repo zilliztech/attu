@@ -26,6 +26,7 @@ import { ReactComponent as ConsoleIcon } from '../../assets/icons/console.svg';
 import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
 import { ReactComponent as ReleaseIcon } from '../../assets/icons/release.svg';
 import { ReactComponent as LoadIcon } from '../../assets/icons/load.svg';
+import { ReactComponent as KeyIcon } from '../../assets/icons/key.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -67,6 +68,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   load: (props = {}) => (
     <SvgIcon viewBox="0 0 24 24" component={LoadIcon} {...props} />
+  ),
+  key: (props = {}) => (
+    <SvgIcon viewBox="0 0 16 16" component={KeyIcon} {...props} />
   ),
 };
 

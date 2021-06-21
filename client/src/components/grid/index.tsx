@@ -98,7 +98,7 @@ const MilvusGrid: FC<MilvusGridType> = props => {
     searchForm,
     openCheckBox = true,
     disableSelect = false,
-    noData = t('grid.noData'),
+    noData = gridTrans.noData,
     showHoverStyle = true,
     selected = [],
     setSelected = () => {},
