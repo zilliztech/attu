@@ -88,7 +88,16 @@ const Partitions: FC<{
     handleCloseDialog();
   };
 
-  const handleRelease = async (data: PartitionView) => {};
+  const handleRelease = async (data: PartitionView) => {
+    const param: PartitionParam = {
+      collectionName,
+      partitionNames: [data._name],
+    };
+    const res = await PartitionHttp.releasePartition(param);
+    openSnackBar(successTrans('release', { name: t('partition') }));
+    fetchPartitions(collectionName);
+    return res;
+  };
 
   const handleLoad = async (data: PartitionView) => {
     const param: PartitionParam = {

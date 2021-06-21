@@ -93,7 +93,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   const generalInfoConfigs: ITextfieldConfig[] = [
     {
       label: t('name'),
-      key: 'name',
+      key: 'collection_name',
       value: form.collection_name,
       onChange: (value: string) => handleInputChange('collection_name', value),
       variant: 'filled',
