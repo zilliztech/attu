@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateStepTwo = (
+const CreateForm = (
   props: FormHelperType & {
     metricOptions: Option[];
     indexOptions: Option[];
@@ -200,4 +200,4 @@ const CreateStepTwo = (
     </div>
   );
 };
-export default CreateStepTwo;
+export default CreateForm;

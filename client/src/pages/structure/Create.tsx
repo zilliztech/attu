@@ -10,7 +10,7 @@ import {
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { DataType } from '../collections/Types';
-import CreateStepTwo from './CreateStepTwo';
+import CreateForm from './CreateForm';
 import { IndexType, ParamPair } from './Types';
 
 const CreateIndex = (props: {
@@ -143,7 +143,7 @@ const CreateIndex = (props: {
       handleConfirm={handleCreateIndex}
       confirmDisabled={disabled}
     >
-      <CreateStepTwo
+      <CreateForm
         updateForm={updateStepTwoForm}
         metricOptions={metricOptions}
         indexOptions={indexOptions}
@@ -152,7 +152,7 @@ const CreateIndex = (props: {
         validation={validation}
         indexParams={indexCreateParams}
         indexTypeChange={onIndexTypeChange}
-      ></CreateStepTwo>
+      />
     </DialogTemplate>
   );
 };
