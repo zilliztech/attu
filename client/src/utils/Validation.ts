@@ -35,7 +35,7 @@ export type CheckMap = {
   [key in ValidType]: boolean;
 };
 
-export const checkIsEmpty = (value: string): boolean => {
+export const checkEmptyValid = (value: string): boolean => {
   return value.trim() !== '';
 };
 
@@ -152,7 +152,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
 
   const checkMap = {
     email: checkEmail(value),
-    require: checkIsEmpty(value),
+    require: checkEmptyValid(value),
     confirm: value === extraParam?.compareValue,
     range: checkRange({
       value,

@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import icons from '../../components/icons/Icons';
+import { PRIMARY_KEY_FIELD } from '../../consts/Milvus';
 import { generateId } from '../../utils/Common';
 import { getCreateFieldType } from '../../utils/Format';
+import { checkEmptyValid, getCheckResult } from '../../utils/Validation';
 import {
   ALL_OPTIONS,
   AUTO_ID_OPTIONS,
@@ -38,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   select: {
     width: '160px',
+    marginBottom: '22px',
   },
   descInput: {
     minWidth: '270px',
@@ -57,20 +60,34 @@ const useStyles = makeStyles((theme: Theme) => ({
   mb2: {
     marginBottom: theme.spacing(2),
   },
+  helperText: {
+    color: theme.palette.error.main,
+  },
 }));
+
+type inputType = {
+  label: string;
+  value: string | number | null;
+  handleChange?: (value: string) => void;
+  className?: string;
+  inputClassName?: string;
+  isReadOnly?: boolean;
+  validate?: (value: string | number | null) => string;
+  type?: 'number' | 'text';
+};
 
 const CreateFields: FC<CreateFieldsProps> = ({
   fields,
   setFields,
-  // @TODO validation
-  setfieldsAllValid,
   setAutoID,
   autoID,
+  setFieldsValidation,
 }) => {
   const { t } = useTranslation('collection');
+  const { t: warningTrans } = useTranslation('warning');
+
   const classes = useStyles();
 
-  const primaryInt64Value = 'INT64 (Primary key)';
   const AddIcon = icons.add;
   const RemoveIcon = icons.remove;
 
@@ -92,36 +109,107 @@ const CreateFields: FC<CreateFieldsProps> = ({
     />
   );
 
-  const getInput = (
-    label: string,
-    value: string | number,
-    handleChange: (value: string) => void,
-    className = '',
-    inputClassName = '',
-    isReadOnly = false
-  ) => (
-    <TextField
-      label={label}
-      value={value}
-      onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-        handleChange(e.target.value as string);
-      }}
-      variant="filled"
-      className={className}
-      InputProps={{
-        classes: {
-          input: inputClassName,
-        },
-      }}
-      disabled={isReadOnly}
-    />
-  );
+  const getInput = (data: inputType) => {
+    const {
+      label,
+      value,
+      handleChange = () => {},
+      className = '',
+      inputClassName = '',
+      isReadOnly = false,
+      validate = (value: string | number | null) => ' ',
+      type = 'text',
+    } = data;
+    return (
+      <TextField
+        label={label}
+        // value={value}
+        onBlur={(e: React.ChangeEvent<{ value: unknown }>) => {
+          handleChange(e.target.value as string);
+        }}
+        variant="filled"
+        className={className}
+        InputProps={{
+          classes: {
+            input: inputClassName,
+          },
+        }}
+        disabled={isReadOnly}
+        helperText={validate(value)}
+        FormHelperTextProps={{
+          className: classes.helperText,
+        }}
+        defaultValue={value}
+        type={type}
+      />
+    );
+  };
 
-  const changeFields = (
-    id: string,
-    key: string,
-    value: string | DataTypeEnum
-  ) => {
+  const generateFieldName = (field: Field) => {
+    return getInput({
+      label: t('fieldName'),
+      value: field.name,
+      handleChange: (value: string) => {
+        const isValid = checkEmptyValid(value);
+        setFieldsValidation(v =>
+          v.map(item =>
+            item.id === field.id ? { ...item, name: isValid } : item
+          )
+        );
+
+        changeFields(field.id, 'name', value);
+      },
+      validate: (value: any) => {
+        if (value === null) return ' ';
+        const isValid = checkEmptyValid(value);
+
+        return isValid
+          ? ' '
+          : warningTrans('required', { name: t('fieldName') });
+      },
+    });
+  };
+
+  const generateDesc = (field: Field) => {
+    return getInput({
+      label: t('description'),
+      value: field.description,
+      handleChange: (value: string) =>
+        changeFields(field.id, 'description', value),
+      className: classes.descInput,
+    });
+  };
+
+  const generateDimension = (field: Field) => {
+    return getInput({
+      label: t('dimension'),
+      value: field.dimension as number,
+      handleChange: (value: string) => {
+        const isValid = getCheckResult({
+          value,
+          rule: 'positiveNumber',
+        });
+        changeFields(field.id, 'dimension', `${value}`);
+
+        setFieldsValidation(v =>
+          v.map(item =>
+            item.id === field.id ? { ...item, dimension: isValid } : item
+          )
+        );
+      },
+      type: 'number',
+      validate: (value: any) => {
+        const isValid = getCheckResult({
+          value,
+          rule: 'positiveNumber',
+        });
+
+        return isValid ? ' ' : 'wrong';
+      },
+    });
+  };
+
+  const changeFields = (id: string, key: string, value: any) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
         return f;
@@ -136,20 +224,29 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const handleAddNewField = () => {
+    const id = generateId();
     const newDefaultItem: Field = {
-      name: '',
+      name: null,
       data_type: DataTypeEnum.Int16,
       is_primary_key: false,
       description: '',
       isDefault: false,
-      id: generateId(),
+      dimension: 128,
+      id,
+    };
+    const newValidation = {
+      id,
+      name: false,
+      dimension: true,
     };
     setFields([...fields, newDefaultItem]);
+    setFieldsValidation(v => [...v, newValidation]);
   };
 
   const handleRemoveField = (field: Field) => {
     const newFields = fields.filter(f => f.id !== field.id);
     setFields(newFields);
+    setFieldsValidation(v => v.filter(item => item.id !== field.id));
   };
 
   const generatePrimaryKeyRow = (
@@ -158,18 +255,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ): ReactElement => {
     return (
       <div className={`${classes.rowWrapper} ${classes.mb3}`}>
-        {getInput(
-          t('fieldType'),
-          primaryInt64Value,
-          () => {},
-          classes.primaryInput,
-          classes.input,
-          true
-        )}
+        {getInput({
+          label: t('fieldType'),
+          value: PRIMARY_KEY_FIELD,
+          className: classes.primaryInput,
+          inputClassName: classes.input,
+          isReadOnly: true,
+        })}
 
-        {getInput(t('fieldName'), field.name, (value: string) =>
-          changeFields(field.id, 'name', value)
-        )}
+        {generateFieldName(field)}
 
         <CustomSelector
           label={t('autoId')}
@@ -183,12 +277,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           classes={{ root: classes.select }}
         />
 
-        {getInput(
-          t('description'),
-          field.description,
-          (value: string) => changeFields(field.id, 'description', value),
-          classes.descInput
-        )}
+        {generateDesc(field)}
       </div>
     );
   };
@@ -204,23 +293,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
             (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
           )}
 
-          {getInput(t('fieldName'), field.name, (value: string) =>
-            changeFields(field.id, 'name', value)
-          )}
+          {generateFieldName(field)}
 
-          {getInput(
-            t('dimension'),
-            field.dimension as number,
-            (value: string) => changeFields(field.id, 'dimension', value),
-            'dimension'
-          )}
+          {generateDimension(field)}
 
-          {getInput(
-            t('description'),
-            field.description,
-            (value: string) => changeFields(field.id, 'description', value),
-            classes.descInput
-          )}
+          {generateDesc(field)}
         </div>
 
         <CustomButton onClick={handleAddNewField} className={classes.mb2}>
@@ -241,9 +318,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         >
           <RemoveIcon />
         </IconButton>
-        {getInput(t('fieldName'), field.name, (value: string) =>
-          changeFields(field.id, 'name', value)
-        )}
+        {generateFieldName(field)}
         {getSelector(
           'all',
           t('fieldType'),
@@ -251,12 +326,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           (value: DataTypeEnum) => changeFields(field.id, 'type', value)
         )}
 
-        {getInput(
-          t('description'),
-          field.description,
-          (value: string) => changeFields(field.id, 'desc', value),
-          classes.descInput
-        )}
+        {generateDesc(field)}
       </div>
     );
   };
@@ -267,28 +337,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
         <IconButton classes={{ root: classes.iconBtn }} aria-label="delete">
           <RemoveIcon />
         </IconButton>
-        {getInput(t('fieldName'), field.name, (value: string) =>
-          changeFields(field.id, 'name', value)
-        )}
+        {generateFieldName(field)}
         {getSelector(
           'all',
           t('fieldType'),
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
         )}
-        {getInput(
-          t('dimension'),
-          field.dimension as number,
-          (value: string) => changeFields(field.id, 'dimension', value),
-          'dimension'
-        )}
+        {generateDimension(field)}
 
-        {getInput(
-          t('description'),
-          field.description,
-          (value: string) => changeFields(field.id, 'description', value),
-          classes.descInput
-        )}
+        {generateDesc(field)}
       </div>
     );
   };

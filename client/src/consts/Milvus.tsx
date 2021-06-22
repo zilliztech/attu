@@ -139,3 +139,5 @@ export const FIELD_TYPES = {
   INT32: 'int32',
   INT64: 'int64',
 };
+
+export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
