@@ -1,8 +1,8 @@
 import { Option } from '../components/customSelector/Types';
-import { METRIC_TYPES, METRIC_TYPES_VALUES } from '../consts/Milvus';
+import { METRIC_TYPES_VALUES } from '../consts/Milvus';
 import { IForm } from '../hooks/Form';
+import { DataType } from '../pages/collections/Types';
 import { IndexType } from '../pages/structure/Types';
-import { checkMultiple } from './Validation';
 
 interface IInfo {
   [key: string]: any;
@@ -21,10 +21,10 @@ export const formatForm = (info: IInfo): IForm[] => {
 };
 
 export const getMetricOptions = (
-  dimension: string,
-  indexType: IndexType
+  indexType: IndexType,
+  fieldType: DataType
 ): Option[] => {
-  const baseOptions = [
+  const baseFloatOptions = [
     {
       value: METRIC_TYPES_VALUES.L2,
       label: 'L2',
@@ -34,32 +34,43 @@ export const getMetricOptions = (
       label: 'IP',
     },
   ];
-  if (!checkMultiple({ value: dimension, multipleNumber: 8 })) {
-    return baseOptions;
-  }
 
-  switch (indexType) {
-    case 'FLAT':
-      return METRIC_TYPES;
+  const baseBinaryOptions = [
+    {
+      value: METRIC_TYPES_VALUES.HAMMING,
+      label: 'Hamming',
+    },
+    {
+      value: METRIC_TYPES_VALUES.JACCARD,
+      label: 'Jaccard',
+    },
+    {
+      value: METRIC_TYPES_VALUES.TANIMOTO,
+      label: 'Tanimoto',
+    },
+  ];
 
-    case 'IVF_FLAT':
-      return [
-        ...baseOptions,
+  const type = fieldType === 'FloatVector' ? 'ALL' : indexType;
+
+  const baseOptionsMap: { [key: string]: any } = {
+    BinaryVector: {
+      FLAT: [
+        ...baseBinaryOptions,
         {
-          value: METRIC_TYPES_VALUES.HAMMING,
-          label: 'Hamming',
+          value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
+          label: 'Substructure',
         },
         {
-          value: METRIC_TYPES_VALUES.JACCARD,
-          label: 'Jaccard',
+          value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
+          label: 'Superstructure',
         },
-        {
-          value: METRIC_TYPES_VALUES.TANIMOTO,
-          label: 'Tanimoto',
-        },
-      ];
+      ],
+      IVF_FLAT: baseBinaryOptions,
+    },
+    FloatVector: {
+      ALL: baseFloatOptions,
+    },
+  };
 
-    default:
-      return baseOptions;
-  }
+  return baseOptionsMap[fieldType][type];
 };

@@ -1,23 +1,31 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import { INDEX_CONFIG, MetricType } from '../../consts/Milvus';
+import {
+  EmbeddingTypeEnum,
+  INDEX_CONFIG,
+  INDEX_OPTIONS_MAP,
+  MetricType,
+} from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm, getMetricOptions } from '../../utils/Form';
+import { DataType } from '../collections/Types';
 import CreateStepTwo from './CreateStepTwo';
 import { IndexType, ParamPair } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
-  dimension: string;
+  fieldType: DataType;
   handleCreate: (params: ParamPair[]) => void;
   handleCancel: () => void;
 }) => {
-  const { collectionName, dimension, handleCreate, handleCancel } = props;
+  const { collectionName, fieldType, handleCreate, handleCancel } = props;
 
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
+
+  const defaultMetricType = fieldType === 'BinaryVector' ? 'Hamming' : 'L2';
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
@@ -25,7 +33,7 @@ const CreateIndex = (props: {
     [x: string]: string;
   }>({
     index_type: 'IVF_FLAT',
-    metric_type: 'L2',
+    metric_type: defaultMetricType,
     M: '',
     m: '4',
     efConstruction: '',
@@ -45,9 +53,17 @@ const CreateIndex = (props: {
   }, [indexSetting.index_type]);
 
   const metricOptions = useMemo(
-    () => getMetricOptions(dimension, indexSetting.index_type),
-    [dimension, indexSetting.index_type]
+    () => getMetricOptions(indexSetting.index_type, fieldType),
+    [indexSetting.index_type, fieldType]
   );
+
+  const indexOptions = useMemo(() => {
+    const type =
+      fieldType === 'BinaryVector'
+        ? EmbeddingTypeEnum.binary
+        : EmbeddingTypeEnum.float;
+    return INDEX_OPTIONS_MAP[type];
+  }, [fieldType]);
 
   const checkedForm = useMemo(() => {
     const paramsForm: any = { metric_type: indexSetting.metric_type };
@@ -65,7 +81,7 @@ const CreateIndex = (props: {
     setDisabled(true);
     setIndexSetting(v => ({
       ...v,
-      metric_type: 'L2',
+      metric_type: defaultMetricType,
       M: '',
       m: '4',
       efConstruction: '',
@@ -76,7 +92,7 @@ const CreateIndex = (props: {
       search_length: '',
       knng: '',
     }));
-  }, [indexCreateParams, setDisabled]);
+  }, [indexCreateParams, setDisabled, defaultMetricType]);
 
   const updateStepTwoForm = (type: string, value: string) => {
     setIndexSetting(v => ({ ...v, [type]: value }));
@@ -130,6 +146,7 @@ const CreateIndex = (props: {
       <CreateStepTwo
         updateForm={updateStepTwoForm}
         metricOptions={metricOptions}
+        indexOptions={indexOptions}
         formValue={indexSetting}
         checkIsValid={checkIsValid}
         validation={validation}

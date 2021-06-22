@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import CustomInput from '../../components/customInput/CustomInput';
 import CustomSelector from '../../components/customSelector/CustomSelector';
-import { INDEX_OPTIONS, m_OPTIONS } from '../../consts/Milvus';
+import { m_OPTIONS } from '../../consts/Milvus';
 import { FormHelperType } from '../../types/Common';
 import { Option } from '../../components/customSelector/Types';
 
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CreateStepTwo = (
   props: FormHelperType & {
     metricOptions: Option[];
+    indexOptions: Option[];
     indexParams: string[];
     indexTypeChange?: (type: string) => void;
   }
@@ -39,6 +40,7 @@ const CreateStepTwo = (
     validation,
     indexParams,
     indexTypeChange,
+    indexOptions,
     metricOptions,
   } = props;
 
@@ -148,7 +150,7 @@ const CreateStepTwo = (
       <CustomSelector
         label={indexTrans('type')}
         value={formValue.index_type}
-        options={INDEX_OPTIONS}
+        options={indexOptions}
         onChange={(e: { target: { value: unknown } }) => {
           const type = e.target.value;
           updateForm('index_type', type as string);

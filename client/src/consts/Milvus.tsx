@@ -91,11 +91,6 @@ export const INDEX_CONFIG: {
   },
 };
 
-export const INDEX_OPTIONS = Object.keys(INDEX_CONFIG).map(v => ({
-  label: v,
-  value: v,
-}));
-
 export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
 
 export const m_OPTIONS = [
@@ -108,9 +103,13 @@ export const m_OPTIONS = [
 
 export const INDEX_OPTIONS_MAP = {
   FLOAT_POINT: Object.keys(INDEX_CONFIG).map(v => ({ label: v, value: v })),
-  BINARY_ONE: [{ label: 'FLAT', value: 'FLAT' }],
-  BINARY_TWO: [
+  BINARY: [
     { label: 'FLAT', value: 'FLAT' },
     { label: 'IVF_FLAT', value: 'IVF_FLAT' },
   ],
 };
+
+export enum EmbeddingTypeEnum {
+  float = 'FLOAT_POINT',
+  binary = 'BINARY',
+}

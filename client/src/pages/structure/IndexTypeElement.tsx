@@ -78,8 +78,8 @@ const IndexTypeElement: FC<{
       params: {
         component: (
           <CreateIndex
-            dimension={data._dimension}
             collectionName={collectionName}
+            fieldType={data._fieldType}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}
           />
