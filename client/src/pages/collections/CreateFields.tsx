@@ -155,11 +155,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         const isValid = checkEmptyValid(value);
         setFieldsValidation(v =>
           v.map(item =>
-            item.id === field.id ? { ...item, name: isValid } : item
+            item.id === field.id! ? { ...item, name: isValid } : item
           )
         );
 
-        changeFields(field.id, 'name', value);
+        changeFields(field.id!, 'name', value);
       },
       validate: (value: any) => {
         if (value === null) return ' ';
@@ -177,7 +177,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       label: t('description'),
       value: field.description,
       handleChange: (value: string) =>
-        changeFields(field.id, 'description', value),
+        changeFields(field.id!, 'description', value),
       className: classes.descInput,
     });
   };
@@ -191,11 +191,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           value,
           rule: 'positiveNumber',
         });
-        changeFields(field.id, 'dimension', `${value}`);
+        changeFields(field.id!, 'dimension', `${value}`);
 
         setFieldsValidation(v =>
           v.map(item =>
-            item.id === field.id ? { ...item, dimension: isValid } : item
+            item.id === field.id! ? { ...item, dimension: isValid } : item
           )
         );
       },
@@ -232,7 +232,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       is_primary_key: false,
       description: '',
       isDefault: false,
-      dimension: 128,
+      dimension: '128',
       id,
     };
     const newValidation = {
@@ -291,7 +291,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
             'vector',
             t('fieldType'),
             field.data_type,
-            (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
+            (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
           )}
 
           {generateFieldName(field)}
@@ -324,7 +324,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           'all',
           t('fieldType'),
           field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
+          (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
 
         {generateDesc(field)}
@@ -343,7 +343,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           'all',
           t('fieldType'),
           field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
+          (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
         {generateDimension(field)}
 

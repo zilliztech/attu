@@ -55,7 +55,7 @@ export interface Field {
   description: string;
   dimension?: number | string;
   isDefault?: boolean;
-  id: string;
+  id?: string;
   type_params?: { key: string; value: any }[];
 }
 

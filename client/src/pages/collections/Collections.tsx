@@ -4,7 +4,7 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MilvusGrid from '../../components/grid';
 import CustomToolBar from '../../components/grid/ToolBar';
-import { CollectionCreateParam, CollectionView } from './Types';
+import { CollectionCreateParam, CollectionView, DataTypeEnum } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
@@ -106,10 +106,16 @@ const Collections = () => {
 
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
-    data.fields = data.fields.map(v => ({
-      ...v,
-      type_params: [{ key: 'dim', value: v.dimension }],
-    }));
+    const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
+
+    data.fields = data.fields.map(v =>
+      vectorType.includes(v.data_type)
+        ? {
+            ...v,
+            type_params: [{ key: 'dim', value: v.dimension }],
+          }
+        : v
+    );
     await CollectionHttp.createCollection(data);
     handleCloseDialog();
     openSnackBar(successTrans('create', { name: t('collection') }));
