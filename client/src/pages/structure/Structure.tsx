@@ -31,19 +31,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 
-  param: {
-    padding: theme.spacing(0.5),
+  paramWrapper: {
+    '& .param': {
+      padding: theme.spacing(0.5),
 
-    marginRight: theme.spacing(2),
+      marginRight: theme.spacing(2),
 
-    '& .key': {
-      color: '#82838e',
-      display: 'inline-block',
-      marginRight: theme.spacing(0.5),
-    },
+      '& .key': {
+        color: '#82838e',
+        display: 'inline-block',
+        marginRight: theme.spacing(0.5),
+      },
 
-    '& .value': {
-      color: '#010e29',
+      '& .value': {
+        color: '#010e29',
+      },
     },
   },
 }));
@@ -107,10 +109,10 @@ const Structure: FC<{
               </div>
             ),
             _indexParamElement: (
-              <>
+              <div className={classes.paramWrapper}>
                 {f._indexParameterPairs?.length > 0 ? (
                   f._indexParameterPairs.map(p => (
-                    <span key={p.key} className={classes.param}>
+                    <span key={p.key} className="param">
                       <Typography variant="caption" className="key">
                         {`${p.key}:`}
                       </Typography>
@@ -122,10 +124,14 @@ const Structure: FC<{
                 ) : (
                   <>--</>
                 )}
-              </>
+              </div>
             ),
             _indexTypeElement: (
-              <IndexTypeElement data={f} collectionName={collectionName} />
+              <IndexTypeElement
+                data={f}
+                collectionName={collectionName}
+                createCb={fetchFields}
+              />
             ),
           })
         );
@@ -137,7 +143,7 @@ const Structure: FC<{
         throw err;
       }
     },
-    [classes.nameWrapper, classes.param]
+    [classes.nameWrapper, classes.paramWrapper]
   );
 
   useEffect(() => {

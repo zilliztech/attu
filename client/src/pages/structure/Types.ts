@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { IndexState } from '../../types/Milvus';
+import { ManageRequestMethods } from '../../types/Common';
 import { DataType } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {
@@ -36,4 +36,26 @@ export interface IndexView {
   _indexTypeElement?: ReactElement;
   _indexParameterPairs: { key: string; value: string }[];
   _indexParamElement?: ReactElement;
+}
+
+export type IndexType =
+  | 'FLAT'
+  | 'IVF_FLAT'
+  | 'IVF_SQ8'
+  // | 'IVF_SQ8_HYBRID'
+  | 'IVF_PQ'
+  | 'RNSG'
+  | 'HNSW'
+  | 'ANNOY';
+
+export interface IndexCreateParam {
+  type: ManageRequestMethods;
+  collection_name: string;
+  field_name: string;
+  extra_params: ParamPair[];
+}
+
+export interface ParamPair {
+  key: string;
+  value: string;
 }

@@ -1,33 +1,11 @@
-export const VECTOR_TYPE_OPTIONS = [
-  {
-    label: 'Vector float',
-    value: 'VECTOR_FLOAT',
-  },
-  {
-    label: 'Vector binary',
-    value: 'VECTOR_BINARY',
-  },
-];
-
-export const NON_VECTOR_TYPE_OPTIONS = [
-  {
-    label: 'Number',
-    value: 'number',
-  },
-  {
-    label: 'Float',
-    value: 'float',
-  },
-];
-
 export enum METRIC_TYPES_VALUES {
-  L2 = 1,
-  IP,
-  HAMMING,
-  JACCARD,
-  TANIMOTO,
-  SUBSTRUCTURE,
-  SUPERSTRUCTURE,
+  L2 = 'L2',
+  IP = 'IP',
+  HAMMING = 'Hamming',
+  JACCARD = 'Jaccard',
+  TANIMOTO = 'Tanimoto',
+  SUBSTRUCTURE = 'Substructure',
+  SUPERSTRUCTURE = 'Superstructure',
 }
 
 export const METRIC_TYPES = [
@@ -40,16 +18,16 @@ export const METRIC_TYPES = [
     label: 'IP',
   },
   {
-    value: METRIC_TYPES_VALUES.HAMMING,
-    label: 'Hamming',
-  },
-  {
     value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
     label: 'Substructure',
   },
   {
     value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
     label: 'Superstructure',
+  },
+  {
+    value: METRIC_TYPES_VALUES.HAMMING,
+    label: 'Hamming',
   },
   {
     value: METRIC_TYPES_VALUES.JACCARD,
@@ -61,13 +39,14 @@ export const METRIC_TYPES = [
   },
 ];
 
-export const BINARY_METRIC_TYPES = [
-  'HAMMING',
-  'JACCARD',
-  'TANIMOTO',
-  'SUBSTRUCTURE',
-  'SUPERSTRUCTURE',
-];
+export type MetricType =
+  | 'L2'
+  | 'IP'
+  | 'Hamming'
+  | 'Substructure'
+  | 'Superstructure'
+  | 'Jaccard'
+  | 'Tanimoto';
 
 export type searchKeywordsType = 'nprobe' | 'ef' | 'search_k' | 'search_length';
 
@@ -124,18 +103,13 @@ export const m_OPTIONS = [
 
 export const INDEX_OPTIONS_MAP = {
   FLOAT_POINT: Object.keys(INDEX_CONFIG).map(v => ({ label: v, value: v })),
-  BINARY_ONE: [{ label: 'FLAT', value: 'FLAT' }],
-  BINARY_TWO: [
+  BINARY: [
     { label: 'FLAT', value: 'FLAT' },
     { label: 'IVF_FLAT', value: 'IVF_FLAT' },
   ],
 };
 
-export const FIELD_TYPES = {
-  VECTOR_FLOAT: 'vector_float',
-  VECTOR_BINARY: 'vector_binary',
-  Float: 'float',
-  Double: 'double',
-  INT32: 'int32',
-  INT64: 'int64',
-};
+export enum EmbeddingTypeEnum {
+  float = 'FLOAT_POINT',
+  binary = 'BINARY',
+}

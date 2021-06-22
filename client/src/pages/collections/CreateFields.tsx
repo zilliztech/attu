@@ -255,7 +255,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {getInput(
           t('description'),
           field.description,
-          (value: string) => changeFields(field.id, 'desc', value),
+          (value: string) => changeFields(field.id, 'description', value),
           classes.descInput
         )}
       </div>

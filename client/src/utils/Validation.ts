@@ -1,4 +1,4 @@
-import { METRIC_TYPES_VALUES } from '../consts/Milvus';
+import { MetricType, METRIC_TYPES_VALUES } from '../consts/Milvus';
 
 export type ValidType =
   | 'email'
@@ -28,7 +28,7 @@ export interface IExtraParam {
   type?: 'string' | 'number';
 
   // used for dimension
-  metricType?: number;
+  metricType?: MetricType;
   multipleNumber?: number;
 }
 export type CheckMap = {
@@ -133,7 +133,7 @@ export const checkMultiple = (param: {
 
 export const checkDimension = (param: {
   value: string;
-  metricType?: number;
+  metricType?: MetricType;
   multipleNumber?: number;
 }): boolean => {
   const { value, metricType, multipleNumber } = param;

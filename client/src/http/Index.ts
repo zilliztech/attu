@@ -1,9 +1,13 @@
-import { IndexView } from '../pages/structure/Types';
+import {
+  IndexCreateParam,
+  IndexView,
+  ParamPair,
+} from '../pages/structure/Types';
 import { IndexState } from '../types/Milvus';
 import BaseModel from './BaseModel';
 
 export class IndexHttp extends BaseModel implements IndexView {
-  params!: { key: string; value: string }[];
+  params!: ParamPair[];
   field_name!: string;
 
   constructor(props: {}) {
@@ -32,6 +36,15 @@ export class IndexHttp extends BaseModel implements IndexView {
       params: { collection_name: collectionName },
     });
     return res.index_descriptions.map((index: any) => new this(index));
+  }
+
+  static async createIndex(param: IndexCreateParam) {
+    const path = this.BASE_URL;
+
+    return super.create({
+      path,
+      data: { ...param },
+    });
   }
 
   get _indexType() {
