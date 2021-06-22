@@ -21,6 +21,7 @@ const commonTrans = {
     copy: 'Copy',
     copied: 'Copied',
   },
+  param: 'Parameter',
 };
 
 export default commonTrans;

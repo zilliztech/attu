@@ -25,6 +25,9 @@ export class SchemaService {
 
   async describeIndex(data: DescribeIndexReq) {
     const res = await this.milvusClient.describeIndex(data);
+    if (res.status.error_code === 'IndexNotExist') {
+      return res;
+    }
     throwErrorFromSDK(res.status);
     return res;
   }
