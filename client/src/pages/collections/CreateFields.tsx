@@ -83,7 +83,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   autoID,
   setFieldsValidation,
 }) => {
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
 
   const classes = useStyles();
@@ -149,7 +149,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const generateFieldName = (field: Field) => {
     return getInput({
-      label: t('fieldName'),
+      label: collectionTrans('fieldName'),
       value: field.name,
       handleChange: (value: string) => {
         const isValid = checkEmptyValid(value);
@@ -167,14 +167,14 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         return isValid
           ? ' '
-          : warningTrans('required', { name: t('fieldName') });
+          : warningTrans('required', { name: collectionTrans('fieldName') });
       },
     });
   };
 
   const generateDesc = (field: Field) => {
     return getInput({
-      label: t('description'),
+      label: collectionTrans('description'),
       value: field.description,
       handleChange: (value: string) =>
         changeFields(field.id!, 'description', value),
@@ -183,14 +183,38 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateDimension = (field: Field) => {
+    const validateDimension = (value: string) => {
+      const isPositive = getCheckResult({
+        value,
+        rule: 'positiveNumber',
+      });
+      const isMutiple = getCheckResult({
+        value,
+        rule: 'multiple',
+        extraParam: {
+          multipleNumber: 8,
+        },
+      });
+      if (field.data_type === DataTypeEnum.BinaryVector) {
+        return {
+          isMutiple,
+          isPositive,
+        };
+      }
+      return {
+        isPositive,
+      };
+    };
     return getInput({
-      label: t('dimension'),
+      label: collectionTrans('dimension'),
       value: field.dimension as number,
       handleChange: (value: string) => {
-        const isValid = getCheckResult({
-          value,
-          rule: 'positiveNumber',
-        });
+        const { isPositive, isMutiple } = validateDimension(value);
+        const isValid =
+          field.data_type === DataTypeEnum.BinaryVector
+            ? !!isMutiple && isPositive
+            : isPositive;
+
         changeFields(field.id!, 'dimension', `${value}`);
 
         setFieldsValidation(v =>
@@ -201,12 +225,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
       },
       type: 'number',
       validate: (value: any) => {
-        const isValid = getCheckResult({
-          value,
-          rule: 'positiveNumber',
-        });
+        const { isPositive, isMutiple } = validateDimension(value);
+        if (isMutiple === false) {
+          return collectionTrans('dimensionMutipleWarning');
+        }
 
-        return isValid ? ' ' : 'wrong';
+        return isPositive ? ' ' : collectionTrans('dimensionPositiveWarning');
       },
     });
   };
@@ -257,7 +281,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return (
       <div className={`${classes.rowWrapper} ${classes.mb3}`}>
         {getInput({
-          label: t('fieldType'),
+          label: collectionTrans('fieldType'),
           value: PRIMARY_KEY_FIELD,
           className: classes.primaryInput,
           inputClassName: classes.input,
@@ -267,7 +291,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {generateFieldName(field)}
 
         <CustomSelector
-          label={t('autoId')}
+          label={collectionTrans('autoId')}
           options={AUTO_ID_OPTIONS}
           value={autoID ? 'true' : 'false'}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -289,7 +313,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         <div className={`${classes.rowWrapper} ${classes.mb2}`}>
           {getSelector(
             'vector',
-            t('fieldType'),
+            collectionTrans('fieldType'),
             field.data_type,
             (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
           )}
@@ -303,7 +327,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         <CustomButton onClick={handleAddNewField} className={classes.mb2}>
           <AddIcon />
-          <span className={classes.btnTxt}>{t('newBtn')}</span>
+          <span className={classes.btnTxt}>{collectionTrans('newBtn')}</span>
         </CustomButton>
       </>
     );
@@ -322,7 +346,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {generateFieldName(field)}
         {getSelector(
           'all',
-          t('fieldType'),
+          collectionTrans('fieldType'),
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
@@ -341,7 +365,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {generateFieldName(field)}
         {getSelector(
           'all',
-          t('fieldType'),
+          collectionTrans('fieldType'),
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
