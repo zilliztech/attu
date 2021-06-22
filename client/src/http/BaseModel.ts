@@ -55,9 +55,7 @@ export default class BaseModel {
    */
   static async create(options: updateParamsType) {
     const { path, data } = options;
-
     const res = await http.post(path, data);
-
     return new this(res.data.data || {});
   }
 

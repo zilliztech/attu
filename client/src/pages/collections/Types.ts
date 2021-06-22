@@ -38,6 +38,16 @@ export enum DataTypeEnum {
   FloatVector = 101,
 }
 
+export type DataType =
+  | 'Int8'
+  | 'Int16'
+  | 'Int32'
+  | 'Int64'
+  | 'Float'
+  | 'Double'
+  | 'BinaryVector'
+  | 'FloatVector';
+
 export interface Field {
   name: string | null;
   data_type: DataTypeEnum;
