@@ -42,7 +42,7 @@ const IndexTypeElement: FC<{
 
   const [status, setStatus] = useState<string>('');
 
-  const { t } = useTranslation('index');
+  const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
@@ -75,7 +75,7 @@ const IndexTypeElement: FC<{
     };
     await IndexHttp.createIndex(indexCreateParam);
     handleCloseDialog();
-    openSnackBar(t('createSuccess'));
+    openSnackBar(indexTrans('createSuccess'));
     cb(collectionName);
   };
 
@@ -104,7 +104,7 @@ const IndexTypeElement: FC<{
 
     await IndexHttp.deleteIndex(indexDeleteParam);
     handleCloseDialog();
-    openSnackBar(successTrans('delete', { name: t('index') }));
+    openSnackBar(successTrans('delete', { name: indexTrans('index') }));
     cb(collectionName);
   };
 
@@ -116,8 +116,8 @@ const IndexTypeElement: FC<{
         component: (
           <DeleteTemplate
             label={btnTrans('delete')}
-            title={dialogTrans('deleteTitle', { type: t('index') })}
-            text={t('deleteWarning')}
+            title={dialogTrans('deleteTitle', { type: indexTrans('index') })}
+            text={indexTrans('deleteWarning')}
             handleDelete={requestDeleteIndex}
           />
         ),
@@ -142,7 +142,7 @@ const IndexTypeElement: FC<{
             onClick={handleCreate}
           >
             <AddIcon />
-            {t('create')}
+            {indexTrans('create')}
           </CustomButton>
         );
       }

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   const classes = useStyles();
   const { handleCloseDialog } = useContext(rootContext);
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
 
@@ -105,7 +105,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
 
   const generalInfoConfigs: ITextfieldConfig[] = [
     {
-      label: t('name'),
+      label: collectionTrans('name'),
       key: 'collection_name',
       value: form.collection_name,
       onChange: (value: string) => handleInputChange('collection_name', value),
@@ -113,13 +113,15 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
       validations: [
         {
           rule: 'require',
-          errorText: warningTrans('required', { name: t('name') }),
+          errorText: warningTrans('required', {
+            name: collectionTrans('name'),
+          }),
         },
       ],
       className: classes.input,
     },
     {
-      label: t('description'),
+      label: collectionTrans('description'),
       key: 'description',
       value: form.description,
       onChange: (value: string) => handleInputChange('description', value),
@@ -148,7 +150,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
 
   return (
     <DialogTemplate
-      title={t('createTitle')}
+      title={collectionTrans('createTitle')}
       handleCancel={handleCloseDialog}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
@@ -156,7 +158,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     >
       <form>
         <fieldset className={classes.fieldset}>
-          <legend>{t('general')}</legend>
+          <legend>{collectionTrans('general')}</legend>
           {generalInfoConfigs.map(config => (
             <CustomInput
               key={config.key}
@@ -169,7 +171,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
         </fieldset>
 
         <fieldset className={classes.fieldset}>
-          <legend>{t('structure')}</legend>
+          <legend>{collectionTrans('structure')}</legend>
           <CreateFields
             fields={fields}
             setFields={setFields}
