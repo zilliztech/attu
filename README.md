@@ -1,3 +1,1 @@
 # Milvus Insight
-
-haha
