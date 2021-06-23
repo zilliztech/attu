@@ -6,20 +6,10 @@
   "bugs": "https://github.com/milvus-io/milvus-insight/issues",
   "release": {
     "branches": [
-      "master"
+      "main",
+      "next",
+      "{name: 'beta', prerelease: true}"
     ]
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "semantic-release": "semantic-release"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nameczz/milvus-insight.git"
-  },
-  "devDependencies": {
-    "semantic-release": "^17.4.4"
-  }
+  "private": true
 }
