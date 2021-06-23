@@ -60,7 +60,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const RightArrowIcon = icons.rightArrow;
   const InfoIcon = icons.info;
   const ReleaseIcon = icons.release;
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
   const handleRelease = () => {};
@@ -79,8 +79,8 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <RightArrowIcon classes={{ root: classes.icon }} />
       </Link>
       <div className={classes.content}>
-        <Typography>{t('rowCount')}</Typography>
-        <CustomToolTip title={t('tooltip')} placement="bottom">
+        <Typography>{collectionTrans('rowCount')}</Typography>
+        <CustomToolTip title={collectionTrans('tooltip')} placement="bottom">
           <InfoIcon classes={{ root: classes.icon }} />
         </CustomToolTip>
         <Typography className={classes.rowCount}>{rowCount}</Typography>

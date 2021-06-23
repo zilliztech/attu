@@ -117,6 +117,7 @@ const EnhancedTable: FC<TableType> = props => {
     noData,
     showHoverStyle,
     isLoading,
+    setPageSize,
   } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -125,6 +126,7 @@ const EnhancedTable: FC<TableType> = props => {
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
+  const rowRef = useRef(null);
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -138,6 +140,21 @@ const EnhancedTable: FC<TableType> = props => {
     const count = Math.floor((height - 57) / 40);
     setLoadingRowCount(count);
   }, []);
+
+  useEffect(() => {
+    if (setPageSize) {
+      const containerHeight: number = (containerRef.current as any)!
+        .offsetHeight;
+      const rowHeight: number = (rowRef.current as any)?.offsetHeight || 0;
+      const tableHeaderHeight: number = 57;
+      if (rowHeight > 0) {
+        const pageSize = Math.floor(
+          (containerHeight - tableHeaderHeight) / rowHeight
+        );
+        setPageSize(pageSize);
+      }
+    }
+  }, [setPageSize]);
 
   return (
     <TableContainer ref={containerRef} className={classes.root}>
@@ -183,6 +200,7 @@ const EnhancedTable: FC<TableType> = props => {
 
                     return (
                       <TableRow
+                        ref={rowRef}
                         hover={showHoverStyle}
                         key={'row' + row[primaryKey] + index}
                         onClick={event => onSelected(event, row)}

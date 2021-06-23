@@ -45,6 +45,7 @@ const Partitions: FC<{
   const [partitions, setPartitions] = useState<PartitionView[]>([]);
   const {
     pageSize,
+    handlePageSize,
     currentPage,
     handleCurrentPage,
     total,
@@ -255,6 +256,7 @@ const Partitions: FC<{
         page={currentPage}
         onChangePage={handlePageChange}
         rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
         isLoading={loading}
       />
     </section>

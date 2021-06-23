@@ -63,6 +63,7 @@ const Structure: FC<{
 
   const {
     pageSize,
+    handlePageSize,
     currentPage,
     handleCurrentPage,
     total,
@@ -130,7 +131,7 @@ const Structure: FC<{
               <IndexTypeElement
                 data={f}
                 collectionName={collectionName}
-                createCb={fetchFields}
+                cb={fetchFields}
               />
             ),
           })
@@ -207,6 +208,7 @@ const Structure: FC<{
         page={currentPage}
         onChangePage={handlePageChange}
         rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
         isLoading={loading}
       />
     </section>
