@@ -46,6 +46,7 @@ const Collections = () => {
   const [collections, setCollections] = useState<CollectionView[]>([]);
   const {
     pageSize,
+    handlePageSize,
     currentPage,
     handleCurrentPage,
     total,
@@ -283,6 +284,7 @@ const Collections = () => {
           page={currentPage}
           onChangePage={handlePageChange}
           rowsPerPage={pageSize}
+          setRowsPerPage={handlePageSize}
           isLoading={loading}
         />
       ) : (

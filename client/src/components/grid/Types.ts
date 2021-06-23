@@ -66,6 +66,7 @@ export type TableType = {
   noData?: string;
   showHoverStyle?: boolean;
   isLoading?: boolean;
+  setPageSize?: (size: number) => void;
 };
 
 export type ColDefinitionsType = {
@@ -93,6 +94,8 @@ export type ColDefinitionsType = {
 export type MilvusGridType = ToolBarType & {
   rowCount: number;
   rowsPerPage?: number;
+  // used to dynamic set page size by table container and row height
+  setRowsPerPage?: (size: number) => void;
   primaryKey: string;
   onChangePage?: (e: any, nextPageNum: number) => void;
   labelDisplayedRows?: (obj: any) => string;
