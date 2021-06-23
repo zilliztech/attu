@@ -63,6 +63,7 @@ const Structure: FC<{
 
   const {
     pageSize,
+    handlePageSize,
     currentPage,
     handleCurrentPage,
     total,
@@ -207,6 +208,7 @@ const Structure: FC<{
         page={currentPage}
         onChangePage={handlePageChange}
         rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
         isLoading={loading}
       />
     </section>
