@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - feature/cicd
+      - main
 
 jobs:
   publish:
