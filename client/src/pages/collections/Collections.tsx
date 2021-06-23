@@ -59,7 +59,7 @@ const Collections = () => {
 
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
@@ -119,20 +119,24 @@ const Collections = () => {
     );
     await CollectionHttp.createCollection(data);
     handleCloseDialog();
-    openSnackBar(successTrans('create', { name: t('collection') }));
+    openSnackBar(
+      successTrans('create', { name: collectionTrans('collection') })
+    );
     fetchData();
   };
 
   const handleRelease = async (data: CollectionView) => {
     const res = await CollectionHttp.releaseCollection(data._name);
-    openSnackBar(successTrans('release', { name: t('collection') }));
+    openSnackBar(
+      successTrans('release', { name: collectionTrans('collection') })
+    );
     fetchData();
     return res;
   };
 
   const handleLoad = async (data: CollectionView) => {
     const res = await CollectionHttp.loadCollection(data._name);
-    openSnackBar(successTrans('load', { name: t('collection') }));
+    openSnackBar(successTrans('load', { name: collectionTrans('collection') }));
     fetchData();
     return res;
   };
@@ -141,7 +145,9 @@ const Collections = () => {
     for (const item of selectedCollections) {
       await CollectionHttp.deleteCollection(item._name);
     }
-    openSnackBar(successTrans('delete', { name: t('collection') }));
+    openSnackBar(
+      successTrans('delete', { name: collectionTrans('collection') })
+    );
     fetchData();
     handleCloseDialog();
     setSelectedCollections([]);
@@ -149,7 +155,7 @@ const Collections = () => {
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      label: t('create'),
+      label: collectionTrans('create'),
       onClick: () => {
         setDialog({
           open: true,
@@ -173,15 +179,17 @@ const Collections = () => {
             component: (
               <DeleteTemplate
                 label={btnTrans('delete')}
-                title={dialogTrans('deleteTitle', { type: t('collection') })}
-                text={t('deleteWarning')}
+                title={dialogTrans('deleteTitle', {
+                  type: collectionTrans('collection'),
+                })}
+                text={collectionTrans('deleteWarning')}
                 handleDelete={handleDelete}
               />
             ),
           },
         });
       },
-      label: t('delete'),
+      label: collectionTrans('delete'),
       icon: 'delete',
       disabled: data => data.length === 0,
     },
@@ -192,19 +200,19 @@ const Collections = () => {
       id: '_id',
       align: 'left',
       disablePadding: true,
-      label: t('id'),
+      label: collectionTrans('id'),
     },
     {
       id: 'nameElement',
       align: 'left',
       disablePadding: true,
-      label: t('name'),
+      label: collectionTrans('name'),
     },
     {
       id: 'statusElement',
       align: 'left',
       disablePadding: false,
-      label: t('status'),
+      label: collectionTrans('status'),
     },
     {
       id: '_rowCount',
@@ -212,8 +220,8 @@ const Collections = () => {
       disablePadding: false,
       label: (
         <span className="flex-center">
-          {t('rowCount')}
-          <CustomToolTip title={t('tooltip')}>
+          {collectionTrans('rowCount')}
+          <CustomToolTip title={collectionTrans('tooltip')}>
             <InfoIcon classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
@@ -223,7 +231,7 @@ const Collections = () => {
       id: '_desc',
       align: 'left',
       disablePadding: false,
-      label: t('desc'),
+      label: collectionTrans('desc'),
     },
     {
       id: 'indexCreatingElement',
@@ -293,7 +301,7 @@ const Collections = () => {
           <EmptyCard
             wrapperClass={`page-empty-card ${classes.emptyWrapper}`}
             icon={<CollectionIcon />}
-            text={t('noData')}
+            text={collectionTrans('noData')}
           />
         </>
       )}

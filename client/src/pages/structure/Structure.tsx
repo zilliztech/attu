@@ -131,7 +131,7 @@ const Structure: FC<{
               <IndexTypeElement
                 data={f}
                 collectionName={collectionName}
-                createCb={fetchFields}
+                cb={fetchFields}
               />
             ),
           })
