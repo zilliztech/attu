@@ -91,7 +91,7 @@ export class CollectionsService {
           description: collectionInfo.schema.description,
           autoID: collectionInfo.schema.autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
-          // id: collectionInfo.collectionId
+          id: collectionInfo.collectionID,
         });
       }
     }
