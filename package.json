@@ -1,0 +1,8 @@
+{
+  "name": "milvus-insight",
+  "version": "0.1.0",
+  "description": "Milvus insight",
+  "license": "Apache-2.0",
+  "bugs": "https://github.com/milvus-io/milvus-insight/issues",
+  "private": true
+}
