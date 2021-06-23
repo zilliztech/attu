@@ -1,6 +1,7 @@
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   publish:
@@ -11,7 +12,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
+
       - name: Semantic release
-        run: |
-          yarn
-          npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npx semantic-release
