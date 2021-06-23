@@ -44,7 +44,7 @@ const CreateForm = (
     metricOptions,
   } = props;
 
-  const { t } = useTranslation();
+  const { t: commonTrans } = useTranslation();
   const { t: indexTrans } = useTranslation('index');
   const { t: warningTrans } = useTranslation('warning');
 
@@ -162,7 +162,9 @@ const CreateForm = (
         classes={{ root: classes.select }}
       />
 
-      <Typography className={classes.paramTitle}>{t('param')}</Typography>
+      <Typography className={classes.paramTitle}>
+        {commonTrans('param')}
+      </Typography>
       <CustomSelector
         label={indexTrans('metric')}
         value={formValue.metric_type}

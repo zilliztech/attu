@@ -3,7 +3,12 @@ import Chip from '@material-ui/core/Chip';
 import CustomButton from '../../components/customButton/CustomButton';
 import { IndexHttp } from '../../http/Index';
 import { IndexState } from '../../types/Milvus';
-import { FieldView, IndexCreateParam, ParamPair } from './Types';
+import {
+  FieldView,
+  IndexCreateParam,
+  IndexManageParam,
+  ParamPair,
+} from './Types';
 import StatusIcon from '../../components/status/StatusIcon';
 import { ChildrenStatusType } from '../../components/status/Types';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +16,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 import icons from '../../components/icons/Icons';
 import { rootContext } from '../../context/Root';
 import CreateIndex from './Create';
-import { ManageRequestMethods } from '../../types/Common';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 
 const useStyles = makeStyles((theme: Theme) => ({
   item: {
@@ -31,12 +36,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 const IndexTypeElement: FC<{
   data: FieldView;
   collectionName: string;
-  createCb: (collectionName: string) => void;
-}> = ({ data, collectionName, createCb }) => {
+  cb: (collectionName: string) => void;
+}> = ({ data, collectionName, cb }) => {
   const classes = useStyles();
 
   const [status, setStatus] = useState<string>('');
-  const { t } = useTranslation('index');
+
+  const { t: indexTrans } = useTranslation('index');
+  const { t: btnTrans } = useTranslation('btn');
+  const { t: dialogTrans } = useTranslation('dialog');
+  const { t: successTrans } = useTranslation('success');
 
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -60,15 +69,14 @@ const IndexTypeElement: FC<{
 
   const requestCreateIndex = async (params: ParamPair[]) => {
     const indexCreateParam: IndexCreateParam = {
-      type: ManageRequestMethods.CREATE,
       collection_name: collectionName,
       field_name: data._fieldName,
       extra_params: params,
     };
     await IndexHttp.createIndex(indexCreateParam);
     handleCloseDialog();
-    openSnackBar(t('createSuccess'));
-    createCb(collectionName);
+    openSnackBar(indexTrans('createSuccess'));
+    cb(collectionName);
   };
 
   const handleCreate = () => {
@@ -88,7 +96,34 @@ const IndexTypeElement: FC<{
     });
   };
 
-  const handleDelete = () => {};
+  const requestDeleteIndex = async () => {
+    const indexDeleteParam: IndexManageParam = {
+      collection_name: collectionName,
+      field_name: data._fieldName,
+    };
+
+    await IndexHttp.deleteIndex(indexDeleteParam);
+    handleCloseDialog();
+    openSnackBar(successTrans('delete', { name: indexTrans('index') }));
+    cb(collectionName);
+  };
+
+  const handleDelete = () => {
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component: (
+          <DeleteTemplate
+            label={btnTrans('delete')}
+            title={dialogTrans('deleteTitle', { type: indexTrans('index') })}
+            text={indexTrans('deleteWarning')}
+            handleDelete={requestDeleteIndex}
+          />
+        ),
+      },
+    });
+  };
 
   const generateElement = () => {
     if (
@@ -107,7 +142,7 @@ const IndexTypeElement: FC<{
             onClick={handleCreate}
           >
             <AddIcon />
-            {t('create')}
+            {indexTrans('create')}
           </CustomButton>
         );
       }

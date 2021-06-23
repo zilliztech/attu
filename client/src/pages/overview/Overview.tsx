@@ -28,24 +28,26 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
   const classes = useStyles();
-  const { t } = useTranslation('overview');
+  const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
 
   const mockStatistics: StatisticsCardProps = {
     data: [
       {
-        label: t('load'),
+        label: overviewTrans('load'),
         value: formatNumber(4337),
         valueColor: '#07d197',
       },
       {
-        label: t('all'),
+        label: overviewTrans('all'),
         value: formatNumber(30000),
         valueColor: '#06aff2',
       },
       {
-        label: t('data'),
-        value: t('rows', { number: formatNumber(209379100) }) as string,
+        label: overviewTrans('data'),
+        value: overviewTrans('rows', {
+          number: formatNumber(209379100),
+        }) as string,
         valueColor: '#0689d2',
       },
     ],
@@ -94,7 +96,9 @@ const Overview = () => {
   return (
     <section className="page-wrapper">
       <StatisticsCard data={mockStatistics.data} />
-      <Typography className={classes.collectionTitle}>{t('load')}</Typography>
+      <Typography className={classes.collectionTitle}>
+        {overviewTrans('load')}
+      </Typography>
       {mockCollections.length > 0 ? (
         <div className={classes.cardsWrapper}>
           {mockCollections.map(collection => (

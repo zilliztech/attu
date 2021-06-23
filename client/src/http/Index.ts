@@ -1,8 +1,10 @@
 import {
   IndexCreateParam,
+  IndexManageParam,
   IndexView,
   ParamPair,
 } from '../pages/structure/Types';
+import { ManageRequestMethods } from '../types/Common';
 import { IndexState } from '../types/Milvus';
 import BaseModel from './BaseModel';
 
@@ -40,11 +42,19 @@ export class IndexHttp extends BaseModel implements IndexView {
 
   static async createIndex(param: IndexCreateParam) {
     const path = this.BASE_URL;
+    const type: ManageRequestMethods = ManageRequestMethods.CREATE;
 
     return super.create({
       path,
-      data: { ...param },
+      data: { ...param, type },
     });
+  }
+
+  static async deleteIndex(param: IndexManageParam) {
+    const path = this.BASE_URL;
+    const type: ManageRequestMethods = ManageRequestMethods.DELETE;
+
+    return super.batchDelete({ path, data: { ...param, type } });
   }
 
   get _indexType() {

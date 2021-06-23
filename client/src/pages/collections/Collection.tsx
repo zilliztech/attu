@@ -25,7 +25,7 @@ const Collection = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
 
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
@@ -41,11 +41,11 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: t('partitionTab'),
+      label: collectionTrans('partitionTab'),
       component: <Partitions collectionName={collectionName} />,
     },
     {
-      label: t('structureTab'),
+      label: collectionTrans('structureTab'),
       component: <Structure collectionName={collectionName} />,
     },
   ];

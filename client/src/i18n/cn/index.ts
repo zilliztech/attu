@@ -7,6 +7,8 @@ const indexTrans = {
   metric: 'Metric Type',
 
   createSuccess: 'Creating index successfully',
+  deleteWarning:
+    'You are trying to delete an index. This action cannot be undone.',
 };
 
 export default indexTrans;

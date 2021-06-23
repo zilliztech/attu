@@ -48,9 +48,9 @@ const Connect = () => {
   const { setAddress } = useContext(authContext);
   const { openSnackBar } = useContext(rootContext);
   const classes = useStyles();
-  const { t } = useTranslation();
+  const { t: commonTrans } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
-  const milvusTrans: { [key in string]: string } = t('milvus');
+  const milvusTrans: { [key in string]: string } = commonTrans('milvus');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
 

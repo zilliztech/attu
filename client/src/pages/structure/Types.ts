@@ -48,10 +48,12 @@ export type IndexType =
   | 'HNSW'
   | 'ANNOY';
 
-export interface IndexCreateParam {
-  type: ManageRequestMethods;
+export interface IndexManageParam {
   collection_name: string;
   field_name: string;
+}
+
+export interface IndexCreateParam extends IndexManageParam {
   extra_params: ParamPair[];
 }
 
