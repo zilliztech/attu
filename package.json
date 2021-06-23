@@ -4,10 +4,12 @@
   "description": "Milvus insight",
   "license": "Apache-2.0",
   "bugs": "https://github.com/milvus-io/milvus-insight/issues",
-  "private": true,
   "release": {
     "branches": [
       "master"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
