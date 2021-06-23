@@ -109,6 +109,8 @@ export const INDEX_OPTIONS_MAP = {
   ],
 };
 
+export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
+
 export enum EmbeddingTypeEnum {
   float = 'FLOAT_POINT',
   binary = 'BINARY',

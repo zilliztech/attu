@@ -257,12 +257,12 @@ const createHelperTextNode = (hint: string): ReactElement => {
   const classes = getStyles();
   return (
     <span className={classes.errWrapper}>
-      {Icons.error({
+      {/* {Icons.error({
         fontSize: 'small',
         classes: {
           root: classes.errBtn,
         },
-      })}
+      })} */}
       {hint}
     </span>
   );

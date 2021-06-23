@@ -49,13 +49,13 @@ export type DataType =
   | 'FloatVector';
 
 export interface Field {
-  name: string;
+  name: string | null;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
   description: string;
   dimension?: number | string;
   isDefault?: boolean;
-  id: string;
+  id?: string;
   type_params?: { key: string; value: any }[];
 }
 
@@ -68,7 +68,9 @@ export type CreateFieldType =
 export interface CreateFieldsProps {
   fields: Field[];
   setFields: Dispatch<SetStateAction<Field[]>>;
-  setfieldsAllValid: Dispatch<SetStateAction<boolean>>;
+  setFieldsValidation: Dispatch<
+    SetStateAction<{ [x: string]: string | boolean }[]>
+  >;
   autoID: boolean;
   setAutoID: (value: boolean) => void;
 }
