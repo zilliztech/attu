@@ -8,7 +8,7 @@ const indexTrans = {
 
   createSuccess: 'Creating index successfully',
   deleteWarning:
-    'You are trying to delete a index. This action cannot be undone.',
+    'You are trying to delete an index. This action cannot be undone.',
 };
 
 export default indexTrans;
