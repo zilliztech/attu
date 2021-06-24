@@ -1,7 +1,7 @@
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [prereleased]
+    branches: [main]
 
 jobs:
   publish:
