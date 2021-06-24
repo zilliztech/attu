@@ -5,9 +5,9 @@ on:
     types: [closed]
 
 jobs:
-  if: github.event.pull_request.merged == true
   publish:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
