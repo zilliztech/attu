@@ -1,8 +1,9 @@
 name: Milvus insight dev release
 
 on:
-  push:
+  pull_request:
     branches: [main]
+    types: [closed]
 
 jobs:
   dev:
