@@ -2,7 +2,7 @@
 
 Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you to interact with your databases and manage your data with just few clicks.
 
-<img src="../milvus-insight/.github/images/screenshot.png" alt="Miluvs insight" />
+<img src="./.github/images/screenshot.png" alt="Miluvs insight" />
 
 
 ## ⭐️ Install 
