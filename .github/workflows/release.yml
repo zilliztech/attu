@@ -18,9 +18,6 @@ jobs:
       - name: Docker tag
         run: docker tag milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} milvusdb/milvus-insight:latest
 
-      - name: Docker Push version
-        run: docker push milvusdb/milvus-insight:${GITHUB_REF#refs/tags/}
-
       # - name: Docker Push version
       #   run: docker push milvusdb/cloud-ui:${GITHUB_REF#refs/tags/}
 
