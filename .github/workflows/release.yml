@@ -24,16 +24,16 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
 
       - name: Docker Build
-        run: docker build -t milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
+        run: docker build -t naemczz/milvus-insight:dev --build-arg VERSION=dev .
 
       - name: Docker tag
-        run: docker tag milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} milvusdb/milvus-insight:latest
+        run: docker tag naemczz/milvus-insight:dev naemczz/milvus-insight:latest
 
       # - name: Docker Push version
       #   run: docker push milvusdb/cloud-ui:${GITHUB_REF#refs/tags/}
 
       - name: Docker Push lastest
-        run: docker push milvusdb/milvus-insight
+        run: docker push naemczz/milvus-insight
 
       - name: Semantic release
         env:
