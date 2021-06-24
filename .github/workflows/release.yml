@@ -6,6 +6,12 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
