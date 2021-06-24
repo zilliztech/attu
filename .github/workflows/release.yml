@@ -1,22 +1,11 @@
 on:
-  push:
-    branches:
-      - main
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types: [closed]
+  release:
+    types: [published]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -34,8 +23,3 @@ jobs:
 
       - name: Docker Push lastest
         run: docker push milvusdb/milvus-insight
-
-      - name: Semantic release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
