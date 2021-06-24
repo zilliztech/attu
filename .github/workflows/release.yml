@@ -1,7 +1,9 @@
+name: Milvus insight prod release
+
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [released]
+    branches: [main]
 
 jobs:
   publish:
@@ -30,8 +32,3 @@ jobs:
 
       - name: Docker Push lastest
         run: docker push milvusdb/milvus-insight
-
-      - name: Semantic release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release

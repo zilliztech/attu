@@ -17,7 +17,7 @@ import { SchemaModule } from './schema/schema.module';
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'build'),
-      renderPath: '/', // only root render static html
+      // renderPath: '/', // only root render static html
     }),
     MilvusModule,
     CollectionsModule,
