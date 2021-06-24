@@ -1,5 +1,5 @@
 import {
-  checkIsEmpty,
+  checkEmptyValid,
   checkEmail,
   checkPasswordStrength,
   checkRange,
@@ -9,9 +9,9 @@ import {
 } from '../Validation';
 
 describe('Test validation utils', () => {
-  test('test checkIsEmpty function', () => {
-    expect(checkIsEmpty('')).toBeFalsy();
-    expect(checkIsEmpty('test')).toBeTruthy();
+  test('test checkEmptyValid function', () => {
+    expect(checkEmptyValid('')).toBeFalsy();
+    expect(checkEmptyValid('test')).toBeTruthy();
   });
 
   test('test checkEmail function', () => {

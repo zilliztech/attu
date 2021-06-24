@@ -7,6 +7,7 @@ import Partitions from '../partitions/partitions';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
+import Structure from '../structure/Structure';
 
 enum TAB_EMUM {
   'partition',
@@ -24,7 +25,7 @@ const Collection = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
 
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
@@ -40,12 +41,12 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: t('partitionTab'),
+      label: collectionTrans('partitionTab'),
       component: <Partitions collectionName={collectionName} />,
     },
     {
-      label: t('structureTab'),
-      component: <section>structure section</section>,
+      label: collectionTrans('structureTab'),
+      component: <Structure collectionName={collectionName} />,
     },
   ];
 

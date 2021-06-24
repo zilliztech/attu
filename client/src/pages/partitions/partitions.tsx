@@ -32,7 +32,6 @@ const Partitions: FC<{
   const classes = useStyles();
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
-  const { t: warningTrans } = useTranslation('warning');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const InfoIcon = icons.info;
@@ -46,6 +45,7 @@ const Partitions: FC<{
   const [partitions, setPartitions] = useState<PartitionView[]>([]);
   const {
     pageSize,
+    handlePageSize,
     currentPage,
     handleCurrentPage,
     total,
@@ -88,7 +88,16 @@ const Partitions: FC<{
     handleCloseDialog();
   };
 
-  const handleRelease = async (data: PartitionView) => {};
+  const handleRelease = async (data: PartitionView) => {
+    const param: PartitionParam = {
+      collectionName,
+      partitionNames: [data._name],
+    };
+    const res = await PartitionHttp.releasePartition(param);
+    openSnackBar(successTrans('release', { name: t('partition') }));
+    fetchPartitions(collectionName);
+    return res;
+  };
 
   const handleLoad = async (data: PartitionView) => {
     const param: PartitionParam = {
@@ -145,7 +154,7 @@ const Partitions: FC<{
         selectedPartitions.length === 0 ||
         selectedPartitions.some(p => p._name === '_default'),
       tooltip: selectedPartitions.some(p => p._name === '_default')
-        ? warningTrans('deletePartition')
+        ? t('deletePartitionError')
         : '',
     },
   ];
@@ -247,6 +256,7 @@ const Partitions: FC<{
         page={currentPage}
         onChangePage={handlePageChange}
         rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
         isLoading={loading}
       />
     </section>

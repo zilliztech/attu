@@ -26,6 +26,9 @@ const collectionTrans = {
   fieldName: 'Field Name',
   autoId: 'Auto ID',
   dimension: 'Dimension',
+  dimensionTooltip: 'Only vector type has dimension',
+  dimensionMutipleWarning: 'Dimension should be 8 multiple',
+  dimensionPositiveWarning: 'Dimension should be positive number',
   newBtn: 'add new field',
 
   // load dialog

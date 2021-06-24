@@ -6,7 +6,6 @@ import CustomInput from '../../components/customInput/CustomInput';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
-import { generateId } from '../../utils/Common';
 import { formatForm } from '../../utils/Form';
 import CreateFields from './CreateFields';
 import {
@@ -43,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   const classes = useStyles();
   const { handleCloseDialog } = useContext(rootContext);
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
 
@@ -52,31 +51,45 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     description: '',
     autoID: true,
   });
+
   const [fields, setFields] = useState<Field[]>([
     {
       data_type: DataTypeEnum.Int64,
       is_primary_key: true,
-      name: '',
+      name: null, // we need hide helpertext at first time, so we use null to detect user enter input or not.
       description: '',
       isDefault: true,
-      id: generateId(),
+      id: '1',
     },
     {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
-      name: '',
-      dimension: '',
+      name: null,
+      dimension: '128',
       description: '',
       isDefault: true,
-      id: generateId(),
+      id: '2',
     },
   ]);
-  const [fieldsAllValid, setFieldsAllValid] = useState<boolean>(true);
+
+  const [fieldsValidation, setFieldsValidation] = useState<
+    {
+      [x: string]: string | boolean;
+    }[]
+  >([
+    { id: '1', name: false },
+    { id: '2', name: false, dimension: true },
+  ]);
+
+  const allFieldsValid = useMemo(() => {
+    return fieldsValidation.every(v => Object.keys(v).every(key => !!v[key]));
+  }, [fieldsValidation]);
 
   const checkedForm = useMemo(() => {
     const { collection_name } = form;
     return formatForm({ collection_name });
   }, [form]);
+
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
   const changeIsAutoID = (value: boolean) => {
@@ -92,21 +105,23 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
 
   const generalInfoConfigs: ITextfieldConfig[] = [
     {
-      label: t('name'),
-      key: 'name',
+      label: collectionTrans('name'),
+      key: 'collection_name',
       value: form.collection_name,
       onChange: (value: string) => handleInputChange('collection_name', value),
       variant: 'filled',
       validations: [
         {
           rule: 'require',
-          errorText: warningTrans('required', { name: t('name') }),
+          errorText: warningTrans('required', {
+            name: collectionTrans('name'),
+          }),
         },
       ],
       className: classes.input,
     },
     {
-      label: t('description'),
+      label: collectionTrans('description'),
       key: 'description',
       value: form.description,
       onChange: (value: string) => handleInputChange('description', value),
@@ -117,24 +132,33 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   ];
 
   const handleCreateCollection = () => {
+    const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
     const param: CollectionCreateParam = {
       ...form,
-      fields,
+      fields: fields.map(v => {
+        return {
+          name: v.name,
+          description: v.description,
+          is_primary_key: v.is_primary_key,
+          data_type: v.data_type,
+          dimension: vectorType.includes(v.data_type) ? v.dimension : undefined,
+        };
+      }),
     };
     handleCreate(param);
   };
 
   return (
     <DialogTemplate
-      title={t('createTitle')}
+      title={collectionTrans('createTitle')}
       handleCancel={handleCloseDialog}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
-      confirmDisabled={disabled || !fieldsAllValid}
+      confirmDisabled={disabled || !allFieldsValid}
     >
       <form>
         <fieldset className={classes.fieldset}>
-          <legend>{t('general')}</legend>
+          <legend>{collectionTrans('general')}</legend>
           {generalInfoConfigs.map(config => (
             <CustomInput
               key={config.key}
@@ -147,11 +171,11 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
         </fieldset>
 
         <fieldset className={classes.fieldset}>
-          <legend>{t('structure')}</legend>
+          <legend>{collectionTrans('structure')}</legend>
           <CreateFields
             fields={fields}
             setFields={setFields}
-            setfieldsAllValid={setFieldsAllValid}
+            setFieldsValidation={setFieldsValidation}
             autoID={form.autoID}
             setAutoID={changeIsAutoID}
           />

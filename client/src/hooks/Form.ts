@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IValidation } from '../components/customInput/Types';
-import { checkIsEmpty, getCheckResult } from '../utils/Validation';
+import { checkEmptyValid, getCheckResult } from '../utils/Validation';
 
 export interface IForm {
   key: string;
@@ -95,7 +95,7 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
 
   const checkFormValid = (form: IForm[]): boolean => {
     const requireCheckItems = form.filter(f => f.needCheck);
-    if (requireCheckItems.some(item => !checkIsEmpty(item.value))) {
+    if (requireCheckItems.some(item => !checkEmptyValid(item.value))) {
       return false;
     }
 

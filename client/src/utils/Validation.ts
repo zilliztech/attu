@@ -1,4 +1,4 @@
-import { METRIC_TYPES_VALUES } from '../consts/Milvus';
+import { MetricType, METRIC_TYPES_VALUES } from '../consts/Milvus';
 
 export type ValidType =
   | 'email'
@@ -28,14 +28,14 @@ export interface IExtraParam {
   type?: 'string' | 'number';
 
   // used for dimension
-  metricType?: number;
+  metricType?: MetricType;
   multipleNumber?: number;
 }
 export type CheckMap = {
   [key in ValidType]: boolean;
 };
 
-export const checkIsEmpty = (value: string): boolean => {
+export const checkEmptyValid = (value: string): boolean => {
   return value.trim() !== '';
 };
 
@@ -133,7 +133,7 @@ export const checkMultiple = (param: {
 
 export const checkDimension = (param: {
   value: string;
-  metricType?: number;
+  metricType?: MetricType;
   multipleNumber?: number;
 }): boolean => {
   const { value, metricType, multipleNumber } = param;
@@ -152,7 +152,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
 
   const checkMap = {
     email: checkEmail(value),
-    require: checkIsEmpty(value),
+    require: checkEmptyValid(value),
     confirm: value === extraParam?.compareValue,
     range: checkRange({
       value,

@@ -9,6 +9,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private description!: string;
   private rowCount!: string;
   private index_status!: string;
+  private id!: string;
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
@@ -60,7 +61,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _id() {
-    return '12';
+    return this.id;
   }
 
   get _name() {
