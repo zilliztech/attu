@@ -1,22 +1,11 @@
 on:
-  push:
-    branches:
-      - main
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types: [closed]
+  release:
+    types: [published]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -24,18 +13,16 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
 
       - name: Docker Build
-        run: docker build -t naemczz/milvus-insight:dev --build-arg VERSION=dev .
+        run: docker build -t milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
 
       - name: Docker tag
-        run: docker tag naemczz/milvus-insight:dev naemczz/milvus-insight:latest
+        run: docker tag milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} milvusdb/milvus-insight:latest
+
+      - name: Docker Push version
+        run: docker push milvusdb/milvus-insight:${GITHUB_REF#refs/tags/}
 
       # - name: Docker Push version
       #   run: docker push milvusdb/cloud-ui:${GITHUB_REF#refs/tags/}
 
       - name: Docker Push lastest
-        run: docker push naemczz/milvus-insight
-
-      - name: Semantic release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx semantic-release
+        run: docker push milvusdb/milvus-insight
