@@ -2,13 +2,13 @@ name: Milvus insight dev release
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
     types: [closed]
 
 jobs:
-  publish:
+  dev:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
@@ -23,9 +23,7 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
 
       - name: Docker Build
-        if: github.event.pull_request.merged == true
         run: docker build -t milvusdb/milvus-insight:dev --build-arg VERSION=dev .
 
       - name: Docker Push Dev
-        if: github.event.pull_request.merged == true
         run: docker push milvusdb/milvus-insight:dev
