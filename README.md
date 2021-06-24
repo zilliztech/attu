@@ -4,17 +4,21 @@ Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you 
 
 <img src="../milvus-insight/.github/images/screenshot.png" alt="Miluvs insight" />
 
-## ⭐️ Getting Started 
+
+## ⭐️ Install 
 
 Start Docker container and map the url to the container:
 
 ```code
-docker run -p 9999:3000 -e URL=http://127.0.0.1:9999 -e MILVUS_URL=http://127.0.0.1:19539 milvusdb/milvus-insight:latest
+docker run -p 8000:3000 -e HOST_URL=http://127.0.0.1:8000 -e MILVUS_URL=http://127.0.0.1:19530 milvusdb/milvus-insight:latest
 ```
-- `URL`: the docker host url
-- `MILVUS_URL`: the Milvus server url
-  
-Once you start the docker, open the browser, type `http://127.0.0.1:9999`, you can view the milvus insight.
+
+| Parameters | Default | required |  description |
+| :-----| :---- | :----: | :----: |
+| HOST_URL | http://127.0.0.1:8000 | true | Docker host url
+| MILVUS_URL | http://127.0.0.1:19530 | false | Milvus server url|
+
+Once you start the docker, open the browser, type `http://127.0.0.1:3000`, you can view the milvus insight.
 
 ## ✨ Building and Running Milvus insight, and/or Contributing Code
 You might want to build Milvus-insight locally to contribute some code, test out the latest features, or try
