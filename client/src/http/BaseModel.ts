@@ -47,7 +47,7 @@ export default class BaseModel {
       url: path,
       params,
     });
-    return res.data;
+    return res.data.data;
   }
 
   /**
