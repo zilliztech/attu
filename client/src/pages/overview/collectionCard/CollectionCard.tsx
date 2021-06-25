@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   rowCount: {
-    marginLeft: theme.spacing(3),
+    marginLeft: theme.spacing(1),
   },
   divider: {
     marginBottom: theme.spacing(2),
