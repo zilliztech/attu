@@ -21,8 +21,8 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       const milvusAddress = window.localStorage.getItem(MILVUS_ADDRESS) || '';
       try {
         const res = await MilvusHttp.check(milvusAddress);
-        setAddress(res.data.connected ? milvusAddress : '');
-        if (!res.data.connected) {
+        setAddress(res.connected ? milvusAddress : '');
+        if (!res.connected) {
           window.localStorage.removeItem(MILVUS_ADDRESS);
         }
       } catch (error) {
