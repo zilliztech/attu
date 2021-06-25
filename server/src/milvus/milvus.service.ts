@@ -7,8 +7,6 @@ export class MilvusService {
 
   constructor() {
     this.milvusAddress = '';
-    // todo: this is easy for test. need delete it before publish
-    // this.milvusClient = new MilvusNode('127.0.0.1:19530');
   }
 
   get milvusAddressGetter() {
@@ -20,8 +18,9 @@ export class MilvusService {
   }
 
   async connectMilvus(address: string) {
+    const milvusAddress = address.replace(/(http|https):\/\//, '');
     try {
-      this.milvusClient = new MilvusNode(address);
+      this.milvusClient = new MilvusNode(milvusAddress);
       await this.milvusClient.hasCollection({
         collection_name: 'not_exist',
       });
