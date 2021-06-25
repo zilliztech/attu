@@ -17,10 +17,10 @@ import LoadingTable from './LoadingTable';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    // minHeight: '29vh',
     width: '100%',
     flexGrow: 1,
-    // flexBasis: 0,
+    /* set flex basis to make child item height 100% work on Safari */
+    flexBasis: 0,
 
     // change scrollbar style
     '&::-webkit-scrollbar': {

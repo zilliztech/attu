@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginRight: theme.spacing(3),
   },
   tabPanel: {
+    flexBasis: 0,
     flexGrow: 1,
     marginTop: theme.spacing(2),
   },

@@ -3,10 +3,10 @@ import Header from './Header';
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import NavMenu from '../menu/NavMenu';
 import { NavMenuItem } from '../menu/Types';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,18 +41,26 @@ const useStyles = makeStyles((theme: Theme) =>
 const Layout = (props: any) => {
   const history = useHistory();
   const { isAuth } = useContext(authContext);
-  const { t } = useTranslation('nav');
+  const { t: navTrans } = useTranslation('nav');
   const classes = useStyles();
+  const location = useLocation();
+  const defaultActive = useMemo(
+    () =>
+      location.pathname.includes('collection')
+        ? navTrans('collection')
+        : navTrans('overview'),
+    [location, navTrans]
+  );
 
   const menuItems: NavMenuItem[] = [
     {
       icon: icons.navOverview,
-      label: t('overview'),
+      label: navTrans('overview'),
       onClick: () => history.push('/'),
     },
     {
       icon: icons.navCollection,
-      label: t('collection'),
+      label: navTrans('collection'),
       onClick: () => history.push('/collections'),
     },
   ];
@@ -65,9 +73,9 @@ const Layout = (props: any) => {
             <NavMenu
               width="200px"
               data={menuItems}
-              defaultActive={t('overview')}
+              defaultActive={defaultActive}
               // used for nested child menu
-              defaultOpen={{ [t('overview')]: true }}
+              defaultOpen={{ [navTrans('overview')]: true }}
             />
           )}
 

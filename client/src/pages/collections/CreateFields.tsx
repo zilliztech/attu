@@ -25,8 +25,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    gap: '10px',
+    // only Safari 14.1+ support flexbox gap
+    // gap: '10px',
     width: '100%',
+
+    '& > *': {
+      marginLeft: '10px',
+    },
 
     '& .dimension': {
       maxWidth: '160px',
@@ -37,10 +42,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   primaryInput: {
     maxWidth: '160px',
+
+    '&:first-child': {
+      marginLeft: 0,
+    },
   },
   select: {
     width: '160px',
     marginBottom: '22px',
+
+    '&:first-child': {
+      marginLeft: 0,
+    },
   },
   descInput: {
     minWidth: '270px',
@@ -50,6 +63,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     textTransform: 'uppercase',
   },
   iconBtn: {
+    marginLeft: 0,
+
     padding: 0,
     width: '20px',
     height: '20px',

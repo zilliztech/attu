@@ -21,6 +21,9 @@ fieldset {
 
 /* used for fill remaining height of page */
 .page-wrapper {
+  /* set flex basis to make child item height 100% work on Safari */
+  flex-basis: 0;
+
   flex-grow: 1;
   display: flex;
   flex-direction: column;
