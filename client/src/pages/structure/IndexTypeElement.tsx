@@ -1,6 +1,5 @@
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import Chip from '@material-ui/core/Chip';
-import CustomButton from '../../components/customButton/CustomButton';
 import { IndexHttp } from '../../http/Index';
 import { IndexState } from '../../types/Milvus';
 import {
@@ -23,13 +22,43 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(1),
   },
   btn: {
-    '& span': {
-      textTransform: 'uppercase',
-      whiteSpace: 'nowrap',
+    display: 'flex',
+    alignItems: 'center',
+    textTransform: 'uppercase',
+    whiteSpace: 'nowrap',
+
+    fontSize: '14px',
+    color: theme.palette.primary.main,
+
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+  btnDisabled: {
+    color: '#82838e',
+    pointerEvents: 'none',
+
+    '&:hover': {
+      cursor: 'default',
     },
   },
   chip: {
+    height: '24px',
     backgroundColor: '#e9e9ed',
+    padding: theme.spacing(0.5),
+
+    '& .icon': {
+      width: '16px',
+      height: '16px',
+    },
+  },
+  chipLabel: {
+    fontSize: '12px',
+    lineHeight: '16px',
+  },
+  addIcon: {
+    width: '20px',
+    height: '20px',
   },
 }));
 
@@ -136,14 +165,16 @@ const IndexTypeElement: FC<{
     switch (data._indexType) {
       case '': {
         return (
-          <CustomButton
-            disabled={data._createIndexDisabled}
-            className={classes.btn}
+          <div
+            role="button"
             onClick={handleCreate}
+            className={`${classes.btn} ${
+              data._createIndexDisabled ? classes.btnDisabled : ''
+            }`}
           >
-            <AddIcon />
+            <AddIcon classes={{ root: classes.addIcon }} />
             {indexTrans('create')}
-          </CustomButton>
+          </div>
         );
       }
       default: {
@@ -152,8 +183,8 @@ const IndexTypeElement: FC<{
         ) : (
           <Chip
             label={data._indexType}
-            classes={{ root: classes.chip }}
-            deleteIcon={<DeleteIcon />}
+            classes={{ root: classes.chip, label: classes.chipLabel }}
+            deleteIcon={<DeleteIcon classes={{ root: 'icon' }} />}
             onDelete={handleDelete}
           />
         );

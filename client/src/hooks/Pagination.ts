@@ -7,9 +7,10 @@ export const usePaginationHook = (list: any[]) => {
   const total = list.length;
   const { data, offset } = useMemo(() => {
     const offset = pageSize * currentPage;
+    const data = list.slice(offset, offset + pageSize);
     return {
       offset,
-      data: list.slice(offset, offset + pageSize),
+      data,
     };
   }, [list, currentPage, pageSize]);
 

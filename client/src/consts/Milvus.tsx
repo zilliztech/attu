@@ -65,14 +65,14 @@ export const INDEX_CONFIG: {
     create: ['nlist', 'm'],
     search: ['nprobe'],
   },
-  IVF_SQ8: {
-    create: ['nlist'],
-    search: ['nprobe'],
-  },
-  IVF_SQ8_HYBRID: {
-    create: ['nlist'],
-    search: ['nprobe'],
-  },
+  // IVF_SQ8: {
+  //   create: ['nlist'],
+  //   search: ['nprobe'],
+  // },
+  // IVF_SQ8_HYBRID: {
+  //   create: ['nlist'],
+  //   search: ['nprobe'],
+  // },
   FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -85,10 +85,10 @@ export const INDEX_CONFIG: {
     create: ['n_trees'],
     search: ['search_k'],
   },
-  RNSG: {
-    create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
-    search: ['search_length'],
-  },
+  // RNSG: {
+  //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
+  //   search: ['search_length'],
+  // },
 };
 
 export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
