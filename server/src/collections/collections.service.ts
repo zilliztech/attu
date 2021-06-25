@@ -118,7 +118,7 @@ export class CollectionsService {
           collection_name: name,
         });
         const rowCount = findKeyValue(collectionStatistics.stats, ROW_COUNT);
-        data.totalData += isNaN(Number(rowCount)) ? 9 : Number(rowCount);
+        data.totalData += isNaN(Number(rowCount)) ? 0 : Number(rowCount);
       }
     }
     return data;
