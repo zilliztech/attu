@@ -13,6 +13,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
+  static COLLECTIONS_STATISTICS_URL = '/collections/statistics';
 
   static CHECK_URL = '/milvus/check';
 
@@ -50,6 +51,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.update({
       path: `${this.COLLECTIONS_URL}/${collectionName}/release`,
     });
+  }
+
+  static getStatistics() {
+    return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
   }
 
   get _autoId() {

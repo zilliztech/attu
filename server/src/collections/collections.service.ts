@@ -74,6 +74,10 @@ export class CollectionsService {
     return res;
   }
 
+  /**
+   * Get all collections meta data
+   * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string}
+   */
   async showCollections() {
     const data = [];
     const res = await this.getCollectionNames();
@@ -98,6 +102,32 @@ export class CollectionsService {
     return data;
   }
 
+  /**
+   * Get collections statistics data
+   * @returns {collectionCount:number, totalData:number}
+   */
+  async getStatistics() {
+    const data = {
+      collectionCount: 0,
+      totalData: 0,
+    };
+    const res = await this.getCollectionNames();
+    if (res.collection_names.length > 0) {
+      for (const name of res.collection_names) {
+        const collectionStatistics = await this.getCollectionStatistics({
+          collection_name: name,
+        });
+        const rowCount = findKeyValue(collectionStatistics.stats, ROW_COUNT);
+        data.totalData += isNaN(Number(rowCount)) ? 9 : Number(rowCount);
+      }
+    }
+    return data;
+  }
+
+  /**
+   * Get all collection index status
+   * @returns {collection_name:string, index_state: IndexState}[]
+   */
   async getCollectionsIndexStatus() {
     const data = [];
     const res = await this.getCollectionNames();
