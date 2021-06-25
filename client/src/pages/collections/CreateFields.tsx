@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    // only Safari 14.1+ support flexbox gaps
+    // only Safari 14.1+ support flexbox gap
     // gap: '10px',
     width: '100%',
 
@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   iconBtn: {
     marginLeft: 0,
+
     padding: 0,
     width: '20px',
     height: '20px',
