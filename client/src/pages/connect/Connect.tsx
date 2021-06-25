@@ -4,7 +4,7 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import icons from '../../components/icons/Icons';
 import ConnectContainer from './ConnectContainer';
 import CustomInput from '../../components/customInput/CustomInput';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
@@ -42,6 +42,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(3, 0, 0.5),
   },
 }));
+const MILVUS_URL =
+  ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';
 
 const Connect = () => {
   const history = useHistory();
@@ -55,7 +57,7 @@ const Connect = () => {
   const { t: successTrans } = useTranslation('success');
 
   const [form, setForm] = useState({
-    address: '',
+    address: MILVUS_URL,
   });
   const checkedForm = useMemo(() => {
     const { address } = form;
@@ -91,6 +93,7 @@ const Connect = () => {
         errorText: warningTrans('required', { name: milvusTrans.address }),
       },
     ],
+    defaultValue: form.address,
   };
 
   return (
@@ -110,7 +113,7 @@ const Connect = () => {
         />
         <CustomButton
           variant="contained"
-          disabled={disabled}
+          disabled={form.address ? false : disabled}
           onClick={handleConnect}
         >
           {btnTrans('connect')}
