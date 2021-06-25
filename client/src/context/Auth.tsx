@@ -19,6 +19,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   useEffect(() => {
     const check = async () => {
       const milvusAddress = window.localStorage.getItem(MILVUS_ADDRESS) || '';
+      if (!milvusAddress) {
+        return;
+      }
       try {
         const res = await MilvusHttp.check(milvusAddress);
         setAddress(res.connected ? milvusAddress : '');

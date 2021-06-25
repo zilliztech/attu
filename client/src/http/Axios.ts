@@ -5,10 +5,7 @@ console.log(process.env.NODE_ENV, 'api:', process.env.REACT_APP_BASE_URL);
 console.log('docker env', (window as any)._env_);
 
 export const url =
-  ((window as any)._env_ &&
-    (window as any)._env_.API_URL !== null &&
-    (window as any)._env_.API_URL !== 'null' &&
-    (window as any)._env_.API_URL) ||
+  ((window as any)._env_ && (window as any)._env_.HOST_URL) ||
   process.env.REACT_APP_BASE_URL;
 
 const axiosInstance = axios.create({
