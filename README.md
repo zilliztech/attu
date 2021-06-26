@@ -38,6 +38,12 @@ out an open PR:
 3. `$ yarn install` to install dependencies
 4. Create a branch for your PR
 
+### Milvus
+New to milvus? Milvus is an open-source vector database built to power AI applications and embedding similarity search.
+- [Milvus installation guide](https://milvus.io/docs/v2.0.0/install_standalone-docker.md)
+- [Milvus python sdk](https://milvus.io/docs/v2.0.0/explore_pymilvus.md)
+- [Milvus bootcamp](https://milvus.io/bootcamp)
+
 ## 📖 Documentation
 
 TBD
