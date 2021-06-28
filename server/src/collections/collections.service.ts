@@ -112,6 +112,7 @@ export class CollectionsService {
       totalData: 0,
     };
     const res = await this.getCollectionNames();
+    data.collectionCount = res.collection_names.length;
     if (res.collection_names.length > 0) {
       for (const name of res.collection_names) {
         const collectionStatistics = await this.getCollectionStatistics({

@@ -78,6 +78,8 @@ const useStyles = makeStyles(theme => ({
     },
   },
   cell: {
+    borderBottom: '1px solid #e9e9ed',
+
     '& p': {
       display: 'inline-block',
       verticalAlign: 'middle',
@@ -85,15 +87,9 @@ const useStyles = makeStyles(theme => ({
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       maxWidth: '300px',
-      fontSize: '12.8px',
+      fontSize: '14px',
+      lineHeight: '20px',
     },
-    '& button': {
-      textTransform: 'inherit',
-      justifyContent: 'flex-start',
-    },
-    // '& svg': {
-    //   color: 'rgba(0, 0, 0, 0.33)',
-    // },
   },
   noData: {
     paddingTop: theme.spacing(6),
@@ -126,7 +122,6 @@ const EnhancedTable: FC<TableType> = props => {
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
-  const rowRef = useRef(null);
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -145,7 +140,11 @@ const EnhancedTable: FC<TableType> = props => {
     if (setPageSize) {
       const containerHeight: number = (containerRef.current as any)!
         .offsetHeight;
-      const rowHeight: number = (rowRef.current as any)?.offsetHeight || 0;
+
+      // table default row height is 54
+      // if pass component as row item, its max height should be 54 too
+      const rowHeight = 54;
+      // table header default height is 57
       const tableHeaderHeight: number = 57;
       if (rowHeight > 0) {
         const pageSize = Math.floor(
@@ -200,7 +199,6 @@ const EnhancedTable: FC<TableType> = props => {
 
                     return (
                       <TableRow
-                        ref={rowRef}
                         hover={showHoverStyle}
                         key={'row' + row[primaryKey] + index}
                         onClick={event => onSelected(event, row)}

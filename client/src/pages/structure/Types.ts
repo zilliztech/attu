@@ -41,10 +41,10 @@ export interface IndexView {
 export type IndexType =
   | 'FLAT'
   | 'IVF_FLAT'
-  | 'IVF_SQ8'
+  // | 'IVF_SQ8'
   // | 'IVF_SQ8_HYBRID'
   | 'IVF_PQ'
-  | 'RNSG'
+  // | 'RNSG'
   | 'HNSW'
   | 'ANNOY';
 
