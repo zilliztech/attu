@@ -142,6 +142,7 @@ const EnhancedTable: FC<TableType> = props => {
         .offsetHeight;
 
       // table default row height is 54
+      // if pass component as row item, its max height should be 54 too
       const rowHeight = 54;
       // table header default height is 57
       const tableHeaderHeight: number = 57;
