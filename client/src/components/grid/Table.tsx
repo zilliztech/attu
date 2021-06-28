@@ -141,7 +141,9 @@ const EnhancedTable: FC<TableType> = props => {
       const containerHeight: number = (containerRef.current as any)!
         .offsetHeight;
 
+      // table default row height is 54
       const rowHeight = 54;
+      // table header default height is 57
       const tableHeaderHeight: number = 57;
       if (rowHeight > 0) {
         const pageSize = Math.floor(
