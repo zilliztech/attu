@@ -33,8 +33,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
   paramWrapper: {
     '& .param': {
-      padding: theme.spacing(0.5),
-
       marginRight: theme.spacing(2),
 
       '& .key': {
@@ -114,10 +112,10 @@ const Structure: FC<{
                 {f._indexParameterPairs?.length > 0 ? (
                   f._indexParameterPairs.map(p => (
                     <span key={p.key} className="param">
-                      <Typography variant="caption" className="key">
+                      <Typography variant="body1" className="key">
                         {`${p.key}:`}
                       </Typography>
-                      <Typography variant="caption" className="value">
+                      <Typography variant="body1" className="value">
                         {p.value}
                       </Typography>
                     </span>
