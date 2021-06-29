@@ -30,7 +30,7 @@
     "@nestjs/swagger": "^4.8.0",
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
-    "@zilliz/milvus-sdk-node-dev": "^0.1.4",
+    "@zilliz/milvus2-sdk-node": "^0.1.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "passport": "^0.4.1",

@@ -6,12 +6,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
-import { CreateCollection } from './dto';
+import { CreateCollection, ShowCollections } from './dto';
 
 @ApiTags('collections')
 @Controller('collections')
@@ -19,8 +20,10 @@ export class CollectionsController {
   constructor(private collectionsService: CollectionsService) {}
 
   @Get()
-  async getCollections() {
-    return await this.collectionsService.showCollections();
+  async getCollections(@Query() data?: ShowCollections) {
+    return Number(data.type) === 1
+      ? await this.collectionsService.getLoadedColletions()
+      : await this.collectionsService.getAllCollections();
   }
 
   @Get('statistics')

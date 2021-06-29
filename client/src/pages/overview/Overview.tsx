@@ -7,6 +7,7 @@ import { StatusEnum } from '../../components/status/Types';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
+import { ShowCollectionsType } from '../../types/Milvus';
 import { formatNumber } from '../../utils/Common';
 import CollectionCard from './collectionCard/CollectionCard';
 import { CollectionData } from './collectionCard/Types';
@@ -39,10 +40,16 @@ const Overview = () => {
     totalData: 0,
   });
 
+  const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await CollectionHttp.getStatistics();
+      const loadCollections = await CollectionHttp.getCollections({
+        type: ShowCollectionsType.InMemory,
+      });
       setStatistics(res);
+      setLoadCollections(loadCollections);
     };
     fetchData();
   }, []);
@@ -52,7 +59,7 @@ const Overview = () => {
       data: [
         {
           label: overviewTrans('load'),
-          value: formatNumber(4337),
+          value: formatNumber(loadCollections.length),
           valueColor: '#07d197',
         },
         {
@@ -69,46 +76,17 @@ const Overview = () => {
         },
       ],
     };
-  }, [overviewTrans, statistics]);
+  }, [overviewTrans, statistics, loadCollections]);
 
-  const mockCollections: CollectionData[] = [
-    {
-      name: 'collection1',
-      id: 'c1',
+  const loadCollectionsData: CollectionData[] = useMemo(() => {
+    return loadCollections.map(v => ({
+      id: v._id,
+      name: v._name,
       status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection2',
-      id: 'c2',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection3',
-      id: 'c3',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection4',
-      id: 'c4',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection5',
-      id: 'c5',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection6',
-      id: 'c6',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-  ];
+      rowCount: Number(v._rowCount),
+    }));
+  }, [loadCollections]);
+
   const CollectionIcon = icons.navCollection;
 
   return (
@@ -117,9 +95,9 @@ const Overview = () => {
       <Typography className={classes.collectionTitle}>
         {overviewTrans('load')}
       </Typography>
-      {mockCollections.length > 0 ? (
+      {loadCollectionsData.length > 0 ? (
         <div className={classes.cardsWrapper}>
-          {mockCollections.map(collection => (
+          {loadCollectionsData.map(collection => (
             <CollectionCard key={collection.id} data={collection} />
           ))}
         </div>

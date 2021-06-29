@@ -1,6 +1,6 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
 import { CollectionView } from '../pages/collections/Types';
-import { IndexState } from '../types/Milvus';
+import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import BaseModel from './BaseModel';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
@@ -10,6 +10,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private rowCount!: string;
   private index_status!: string;
   private id!: string;
+  private isLoaded!: boolean;
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
@@ -22,8 +23,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     Object.assign(this, props);
   }
 
-  static getCollections(): Promise<CollectionHttp[]> {
-    return super.findAll({ path: this.COLLECTIONS_URL, params: {} });
+  static getCollections(data?: {
+    type: ShowCollectionsType;
+  }): Promise<CollectionHttp[]> {
+    return super.findAll({ path: this.COLLECTIONS_URL, params: data || {} });
   }
 
   static createCollection(data: any) {
@@ -78,7 +81,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _status() {
-    return StatusEnum.loaded;
+    return this.isLoaded === true ? StatusEnum.loaded : StatusEnum.unloaded;
   }
 
   get _indexState() {
