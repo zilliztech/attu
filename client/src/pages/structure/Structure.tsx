@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: theme.spacing(2),
 
       '& .key': {
-        color: '#82838e',
+        color: theme.palette.milvusGrey.dark,
         display: 'inline-block',
         marginRight: theme.spacing(0.5),
       },

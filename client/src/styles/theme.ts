@@ -3,6 +3,17 @@ import {
   unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core/styles';
 
+declare module '@material-ui/core/styles/createPalette' {
+  interface Palette {
+    milvusBlue: Palette['primary'];
+    milvusGrey: Palette['primary'];
+  }
+  interface PaletteOptions {
+    milvusBlue: PaletteOptions['primary'];
+    milvusGrey: PaletteOptions['primary'];
+  }
+}
+
 const commonThemes = {
   typography: {
     fontFamily: [
@@ -21,8 +32,8 @@ const commonThemes = {
   palette: {
     primary: {
       main: '#06aff2',
-      light: '#65daf8',
-      dark: '#009bc4',
+      light: '#bfdeff',
+      dark: '#0689D2',
     },
     secondary: {
       light: '#82d3ba',
@@ -33,6 +44,16 @@ const commonThemes = {
       main: '#ff4605',
       light: '#ff8f68',
       dark: '#cd3804',
+    },
+    milvusBlue: {
+      main: '#f8f8fc',
+      dark: '#dcdce3',
+    },
+    milvusGrey: {
+      main: '#aeaebb',
+      light: '#dcdce3',
+      dark: '#82838e',
+      contrastText: '#f8f8fc',
     },
   },
   breakpoints: {
@@ -59,15 +80,17 @@ export const theme = createMuiTheme({
       h1: {
         fontSize: '36px',
         lineHeight: '42px',
+        fontWeight: 'bold',
         letterSpacing: '-0.02em',
       },
       h2: {
         lineHeight: '24px',
         fontSize: '28px',
+        fontWeight: 'bold',
       },
       h3: {
         lineHeight: '20px',
-        fontSize: '23px',
+        fontSize: '24px',
         fontWeight: 'bold',
       },
       h4: {
@@ -87,14 +110,17 @@ export const theme = createMuiTheme({
         lineHeight: '24px',
         letterSpacing: '-0.01em',
       },
+      // style for element p
       body1: {
         fontSize: '14px',
         lineHeight: '20px',
       },
+      // small caption
       body2: {
         fontSize: '12px',
         lineHeight: '16px',
       },
+      // tiny caption
       caption: {
         fontSize: '10px',
         lineHeight: '12px',

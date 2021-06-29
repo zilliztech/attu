@@ -65,7 +65,7 @@ const handleOnChange = (param: IChangeParam) => {
 
 const getAdornmentStyles = makeStyles(theme => ({
   icon: {
-    color: '#82838e',
+    color: theme.palette.milvusGrey.dark,
   },
 }));
 
@@ -217,6 +217,7 @@ const getTextfield = (
           ? { ...inputProps, ...defaultInputProps }
           : { ...defaultInputProps }
       }
+      error={info?.result && info.errText !== ''}
       InputProps={InputProps ? { ...InputProps } : {}}
       helperText={
         info && info.result && info.errText
@@ -247,6 +248,7 @@ const getStyles = makeStyles(theme => ({
     wordWrap: 'break-word',
     wordBreak: 'break-all',
     overflow: 'hidden',
+    marginLeft: '12px',
   },
   errBtn: {
     marginRight: `${theme.spacing(1)}`,

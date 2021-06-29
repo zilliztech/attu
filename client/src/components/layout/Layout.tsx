@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     normalConsole: {
       '& path': {
-        fill: '#82838e',
+        fill: theme.palette.milvusGrey.dark,
       },
     },
   })

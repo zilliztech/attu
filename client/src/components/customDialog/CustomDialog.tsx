@@ -16,9 +16,7 @@ import CustomDialogTitle from './CustomDialogTitle';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      // maxWidth: '480px',
       minWidth: '480px',
-      // width: '100%',
       borderRadius: '8px',
       padding: 0,
     },
@@ -29,10 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '80%',
     },
     dialogContent: {
-      marginTop: theme.spacing(4),
+      marginTop: theme.spacing(2),
     },
     title: {
-      // padding: theme.spacing(4),
       '& p': {
         fontWeight: '500',
         overflow: 'hidden',
@@ -43,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     padding: {
-      padding: theme.spacing(4),
+      padding: theme.spacing(3, 4, 4),
     },
     cancel: {
       color: theme.palette.common.black,

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(3),
 
       width: 'initial',
-      color: '#82838e',
+      color: theme.palette.milvusGrey.dark,
     },
     itemIcon: {
       minWidth: '20px',
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fill: 'transparent',
 
         '& path': {
-          stroke: '#82838e',
+          stroke: theme.palette.milvusGrey.dark,
         },
       },
     },
