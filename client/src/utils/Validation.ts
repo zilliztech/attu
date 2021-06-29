@@ -116,6 +116,12 @@ export const checkCollectionName = (value: string): boolean => {
   return re.test(value);
 };
 
+/**
+ * check data type
+ * @param type data types, like string, number
+ * @param value
+ * @returns whether value's value is equal to param type
+ */
 export const checkType = (type: TypeEnum, value: string): boolean => {
   switch (type) {
     case TypeEnum.number:
@@ -125,6 +131,12 @@ export const checkType = (type: TypeEnum, value: string): boolean => {
   }
 };
 
+/**
+ * check string start letter
+ * @param value
+ * @param invalidTypes
+ * @returns whether start letter type not belongs to invalid types
+ */
 export const checkStart = (param: {
   value: string;
   invalidTypes?: TypeEnum[];
