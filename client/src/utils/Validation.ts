@@ -14,7 +14,7 @@ export type ValidType =
   | 'dimension'
   | 'multiple'
   | 'partitionName'
-  | 'start';
+  | 'firstCharacter';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
@@ -132,12 +132,12 @@ export const checkType = (type: TypeEnum, value: string): boolean => {
 };
 
 /**
- * check string start letter
+ * check input first character
  * @param value
  * @param invalidTypes
  * @returns whether start letter type not belongs to invalid types
  */
-export const checkStart = (param: {
+export const checkFirstCharacter = (param: {
   value: string;
   invalidTypes?: TypeEnum[];
 }): boolean => {
@@ -211,7 +211,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       multipleNumber: extraParam?.multipleNumber,
     }),
     partitionName: checkPartitionName(value),
-    start: checkStart({
+    firstCharacter: checkFirstCharacter({
       value,
       invalidTypes: extraParam?.invalidTypes,
     }),

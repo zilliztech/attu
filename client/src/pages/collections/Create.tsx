@@ -135,7 +135,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
         },
         // name can not start with number
         {
-          rule: 'start',
+          rule: 'firstCharacter',
           extraParam: {
             invalidTypes: [TypeEnum.number],
           },
