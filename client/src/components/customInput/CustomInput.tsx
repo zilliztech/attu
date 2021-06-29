@@ -248,6 +248,7 @@ const getStyles = makeStyles(theme => ({
     wordWrap: 'break-word',
     wordBreak: 'break-all',
     overflow: 'hidden',
+    marginLeft: '12px',
   },
   errBtn: {
     marginRight: `${theme.spacing(1)}`,

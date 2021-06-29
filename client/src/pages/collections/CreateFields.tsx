@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
     width: '100%',
     paddingRight: theme.spacing(1),
-    maxHeight: '250px',
+    maxHeight: '240px',
     overflowY: 'auto',
   },
   rowWrapper: {
@@ -75,14 +75,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '20px',
     height: '20px',
   },
-  mb3: {
-    marginBottom: theme.spacing(3),
-  },
   mb2: {
     marginBottom: theme.spacing(2),
   },
   helperText: {
-    color: theme.palette.error.main,
+    lineHeight: '20px',
+    margin: theme.spacing(0.25, 0),
+    marginLeft: '12px',
   },
 }));
 
@@ -330,7 +329,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     autoID: boolean
   ): ReactElement => {
     return (
-      <div className={`${classes.rowWrapper} ${classes.mb3}`}>
+      <div className={`${classes.rowWrapper}`}>
         {getInput({
           label: collectionTrans('fieldType'),
           value: PRIMARY_KEY_FIELD,
@@ -361,7 +360,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateDefaultVectorRow = (field: Field): ReactElement => {
     return (
       <>
-        <div className={`${classes.rowWrapper} ${classes.mb2}`}>
+        <div className={`${classes.rowWrapper}`}>
           {getSelector(
             'vector',
             collectionTrans('fieldType'),
@@ -386,7 +385,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const generateNumberRow = (field: Field): ReactElement => {
     return (
-      <div className={`${classes.rowWrapper} ${classes.mb2}`}>
+      <div className={`${classes.rowWrapper}`}>
         <IconButton
           onClick={() => handleRemoveField(field)}
           classes={{ root: classes.iconBtn }}
@@ -409,7 +408,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const generateVectorRow = (field: Field) => {
     return (
-      <div className={`${classes.rowWrapper} ${classes.mb2}`}>
+      <div className={`${classes.rowWrapper}`}>
         <IconButton classes={{ root: classes.iconBtn }} aria-label="delete">
           <RemoveIcon />
         </IconButton>
