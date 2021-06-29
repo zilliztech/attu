@@ -5,8 +5,12 @@ import {
   IsOptional,
   IsArray,
   ArrayNotEmpty,
+  IsEnum,
 } from 'class-validator';
-import { FieldType } from '@zilliz/milvus-sdk-node-dev/dist/milvus/types/Collection'; // todo: need improve like export types in root file.
+import {
+  FieldType,
+  ShowCollectionsType,
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection'; // todo: need improve like export types in root file.
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCollection {
@@ -29,4 +33,11 @@ export class CreateCollection {
     message: 'fields is empty',
   })
   readonly fields: FieldType[];
+}
+
+export class ShowCollections {
+  @ApiProperty({ enum: ShowCollectionsType })
+  @IsOptional()
+  @IsEnum(ShowCollectionsType, { message: 'Type allow all->0 inmemory->1' })
+  readonly type: ShowCollectionsType;
 }
