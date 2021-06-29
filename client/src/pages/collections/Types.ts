@@ -57,6 +57,7 @@ export interface Field {
   isDefault?: boolean;
   id?: string;
   type_params?: { key: string; value: any }[];
+  createType?: CreateFieldType;
 }
 
 export type CreateFieldType =

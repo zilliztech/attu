@@ -217,7 +217,7 @@ const getTextfield = (
           ? { ...inputProps, ...defaultInputProps }
           : { ...defaultInputProps }
       }
-      error={info?.result}
+      error={info?.result && info.errText !== ''}
       InputProps={InputProps ? { ...InputProps } : {}}
       helperText={
         info && info.result && info.errText

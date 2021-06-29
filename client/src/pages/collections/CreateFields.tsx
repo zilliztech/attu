@@ -1,5 +1,5 @@
 import { makeStyles, Theme, TextField, IconButton } from '@material-ui/core';
-import { FC, Fragment, ReactElement } from 'react';
+import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
@@ -21,6 +21,12 @@ import {
 } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  optionalWrapper: {
+    width: '100%',
+    paddingRight: theme.spacing(1),
+    maxHeight: '250px',
+    overflowY: 'auto',
+  },
   rowWrapper: {
     display: 'flex',
     flexWrap: 'nowrap',
@@ -106,6 +112,35 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const AddIcon = icons.add;
   const RemoveIcon = icons.remove;
 
+  const { requiredFields, optionalFields } = useMemo(
+    () =>
+      fields.reduce(
+        (acc, field) => {
+          const createType: CreateFieldType = getCreateFieldType(field);
+          const requiredTypes: CreateFieldType[] = [
+            'primaryKey',
+            'defaultVector',
+          ];
+          const key = requiredTypes.includes(createType)
+            ? 'requiredFields'
+            : 'optionalFields';
+
+          acc[key].push({
+            ...field,
+            createType,
+          });
+
+          return acc;
+        },
+        {
+          requiredFields: [] as Field[],
+          optionalFields: [] as Field[],
+        }
+      ),
+
+    [fields]
+  );
+
   const getSelector = (
     type: 'all' | 'vector',
     label: string,
@@ -152,6 +187,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           },
         }}
         disabled={isReadOnly}
+        error={validate(value) !== ' '}
         helperText={validate(value)}
         FormHelperTextProps={{
           className: classes.helperText,
@@ -391,30 +427,37 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateFieldRow = (field: Field, autoID: boolean) => {
-    const createType: CreateFieldType = getCreateFieldType(field);
-    switch (createType) {
-      case 'primaryKey': {
-        return generatePrimaryKeyRow(field, autoID);
-      }
-      case 'defaultVector': {
-        return generateDefaultVectorRow(field);
-      }
-      case 'vector': {
-        return generateVectorRow(field);
-      }
-      // use number as default createType
-      default: {
-        return generateNumberRow(field);
-      }
+  const generateRequiredFieldRow = (field: Field, autoID: boolean) => {
+    // required type is primaryKey or defaultVector
+    if (field.createType === 'primaryKey') {
+      return generatePrimaryKeyRow(field, autoID);
     }
+    // use defaultVector as default return type
+    return generateDefaultVectorRow(field);
+  };
+
+  const generateOptionalFieldRow = (field: Field) => {
+    // optional type is vector or number
+    if (field.createType === 'vector') {
+      return generateVectorRow(field);
+    }
+
+    // use number as default createType
+    return generateNumberRow(field);
   };
 
   return (
     <>
-      {fields.map((field, index) => (
-        <Fragment key={index}>{generateFieldRow(field, autoID)}</Fragment>
+      {requiredFields.map((field, index) => (
+        <Fragment key={index}>
+          {generateRequiredFieldRow(field, autoID)}
+        </Fragment>
       ))}
+      <div className={classes.optionalWrapper}>
+        {optionalFields.map((field, index) => (
+          <Fragment key={index}>{generateOptionalFieldRow(field)}</Fragment>
+        ))}
+      </div>
     </>
   );
 };
