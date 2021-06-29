@@ -7,22 +7,32 @@ import {
   ArrayNotEmpty,
 } from 'class-validator';
 import { FieldType } from '@zilliz/milvus-sdk-node-dev/dist/milvus/types/Collection'; // todo: need improve like export types in root file.
+import { DataType } from '@zilliz/milvus-sdk-node-dev/dist/milvus/types/Common';
 import { ApiProperty } from '@nestjs/swagger';
 
+
 export class CreateCollection {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name'
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Generate ID automatically by milvus',
+    type: Boolean,
+  })
   @IsBoolean()
   @IsOptional()
   readonly autoID: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Field data type',
+    enum: DataType
+  })
   @IsArray()
   @ArrayNotEmpty()
   @IsNotEmpty({

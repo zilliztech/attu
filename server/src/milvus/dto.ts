@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class ConnectMilvus {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus url'
+  })
   @IsString()
   @IsNotEmpty({
     message: 'address is empty',
@@ -11,7 +13,9 @@ export class ConnectMilvus {
 }
 
 export class CheckMilvus {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus url'
+  })
   @IsString()
   @IsNotEmpty({
     message: 'address is empty',

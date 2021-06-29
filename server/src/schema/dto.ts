@@ -24,14 +24,18 @@ export class ManageIndex {
   @IsEnum(ManageType, { message: 'Type allow delete and create' })
   readonly type: ManageType;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'field name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'field_name is empty',
@@ -47,49 +51,63 @@ export class ManageIndex {
 }
 
 export class DescribeIndex {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection description',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'field name',
+  })
   @IsString()
   @IsOptional()
   readonly field_name?: string;
 }
 
 export class GetIndexState {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'field name',
+  })
   @IsString()
   @IsOptional()
   readonly field_name?: string;
 }
 
 export class GetIndexProgress {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'index name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'index_name is empty',
   })
   readonly index_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'field name',
+  })
   @IsString()
   @IsOptional()
   readonly field_name?: string;

@@ -9,9 +9,11 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
 import { CreateCollection } from './dto';
 
+@ApiTags('collections')
 @Controller('collections')
 export class CollectionsController {
   constructor(private collectionsService: CollectionsService) {}
