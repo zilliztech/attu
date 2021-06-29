@@ -7,6 +7,7 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
+import { TypeEnum } from '../../utils/Validation';
 import CreateFields from './CreateFields';
 import {
   CollectionCreateParam,
@@ -111,11 +112,34 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
       onChange: (value: string) => handleInputChange('collection_name', value),
       variant: 'filled',
       validations: [
+        // cannot be empty
         {
           rule: 'require',
           errorText: warningTrans('required', {
             name: collectionTrans('name'),
           }),
+        },
+        // length <= 255
+        {
+          rule: 'range',
+          extraParam: {
+            max: 255,
+            type: 'string',
+          },
+          errorText: collectionTrans('nameLengthWarning'),
+        },
+        // name can only be combined with letters, number or underscores
+        {
+          rule: 'collectionName',
+          errorText: collectionTrans('nameContentWarning'),
+        },
+        // name can not start with number
+        {
+          rule: 'start',
+          extraParam: {
+            invalidTypes: [TypeEnum.number],
+          },
+          errorText: collectionTrans('nameFirstLetterWarning'),
         },
       ],
       className: classes.input,
