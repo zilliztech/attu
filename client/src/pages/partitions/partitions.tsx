@@ -176,12 +176,12 @@ const Partitions: FC<{
       disablePadding: false,
       label: t('name'),
     },
-    {
-      id: '_statusElement',
-      align: 'left',
-      disablePadding: false,
-      label: t('status'),
-    },
+    // {
+    //   id: '_statusElement',
+    //   align: 'left',
+    //   disablePadding: false,
+    //   label: t('status'),
+    // },
     {
       id: '_rowCount',
       align: 'left',
