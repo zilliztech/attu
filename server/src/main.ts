@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('/api/v1');
 
   const config = new DocumentBuilder()
-    .setTitle('Milvus admin')
+    .setTitle('Milvus insight')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
