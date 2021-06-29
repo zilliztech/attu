@@ -56,7 +56,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   wrapperClass = '',
 }) => {
   const classes = useStyles();
-  const { name, status, id, rowCount } = data;
+  const { name, status, rowCount } = data;
   const RightArrowIcon = icons.rightArrow;
   const InfoIcon = icons.info;
   const ReleaseIcon = icons.release;
@@ -73,7 +73,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       <Link
         classes={{ root: classes.link }}
         underline="none"
-        href={`/collection/${id}`}
+        href={`/collections/${name}`}
       >
         {name}
         <RightArrowIcon classes={{ root: classes.icon }} />
