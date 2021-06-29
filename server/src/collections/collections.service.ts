@@ -8,10 +8,14 @@ import {
   GetIndexStateReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
-} from '@zilliz/milvus-sdk-node-dev/dist/milvus/types';
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils/Const';
+import {
+  ShowCollectionsReq,
+  ShowCollectionsType,
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
 @Injectable()
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -20,8 +24,8 @@ export class CollectionsService {
     return this.milvusService.milvusClientGetter;
   }
 
-  async getCollectionNames() {
-    const res = await this.milvusClient.showCollections();
+  async getCollectionNames(data?: ShowCollectionsReq) {
+    const res = await this.milvusClient.showCollections(data);
     throwErrorFromSDK(res.status);
     return res;
   }
@@ -78,9 +82,12 @@ export class CollectionsService {
    * Get all collections meta data
    * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string}
    */
-  async showCollections() {
+  async getAllCollections() {
     const data = [];
     const res = await this.getCollectionNames();
+    const loadedCollections = await this.getCollectionNames({
+      type: ShowCollectionsType.InMemory,
+    });
     if (res.collection_names.length > 0) {
       for (const name of res.collection_names) {
         const collectionInfo = await this.describeCollection({
@@ -96,6 +103,27 @@ export class CollectionsService {
           autoID: collectionInfo.schema.autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
+          isLoaded: loadedCollections.collection_names.includes(name),
+        });
+      }
+    }
+    return data;
+  }
+
+  async getLoadedColletions() {
+    const data = [];
+    const res = await this.getCollectionNames({
+      type: ShowCollectionsType.InMemory,
+    });
+    if (res.collection_names.length > 0) {
+      for (const [index, value] of res.collection_names.entries()) {
+        const collectionStatistics = await this.getCollectionStatistics({
+          collection_name: value,
+        });
+        data.push({
+          id: res.collection_ids[index],
+          collection_name: value,
+          rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
         });
       }
     }

@@ -7,6 +7,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   DescribeIndex,
   GetIndexProgress,
@@ -16,6 +17,7 @@ import {
 } from './dto';
 import { SchemaService } from './schema.service';
 
+@ApiTags('schema')
 @Controller('schema')
 export class SchemaController {
   constructor(private schemaService: SchemaService) {}

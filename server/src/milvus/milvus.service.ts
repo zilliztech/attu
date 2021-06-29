@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MilvusNode } from '@zilliz/milvus-sdk-node-dev';
+import { MilvusNode } from '@zilliz/milvus2-sdk-node';
 @Injectable()
 export class MilvusService {
   private milvusAddress: string;

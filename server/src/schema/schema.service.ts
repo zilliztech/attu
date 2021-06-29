@@ -5,7 +5,7 @@ import {
   DropIndexReq,
   GetIndexBuildProgressReq,
   GetIndexStateReq,
-} from '@zilliz/milvus-sdk-node-dev/dist/milvus/types';
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from 'src/utils/Error';
 import { MilvusService } from '../milvus/milvus.service';
 

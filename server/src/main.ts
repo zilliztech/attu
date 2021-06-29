@@ -6,15 +6,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
+  app.setGlobalPrefix('/api/v1');
 
   const config = new DocumentBuilder()
-    .setTitle('Milvus admin')
+    .setTitle('Milvus insight')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.setGlobalPrefix('/api/v1');
   await app.listen(3000);
 }
 bootstrap();
