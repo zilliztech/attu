@@ -1,7 +1,10 @@
 import { Body, Controller, Get, Post, Query, UsePipes } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ValidationPipe } from 'src/pipe/validation.pipe';
 import { CheckMilvus, ConnectMilvus } from './dto';
 import { MilvusService } from './milvus.service';
+
+@ApiTags('milvus')
 @Controller('milvus')
 export class MilvusController {
   constructor(private milvusService: MilvusService) {}

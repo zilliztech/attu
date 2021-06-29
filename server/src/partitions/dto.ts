@@ -12,7 +12,9 @@ export enum ManageType {
   CREATE = 'create',
 }
 export class GetPartitionsInfo {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
@@ -21,34 +23,45 @@ export class GetPartitionsInfo {
 }
 
 export class ManagePartition {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus partition name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'partition_name is empty',
   })
   readonly partition_name: string;
 
-  @ApiProperty({ enum: ManageType })
+  @ApiProperty({ 
+    description: 'Type allow delete and create',
+    enum: ManageType
+  })
   @IsEnum(ManageType, { message: 'Type allow delete and create' })
   readonly type: ManageType;
 }
 
 export class LoadPartitions {
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus collection name',
+  })
   @IsString()
   @IsNotEmpty({
     message: 'collection_name is empty',
   })
   readonly collection_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Milvus partition name',
+  })
   @IsArray()
   @ArrayNotEmpty()
   @IsNotEmpty({
