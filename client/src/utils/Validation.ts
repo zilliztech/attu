@@ -13,7 +13,8 @@ export type ValidType =
   | 'collectionName'
   | 'dimension'
   | 'multiple'
-  | 'partitionName';
+  | 'partitionName'
+  | 'firstCharacter';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
@@ -30,10 +31,17 @@ export interface IExtraParam {
   // used for dimension
   metricType?: MetricType;
   multipleNumber?: number;
+
+  // used for check start item
+  invalidTypes?: TypeEnum[];
 }
 export type CheckMap = {
   [key in ValidType]: boolean;
 };
+
+export enum TypeEnum {
+  'number' = 'number',
+}
 
 export const checkEmptyValid = (value: string): boolean => {
   return value.trim() !== '';
@@ -103,20 +111,47 @@ export const checkIpOrCIDR = (value: string): boolean => {
 };
 
 // collection name can only be combined with number, letter or _
-// name max length 255 and can't start with number
 export const checkCollectionName = (value: string): boolean => {
-  const length = value.length;
-  if (length > 254) {
-    return false;
-  }
-
-  const start = Number(value[0]);
-  if (!isNaN(start)) {
-    return false;
-  }
-
-  const re = /^[0-9,a-z,A-Z$_]+$/;
+  const re = /^[0-9,a-z,A-Z_]+$/;
   return re.test(value);
+};
+
+/**
+ * check data type
+ * @param type data types, like string, number
+ * @param value
+ * @returns whether value's value is equal to param type
+ */
+export const checkType = (type: TypeEnum, value: string): boolean => {
+  switch (type) {
+    case TypeEnum.number:
+      return !isNaN(Number(value));
+    default:
+      return true;
+  }
+};
+
+/**
+ * check input first character
+ * @param value
+ * @param invalidTypes
+ * @returns whether start letter type not belongs to invalid types
+ */
+export const checkFirstCharacter = (param: {
+  value: string;
+  invalidTypes?: TypeEnum[];
+}): boolean => {
+  const { value, invalidTypes } = param;
+  const start = value[0];
+  const types = invalidTypes || [];
+  for (let type of types) {
+    const result = checkType(type, start);
+    if (result) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const checkPartitionName = (value: string): boolean => {
@@ -176,6 +211,10 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       multipleNumber: extraParam?.multipleNumber,
     }),
     partitionName: checkPartitionName(value),
+    firstCharacter: checkFirstCharacter({
+      value,
+      invalidTypes: extraParam?.invalidTypes,
+    }),
   };
 
   return checkMap[rule];
