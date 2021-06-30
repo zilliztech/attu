@@ -15,10 +15,9 @@ enum TAB_EMUM {
 }
 
 const Collection = () => {
-  const { collectionName = '' } =
-    useParams<{
-      collectionName: string;
-    }>();
+  const { collectionName = '' } = useParams<{
+    collectionName: string;
+  }>();
 
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
 
@@ -41,12 +40,12 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: collectionTrans('partitionTab'),
-      component: <Partitions collectionName={collectionName} />,
-    },
-    {
       label: collectionTrans('structureTab'),
       component: <Structure collectionName={collectionName} />,
+    },
+    {
+      label: collectionTrans('partitionTab'),
+      component: <Partitions collectionName={collectionName} />,
     },
   ];
 
