@@ -1,4 +1,5 @@
 import {
+  Logger,
   Injectable,
   NestInterceptor,
   ExecutionContext,
@@ -40,7 +41,7 @@ export class ErrorInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
-        console.error('---error interceptor---', err.response);
+        Logger.error('---error interceptor---', err);
         if (err.response) {
           return throwError(err);
         }
