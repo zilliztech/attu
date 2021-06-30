@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import {
   PartitionManageParam,
   // PartitionParam,
@@ -47,6 +47,9 @@ const Partitions: FC<{
     []
   );
   const [partitions, setPartitions] = useState<PartitionView[]>([]);
+  const [searchedPartitions, setSearchedPartitions] = useState<PartitionView[]>(
+    []
+  );
   const {
     pageSize,
     handlePageSize,
@@ -54,28 +57,29 @@ const Partitions: FC<{
     handleCurrentPage,
     total,
     data: partitionList,
-  } = usePaginationHook(partitions);
+  } = usePaginationHook(searchedPartitions);
   const [loading, setLoading] = useState<boolean>(true);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
-  useEffect(() => {
-    fetchPartitions(collectionName);
-  }, [collectionName]);
-
-  const fetchPartitions = async (collectionName: string) => {
+  const fetchPartitions = useCallback(async (collectionName: string) => {
     try {
       const res = await PartitionHttp.getPartitions(collectionName);
 
-      const partitons: PartitionView[] = res.map(p =>
+      const partitions: PartitionView[] = res.map(p =>
         Object.assign(p, { _statusElement: <Status status={p._status} /> })
       );
       setLoading(false);
-      setPartitions(partitons);
+      setPartitions(partitions);
+      setSearchedPartitions(partitions);
     } catch (err) {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPartitions(collectionName);
+  }, [collectionName, fetchPartitions]);
 
   const handleDelete = async () => {
     for (const partition of selectedPartitions) {
@@ -160,6 +164,17 @@ const Partitions: FC<{
       tooltip: selectedPartitions.some(p => p._name === '_default')
         ? t('deletePartitionError')
         : '',
+    },
+    {
+      label: 'Search',
+      icon: 'search',
+      onSearch: (value: string) => {
+        const list = value
+          ? partitions.filter(p => p._name.includes(value))
+          : partitions;
+
+        setSearchedPartitions(list);
+      },
     },
   ];
 

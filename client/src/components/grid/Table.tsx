@@ -311,7 +311,11 @@ const EnhancedTable: FC<TableType> = props => {
                 <tr>
                   <td
                     className={classes.noData}
-                    colSpan={colDefinitions.length}
+                    colSpan={
+                      openCheckBox
+                        ? colDefinitions.length + 1
+                        : colDefinitions.length
+                    }
                   >
                     {noData}
                   </td>

@@ -108,18 +108,6 @@ const Collections = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleSearch = (value: string) => {
-    // setLoading(true);
-    // setTimeout(() => {
-    // setLoading(false);
-    const list = value
-      ? collections.filter(c => c._name.includes(value))
-      : collections;
-
-    setSearchedCollections(list);
-    // }, 100);
-  };
-
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
     const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
@@ -212,7 +200,11 @@ const Collections = () => {
       label: 'Search',
       icon: 'search',
       onSearch: (value: string) => {
-        handleSearch(value);
+        const list = value
+          ? collections.filter(c => c._name.includes(value))
+          : collections;
+
+        setSearchedCollections(list);
       },
     },
   ];
