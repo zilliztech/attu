@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ErrorInterceptor, TransformResInterceptor } from './interceptors';
@@ -8,10 +9,10 @@ import { CollectionsModule } from './collections/collections.module';
 import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PartitionsModule } from './partitions/partitions.module';
 import { SchemaModule } from './schema/schema.module';
+import { LoggerMiddleware } from './middlewares/logger';
 
 @Module({
   imports: [
@@ -41,4 +42,10 @@ import { SchemaModule } from './schema/schema.module';
     UsersService,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
