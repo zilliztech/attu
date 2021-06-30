@@ -1,5 +1,6 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
-import { useRef, FC, useState } from 'react';
+import { useRef, FC, useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -48,6 +49,8 @@ const useSearchStyles = makeStyles(theme => ({
   },
 }));
 
+let timer: NodeJS.Timeout | null = null;
+
 const SearchInput: FC<SearchType> = props => {
   const { searchText = '', onClear = () => {}, onSearch = () => {} } = props;
   const [searchValue, setSearchValue] = useState<string>(searchText);
@@ -56,7 +59,32 @@ const SearchInput: FC<SearchType> = props => {
 
   const classes = useSearchStyles({ searched, showInput });
 
+  const history = useHistory();
   const inputRef = useRef<any>(null);
+
+  const savedSearchFn = useRef<(value: string) => void>(() => {});
+  useEffect(() => {
+    savedSearchFn.current = onSearch;
+  }, [onSearch]);
+
+  useEffect(() => {
+    timer = setTimeout(() => {
+      const params = new URLSearchParams();
+      if (searchValue) {
+        params.append('search', searchValue);
+      } else {
+        params.delete('search');
+      }
+      // add search value in url
+      history.push({ search: params.toString() });
+
+      savedSearchFn.current(searchValue);
+    }, 300);
+
+    return () => {
+      timer && clearTimeout(timer);
+    };
+  }, [searchValue, history]);
 
   const onIconClick = () => {
     setShowInput(true);

@@ -44,6 +44,9 @@ const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { handleAction } = useDialogHook({ type: 'collection' });
   const [collections, setCollections] = useState<CollectionView[]>([]);
+  const [searchedCollections, setSearchedCollections] = useState<
+    CollectionView[]
+  >([]);
   const {
     pageSize,
     handlePageSize,
@@ -51,7 +54,7 @@ const Collections = () => {
     handleCurrentPage,
     total,
     data: collectionList,
-  } = usePaginationHook(collections);
+  } = usePaginationHook(searchedCollections);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCollections, setSelectedCollections] = useState<
     CollectionView[]
@@ -75,27 +78,27 @@ const Collections = () => {
       const res = await CollectionHttp.getCollections();
       const statusRes = await CollectionHttp.getCollectionsIndexState();
       setLoading(false);
+      const collections = res.map(v => {
+        const indexStatus = statusRes.find(item => item._name === v._name);
+        Object.assign(v, {
+          nameElement: (
+            <Link to={`/collections/${v._name}`} className={classes.link}>
+              {v._name}
+            </Link>
+          ),
+          statusElement: <Status status={v._status} />,
+          indexCreatingElement: (
+            <StatusIcon
+              type={indexStatus?._indexState || ChildrenStatusType.FINISH}
+            />
+          ),
+        });
 
-      setCollections(
-        res.map(v => {
-          const indexStatus = statusRes.find(item => item._name === v._name);
-          Object.assign(v, {
-            nameElement: (
-              <Link to={`/collections/${v._name}`} className={classes.link}>
-                {v._name}
-              </Link>
-            ),
-            statusElement: <Status status={v._status} />,
-            indexCreatingElement: (
-              <StatusIcon
-                type={indexStatus?._indexState || ChildrenStatusType.FINISH}
-              />
-            ),
-          });
+        return v;
+      });
 
-          return v;
-        })
-      );
+      setCollections(collections);
+      setSearchedCollections(collections);
     } catch (err) {
       setLoading(false);
     }
@@ -104,6 +107,18 @@ const Collections = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleSearch = (value: string) => {
+    // setLoading(true);
+    // setTimeout(() => {
+    // setLoading(false);
+    const list = value
+      ? collections.filter(c => c._name.includes(value))
+      : collections;
+
+    setSearchedCollections(list);
+    // }, 100);
+  };
 
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
@@ -192,6 +207,13 @@ const Collections = () => {
       label: collectionTrans('delete'),
       icon: 'delete',
       disabled: data => data.length === 0,
+    },
+    {
+      label: 'Search',
+      icon: 'search',
+      onSearch: (value: string) => {
+        handleSearch(value);
+      },
     },
   ];
 
