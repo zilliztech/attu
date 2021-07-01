@@ -1,6 +1,8 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
-import { useRef, FC, useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useRef, FC, useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory, useLocation } from 'react-router-dom';
+import { parseLocationSearch } from '../../utils/Format';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -10,10 +12,12 @@ const useSearchStyles = makeStyles(theme => ({
   },
   input: {
     backgroundColor: '#fff',
-    borderRadius: '4px 4px 0 0',
-    padding: (props: any) => `${props.showInput ? theme.spacing(0, 1) : 0}`,
-    boxSizing: 'border-box',
-    width: (props: any) => `${props.showInput ? '255px' : 0}`,
+    borderRadius: '4px',
+    padding: theme.spacing(1),
+    width: '240px',
+    border: '1px solid #e9e9ed',
+    fontSize: '14px',
+
     transition: 'all 0.2s',
 
     '& .MuiAutocomplete-endAdornment': {
@@ -27,23 +31,44 @@ const useSearchStyles = makeStyles(theme => ({
     '& .MuiInput-underline:after': {
       border: 'none',
     },
+
+    /**
+     * when input focus
+     * 1. change parent wrapper border color
+     * 2. hide input start search icon
+     */
+    '&:focus-within': {
+      border: `1px solid ${theme.palette.primary.main}`,
+
+      '& $searchIcon': {
+        width: 0,
+      },
+    },
+  },
+  textfield: {
+    padding: 0,
+    height: '16px',
+
+    '&:focus': {
+      caretColor: theme.palette.primary.main,
+    },
   },
   searchIcon: {
-    paddingLeft: theme.spacing(1),
-    color: theme.palette.primary.main,
+    color: '#aeaebb',
     cursor: 'pointer',
-    fontSize: '24px',
+    fontSize: '20px',
+    transition: 'width 0.2s',
   },
   clearIcon: {
-    color: 'rgba(0, 0, 0, 0.6)',
+    color: theme.palette.primary.main,
     cursor: 'pointer',
   },
   iconWrapper: {
-    opacity: (props: any) => `${props.searched ? 1 : 0}`,
+    opacity: (props: { searched: boolean }) => `${props.searched ? 1 : 0}`,
     transition: 'opacity 0.2s',
   },
   searchWrapper: {
-    display: (props: any) => `${props.showInput ? 'flex' : 'none'}`,
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -54,18 +79,28 @@ let timer: NodeJS.Timeout | null = null;
 const SearchInput: FC<SearchType> = props => {
   const { searchText = '', onClear = () => {}, onSearch = () => {} } = props;
   const [searchValue, setSearchValue] = useState<string>(searchText);
-  const searched = searchValue !== '';
-  const [showInput, setShowInput] = useState<boolean>(searchValue !== '');
 
-  const classes = useSearchStyles({ searched, showInput });
+  const searched = useMemo(() => searchValue !== '', [searchValue]);
+
+  const classes = useSearchStyles({ searched });
+  const { t: commonTrans } = useTranslation();
 
   const history = useHistory();
+  const location = useLocation();
+
   const inputRef = useRef<any>(null);
 
   const savedSearchFn = useRef<(value: string) => void>(() => {});
   useEffect(() => {
     savedSearchFn.current = onSearch;
   }, [onSearch]);
+
+  useEffect(() => {
+    const { search } = parseLocationSearch(location.search);
+    if (search) {
+      setSearchValue(search);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     timer = setTimeout(() => {
@@ -86,35 +121,15 @@ const SearchInput: FC<SearchType> = props => {
     };
   }, [searchValue, history]);
 
-  const onIconClick = () => {
-    setShowInput(true);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-
-    if (searched) {
-      onSearch(searchValue);
-    }
-  };
-
-  const handleInputBlur = () => {
-    setShowInput(searched);
-  };
-
   return (
     <div className={classes.wrapper}>
-      {!showInput && (
-        <div className={classes.searchIcon} onClick={onIconClick}>
-          {Icons.search()}
-        </div>
-      )}
       <TextField
         inputRef={inputRef}
-        autoFocus={true}
         variant="standard"
         classes={{ root: classes.input }}
         InputProps={{
           disableUnderline: true,
+          classes: { input: classes.textfield },
           endAdornment: (
             <InputAdornment position="end">
               <span
@@ -140,9 +155,7 @@ const SearchInput: FC<SearchType> = props => {
             </InputAdornment>
           ),
         }}
-        onBlur={handleInputBlur}
         onChange={e => {
-          // console.log('change', e.target.value);
           const value = e.target.value;
           setSearchValue(value);
           if (value === '') {
@@ -150,7 +163,6 @@ const SearchInput: FC<SearchType> = props => {
           }
         }}
         onKeyPress={e => {
-          // console.log(`Pressed keyCode ${e.key}`);
           if (e.key === 'Enter') {
             // Do code here
             onSearch(searchValue);
@@ -158,6 +170,7 @@ const SearchInput: FC<SearchType> = props => {
           }
         }}
         value={searchValue}
+        placeholder={commonTrans('search')}
       />
     </div>
   );
