@@ -45,6 +45,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+let timer: NodeJS.Timeout | null = null;
+
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { handleAction } = useDialogHook({ type: 'collection' });
@@ -162,26 +164,35 @@ const Collections = () => {
   };
 
   const handleSearch = (value: string) => {
-    const searchWords = [value];
-    const list = value
-      ? collections.filter(c => c._name.includes(value))
-      : collections;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    // add loading manually
+    setLoading(true);
+    timer = setTimeout(() => {
+      const searchWords = [value];
+      const list = value
+        ? collections.filter(c => c._name.includes(value))
+        : collections;
 
-    const highlightList = list.map(c => {
-      Object.assign(c, {
-        nameElement: (
-          <Link to={`/collections/${c._name}`} className={classes.link}>
-            <Highlighter
-              textToHighlight={c._name}
-              searchWords={searchWords}
-              highlightClassName={classes.highlight}
-            />
-          </Link>
-        ),
+      const highlightList = list.map(c => {
+        Object.assign(c, {
+          nameElement: (
+            <Link to={`/collections/${c._name}`} className={classes.link}>
+              <Highlighter
+                textToHighlight={c._name}
+                searchWords={searchWords}
+                highlightClassName={classes.highlight}
+              />
+            </Link>
+          ),
+        });
+        return c;
       });
-      return c;
-    });
-    setSearchedCollections(highlightList);
+
+      setLoading(false);
+      setSearchedCollections(highlightList);
+    }, 300);
   };
 
   const toolbarConfigs: ToolBarConfig[] = [

@@ -35,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+let timer: NodeJS.Timeout | null = null;
+
 const Partitions: FC<{
   collectionName: string;
 }> = ({ collectionName }) => {
@@ -127,25 +129,33 @@ const Partitions: FC<{
   // };
 
   const handleSearch = (value: string) => {
-    const searchWords = [value];
-    console.log('====== search words', searchWords);
-    const list = value
-      ? partitions.filter(p => p._formatName.includes(value))
-      : partitions;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    // add loading manually
+    setLoading(true);
+    timer = setTimeout(() => {
+      const searchWords = [value];
+      const list = value
+        ? partitions.filter(p => p._formatName.includes(value))
+        : partitions;
 
-    const highlightList = list.map(c => {
-      Object.assign(c, {
-        _nameElement: (
-          <Highlighter
-            textToHighlight={c._formatName}
-            searchWords={searchWords}
-            highlightClassName={classes.highlight}
-          />
-        ),
+      const highlightList = list.map(c => {
+        Object.assign(c, {
+          _nameElement: (
+            <Highlighter
+              textToHighlight={c._formatName}
+              searchWords={searchWords}
+              highlightClassName={classes.highlight}
+            />
+          ),
+        });
+        return c;
       });
-      return c;
-    });
-    setSearchedPartitions(highlightList);
+
+      setLoading(false);
+      setSearchedPartitions(highlightList);
+    }, 300);
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
