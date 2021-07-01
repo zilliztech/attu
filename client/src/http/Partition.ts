@@ -2,12 +2,12 @@ import { StatusEnum } from '../components/status/Types';
 import {
   PartitionManageParam,
   PartitionParam,
-  PartitionView,
+  PartitionData,
 } from '../pages/partitions/Types';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 
-export class PartitionHttp extends BaseModel implements PartitionView {
+export class PartitionHttp extends BaseModel implements PartitionData {
   private id!: string;
   private name!: string;
   private rowCount!: string;

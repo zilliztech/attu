@@ -19,6 +19,7 @@ import { ManageRequestMethods } from '../../types/Common';
 // import { StatusEnum } from '../../components/status/Types';
 // import { useDialogHook } from '../../hooks/Dialog';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import Highlighter from 'react-highlight-words';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -27,6 +28,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
+  },
+  highlight: {
+    color: theme.palette.primary.main,
+    backgroundColor: 'transparent',
   },
 }));
 
@@ -67,7 +72,10 @@ const Partitions: FC<{
       const res = await PartitionHttp.getPartitions(collectionName);
 
       const partitions: PartitionView[] = res.map(p =>
-        Object.assign(p, { _statusElement: <Status status={p._status} /> })
+        Object.assign(p, {
+          _nameElement: <>{p._formatName}</>,
+          _statusElement: <Status status={p._status} />,
+        })
       );
       setLoading(false);
       setPartitions(partitions);
@@ -117,6 +125,28 @@ const Partitions: FC<{
   //   fetchPartitions(collectionName);
   //   return res;
   // };
+
+  const handleSearch = (value: string) => {
+    const searchWords = [value];
+    console.log('====== search words', searchWords);
+    const list = value
+      ? partitions.filter(p => p._formatName.includes(value))
+      : partitions;
+
+    const highlightList = list.map(c => {
+      Object.assign(c, {
+        _nameElement: (
+          <Highlighter
+            textToHighlight={c._formatName}
+            searchWords={searchWords}
+            highlightClassName={classes.highlight}
+          />
+        ),
+      });
+      return c;
+    });
+    setSearchedPartitions(highlightList);
+  };
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -169,11 +199,7 @@ const Partitions: FC<{
       label: 'Search',
       icon: 'search',
       onSearch: (value: string) => {
-        const list = value
-          ? partitions.filter(p => p._name.includes(value))
-          : partitions;
-
-        setSearchedPartitions(list);
+        handleSearch(value);
       },
     },
   ];
@@ -186,7 +212,7 @@ const Partitions: FC<{
       label: t('id'),
     },
     {
-      id: '_formatName',
+      id: '_nameElement',
       align: 'left',
       disablePadding: false,
       label: t('name'),

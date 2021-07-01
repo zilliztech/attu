@@ -2,13 +2,17 @@ import { ReactElement } from 'react';
 import { StatusEnum } from '../../components/status/Types';
 import { ManageRequestMethods } from '../../types/Common';
 
-export interface PartitionView {
+export interface PartitionData {
   _id: string;
   _name: string;
   _status: StatusEnum;
-  _statusElement?: ReactElement;
   _rowCount: string;
   _formatName: string;
+}
+
+export interface PartitionView extends PartitionData {
+  _nameElement?: ReactElement;
+  _statusElement?: ReactElement;
 }
 
 // delete and create

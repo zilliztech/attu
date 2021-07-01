@@ -104,7 +104,8 @@ const SearchInput: FC<SearchType> = props => {
 
   useEffect(() => {
     timer = setTimeout(() => {
-      const params = new URLSearchParams();
+      const location = history.location;
+      const params = new URLSearchParams(location.search);
       if (searchValue) {
         params.append('search', searchValue);
       } else {
