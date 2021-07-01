@@ -20,6 +20,7 @@ import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
 import { useDialogHook } from '../../hooks/Dialog';
+import Highlighter from 'react-highlight-words';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -37,6 +38,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   link: {
     color: theme.palette.common.black,
+  },
+  highlight: {
+    color: theme.palette.primary.main,
+    backgroundColor: 'transparent',
   },
 }));
 
@@ -156,6 +161,29 @@ const Collections = () => {
     setSelectedCollections([]);
   };
 
+  const handleSearch = (value: string) => {
+    const searchWords = [value];
+    const list = value
+      ? collections.filter(c => c._name.includes(value))
+      : collections;
+
+    const highlightList = list.map(c => {
+      Object.assign(c, {
+        nameElement: (
+          <Link to={`/collections/${c._name}`} className={classes.link}>
+            <Highlighter
+              textToHighlight={c._name}
+              searchWords={searchWords}
+              highlightClassName={classes.highlight}
+            />
+          </Link>
+        ),
+      });
+      return c;
+    });
+    setSearchedCollections(highlightList);
+  };
+
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: collectionTrans('create'),
@@ -200,11 +228,7 @@ const Collections = () => {
       label: 'Search',
       icon: 'search',
       onSearch: (value: string) => {
-        const list = value
-          ? collections.filter(c => c._name.includes(value))
-          : collections;
-
-        setSearchedCollections(list);
+        handleSearch(value);
       },
     },
   ];
