@@ -17,7 +17,7 @@ docker run -p 8000:3000 -e HOST_URL=http://127.0.0.1:8000 -e MILVUS_URL=127.0.0.
 | HOST_URL   | http://127.0.0.1:8000 |   true   |  Docker host url  |
 | MILVUS_URL | 127.0.0.1:19530       |  false   | Milvus server url |
 
-Once you start the docker, open the browser, type `http://127.0.0.1:3000`, you can view the milvus insight.
+Once you start the docker, open the browser, type `http://127.0.0.1:8000`, you can view the milvus insight.
 
 ## ✨ Building and Running Milvus insight, and/or Contributing Code
 
