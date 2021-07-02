@@ -3,6 +3,12 @@ import { act } from 'react-dom/test-utils';
 import Copy from '../../copy/Copy';
 let container: any = null;
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: any) => key,
+  }),
+}));
+
 jest.mock('@material-ui/core/Tooltip', () => {
   return props => {
     return <div id="tooltip">{props.children}</div>;

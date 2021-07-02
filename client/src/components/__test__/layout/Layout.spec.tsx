@@ -4,6 +4,24 @@ import Layout from '../../layout/Layout';
 
 let container: any = null;
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: any) => key,
+  }),
+}));
+
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    push: jest.fn(),
+  }),
+  useLocation: () => ({
+    hash: '',
+    pathname: '/use-location-mock',
+    search: '',
+    state: undefined,
+  }),
+}));
+
 jest.mock('../../layout/GlobalEffect', () => {
   return () => {
     return <div id="global">{}</div>;
