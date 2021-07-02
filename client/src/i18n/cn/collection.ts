@@ -2,8 +2,8 @@ const collectionTrans = {
   noLoadData: 'No Loaded Collection',
   noData: 'No Collection',
 
-  rowCount: 'Row Count',
-  tooltip: 'data in one row',
+  rowCount: 'Entity Count',
+  tooltip: 'data in one entity',
 
   create: 'Create Collection',
   delete: 'delete',
