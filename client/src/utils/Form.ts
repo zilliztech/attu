@@ -2,7 +2,7 @@ import { Option } from '../components/customSelector/Types';
 import { METRIC_TYPES_VALUES } from '../consts/Milvus';
 import { IForm } from '../hooks/Form';
 import { DataType } from '../pages/collections/Types';
-import { IndexType } from '../pages/structure/Types';
+import { IndexType } from '../pages/schema/Types';
 
 interface IInfo {
   [key: string]: any;
