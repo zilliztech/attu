@@ -1,8 +1,7 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
-import { parseLocationSearch } from '../../utils/Format';
+import { useHistory } from 'react-router-dom';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -57,6 +56,8 @@ const useSearchStyles = makeStyles(theme => ({
     color: '#aeaebb',
     cursor: 'pointer',
     fontSize: '20px',
+    width: (props: { searched: boolean }) => `${props.searched ? 0 : '20px'}`,
+
     transition: 'width 0.2s',
   },
   clearIcon: {
@@ -78,15 +79,21 @@ let timer: NodeJS.Timeout | null = null;
 
 const SearchInput: FC<SearchType> = props => {
   const { searchText = '', onClear = () => {}, onSearch = () => {} } = props;
-  const [searchValue, setSearchValue] = useState<string>(searchText);
+  const [searchValue, setSearchValue] = useState<string | null>(
+    searchText || null
+  );
 
-  const searched = useMemo(() => searchValue !== '', [searchValue]);
+  const [isInit, setIsInit] = useState<boolean>(true);
+
+  const searched = useMemo(
+    () => searchValue !== '' && searchValue !== null,
+    [searchValue]
+  );
 
   const classes = useSearchStyles({ searched });
   const { t: commonTrans } = useTranslation();
 
   const history = useHistory();
-  const location = useLocation();
 
   const inputRef = useRef<any>(null);
 
@@ -96,31 +103,36 @@ const SearchInput: FC<SearchType> = props => {
   }, [onSearch]);
 
   useEffect(() => {
-    const { search } = parseLocationSearch(location.search);
-    if (search) {
-      setSearchValue(search);
+    if (timer) {
+      clearTimeout(timer);
     }
-  }, [location.search]);
-
-  useEffect(() => {
-    timer = setTimeout(() => {
-      const location = history.location;
-      const params = new URLSearchParams(location.search);
-      if (searchValue) {
-        params.append('search', searchValue);
-      } else {
+    if (searchValue !== null && !isInit) {
+      timer = setTimeout(() => {
+        // save other params data and remove last time search info
+        const location = history.location;
+        const params = new URLSearchParams(location.search);
         params.delete('search');
-      }
-      // add search value in url
-      history.push({ search: params.toString() });
 
-      savedSearchFn.current(searchValue);
-    }, 300);
+        if (searchValue) {
+          params.append('search', searchValue);
+        }
+        // add search value in url
+        history.push({ search: params.toString() });
+
+        savedSearchFn.current(searchValue);
+      }, 300);
+    }
 
     return () => {
       timer && clearTimeout(timer);
     };
-  }, [searchValue, history]);
+  }, [searchValue, history, isInit]);
+
+  const handleSearch = (value: string | null) => {
+    if (value !== null) {
+      onSearch(value);
+    }
+  };
 
   return (
     <div className={classes.wrapper}>
@@ -137,6 +149,7 @@ const SearchInput: FC<SearchType> = props => {
                 className={`flex-center ${classes.iconWrapper}`}
                 onClick={e => {
                   setSearchValue('');
+                  setIsInit(false);
                   inputRef.current.focus();
                   onClear();
                 }}
@@ -149,7 +162,7 @@ const SearchInput: FC<SearchType> = props => {
             <InputAdornment position="start">
               <span
                 className={classes.searchWrapper}
-                onClick={() => onSearch(searchValue)}
+                onClick={() => handleSearch(searchValue)}
               >
                 {Icons.search({ classes: { root: classes.searchIcon } })}
               </span>
@@ -157,8 +170,9 @@ const SearchInput: FC<SearchType> = props => {
           ),
         }}
         onChange={e => {
-          const value = e.target.value;
+          const value = e.target.value.trim();
           setSearchValue(value);
+          setIsInit(false);
           if (value === '') {
             onClear();
           }
@@ -166,11 +180,11 @@ const SearchInput: FC<SearchType> = props => {
         onKeyPress={e => {
           if (e.key === 'Enter') {
             // Do code here
-            onSearch(searchValue);
+            handleSearch(searchValue);
             e.preventDefault();
           }
         }}
-        value={searchValue}
+        value={searchValue || ''}
         placeholder={commonTrans('search')}
       />
     </div>

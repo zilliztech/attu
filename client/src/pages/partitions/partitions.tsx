@@ -20,6 +20,7 @@ import { ManageRequestMethods } from '../../types/Common';
 // import { useDialogHook } from '../../hooks/Dialog';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import Highlighter from 'react-highlight-words';
+import { parseLocationSearch } from '../../utils/Format';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -36,6 +37,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 let timer: NodeJS.Timeout | null = null;
+// get init search value from url
+const { search = '' } = parseLocationSearch(window.location.search);
 
 const Partitions: FC<{
   collectionName: string;
@@ -69,23 +72,35 @@ const Partitions: FC<{
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
-  const fetchPartitions = useCallback(async (collectionName: string) => {
-    try {
-      const res = await PartitionHttp.getPartitions(collectionName);
+  const fetchPartitions = useCallback(
+    async (collectionName: string) => {
+      try {
+        const res = await PartitionHttp.getPartitions(collectionName);
 
-      const partitions: PartitionView[] = res.map(p =>
-        Object.assign(p, {
-          _nameElement: <>{p._formatName}</>,
-          _statusElement: <Status status={p._status} />,
-        })
-      );
-      setLoading(false);
-      setPartitions(partitions);
-      setSearchedPartitions(partitions);
-    } catch (err) {
-      setLoading(false);
-    }
-  }, []);
+        const partitions: PartitionView[] = res.map(p =>
+          Object.assign(p, {
+            _nameElement: (
+              <Highlighter
+                textToHighlight={p._formatName}
+                searchWords={[search]}
+                highlightClassName={classes.highlight}
+              />
+            ),
+            _statusElement: <Status status={p._status} />,
+          })
+        );
+        const filteredPartitions = partitions.filter(p =>
+          p._formatName.includes(search)
+        );
+        setLoading(false);
+        setPartitions(partitions);
+        setSearchedPartitions(filteredPartitions);
+      } catch (err) {
+        setLoading(false);
+      }
+    },
+    [classes.highlight]
+  );
 
   useEffect(() => {
     fetchPartitions(collectionName);
@@ -152,7 +167,6 @@ const Partitions: FC<{
         });
         return c;
       });
-
       setLoading(false);
       setSearchedPartitions(highlightList);
     }, 300);
@@ -208,6 +222,7 @@ const Partitions: FC<{
     {
       label: 'Search',
       icon: 'search',
+      searchText: search,
       onSearch: (value: string) => {
         handleSearch(value);
       },
