@@ -3,7 +3,7 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomTabList from '../../components/customTabList/CustomTabList';
 import { ITab } from '../../components/customTabList/Types';
-import Partitions from '../partitions/partitions';
+import Partitions from '../partitions/Partitions';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
