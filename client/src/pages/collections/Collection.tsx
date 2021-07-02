@@ -10,8 +10,8 @@ import { parseLocationSearch } from '../../utils/Format';
 import Structure from '../structure/Structure';
 
 enum TAB_EMUM {
-  'partition',
   'structure',
+  'partition',
 }
 
 const Collection = () => {
@@ -29,7 +29,7 @@ const Collection = () => {
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
       ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_EMUM.partition };
+      : { activeIndex: TAB_EMUM.structure };
     return Number(activeIndex);
   }, [location]);
 

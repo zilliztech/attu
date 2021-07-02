@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import {
   PartitionManageParam,
   // PartitionParam,
@@ -19,6 +19,8 @@ import { ManageRequestMethods } from '../../types/Common';
 // import { StatusEnum } from '../../components/status/Types';
 // import { useDialogHook } from '../../hooks/Dialog';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import Highlighter from 'react-highlight-words';
+import { parseLocationSearch } from '../../utils/Format';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -28,7 +30,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
   },
+  highlight: {
+    color: theme.palette.primary.main,
+    backgroundColor: 'transparent',
+  },
 }));
+
+let timer: NodeJS.Timeout | null = null;
+// get init search value from url
+const { search = '' } = parseLocationSearch(window.location.search);
 
 const Partitions: FC<{
   collectionName: string;
@@ -47,6 +57,9 @@ const Partitions: FC<{
     []
   );
   const [partitions, setPartitions] = useState<PartitionView[]>([]);
+  const [searchedPartitions, setSearchedPartitions] = useState<PartitionView[]>(
+    []
+  );
   const {
     pageSize,
     handlePageSize,
@@ -54,28 +67,44 @@ const Partitions: FC<{
     handleCurrentPage,
     total,
     data: partitionList,
-  } = usePaginationHook(partitions);
+  } = usePaginationHook(searchedPartitions);
   const [loading, setLoading] = useState<boolean>(true);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
+  const fetchPartitions = useCallback(
+    async (collectionName: string) => {
+      try {
+        const res = await PartitionHttp.getPartitions(collectionName);
+
+        const partitions: PartitionView[] = res.map(p =>
+          Object.assign(p, {
+            _nameElement: (
+              <Highlighter
+                textToHighlight={p._formatName}
+                searchWords={[search]}
+                highlightClassName={classes.highlight}
+              />
+            ),
+            _statusElement: <Status status={p._status} />,
+          })
+        );
+        const filteredPartitions = partitions.filter(p =>
+          p._formatName.includes(search)
+        );
+        setLoading(false);
+        setPartitions(partitions);
+        setSearchedPartitions(filteredPartitions);
+      } catch (err) {
+        setLoading(false);
+      }
+    },
+    [classes.highlight]
+  );
+
   useEffect(() => {
     fetchPartitions(collectionName);
-  }, [collectionName]);
-
-  const fetchPartitions = async (collectionName: string) => {
-    try {
-      const res = await PartitionHttp.getPartitions(collectionName);
-
-      const partitons: PartitionView[] = res.map(p =>
-        Object.assign(p, { _statusElement: <Status status={p._status} /> })
-      );
-      setLoading(false);
-      setPartitions(partitons);
-    } catch (err) {
-      setLoading(false);
-    }
-  };
+  }, [collectionName, fetchPartitions]);
 
   const handleDelete = async () => {
     for (const partition of selectedPartitions) {
@@ -113,6 +142,35 @@ const Partitions: FC<{
   //   fetchPartitions(collectionName);
   //   return res;
   // };
+
+  const handleSearch = (value: string) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    // add loading manually
+    setLoading(true);
+    timer = setTimeout(() => {
+      const searchWords = [value];
+      const list = value
+        ? partitions.filter(p => p._formatName.includes(value))
+        : partitions;
+
+      const highlightList = list.map(c => {
+        Object.assign(c, {
+          _nameElement: (
+            <Highlighter
+              textToHighlight={c._formatName}
+              searchWords={searchWords}
+              highlightClassName={classes.highlight}
+            />
+          ),
+        });
+        return c;
+      });
+      setLoading(false);
+      setSearchedPartitions(highlightList);
+    }, 300);
+  };
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -161,6 +219,14 @@ const Partitions: FC<{
         ? t('deletePartitionError')
         : '',
     },
+    {
+      label: 'Search',
+      icon: 'search',
+      searchText: search,
+      onSearch: (value: string) => {
+        handleSearch(value);
+      },
+    },
   ];
 
   const colDefinitions: ColDefinitionsType[] = [
@@ -171,7 +237,7 @@ const Partitions: FC<{
       label: t('id'),
     },
     {
-      id: '_formatName',
+      id: '_nameElement',
       align: 'left',
       disablePadding: false,
       label: t('name'),
