@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Structure: FC<{
+const Schema: FC<{
   collectionName: string;
 }> = ({ collectionName }) => {
   const classes = useStyles();
@@ -65,23 +65,23 @@ const Structure: FC<{
     currentPage,
     handleCurrentPage,
     total,
-    data: structureList,
+    data: schemaList,
   } = usePaginationHook(fields);
 
-  const fetchStructureListWithIndex = async (
+  const fetchSchemaListWithIndex = async (
     collectionName: string
   ): Promise<FieldView[]> => {
     const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
     const indexList = await IndexHttp.getIndexInfo(collectionName);
-    const structureList = await FieldHttp.getFields(collectionName);
+    const schemaList = await FieldHttp.getFields(collectionName);
     let fields: FieldView[] = [];
-    for (const structure of structureList) {
-      let field: FieldView = Object.assign(structure, {
+    for (const schema of schemaList) {
+      let field: FieldView = Object.assign(schema, {
         _indexParameterPairs: [],
         _indexType: '',
       });
-      if (vectorTypes.includes(structure.data_type)) {
-        const index = indexList.find(i => i._fieldName === structure.name);
+      if (vectorTypes.includes(schema.data_type)) {
+        const index = indexList.find(i => i._fieldName === schema.name);
 
         field._indexParameterPairs = index?._indexParameterPairs || [];
         field._indexType = index?._indexType || '';
@@ -98,7 +98,7 @@ const Structure: FC<{
       const KeyIcon = icons.key;
 
       try {
-        const list = await fetchStructureListWithIndex(collectionName);
+        const list = await fetchSchemaListWithIndex(collectionName);
         const fields: FieldView[] = list.map(f =>
           Object.assign(f, {
             _fieldNameElement: (
@@ -198,7 +198,7 @@ const Structure: FC<{
       <MilvusGrid
         toolbarConfigs={[]}
         colDefinitions={colDefinitions}
-        rows={structureList}
+        rows={schemaList}
         rowCount={total}
         primaryKey="_fieldId"
         openCheckBox={false}
@@ -213,4 +213,4 @@ const Structure: FC<{
   );
 };
 
-export default Structure;
+export default Schema;

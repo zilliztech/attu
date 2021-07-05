@@ -1,5 +1,5 @@
 import { DataType } from '../pages/collections/Types';
-import { FieldData } from '../pages/structure/Types';
+import { FieldData } from '../pages/schema/Types';
 import BaseModel from './BaseModel';
 
 export class FieldHttp extends BaseModel implements FieldData {

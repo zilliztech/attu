@@ -22,6 +22,7 @@ const commonTrans = {
     copied: 'Copied',
   },
   param: 'Parameter',
+  search: 'Search by name',
 };
 
 export default commonTrans;

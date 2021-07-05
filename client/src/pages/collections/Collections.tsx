@@ -20,6 +20,8 @@ import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
 import { useDialogHook } from '../../hooks/Dialog';
+import Highlighter from 'react-highlight-words';
+import { parseLocationSearch } from '../../utils/Format';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -38,12 +40,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   link: {
     color: theme.palette.common.black,
   },
+  highlight: {
+    color: theme.palette.primary.main,
+    backgroundColor: 'transparent',
+  },
 }));
+
+let timer: NodeJS.Timeout | null = null;
+// get init search value from url
+const { search = '' } = parseLocationSearch(window.location.search);
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { handleAction } = useDialogHook({ type: 'collection' });
   const [collections, setCollections] = useState<CollectionView[]>([]);
+  const [searchedCollections, setSearchedCollections] = useState<
+    CollectionView[]
+  >([]);
   const {
     pageSize,
     handlePageSize,
@@ -51,7 +64,7 @@ const Collections = () => {
     handleCurrentPage,
     total,
     data: collectionList,
-  } = usePaginationHook(collections);
+  } = usePaginationHook(searchedCollections);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCollections, setSelectedCollections] = useState<
     CollectionView[]
@@ -76,30 +89,40 @@ const Collections = () => {
       const statusRes = await CollectionHttp.getCollectionsIndexState();
       setLoading(false);
 
-      setCollections(
-        res.map(v => {
-          const indexStatus = statusRes.find(item => item._name === v._name);
-          Object.assign(v, {
-            nameElement: (
-              <Link to={`/collections/${v._name}`} className={classes.link}>
-                {v._name}
-              </Link>
-            ),
-            statusElement: <Status status={v._status} />,
-            indexCreatingElement: (
-              <StatusIcon
-                type={indexStatus?._indexState || ChildrenStatusType.FINISH}
+      const collections = res.map(v => {
+        const indexStatus = statusRes.find(item => item._name === v._name);
+        Object.assign(v, {
+          nameElement: (
+            <Link to={`/collections/${v._name}`} className={classes.link}>
+              <Highlighter
+                textToHighlight={v._name}
+                searchWords={[search]}
+                highlightClassName={classes.highlight}
               />
-            ),
-          });
+            </Link>
+          ),
+          statusElement: <Status status={v._status} />,
+          indexCreatingElement: (
+            <StatusIcon
+              type={indexStatus?._indexState || ChildrenStatusType.FINISH}
+            />
+          ),
+        });
 
-          return v;
-        })
+        return v;
+      });
+
+      // filter collection if url contains search param
+      const filteredCollections = collections.filter(collection =>
+        collection._name.includes(search)
       );
+
+      setCollections(collections);
+      setSearchedCollections(filteredCollections);
     } catch (err) {
       setLoading(false);
     }
-  }, [classes.link]);
+  }, [classes.link, classes.highlight]);
 
   useEffect(() => {
     fetchData();
@@ -153,6 +176,38 @@ const Collections = () => {
     setSelectedCollections([]);
   };
 
+  const handleSearch = (value: string) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    // add loading manually
+    setLoading(true);
+    timer = setTimeout(() => {
+      const searchWords = [value];
+      const list = value
+        ? collections.filter(c => c._name.includes(value))
+        : collections;
+
+      const highlightList = list.map(c => {
+        Object.assign(c, {
+          nameElement: (
+            <Link to={`/collections/${c._name}`} className={classes.link}>
+              <Highlighter
+                textToHighlight={c._name}
+                searchWords={searchWords}
+                highlightClassName={classes.highlight}
+              />
+            </Link>
+          ),
+        });
+        return c;
+      });
+
+      setLoading(false);
+      setSearchedCollections(highlightList);
+    }, 300);
+  };
+
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: collectionTrans('create'),
@@ -192,6 +247,14 @@ const Collections = () => {
       label: collectionTrans('delete'),
       icon: 'delete',
       disabled: data => data.length === 0,
+    },
+    {
+      label: 'Search',
+      icon: 'search',
+      searchText: search,
+      onSearch: (value: string) => {
+        handleSearch(value);
+      },
     },
   ];
 

@@ -3,7 +3,7 @@ import {
   IndexManageParam,
   IndexView,
   ParamPair,
-} from '../pages/structure/Types';
+} from '../pages/schema/Types';
 import { ManageRequestMethods } from '../types/Common';
 import { IndexState } from '../types/Milvus';
 import BaseModel from './BaseModel';

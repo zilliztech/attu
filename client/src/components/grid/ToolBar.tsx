@@ -116,6 +116,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
                     onClear={c.onClear}
                     onSearch={c.onSearch}
                     searchText={c.searchText}
+                    placeholder={c.placeholder}
                     key={i}
                   />
                 );

@@ -3,15 +3,15 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomTabList from '../../components/customTabList/CustomTabList';
 import { ITab } from '../../components/customTabList/Types';
-import Partitions from '../partitions/partitions';
+import Partitions from '../partitions/Partitions';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
-import Structure from '../structure/Structure';
+import Schema from '../schema/Schema';
 
 enum TAB_EMUM {
+  'schema',
   'partition',
-  'structure',
 }
 
 const Collection = () => {
@@ -29,7 +29,7 @@ const Collection = () => {
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
       ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_EMUM.partition };
+      : { activeIndex: TAB_EMUM.schema };
     return Number(activeIndex);
   }, [location]);
 
@@ -40,8 +40,8 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: collectionTrans('structureTab'),
-      component: <Structure collectionName={collectionName} />,
+      label: collectionTrans('schemaTab'),
+      component: <Schema collectionName={collectionName} />,
     },
     {
       label: collectionTrans('partitionTab'),
