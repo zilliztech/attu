@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import Status from '../../status/Status';
@@ -5,11 +6,15 @@ import { StatusEnum } from '../../status/Types';
 
 let container: any = null;
 
+jest.mock('@material-ui/core/styles/makeStyles', () => {
+  return () => () => ({});
+});
+
 jest.mock('react-i18next', () => {
   return {
     useTranslation: () => {
       return {
-        t: name => {
+        t: () => {
           return {
             loaded: 'loaded',
             unloaded: 'unloaded',
@@ -22,7 +27,7 @@ jest.mock('react-i18next', () => {
 });
 
 jest.mock('@material-ui/core/Typography', () => {
-  return props => {
+  return (props: { children: ReactNode }) => {
     return <div className="label">{props.children}</div>;
   };
 });
