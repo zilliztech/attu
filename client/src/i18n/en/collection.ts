@@ -2,8 +2,8 @@ const collectionTrans = {
   noLoadData: 'No Loaded Collection',
   noData: 'No Collection',
 
-  rowCount: 'Row Count',
-  tooltip: 'data in one row',
+  rowCount: 'Entity Count',
+  tooltip: 'data in one entity',
 
   create: 'Create Collection',
   delete: 'delete',
@@ -19,7 +19,7 @@ const collectionTrans = {
   // create dialog
   createTitle: 'Create Collection',
   general: '1. General Info',
-  structure: '2. Define Structure',
+  schema: '2. Define Schema',
   description: 'Description (Optional)',
   fieldType: 'Field Type',
   vectorFieldType: 'Vector Field Type',
@@ -53,7 +53,7 @@ const collectionTrans = {
 
   // collection tabs
   partitionTab: 'Partitions',
-  structureTab: 'Structure',
+  schemaTab: 'Schema',
 };
 
 export default collectionTrans;

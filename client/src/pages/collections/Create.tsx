@@ -195,7 +195,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
         </fieldset>
 
         <fieldset className={classes.fieldset}>
-          <legend>{collectionTrans('structure')}</legend>
+          <legend>{collectionTrans('schema')}</legend>
           <CreateFields
             fields={fields}
             setFields={setFields}
