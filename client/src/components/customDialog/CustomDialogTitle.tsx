@@ -43,7 +43,11 @@ const CustomDialogTitle = (props: IProps) => {
     >
       <Typography variant="h5">{children}</Typography>
       {onClose ? (
-        <ClearIcon classes={{ root: innerClass.icon }} onClick={onClose} />
+        <ClearIcon
+          data-testid="clear-icon"
+          classes={{ root: innerClass.icon }}
+          onClick={onClose}
+        />
       ) : null}
     </MuiDialogTitle>
   );
