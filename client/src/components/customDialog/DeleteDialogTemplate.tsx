@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const DeleteTemplate: FC<DeleteDialogContentType> = props => {
-  const { title, text, label, handleDelete, handleCancel = () => {} } = props;
+  const { title, text, label, handleDelete, handleCancel } = props;
   const { handleCloseDialog } = useContext(rootContext);
   const classes = useStyles();
   const { t: dialogTrans } = useTranslation('dialog');
@@ -49,7 +49,7 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
 
   const onCancelClick = () => {
     handleCloseDialog();
-    handleCancel();
+    handleCancel && handleCancel();
   };
 
   const onDeleteClick = () => {
