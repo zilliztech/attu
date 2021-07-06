@@ -6,6 +6,12 @@ import CustomDialog from '../../customDialog/CustomDialog';
 
 let container: any = null;
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: any) => key,
+  }),
+}));
+
 jest.mock('@material-ui/core/Dialog', () => {
   return props => {
     return <div id="dialog-wrapper">{props.children}</div>;

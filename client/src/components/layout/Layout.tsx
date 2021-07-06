@@ -25,16 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100vh',
       overflowY: 'scroll',
     },
-    activeConsole: {
-      '& path': {
-        fill: theme.palette.primary.main,
-      },
-    },
-    normalConsole: {
-      '& path': {
-        fill: theme.palette.milvusGrey.dark,
-      },
-    },
   })
 );
 

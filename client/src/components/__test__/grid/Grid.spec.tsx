@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import MilvusGrid from '../../grid/index';
+import MilvusGrid from '../../grid/Grid';
 import { ToolBarConfig } from '../../grid/Types';
 
 let container: any = null;

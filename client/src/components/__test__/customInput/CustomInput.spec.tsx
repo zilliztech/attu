@@ -10,6 +10,10 @@ import {
 
 let container: any = null;
 
+jest.mock('@material-ui/core/styles/makeStyles', () => {
+  return () => () => ({});
+});
+
 jest.mock('@material-ui/core/FormControl', () => {
   return props => {
     const { children } = props;

@@ -5,7 +5,7 @@ import {
   // PartitionParam,
   PartitionView,
 } from './Types';
-import MilvusGrid from '../../components/grid';
+import MilvusGrid from '../../components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '../../hooks/Pagination';

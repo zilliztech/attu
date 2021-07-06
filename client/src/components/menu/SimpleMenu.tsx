@@ -48,22 +48,24 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        {menuItems.map((v, i) =>
-          typeof v.label === 'string' ? (
-            <MenuItem
-              classes={{ root: classes.menuItem }}
-              onClick={() => {
-                v.callback && v.callback();
-                handleClose();
-              }}
-              key={v.label + i}
-            >
-              {v.label}
-            </MenuItem>
-          ) : (
-            <span key={i}>{v.label}</span>
-          )
-        )}
+        <div>
+          {menuItems.map((v, i) =>
+            typeof v.label === 'string' ? (
+              <MenuItem
+                classes={{ root: classes.menuItem }}
+                onClick={() => {
+                  v.callback && v.callback();
+                  handleClose();
+                }}
+                key={v.label + i}
+              >
+                {v.label}
+              </MenuItem>
+            ) : (
+              <span key={i}>{v.label}</span>
+            )
+          )}
+        </div>
       </Menu>
     </div>
   );

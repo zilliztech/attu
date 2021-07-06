@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
-import MilvusGrid from '../../components/grid';
+import MilvusGrid from '../../components/grid/Grid';
 import CustomToolBar from '../../components/grid/ToolBar';
 import { CollectionCreateParam, CollectionView, DataTypeEnum } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';

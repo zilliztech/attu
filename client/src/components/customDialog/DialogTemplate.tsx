@@ -35,7 +35,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
       <CustomDialogTitle onClose={handleCancel}>{title}</CustomDialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions className={classes.actions}>
-        <CustomButton onClick={handleCancel} color="default">
+        <CustomButton onClick={handleCancel} color="default" name="cancel">
           {cancel}
         </CustomButton>
         <CustomButton
@@ -43,6 +43,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
           onClick={handleConfirm}
           color="primary"
           disabled={confirmDisabled}
+          name="confirm"
         >
           {confirm}
         </CustomButton>

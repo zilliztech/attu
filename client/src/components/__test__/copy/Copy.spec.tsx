@@ -1,10 +1,17 @@
+import { ReactNode } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import Copy from '../../copy/Copy';
 let container: any = null;
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: any) => key,
+  }),
+}));
+
 jest.mock('@material-ui/core/Tooltip', () => {
-  return props => {
+  return (props: { children: ReactNode }) => {
     return <div id="tooltip">{props.children}</div>;
   };
 });

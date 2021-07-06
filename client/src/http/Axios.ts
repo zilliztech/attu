@@ -1,8 +1,8 @@
 import axios from 'axios';
 // import { SESSION } from '../consts/Localstorage';
 
-console.log(process.env.NODE_ENV, 'api:', process.env.REACT_APP_BASE_URL);
-console.log('docker env', (window as any)._env_);
+// console.log(process.env.NODE_ENV, 'api:', process.env.REACT_APP_BASE_URL);
+// console.log('docker env', (window as any)._env_);
 
 export const url =
   ((window as any)._env_ && (window as any)._env_.HOST_URL) ||

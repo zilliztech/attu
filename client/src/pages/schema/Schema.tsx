@@ -1,6 +1,6 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
-import MilvusGrid from '../../components/grid';
+import MilvusGrid from '../../components/grid/Grid';
 import { ColDefinitionsType } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '../../hooks/Pagination';
