@@ -1,5 +1,5 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
@@ -47,18 +47,18 @@ const Overview = () => {
   const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
   const { openSnackBar } = useContext(rootContext);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const res = await CollectionHttp.getStatistics();
     const loadCollections = await CollectionHttp.getCollections({
       type: ShowCollectionsType.InMemory,
     });
     setStatistics(res);
     setLoadCollections(loadCollections);
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const fetchRelease = async (data: CollectionData) => {
     const name = data._name;
