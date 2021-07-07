@@ -65,7 +65,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _desc() {
-    return this.description;
+    return this.description || '--';
   }
 
   get _id() {

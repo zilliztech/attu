@@ -187,6 +187,12 @@ const Schema: FC<{
       disablePadding: false,
       label: indexTrans('param'),
     },
+    {
+      id: '_desc',
+      align: 'left',
+      disablePadding: false,
+      label: indexTrans('desc'),
+    },
   ];
 
   const handlePageChange = (e: any, page: number) => {
