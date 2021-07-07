@@ -78,6 +78,8 @@ export type ColDefinitionsType = {
   showActionCell?: boolean;
   isHoverAction?: boolean;
   notSort?: boolean;
+  // custom sort rule property, default is row id
+  sortBy?: string;
   onClick?: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     data?: any
