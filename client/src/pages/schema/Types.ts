@@ -20,6 +20,7 @@ export interface FieldData {
   _fieldNameElement?: ReactElement;
   _fieldType: DataType;
   _dimension: string;
+  _desc: string;
 }
 
 export interface FieldView extends FieldData, IndexView {
