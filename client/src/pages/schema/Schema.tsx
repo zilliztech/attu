@@ -190,6 +190,12 @@ const Schema: FC<{
       label: indexTrans('param'),
       notSort: true,
     },
+    {
+      id: '_desc',
+      align: 'left',
+      disablePadding: false,
+      label: indexTrans('desc'),
+    },
   ];
 
   const handlePageChange = (e: any, page: number) => {

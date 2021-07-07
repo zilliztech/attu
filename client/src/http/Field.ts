@@ -8,6 +8,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   type_params!: { key: string; value: string }[];
   is_primary_key!: true;
   name!: string;
+  description!: string;
 
   constructor(props: {}) {
     super(props);
@@ -39,6 +40,10 @@ export class FieldHttp extends BaseModel implements FieldData {
 
   get _fieldType() {
     return this.data_type;
+  }
+
+  get _desc() {
+    return this.description || '--';
   }
 
   get _dimension() {

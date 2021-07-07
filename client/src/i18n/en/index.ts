@@ -4,6 +4,7 @@ const indexTrans = {
 
   create: 'Create Index',
   index: 'Index',
+  desc: 'Description',
 
   metric: 'Metric Type',
   createSuccess: 'Creating index successfully',
