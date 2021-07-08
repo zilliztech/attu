@@ -269,12 +269,14 @@ const Collections = () => {
       id: 'nameElement',
       align: 'left',
       disablePadding: true,
+      sortBy: '_name',
       label: collectionTrans('name'),
     },
     {
       id: 'statusElement',
       align: 'left',
       disablePadding: false,
+      sortBy: '_status',
       label: collectionTrans('status'),
     },
     {
