@@ -1,6 +1,7 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
 import { CollectionView } from '../pages/collections/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
+import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
@@ -77,7 +78,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _rowCount() {
-    return this.rowCount;
+    return formatNumber(Number(this.rowCount));
   }
 
   get _status() {

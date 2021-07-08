@@ -5,6 +5,7 @@ import { rootContext } from '../context/Root';
 import { CollectionView } from '../pages/collections/Types';
 import { PartitionView } from '../pages/partitions/Types';
 import { StatusEnum } from '../components/status/Types';
+import { CollectionData } from '../pages/overview/collectionCard/Types';
 
 // handle release and load dialog
 export interface DialogHookProps {
@@ -46,7 +47,7 @@ export const useDialogHook = (props: DialogHookProps) => {
   };
 
   const handleAction = (
-    data: PartitionView | CollectionView,
+    data: PartitionView | CollectionView | CollectionData,
     cb: (data: any) => Promise<any>
   ) => {
     const actionType: 'release' | 'load' =

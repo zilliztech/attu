@@ -175,7 +175,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       <TextField
         label={label}
         // value={value}
-        onBlur={(e: React.ChangeEvent<{ value: unknown }>) => {
+        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           handleChange(e.target.value as string);
         }}
         variant="filled"
