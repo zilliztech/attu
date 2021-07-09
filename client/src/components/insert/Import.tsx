@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, Divider } from '@material-ui/core';
 import CustomSelector from '../customSelector/CustomSelector';
-import { Option } from '../customSelector/Types';
+import { FC } from 'react';
+import { InsertImportProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
@@ -30,32 +31,16 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const InsertImport = () => {
+const InsertImport: FC<InsertImportProps> = ({
+  collectionOptions,
+  partitionOptions,
+  selectedCollection,
+  selectedPartition,
+}) => {
   const { t: insertTrans } = useTranslation('insert');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: partitionTrans } = useTranslation('partition');
   const classes = getStyles();
-
-  const collectionOptions: Option[] = [
-    {
-      label: 'a',
-      value: 'a',
-    },
-    {
-      label: 'b',
-      value: 'b',
-    },
-  ];
-  const partitionOptions: Option[] = [
-    {
-      label: 'a',
-      value: 'a',
-    },
-    {
-      label: 'b',
-      value: 'b',
-    },
-  ];
 
   const handleCollectionChange = () => {};
   const handlePartitionChange = () => {};
@@ -70,7 +55,7 @@ const InsertImport = () => {
         <CustomSelector
           options={collectionOptions}
           classes={{ root: 'selector' }}
-          value={''}
+          value={selectedCollection}
           variant="filled"
           label={collectionTrans('collection')}
           onChange={handleCollectionChange}
@@ -79,14 +64,14 @@ const InsertImport = () => {
         <CustomSelector
           options={partitionOptions}
           classes={{ root: 'selector' }}
-          value={''}
+          value={selectedPartition}
           variant="filled"
           label={partitionTrans('partition')}
           onChange={handlePartitionChange}
         />
       </form>
 
-      <div className={classes.uploadWrapper}></div>
+      <div className={classes.uploadWrapper}>uploader</div>
     </section>
   );
 };

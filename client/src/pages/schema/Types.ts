@@ -1,5 +1,4 @@
 import { ReactElement } from 'react';
-import { ManageRequestMethods } from '../../types/Common';
 import { DataType } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {

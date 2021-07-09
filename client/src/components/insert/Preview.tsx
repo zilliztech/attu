@@ -1,5 +1,7 @@
-const InsertPreview = () => {
-  console.log('enter preview');
+import { FC } from 'react';
+import { InsertPreviewProps } from './Types';
+
+const InsertPreview: FC<InsertPreviewProps> = ({ schemaOptions }) => {
   return <div>preview</div>;
 };
 

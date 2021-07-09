@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { useContext, useMemo, useState } from 'react';
+import { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../customDialog/DialogTemplate';
 import icons from '../icons/Icons';
@@ -7,7 +7,12 @@ import { rootContext } from '../../context/Root';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
 import InsertStatus from './Status';
-import { InsertStatusEnum, InsertStepperEnum } from './Types';
+import {
+  InsertContentProps,
+  InsertStatusEnum,
+  InsertStepperEnum,
+} from './Types';
+import { Option } from '../customSelector/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {
@@ -20,8 +25,29 @@ const getStyles = makeStyles((theme: Theme) => ({
  * all datas and methods passed in as props, no interactions with server done in it
  */
 
-const InsertContainer = () => {
+const InsertContainer: FC<InsertContentProps> = ({
+  collections,
+  selectedCollection,
+  partitions,
+  selectedPartition,
+  schema,
+  handleInsert,
+}) => {
   const classes = getStyles();
+
+  // props children component needed:
+  const collectionOptions: Option[] = collections.map(c => ({
+    label: c._name,
+    value: c._name,
+  }));
+  const partitionOptions: Option[] = partitions.map(p => ({
+    label: p._name,
+    value: p._name,
+  }));
+  const schemaOptions: Option[] = schema.map(s => ({
+    label: s._fieldName,
+    value: s._fieldId,
+  }));
 
   const { t: insertTrans } = useTranslation('insert');
   const { t: btnTrans } = useTranslation('btn');
@@ -75,6 +101,7 @@ const InsertContainer = () => {
   const handleInsertData = () => {
     // mock status change
     setInsertStauts(InsertStatusEnum.loading);
+    handleInsert();
     setTimeout(() => {
       setInsertStauts(InsertStatusEnum.success);
     }, 500);
@@ -87,7 +114,6 @@ const InsertContainer = () => {
         break;
       case InsertStepperEnum.preview:
         setActiveStep(activeStep => activeStep + 1);
-        // @TODO insert interactions
         handleInsertData();
         break;
       // default represent InsertStepperEnum.status
@@ -104,7 +130,6 @@ const InsertContainer = () => {
         break;
       case InsertStepperEnum.preview:
         setActiveStep(activeStep => activeStep - 1);
-        // @TODO reset uploaded file?
         break;
       // default represent InsertStepperEnum.status
       // status don't have cancel button
@@ -116,12 +141,19 @@ const InsertContainer = () => {
   const generateContent = (activeStep: InsertStepperEnum) => {
     switch (activeStep) {
       case InsertStepperEnum.import:
-        return <InsertImport />;
+        return (
+          <InsertImport
+            collectionOptions={collectionOptions}
+            selectedCollection={selectedCollection}
+            partitionOptions={partitionOptions}
+            selectedPartition={selectedPartition}
+          />
+        );
       case InsertStepperEnum.preview:
-        return <InsertPreview />;
+        return <InsertPreview schemaOptions={schemaOptions} />;
       // default represents InsertStepperEnum.status
       default:
-        return <InsertStatus />;
+        return <InsertStatus status={insertStatus} />;
     }
   };
 

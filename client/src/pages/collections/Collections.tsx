@@ -22,7 +22,7 @@ import { CollectionHttp } from '../../http/Collection';
 import { useLoadAndReleaseHook } from '../../hooks/ReleaseAndLoad';
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
-import InsertContainer from '../insert/Container';
+// import InsertContainer from '../../components/insert/Container';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -225,26 +225,26 @@ const Collections = () => {
       },
       icon: 'add',
     },
-    {
-      label: btnTrans('insert'),
-      onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: <InsertContainer />,
-          },
-        });
-      },
-      /**
-       * insert validation:
-       * 1. At least 1 available collection
-       * 2. selected collections quantity shouldn't over 1
-       */
-      disabled: () =>
-        collectionList.length === 0 || selectedCollections.length > 1,
-      icon: 'upload',
-    },
+    // {
+    //   label: btnTrans('insert'),
+    //   onClick: () => {
+    //     setDialog({
+    //       open: true,
+    //       type: 'custom',
+    //       params: {
+    //         component: <InsertContainer />,
+    //       },
+    //     });
+    //   },
+    //   /**
+    //    * insert validation:
+    //    * 1. At least 1 available collection
+    //    * 2. selected collections quantity shouldn't over 1
+    //    */
+    //   disabled: () =>
+    //     collectionList.length === 0 || selectedCollections.length > 1,
+    //   icon: 'upload',
+    // },
     {
       type: 'iconBtn',
       onClick: () => {
