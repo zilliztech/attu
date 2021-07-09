@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, Divider } from '@material-ui/core';
-import CustomSelector from '../../components/customSelector/CustomSelector';
-import { Option } from '../../components/customSelector/Types';
+import CustomSelector from '../customSelector/CustomSelector';
+import { Option } from '../customSelector/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {

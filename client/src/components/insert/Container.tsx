@@ -1,8 +1,8 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import icons from '../../components/icons/Icons';
+import DialogTemplate from '../customDialog/DialogTemplate';
+import icons from '../icons/Icons';
 import { rootContext } from '../../context/Root';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
@@ -17,7 +17,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 
 /**
  * this component contains processes during insert
- * all interactions with server are done in it
+ * all datas and methods passed in as props, no interactions with server done in it
  */
 
 const InsertContainer = () => {
