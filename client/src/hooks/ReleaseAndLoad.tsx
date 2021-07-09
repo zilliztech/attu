@@ -8,11 +8,11 @@ import { StatusEnum } from '../components/status/Types';
 import { CollectionData } from '../pages/overview/collectionCard/Types';
 
 // handle release and load dialog
-export interface DialogHookProps {
+export interface LoadAndReleaseHookProps {
   type: 'partition' | 'collection';
 }
 
-export const useDialogHook = (props: DialogHookProps) => {
+export const useLoadAndReleaseHook = (props: LoadAndReleaseHookProps) => {
   const { type } = props;
   const { setDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');

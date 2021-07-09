@@ -11,6 +11,10 @@ const btnTrans = {
   release: 'Release',
   create: 'Create',
   load: 'Load',
+  insert: 'Import Data',
+  next: 'Next',
+  previous: 'Previous',
+  done: 'Done',
 };
 
 export default btnTrans;

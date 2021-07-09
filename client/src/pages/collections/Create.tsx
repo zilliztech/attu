@@ -175,7 +175,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   return (
     <DialogTemplate
       title={collectionTrans('createTitle')}
-      handleCancel={handleCloseDialog}
+      handleClose={handleCloseDialog}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
       confirmDisabled={disabled || !allFieldsValid}
