@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { ReactElement, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import { rootContext } from '../context/Root';
@@ -8,11 +8,13 @@ import { StatusEnum } from '../components/status/Types';
 import { CollectionData } from '../pages/overview/collectionCard/Types';
 
 // handle release and load dialog
-export interface LoadAndReleaseHookProps {
+export interface LoadAndReleaseDialogHookProps {
   type: 'partition' | 'collection';
 }
 
-export const useLoadAndReleaseHook = (props: LoadAndReleaseHookProps) => {
+export const useLoadAndReleaseDialogHook = (
+  props: LoadAndReleaseDialogHookProps
+) => {
   const { type } = props;
   const { setDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
@@ -68,5 +70,26 @@ export const useLoadAndReleaseHook = (props: LoadAndReleaseHookProps) => {
 
   return {
     handleAction,
+  };
+};
+
+export const useInsertDialogHook = () => {
+  const { setDialog } = useContext(rootContext);
+
+  const handleInsertDialog = (
+    // stepper container, contains all contents
+    component: ReactElement
+  ) => {
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component,
+      },
+    });
+  };
+
+  return {
+    handleInsertDialog,
   };
 };

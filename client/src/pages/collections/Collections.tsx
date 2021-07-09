@@ -19,10 +19,13 @@ import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
-import { useLoadAndReleaseHook } from '../../hooks/ReleaseAndLoad';
+import {
+  useInsertDialogHook,
+  useLoadAndReleaseDialogHook,
+} from '../../hooks/Dialog';
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
-// import InsertContainer from '../../components/insert/Container';
+import InsertContainer from '../../components/insert/Container';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -53,7 +56,8 @@ const { search = '' } = parseLocationSearch(window.location.search);
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
-  const { handleAction } = useLoadAndReleaseHook({ type: 'collection' });
+  const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
+  const { handleInsertDialog } = useInsertDialogHook();
   const [collections, setCollections] = useState<CollectionView[]>([]);
   const [searchedCollections, setSearchedCollections] = useState<
     CollectionView[]
@@ -228,13 +232,17 @@ const Collections = () => {
     // {
     //   label: btnTrans('insert'),
     //   onClick: () => {
-    //     setDialog({
-    //       open: true,
-    //       type: 'custom',
-    //       params: {
-    //         component: <InsertContainer />,
-    //       },
-    //     });
+    //     const component = (
+    //       <InsertContainer
+    //         collections={[]}
+    //         selectedCollection={''}
+    //         partitions={[]}
+    //         selectedPartition={''}
+    //         schema={[]}
+    //         handleInsert={() => {}}
+    //       />
+    //     );
+    //     handleInsertDialog(component);
     //   },
     //   /**
     //    * insert validation:
