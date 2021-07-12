@@ -12,13 +12,14 @@ export interface GroupOption {
 }
 
 export type CustomSelectorType = SelectProps & {
-  label: string;
+  label?: string;
   value: string | number;
   options: Option[];
   onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
   classes?: Partial<ClassNameMap<FormControlClassKey>>;
   variant?: 'filled' | 'outlined' | 'standard';
   labelClass?: string;
+  wrapperClass?: string;
 };
 
 export interface ICustomGroupSelect {

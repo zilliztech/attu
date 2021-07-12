@@ -48,6 +48,13 @@ const InsertContainer: FC<InsertContentProps> = ({
     label: s._fieldName,
     value: s._fieldId,
   }));
+  const isContainFieldNamesOptions: Option[] = [
+    {
+      label: 'Yes',
+      value: 1,
+    },
+    { label: 'No', value: 0 },
+  ];
 
   const { t: insertTrans } = useTranslation('insert');
   const { t: btnTrans } = useTranslation('btn');
@@ -59,6 +66,12 @@ const InsertContainer: FC<InsertContentProps> = ({
     InsertStatusEnum.init
   );
   // const [nextDisabled, setNextDisabled] = useState<boolean>(false);
+  const [collectionValue, setCollectionValue] =
+    useState<string>(selectedCollection);
+  const [partitionValue, setPartitionValue] =
+    useState<string>(selectedPartition);
+  // use contain field names yes as default
+  const [isContainFieldNames, setIsContainFieldNames] = useState<number>(1);
 
   const BackIcon = icons.back;
 
@@ -97,6 +110,10 @@ const InsertContainer: FC<InsertContentProps> = ({
       showCancel: insertStatus === InsertStatusEnum.init,
     };
   }, [insertStatus]);
+
+  const handleUploadedData = (data: string) => {
+    console.log('----- data 102', data);
+  };
 
   const handleInsertData = () => {
     // mock status change
@@ -144,9 +161,15 @@ const InsertContainer: FC<InsertContentProps> = ({
         return (
           <InsertImport
             collectionOptions={collectionOptions}
-            selectedCollection={selectedCollection}
             partitionOptions={partitionOptions}
-            selectedPartition={selectedPartition}
+            isContainedOptions={isContainFieldNamesOptions}
+            selectedCollection={collectionValue}
+            selectedPartition={partitionValue}
+            isContainFieldNames={isContainFieldNames}
+            handleCollectionChange={setCollectionValue}
+            handlePartitionChange={setPartitionValue}
+            handleIsContainedChange={setIsContainFieldNames}
+            handleUploadedData={handleUploadedData}
           />
         );
       case InsertStepperEnum.preview:

@@ -11,6 +11,8 @@ const insertTrans = {
     `Data size should be less than 5MB and the number of rows should be less than 100000, for the data to be imported properly.`,
     `The "Import Data" option will only append new records. You cannot update existing records using this option.`,
   ],
+  overSizeWarning: 'File data size should less than 5MB',
+  isContainFieldNames: 'First row contains field names?',
 };
 
 export default insertTrans;

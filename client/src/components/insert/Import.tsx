@@ -2,38 +2,49 @@ import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, Divider } from '@material-ui/core';
 import CustomSelector from '../customSelector/CustomSelector';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { InsertImportProps } from './Types';
 import Uploader from '../uploader/Uploader';
 import { INSERT_CSV_SAMPLE } from '../../consts/Insert';
+import { parseByte } from '../../utils/Format';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
     color: theme.palette.milvusGrey.dark,
+    fontWeight: 500,
     marginBottom: theme.spacing(1),
   },
-  selectorWrapper: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  selectors: {
+    '& .selectorWrapper': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+
+      marginBottom: theme.spacing(3),
+
+      '& .selectLabel': {
+        fontSize: '14px',
+        lineHeight: '20px',
+        color: '#010e29',
+      },
+
+      '& .divider': {
+        width: '20px',
+        margin: theme.spacing(0, 4),
+        backgroundColor: theme.palette.milvusGrey.dark,
+      },
+    },
 
     '& .selector': {
       flexBasis: '40%',
       minWidth: '256px',
     },
 
-    '& .selectLabel': {
-      fontSize: '14px',
-      lineHeight: '20px',
-      color: '#010e29',
-    },
-
-    '& .divider': {
-      width: '20px',
-      margin: theme.spacing(0, 4),
-      backgroundColor: theme.palette.milvusGrey.dark,
+    '& .isContainSelect': {
+      paddingTop: theme.spacing(2),
     },
   },
+
   uploadWrapper: {
     marginTop: theme.spacing(3),
     padding: theme.spacing(1),
@@ -88,18 +99,23 @@ const getStyles = makeStyles((theme: Theme) => ({
 const InsertImport: FC<InsertImportProps> = ({
   collectionOptions,
   partitionOptions,
+  isContainedOptions,
+
   selectedCollection,
   selectedPartition,
+  isContainFieldNames,
+
+  handleCollectionChange,
+  handlePartitionChange,
+  handleIsContainedChange,
+
+  handleUploadedData,
 }) => {
   const { t: insertTrans } = useTranslation('insert');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: partitionTrans } = useTranslation('partition');
   const classes = getStyles();
-
-  const handleCollectionChange = () => {};
-  const handlePartitionChange = () => {};
-
-  const fileName = '';
+  const [fileName, setFileName] = useState<string>('');
 
   return (
     <section>
@@ -107,25 +123,51 @@ const InsertImport: FC<InsertImportProps> = ({
         {insertTrans('targetTip')}
       </Typography>
 
-      <form className={classes.selectorWrapper}>
+      <form className={classes.selectors}>
+        <div className="selectorWrapper">
+          <CustomSelector
+            options={collectionOptions}
+            wrapperClass="selector"
+            labelClass="selectLabel"
+            value={selectedCollection}
+            variant="filled"
+            label={collectionTrans('collection')}
+            onChange={(e: { target: { value: unknown } }) => {
+              const collection = e.target.value;
+              handleCollectionChange(collection as string);
+            }}
+          />
+          <Divider classes={{ root: 'divider' }} />
+          <CustomSelector
+            options={partitionOptions}
+            wrapperClass="selector"
+            labelClass="selectLabel"
+            value={selectedPartition}
+            variant="filled"
+            label={partitionTrans('partition')}
+            onChange={(e: { target: { value: unknown } }) => {
+              const partition = e.target.value;
+              handlePartitionChange(partition as string);
+            }}
+          />
+        </div>
+
+        <label>
+          <Typography className={classes.tip}>
+            {insertTrans('isContainFieldNames')}
+          </Typography>
+        </label>
         <CustomSelector
-          options={collectionOptions}
-          classes={{ root: 'selector' }}
-          labelClass="selectLabel"
-          value={selectedCollection}
+          options={isContainedOptions}
+          wrapperClass="selector"
+          classes={{ filled: 'isContainSelect' }}
+          value={isContainFieldNames}
           variant="filled"
-          label={collectionTrans('collection')}
-          onChange={handleCollectionChange}
-        />
-        <Divider classes={{ root: 'divider' }} />
-        <CustomSelector
-          options={partitionOptions}
-          classes={{ root: 'selector' }}
-          labelClass="selectLabel"
-          value={selectedPartition}
-          variant="filled"
-          label={partitionTrans('partition')}
-          onChange={handlePartitionChange}
+          onChange={(e: { target: { value: unknown } }) => {
+            const isContainedValue = e.target.value;
+            console.log('isContained value', isContainedValue);
+            handleIsContainedChange(isContainedValue as number);
+          }}
         />
       </form>
 
@@ -138,6 +180,10 @@ const InsertImport: FC<InsertImportProps> = ({
             btnClass="uploader"
             label={insertTrans('uploaderLabel')}
             accept=".csv"
+            setFileName={setFileName}
+            handleUploadedData={handleUploadedData}
+            maxSize={parseByte('5m')}
+            overSizeWarning={insertTrans('overSizeWarning')}
           />
           <Typography className="text">
             {fileName || insertTrans('fileNamePlaceHolder')}
@@ -156,7 +202,7 @@ const InsertImport: FC<InsertImportProps> = ({
         </Typography>
         <ul className="noteList">
           {insertTrans('notes', { returnObjects: true }).map(note => (
-            <li className="text noteItem">
+            <li key={note} className="text noteItem">
               <Typography>{note}</Typography>
             </li>
           ))}

@@ -14,17 +14,21 @@ const CustomSelector: FC<CustomSelectorType> = props => {
     options,
     classes,
     variant,
+    wrapperClass = '',
     labelClass = '',
     ...others
   } = props;
   const id = generateId('selector');
 
   return (
-    <FormControl variant={variant} classes={classes}>
-      <InputLabel classes={{ root: labelClass }} htmlFor={id}>
-        {label}
-      </InputLabel>
+    <FormControl variant={variant} className={wrapperClass}>
+      {label && (
+        <InputLabel classes={{ root: labelClass }} htmlFor={id}>
+          {label}
+        </InputLabel>
+      )}
       <Select
+        classes={classes}
         {...others}
         value={value}
         onChange={onChange}

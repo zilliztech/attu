@@ -27,10 +27,20 @@ export enum InsertStatusEnum {
 }
 
 export interface InsertImportProps {
+  // selectors options
   collectionOptions: Option[];
   partitionOptions: Option[];
+  isContainedOptions: Option[];
+  // selectors value
   selectedCollection: string;
   selectedPartition: string;
+  isContainFieldNames: number;
+  // selectors change methods
+  handleIsContainedChange: (isContained: number) => void;
+  handleCollectionChange: (collectionName: string) => void;
+  handlePartitionChange: (partitionName: string) => void;
+  // handle uploaded data
+  handleUploadedData: (data: string) => void;
 }
 
 export interface InsertPreviewProps {
