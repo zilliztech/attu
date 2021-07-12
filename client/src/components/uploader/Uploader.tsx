@@ -13,7 +13,10 @@ const Uploader: FC<UploaderProps> = ({ label, accept, btnClass = '' }) => {
 
   return (
     <form>
-      <CustomButton variant="text" className={`${classes.btn} ${btnClass}`}>
+      <CustomButton
+        variant="contained"
+        className={`${classes.btn} ${btnClass}`}
+      >
         {label}
       </CustomButton>
       <input

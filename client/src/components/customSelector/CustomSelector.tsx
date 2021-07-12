@@ -1,36 +1,27 @@
 import { FC } from 'react';
-import {
-  createStyles,
-  FormControl,
-  InputLabel,
-  makeStyles,
-  MenuItem,
-  Select,
-  Theme,
-} from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { CustomSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    label: {
-      // textTransform: 'capitalize',
-    },
-  })
-);
 
 /**
  *  label: We may need label lowecase or capitalize, so we cant control css inside.
  * */
 const CustomSelector: FC<CustomSelectorType> = props => {
-  const { label, value, onChange, options, classes, variant, ...others } =
-    props;
+  const {
+    label,
+    value,
+    onChange,
+    options,
+    classes,
+    variant,
+    labelClass = '',
+    ...others
+  } = props;
   const id = generateId('selector');
-  const selectorClasses = useStyles();
 
   return (
     <FormControl variant={variant} classes={classes}>
-      <InputLabel htmlFor={id} className={selectorClasses.label}>
+      <InputLabel classes={{ root: labelClass }} htmlFor={id}>
         {label}
       </InputLabel>
       <Select

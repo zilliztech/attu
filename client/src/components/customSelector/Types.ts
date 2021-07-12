@@ -18,6 +18,7 @@ export type CustomSelectorType = SelectProps & {
   onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
   classes?: Partial<ClassNameMap<FormControlClassKey>>;
   variant?: 'filled' | 'outlined' | 'standard';
+  labelClass?: string;
 };
 
 export interface ICustomGroupSelect {
