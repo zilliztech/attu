@@ -5,7 +5,7 @@ import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import { StatusEnum } from '../../components/status/Types';
 import { rootContext } from '../../context/Root';
-import { useDialogHook } from '../../hooks/Dialog';
+import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
-  const { handleAction } = useDialogHook({ type: 'collection' });
+  const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const classes = useStyles();
   const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');

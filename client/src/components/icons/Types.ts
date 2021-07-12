@@ -24,4 +24,5 @@ export type IconsType =
   | 'release'
   | 'load'
   | 'remove'
-  | 'key';
+  | 'key'
+  | 'upload';

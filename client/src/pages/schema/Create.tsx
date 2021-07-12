@@ -138,7 +138,7 @@ const CreateIndex = (props: {
         type: indexTrans('index'),
         name: collectionName,
       })}
-      handleCancel={handleCancel}
+      handleClose={handleCancel}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateIndex}
       confirmDisabled={disabled}

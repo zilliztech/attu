@@ -14,7 +14,7 @@ describe('test dialog template component', () => {
         <I18nextProvider i18n={i18n}>
           <DialogTemplate
             title="dialog template"
-            handleCancel={mockCancelFn}
+            handleClose={mockCancelFn}
             handleConfirm={mockConfirmFn}
           >
             dialog content
@@ -38,7 +38,7 @@ describe('test dialog template component', () => {
         <I18nextProvider i18n={i18n}>
           <DialogTemplate
             title="dialog template"
-            handleCancel={mockCancelFn}
+            handleClose={mockCancelFn}
             handleConfirm={mockConfirmFn}
             confirmDisabled={true}
           >
