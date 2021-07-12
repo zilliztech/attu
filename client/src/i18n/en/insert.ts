@@ -13,6 +13,8 @@ const insertTrans = {
   ],
   overSizeWarning: 'File data size should less than 5MB',
   isContainFieldNames: 'First row contains field names?',
+  uploadFieldNamesLenWarning:
+    'Uploaded data column count is not equal to schema count',
 };
 
 export default insertTrans;

@@ -13,6 +13,7 @@ import {
   InsertStepperEnum,
 } from './Types';
 import { Option } from '../customSelector/Types';
+import { parse } from 'papaparse';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {
@@ -48,17 +49,10 @@ const InsertContainer: FC<InsertContentProps> = ({
     label: s._fieldName,
     value: s._fieldId,
   }));
-  const isContainFieldNamesOptions: Option[] = [
-    {
-      label: 'Yes',
-      value: 1,
-    },
-    { label: 'No', value: 0 },
-  ];
 
   const { t: insertTrans } = useTranslation('insert');
   const { t: btnTrans } = useTranslation('btn');
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const [activeStep, setActiveStep] = useState<InsertStepperEnum>(
     InsertStepperEnum.import
   );
@@ -72,6 +66,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     useState<string>(selectedPartition);
   // use contain field names yes as default
   const [isContainFieldNames, setIsContainFieldNames] = useState<number>(1);
+  const [fileName, setFileName] = useState<string>('');
 
   const BackIcon = icons.back;
 
@@ -111,8 +106,25 @@ const InsertContainer: FC<InsertContentProps> = ({
     };
   }, [insertStatus]);
 
-  const handleUploadedData = (data: string) => {
-    console.log('----- data 102', data);
+  const checkUploadFileValidation = (fieldNamesLength: number): boolean => {
+    // return schemaOptions.length === fieldNamesLength;
+    return true;
+  };
+
+  const handleUploadedData = (csv: string) => {
+    // use !! to convert number(0 or 1) to boolean
+    const { data } = parse(csv, { header: !!isContainFieldNames });
+    const uploadFieldNamesLength = !!isContainFieldNames
+      ? data.length
+      : (data as string[])[0].length;
+    const validation = checkUploadFileValidation(uploadFieldNamesLength);
+    if (!validation) {
+      // open snackbar
+      openSnackBar(insertTrans('uploadFieldNamesLenWarning'), 'error');
+      // reset filename
+      setFileName('');
+      return;
+    }
   };
 
   const handleInsertData = () => {
@@ -162,7 +174,6 @@ const InsertContainer: FC<InsertContentProps> = ({
           <InsertImport
             collectionOptions={collectionOptions}
             partitionOptions={partitionOptions}
-            isContainedOptions={isContainFieldNamesOptions}
             selectedCollection={collectionValue}
             selectedPartition={partitionValue}
             isContainFieldNames={isContainFieldNames}
@@ -170,6 +181,8 @@ const InsertContainer: FC<InsertContentProps> = ({
             handlePartitionChange={setPartitionValue}
             handleIsContainedChange={setIsContainFieldNames}
             handleUploadedData={handleUploadedData}
+            fileName={fileName}
+            setFileName={setFileName}
           />
         );
       case InsertStepperEnum.preview:

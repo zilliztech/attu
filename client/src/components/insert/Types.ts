@@ -30,7 +30,6 @@ export interface InsertImportProps {
   // selectors options
   collectionOptions: Option[];
   partitionOptions: Option[];
-  isContainedOptions: Option[];
   // selectors value
   selectedCollection: string;
   selectedPartition: string;
@@ -41,6 +40,8 @@ export interface InsertImportProps {
   handlePartitionChange: (partitionName: string) => void;
   // handle uploaded data
   handleUploadedData: (data: string) => void;
+  fileName: string;
+  setFileName: (fileName: string) => void;
 }
 
 export interface InsertPreviewProps {

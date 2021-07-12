@@ -2,11 +2,12 @@ import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, Divider } from '@material-ui/core';
 import CustomSelector from '../customSelector/CustomSelector';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { InsertImportProps } from './Types';
 import Uploader from '../uploader/Uploader';
 import { INSERT_CSV_SAMPLE } from '../../consts/Insert';
 import { parseByte } from '../../utils/Format';
+import { Option } from '../customSelector/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
@@ -99,7 +100,6 @@ const getStyles = makeStyles((theme: Theme) => ({
 const InsertImport: FC<InsertImportProps> = ({
   collectionOptions,
   partitionOptions,
-  isContainedOptions,
 
   selectedCollection,
   selectedPartition,
@@ -110,12 +110,20 @@ const InsertImport: FC<InsertImportProps> = ({
   handleIsContainedChange,
 
   handleUploadedData,
+  fileName,
+  setFileName,
 }) => {
   const { t: insertTrans } = useTranslation('insert');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: partitionTrans } = useTranslation('partition');
   const classes = getStyles();
-  const [fileName, setFileName] = useState<string>('');
+  const isContainedOptions: Option[] = [
+    {
+      label: 'Yes',
+      value: 1,
+    },
+    { label: 'No', value: 0 },
+  ];
 
   return (
     <section>
