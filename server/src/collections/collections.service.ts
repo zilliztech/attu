@@ -86,7 +86,7 @@ export class CollectionsService {
     const data = [];
     const res = await this.getCollectionNames();
     const loadedCollections = await this.getCollectionNames({
-      type: ShowCollectionsType.InMemory,
+      type: ShowCollectionsType.Loaded,
     });
     if (res.collection_names.length > 0) {
       for (const name of res.collection_names) {
@@ -113,7 +113,7 @@ export class CollectionsService {
   async getLoadedColletions() {
     const data = [];
     const res = await this.getCollectionNames({
-      type: ShowCollectionsType.InMemory,
+      type: ShowCollectionsType.Loaded,
     });
     if (res.collection_names.length > 0) {
       for (const [index, value] of res.collection_names.entries()) {
