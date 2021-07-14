@@ -78,6 +78,8 @@ export type TableType = {
   setPageSize?: (size: number) => void;
   headEditable?: boolean;
   editHeads: EditableHeads[];
+  // with unit like '20px'
+  tableCellMaxWidth?: string;
 };
 
 export type ColDefinitionsType = {
@@ -127,6 +129,8 @@ export type MilvusGridType = ToolBarType & {
   showHoverStyle?: boolean;
   headEditable?: boolean;
   editHeads?: EditableHeads[];
+  // with unit like '20px'
+  tableCellMaxWidth?: string;
 };
 
 export type ActionBarType = {

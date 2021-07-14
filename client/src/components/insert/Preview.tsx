@@ -81,7 +81,6 @@ const getTableData = (
   isContainFieldNames: number
 ): { [key in string]: any }[] => {
   const csvData = isContainFieldNames ? data.slice(1) : data;
-
   return transferCsvArrayToTableData(csvData);
 };
 
@@ -129,7 +128,24 @@ const InsertPreview: FC<InsertPreviewProps> = ({
         component: (
           <SimpleMenu
             label={head || insertTrans('requiredFieldName')}
-            menuItems={schemaOptions.map(schema => ({
+            // menuItems={schemaOptions.map(schema => ({
+            //   label: schema.label,
+            //   callback: () => handleTableHeadChange(index, schema.label),
+            //   wrapperClass: `${classes.menuItem} ${
+            //     head === schema.label ? classes.menuActive : ''
+            //   }`,
+            // }))}
+            menuItems={[
+              { label: 'type', value: 'type' },
+              {
+                label: 'field1',
+                value: 'field1',
+              },
+              {
+                label: 'field2',
+                value: 'field2',
+              },
+            ].map(schema => ({
               label: schema.label,
               callback: () => handleTableHeadChange(index, schema.label),
               wrapperClass: `${classes.menuItem} ${
@@ -150,7 +166,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
       classes.menuItem,
       classes.menuActive,
       ArrowIcon,
-      schemaOptions,
+      // schemaOptions,
       insertTrans,
       handleTableHeadChange,
     ]
@@ -191,7 +207,6 @@ const InsertPreview: FC<InsertPreviewProps> = ({
           variant="filled"
           onChange={(e: { target: { value: unknown } }) => {
             const isContainedValue = e.target.value;
-            console.log('isContained value', isContainedValue);
             handleIsContainedChange(isContainedValue as number);
           }}
         />
@@ -216,6 +231,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
             showHoverStyle={false}
             headEditable={true}
             editHeads={editHeads}
+            tableCellMaxWidth="120px"
           />
         </div>
       )}

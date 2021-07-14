@@ -87,7 +87,8 @@ const useStyles = makeStyles(theme => ({
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      maxWidth: '300px',
+      maxWidth: (props: { tableCellMaxWidth: string }) =>
+        props.tableCellMaxWidth ? props.tableCellMaxWidth : '300px',
       fontSize: '14px',
       lineHeight: '20px',
     },
@@ -117,8 +118,9 @@ const EnhancedTable: FC<TableType> = props => {
     setPageSize,
     headEditable = false,
     editHeads = [],
+    tableCellMaxWidth = '',
   } = props;
-  const classes = useStyles();
+  const classes = useStyles({ tableCellMaxWidth });
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState<string>('');
   const [tableMouseStatus, setTableMouseStatus] = React.useState<boolean[]>([]);
