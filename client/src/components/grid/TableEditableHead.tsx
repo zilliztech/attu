@@ -3,21 +3,8 @@ import { TableEditableHeadType } from './Types';
 import { TableHead, TableRow, TableCell, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
   tableCell: {
-    // background: theme.palette.common.t,
     paddingLeft: theme.spacing(2),
-    // borderBottom: 'none',
   },
   tableHeader: {
     textTransform: 'capitalize',
