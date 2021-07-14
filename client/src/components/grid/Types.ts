@@ -40,6 +40,7 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     type?: 'iconBtn' | 'buttton' | 'switch' | 'select' | 'groupSelect';
     position?: 'right' | 'left';
     component?: ReactElement;
+    btnVariant?: 'contained' | 'outlined' | 'text';
   };
 
 export type TableHeadType = {

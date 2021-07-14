@@ -8,6 +8,10 @@ import CustomButton from '../customButton/CustomButton';
 import { makeStyles, Theme } from '@material-ui/core';
 
 const getStyles = makeStyles((theme: Theme) => ({
+  menuPaper: {
+    boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.08)',
+    borderRadius: '4px',
+  },
   menuItem: {
     minWidth: '160px',
     padding: theme.spacing(1),
@@ -49,9 +53,10 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        classes={{ paper: classes.menuPaper }}
         getContentAnchorEl={null}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        // anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        // transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <div>
           {menuItems.map((v, i) =>
