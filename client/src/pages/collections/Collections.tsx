@@ -229,30 +229,30 @@ const Collections = () => {
       },
       icon: 'add',
     },
-    {
-      label: btnTrans('insert'),
-      onClick: () => {
-        const component = (
-          <InsertContainer
-            collections={[]}
-            selectedCollection={''}
-            partitions={[]}
-            selectedPartition={''}
-            schema={[]}
-            handleInsert={() => {}}
-          />
-        );
-        handleInsertDialog(component);
-      },
-      /**
-       * insert validation:
-       * 1. At least 1 available collection
-       * 2. selected collections quantity shouldn't over 1
-       */
-      disabled: () =>
-        collectionList.length === 0 || selectedCollections.length > 1,
-      icon: 'upload',
-    },
+    // {
+    //   label: btnTrans('insert'),
+    //   onClick: () => {
+    //     const component = (
+    //       <InsertContainer
+    //         collections={[]}
+    //         selectedCollection={''}
+    //         partitions={[]}
+    //         selectedPartition={''}
+    //         schema={[]}
+    //         handleInsert={() => {}}
+    //       />
+    //     );
+    //     handleInsertDialog(component);
+    //   },
+    //   /**
+    //    * insert validation:
+    //    * 1. At least 1 available collection
+    //    * 2. selected collections quantity shouldn't over 1
+    //    */
+    //   disabled: () =>
+    //     collectionList.length === 0 || selectedCollections.length > 1,
+    //   icon: 'upload',
+    // },
     {
       type: 'iconBtn',
       onClick: () => {
