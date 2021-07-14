@@ -319,8 +319,6 @@ const Partitions: FC<{
         rows={partitionList}
         rowCount={total}
         primaryKey="id"
-        openCheckBox={true}
-        showHoverStyle={true}
         selected={selectedPartitions}
         setSelected={handleSelectChange}
         page={currentPage}

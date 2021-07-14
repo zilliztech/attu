@@ -9,7 +9,7 @@ export interface InsertContentProps {
   partitions: PartitionData[];
   selectedPartition: string;
   schema: FieldData[];
-  handleInsert: () => void;
+  handleInsert: () => Promise<boolean>;
 }
 
 export enum InsertStepperEnum {
@@ -27,14 +27,28 @@ export enum InsertStatusEnum {
 }
 
 export interface InsertImportProps {
+  // selectors options
   collectionOptions: Option[];
   partitionOptions: Option[];
+  // selectors value
   selectedCollection: string;
   selectedPartition: string;
+
+  // selectors change methods
+  handleCollectionChange: (collectionName: string) => void;
+  handlePartitionChange: (partitionName: string) => void;
+  // handle uploaded data
+  handleUploadedData: (data: string) => void;
+  fileName: string;
+  setFileName: (fileName: string) => void;
 }
 
 export interface InsertPreviewProps {
   schemaOptions: Option[];
+  data: any[];
+
+  isContainFieldNames: number;
+  handleIsContainedChange: (isContained: number) => void;
 }
 
 export interface InsertStatusProps {

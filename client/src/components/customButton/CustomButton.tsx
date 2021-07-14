@@ -19,7 +19,7 @@ const buttonStyle = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.main,
     boxShadow: 'initial',
     fontWeight: 'bold',
-    lineHeight: '16px',
+    lineHeight: '24px',
     '&:hover': {
       backgroundColor: theme.palette.primary.dark,
       boxShadow: 'initial',

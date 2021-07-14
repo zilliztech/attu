@@ -17,6 +17,9 @@ const getStyles = makeStyles((theme: Theme) => ({
   // closeButton: {
   //   padding: theme.spacing(1),
   // },
+  title: {
+    fontWeight: 500,
+  },
   icon: {
     fontSize: '24px',
     color: '#010e29',
@@ -27,10 +30,17 @@ const getStyles = makeStyles((theme: Theme) => ({
 
 interface IProps extends DialogTitleProps {
   onClose?: () => void;
+  showCloseIcon?: boolean;
 }
 
 const CustomDialogTitle = (props: IProps) => {
-  const { children, classes = { root: '' }, onClose, ...other } = props;
+  const {
+    children,
+    classes = { root: '' },
+    onClose,
+    showCloseIcon = true,
+    ...other
+  } = props;
   const innerClass = getStyles();
 
   const ClearIcon = icons.clear;
@@ -41,8 +51,10 @@ const CustomDialogTitle = (props: IProps) => {
       className={`${innerClass.root} ${classes.root}`}
       {...other}
     >
-      <Typography variant="h5">{children}</Typography>
-      {onClose ? (
+      <Typography variant="h4" className={innerClass.title}>
+        {children}
+      </Typography>
+      {showCloseIcon && onClose ? (
         <ClearIcon
           data-testid="clear-icon"
           classes={{ root: innerClass.icon }}

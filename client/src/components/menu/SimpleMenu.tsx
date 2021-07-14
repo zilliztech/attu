@@ -10,6 +10,11 @@ import { makeStyles, Theme } from '@material-ui/core';
 const getStyles = makeStyles((theme: Theme) => ({
   menuItem: {
     minWidth: '160px',
+    padding: theme.spacing(1),
+
+    '&:hover': {
+      backgroundColor: '#f9f9f9',
+    },
   },
 }));
 
@@ -59,7 +64,11 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
                 }}
                 key={v.label + i}
               >
-                {v.label}
+                {v.wrapperClass ? (
+                  <span className={v.wrapperClass}>{v.label}</span>
+                ) : (
+                  v.label
+                )}
               </MenuItem>
             ) : (
               <span key={i}>{v.label}</span>

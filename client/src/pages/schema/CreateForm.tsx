@@ -159,7 +159,7 @@ const CreateForm = (
           indexTypeChange && indexTypeChange(type as string);
         }}
         variant="filled"
-        classes={{ root: classes.select }}
+        wrapperClass={classes.select}
       />
 
       <Typography className={classes.paramTitle}>
@@ -174,7 +174,7 @@ const CreateForm = (
           updateForm('metric_type', type as string);
         }}
         variant="filled"
-        classes={{ root: classes.select }}
+        wrapperClass={classes.select}
       />
 
       {indexParams.includes('m') && (
@@ -186,7 +186,7 @@ const CreateForm = (
             updateForm('m', e.target.value as string)
           }
           variant="filled"
-          classes={{ root: classes.select }}
+          wrapperClass={classes.select}
         />
       )}
 

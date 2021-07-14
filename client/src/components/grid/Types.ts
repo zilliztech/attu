@@ -53,6 +53,15 @@ export type TableHeadType = {
   openCheckBox?: boolean;
 };
 
+export type TableEditableHeadType = {
+  editHeads: EditableHeads[];
+};
+
+export type EditableHeads = {
+  component: ReactElement;
+  value: string;
+};
+
 export type TableType = {
   selected: any[];
   onSelected: (e: React.MouseEvent, row: any) => void;
@@ -67,6 +76,10 @@ export type TableType = {
   showHoverStyle?: boolean;
   isLoading?: boolean;
   setPageSize?: (size: number) => void;
+  headEditable?: boolean;
+  editHeads: EditableHeads[];
+  // with unit like '20px'
+  tableCellMaxWidth?: string;
 };
 
 export type ColDefinitionsType = {
@@ -114,6 +127,10 @@ export type MilvusGridType = ToolBarType & {
   disableSelect?: boolean;
   noData?: string;
   showHoverStyle?: boolean;
+  headEditable?: boolean;
+  editHeads?: EditableHeads[];
+  // with unit like '20px'
+  tableCellMaxWidth?: string;
 };
 
 export type ActionBarType = {

@@ -24,6 +24,7 @@ export type DialogContainerProps = {
   title: string;
   cancelLabel?: string | ReactElement;
   confirmLabel?: string | ReactElement;
+  showCloseIcon?: boolean;
   handleClose: () => void;
   handleCancel?: () => void;
   handleConfirm: (param: any) => void;

@@ -379,8 +379,6 @@ const Collections = () => {
           rows={collectionList}
           rowCount={total}
           primaryKey="_name"
-          openCheckBox={true}
-          showHoverStyle={true}
           selected={selectedCollections}
           setSelected={handleSelectChange}
           page={currentPage}

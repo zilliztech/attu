@@ -10,6 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { TableType } from './Types';
 import { Box, Button, Typography } from '@material-ui/core';
 import EnhancedTableHead from './TableHead';
+import EditableTableHead from './TableEditableHead';
 import { stableSort, getComparator } from './Utils';
 import Copy from '../../components/copy/Copy';
 import ActionBar from './ActionBar';
@@ -86,7 +87,8 @@ const useStyles = makeStyles(theme => ({
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      maxWidth: '300px',
+      maxWidth: (props: { tableCellMaxWidth: string }) =>
+        props.tableCellMaxWidth,
       fontSize: '14px',
       lineHeight: '20px',
     },
@@ -108,14 +110,23 @@ const EnhancedTable: FC<TableType> = props => {
     rows = [],
     colDefinitions,
     primaryKey,
+    // whether show checkbox in the first column
+    // set true as default
     openCheckBox = true,
     disableSelect,
     noData,
-    showHoverStyle,
+    // whether change table row background color when mouse hover
+    // set true as default
+    showHoverStyle = true,
     isLoading,
     setPageSize,
+    headEditable = false,
+    // editable heads required param, contains heads components and its value
+    editHeads = [],
+    // if table cell max width not be passed, table row will use 300px as default
+    tableCellMaxWidth = '300px',
   } = props;
-  const classes = useStyles();
+  const classes = useStyles({ tableCellMaxWidth });
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState<string>('');
   const [tableMouseStatus, setTableMouseStatus] = React.useState<boolean[]>([]);
@@ -165,16 +176,20 @@ const EnhancedTable: FC<TableType> = props => {
           size="medium"
           aria-label="enhanced table"
         >
-          <EnhancedTableHead
-            colDefinitions={colDefinitions}
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={onSelectedAll}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-            openCheckBox={openCheckBox}
-          />
+          {!headEditable ? (
+            <EnhancedTableHead
+              colDefinitions={colDefinitions}
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={onSelectedAll}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+              openCheckBox={openCheckBox}
+            />
+          ) : (
+            <EditableTableHead editHeads={editHeads} />
+          )}
           {!isLoading && (
             <TableBody>
               {rows && rows.length ? (
