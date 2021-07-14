@@ -9,7 +9,7 @@ export interface InsertContentProps {
   partitions: PartitionData[];
   selectedPartition: string;
   schema: FieldData[];
-  handleInsert: () => void;
+  handleInsert: () => Promise<boolean>;
 }
 
 export enum InsertStepperEnum {

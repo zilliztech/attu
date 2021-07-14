@@ -88,7 +88,7 @@ const useStyles = makeStyles(theme => ({
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
       maxWidth: (props: { tableCellMaxWidth: string }) =>
-        props.tableCellMaxWidth ? props.tableCellMaxWidth : '300px',
+        props.tableCellMaxWidth,
       fontSize: '14px',
       lineHeight: '20px',
     },
@@ -110,15 +110,21 @@ const EnhancedTable: FC<TableType> = props => {
     rows = [],
     colDefinitions,
     primaryKey,
+    // whether show checkbox in the first column
+    // set true as default
     openCheckBox = true,
     disableSelect,
     noData,
+    // whether change table row background color when mouse hover
+    // set true as default
     showHoverStyle = true,
     isLoading,
     setPageSize,
     headEditable = false,
+    // editable heads required param, contains heads components and its value
     editHeads = [],
-    tableCellMaxWidth = '',
+    // if table cell max width not be passed, table row will use 300px as default
+    tableCellMaxWidth = '300px',
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const [order, setOrder] = React.useState('asc');

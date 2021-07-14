@@ -128,24 +128,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
         component: (
           <SimpleMenu
             label={head || insertTrans('requiredFieldName')}
-            // menuItems={schemaOptions.map(schema => ({
-            //   label: schema.label,
-            //   callback: () => handleTableHeadChange(index, schema.label),
-            //   wrapperClass: `${classes.menuItem} ${
-            //     head === schema.label ? classes.menuActive : ''
-            //   }`,
-            // }))}
-            menuItems={[
-              { label: 'type', value: 'type' },
-              {
-                label: 'field1',
-                value: 'field1',
-              },
-              {
-                label: 'field2',
-                value: 'field2',
-              },
-            ].map(schema => ({
+            menuItems={schemaOptions.map(schema => ({
               label: schema.label,
               callback: () => handleTableHeadChange(index, schema.label),
               wrapperClass: `${classes.menuItem} ${
@@ -166,7 +149,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
       classes.menuItem,
       classes.menuActive,
       ArrowIcon,
-      // schemaOptions,
+      schemaOptions,
       insertTrans,
       handleTableHeadChange,
     ]

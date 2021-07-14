@@ -60,17 +60,23 @@ const InsertContainer: FC<InsertContentProps> = ({
     InsertStatusEnum.init
   );
   // const [nextDisabled, setNextDisabled] = useState<boolean>(false);
+
+  // selected collection name
   const [collectionValue, setCollectionValue] =
     useState<string>(selectedCollection);
+  // selected partition name
   const [partitionValue, setPartitionValue] =
     useState<string>(selectedPartition);
   // use contain field names yes as default
   const [isContainFieldNames, setIsContainFieldNames] = useState<number>(1);
+  // uploaded file name
   const [fileName, setFileName] = useState<string>('');
+  // uploaded csv data (type: string)
   const [csvData, setCsvData] = useState<any[]>([]);
 
   const BackIcon = icons.back;
 
+  // modal actions part, buttons label text or component
   const { confirm, cancel } = useMemo(() => {
     const labelMap: {
       [key in InsertStepperEnum]: {
@@ -111,6 +117,7 @@ const InsertContainer: FC<InsertContentProps> = ({
   };
 
   const previewData = useMemo(() => {
+    // we only show top 4 results of uploaded csv data
     const end = isContainFieldNames ? 5 : 4;
     return csvData.slice(0, end);
   }, [csvData, isContainFieldNames]);
@@ -129,13 +136,11 @@ const InsertContainer: FC<InsertContentProps> = ({
     setCsvData(data);
   };
 
-  const handleInsertData = () => {
-    // mock status change
+  const handleInsertData = async () => {
     setInsertStauts(InsertStatusEnum.loading);
-    handleInsert();
-    setTimeout(() => {
-      setInsertStauts(InsertStatusEnum.success);
-    }, 1000);
+    const res = await handleInsert();
+    const status = res ? InsertStatusEnum.success : InsertStatusEnum.error;
+    setInsertStauts(status);
   };
 
   const handleNext = () => {
