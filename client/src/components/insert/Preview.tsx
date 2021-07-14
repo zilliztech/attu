@@ -101,6 +101,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   const { t: insertTrans } = useTranslation('insert');
 
   const ArrowIcon = icons.dropdown;
+  // table needed table structure, metadata from csv
   const tableData = getTableData(data, isContainFieldNames);
 
   const [tableHeads, setTableHeads] = useState<string[]>(
