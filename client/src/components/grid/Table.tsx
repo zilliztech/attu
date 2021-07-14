@@ -10,6 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { TableType } from './Types';
 import { Box, Button, Typography } from '@material-ui/core';
 import EnhancedTableHead from './TableHead';
+import EditableTableHead from './TableEditableHead';
 import { stableSort, getComparator } from './Utils';
 import Copy from '../../components/copy/Copy';
 import ActionBar from './ActionBar';
@@ -111,9 +112,11 @@ const EnhancedTable: FC<TableType> = props => {
     openCheckBox = true,
     disableSelect,
     noData,
-    showHoverStyle,
+    showHoverStyle = true,
     isLoading,
     setPageSize,
+    headEditable = false,
+    editHeads = [],
   } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -165,16 +168,20 @@ const EnhancedTable: FC<TableType> = props => {
           size="medium"
           aria-label="enhanced table"
         >
-          <EnhancedTableHead
-            colDefinitions={colDefinitions}
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={onSelectedAll}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-            openCheckBox={openCheckBox}
-          />
+          {!headEditable ? (
+            <EnhancedTableHead
+              colDefinitions={colDefinitions}
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={onSelectedAll}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+              openCheckBox={openCheckBox}
+            />
+          ) : (
+            <EditableTableHead editHeads={editHeads} />
+          )}
           {!isLoading && (
             <TableBody>
               {rows && rows.length ? (

@@ -210,7 +210,6 @@ const Schema: FC<{
         rows={schemaList}
         rowCount={total}
         primaryKey="_fieldId"
-        openCheckBox={false}
         showHoverStyle={false}
         page={currentPage}
         onChangePage={handlePageChange}

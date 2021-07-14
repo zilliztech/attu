@@ -100,6 +100,8 @@ const MilvusGrid: FC<MilvusGridType> = props => {
     disableSelect = false,
     noData = gridTrans.noData,
     showHoverStyle = true,
+    headEditable = false,
+    editHeads = [],
     selected = [],
     setSelected = () => {},
     setRowsPerPage = () => {},
@@ -208,6 +210,8 @@ const MilvusGrid: FC<MilvusGridType> = props => {
           showHoverStyle={showHoverStyle}
           isLoading={isLoading}
           setPageSize={setRowsPerPage}
+          headEditable={headEditable}
+          editHeads={editHeads}
         ></Table>
         {rowCount ? (
           <TablePagination

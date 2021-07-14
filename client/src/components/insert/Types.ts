@@ -33,9 +33,8 @@ export interface InsertImportProps {
   // selectors value
   selectedCollection: string;
   selectedPartition: string;
-  isContainFieldNames: number;
+
   // selectors change methods
-  handleIsContainedChange: (isContained: number) => void;
   handleCollectionChange: (collectionName: string) => void;
   handlePartitionChange: (partitionName: string) => void;
   // handle uploaded data
@@ -46,6 +45,10 @@ export interface InsertImportProps {
 
 export interface InsertPreviewProps {
   schemaOptions: Option[];
+  data: any[];
+
+  isContainFieldNames: number;
+  handleIsContainedChange: (isContained: number) => void;
 }
 
 export interface InsertStatusProps {

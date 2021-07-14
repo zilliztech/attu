@@ -27,6 +27,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   children,
   showActions = true,
   showCancel = true,
+  showCloseIcon = true,
 }) => {
   const { t } = useTranslation('btn');
   const cancel = cancelLabel || t('cancel');
@@ -36,7 +37,9 @@ const DialogTemplate: FC<DialogContainerProps> = ({
 
   return (
     <>
-      <CustomDialogTitle onClose={handleClose}>{title}</CustomDialogTitle>
+      <CustomDialogTitle onClose={handleClose} showCloseIcon={showCloseIcon}>
+        {title}
+      </CustomDialogTitle>
       <DialogContent>{children}</DialogContent>
       {showActions && (
         <DialogActions className={classes.actions}>

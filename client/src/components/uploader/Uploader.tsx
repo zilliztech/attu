@@ -44,7 +44,7 @@ const Uploader: FC<UploaderProps> = ({
     uploader!.onchange = (e: Event) => {
       const target = e.target as HTMLInputElement;
       const file: File = (target.files as FileList)[0];
-      const isSizeOverLimit = maxSize && maxSize < file.size;
+      const isSizeOverLimit = file && maxSize && maxSize < file.size;
 
       if (!file) {
         return;

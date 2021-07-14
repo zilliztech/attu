@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useContext, useMemo, useState } from 'react';
+import { FC, ReactElement, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../customDialog/DialogTemplate';
 import icons from '../icons/Icons';
@@ -67,22 +67,22 @@ const InsertContainer: FC<InsertContentProps> = ({
   // use contain field names yes as default
   const [isContainFieldNames, setIsContainFieldNames] = useState<number>(1);
   const [fileName, setFileName] = useState<string>('');
+  const [csvData, setCsvData] = useState<any[]>([]);
 
   const BackIcon = icons.back;
 
   const { confirm, cancel } = useMemo(() => {
-    /**
-     * activeStep type is InsertStepperEnum
-     * so index 0 represents import,
-     * index 1 represents preview,
-     * index 2 represents status
-     */
-    const labelList = [
-      {
+    const labelMap: {
+      [key in InsertStepperEnum]: {
+        confirm: string;
+        cancel: string | ReactElement;
+      };
+    } = {
+      [InsertStepperEnum.import]: {
         confirm: btnTrans('next'),
         cancel: btnTrans('cancel'),
       },
-      {
+      [InsertStepperEnum.preview]: {
         confirm: btnTrans('insert'),
         cancel: (
           <>
@@ -91,12 +91,12 @@ const InsertContainer: FC<InsertContentProps> = ({
           </>
         ),
       },
-      {
+      [InsertStepperEnum.status]: {
         confirm: btnTrans('done'),
         cancel: '',
       },
-    ];
-    return labelList[activeStep];
+    };
+    return labelMap[activeStep];
   }, [activeStep, btnTrans, BackIcon, classes.icon]);
 
   const { showActions, showCancel } = useMemo(() => {
@@ -107,16 +107,17 @@ const InsertContainer: FC<InsertContentProps> = ({
   }, [insertStatus]);
 
   const checkUploadFileValidation = (fieldNamesLength: number): boolean => {
-    // return schemaOptions.length === fieldNamesLength;
-    return true;
+    return schemaOptions.length === fieldNamesLength;
   };
 
+  const previewData = useMemo(() => {
+    const end = isContainFieldNames ? 5 : 4;
+    return csvData.slice(0, end);
+  }, [csvData, isContainFieldNames]);
+
   const handleUploadedData = (csv: string) => {
-    // use !! to convert number(0 or 1) to boolean
-    const { data } = parse(csv, { header: !!isContainFieldNames });
-    const uploadFieldNamesLength = !!isContainFieldNames
-      ? data.length
-      : (data as string[])[0].length;
+    const { data } = parse(csv);
+    const uploadFieldNamesLength = (data as string[])[0].length;
     const validation = checkUploadFileValidation(uploadFieldNamesLength);
     if (!validation) {
       // open snackbar
@@ -125,6 +126,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       setFileName('');
       return;
     }
+    setCsvData(data);
   };
 
   const handleInsertData = () => {
@@ -133,7 +135,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     handleInsert();
     setTimeout(() => {
       setInsertStauts(InsertStatusEnum.success);
-    }, 500);
+    }, 1000);
   };
 
   const handleNext = () => {
@@ -176,17 +178,22 @@ const InsertContainer: FC<InsertContentProps> = ({
             partitionOptions={partitionOptions}
             selectedCollection={collectionValue}
             selectedPartition={partitionValue}
-            isContainFieldNames={isContainFieldNames}
             handleCollectionChange={setCollectionValue}
             handlePartitionChange={setPartitionValue}
-            handleIsContainedChange={setIsContainFieldNames}
             handleUploadedData={handleUploadedData}
             fileName={fileName}
             setFileName={setFileName}
           />
         );
       case InsertStepperEnum.preview:
-        return <InsertPreview schemaOptions={schemaOptions} />;
+        return (
+          <InsertPreview
+            schemaOptions={schemaOptions}
+            data={previewData}
+            isContainFieldNames={isContainFieldNames}
+            handleIsContainedChange={setIsContainFieldNames}
+          />
+        );
       // default represents InsertStepperEnum.status
       default:
         return <InsertStatus status={insertStatus} />;
@@ -204,6 +211,8 @@ const InsertContainer: FC<InsertContentProps> = ({
       confirmDisabled={false}
       showActions={showActions}
       showCancel={showCancel}
+      // don't show close icon when insert not finish
+      showCloseIcon={insertStatus !== InsertStatusEnum.loading}
     >
       {generateContent(activeStep)}
     </DialogTemplate>

@@ -1,13 +1,11 @@
-import { useTranslation } from 'react-i18next';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, Theme, Divider } from '@material-ui/core';
-import CustomSelector from '../customSelector/CustomSelector';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { makeStyles, Theme, Divider, Typography } from '@material-ui/core';
+import CustomSelector from '../customSelector/CustomSelector';
 import { InsertImportProps } from './Types';
 import Uploader from '../uploader/Uploader';
 import { INSERT_CSV_SAMPLE } from '../../consts/Insert';
 import { parseByte } from '../../utils/Format';
-import { Option } from '../customSelector/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
@@ -39,10 +37,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     '& .selector': {
       flexBasis: '40%',
       minWidth: '256px',
-    },
-
-    '& .isContainSelect': {
-      paddingTop: theme.spacing(2),
     },
   },
 
@@ -103,11 +97,9 @@ const InsertImport: FC<InsertImportProps> = ({
 
   selectedCollection,
   selectedPartition,
-  isContainFieldNames,
 
   handleCollectionChange,
   handlePartitionChange,
-  handleIsContainedChange,
 
   handleUploadedData,
   fileName,
@@ -117,13 +109,6 @@ const InsertImport: FC<InsertImportProps> = ({
   const { t: collectionTrans } = useTranslation('collection');
   const { t: partitionTrans } = useTranslation('partition');
   const classes = getStyles();
-  const isContainedOptions: Option[] = [
-    {
-      label: 'Yes',
-      value: 1,
-    },
-    { label: 'No', value: 0 },
-  ];
 
   return (
     <section>
@@ -159,24 +144,6 @@ const InsertImport: FC<InsertImportProps> = ({
             }}
           />
         </div>
-
-        <label>
-          <Typography className={classes.tip}>
-            {insertTrans('isContainFieldNames')}
-          </Typography>
-        </label>
-        <CustomSelector
-          options={isContainedOptions}
-          wrapperClass="selector"
-          classes={{ filled: 'isContainSelect' }}
-          value={isContainFieldNames}
-          variant="filled"
-          onChange={(e: { target: { value: unknown } }) => {
-            const isContainedValue = e.target.value;
-            console.log('isContained value', isContainedValue);
-            handleIsContainedChange(isContainedValue as number);
-          }}
-        />
       </form>
 
       <div className={classes.uploadWrapper}>
