@@ -1,8 +1,9 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
-import { CollectionView } from '../pages/collections/Types';
+import { CollectionView, DataType } from '../pages/collections/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
+import { FieldHttp } from './Field';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private autoID!: string;
@@ -12,6 +13,16 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private index_status!: string;
   private id!: string;
   private isLoaded!: boolean;
+  private schema!: {
+    fields: {
+      data_type: DataType;
+      fieldID: string;
+      type_params: { key: string; value: string }[];
+      is_primary_key: true;
+      name: string;
+      description: string;
+    }[];
+  };
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
@@ -83,6 +94,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
 
   get _status() {
     return this.isLoaded === true ? StatusEnum.loaded : StatusEnum.unloaded;
+  }
+
+  get _fields() {
+    return this.schema.fields.map(f => new FieldHttp(f));
   }
 
   get _indexState() {

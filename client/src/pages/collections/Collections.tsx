@@ -26,6 +26,9 @@ import {
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
+import { PartitionData } from '../partitions/Types';
+import { FieldData } from '../schema/Types';
+import { PartitionHttp } from '../../http/Partition';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -88,6 +91,14 @@ const Collections = () => {
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
 
+  /**
+   * insert needed data:
+   * 1. partitions: according to selected collection, always selectable
+   * 2. schema: according to selected collection, used as editable heads options
+   */
+  const [insertPartitions, setInsertPartitions] = useState<PartitionData[]>([]);
+  const [insertSchema, setInsertSchema] = useState<FieldData[]>([]);
+
   const fetchData = useCallback(async () => {
     try {
       const res = await CollectionHttp.getCollections();
@@ -132,6 +143,28 @@ const Collections = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleInsert = useCallback(async (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {});
+  }, []);
+
+  const handleInsertCollectionChange = useCallback(
+    async (name: string) => {
+      const selectCollection = collections.find(c => c._name === name);
+
+      console.log('select collection', selectCollection);
+      if (selectCollection) {
+        const partitions = await PartitionHttp.getPartitions(name);
+        console.log('----- partitions', partitions);
+        setInsertPartitions(partitions);
+
+        const schema = selectCollection._fields || [];
+        console.log('----- schema', schema);
+        setInsertSchema(schema);
+      }
+    },
+    [collections]
+  );
 
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
@@ -229,30 +262,35 @@ const Collections = () => {
       },
       icon: 'add',
     },
-    // {
-    //   label: btnTrans('insert'),
-    //   onClick: () => {
-    //     const component = (
-    //       <InsertContainer
-    //         collections={[]}
-    //         selectedCollection={''}
-    //         partitions={[]}
-    //         selectedPartition={''}
-    //         schema={[]}
-    //         handleInsert={() => {}}
-    //       />
-    //     );
-    //     handleInsertDialog(component);
-    //   },
-    //   /**
-    //    * insert validation:
-    //    * 1. At least 1 available collection
-    //    * 2. selected collections quantity shouldn't over 1
-    //    */
-    //   disabled: () =>
-    //     collectionList.length === 0 || selectedCollections.length > 1,
-    //   icon: 'upload',
-    // },
+    {
+      label: btnTrans('insert'),
+      onClick: () => {
+        handleInsertDialog(
+          <InsertContainer
+            collections={collections}
+            defaultSelectedCollection={
+              selectedCollections.length === 1
+                ? selectedCollections[0]._name
+                : ''
+            }
+            handleSelectedCollectionChange={handleInsertCollectionChange}
+            partitions={insertPartitions}
+            // user can't select partition on collection page, so default value is ''
+            defaultSelectedPartition={''}
+            schema={insertSchema}
+            handleInsert={handleInsert}
+          />
+        );
+      },
+      /**
+       * insert validation:
+       * 1. At least 1 available collection
+       * 2. selected collections quantity shouldn't over 1
+       */
+      disabled: () =>
+        collectionList.length === 0 || selectedCollections.length > 1,
+      btnVariant: 'outlined',
+    },
     {
       type: 'iconBtn',
       onClick: () => {

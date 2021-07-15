@@ -5,9 +5,14 @@ import { Option } from '../customSelector/Types';
 
 export interface InsertContentProps {
   collections: CollectionData[];
-  selectedCollection: string;
   partitions: PartitionData[];
-  selectedPartition: string;
+  // insert default selected collection
+  defaultSelectedCollection: string;
+  // optional if collections not selectable
+  handleSelectedCollectionChange?: (name: string) => void;
+
+  // insert default selected partition
+  defaultSelectedPartition: string;
   schema: FieldData[];
   handleInsert: () => Promise<boolean>;
 }
@@ -35,7 +40,8 @@ export interface InsertImportProps {
   selectedPartition: string;
 
   // selectors change methods
-  handleCollectionChange: (collectionName: string) => void;
+  // optional if collection not selectable
+  handleCollectionChange?: (collectionName: string) => void;
   handlePartitionChange: (partitionName: string) => void;
   // handle uploaded data
   handleUploadedData: (data: string) => void;

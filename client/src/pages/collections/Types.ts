@@ -1,5 +1,6 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
 import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
+import { FieldData } from '../schema/Types';
 
 export interface CollectionData {
   _name: string;
@@ -8,6 +9,7 @@ export interface CollectionData {
   _rowCount: string;
   _desc: string;
   _indexState: ChildrenStatusType;
+  _fields?: FieldData[];
 }
 
 export interface CollectionView extends CollectionData {

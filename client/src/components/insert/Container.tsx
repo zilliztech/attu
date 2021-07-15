@@ -28,27 +28,47 @@ const getStyles = makeStyles((theme: Theme) => ({
 
 const InsertContainer: FC<InsertContentProps> = ({
   collections,
-  selectedCollection,
   partitions,
-  selectedPartition,
+
+  /**
+   * every time selected collection change,
+   * we need to call handleSelectedCollectionChange function to update partitions and schema data,
+   */
+  defaultSelectedCollection,
+  handleSelectedCollectionChange,
+
+  defaultSelectedPartition,
+
   schema,
   handleInsert,
 }) => {
   const classes = getStyles();
 
   // props children component needed:
-  const collectionOptions: Option[] = collections.map(c => ({
-    label: c._name,
-    value: c._name,
-  }));
-  const partitionOptions: Option[] = partitions.map(p => ({
-    label: p._name,
-    value: p._name,
-  }));
-  const schemaOptions: Option[] = schema.map(s => ({
-    label: s._fieldName,
-    value: s._fieldId,
-  }));
+  const collectionOptions: Option[] = useMemo(
+    () =>
+      collections.map(c => ({
+        label: c._name,
+        value: c._name,
+      })),
+    [collections]
+  );
+  const partitionOptions: Option[] = useMemo(
+    () =>
+      partitions.map(p => ({
+        label: p._name,
+        value: p._name,
+      })),
+    [partitions]
+  );
+  const schemaOptions: Option[] = useMemo(
+    () =>
+      schema.map(s => ({
+        label: s._fieldName,
+        value: s._fieldId,
+      })),
+    [schema]
+  );
 
   const { t: insertTrans } = useTranslation('insert');
   const { t: btnTrans } = useTranslation('btn');
@@ -62,11 +82,13 @@ const InsertContainer: FC<InsertContentProps> = ({
   // const [nextDisabled, setNextDisabled] = useState<boolean>(false);
 
   // selected collection name
-  const [collectionValue, setCollectionValue] =
-    useState<string>(selectedCollection);
+  const [collectionValue, setCollectionValue] = useState<string>(
+    defaultSelectedCollection
+  );
   // selected partition name
-  const [partitionValue, setPartitionValue] =
-    useState<string>(selectedPartition);
+  const [partitionValue, setPartitionValue] = useState<string>(
+    defaultSelectedPartition
+  );
   // use contain field names yes as default
   const [isContainFieldNames, setIsContainFieldNames] = useState<number>(1);
   // uploaded file name
@@ -143,6 +165,11 @@ const InsertContainer: FC<InsertContentProps> = ({
     setInsertStauts(status);
   };
 
+  const handleCollectionChange = (name: string) => {
+    setCollectionValue(name);
+    handleSelectedCollectionChange && handleSelectedCollectionChange(name);
+  };
+
   const handleNext = () => {
     switch (activeStep) {
       case InsertStepperEnum.import:
@@ -183,7 +210,7 @@ const InsertContainer: FC<InsertContentProps> = ({
             partitionOptions={partitionOptions}
             selectedCollection={collectionValue}
             selectedPartition={partitionValue}
-            handleCollectionChange={setCollectionValue}
+            handleCollectionChange={handleCollectionChange}
             handlePartitionChange={setPartitionValue}
             handleUploadedData={handleUploadedData}
             fileName={fileName}

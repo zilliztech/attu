@@ -127,7 +127,8 @@ const InsertImport: FC<InsertImportProps> = ({
             label={collectionTrans('collection')}
             onChange={(e: { target: { value: unknown } }) => {
               const collection = e.target.value;
-              handleCollectionChange(collection as string);
+              handleCollectionChange &&
+                handleCollectionChange(collection as string);
             }}
           />
           <Divider classes={{ root: 'divider' }} />
