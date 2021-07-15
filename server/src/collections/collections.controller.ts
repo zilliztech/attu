@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
-import { CreateCollection, ShowCollections } from './dto';
+import { CreateCollection, InsertData, ShowCollections } from './dto';
 
 @ApiTags('collections')
 @Controller('collections')
@@ -75,6 +75,14 @@ export class CollectionsController {
   async releaseCollection(@Param('name') name: string) {
     return await this.collectionsService.releaseCollection({
       collection_name: name,
+    });
+  }
+
+  @Post(':name/insert')
+  async insertData(@Param('name') name: string, @Body() data: InsertData) {
+    return await this.collectionsService.insert({
+      collection_name: name,
+      ...data,
     });
   }
 }

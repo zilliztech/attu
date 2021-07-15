@@ -6,6 +6,7 @@ import {
   DropCollectionReq,
   GetCollectionStatisticsReq,
   GetIndexStateReq,
+  InsertReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
@@ -62,6 +63,12 @@ export class CollectionsService {
 
   async getCollectionStatistics(data: GetCollectionStatisticsReq) {
     const res = await this.milvusClient.getCollectionStatistics(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async insert(data: InsertReq) {
+    const res = await this.milvusClient.insert(data);
     throwErrorFromSDK(res.status);
     return res;
   }
