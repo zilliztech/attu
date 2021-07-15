@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MilvusClient } from '@zilliz/milvus2-sdk-node';
+import { FlushReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 @Injectable()
 export class MilvusService {
   private milvusAddress: string;
@@ -39,5 +40,10 @@ export class MilvusService {
     return {
       connected: res.address ? true : false,
     };
+  }
+
+  async flush(data: FlushReq) {
+    const res = await this.milvusClient.flush(data);
+    return res;
   }
 }

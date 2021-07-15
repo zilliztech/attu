@@ -53,3 +53,17 @@ export class ShowCollections {
   @IsEnum(ShowCollectionsType, { message: 'Type allow all->0 inmemory->1' })
   readonly type: ShowCollectionsType;
 }
+
+export class InsertData {
+  @ApiProperty({
+    description: 'Partition in this collection',
+  })
+  @IsOptional()
+  readonly partition_names: string[];
+
+  @ApiProperty({
+    description: 'The fields data in this collection',
+    default: [{ vector: [1, 2, 3], a: 1, b: 2 }],
+  })
+  readonly fields_data: any[];
+}
