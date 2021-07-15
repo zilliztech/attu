@@ -12,7 +12,12 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
-import { CreateCollection, InsertData, ShowCollections } from './dto';
+import {
+  CreateCollection,
+  InsertData,
+  ShowCollections,
+  VectorSearch,
+} from './dto';
 
 @ApiTags('collections')
 @Controller('collections')
@@ -81,6 +86,14 @@ export class CollectionsController {
   @Post(':name/insert')
   async insertData(@Param('name') name: string, @Body() data: InsertData) {
     return await this.collectionsService.insert({
+      collection_name: name,
+      ...data,
+    });
+  }
+
+  @Post(':name/search')
+  async vectorSearch(@Param('name') name: string, @Body() data: VectorSearch) {
+    return await this.collectionsService.vectorSearch({
       collection_name: name,
       ...data,
     });
