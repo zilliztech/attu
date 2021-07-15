@@ -4,7 +4,10 @@ import * as chalk from 'chalk';
 export class ConsoleLogger implements LoggerService {
   log(...messages: any[]) {
     // tslint:disable-next-line:no-console
-    console.log(chalk.green(`milvus-insight: [${ConsoleLogger.time()}]`), ...messages);
+    console.log(
+      chalk.green(`milvus-insight: [${ConsoleLogger.time()}]`),
+      ...messages,
+    );
   }
   error(...messages: any[]) {
     // tslint:disable-next-line:no-console
