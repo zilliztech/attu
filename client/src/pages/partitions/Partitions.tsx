@@ -24,6 +24,10 @@ import { parseLocationSearch } from '../../utils/Format';
 import { useInsertDialogHook } from '../../hooks/Dialog';
 import InsertContainer from '../../components/insert/Container';
 import { CollectionHttp } from '../../http/Collection';
+import { FieldHttp } from '../../http/Field';
+import { Field } from '../schema/Types';
+import { InsertDataParam } from '../collections/Types';
+import { MilvusHttp } from '../../http/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -182,9 +186,26 @@ const Partitions: FC<{
     }, 300);
   };
 
-  const handleInsert = useCallback(async (): Promise<boolean> => {
-    return new Promise((resolve, reject) => {});
-  }, []);
+  const handleInsert = async (
+    collectionName: string,
+    partitionName: string,
+    fieldData: any[]
+  ): Promise<boolean> => {
+    const param: InsertDataParam = {
+      partition_names: [partitionName],
+      fields_data: fieldData,
+    };
+    try {
+      await CollectionHttp.insertData(collectionName, param);
+      await MilvusHttp.flush(collectionName);
+      // update partitions
+      fetchPartitions(collectionName);
+
+      return true;
+    } catch (err) {
+      return false;
+    }
+  };
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -209,27 +230,28 @@ const Partitions: FC<{
       label: btnTrans('insert'),
       onClick: async () => {
         const collection = await fetchCollectionDetail(collectionName);
-        // const schema = collection.schema.fields.map(f => new )
-        console.log('----- collections', collection);
+        const schema = collection.schema.fields.map(
+          (f: Field) => new FieldHttp(f)
+        );
 
         handleInsertDialog(
           <InsertContainer
-            collections={[]}
-            schema={[]}
+            schema={schema}
             defaultSelectedCollection={collectionName}
             defaultSelectedPartition={
               selectedPartitions.length === 1
                 ? selectedPartitions[0]._formatName
                 : ''
             }
+            partitions={partitions}
             handleInsert={handleInsert}
           />
         );
       },
       /**
        * insert validation:
-       * 1. At least 1 available collection
-       * 2. selected collections quantity shouldn't over 1
+       * 1. At least 1 available partition
+       * 2. selected partition quantity shouldn't over 1
        */
       disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
       btnVariant: 'outlined',

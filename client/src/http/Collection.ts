@@ -1,9 +1,6 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
-import {
-  CollectionView,
-  DataType,
-  InsertDataParam,
-} from '../pages/collections/Types';
+import { CollectionView, InsertDataParam } from '../pages/collections/Types';
+import { Field } from '../pages/schema/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
@@ -18,14 +15,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private id!: string;
   private isLoaded!: boolean;
   private schema!: {
-    fields: {
-      data_type: DataType;
-      fieldID: string;
-      type_params: { key: string; value: string }[];
-      is_primary_key: true;
-      name: string;
-      description: string;
-    }[];
+    fields: Field[];
   };
 
   static COLLECTIONS_URL = '/collections';

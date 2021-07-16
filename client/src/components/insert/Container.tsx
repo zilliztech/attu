@@ -41,6 +41,7 @@ const InsertContainer: FC<InsertContentProps> = ({
   defaultSelectedCollection,
   defaultSelectedPartition,
 
+  partitions = [],
   schema = [],
   handleInsert,
 }) => {
@@ -55,6 +56,7 @@ const InsertContainer: FC<InsertContentProps> = ({
   const [insertStatus, setInsertStauts] = useState<InsertStatusEnum>(
     InsertStatusEnum.init
   );
+  // TODO: add validation
   // const [nextDisabled, setNextDisabled] = useState<boolean>(false);
 
   // selected collection name
@@ -74,6 +76,8 @@ const InsertContainer: FC<InsertContentProps> = ({
 
   // handle changed table heads
   const [tableHeads, setTableHeads] = useState<string[]>([]);
+
+  const [partitionOptions, setPartitionOptions] = useState<Option[]>([]);
 
   const previewData = useMemo(() => {
     // we only show top 4 results of uploaded csv data
@@ -101,8 +105,25 @@ const InsertContainer: FC<InsertContentProps> = ({
   }, [collectionValue]);
 
   useEffect(() => {
-    fetchPartition();
-  }, [fetchPartition]);
+    // if not on partitions page, we need to fetch partitions according to selected collection
+    if (partitions.length === 0) {
+      fetchPartition();
+    } else {
+      const options = partitions
+        .map(p => ({
+          label: p._formatName,
+          value: p._name,
+        }))
+        // when there's single selected partition
+        // insert dialog partitions shouldn't selectable
+        .filter(
+          partition =>
+            partition.label === defaultSelectedPartition ||
+            defaultSelectedPartition === ''
+        );
+      setPartitionOptions(options);
+    }
+  }, [partitions, fetchPartition, defaultSelectedPartition]);
 
   const BackIcon = icons.back;
 
@@ -169,8 +190,6 @@ const InsertContainer: FC<InsertContentProps> = ({
       value: s._fieldId,
     }));
   }, [schema, collectionValue, collections]);
-
-  const [partitionOptions, setPartitionOptions] = useState<Option[]>([]);
 
   const checkUploadFileValidation = (fieldNamesLength: number): boolean => {
     return schemaOptions.length === fieldNamesLength;

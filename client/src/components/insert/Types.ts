@@ -1,4 +1,5 @@
 import { CollectionData } from '../../pages/collections/Types';
+import { PartitionView } from '../../pages/partitions/Types';
 import { FieldData } from '../../pages/schema/Types';
 import { Option } from '../customSelector/Types';
 
@@ -7,6 +8,8 @@ export interface InsertContentProps {
   collections?: CollectionData[];
   // required on partition page since user can't select collection to get schema
   schema?: FieldData[];
+  // required on partition page
+  partitions?: PartitionView[];
 
   // insert default selected collection
   // if default value is not '', collections not selectable

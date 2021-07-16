@@ -12,6 +12,15 @@ export enum INDEX_TYPES_ENUM {
   RNSG = 'RNSG',
 }
 
+export interface Field {
+  data_type: DataType;
+  fieldID: string;
+  type_params: { key: string; value: string }[];
+  is_primary_key: true;
+  name: string;
+  description: string;
+}
+
 export interface FieldData {
   _fieldId: string;
   _isPrimaryKey: boolean;

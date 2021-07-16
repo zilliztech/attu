@@ -151,6 +151,8 @@ const Collections = () => {
     try {
       await CollectionHttp.insertData(collectionName, param);
       await MilvusHttp.flush(collectionName);
+      // update collections
+      fetchData();
       return true;
     } catch (err) {
       return false;
