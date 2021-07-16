@@ -51,6 +51,8 @@ const Uploader: FC<UploaderProps> = ({
       }
       if (isSizeOverLimit) {
         openSnackBar(overSizeWarning, 'error');
+        const uploader = inputRef.current! as HTMLFormElement;
+        uploader.value = null;
         return;
       }
 

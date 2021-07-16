@@ -53,7 +53,7 @@ const InsertContainer: FC<InsertContentProps> = ({
   const [activeStep, setActiveStep] = useState<InsertStepperEnum>(
     InsertStepperEnum.import
   );
-  const [insertStatus, setInsertStauts] = useState<InsertStatusEnum>(
+  const [insertStatus, setInsertStatus] = useState<InsertStatusEnum>(
     InsertStatusEnum.init
   );
   const [insertFailMsg, setInsertFailMsg] = useState<string>('');
@@ -232,11 +232,11 @@ const InsertContainer: FC<InsertContentProps> = ({
   };
 
   const handleInsertData = async () => {
+    // start loading
+    setInsertStatus(InsertStatusEnum.loading);
     // combine table heads and data
     const tableData = isContainFieldNames ? csvData.slice(1) : csvData;
     const data = combineHeadsAndData(tableHeads, tableData);
-
-    setInsertStauts(InsertStatusEnum.loading);
     const { result, msg } = await handleInsert(
       collectionValue,
       partitionValue,
@@ -247,7 +247,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       setInsertFailMsg(msg);
     }
     const status = result ? InsertStatusEnum.success : InsertStatusEnum.error;
-    setInsertStauts(status);
+    setInsertStatus(status);
   };
 
   const handleCollectionChange = (name: string) => {
