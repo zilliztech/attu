@@ -1,8 +1,10 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
-import { CollectionView } from '../pages/collections/Types';
+import { CollectionView, InsertDataParam } from '../pages/collections/Types';
+import { Field } from '../pages/schema/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
+import { FieldHttp } from './Field';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private autoID!: string;
@@ -12,6 +14,9 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private index_status!: string;
   private id!: string;
   private isLoaded!: boolean;
+  private schema!: {
+    fields: Field[];
+  };
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
@@ -28,6 +33,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     type: ShowCollectionsType;
   }): Promise<CollectionHttp[]> {
     return super.findAll({ path: this.COLLECTIONS_URL, params: data || {} });
+  }
+
+  static getCollection(name: string) {
+    return super.search({
+      path: `${this.COLLECTIONS_URL}/${name}`,
+      params: {},
+    });
   }
 
   static createCollection(data: any) {
@@ -61,6 +73,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
   }
 
+  static insertData(collectionName: string, param: InsertDataParam) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
+      data: param,
+    });
+  }
+
   get _autoId() {
     return this.autoID;
   }
@@ -83,6 +102,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
 
   get _status() {
     return this.isLoaded === true ? StatusEnum.loaded : StatusEnum.unloaded;
+  }
+
+  get _fields() {
+    return this.schema.fields.map(f => new FieldHttp(f));
   }
 
   get _indexState() {

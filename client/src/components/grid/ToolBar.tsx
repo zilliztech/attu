@@ -79,7 +79,8 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 startIcon={Icon}
                 color="primary"
                 disabled={disabled}
-                variant="contained"
+                // use contained variant as default
+                variant={c.btnVariant || 'contained'}
                 tooltip={c.tooltip}
                 className={classes.btn}
               >

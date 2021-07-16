@@ -120,6 +120,7 @@ const InsertImport: FC<InsertImportProps> = ({
         <div className="selectorWrapper">
           <CustomSelector
             options={collectionOptions}
+            disabled={collectionOptions.length === 0}
             wrapperClass="selector"
             labelClass="selectLabel"
             value={selectedCollection}
@@ -127,12 +128,14 @@ const InsertImport: FC<InsertImportProps> = ({
             label={collectionTrans('collection')}
             onChange={(e: { target: { value: unknown } }) => {
               const collection = e.target.value;
-              handleCollectionChange(collection as string);
+              handleCollectionChange &&
+                handleCollectionChange(collection as string);
             }}
           />
           <Divider classes={{ root: 'divider' }} />
           <CustomSelector
             options={partitionOptions}
+            disabled={partitionOptions.length === 0}
             wrapperClass="selector"
             labelClass="selectLabel"
             value={selectedPartition}

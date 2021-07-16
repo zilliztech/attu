@@ -1,15 +1,29 @@
 import { CollectionData } from '../../pages/collections/Types';
-import { PartitionData } from '../../pages/partitions/Types';
+import { PartitionView } from '../../pages/partitions/Types';
 import { FieldData } from '../../pages/schema/Types';
 import { Option } from '../customSelector/Types';
 
 export interface InsertContentProps {
-  collections: CollectionData[];
-  selectedCollection: string;
-  partitions: PartitionData[];
-  selectedPartition: string;
-  schema: FieldData[];
-  handleInsert: () => Promise<boolean>;
+  // optional on partition page since its collection is fixed
+  collections?: CollectionData[];
+  // required on partition page since user can't select collection to get schema
+  schema?: FieldData[];
+  // required on partition page
+  partitions?: PartitionView[];
+
+  // insert default selected collection
+  // if default value is not '', collections not selectable
+  defaultSelectedCollection: string;
+
+  // insert default selected partition
+  // if default value is not '', partitions not selectable
+  defaultSelectedPartition: string;
+
+  handleInsert: (
+    collectionName: string,
+    partitionName: string,
+    fieldData: any[]
+  ) => Promise<{ result: boolean; msg: string }>;
 }
 
 export enum InsertStepperEnum {
@@ -35,10 +49,11 @@ export interface InsertImportProps {
   selectedPartition: string;
 
   // selectors change methods
-  handleCollectionChange: (collectionName: string) => void;
+  // optional if collection not selectable
+  handleCollectionChange?: (collectionName: string) => void;
   handlePartitionChange: (partitionName: string) => void;
   // handle uploaded data
-  handleUploadedData: (data: string) => void;
+  handleUploadedData: (data: string, uploader: HTMLFormElement) => void;
   fileName: string;
   setFileName: (fileName: string) => void;
 }
@@ -47,10 +62,14 @@ export interface InsertPreviewProps {
   schemaOptions: Option[];
   data: any[];
 
+  tableHeads: string[];
+  setTableHeads: (heads: string[]) => void;
+
   isContainFieldNames: number;
   handleIsContainedChange: (isContained: number) => void;
 }
 
 export interface InsertStatusProps {
   status: InsertStatusEnum;
+  failMsg: string;
 }

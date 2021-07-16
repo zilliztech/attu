@@ -4,7 +4,12 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MilvusGrid from '../../components/grid/Grid';
 import CustomToolBar from '../../components/grid/ToolBar';
-import { CollectionCreateParam, CollectionView, DataTypeEnum } from './Types';
+import {
+  CollectionCreateParam,
+  CollectionView,
+  DataTypeEnum,
+  InsertDataParam,
+} from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
@@ -26,6 +31,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
+import { MilvusHttp } from '../../http/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -133,6 +139,31 @@ const Collections = () => {
     fetchData();
   }, [fetchData]);
 
+  const handleInsert = async (
+    collectionName: string,
+    partitionName: string,
+    fieldData: any[]
+  ): Promise<{ result: boolean; msg: string }> => {
+    const param: InsertDataParam = {
+      partition_names: [partitionName],
+      fields_data: fieldData,
+    };
+    try {
+      await CollectionHttp.insertData(collectionName, param);
+      await MilvusHttp.flush(collectionName);
+      // update collections
+      fetchData();
+      return { result: true, msg: '' };
+    } catch (err) {
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      return { result: false, msg: message || '' };
+    }
+  };
+
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
     const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
@@ -229,30 +260,32 @@ const Collections = () => {
       },
       icon: 'add',
     },
-    // {
-    //   label: btnTrans('insert'),
-    //   onClick: () => {
-    //     const component = (
-    //       <InsertContainer
-    //         collections={[]}
-    //         selectedCollection={''}
-    //         partitions={[]}
-    //         selectedPartition={''}
-    //         schema={[]}
-    //         handleInsert={() => {}}
-    //       />
-    //     );
-    //     handleInsertDialog(component);
-    //   },
-    //   /**
-    //    * insert validation:
-    //    * 1. At least 1 available collection
-    //    * 2. selected collections quantity shouldn't over 1
-    //    */
-    //   disabled: () =>
-    //     collectionList.length === 0 || selectedCollections.length > 1,
-    //   icon: 'upload',
-    // },
+    {
+      label: btnTrans('insert'),
+      onClick: () => {
+        handleInsertDialog(
+          <InsertContainer
+            collections={collections}
+            defaultSelectedCollection={
+              selectedCollections.length === 1
+                ? selectedCollections[0]._name
+                : ''
+            }
+            // user can't select partition on collection page, so default value is ''
+            defaultSelectedPartition={''}
+            handleInsert={handleInsert}
+          />
+        );
+      },
+      /**
+       * insert validation:
+       * 1. At least 1 available collection
+       * 2. selected collections quantity shouldn't over 1
+       */
+      disabled: () =>
+        collectionList.length === 0 || selectedCollections.length > 1,
+      btnVariant: 'outlined',
+    },
     {
       type: 'iconBtn',
       onClick: () => {
