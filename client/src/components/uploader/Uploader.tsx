@@ -31,7 +31,7 @@ const Uploader: FC<UploaderProps> = ({
     reader.onload = async e => {
       const data = reader.result;
       if (data) {
-        handleUploadedData(data as string);
+        handleUploadedData(data as string, inputRef.current!);
       }
     };
     // handle upload error
@@ -55,7 +55,7 @@ const Uploader: FC<UploaderProps> = ({
       }
 
       setFileName(file.name || 'file');
-      handleUploadFileChange && handleUploadFileChange(file);
+      handleUploadFileChange && handleUploadFileChange(file, inputRef.current!);
       reader.readAsText(file, 'utf8');
     };
     uploader.click();

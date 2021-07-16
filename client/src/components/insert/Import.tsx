@@ -120,6 +120,7 @@ const InsertImport: FC<InsertImportProps> = ({
         <div className="selectorWrapper">
           <CustomSelector
             options={collectionOptions}
+            disabled={collectionOptions.length === 0}
             wrapperClass="selector"
             labelClass="selectLabel"
             value={selectedCollection}
@@ -134,6 +135,7 @@ const InsertImport: FC<InsertImportProps> = ({
           <Divider classes={{ root: 'divider' }} />
           <CustomSelector
             options={partitionOptions}
+            disabled={partitionOptions.length === 0}
             wrapperClass="selector"
             labelClass="selectLabel"
             value={selectedPartition}

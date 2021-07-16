@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
@@ -84,18 +84,13 @@ const getTableData = (
   return transferCsvArrayToTableData(csvData);
 };
 
-const getDefaultHeads = (
-  data: any[],
-  isContainFieldNames: number
-): string[] => {
-  return isContainFieldNames ? data[0] : new Array(data[0].length).fill('');
-};
-
 const InsertPreview: FC<InsertPreviewProps> = ({
   schemaOptions,
   data,
   isContainFieldNames,
   handleIsContainedChange,
+  tableHeads,
+  setTableHeads,
 }) => {
   const classes = getStyles();
   const { t: insertTrans } = useTranslation('insert');
@@ -104,23 +99,14 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   // table needed table structure, metadata from csv
   const tableData = getTableData(data, isContainFieldNames);
 
-  const [tableHeads, setTableHeads] = useState<string[]>(
-    getDefaultHeads(data, isContainFieldNames)
-  );
-
   const handleTableHeadChange = useCallback(
     (index: number, label: string) => {
       const newHeads = [...tableHeads];
       newHeads[index] = label;
       setTableHeads(newHeads);
     },
-    [tableHeads]
+    [tableHeads, setTableHeads]
   );
-
-  useEffect(() => {
-    const newHeads = getDefaultHeads(data, isContainFieldNames);
-    setTableHeads(newHeads);
-  }, [data, isContainFieldNames]);
 
   const editHeads = useMemo(
     () =>

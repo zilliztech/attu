@@ -77,3 +77,9 @@ export interface CreateFieldsProps {
   autoID: boolean;
   setAutoID: (value: boolean) => void;
 }
+
+export interface InsertDataParam {
+  partition_names: string[];
+  // e.g. [{vector: [1,2,3], age: 10}]
+  fields_data: any[];
+}

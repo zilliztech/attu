@@ -21,6 +21,9 @@ import { ManageRequestMethods } from '../../types/Common';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
+import { useInsertDialogHook } from '../../hooks/Dialog';
+import InsertContainer from '../../components/insert/Container';
+import { CollectionHttp } from '../../http/Collection';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -49,6 +52,8 @@ const Partitions: FC<{
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const InfoIcon = icons.info;
+
+  const { handleInsertDialog } = useInsertDialogHook();
   // const LoadIcon = icons.load;
   // const ReleaseIcon = icons.release;
 
@@ -101,6 +106,11 @@ const Partitions: FC<{
     },
     [classes.highlight]
   );
+
+  const fetchCollectionDetail = async (name: string) => {
+    const res = await CollectionHttp.getCollection(name);
+    return res;
+  };
 
   useEffect(() => {
     fetchPartitions(collectionName);
@@ -172,6 +182,10 @@ const Partitions: FC<{
     }, 300);
   };
 
+  const handleInsert = useCallback(async (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {});
+  }, []);
+
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: t('create'),
@@ -190,6 +204,35 @@ const Partitions: FC<{
         });
       },
       icon: 'add',
+    },
+    {
+      label: btnTrans('insert'),
+      onClick: async () => {
+        const collection = await fetchCollectionDetail(collectionName);
+        // const schema = collection.schema.fields.map(f => new )
+        console.log('----- collections', collection);
+
+        handleInsertDialog(
+          <InsertContainer
+            collections={[]}
+            schema={[]}
+            defaultSelectedCollection={collectionName}
+            defaultSelectedPartition={
+              selectedPartitions.length === 1
+                ? selectedPartitions[0]._formatName
+                : ''
+            }
+            handleInsert={handleInsert}
+          />
+        );
+      },
+      /**
+       * insert validation:
+       * 1. At least 1 available collection
+       * 2. selected collections quantity shouldn't over 1
+       */
+      disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
+      btnVariant: 'outlined',
     },
     {
       type: 'iconBtn',

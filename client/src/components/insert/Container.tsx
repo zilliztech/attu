@@ -1,5 +1,13 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, ReactElement, useContext, useMemo, useState } from 'react';
+import {
+  FC,
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../customDialog/DialogTemplate';
 import icons from '../icons/Icons';
@@ -14,6 +22,8 @@ import {
 } from './Types';
 import { Option } from '../customSelector/Types';
 import { parse } from 'papaparse';
+import { PartitionHttp } from '../../http/Partition';
+import { combineHeadsAndData } from '../../utils/Insert';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {
@@ -23,52 +33,18 @@ const getStyles = makeStyles((theme: Theme) => ({
 
 /**
  * this component contains processes during insert
- * all datas and methods passed in as props, no interactions with server done in it
+ * including import, preview and status
  */
 
 const InsertContainer: FC<InsertContentProps> = ({
-  collections,
-  partitions,
-
-  /**
-   * every time selected collection change,
-   * we need to call handleSelectedCollectionChange function to update partitions and schema data,
-   */
+  collections = [],
   defaultSelectedCollection,
-  handleSelectedCollectionChange,
-
   defaultSelectedPartition,
 
-  schema,
+  schema = [],
   handleInsert,
 }) => {
   const classes = getStyles();
-
-  // props children component needed:
-  const collectionOptions: Option[] = useMemo(
-    () =>
-      collections.map(c => ({
-        label: c._name,
-        value: c._name,
-      })),
-    [collections]
-  );
-  const partitionOptions: Option[] = useMemo(
-    () =>
-      partitions.map(p => ({
-        label: p._name,
-        value: p._name,
-      })),
-    [partitions]
-  );
-  const schemaOptions: Option[] = useMemo(
-    () =>
-      schema.map(s => ({
-        label: s._fieldName,
-        value: s._fieldId,
-      })),
-    [schema]
-  );
 
   const { t: insertTrans } = useTranslation('insert');
   const { t: btnTrans } = useTranslation('btn');
@@ -95,6 +71,38 @@ const InsertContainer: FC<InsertContentProps> = ({
   const [fileName, setFileName] = useState<string>('');
   // uploaded csv data (type: string)
   const [csvData, setCsvData] = useState<any[]>([]);
+
+  // handle changed table heads
+  const [tableHeads, setTableHeads] = useState<string[]>([]);
+
+  const previewData = useMemo(() => {
+    // we only show top 4 results of uploaded csv data
+    const end = isContainFieldNames ? 5 : 4;
+    return csvData.slice(0, end);
+  }, [csvData, isContainFieldNames]);
+
+  useEffect(() => {
+    const heads = isContainFieldNames
+      ? previewData[0]
+      : new Array(previewData[0].length).fill('');
+
+    setTableHeads(heads);
+  }, [previewData, isContainFieldNames]);
+
+  const fetchPartition = useCallback(async () => {
+    if (collectionValue) {
+      const partitions = await PartitionHttp.getPartitions(collectionValue);
+      const partitionOptions: Option[] = partitions.map(p => ({
+        label: p._formatName,
+        value: p._name,
+      }));
+      setPartitionOptions(partitionOptions);
+    }
+  }, [collectionValue]);
+
+  useEffect(() => {
+    fetchPartition();
+  }, [fetchPartition]);
 
   const BackIcon = icons.back;
 
@@ -134,40 +142,71 @@ const InsertContainer: FC<InsertContentProps> = ({
     };
   }, [insertStatus]);
 
+  // props children component needed:
+  const collectionOptions: Option[] = useMemo(
+    () =>
+      defaultSelectedCollection === ''
+        ? collections.map(c => ({
+            label: c._name,
+            value: c._name,
+          }))
+        : [
+            {
+              label: defaultSelectedCollection,
+              value: defaultSelectedCollection,
+            },
+          ],
+    [collections, defaultSelectedCollection]
+  );
+
+  const schemaOptions: Option[] = useMemo(() => {
+    const list =
+      schema.length > 0
+        ? schema
+        : collections.find(c => c._name === collectionValue)?._fields;
+    return (list || []).map(s => ({
+      label: s._fieldName,
+      value: s._fieldId,
+    }));
+  }, [schema, collectionValue, collections]);
+
+  const [partitionOptions, setPartitionOptions] = useState<Option[]>([]);
+
   const checkUploadFileValidation = (fieldNamesLength: number): boolean => {
     return schemaOptions.length === fieldNamesLength;
   };
 
-  const previewData = useMemo(() => {
-    // we only show top 4 results of uploaded csv data
-    const end = isContainFieldNames ? 5 : 4;
-    return csvData.slice(0, end);
-  }, [csvData, isContainFieldNames]);
-
-  const handleUploadedData = (csv: string) => {
+  const handleUploadedData = (csv: string, uploader: HTMLFormElement) => {
     const { data } = parse(csv);
     const uploadFieldNamesLength = (data as string[])[0].length;
     const validation = checkUploadFileValidation(uploadFieldNamesLength);
     if (!validation) {
       // open snackbar
       openSnackBar(insertTrans('uploadFieldNamesLenWarning'), 'error');
-      // reset filename
+      // reset uploader value and filename
       setFileName('');
+      uploader.value = null;
       return;
     }
     setCsvData(data);
   };
 
   const handleInsertData = async () => {
+    // combine table heads and data
+    const tableData = isContainFieldNames ? csvData.slice(1) : csvData;
+
+    const data = combineHeadsAndData(tableHeads, tableData);
+
     setInsertStauts(InsertStatusEnum.loading);
-    const res = await handleInsert();
+    const res = await handleInsert(collectionValue, partitionValue, data);
     const status = res ? InsertStatusEnum.success : InsertStatusEnum.error;
     setInsertStauts(status);
   };
 
   const handleCollectionChange = (name: string) => {
     setCollectionValue(name);
-    handleSelectedCollectionChange && handleSelectedCollectionChange(name);
+    // reset partition
+    setPartitionValue('');
   };
 
   const handleNext = () => {
@@ -222,6 +261,8 @@ const InsertContainer: FC<InsertContentProps> = ({
           <InsertPreview
             schemaOptions={schemaOptions}
             data={previewData}
+            tableHeads={tableHeads}
+            setTableHeads={setTableHeads}
             isContainFieldNames={isContainFieldNames}
             handleIsContainedChange={setIsContainFieldNames}
           />

@@ -1,5 +1,9 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
-import { CollectionView, DataType } from '../pages/collections/Types';
+import {
+  CollectionView,
+  DataType,
+  InsertDataParam,
+} from '../pages/collections/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
@@ -41,6 +45,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.findAll({ path: this.COLLECTIONS_URL, params: data || {} });
   }
 
+  static getCollection(name: string) {
+    return super.findAll({
+      path: `${this.COLLECTIONS_URL}/${name}`,
+      params: {},
+    });
+  }
+
   static createCollection(data: any) {
     return super.create({ path: this.COLLECTIONS_URL, data });
   }
@@ -70,6 +81,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
 
   static getStatistics() {
     return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
+  }
+
+  static insertData(collectionName: string, param: InsertDataParam) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
+      data: param,
+    });
   }
 
   get _autoId() {

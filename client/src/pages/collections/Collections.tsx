@@ -4,7 +4,12 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MilvusGrid from '../../components/grid/Grid';
 import CustomToolBar from '../../components/grid/ToolBar';
-import { CollectionCreateParam, CollectionView, DataTypeEnum } from './Types';
+import {
+  CollectionCreateParam,
+  CollectionView,
+  DataTypeEnum,
+  InsertDataParam,
+} from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
@@ -26,9 +31,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
-import { PartitionData } from '../partitions/Types';
-import { FieldData } from '../schema/Types';
-import { PartitionHttp } from '../../http/Partition';
+import { MilvusHttp } from '../../http/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -91,14 +94,6 @@ const Collections = () => {
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
 
-  /**
-   * insert needed data:
-   * 1. partitions: according to selected collection, always selectable
-   * 2. schema: according to selected collection, used as editable heads options
-   */
-  const [insertPartitions, setInsertPartitions] = useState<PartitionData[]>([]);
-  const [insertSchema, setInsertSchema] = useState<FieldData[]>([]);
-
   const fetchData = useCallback(async () => {
     try {
       const res = await CollectionHttp.getCollections();
@@ -144,27 +139,23 @@ const Collections = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleInsert = useCallback(async (): Promise<boolean> => {
-    return new Promise((resolve, reject) => {});
-  }, []);
-
-  const handleInsertCollectionChange = useCallback(
-    async (name: string) => {
-      const selectCollection = collections.find(c => c._name === name);
-
-      console.log('select collection', selectCollection);
-      if (selectCollection) {
-        const partitions = await PartitionHttp.getPartitions(name);
-        console.log('----- partitions', partitions);
-        setInsertPartitions(partitions);
-
-        const schema = selectCollection._fields || [];
-        console.log('----- schema', schema);
-        setInsertSchema(schema);
-      }
-    },
-    [collections]
-  );
+  const handleInsert = async (
+    collectionName: string,
+    partitionName: string,
+    fieldData: any[]
+  ): Promise<boolean> => {
+    const param: InsertDataParam = {
+      partition_names: [partitionName],
+      fields_data: fieldData,
+    };
+    try {
+      await CollectionHttp.insertData(collectionName, param);
+      await MilvusHttp.flush(collectionName);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  };
 
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
@@ -273,11 +264,8 @@ const Collections = () => {
                 ? selectedCollections[0]._name
                 : ''
             }
-            handleSelectedCollectionChange={handleInsertCollectionChange}
-            partitions={insertPartitions}
             // user can't select partition on collection page, so default value is ''
             defaultSelectedPartition={''}
-            schema={insertSchema}
             handleInsert={handleInsert}
           />
         );

@@ -7,7 +7,9 @@ export interface UploaderProps {
   // snackbar warning when uploaded file size is over limit
   overSizeWarning?: string;
   setFileName: (fileName: string) => void;
-  handleUploadedData: (data: string) => void;
-  handleUploadFileChange?: (file: File) => void;
+  // handle uploader uploaded
+  handleUploadedData: (data: string, uploader: HTMLFormElement) => void;
+  // handle uploader onchange
+  handleUploadFileChange?: (file: File, uploader: HTMLFormElement) => void;
   handleUploadError?: () => void;
 }
