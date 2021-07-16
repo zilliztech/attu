@@ -41,8 +41,8 @@ const InsertContainer: FC<InsertContentProps> = ({
   defaultSelectedCollection,
   defaultSelectedPartition,
 
-  partitions = [],
-  schema = [],
+  partitions,
+  schema,
   handleInsert,
 }) => {
   const classes = getStyles();
@@ -127,7 +127,7 @@ const InsertContainer: FC<InsertContentProps> = ({
 
   useEffect(() => {
     // if not on partitions page, we need to fetch partitions according to selected collection
-    if (partitions.length === 0) {
+    if (!partitions || partitions.length === 0) {
       fetchPartition();
     } else {
       const options = partitions
@@ -203,7 +203,7 @@ const InsertContainer: FC<InsertContentProps> = ({
 
   const schemaOptions: Option[] = useMemo(() => {
     const list =
-      schema.length > 0
+      schema && schema.length > 0
         ? schema
         : collections.find(c => c._name === collectionValue)?._fields;
     return (list || []).map(s => ({
