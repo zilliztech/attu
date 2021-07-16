@@ -9,6 +9,7 @@ import {
   InsertReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
+  SearchReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
@@ -69,6 +70,12 @@ export class CollectionsService {
 
   async insert(data: InsertReq) {
     const res = await this.milvusClient.insert(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async vectorSearch(data: SearchReq) {
+    const res = await this.milvusClient.search(data);
     throwErrorFromSDK(res.status);
     return res;
   }
