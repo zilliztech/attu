@@ -32,7 +32,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const InsertStatus: FC<InsertStatusProps> = ({ status }) => {
+const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
   const { t: insertTrans } = useTranslation('insert');
   const classes = getStyles({ status });
 
@@ -69,6 +69,7 @@ const InsertStatus: FC<InsertStatusProps> = ({ status }) => {
       <Typography variant="h4" className={classes.text}>
         {insertTrans('statusError')}
       </Typography>
+      {failMsg && <Typography className={classes.text}>{failMsg}</Typography>}
     </>
   );
 

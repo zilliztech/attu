@@ -143,7 +143,7 @@ const Collections = () => {
     collectionName: string,
     partitionName: string,
     fieldData: any[]
-  ): Promise<boolean> => {
+  ): Promise<{ result: boolean; msg: string }> => {
     const param: InsertDataParam = {
       partition_names: [partitionName],
       fields_data: fieldData,
@@ -153,9 +153,14 @@ const Collections = () => {
       await MilvusHttp.flush(collectionName);
       // update collections
       fetchData();
-      return true;
+      return { result: true, msg: '' };
     } catch (err) {
-      return false;
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      return { result: false, msg: message || '' };
     }
   };
 

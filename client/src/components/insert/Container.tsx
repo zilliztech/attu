@@ -56,8 +56,9 @@ const InsertContainer: FC<InsertContentProps> = ({
   const [insertStatus, setInsertStauts] = useState<InsertStatusEnum>(
     InsertStatusEnum.init
   );
-  // TODO: add validation
-  // const [nextDisabled, setNextDisabled] = useState<boolean>(false);
+  const [insertFailMsg, setInsertFailMsg] = useState<string>('');
+
+  const [nextDisabled, setNextDisabled] = useState<boolean>(false);
 
   // selected collection name
   const [collectionValue, setCollectionValue] = useState<string>(
@@ -84,6 +85,26 @@ const InsertContainer: FC<InsertContentProps> = ({
     const end = isContainFieldNames ? 5 : 4;
     return csvData.slice(0, end);
   }, [csvData, isContainFieldNames]);
+
+  useEffect(() => {
+    if (activeStep === InsertStepperEnum.import) {
+      /**
+       * 1. must choose collection and partition
+       * 2. must upload a csv file
+       */
+      const selectValid = collectionValue !== '' && partitionValue !== '';
+      const uploadValid = csvData.length > 0;
+      const condition = selectValid && uploadValid;
+      setNextDisabled(!condition);
+    }
+    if (activeStep === InsertStepperEnum.preview) {
+      /**
+       * table heads shouldn't be empty
+       */
+      const headsValid = tableHeads.every(h => h !== '');
+      setNextDisabled(!headsValid);
+    }
+  }, [activeStep, collectionValue, partitionValue, csvData, tableHeads]);
 
   useEffect(() => {
     const heads = isContainFieldNames
@@ -213,12 +234,19 @@ const InsertContainer: FC<InsertContentProps> = ({
   const handleInsertData = async () => {
     // combine table heads and data
     const tableData = isContainFieldNames ? csvData.slice(1) : csvData;
-
     const data = combineHeadsAndData(tableHeads, tableData);
 
     setInsertStauts(InsertStatusEnum.loading);
-    const res = await handleInsert(collectionValue, partitionValue, data);
-    const status = res ? InsertStatusEnum.success : InsertStatusEnum.error;
+    const { result, msg } = await handleInsert(
+      collectionValue,
+      partitionValue,
+      data
+    );
+
+    if (!result) {
+      setInsertFailMsg(msg);
+    }
+    const status = result ? InsertStatusEnum.success : InsertStatusEnum.error;
     setInsertStauts(status);
   };
 
@@ -288,7 +316,7 @@ const InsertContainer: FC<InsertContentProps> = ({
         );
       // default represents InsertStepperEnum.status
       default:
-        return <InsertStatus status={insertStatus} />;
+        return <InsertStatus status={insertStatus} failMsg={insertFailMsg} />;
     }
   };
 
@@ -300,7 +328,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       cancelLabel={cancel}
       handleCancel={handleBack}
       handleConfirm={handleNext}
-      confirmDisabled={false}
+      confirmDisabled={nextDisabled}
       showActions={showActions}
       showCancel={showCancel}
       // don't show close icon when insert not finish

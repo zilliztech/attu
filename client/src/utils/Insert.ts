@@ -12,6 +12,12 @@ export const transferCsvArrayToTableData = (data: any[][]) => {
   );
 };
 
+/**
+ * function to replace object key
+ * @param obj e.g. {0: 'name1', 1: 12, 2: 'red'}
+ * @param newKeys e.g. ['name', 'age', 'color']
+ * @returns e.g. {name: 'name1', age: 12, color: 'red'}
+ */
 const replaceKeysByIndex = (obj: any, newKeys: string[]) => {
   const keyValues = Object.keys(obj).map(key => {
     const newKey = newKeys[Number(key)] || key;

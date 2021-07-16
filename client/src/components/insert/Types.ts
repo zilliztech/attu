@@ -23,7 +23,7 @@ export interface InsertContentProps {
     collectionName: string,
     partitionName: string,
     fieldData: any[]
-  ) => Promise<boolean>;
+  ) => Promise<{ result: boolean; msg: string }>;
 }
 
 export enum InsertStepperEnum {
@@ -71,4 +71,5 @@ export interface InsertPreviewProps {
 
 export interface InsertStatusProps {
   status: InsertStatusEnum;
+  failMsg: string;
 }
