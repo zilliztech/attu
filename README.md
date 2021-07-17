@@ -4,12 +4,13 @@ Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you 
 
 <img src="./.github/images/screenshot.png" alt="Miluvs insight" />
 
-## Features
+## Features and Roadmap
+Milvus insight is under rapid development nad we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
 - Manage collections/partitions
 - Manage index
 - Basic statistics overview
 - Load/release collections for search
-- Insert vectors(TBD)
+- Insert entities
 - Vector search with advanced filter(TBD)
 - Milvus cluster info topology view(TBD)
 - View milvus node configuration(TBD)
@@ -19,9 +20,11 @@ Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you 
 ## Quick start
 
 ### Before you start
-Ensure you have Milvus installed on [your server](https://milvus.io/docs/install_standalone-docker.md) or [cluster](https://milvus.io/docs/install_cluster-docker.md), and Milvus insight only supports Milvus 2.x. 
+
+Ensure you have Milvus installed on [your server](https://milvus.io/docs/install_standalone-docker.md) or [cluster](https://milvus.io/docs/install_cluster-docker.md), and Milvus insight only supports Milvus 2.x.
 
 ### ⭐️ Install Milvus insight
+
 Start Docker container and map the url to the container:
 
 ```code
@@ -34,7 +37,6 @@ docker run -p 8000:3000 -e HOST_URL=http://127.0.0.1:8000 -e MILVUS_URL=127.0.0.
 | MILVUS_URL | 127.0.0.1:19530       |  false   | Milvus server url |
 
 Once you start the docker, open the browser, type `http://127.0.0.1:8000`, you can view the milvus insight.
-
 
 ## ✨ Building and Running Milvus insight, and/or Contributing Code
 
@@ -56,15 +58,14 @@ out an open PR:
 4. Create a branch for your PR
 
 ### Milvus
+
 New to milvus? Milvus is an open-source vector database built to power AI applications and embedding similarity search.
 
-  
 ### Userful links
+
 - [Milvus installation guide](https://milvus.io/docs/v2.0.0/install_standalone-docker.md)
 - [Milvus python sdk](https://milvus.io/docs/v2.0.0/explore_pymilvus.md)
 - [Milvus bootcamp](https://milvus.io/bootcamp)
-
-
 
 ## Community
 
