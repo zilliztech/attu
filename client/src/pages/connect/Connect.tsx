@@ -13,6 +13,7 @@ import { authContext } from '../../context/Auth';
 import { MilvusHttp } from '../../http/Milvus';
 import { rootContext } from '../../context/Root';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
+import { formatAddress } from '../../utils/Format';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -73,10 +74,11 @@ const Connect = () => {
   };
 
   const handleConnect = async () => {
-    await MilvusHttp.connect(form.address);
+    const address = formatAddress(form.address);
+    await MilvusHttp.connect(address);
     openSnackBar(successTrans('connect'));
-    setAddress(form.address);
-    window.localStorage.setItem(MILVUS_ADDRESS, form.address);
+    setAddress(address);
+    window.localStorage.setItem(MILVUS_ADDRESS, address);
     history.push('/');
   };
 
