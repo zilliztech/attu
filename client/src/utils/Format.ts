@@ -114,3 +114,6 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 
   return 'number';
 };
+
+// Trim the address
+export const formatAddress = (address: string): string => address.trim();
