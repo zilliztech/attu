@@ -32,6 +32,7 @@ server/dist
 server/build
 server/coverage
 server/documentation
+server/vectors.csv
 
 
 # package.lock.json
