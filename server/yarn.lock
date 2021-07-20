@@ -1292,10 +1292,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zilliz/milvus2-sdk-node@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-1.0.2.tgz#68aecdaa9d2f27058d9af8322e3fc7acaf31da1e"
-  integrity sha512-Uwz0OZqvu8hcaoUU5xXKkJpgx2xwDttzCJihqttB4iTMrn7HERZeFJZLYgeL3BbxdEgKF0jbxGlstZ2kUWx9fQ==
+"@zilliz/milvus2-sdk-node@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-1.0.3.tgz#909f1b44f5a7dedcfc3d075180f0273e8ace90f1"
+  integrity sha512-jAc/l7siEyNcDJ/WJ5tvbD/9bPMKXNWXCXaeUgLWLTitSrmjRLquhHKkf66OUU+rbEiDQw0l408jQyyY3CIZwA==
   dependencies:
     "@grpc/grpc-js" "^1.2.12"
     "@grpc/proto-loader" "^0.6.0"
@@ -2103,6 +2103,11 @@ cssstyle@^2.3.0:
   integrity sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A==
   dependencies:
     cssom "~0.3.6"
+
+csv-writer@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/csv-writer/-/csv-writer-1.6.0.tgz#d0cea44b6b4d7d3baa2ecc6f3f7209233514bcf9"
+  integrity sha512-NOx7YDFWEsM/fTRAJjRpPp8t+MKRVvniAg9wQlUKx20MFrPs73WLJhFf5iteqrxNYnsy924K3Iroh3yNHeYd2g==
 
 data-urls@^2.0.0:
   version "2.0.0"

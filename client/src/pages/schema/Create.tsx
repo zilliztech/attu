@@ -57,6 +57,14 @@ const CreateIndex = (props: {
     [indexSetting.index_type, fieldType]
   );
 
+  const indexParams = useMemo(() => {
+    const params: { [x: string]: string } = {};
+    indexCreateParams.forEach(v => {
+      params[v] = indexSetting[v];
+    });
+    return params;
+  }, [indexCreateParams, indexSetting]);
+
   const indexOptions = useMemo(() => {
     const type =
       fieldType === 'BinaryVector'
@@ -77,6 +85,7 @@ const CreateIndex = (props: {
   const { validation, checkIsValid, disabled, setDisabled, resetValidation } =
     useFormValidation(checkedForm);
 
+  // reset index params
   useEffect(() => {
     setDisabled(true);
     setIndexSetting(v => ({
@@ -123,10 +132,10 @@ const CreateIndex = (props: {
         key: 'metric_type',
         value: metric_type,
       },
-      ...indexCreateParams.map(p => ({
-        key: p,
-        value: indexSetting[p],
-      })),
+      {
+        key: 'params',
+        value: JSON.stringify(indexParams),
+      },
     ];
 
     handleCreate(params);

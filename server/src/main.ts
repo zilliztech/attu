@@ -18,7 +18,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  app.use(json({ limit: '50mb' }));
+  app.use(json({ limit: '150mb' }));
 
   await app.listen(port);
   Logger.log(`Milvus insight API server is running on port ${port}`);

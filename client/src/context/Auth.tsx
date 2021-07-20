@@ -36,6 +36,12 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     check();
   }, [setAddress]);
 
+  useEffect(() => {
+    document.title = address
+      ? `Milvus Insight - ${address} `
+      : 'Milvus Insight';
+  }, [address]);
+
   return (
     <Provider value={{ isAuth, address, setAddress }}>
       {props.children}
