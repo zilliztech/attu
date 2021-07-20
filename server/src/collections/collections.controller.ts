@@ -11,6 +11,8 @@ import {
   ValidationPipe,
   CACHE_MANAGER,
   Inject,
+  UseInterceptors,
+  CacheInterceptor,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { ApiTags } from '@nestjs/swagger';
@@ -23,11 +25,13 @@ import {
 } from './dto';
 import { cacheKeys } from '../cache/config';
 
+//Including 2 kind of cache check getCollections and getStatistics for detail
 @ApiTags('collections')
 @Controller('collections')
 export class CollectionsController {
   constructor(private collectionsService: CollectionsService, @Inject(CACHE_MANAGER) private cacheManager: Cache) { }
 
+  // manually control cache if logic is complicated
   @Get()
   async getCollections(@Query() data?: ShowCollections) {
     if (Number(data.type) === 1) {
@@ -48,7 +52,9 @@ export class CollectionsController {
     return allCollections;
   }
 
+  // use interceptor to control cache automatically
   @Get('statistics')
+  @UseInterceptors(CacheInterceptor)
   async getStatistics() {
     return await this.collectionsService.getStatistics();
   }

@@ -2,7 +2,7 @@ import { Module, CacheModule } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CollectionsController } from './collections.controller';
 import { MilvusModule } from '../milvus/milvus.module';
-import { ttl } from '../cache/ config';
+import { ttl } from '../cache/config';
 
 @Module({
   imports: [
