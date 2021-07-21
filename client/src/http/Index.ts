@@ -6,6 +6,8 @@ import {
 } from '../pages/schema/Types';
 import { ManageRequestMethods } from '../types/Common';
 import { IndexState } from '../types/Milvus';
+import { findKeyValue } from '../utils/Common';
+import { getKeyValueListFromJsonString } from '../utils/Format';
 import BaseModel from './BaseModel';
 
 export class IndexHttp extends BaseModel implements IndexView {
@@ -62,7 +64,13 @@ export class IndexHttp extends BaseModel implements IndexView {
   }
 
   get _indexParameterPairs() {
-    return this.params.filter(p => p.key !== 'index_type');
+    const metricType = this.params.filter(v => v.key === 'metric_type');
+    // parms is json string, so we need parse it to key value array
+    const params = findKeyValue(this.params, 'params');
+    if (params) {
+      return [...metricType, ...getKeyValueListFromJsonString(params)];
+    }
+    return metricType;
   }
 
   get _fieldName() {

@@ -74,11 +74,11 @@ export const getEnumKeyByValue = (enumObj: any, enumValue: any) => {
   return '--';
 };
 
-export const getKeyValueListFromJSON = (
-  paramJSON: string
+export const getKeyValueListFromJsonString = (
+  json: string
 ): { key: string; value: string }[] => {
   try {
-    const obj = JSON.parse(paramJSON);
+    const obj = JSON.parse(json);
 
     const pairs: { key: string; value: string }[] = Object.entries(obj).map(
       ([key, value]) => ({
@@ -114,3 +114,6 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 
   return 'number';
 };
+
+// Trim the address
+export const formatAddress = (address: string): string => address.trim();

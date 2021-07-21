@@ -160,7 +160,7 @@ const InsertImport: FC<InsertImportProps> = ({
             accept=".csv"
             setFileName={setFileName}
             handleUploadedData={handleUploadedData}
-            maxSize={parseByte('5m')}
+            maxSize={parseByte('150m')}
             overSizeWarning={insertTrans('overSizeWarning')}
           />
           <Typography className="text">
