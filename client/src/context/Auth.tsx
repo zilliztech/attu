@@ -11,12 +11,14 @@ export const authContext = createContext<AuthContextType>({
 
 const { Provider } = authContext;
 export const AuthProvider = (props: { children: React.ReactNode }) => {
+  // get milvus address from local storage
   const [address, setAddress] = useState<string>(
     window.localStorage.getItem(MILVUS_ADDRESS) || ''
   );
   const isAuth = useMemo(() => !!address, [address]);
 
   useEffect(() => {
+    // check if the milvus is still available
     const check = async () => {
       const milvusAddress = window.localStorage.getItem(MILVUS_ADDRESS) || '';
       if (!milvusAddress) {
@@ -38,7 +40,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
 
   useEffect(() => {
     document.title = address
-      ? `Milvus Insight - ${address} `
+      ? `${address} - Milvus Insight`
       : 'Milvus Insight';
   }, [address]);
 
