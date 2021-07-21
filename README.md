@@ -38,6 +38,8 @@ docker run -p 8000:3000 -e HOST_URL=http://127.0.0.1:8000 -e MILVUS_URL=127.0.0.
 
 Once you start the docker, open the browser, type `http://127.0.0.1:8000`, you can view the milvus insight.
 
+***note*** We plan to release milvus insight once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
+
 ## ✨ Building and Running Milvus insight, and/or Contributing Code
 
 You might want to build Milvus-insight locally to contribute some code, test out the latest features, or try
