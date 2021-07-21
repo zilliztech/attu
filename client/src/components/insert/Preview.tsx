@@ -91,6 +91,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   handleIsContainedChange,
   tableHeads,
   setTableHeads,
+  file,
 }) => {
   const classes = getStyles();
   const { t: insertTrans } = useTranslation('insert');

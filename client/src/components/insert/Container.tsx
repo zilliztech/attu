@@ -72,6 +72,8 @@ const InsertContainer: FC<InsertContentProps> = ({
   const [isContainFieldNames, setIsContainFieldNames] = useState<number>(1);
   // uploaded file name
   const [fileName, setFileName] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+
   // uploaded csv data (type: string)
   const [csvData, setCsvData] = useState<any[]>([]);
 
@@ -225,6 +227,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       openSnackBar(insertTrans('uploadFieldNamesLenWarning'), 'error');
       // reset uploader value and filename
       setFileName('');
+      setFile(null);
       uploader.value = null;
       return;
     }
@@ -272,6 +275,11 @@ const InsertContainer: FC<InsertContentProps> = ({
     }
   };
 
+  const handleUploadFileChange = (file: File, upload: HTMLFormElement) => {
+    console.log(file);
+    setFile(file);
+  };
+
   const handleBack = () => {
     switch (activeStep) {
       case InsertStepperEnum.import:
@@ -299,6 +307,7 @@ const InsertContainer: FC<InsertContentProps> = ({
             handleCollectionChange={handleCollectionChange}
             handlePartitionChange={setPartitionValue}
             handleUploadedData={handleUploadedData}
+            handleUploadFileChange={handleUploadFileChange}
             fileName={fileName}
             setFileName={setFileName}
           />
@@ -311,6 +320,7 @@ const InsertContainer: FC<InsertContentProps> = ({
             tableHeads={tableHeads}
             setTableHeads={setTableHeads}
             isContainFieldNames={isContainFieldNames}
+            file={file}
             handleIsContainedChange={setIsContainFieldNames}
           />
         );
