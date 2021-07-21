@@ -1,8 +1,6 @@
 import {
   Chip,
-  makeStyles,
   TextField,
-  Theme,
   Typography,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -27,151 +25,15 @@ import { Option } from '../../components/customSelector/Types';
 import { CollectionHttp } from '../../http/Collection';
 import { CollectionData, DataType } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  form: {
-    display: 'flex',
-
-    '& .field': {
-      padding: theme.spacing(2, 3, 3),
-      backgroundColor: '#fff',
-      borderRadius: theme.spacing(0.5),
-      boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
-
-      '& .textarea': {
-        border: `1px solid ${theme.palette.milvusGrey.main}`,
-        borderRadius: theme.spacing(0.5),
-        padding: theme.spacing(1),
-        margin: theme.spacing(2, 0),
-        minWidth: '364px',
-      },
-
-      // reset default style
-      '& .textfield': {
-        padding: 0,
-        fontSize: '14px',
-        lineHeight: '20px',
-        fontWeight: 400,
-
-        '&::before': {
-          borderBottom: 'none',
-        },
-
-        '&::after': {
-          borderBottom: 'none',
-        },
-      },
-
-      '& .multiline': {
-        '& textarea': {
-          overflow: 'auto',
-          // change scrollbar style
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: '#f9f9f9',
-          },
-
-          '&::-webkit-scrollbar-thumb': {
-            borderRadius: '8px',
-            backgroundColor: '#eee',
-          },
-        },
-      },
-    },
-
-    '& .field-second': {
-      flexGrow: 1,
-      marginLeft: theme.spacing(1),
-    },
-
-    '& .text': {
-      color: theme.palette.milvusGrey.dark,
-      fontWeight: 500,
-    },
-  },
-  selectors: {
-    display: 'flex',
-    justifyContent: 'space-between',
-
-    '& .selector': {
-      flexBasis: '45%',
-      minWidth: '183px',
-    },
-  },
-  paramsWrapper: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    paddingTop: theme.spacing(2),
-  },
-  toolbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-
-    padding: theme.spacing(2, 0),
-
-    '& .left': {
-      display: 'flex',
-      alignItems: 'center',
-
-      '& .text': {
-        color: theme.palette.milvusGrey.main,
-      },
-
-      '& .button': {
-        marginLeft: theme.spacing(1),
-        fontSize: '16px',
-        lineHeight: '24px',
-      },
-    },
-    '& .right': {
-      '& .btn': {
-        marginRight: theme.spacing(1),
-      },
-      '& .icon': {
-        fontSize: '16px',
-      },
-    },
-  },
-  menuLabel: {
-    minWidth: '108px',
-
-    padding: theme.spacing(0, 1),
-    marginLeft: theme.spacing(1),
-
-    backgroundColor: '#fff',
-    color: theme.palette.milvusGrey.dark,
-  },
-  menuItem: {
-    fontWeight: 500,
-    fontSize: '12px',
-    lineHeight: '16px',
-    color: theme.palette.milvusGrey.dark,
-  },
-  chip: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 0.5, 0, 1),
-    marginLeft: theme.spacing(1),
-  },
-  chipLabel: {
-    color: theme.palette.primary.main,
-    paddingLeft: 0,
-    paddingRight: theme.spacing(1),
-    fontSize: '12px',
-    lineHeight: '16px',
-  },
-}));
+import { getVectorSearchStyles } from './Styles';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
   const { t: searchTrans } = useTranslation('search');
   const { t: btnTrans } = useTranslation('btn');
-  const classes = getStyles();
+  const classes = getVectorSearchStyles();
 
+  // data stored inside the component
   // TODO: set real loading
   const [tableLoading, setTableLoading] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionData[]>([]);
@@ -302,7 +164,7 @@ const VectorSearch = () => {
     <section className="page-wrapper">
       {/* form section */}
       <form className={classes.form}>
-        {/* vector value, collection and field */}
+        {/* vector value textarea */}
         <fieldset className="field">
           <Typography className="text">{searchTrans('firstTip')}</Typography>
           <TextField
@@ -314,44 +176,46 @@ const VectorSearch = () => {
               },
             }}
             multiline
-            rows={2}
+            rows={5}
             placeholder={searchTrans('vectorPlaceholder')}
             onBlur={(e: React.ChangeEvent<{ value: unknown }>) => {
               handleVectorChange(e.target.value as string);
             }}
           />
-          <div className={classes.selectors}>
-            <CustomSelector
-              options={collectionOptions}
-              wrapperClass="selector"
-              variant="filled"
-              label={searchTrans('collection')}
-              value={selectedCollection}
-              onChange={(e: { target: { value: unknown } }) => {
-                const collection = e.target.value;
-                setSelectedCollection(collection as string);
-                // everytime selected collection changed, reset field
-                setSelectedField('');
-              }}
-            />
-            <CustomSelector
-              options={fieldOptions}
-              readOnly={selectedCollection === ''}
-              wrapperClass="selector"
-              variant="filled"
-              label={searchTrans('field')}
-              value={selectedField}
-              onChange={(e: { target: { value: unknown } }) => {
-                const field = e.target.value;
-                setSelectedField(field as string);
-                console.log('selected field', field);
-              }}
-            />
-          </div>
         </fieldset>
-        {/* search params */}
+        {/* collection and field selectors */}
         <fieldset className="field field-second">
           <Typography className="text">{searchTrans('secondTip')}</Typography>
+          <CustomSelector
+            options={collectionOptions}
+            wrapperClass={classes.selector}
+            variant="filled"
+            label={searchTrans('collection')}
+            value={selectedCollection}
+            onChange={(e: { target: { value: unknown } }) => {
+              const collection = e.target.value;
+              setSelectedCollection(collection as string);
+              // everytime selected collection changed, reset field
+              setSelectedField('');
+            }}
+          />
+          <CustomSelector
+            options={fieldOptions}
+            readOnly={selectedCollection === ''}
+            wrapperClass={classes.selector}
+            variant="filled"
+            label={searchTrans('field')}
+            value={selectedField}
+            onChange={(e: { target: { value: unknown } }) => {
+              const field = e.target.value;
+              setSelectedField(field as string);
+              console.log('selected field', field);
+            }}
+          />
+        </fieldset>
+        {/* search params selectors */}
+        <fieldset className="field">
+          <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
             metricType={metricType!}

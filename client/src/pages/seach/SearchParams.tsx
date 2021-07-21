@@ -1,15 +1,15 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useEffect, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import { Option } from '../../components/customSelector/Types';
-import { METRIC_OPTIONS_MAP } from '../../consts/Milvus';
+import { INDEX_CONFIG, METRIC_OPTIONS_MAP } from '../../consts/Milvus';
 import { SearchParamsProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   selector: {
-    // minWidth: '218px',
-    flexBasis: '32%',
+    width: '100%',
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -25,6 +25,14 @@ const SearchParams: FC<SearchParamsProps> = ({
   const classes = getStyles();
 
   const metricOptions: Option[] = METRIC_OPTIONS_MAP[embeddingType];
+  const searchParams = useMemo(() => {
+    if (indexType !== '') {
+      const param = INDEX_CONFIG[indexType].search;
+      console.log('===== 30 param', param);
+      return param;
+    }
+  }, [indexType]);
+  console.log('search params', searchParams);
 
   return (
     <div className={wrapperClass}>
