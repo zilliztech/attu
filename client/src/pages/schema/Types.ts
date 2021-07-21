@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { MetricType } from '../../consts/Milvus';
 import { DataType } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {
@@ -45,6 +46,7 @@ export interface IndexView {
   _indexTypeElement?: ReactElement;
   _indexParameterPairs: { key: string; value: string }[];
   _indexParamElement?: ReactElement;
+  _metricType?: MetricType | string;
 }
 
 export type IndexType =

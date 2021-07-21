@@ -17,6 +17,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       display: 'flex',
+
+      '& .normalSearchIcon': {
+        '& path': {
+          fill: theme.palette.milvusGrey.dark,
+        },
+      },
+
+      '& .activeSearchIcon': {
+        '& path': {
+          fill: theme.palette.primary.main,
+        },
+      },
     },
     body: {
       flex: 1,
@@ -52,6 +64,13 @@ const Layout = (props: any) => {
       icon: icons.navCollection,
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
+    },
+    {
+      icon: icons.navSearch,
+      label: navTrans('search'),
+      onClick: () => history.push('/search'),
+      iconActiveClass: 'activeSearchIcon',
+      iconNormalClass: 'normalSearchIcon',
     },
   ];
 

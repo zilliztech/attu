@@ -65,10 +65,10 @@ export const INDEX_CONFIG: {
     create: ['nlist', 'm'],
     search: ['nprobe'],
   },
-  // IVF_SQ8: {
-  //   create: ['nlist'],
-  //   search: ['nprobe'],
-  // },
+  IVF_SQ8: {
+    create: ['nlist'],
+    search: ['nprobe'],
+  },
   // IVF_SQ8_HYBRID: {
   //   create: ['nlist'],
   //   search: ['nprobe'],
@@ -115,3 +115,47 @@ export enum EmbeddingTypeEnum {
   float = 'FLOAT_POINT',
   binary = 'BINARY',
 }
+
+export const METRIC_OPTIONS_MAP = {
+  [EmbeddingTypeEnum.float]: [
+    {
+      value: METRIC_TYPES_VALUES.L2,
+      label: 'L2',
+    },
+    {
+      value: METRIC_TYPES_VALUES.IP,
+      label: 'IP',
+    },
+  ],
+  [EmbeddingTypeEnum.binary]: [
+    {
+      value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
+      label: 'Substructure',
+    },
+    {
+      value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
+      label: 'Superstructure',
+    },
+    {
+      value: METRIC_TYPES_VALUES.HAMMING,
+      label: 'Hamming',
+    },
+    {
+      value: METRIC_TYPES_VALUES.JACCARD,
+      label: 'Jaccard',
+    },
+    {
+      value: METRIC_TYPES_VALUES.TANIMOTO,
+      label: 'Tanimoto',
+    },
+  ],
+};
+
+/**
+ * use L2 as float default metric type
+ * use Hamming as binary default metric type
+ */
+export const DEFAULT_METRIC_VALUE_MAP = {
+  [EmbeddingTypeEnum.float]: METRIC_TYPES_VALUES.L2,
+  [EmbeddingTypeEnum.binary]: METRIC_TYPES_VALUES.HAMMING,
+};

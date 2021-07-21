@@ -5,8 +5,8 @@ export enum ALL_ROUTER_TYPES {
   COLLECTIONS = 'collections',
   // '/collections/:collectionId'
   COLLECTION_DETAIL = 'collection_detail',
-  // '/console'
-  CONSOLE = 'console',
+  // 'search'
+  SEARCH = 'search',
 }
 
 export type NavInfo = {

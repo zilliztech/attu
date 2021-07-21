@@ -23,6 +23,8 @@ import indexEn from './en/index';
 import indexCn from './cn/index';
 import insertEn from './en/insert';
 import insertCn from './cn/insert';
+import searchEn from './en/search';
+import searchCn from './cn/search';
 
 export const resources = {
   cn: {
@@ -37,6 +39,7 @@ export const resources = {
     success: successCn,
     index: indexCn,
     insert: insertCn,
+    search: searchCn,
   },
   en: {
     translation: commonEn,
@@ -50,6 +53,7 @@ export const resources = {
     success: successEn,
     index: indexEn,
     insert: insertEn,
+    search: searchEn,
   },
 };
 
