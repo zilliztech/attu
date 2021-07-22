@@ -62,7 +62,7 @@ const ConditionGroup = (props: ConditionGroupProps) => {
     addCondition,
     removeCondition,
     changeBinaryLogicalOp,
-    onConditionChange,
+    updateConditionData,
   } = handleConditions;
 
   const classes = useStyles();
@@ -94,7 +94,7 @@ const ConditionGroup = (props: ConditionGroupProps) => {
               removeCondition(condition.id);
             }}
             fields={fields}
-            triggerChange={onConditionChange}
+            triggerChange={updateConditionData}
             initData={condition?.data}
             className={generateClassName(conditions, currentIndex)}
           />
@@ -138,7 +138,7 @@ const ConditionGroup = (props: ConditionGroupProps) => {
               removeCondition(condition.id);
             }}
             fields={fields}
-            triggerChange={onConditionChange}
+            triggerChange={updateConditionData}
             initData={condition?.data}
             className={generateClassName(conditions, currentIndex)}
           />

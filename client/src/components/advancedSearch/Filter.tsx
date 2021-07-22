@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AdvancedDialog from './Dialog';
-import { FilterProps, Field } from './Types';
+import { FilterProps, ConditionData } from './Types';
 import { generateHashCode } from '../../utils/Common';
 
 const Filter = function Filter(props: FilterProps) {
@@ -127,7 +127,7 @@ const Filter = function Filter(props: FilterProps) {
    * Remove "OR" operator in specified position.
    * @param targetId Remove the break operator after the target one.
    */
-  const removeBreak = (targetId: string) => {
+  const removeOrOp = (targetId: string) => {
     setFilteredFlatConditions(flatConditions.filter(i => i.id !== targetId));
   };
   /**
@@ -176,17 +176,12 @@ const Filter = function Filter(props: FilterProps) {
    */
   const removeCondition = (targetId: string) => {
     setFilteredFlatConditions(flatConditions.filter(i => i.id !== targetId));
-    // flatConditions.reduce((prev, item, currentIndex) => {
-    //   if (item.id === targetId) {
-
-    //   }
-    // }, []);
   };
   const changeBinaryLogicalOp = (value: string, targetId: string) => {
     if (value === 'or') {
       addBreak(targetId);
     } else if (value === 'and') {
-      removeBreak(targetId);
+      removeOrOp(targetId);
     }
   };
   /**
@@ -196,18 +191,13 @@ const Filter = function Filter(props: FilterProps) {
    */
   const updateConditionData = (
     id: string,
-    data: { field: Field; op: string; value: string; isCorrect: boolean }
+    data: ConditionData
   ) => {
     const formerFlatConditions = flatConditions.map(i => {
       if (i.id === id) return { ...i, data };
       return i;
     });
     setFilteredFlatConditions(formerFlatConditions);
-  };
-  // Handle condition change.
-  const onConditionChange = (data: any) => {
-    const { field, op, value, isCorrect, id } = data;
-    updateConditionData(id, { field, op, value, isCorrect });
   };
   // Reset conditions.
   const resetConditions = () => {
@@ -229,12 +219,11 @@ const Filter = function Filter(props: FilterProps) {
 
   const handleConditions = {
     addBreak,
-    removeBreak,
+    removeOrOp,
     addCondition,
     removeCondition,
     changeBinaryLogicalOp,
     updateConditionData,
-    onConditionChange,
     resetConditions,
     getConditionsSum,
     setFilteredFlatConditions,

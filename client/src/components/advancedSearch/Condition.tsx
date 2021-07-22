@@ -8,7 +8,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import {ConditionProps, Field} from './Types';
+import { ConditionProps, Field } from './Types';
 
 // Todo: Move to corrsponding Constant file.
 // Static logical operators.
@@ -97,7 +97,7 @@ const Condition: FC<ConditionProps> = props => {
         break;
     }
 
-    triggerChange({
+    triggerChange(id, {
       field: conditionField,
       op: operator,
       value: conditionValue,
@@ -110,7 +110,7 @@ const Condition: FC<ConditionProps> = props => {
 
   // Trigger change event if isValuelegal changed.
   useEffect(() => {
-    triggerChange({
+    triggerChange(id, {
       field: conditionField,
       op: operator,
       value: conditionValue,

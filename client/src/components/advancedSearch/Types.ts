@@ -3,7 +3,7 @@
 export interface ConditionProps {
   others?: object;
   onDelete: () => void;
-  triggerChange: (data: TriggerChangeData) => void;
+  triggerChange: (id: string, data: TriggerChangeData) => void;
   fields: Field[];
   id: string;
   initData: any;
@@ -72,4 +72,11 @@ export interface FilterProps {
   onSubmit: (data: any) => void;
   tooltipPlacement?: 'left' | 'right' | 'bottom' | 'top';
   fields: Field[];
+}
+
+export interface ConditionData {
+  field: Field;
+  op: string;
+  value: string;
+  isCorrect: boolean;
 }
