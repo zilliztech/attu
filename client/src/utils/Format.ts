@@ -74,18 +74,29 @@ export const getEnumKeyByValue = (enumObj: any, enumValue: any) => {
   return '--';
 };
 
+/**
+ *
+ * @param obj e.g. {name: 'test'}
+ * @returns key value pair, e.g. [{key: 'name', value: 'test'}]
+ */
+export const getKeyValuePairFromObj = (
+  obj: { [key in string]: any }
+): { key: string; value: any }[] => {
+  const pairs: { key: string; value: string }[] = Object.entries(obj).map(
+    ([key, value]) => ({
+      key,
+      value: value as string,
+    })
+  );
+  return pairs;
+};
+
 export const getKeyValueListFromJsonString = (
   json: string
 ): { key: string; value: string }[] => {
   try {
     const obj = JSON.parse(json);
-
-    const pairs: { key: string; value: string }[] = Object.entries(obj).map(
-      ([key, value]) => ({
-        key,
-        value: value as string,
-      })
-    );
+    const pairs = getKeyValuePairFromObj(obj);
 
     return pairs;
   } catch (err) {

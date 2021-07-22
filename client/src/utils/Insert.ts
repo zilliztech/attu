@@ -26,7 +26,7 @@ const replaceKeysByIndex = (obj: any, newKeys: string[]) => {
   return Object.assign({}, ...keyValues);
 };
 
-const parseValue = (value: string) => {
+export const parseValue = (value: string) => {
   try {
     return JSON.parse(value);
   } catch (err) {

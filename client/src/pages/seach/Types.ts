@@ -1,6 +1,6 @@
 import { Option } from '../../components/customSelector/Types';
 import { EmbeddingTypeEnum, searchKeywordsType } from '../../consts/Milvus';
-import { DataType } from '../collections/Types';
+import { DataType, DataTypeEnum } from '../collections/Types';
 import { IndexView } from '../schema/Types';
 
 export interface SearchParamsProps {
@@ -25,8 +25,8 @@ export interface SearchParamsProps {
 export interface SearchResultView {
   // dynamic field names
   [key: string]: string | number;
-  _rank: number;
-  _distance: number;
+  rank: number;
+  distance: number;
 }
 
 export interface FieldOption extends Option {
@@ -45,4 +45,18 @@ export interface SearchParamInputConfig {
   // no value: empty string
   value: number | string;
   handleChange: (value: number) => void;
+}
+
+export interface VectorSearchParam {
+  expr?: string;
+  search_params: { key: string; value: string | number }[];
+  vectors: any;
+  output_fields: string[];
+  vector_type: number | DataTypeEnum;
+}
+
+export interface SearchResult {
+  // dynamic field names
+  [key: string]: string | number;
+  score: number;
 }

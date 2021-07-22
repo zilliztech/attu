@@ -9,7 +9,7 @@ import {
   DEFAULT_METRIC_VALUE_MAP,
   EmbeddingTypeEnum,
 } from '../../consts/Milvus';
-import { FieldOption, SearchResultView } from './Types';
+import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 import MilvusGrid from '../../components/grid/Grid';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
@@ -19,9 +19,12 @@ import SimpleMenu from '../../components/menu/SimpleMenu';
 import { TOP_K_OPTIONS } from './Constants';
 import { Option } from '../../components/customSelector/Types';
 import { CollectionHttp } from '../../http/Collection';
-import { CollectionData, DataType } from '../collections/Types';
+import { CollectionData, DataType, DataTypeEnum } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
 import { getVectorSearchStyles } from './Styles';
+import { parseValue } from '../../utils/Insert';
+import { transferSearchResult } from '../../utils/search';
+import { ColDefinitionsType } from '../../components/grid/Types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -30,7 +33,6 @@ const VectorSearch = () => {
   const classes = getVectorSearchStyles();
 
   // data stored inside the component
-  // TODO: set real loading
   const [tableLoading, setTableLoading] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionData[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
@@ -68,10 +70,29 @@ const VectorSearch = () => {
   const outputFields: string[] = useMemo(() => {
     const fields =
       collections.find(c => c._name === selectedCollection)?._fields || [];
-    return fields.map(f => f._fieldName);
+    // vector field can't be output fields
+    const invalidTypes = ['BinaryVector', 'FloatVector'];
+    const nonVectorFields = fields.filter(
+      field => !invalidTypes.includes(field._fieldType)
+    );
+    return nonVectorFields.map(f => f._fieldName);
   }, [selectedCollection, collections]);
 
-  const { metricType, indexType, indexParams } = useMemo(() => {
+  const colDefinitions: ColDefinitionsType[] = useMemo(() => {
+    // filter id and score
+    return searchResult.length > 0
+      ? Object.keys(searchResult[0])
+          .filter(item => item !== 'id' && item !== 'score')
+          .map(key => ({
+            id: key,
+            align: 'left',
+            disablePadding: false,
+            label: key,
+          }))
+      : [];
+  }, [searchResult]);
+
+  const { metricType, indexType, indexParams, fieldType } = useMemo(() => {
     if (selectedField !== '') {
       // field options must contain selected field, so selectedFieldInfo will never undefined
       const selectedFieldInfo = fieldOptions.find(
@@ -94,10 +115,16 @@ const VectorSearch = () => {
         metricType: metric,
         indexType: index!._indexType,
         indexParams,
+        fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
       };
     }
 
-    return { metricType: '', indexType: '', indexParams: [] };
+    return {
+      metricType: '',
+      indexType: '',
+      indexParams: [],
+      fieldType: 0,
+    };
   }, [selectedField, fieldOptions]);
 
   // fetch data
@@ -154,7 +181,45 @@ const VectorSearch = () => {
     handleCurrentPage(page);
   };
   const handleReset = () => {};
-  const handleSearch = () => {};
+  const handleSearch = async () => {
+    const searhParamPairs = [
+      // dynamic search params
+      {
+        key: 'params',
+        value: JSON.stringify(searchParam),
+      },
+      {
+        key: 'anns_field',
+        value: selectedField,
+      },
+      {
+        key: 'topk',
+        value: topK,
+      },
+      {
+        key: 'metric_type',
+        value: metricType,
+      },
+    ];
+
+    const params: VectorSearchParam = {
+      output_fields: outputFields,
+      expr: '',
+      search_params: searhParamPairs,
+      vectors: [parseValue(vectors)],
+      vector_type: fieldType,
+    };
+
+    setTableLoading(true);
+    const res = await CollectionHttp.vectorSearchData(
+      selectedCollection,
+      params
+    );
+    setTableLoading(false);
+
+    const result = transferSearchResult(res.results);
+    setSearchResult(result);
+  };
   const handleFilter = () => {};
   const handleClearFilter = () => {};
   const handleVectorChange = (value: string) => {
@@ -196,7 +261,7 @@ const VectorSearch = () => {
             onChange={(e: { target: { value: unknown } }) => {
               const collection = e.target.value;
               setSelectedCollection(collection as string);
-              // everytime selected collection changed, reset field
+              // every time selected collection changed, reset field
               setSelectedField('');
             }}
           />
@@ -210,7 +275,6 @@ const VectorSearch = () => {
             onChange={(e: { target: { value: unknown } }) => {
               const field = e.target.value;
               setSelectedField(field as string);
-              console.log('selected field', field);
             }}
           />
         </fieldset>
@@ -245,7 +309,11 @@ const VectorSearch = () => {
             label={searchTrans('topK', { number: topK })}
             menuItems={TOP_K_OPTIONS.map(item => ({
               label: item.toString(),
-              callback: () => setTopK(item),
+              callback: () => {
+                setTopK(item);
+                // TODO: check search validation before search
+                // handleSearch();
+              },
               wrapperClass: classes.menuItem,
             }))}
             buttonProps={{
@@ -288,10 +356,10 @@ const VectorSearch = () => {
       {searchResult.length > 0 || tableLoading ? (
         <MilvusGrid
           toolbarConfigs={[]}
-          colDefinitions={[]}
+          colDefinitions={colDefinitions}
           rows={result}
           rowCount={total}
-          primaryKey="_row"
+          primaryKey="rank"
           page={currentPage}
           onChangePage={handlePageChange}
           rowsPerPage={pageSize}
