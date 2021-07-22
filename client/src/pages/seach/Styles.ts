@@ -75,7 +75,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   },
   paramsWrapper: {
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
   toolbar: {
     display: 'flex',

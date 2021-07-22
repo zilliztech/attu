@@ -1,8 +1,4 @@
-import {
-  Chip,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Chip, TextField, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
@@ -40,9 +36,12 @@ const VectorSearch = () => {
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   const [selectedField, setSelectedField] = useState<string>('');
+  // search params form
   const [searchParam, setSearchParam] = useState<{ [key in string]: number }>(
     {}
   );
+  // search params disable state
+  const [paramDisabled, setParamDisabled] = useState<boolean>(true);
   const [searchResult, setSearchResult] = useState<SearchResultView[]>([]);
   // default topK is 100
   const [topK, setTopK] = useState<number>(100);
@@ -72,12 +71,14 @@ const VectorSearch = () => {
     return fields.map(f => f._fieldName);
   }, [selectedCollection, collections]);
 
-  const { metricType, indexType } = useMemo(() => {
+  const { metricType, indexType, indexParams } = useMemo(() => {
     if (selectedField !== '') {
       // field options must contain selected field, so selectedFieldInfo will never undefined
       const selectedFieldInfo = fieldOptions.find(
         f => f.value === selectedField
       );
+
+      const index = selectedFieldInfo?.indexInfo;
 
       const embeddingType =
         selectedFieldInfo!.fieldType === 'BinaryVector'
@@ -85,16 +86,18 @@ const VectorSearch = () => {
           : EmbeddingTypeEnum.float;
 
       const metric =
-        selectedFieldInfo!.metricType ||
-        DEFAULT_METRIC_VALUE_MAP[embeddingType];
+        index!._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
+
+      const indexParams = index?._indexParameterPairs || [];
 
       return {
         metricType: metric,
-        indexType: selectedFieldInfo!.indexType,
+        indexType: index!._indexType,
+        indexParams,
       };
     }
 
-    return { metricType: '', indexType: '' };
+    return { metricType: '', indexType: '', indexParams: [] };
   }, [selectedField, fieldOptions]);
 
   // fetch data
@@ -109,7 +112,6 @@ const VectorSearch = () => {
         collections.find(c => c._name === collectionName)?._fields || [];
       const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
       const indexes = await IndexHttp.getIndexInfo(collectionName);
-      console.log('----- 226 indexes', indexes);
 
       const fieldOptions = fields
         // only vector type field can be select
@@ -121,8 +123,7 @@ const VectorSearch = () => {
             label: `${f._fieldName} (${index?._indexType || 'FLAT'})`,
             value: f._fieldName,
             fieldType: f._fieldType,
-            metricType: index?._metricType || '',
-            indexType: index?._indexType || 'FLAT',
+            indexInfo: index || null,
           };
         });
       setFieldOptions(fieldOptions);
@@ -221,8 +222,11 @@ const VectorSearch = () => {
             metricType={metricType!}
             embeddingType={EmbeddingTypeEnum.float}
             indexType={indexType}
+            indexParams={indexParams!}
             searchParamsForm={searchParam}
             handleFormChange={setSearchParam}
+            topK={topK}
+            setParamsDisabled={setParamDisabled}
           />
         </fieldset>
       </form>

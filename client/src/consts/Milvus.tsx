@@ -159,3 +159,17 @@ export const DEFAULT_METRIC_VALUE_MAP = {
   [EmbeddingTypeEnum.float]: METRIC_TYPES_VALUES.L2,
   [EmbeddingTypeEnum.binary]: METRIC_TYPES_VALUES.HAMMING,
 };
+
+// search params default value map
+export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
+  [key in searchKeywordsType]: number;
+} = {
+  // range: [top_k, 32768]
+  ef: 50,
+  // range: [1, nlist]
+  nprobe: 1,
+  // range: {-1} ∪ [top_k, n × n_trees]
+  search_k: 50,
+  // range: [10, 300]
+  search_length: 10,
+};
