@@ -3,29 +3,11 @@ import { makeStyles, Theme, createStyles, Button } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import ConditionItem from './Condition';
 import AddIcon from '@material-ui/icons/Add';
-
-interface ConditionGroupProps {
-  others?: object;
-  fields: Field[];
-  handleConditions: any;
-  conditions: any[];
-}
-
-interface BinaryLogicalOpProps {
-  onChange: (newOp: string) => void;
-  className?: string;
-  initValue?: string;
-}
-
-interface AddConditionProps {
-  className?: string;
-  onClick?: () => void;
-}
-
-interface Field {
-  name: string;
-  type: 'int' | 'float';
-}
+import {
+  ConditionGroupProps,
+  BinaryLogicalOpProps,
+  AddConditionProps,
+} from './Types';
 
 // "And & or" operator component.
 const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
@@ -102,8 +84,8 @@ const ConditionGroup = React.forwardRef((props: ConditionGroupProps, ref) => {
   // Generate condition items with operators and add condition btn.
   const generateConditionItems = (conditions: any[]) => {
     const conditionsLength = conditions.length;
-    const results = conditions.reduce((prev: any, condition, ind) => {
-      if (ind === conditionsLength - 1) {
+    const results = conditions.reduce((prev: any, condition, currentIndex) => {
+      if (currentIndex === conditionsLength - 1) {
         prev.push(
           <ConditionItem
             key={condition.id}
@@ -114,7 +96,7 @@ const ConditionGroup = React.forwardRef((props: ConditionGroupProps, ref) => {
             fields={fields}
             triggerChange={onConditionChange}
             initData={condition?.data}
-            className={generateClassName(conditions, ind)}
+            className={generateClassName(conditions, currentIndex)}
           />
         );
         prev.push(
@@ -158,7 +140,7 @@ const ConditionGroup = React.forwardRef((props: ConditionGroupProps, ref) => {
             fields={fields}
             triggerChange={onConditionChange}
             initData={condition?.data}
-            className={generateClassName(conditions, ind)}
+            className={generateClassName(conditions, currentIndex)}
           />
         );
         prev.push(

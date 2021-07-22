@@ -8,23 +8,8 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
 import AdvancedDialog from './Dialog';
-
-interface FilterProps {
-  className?: string;
-  title: string;
-  showTitle?: boolean;
-  others?: object;
-  onSubmit: (data: any) => void;
-  tooltipPlacement?: 'left' | 'right' | 'bottom' | 'top';
-  fields: Field[];
-}
-
-interface Field {
-  name: string;
-  type: 'int' | 'float';
-}
+import { FilterProps, Field } from './Types';
 
 const generateHashCode = (source: string) => {
   var hash = 0,

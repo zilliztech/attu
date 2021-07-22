@@ -7,14 +7,7 @@ import {
   IconButton,
   Fade,
 } from '@material-ui/core';
-
-interface CopyButtonProps {
-  className?: string;
-  icon?: any;
-  label: string;
-  value: string;
-  others?: any;
-}
+import { CopyButtonProps } from './Types';
 
 const CopyIcon = (
   <svg

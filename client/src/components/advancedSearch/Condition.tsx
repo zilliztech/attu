@@ -8,30 +8,9 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import {ConditionProps, Field} from './Types';
 
-interface ConditionProps {
-  others?: object;
-  onDelete: () => void;
-  triggerChange: (data: TriggerChangeData) => void;
-  fields: Field[];
-  id: string;
-  initData: any;
-  className?: string;
-}
-
-interface Field {
-  name: string;
-  type: 'int' | 'float';
-}
-
-interface TriggerChangeData {
-  field: Field;
-  op: string;
-  value: string;
-  isCorrect: boolean;
-  id: string;
-}
-
+// Todo: Move to corrsponding Constant file.
 // Static logical operators.
 const LogicalOperators = [
   {

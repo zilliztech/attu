@@ -16,26 +16,7 @@ import CachedIcon from '@material-ui/icons/Cached';
 import ConditionGroup from './ConditionGroup';
 import CopyBtn from './CopyButton';
 import DialogTemplate from '../customDialog/DialogTemplate';
-
-interface DialogProps {
-  others?: object;
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: any) => void;
-  onReset: () => void;
-  onCancel: () => void;
-  title: string;
-  fields: Field[];
-  handleConditions: any;
-  conditions: any[];
-  isLegal: boolean;
-  expression: string;
-}
-
-interface Field {
-  name: string;
-  type: 'int' | 'float';
-}
+import { DialogProps } from './Types';
 
 const AdvancedDialog = React.forwardRef((props: DialogProps, ref) => {
   const {
