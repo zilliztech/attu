@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import {
   makeStyles,
   Theme,
@@ -16,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import CachedIcon from '@material-ui/icons/Cached';
 import ConditionGroup from './ConditionGroup';
 import CopyBtn from './CopyButton';
+import DialogTemplate from '../customDialog/DialogTemplate';
 
 interface DialogProps {
   others?: object;
@@ -64,7 +64,7 @@ const AdvancedDialog = React.forwardRef((props: DialogProps, ref) => {
 
   return (
     <>
-      <Dialog
+      {/* <Dialog
         onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
@@ -92,7 +92,9 @@ const AdvancedDialog = React.forwardRef((props: DialogProps, ref) => {
             } testcopy`}
           >
             {`${isLegal ? filterExpression : 'Filter Expression'}`}
-            {isLegal && (<CopyBtn label="copy expression" value={filterExpression} />)}
+            {isLegal && (
+              <CopyBtn label="copy expression" value={filterExpression} />
+            )}
           </div>
           <div className={classes.expWrapper}>
             <ConditionGroup
@@ -133,24 +135,50 @@ const AdvancedDialog = React.forwardRef((props: DialogProps, ref) => {
             </Button>
           </div>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DialogTemplate
+        title={title}
+        handleClose={onClose}
+        showCloseIcon
+        handleConfirm={onSubmit}
+        confirmLabel="Apply Filters"
+        confirmDisabled={!isLegal}
+        handleCancel={onCancel}
+        cancelLabel="Cancel"
+        leftActions={
+          <Button
+            onClick={onReset}
+            color="primary"
+            className={classes.resetBtn}
+            size="small"
+          >
+            <CachedIcon />
+            Reset
+          </Button>
+        }
+      >
+        <div
+          className={`${classes.expResult} ${
+            !isLegal && 'disable-exp'
+          } testcopy`}
+        >
+          {`${isLegal ? filterExpression : 'Filter Expression'}`}
+          {isLegal && (
+            <CopyBtn label="copy expression" value={filterExpression} />
+          )}
+        </div>
+        <div className={classes.expWrapper}>
+          <ConditionGroup
+            // ref={childRef}
+            fields={fields}
+            handleConditions={handleConditions}
+            conditions={flatConditions}
+          />
+        </div>
+      </DialogTemplate>
     </>
   );
 });
-
-AdvancedDialog.propTypes = {
-  others: PropTypes.object,
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  onReset: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  handleConditions: PropTypes.object.isRequired,
-  conditions: PropTypes.array.isRequired,
-  isLegal: PropTypes.bool.isRequired,
-  expression: PropTypes.string.isRequired,
-};
 
 AdvancedDialog.defaultProps = {
   open: false,

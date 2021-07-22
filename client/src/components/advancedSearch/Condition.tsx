@@ -1,5 +1,4 @@
 import React, { useState, useEffect, FC } from 'react';
-import PropTypes from 'prop-types';
 import {
   makeStyles,
   Theme,
@@ -213,26 +212,6 @@ const Condition: FC<ConditionProps> = props => {
       </IconButton>
     </div>
   );
-};
-
-Condition.propTypes = {
-  /**
-   * Function will be called if delete button is clicked.
-   */
-  onDelete: PropTypes.func.isRequired,
-  /**
-   * Function will be called if input value is changed.
-   */
-  triggerChange: PropTypes.func.isRequired,
-  // fields: PropTypes.arrayOf(
-  //   PropTypes.shape({
-  //     name: PropTypes.string.isRequired,
-  //     type: PropTypes.oneOf(['int', 'float']).isRequired,
-  //   }).isRequired
-  // ).isRequired,
-  id: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  others: PropTypes.object,
 };
 
 Condition.defaultProps = {

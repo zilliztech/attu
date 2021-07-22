@@ -1,5 +1,4 @@
 import React, { useState, FC } from 'react';
-import PropTypes from 'prop-types';
 import {
   makeStyles,
   Theme,
@@ -74,14 +73,6 @@ const CopyButton: FC<CopyButtonProps> = props => {
       </IconButton>
     </Tooltip>
   );
-};
-
-CopyButton.propTypes = {
-  className: PropTypes.string,
-  icon: PropTypes.element,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  others: PropTypes.object,
 };
 
 CopyButton.defaultProps = {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import {
   makeStyles,
   Theme,
@@ -347,20 +346,6 @@ const Filter = React.forwardRef(function Filter(props: FilterProps, ref) {
     </>
   );
 });
-
-Filter.propTypes = {
-  className: PropTypes.string,
-  /**
-   * Specify the title content
-   */
-  title: PropTypes.string.isRequired,
-  /**
-   * Specify whether the title should be visiable
-   */
-  showTitle: PropTypes.bool,
-  onSubmit: PropTypes.func.isRequired,
-  tooltipPlacement: PropTypes.oneOf(['left', 'right', 'bottom', 'top']),
-};
 
 Filter.defaultProps = {
   className: '',

@@ -1,5 +1,4 @@
 import React, { useState, FC } from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles, Theme, createStyles, Button } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import ConditionItem from './Condition';
@@ -191,16 +190,6 @@ const ConditionGroup = React.forwardRef((props: ConditionGroupProps, ref) => {
     </div>
   );
 });
-
-ConditionGroup.propTypes = {
-  others: PropTypes.object,
-  // fields: PropTypes.arrayOf(PropTypes.shape({
-  //   name: PropTypes.string.isRequired,
-  //   type: PropTypes.oneOf(['int', 'float']).isRequired,
-  // }).isRequired).isRequired,
-  handleConditions: PropTypes.object.isRequired,
-  conditions: PropTypes.array.isRequired,
-};
 
 ConditionGroup.defaultProps = {
   fields: [],
