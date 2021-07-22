@@ -7,6 +7,7 @@ const collectionTrans = {
 
   create: 'Create Collection',
   delete: 'delete',
+  deleteTooltip: 'Please select at least one item to delete.',
 
   collection: 'Collection',
 
