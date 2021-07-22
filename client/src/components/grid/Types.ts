@@ -36,6 +36,8 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     onClick?: (arg0: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     disabled?: (data: any[]) => boolean;
     tooltip?: string;
+    // when disabled "disabledTooltip" will replace "tooltip"
+    disabledTooltip?: string;
     hidden?: boolean;
     type?: 'iconBtn' | 'buttton' | 'switch' | 'select' | 'groupSelect';
     position?: 'right' | 'left';
