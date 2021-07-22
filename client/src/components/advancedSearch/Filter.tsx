@@ -43,10 +43,10 @@ const Filter = function Filter(props: FilterProps) {
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
   const [filterExpression, setFilterExpression] = useState('');
 
-  useEffect(() => {
-    setInitConditions(flatConditions);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   setInitConditions(flatConditions);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   // Check all conditions are all correct.
   useEffect(() => {
@@ -69,8 +69,7 @@ const Filter = function Filter(props: FilterProps) {
       }
     }
     setIsConditionsLegal(true);
-    generateExpression(flatConditions, setFilterExpression);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    generateExpression(flatConditions, setFilterExpression);    
   }, [flatConditions]);
 
   const setFilteredFlatConditions = (conditions: any[]) => {

@@ -38,6 +38,7 @@ const AdvancedDialog = (props: DialogProps) => {
 
   useEffect(() => {
     flatConditions.length === 0 && addCondition();
+    // Only need add one condition after dialog's first mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

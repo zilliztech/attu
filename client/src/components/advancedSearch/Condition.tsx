@@ -104,6 +104,7 @@ const Condition: FC<ConditionProps> = props => {
       isCorrect: isValuelegal,
       id,
     });
+    // No need of 'id', 'isValuelegal', and 'triggerChange'.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionField, operator, conditionValue]);
 
@@ -116,6 +117,7 @@ const Condition: FC<ConditionProps> = props => {
       isCorrect: isValuelegal,
       id,
     });
+    // No need of 'id', 'isValuelegal', and 'triggerChange'.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isValuelegal]);
 
