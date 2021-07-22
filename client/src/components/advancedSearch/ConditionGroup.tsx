@@ -56,7 +56,7 @@ const AddCondition: FC<AddConditionProps> = props => {
 };
 
 // Condition group component which contains of BinaryLogicalOp, AddCondition and ConditionItem.
-const ConditionGroup = React.forwardRef((props: ConditionGroupProps, ref) => {
+const ConditionGroup = (props: ConditionGroupProps) => {
   const { fields, handleConditions, conditions: flatConditions } = props;
   const {
     addCondition,
@@ -171,7 +171,7 @@ const ConditionGroup = React.forwardRef((props: ConditionGroupProps, ref) => {
       )}
     </div>
   );
-});
+};
 
 ConditionGroup.defaultProps = {
   fields: [],

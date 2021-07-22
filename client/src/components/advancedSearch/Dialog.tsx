@@ -18,7 +18,7 @@ import CopyBtn from './CopyButton';
 import DialogTemplate from '../customDialog/DialogTemplate';
 import { DialogProps } from './Types';
 
-const AdvancedDialog = React.forwardRef((props: DialogProps, ref) => {
+const AdvancedDialog = (props: DialogProps) => {
   const {
     open,
     onClose,
@@ -159,7 +159,7 @@ const AdvancedDialog = React.forwardRef((props: DialogProps, ref) => {
       </DialogTemplate>
     </>
   );
-});
+};
 
 AdvancedDialog.defaultProps = {
   open: false,

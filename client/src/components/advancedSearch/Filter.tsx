@@ -24,7 +24,7 @@ const generateHashCode = (source: string) => {
   return hash.toString();
 };
 
-const Filter = React.forwardRef(function Filter(props: FilterProps, ref) {
+const Filter = function Filter(props: FilterProps) {
   const {
     title,
     showTitle,
@@ -330,7 +330,7 @@ const Filter = React.forwardRef(function Filter(props: FilterProps, ref) {
       </div>
     </>
   );
-});
+};
 
 Filter.defaultProps = {
   className: '',
