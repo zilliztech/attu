@@ -4,7 +4,7 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import icons from '../../components/icons/Icons';
 import ConnectContainer from './ConnectContainer';
 import CustomInput from '../../components/customInput/CustomInput';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
@@ -14,6 +14,7 @@ import { MilvusHttp } from '../../http/Milvus';
 import { rootContext } from '../../context/Root';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 import { formatAddress } from '../../utils/Format';
+import { io } from "socket.io-client";
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -98,6 +99,33 @@ const Connect = () => {
     ],
     defaultValue: form.address,
   };
+
+  // test code for socket
+  useEffect(() => {
+    const socket = io('http://localhost:3002');
+    socket.on('connect', function () {
+      console.log('Connected');
+
+      socket.emit('identity', 0, (res: any) =>
+        console.log(res));
+
+      socket.emit('events', { test: 'events' });
+
+      socket.emit('senddata', { test: 'senddata' });
+    });
+    socket.on('events', (data: any) => {
+      console.log('event', data);
+    });
+    socket.on('senddata', (data: any) => {
+      console.log('senddata', data);
+    });
+    socket.on('exception', (data: any) => {
+      console.log('event', data);
+    });
+    socket.on('disconnect', () => {
+      console.log('Disconnected');
+    });
+  }, []);
 
   return (
     <ConnectContainer>
