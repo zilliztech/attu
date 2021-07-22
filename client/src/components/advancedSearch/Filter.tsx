@@ -10,19 +10,7 @@ import {
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AdvancedDialog from './Dialog';
 import { FilterProps, Field } from './Types';
-
-const generateHashCode = (source: string) => {
-  var hash = 0,
-    i,
-    chr;
-  if (source.length === 0) return hash;
-  for (i = 0; i < source.length; i++) {
-    chr = source.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash.toString();
-};
+import { generateHashCode } from '../../utils/Common';
 
 const Filter = function Filter(props: FilterProps) {
   const {
@@ -69,7 +57,7 @@ const Filter = function Filter(props: FilterProps) {
       }
     }
     setIsConditionsLegal(true);
-    generateExpression(flatConditions, setFilterExpression);    
+    generateExpression(flatConditions, setFilterExpression);
   }, [flatConditions]);
 
   const setFilteredFlatConditions = (conditions: any[]) => {
