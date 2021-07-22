@@ -14,7 +14,7 @@ import { MilvusHttp } from '../../http/Milvus';
 import { rootContext } from '../../context/Root';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 import { formatAddress } from '../../utils/Format';
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -101,31 +101,31 @@ const Connect = () => {
   };
 
   // test code for socket
-  useEffect(() => {
-    const socket = io('http://localhost:3002');
-    socket.on('connect', function () {
-      console.log('Connected');
+  // useEffect(() => {
+  //   const socket = io('http://localhost:3002');
+  //   socket.on('connect', function () {
+  //     console.log('Connected');
 
-      socket.emit('identity', 0, (res: any) =>
-        console.log(res));
+  //     socket.emit('identity', 0, (res: any) =>
+  //       console.log(res));
 
-      socket.emit('events', { test: 'events' });
+  //     socket.emit('events', { test: 'events' });
 
-      socket.emit('senddata', { test: 'senddata' });
-    });
-    socket.on('events', (data: any) => {
-      console.log('event', data);
-    });
-    socket.on('senddata', (data: any) => {
-      console.log('senddata', data);
-    });
-    socket.on('exception', (data: any) => {
-      console.log('event', data);
-    });
-    socket.on('disconnect', () => {
-      console.log('Disconnected');
-    });
-  }, []);
+  //     socket.emit('senddata', { test: 'senddata' });
+  //   });
+  //   socket.on('events', (data: any) => {
+  //     console.log('event', data);
+  //   });
+  //   socket.on('senddata', (data: any) => {
+  //     console.log('senddata', data);
+  //   });
+  //   socket.on('exception', (data: any) => {
+  //     console.log('event', data);
+  //   });
+  //   socket.on('disconnect', () => {
+  //     console.log('Disconnected');
+  //   });
+  // }, []);
 
   return (
     <ConnectContainer>
