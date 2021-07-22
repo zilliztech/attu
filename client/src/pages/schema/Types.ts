@@ -55,7 +55,10 @@ export type IndexType =
   | 'IVF_PQ'
   // | 'RNSG'
   | 'HNSW'
-  | 'ANNOY';
+  | 'ANNOY'
+  | 'BIN_IVF_FLAT'
+  | 'BIN_FLAT';
+
 
 export interface IndexManageParam {
   collection_name: string;

@@ -25,14 +25,15 @@ const CreateIndex = (props: {
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
 
-  const defaultMetricType = fieldType === 'BinaryVector' ? 'Hamming' : 'L2';
+  const defaultIndexType = fieldType === 'BinaryVector' ? 'BIN_IVF_FLAT': 'IVF_FLAT';
+  const defaultMetricType = fieldType === 'BinaryVector' ? 'HAMMING' : 'L2';
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
     metric_type: MetricType;
     [x: string]: string;
   }>({
-    index_type: 'IVF_FLAT',
+    index_type: defaultIndexType,
     metric_type: defaultMetricType,
     M: '',
     m: '4',
@@ -87,7 +88,8 @@ const CreateIndex = (props: {
 
   // reset index params
   useEffect(() => {
-    setDisabled(true);
+    // no need
+    // setDisabled(true);
     setIndexSetting(v => ({
       ...v,
       metric_type: defaultMetricType,
@@ -115,7 +117,8 @@ const CreateIndex = (props: {
       .forEach(item => {
         paramsForm[item] = '';
       });
-
+    // if no other params, the form should be valid.
+    setDisabled((INDEX_CONFIG[type].create || []).length === 0 ? false : true);
     const form = formatForm(paramsForm);
     resetValidation(form);
   };
