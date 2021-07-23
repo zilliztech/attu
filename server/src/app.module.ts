@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { join } from 'path';
 import { PartitionsModule } from './partitions/partitions.module';
 import { SchemaModule } from './schema/schema.module';
+import { EventsModule } from './events/events.module';
 import { LoggerMiddleware } from './middlewares/logger';
 
 @Module({
@@ -26,6 +27,7 @@ import { LoggerMiddleware } from './middlewares/logger';
     AuthModule,
     PartitionsModule,
     SchemaModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [

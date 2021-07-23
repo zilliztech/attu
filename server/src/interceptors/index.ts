@@ -7,7 +7,7 @@ import {
   HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 export interface Response<T> {
@@ -48,5 +48,20 @@ export class ErrorInterceptor implements NestInterceptor {
         return throwError(new BadRequestException(err.toString()));
       }),
     );
+  }
+}
+
+/**
+ * add spent time looger when accessing milvus.
+ */
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const now = Date.now();
+    return next
+      .handle()
+      .pipe(
+        tap(() => Logger.log(`request to ${context.getArgs()[0]['url']} takes ${Date.now() - now}ms`)),
+      );
   }
 }
