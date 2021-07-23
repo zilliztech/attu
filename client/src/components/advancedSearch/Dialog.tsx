@@ -15,7 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import CachedIcon from '@material-ui/icons/Cached';
 import ConditionGroup from './ConditionGroup';
 import CopyBtn from './CopyButton';
-import DialogTemplate from '../customDialog/DialogTemplate';
+// import DialogTemplate from '../customDialog/DialogTemplate';
 import { DialogProps } from './Types';
 
 const AdvancedDialog = (props: DialogProps) => {
@@ -42,11 +42,9 @@ const AdvancedDialog = (props: DialogProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const childRef: any = useRef();
-
   return (
     <>
-      {/* <Dialog
+      <Dialog
         onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
@@ -80,7 +78,6 @@ const AdvancedDialog = (props: DialogProps) => {
           </div>
           <div className={classes.expWrapper}>
             <ConditionGroup
-              // ref={childRef}
               fields={fields}
               handleConditions={handleConditions}
               conditions={flatConditions}
@@ -117,8 +114,8 @@ const AdvancedDialog = (props: DialogProps) => {
             </Button>
           </div>
         </DialogActions>
-      </Dialog> */}
-      <DialogTemplate
+      </Dialog>
+      {/* <DialogTemplate
         title={title}
         handleClose={onClose}
         showCloseIcon
@@ -151,13 +148,12 @@ const AdvancedDialog = (props: DialogProps) => {
         </div>
         <div className={classes.expWrapper}>
           <ConditionGroup
-            // ref={childRef}
             fields={fields}
             handleConditions={handleConditions}
             conditions={flatConditions}
           />
         </div>
-      </DialogTemplate>
+      </DialogTemplate> */}
     </>
   );
 };
