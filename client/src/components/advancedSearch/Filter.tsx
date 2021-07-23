@@ -31,12 +31,6 @@ const Filter = function Filter(props: FilterProps) {
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
   const [filterExpression, setFilterExpression] = useState('');
 
-  useEffect(() => {
-    setInitConditions(flatConditions);
-    // Only need set init conditions after first mount.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Check all conditions are all correct.
   useEffect(() => {
     // Calc the sum of conditions.
