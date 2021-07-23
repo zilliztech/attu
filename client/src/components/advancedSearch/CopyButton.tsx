@@ -3,12 +3,10 @@ import {
   makeStyles,
   Theme,
   createStyles,
-  Tooltip,
-  IconButton,
-  Fade,
 } from '@material-ui/core';
 import { CopyButtonProps } from './Types';
 import icons from '../icons/Icons';
+import CustomIconButton from '../customButton/CustomIconButton';
 
 const CopyIcon = icons.copyExpression;
 
@@ -26,23 +24,15 @@ const CopyButton: FC<CopyButtonProps> = props => {
   };
 
   return (
-    <Tooltip
-      title={tooltipTitle}
-      arrow
-      placement="top"
-      TransitionComponent={Fade}
-      TransitionProps={{ timeout: 600 }}
-      className={classes.tooltip}
+    <CustomIconButton
+      tooltip={tooltipTitle}
+      aria-label={label}
+      className={`${classes.button} ${className}`}
+      onClick={() => handleClick(value || '')}
+      {...others}
     >
-      <IconButton
-        aria-label={label}
-        className={`${classes.button} ${className}`}
-        onClick={() => handleClick(value || '')}
-        {...others}
-      >
-        {icon || <CopyIcon style={{ color: 'transparent' }} />}
-      </IconButton>
-    </Tooltip>
+      {icon || <CopyIcon style={{ color: 'transparent' }} />}
+    </CustomIconButton>
   );
 };
 
