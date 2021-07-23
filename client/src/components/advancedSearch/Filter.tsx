@@ -26,7 +26,6 @@ const Filter = function Filter(props: FilterProps) {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  const [conditionSum, setConditionSum] = useState(0);
   const [flatConditions, setFlatConditions] = useState<any[]>([]);
   const [initConditions, setInitConditions] = useState<any[]>([]);
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
@@ -43,7 +42,6 @@ const Filter = function Filter(props: FilterProps) {
   // Check all conditions are all correct.
   useEffect(() => {
     // Calc the sum of conditions.
-    setConditionSum(flatConditions.filter(i => i.type === 'condition').length);
     for (let i = 0; i < flatConditions.length; i++) {
       const { data, type } = flatConditions[i];
       if (type !== 'condition') continue;
@@ -273,7 +271,7 @@ const Filter = function Filter(props: FilterProps) {
           <FilterListIcon />
           {showTitle ? title : ''}
         </CustomButton>
-        {conditionSum > 0 && (
+        {initConditions.length > 0 && (
           <Tooltip
             arrow
             interactive
@@ -281,7 +279,7 @@ const Filter = function Filter(props: FilterProps) {
             placement={tooltipPlacement}
           >
             <Chip
-              label={conditionSum}
+              label={initConditions.filter(i => i.type === 'condition').length}
               onDelete={handleDeleteAll}
               variant="outlined"
               size="small"

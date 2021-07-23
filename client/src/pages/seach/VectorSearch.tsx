@@ -258,7 +258,9 @@ const VectorSearch = () => {
   };
   const handleAdvancedFilterChange = (expression: string) => {
     setExpression(expression);
-    handleSearch(topK, expression);
+    if (!searchDisabled) {
+      handleSearch(topK, expression);
+    }
   };
 
   const handleVectorChange = (value: string) => {
