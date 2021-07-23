@@ -5,10 +5,10 @@ import {
   createStyles,
   IconButton,
   TextField,
-  MenuItem,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { ConditionProps, Field } from './Types';
+import CustomSelector from '../customSelector/CustomSelector';
 
 // Todo: Move to corrsponding Constant file.
 // Static logical operators.
@@ -124,12 +124,12 @@ const Condition: FC<ConditionProps> = props => {
   const classes = useStyles();
 
   // Logic operator input change.
-  const handleOpChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOpChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setOperator(event.target.value);
   };
   // Field Name input change.
   const handleFieldNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<{ value: unknown }>
   ) => {
     const value = event.target.value;
     const target = fields.find(field => field.name === value);
@@ -143,42 +143,27 @@ const Condition: FC<ConditionProps> = props => {
 
   return (
     <div className={`${classes.wrapper} ${className}`} {...others}>
-      <TextField
-        className={classes.fieldName}
+      <CustomSelector
         label="Field Name"
-        variant="filled"
-        size="small"
-        select
-        onChange={handleFieldNameChange}
         value={conditionField?.name}
-      >
-        {fields.map((field: Field) => (
-          <MenuItem key={field.name} value={field.name}>
-            {field.name}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        className={classes.logic}
-        label="Logic"
+        onChange={handleFieldNameChange}
+        options={fields.map(i => ({ value: i.name, label: i.name }))}
         variant="filled"
-        size="small"
-        select
-        onChange={handleOpChange}
-        defaultValue={LogicalOperators[0].value}
+        wrapperClass={classes.fieldName}
+      />
+      <CustomSelector
+        label="Logic"
         value={operator}
-      >
-        {LogicalOperators.map(option => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
+        onChange={handleOpChange}
+        options={LogicalOperators}
+        variant="filled"
+        wrapperClass={classes.logic}
+      />
       <TextField
         className={classes.value}
         label="Value"
         variant="filled"
-        size="small"
+        // size="small"
         onChange={handleValueChange}
         value={conditionValue}
         error={!isValuelegal}
