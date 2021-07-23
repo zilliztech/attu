@@ -46,7 +46,7 @@ export const findKeyValue = (
 ) => obj.find(v => v.key === key)?.value;
 
 export const generateHashCode = (source: string) => {
-  var hash = 0,
+  let hash = 0,
     i,
     chr;
   if (source.length === 0) return hash;
