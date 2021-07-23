@@ -118,6 +118,7 @@ export class CollectionsService {
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
           isLoaded: loadedCollections.collection_names.includes(name),
+          createdTime: collectionInfo.created_utc_timestamp,
         });
       }
     }
