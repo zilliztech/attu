@@ -57,3 +57,7 @@ export const generateHashCode = (source: string) => {
   }
   return hash.toString();
 };
+
+export const generateIdByHash = (salt?: string) => {
+  return generateHashCode(`${new Date().getTime().toString()}-${salt}`);
+};

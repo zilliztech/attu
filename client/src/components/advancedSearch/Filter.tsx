@@ -10,7 +10,7 @@ import {
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AdvancedDialog from './Dialog';
 import { FilterProps, ConditionData } from './Types';
-import { generateHashCode } from '../../utils/Common';
+import { generateIdByHash } from '../../utils/Common';
 
 const Filter = function Filter(props: FilterProps) {
   const {
@@ -90,11 +90,6 @@ const Filter = function Filter(props: FilterProps) {
     func(expression);
   };
 
-  // Generate id for each element.
-  const generateId = (salt?: string) => {
-    return generateHashCode(`${new Date().getTime().toString()}-${salt}`);
-  };
-
   /**
    * Insert "OR" operator into specified position.
    * @param targetId The break operator will be inserted after the target one.
@@ -103,9 +98,9 @@ const Filter = function Filter(props: FilterProps) {
     if (!targetId) {
       setFilteredFlatConditions([
         ...flatConditions,
-        { id: generateId('break'), type: 'break' },
+        { id: generateIdByHash('break'), type: 'break' },
         {
-          id: generateId('condition'),
+          id: generateIdByHash('condition'),
           type: 'condition',
           field: '',
           operator: '<',
@@ -117,7 +112,7 @@ const Filter = function Filter(props: FilterProps) {
     const formerConditons = [...flatConditions];
     const newConditions = formerConditons.reduce((prev, item) => {
       if (item.id === targetId) {
-        return [...prev, item, { id: generateId('break'), type: 'break' }];
+        return [...prev, item, { id: generateIdByHash('break'), type: 'break' }];
       }
       return [...prev, item];
     }, []);
@@ -139,7 +134,7 @@ const Filter = function Filter(props: FilterProps) {
   const addCondition = (targetId?: string, beforeTarget?: boolean) => {
     const formerConditons = [...flatConditions];
     const newItem = {
-      id: generateId('condition'),
+      id: generateIdByHash('condition'),
       type: 'condition',
       field: '',
       operator: '<',
@@ -155,7 +150,7 @@ const Filter = function Filter(props: FilterProps) {
         const newItems = [
           item,
           {
-            id: generateId('condition'),
+            id: generateIdByHash('condition'),
             type: 'condition',
             field: '',
             operator: '<',
@@ -204,7 +199,7 @@ const Filter = function Filter(props: FilterProps) {
     setIsConditionsLegal(false);
     setFilteredFlatConditions([
       {
-        id: generateId(),
+        id: generateIdByHash(),
         type: 'condition',
         field: '',
         operator: '<',
@@ -254,7 +249,7 @@ const Filter = function Filter(props: FilterProps) {
   const handleReset = () => {
     setFilteredFlatConditions([
       {
-        id: generateId('condition'),
+        id: generateIdByHash('condition'),
         type: 'condition',
         field: '',
         operator: '<',
