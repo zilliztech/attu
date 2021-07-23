@@ -7,7 +7,6 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -17,11 +16,9 @@ import {
   ManageType,
 } from './dto';
 import { PartitionsService } from './partitions.service';
-import { LoggingInterceptor } from '../interceptors/index';
 
 @ApiTags('partitions')
 @Controller('partitions')
-@UseInterceptors(LoggingInterceptor)
 export class PartitionsController {
   constructor(private partitionsService: PartitionsService) { }
 

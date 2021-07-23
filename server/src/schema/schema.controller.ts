@@ -6,7 +6,6 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -17,10 +16,8 @@ import {
   GetIndexState,
 } from './dto';
 import { SchemaService } from './schema.service';
-import { LoggingInterceptor } from '../interceptors/index';
 @ApiTags('schema')
 @Controller('schema')
-@UseInterceptors(LoggingInterceptor)
 export class SchemaController {
   constructor(private schemaService: SchemaService) { }
 

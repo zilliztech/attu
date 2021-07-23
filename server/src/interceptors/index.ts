@@ -57,11 +57,15 @@ export class ErrorInterceptor implements NestInterceptor {
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const [req = {}, res = {}] = context.getArgs();
+    const { ip = '', method = '', originalUrl = '', headers = {} } = req;
+    const { statusCode = '' } = res;
+    const ua = headers['user-agent'] || '';
     const now = Date.now();
     return next
       .handle()
       .pipe(
-        tap(() => Logger.log(`request to ${context.getArgs()[0]['url']} takes ${Date.now() - now}ms`)),
+        tap(() => Logger.log(`${method} ${originalUrl} takes ${Date.now() - now}ms ip:${ip} ua:${ua} status:${statusCode}`)),
       );
   }
 }
