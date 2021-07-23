@@ -1,9 +1,5 @@
 import React, { useState, FC } from 'react';
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-} from '@material-ui/core';
+import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import { CopyButtonProps } from './Types';
 import icons from '../icons/Icons';
 import CustomIconButton from '../customButton/CustomIconButton';
@@ -46,7 +42,12 @@ CopyButton.displayName = 'CopyButton';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {},
-    button: {},
+    button: {
+      '& svg': {
+        width: '16px',
+        height: '16px',
+      },
+    },
     tooltip: {},
   })
 );
