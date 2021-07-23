@@ -42,6 +42,8 @@ const AdvancedDialog = (props: DialogProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const shouldSowPlaceholder: boolean = !isLegal || !filterExpression;
+
   return (
     <>
       <Dialog
@@ -68,11 +70,11 @@ const AdvancedDialog = (props: DialogProps) => {
         <DialogContent>
           <div
             className={`${classes.expResult} ${
-              !isLegal && 'disable-exp'
-            } testcopy`}
+              shouldSowPlaceholder && 'disable-exp'
+            }`}
           >
-            {`${isLegal ? filterExpression : 'Filter Expression'}`}
-            {isLegal && (
+            {`${shouldSowPlaceholder ? 'Filter Expression' : filterExpression}`}
+            {!shouldSowPlaceholder && (
               <CopyBtn label="copy expression" value={filterExpression} />
             )}
           </div>
