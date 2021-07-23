@@ -10,6 +10,8 @@ export enum INDEX_TYPES_ENUM {
   HNSW = 'HNSW',
   ANNOY = 'ANNOY',
   RNSG = 'RNSG',
+  BIN_IVF_FLAT = 'BIN_IVF_FLAT',
+  BIN_FLAT = 'BIN_FLAT',
 }
 
 export interface Field {
@@ -48,16 +50,16 @@ export interface IndexView {
 }
 
 export type IndexType =
-  | 'FLAT'
-  | 'IVF_FLAT'
+  | INDEX_TYPES_ENUM.FLAT
+  | INDEX_TYPES_ENUM.IVF_FLAT
   // | 'IVF_SQ8'
   // | 'IVF_SQ8_HYBRID'
-  | 'IVF_PQ'
+  | INDEX_TYPES_ENUM.IVF_PQ
   // | 'RNSG'
-  | 'HNSW'
-  | 'ANNOY'
-  | 'BIN_IVF_FLAT'
-  | 'BIN_FLAT';
+  | INDEX_TYPES_ENUM.HNSW
+  | INDEX_TYPES_ENUM.ANNOY
+  | INDEX_TYPES_ENUM.BIN_IVF_FLAT
+  | INDEX_TYPES_ENUM.BIN_FLAT
 
 
 export interface IndexManageParam {

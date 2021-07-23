@@ -6,12 +6,13 @@ import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   MetricType,
+  METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { DataType } from '../collections/Types';
 import CreateForm from './CreateForm';
-import { IndexType, ParamPair } from './Types';
+import { IndexType, ParamPair, INDEX_TYPES_ENUM } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
@@ -25,8 +26,8 @@ const CreateIndex = (props: {
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
 
-  const defaultIndexType = fieldType === 'BinaryVector' ? 'BIN_IVF_FLAT': 'IVF_FLAT';
-  const defaultMetricType = fieldType === 'BinaryVector' ? 'HAMMING' : 'L2';
+  const defaultIndexType = fieldType === 'BinaryVector' ? INDEX_TYPES_ENUM.BIN_IVF_FLAT : INDEX_TYPES_ENUM.IVF_FLAT;
+  const defaultMetricType = fieldType === 'BinaryVector' ? METRIC_TYPES_VALUES.HAMMING : METRIC_TYPES_VALUES.L2;
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;

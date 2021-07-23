@@ -50,13 +50,15 @@ export type MetricType =
 
 export type searchKeywordsType = 'nprobe' | 'ef' | 'search_k' | 'search_length';
 
-// index
-export const INDEX_CONFIG: {
+export type indexConfigType = {
   [x: string]: {
     create: string[];
     search: searchKeywordsType[];
   };
-} = {
+}
+
+// index
+export const FLOAT_INDEX_CONFIG: indexConfigType = {
   IVF_FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -88,7 +90,10 @@ export const INDEX_CONFIG: {
   // RNSG: {
   //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
   //   search: ['search_length'],
-  // },
+  // },}
+}
+
+export const BINARY_INDEX_CONFIG: indexConfigType = {
   BIN_FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -97,6 +102,11 @@ export const INDEX_CONFIG: {
     create: ['nlist'],
     search: ['nprobe'],
   },
+};
+
+export const INDEX_CONFIG: indexConfigType = {
+  ...FLOAT_INDEX_CONFIG,
+  ...BINARY_INDEX_CONFIG,
 };
 
 export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
@@ -110,15 +120,13 @@ export const m_OPTIONS = [
 ];
 
 export const INDEX_OPTIONS_MAP = {
-  // not all
-  // FLOAT_POINT: Object.keys(INDEX_CONFIG).map(v => ({ label: v, value: v })),
-  FLOAT_POINT: ['IVF_FLAT', 'IVF_PQ', 'FLAT', 'HNSW', 'ANNOY',].map(v => ({ label: v, value: v })),
-  BINARY: ['BIN_IVF_FLAT', 'BIN_FLAT'].map(v => ({ label: v, value: v })),
+  FLOAT_INDEX: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({ label: v, value: v })),
+  BINARY_INDEX: Object.keys(BINARY_INDEX_CONFIG).map(v => ({ label: v, value: v })),
 };
 
 export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
 
 export enum EmbeddingTypeEnum {
-  float = 'FLOAT_POINT',
-  binary = 'BINARY',
+  float = 'FLOAT_INDEX',
+  binary = 'BINARY_INDEX',
 }
