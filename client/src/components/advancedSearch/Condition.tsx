@@ -48,9 +48,9 @@ const Condition: FC<ConditionProps> = props => {
     onDelete,
     triggerChange,
     fields = [],
-    id,
+    id = '',
     initData,
-    className,
+    className = '',
     ...others
   } = props;
   const [operator, setOperator] = useState(
@@ -162,14 +162,6 @@ const Condition: FC<ConditionProps> = props => {
       </IconButton>
     </div>
   );
-};
-
-Condition.defaultProps = {
-  onDelete: () => {},
-  triggerChange: () => {},
-  fields: [],
-  id: '',
-  className: '',
 };
 
 Condition.displayName = 'Condition';

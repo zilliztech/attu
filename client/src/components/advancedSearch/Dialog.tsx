@@ -20,17 +20,17 @@ import { DialogProps } from './Types';
 
 const AdvancedDialog = (props: DialogProps) => {
   const {
-    open,
+    open = false,
     onClose,
     onSubmit,
     onReset,
     onCancel,
-    handleConditions,
-    conditions: flatConditions,
-    isLegal,
-    expression: filterExpression,
-    title,
-    fields,
+    handleConditions = {},
+    conditions: flatConditions = [],
+    isLegal = false,
+    expression: filterExpression = '',
+    title = 'Advanced Filter',
+    fields = [],
     ...others
   } = props;
   const { addCondition } = handleConditions;
@@ -156,20 +156,6 @@ const AdvancedDialog = (props: DialogProps) => {
       </DialogTemplate> */}
     </>
   );
-};
-
-AdvancedDialog.defaultProps = {
-  open: false,
-  onClose: () => {},
-  onSubmit: () => {},
-  title: 'Advanced Filter',
-  fields: [],
-  onReset: () => {},
-  onCancel: () => {},
-  handleConditions: {},
-  conditions: [],
-  isLegal: false,
-  expression: '',
 };
 
 AdvancedDialog.displayName = 'AdvancedDialog';

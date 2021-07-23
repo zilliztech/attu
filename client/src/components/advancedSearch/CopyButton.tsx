@@ -7,7 +7,13 @@ import CustomIconButton from '../customButton/CustomIconButton';
 const CopyIcon = icons.copyExpression;
 
 const CopyButton: FC<CopyButtonProps> = props => {
-  const { label, icon, className, value, ...others } = props;
+  const {
+    label = 'copy button',
+    icon,
+    className,
+    value = '',
+    ...others
+  } = props;
   const classes = useStyles();
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
@@ -30,11 +36,6 @@ const CopyButton: FC<CopyButtonProps> = props => {
       {icon || <CopyIcon style={{ color: 'transparent' }} />}
     </CustomIconButton>
   );
-};
-
-CopyButton.defaultProps = {
-  label: 'copy button',
-  value: '',
 };
 
 CopyButton.displayName = 'CopyButton';

@@ -14,12 +14,12 @@ import { generateIdByHash } from '../../utils/Common';
 
 const Filter = function Filter(props: FilterProps) {
   const {
-    title,
-    showTitle,
-    className,
-    tooltipPlacement,
+    title = 'title',
+    showTitle = true,
+    className = '',
+    tooltipPlacement = 'top',
     onSubmit,
-    fields,
+    fields = [],
     ...others
   } = props;
   const classes = useStyles();
@@ -293,14 +293,6 @@ const Filter = function Filter(props: FilterProps) {
       </div>
     </>
   );
-};
-
-Filter.defaultProps = {
-  className: '',
-  showTitle: true,
-  tooltipPlacement: 'top',
-  fields: [],
-  onSubmit: () => {},
 };
 
 Filter.displayName = 'AdvancedFilter';
