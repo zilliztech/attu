@@ -31,19 +31,15 @@ const Filter = function Filter(props: FilterProps) {
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
   const [filterExpression, setFilterExpression] = useState('');
 
-  // useEffect(() => {
-  //   setInitConditions(flatConditions);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+    setInitConditions(flatConditions);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Check all conditions are all correct.
   useEffect(() => {
     // Calc the sum of conditions.
     setConditionSum(flatConditions.filter(i => i.type === 'condition').length);
-    if (flatConditions.length === 0) {
-      setIsConditionsLegal(false);
-      return;
-    }
     for (let i = 0; i < flatConditions.length; i++) {
       const { data, type } = flatConditions[i];
       if (type !== 'condition') continue;
