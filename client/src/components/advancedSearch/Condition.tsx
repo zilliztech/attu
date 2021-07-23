@@ -76,50 +76,34 @@ const Condition: FC<ConditionProps> = props => {
 
     const type = conditionField?.type;
     const isIn = operator === 'in';
+    let isLegal = false;
 
     switch (type) {
       case 'int':
-        setIsValueLegal(
-          isIn
-            ? regIntInterval.test(conditionValue)
-            : regInt.test(conditionValue)
-        );
+        isLegal = isIn
+          ? regIntInterval.test(conditionValue)
+          : regInt.test(conditionValue);
         break;
       case 'float':
-        setIsValueLegal(
-          isIn
-            ? regFloatInterval.test(conditionValue)
-            : regFloat.test(conditionValue)
-        );
+        isLegal = isIn
+          ? regFloatInterval.test(conditionValue)
+          : regFloat.test(conditionValue);
         break;
       default:
-        setIsValueLegal(false);
+        isLegal = false;
         break;
     }
-
+    setIsValueLegal(isLegal);
     triggerChange(id, {
       field: conditionField,
       op: operator,
       value: conditionValue,
-      isCorrect: isValuelegal,
+      isCorrect: isLegal,
       id,
     });
-    // No need of 'id', 'isValuelegal', and 'triggerChange'.
+    // No need for 'id' and 'triggerChange'.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionField, operator, conditionValue]);
-
-  // Trigger change event if isValuelegal changed.
-  useEffect(() => {
-    triggerChange(id, {
-      field: conditionField,
-      op: operator,
-      value: conditionValue,
-      isCorrect: isValuelegal,
-      id,
-    });
-    // No need of 'id', 'isValuelegal', and 'triggerChange'.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isValuelegal]);
 
   const classes = useStyles();
 
@@ -197,7 +181,6 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: '466px',
       minHeight: '62px',
       background: '#FFFFFF',
-      // borderRadius: '8px',
       padding: '12px 16px',
       display: 'flex',
       flexDirection: 'row',

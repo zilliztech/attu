@@ -33,7 +33,8 @@ const Filter = function Filter(props: FilterProps) {
 
   useEffect(() => {
     setInitConditions(flatConditions);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Only need set init conditions after first mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Check all conditions are all correct.
@@ -108,7 +109,11 @@ const Filter = function Filter(props: FilterProps) {
     const formerConditons = [...flatConditions];
     const newConditions = formerConditons.reduce((prev, item) => {
       if (item.id === targetId) {
-        return [...prev, item, { id: generateIdByHash('break'), type: 'break' }];
+        return [
+          ...prev,
+          item,
+          { id: generateIdByHash('break'), type: 'break' },
+        ];
       }
       return [...prev, item];
     }, []);
@@ -180,10 +185,7 @@ const Filter = function Filter(props: FilterProps) {
    * @param id Specify one item that will be updated.
    * @param data Data that will be updated to condition.
    */
-  const updateConditionData = (
-    id: string,
-    data: ConditionData
-  ) => {
+  const updateConditionData = (id: string, data: ConditionData) => {
     const formerFlatConditions = flatConditions.map(i => {
       if (i.id === id) return { ...i, data };
       return i;
