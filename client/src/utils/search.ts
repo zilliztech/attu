@@ -1,7 +1,17 @@
+import { Field } from '../components/advancedSearch/Types';
 import { EmbeddingTypeEnum } from '../consts/Milvus';
 import { DataType } from '../pages/collections/Types';
-import { IndexType, INDEX_TYPES_ENUM } from '../pages/schema/Types';
-import { SearchResult, SearchResultView } from '../pages/seach/Types';
+import {
+  FieldData,
+  IndexType,
+  IndexView,
+  INDEX_TYPES_ENUM,
+} from '../pages/schema/Types';
+import {
+  FieldOption,
+  SearchResult,
+  SearchResultView,
+} from '../pages/seach/Types';
 
 export const transferSearchResult = (
   result: SearchResult[]
@@ -44,4 +54,53 @@ export const getDefaultIndexType = (
       ? INDEX_TYPES_ENUM.FLAT
       : INDEX_TYPES_ENUM.BIN_FLAT;
   return defaultIndexType;
+};
+
+/**
+ * funtion to divide fields into two categories: vector or nonVector
+ */
+export const classifyFields = (
+  fields: FieldData[]
+): { vectorFields: FieldData[]; nonVectorFields: FieldData[] } => {
+  const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
+  return fields.reduce(
+    (result, cur) => {
+      const changedFieldType = vectorTypes.includes(cur._fieldType)
+        ? 'vectorFields'
+        : 'nonVectorFields';
+
+      result[changedFieldType].push(cur);
+
+      return result;
+    },
+    { vectorFields: [] as FieldData[], nonVectorFields: [] as FieldData[] }
+  );
+};
+
+export const getVectorFieldOptions = (
+  fields: FieldData[],
+  indexes: IndexView[]
+): FieldOption[] => {
+  const options: FieldOption[] = fields.map(f => {
+    const embeddingType = getEmbeddingType(f._fieldType);
+    const defaultIndex = getDefaultIndexType(embeddingType);
+    const index = indexes.find(i => i._fieldName === f._fieldName);
+
+    return {
+      label: `${f._fieldName} (${index?._indexType || defaultIndex})`,
+      value: f._fieldName,
+      fieldType: f._fieldType,
+      indexInfo: index || null,
+    };
+  });
+
+  return options;
+};
+
+export const getNonVectorFieldsForFilter = (fields: FieldData[]): Field[] => {
+  const intTypes: DataType[] = ['Int8', 'Int16', 'Int32', 'Int64'];
+  return fields.map(f => ({
+    name: f._fieldName,
+    type: intTypes.includes(f._fieldType) ? 'int' : 'float',
+  }));
 };

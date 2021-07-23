@@ -1,4 +1,4 @@
-import { Chip, TextField, Typography } from '@material-ui/core';
+import { TextField, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
@@ -19,16 +19,21 @@ import SimpleMenu from '../../components/menu/SimpleMenu';
 import { TOP_K_OPTIONS } from './Constants';
 import { Option } from '../../components/customSelector/Types';
 import { CollectionHttp } from '../../http/Collection';
-import { CollectionData, DataType, DataTypeEnum } from '../collections/Types';
+import { CollectionData, DataTypeEnum } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
 import { getVectorSearchStyles } from './Styles';
 import { parseValue } from '../../utils/Insert';
 import {
+  classifyFields,
   getDefaultIndexType,
   getEmbeddingType,
+  getNonVectorFieldsForFilter,
+  getVectorFieldOptions,
   transferSearchResult,
 } from '../../utils/search';
 import { ColDefinitionsType } from '../../components/grid/Types';
+import Filter from '../../components/advancedSearch';
+import { Field } from '../../components/advancedSearch/Types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -41,6 +46,8 @@ const VectorSearch = () => {
   const [collections, setCollections] = useState<CollectionData[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
+  // fields for advanced filter
+  const [filterFields, setFilterFields] = useState<Field[]>([]);
   const [selectedField, setSelectedField] = useState<string>('');
   // search params form
   const [searchParam, setSearchParam] = useState<{ [key in string]: number }>(
@@ -48,9 +55,13 @@ const VectorSearch = () => {
   );
   // search params disable state
   const [paramDisabled, setParamDisabled] = useState<boolean>(true);
-  const [searchResult, setSearchResult] = useState<SearchResultView[]>([]);
+  // use null as init value before search, empty array means no results
+  const [searchResult, setSearchResult] = useState<SearchResultView[] | null>(
+    null
+  );
   // default topK is 100
   const [topK, setTopK] = useState<number>(100);
+  const [expression, setExpression] = useState<string>('');
   const [vectors, setVectors] = useState<string>('');
 
   const {
@@ -60,7 +71,7 @@ const VectorSearch = () => {
     handleCurrentPage,
     total,
     data: result,
-  } = usePaginationHook(searchResult);
+  } = usePaginationHook(searchResult || []);
 
   const searchDisabled = useMemo(() => {
     /**
@@ -99,7 +110,7 @@ const VectorSearch = () => {
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     // filter id and score
-    return searchResult.length > 0
+    return searchResult && searchResult.length > 0
       ? Object.keys(searchResult[0])
           .filter(item => item !== 'id' && item !== 'score')
           .map(key => ({
@@ -152,25 +163,16 @@ const VectorSearch = () => {
     async (collectionName: string, collections: CollectionData[]) => {
       const fields =
         collections.find(c => c._name === collectionName)?._fields || [];
-      const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
       const indexes = await IndexHttp.getIndexInfo(collectionName);
 
-      const fieldOptions = fields
-        // only vector type field can be select
-        .filter(field => vectorTypes.includes(field._fieldType))
-        .map(f => {
-          const embeddingType = getEmbeddingType(f._fieldType);
-          const defaultIndex = getDefaultIndexType(embeddingType);
-          const index = indexes.find(i => i._fieldName === f._fieldName);
+      const { vectorFields, nonVectorFields } = classifyFields(fields);
 
-          return {
-            label: `${f._fieldName} (${index?._indexType || defaultIndex})`,
-            value: f._fieldName,
-            fieldType: f._fieldType,
-            indexInfo: index || null,
-          };
-        });
+      // only vector type fields can be select
+      const fieldOptions = getVectorFieldOptions(vectorFields, indexes);
       setFieldOptions(fieldOptions);
+      // only non vector type fields can be advanced filter
+      const filterFields = getNonVectorFieldsForFilter(nonVectorFields);
+      setFilterFields(filterFields);
     },
     []
   );
@@ -190,8 +192,6 @@ const VectorSearch = () => {
   const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
   const ArrowIcon = icons.dropdown;
-  const FilterIcon = icons.filter;
-  const ClearIcon = icons.clear;
 
   // methods
   const handlePageChange = (e: any, page: number) => {
@@ -203,15 +203,17 @@ const VectorSearch = () => {
      * 1. reset vectors
      * 2. reset selected collection and field
      * 3. reset search params
-     * 4. reset advanced filter
+     * 4. reset advanced filter expression
      * 5. clear search result
      */
     setVectors('');
     setSelectedField('');
     setSelectedCollection('');
-    setSearchResult([]);
+    setSearchResult(null);
+    setFilterFields([]);
+    setExpression('');
   };
-  const handleSearch = async (topK: number) => {
+  const handleSearch = async (topK: number, expr = expression) => {
     const searhParamPairs = [
       // dynamic search params
       {
@@ -234,7 +236,7 @@ const VectorSearch = () => {
 
     const params: VectorSearchParam = {
       output_fields: outputFields,
-      expr: '',
+      expr,
       search_params: searhParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
@@ -254,8 +256,11 @@ const VectorSearch = () => {
       setTableLoading(false);
     }
   };
-  const handleFilter = () => {};
-  const handleClearFilter = () => {};
+  const handleAdvancedFilterChange = (expression: string) => {
+    setExpression(expression);
+    handleSearch(topK, expression);
+  };
+
   const handleVectorChange = (value: string) => {
     setVectors(value);
   };
@@ -358,23 +363,12 @@ const VectorSearch = () => {
             }}
             menuItemWidth="108px"
           />
-          <CustomButton
-            className="button"
-            disabled={selectedField === '' || selectedCollection === ''}
-            onClick={handleFilter}
-          >
-            <FilterIcon />
-            {searchTrans('filter')}
-          </CustomButton>
-          {/* advanced filter number chip */}
-          <Chip
-            variant="outlined"
-            size="small"
-            // TODO: need to replace mock data
-            label={'3'}
-            classes={{ root: classes.chip, label: classes.chipLabel }}
-            deleteIcon={<ClearIcon />}
-            onDelete={handleClearFilter}
+
+          <Filter
+            title="Advanced Filter"
+            fields={filterFields}
+            filterDisabled={selectedField === '' || selectedCollection === ''}
+            onSubmit={handleAdvancedFilterChange}
           />
         </div>
         <div className="right">
@@ -393,7 +387,7 @@ const VectorSearch = () => {
       </section>
 
       {/* search result table section */}
-      {searchResult.length > 0 || tableLoading ? (
+      {(searchResult && searchResult.length > 0) || tableLoading ? (
         <MilvusGrid
           toolbarConfigs={[]}
           colDefinitions={colDefinitions}
@@ -411,7 +405,11 @@ const VectorSearch = () => {
         <EmptyCard
           wrapperClass={`page-empty-card`}
           icon={<VectorSearchIcon />}
-          text={searchTrans('empty')}
+          text={
+            searchResult !== null
+              ? searchTrans('empty')
+              : searchTrans('startTip')
+          }
         />
       )}
     </section>

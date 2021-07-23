@@ -91,12 +91,6 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       '& .text': {
         color: theme.palette.milvusGrey.main,
       },
-
-      '& .button': {
-        marginLeft: theme.spacing(1),
-        fontSize: '16px',
-        lineHeight: '24px',
-      },
     },
     '& .right': {
       '& .btn': {
@@ -111,7 +105,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     minWidth: '108px',
 
     padding: theme.spacing(0, 1),
-    marginLeft: theme.spacing(1),
+    margin: theme.spacing(0, 1),
 
     backgroundColor: '#fff',
     color: theme.palette.milvusGrey.dark,
@@ -121,18 +115,5 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     fontSize: '12px',
     lineHeight: '16px',
     color: theme.palette.milvusGrey.dark,
-  },
-  chip: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 0.5, 0, 1),
-    marginLeft: theme.spacing(1),
-  },
-  chipLabel: {
-    color: theme.palette.primary.main,
-    paddingLeft: 0,
-    paddingRight: theme.spacing(1),
-    fontSize: '12px',
-    lineHeight: '16px',
   },
 }));
