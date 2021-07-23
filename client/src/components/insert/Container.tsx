@@ -276,7 +276,6 @@ const InsertContainer: FC<InsertContentProps> = ({
   };
 
   const handleUploadFileChange = (file: File, upload: HTMLFormElement) => {
-    console.log(file);
     setFile(file);
   };
 
