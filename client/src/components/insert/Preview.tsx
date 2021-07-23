@@ -59,9 +59,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     },
   },
 
-  active: {
-    color: theme.palette.primary.main,
-  },
   menuIcon: {
     color: theme.palette.milvusGrey.dark,
   },

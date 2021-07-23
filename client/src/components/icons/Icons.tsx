@@ -19,6 +19,8 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import CachedIcon from '@material-ui/icons/Cached';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
 import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
@@ -29,6 +31,8 @@ import { ReactComponent as ReleaseIcon } from '../../assets/icons/release.svg';
 import { ReactComponent as LoadIcon } from '../../assets/icons/load.svg';
 import { ReactComponent as KeyIcon } from '../../assets/icons/key.svg';
 import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
+import { ReactComponent as VectorSearchIcon } from '../../assets/icons/nav-search.svg';
+import { ReactComponent as SearchEmptyIcon } from '../../assets/icons/search.svg';
 import { ReactComponent as CopyIcon } from '../../assets/icons/copy.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
@@ -51,6 +55,8 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   rightArrow: (props = {}) => <ArrowForwardIosIcon {...props} />,
   remove: (props = {}) => <RemoveCircleOutlineIcon {...props} />,
   dropdown: (props = {}) => <ArrowDropDownIcon {...props} />,
+  refresh: (props = {}) => <CachedIcon {...props} />,
+  filter: (props = {}) => <FilterListIcon {...props} />,
 
   milvus: (props = {}) => (
     <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />
@@ -63,6 +69,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   navConsole: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={ConsoleIcon} {...props} />
+  ),
+  navSearch: (props = {}) => (
+    <SvgIcon viewBox="0 0 20 20" component={VectorSearchIcon} {...props} />
   ),
   info: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={InfoIcon} {...props} />
@@ -78,6 +87,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   upload: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={UploadIcon} {...props} />
+  ),
+  vectorSearch: (props = {}) => (
+    <SvgIcon viewBox="0 0 48 48" component={SearchEmptyIcon} {...props} />
   ),
   copyExpression: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={CopyIcon} {...props} />
