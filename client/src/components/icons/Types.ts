@@ -30,4 +30,5 @@ export type IconsType =
   | 'dropdown'
   | 'vectorSearch'
   | 'refresh'
-  | 'filter';
+  | 'filter'
+  | 'copyExpression';

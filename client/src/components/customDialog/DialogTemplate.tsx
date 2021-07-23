@@ -13,6 +13,7 @@ import CustomButton from '../customButton/CustomButton';
 const useStyles = makeStyles((theme: Theme) => ({
   actions: {
     paddingTop: theme.spacing(2),
+    justifyContent: 'space-between',
   },
 }));
 
@@ -28,6 +29,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   showActions = true,
   showCancel = true,
   showCloseIcon = true,
+  leftActions,
 }) => {
   const { t } = useTranslation('btn');
   const cancel = cancelLabel || t('cancel');
@@ -43,20 +45,23 @@ const DialogTemplate: FC<DialogContainerProps> = ({
       <DialogContent>{children}</DialogContent>
       {showActions && (
         <DialogActions className={classes.actions}>
-          {showCancel && (
-            <CustomButton onClick={onCancel} color="default" name="cancel">
-              {cancel}
+          <div>{leftActions}</div>
+          <div>
+            {showCancel && (
+              <CustomButton onClick={onCancel} color="default" name="cancel">
+                {cancel}
+              </CustomButton>
+            )}
+            <CustomButton
+              variant="contained"
+              onClick={handleConfirm}
+              color="primary"
+              disabled={confirmDisabled}
+              name="confirm"
+            >
+              {confirm}
             </CustomButton>
-          )}
-          <CustomButton
-            variant="contained"
-            onClick={handleConfirm}
-            color="primary"
-            disabled={confirmDisabled}
-            name="confirm"
-          >
-            {confirm}
-          </CustomButton>
+          </div>
         </DialogActions>
       )}
     </>
