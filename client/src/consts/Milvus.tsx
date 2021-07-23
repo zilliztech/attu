@@ -1,3 +1,5 @@
+import { DataTypeEnum } from '../pages/collections/Types';
+
 export enum METRIC_TYPES_VALUES {
   L2 = 'L2',
   IP = 'IP',
@@ -121,11 +123,11 @@ export const m_OPTIONS = [
 ];
 
 export const INDEX_OPTIONS_MAP = {
-  FLOAT_INDEX: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({
+  [DataTypeEnum.FloatVector]: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({
     label: v,
     value: v,
   })),
-  BINARY_INDEX: Object.keys(BINARY_INDEX_CONFIG).map(v => ({
+  [DataTypeEnum.BinaryVector]: Object.keys(BINARY_INDEX_CONFIG).map(v => ({
     label: v,
     value: v,
   })),
@@ -133,13 +135,8 @@ export const INDEX_OPTIONS_MAP = {
 
 export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
 
-export enum EmbeddingTypeEnum {
-  float = 'FLOAT_INDEX',
-  binary = 'BINARY_INDEX',
-}
-
 export const METRIC_OPTIONS_MAP = {
-  [EmbeddingTypeEnum.float]: [
+  [DataTypeEnum.FloatVector]: [
     {
       value: METRIC_TYPES_VALUES.L2,
       label: METRIC_TYPES_VALUES.L2,
@@ -149,7 +146,7 @@ export const METRIC_OPTIONS_MAP = {
       label: METRIC_TYPES_VALUES.IP,
     },
   ],
-  [EmbeddingTypeEnum.binary]: [
+  [DataTypeEnum.BinaryVector]: [
     {
       value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
       label: METRIC_TYPES_VALUES.SUBSTRUCTURE,
@@ -178,8 +175,8 @@ export const METRIC_OPTIONS_MAP = {
  * use Hamming as binary default metric type
  */
 export const DEFAULT_METRIC_VALUE_MAP = {
-  [EmbeddingTypeEnum.float]: METRIC_TYPES_VALUES.L2,
-  [EmbeddingTypeEnum.binary]: METRIC_TYPES_VALUES.HAMMING,
+  [DataTypeEnum.FloatVector]: METRIC_TYPES_VALUES.L2,
+  [DataTypeEnum.BinaryVector]: METRIC_TYPES_VALUES.HAMMING,
 };
 
 // search params default value map

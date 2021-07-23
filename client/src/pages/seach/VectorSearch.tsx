@@ -5,10 +5,7 @@ import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import SearchParams from './SearchParams';
-import {
-  DEFAULT_METRIC_VALUE_MAP,
-  EmbeddingTypeEnum,
-} from '../../consts/Milvus';
+import { DEFAULT_METRIC_VALUE_MAP } from '../../consts/Milvus';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 import MilvusGrid from '../../components/grid/Grid';
 import EmptyCard from '../../components/cards/EmptyCard';
@@ -149,7 +146,7 @@ const VectorSearch = () => {
         indexType: '',
         indexParams: [],
         fieldType: 0,
-        embeddingType: EmbeddingTypeEnum.float,
+        embeddingType: DataTypeEnum.FloatVector,
       };
     }, [selectedField, fieldOptions]);
 
@@ -326,7 +323,11 @@ const VectorSearch = () => {
           <SearchParams
             wrapperClass={classes.paramsWrapper}
             metricType={metricType!}
-            embeddingType={embeddingType}
+            embeddingType={
+              embeddingType as
+                | DataTypeEnum.BinaryVector
+                | DataTypeEnum.FloatVector
+            }
             indexType={indexType}
             indexParams={indexParams!}
             searchParamsForm={searchParam}

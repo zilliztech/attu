@@ -1,5 +1,5 @@
 import { Option } from '../../components/customSelector/Types';
-import { EmbeddingTypeEnum, searchKeywordsType } from '../../consts/Milvus';
+import { searchKeywordsType } from '../../consts/Milvus';
 import { DataType, DataTypeEnum } from '../collections/Types';
 import { IndexView } from '../schema/Types';
 
@@ -8,7 +8,7 @@ export interface SearchParamsProps {
   // else pass empty string
   metricType: string;
   // used for getting metric type options
-  embeddingType: EmbeddingTypeEnum;
+  embeddingType: DataTypeEnum.FloatVector | DataTypeEnum.BinaryVector;
   // default index type is FLAT
   indexType: string;
   // index extra params, e.g. nlist

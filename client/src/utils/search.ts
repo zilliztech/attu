@@ -1,6 +1,5 @@
 import { Field } from '../components/advancedSearch/Types';
-import { EmbeddingTypeEnum } from '../consts/Milvus';
-import { DataType } from '../pages/collections/Types';
+import { DataType, DataTypeEnum } from '../pages/collections/Types';
 import {
   FieldData,
   IndexType,
@@ -32,11 +31,13 @@ export const transferSearchResult = (
  * @param fieldType only vector type fields: 'BinaryVector' or 'FloatVector'
  * @returns 'FLOAT_INDEX' or 'BINARY_INDEX'
  */
-export const getEmbeddingType = (fieldType: DataType): EmbeddingTypeEnum => {
+export const getEmbeddingType = (
+  fieldType: DataType
+): DataTypeEnum.BinaryVector | DataTypeEnum.FloatVector => {
   const type =
     fieldType === 'BinaryVector'
-      ? EmbeddingTypeEnum.binary
-      : EmbeddingTypeEnum.float;
+      ? DataTypeEnum.BinaryVector
+      : DataTypeEnum.FloatVector;
   return type;
 };
 
@@ -46,11 +47,9 @@ export const getEmbeddingType = (fieldType: DataType): EmbeddingTypeEnum => {
  * @param embeddingType float or binary
  * @returns index type
  */
-export const getDefaultIndexType = (
-  embeddingType: EmbeddingTypeEnum
-): IndexType => {
+export const getDefaultIndexType = (embeddingType: DataTypeEnum): IndexType => {
   const defaultIndexType =
-    embeddingType === EmbeddingTypeEnum.float
+    embeddingType === DataTypeEnum.FloatVector
       ? INDEX_TYPES_ENUM.FLAT
       : INDEX_TYPES_ENUM.BIN_FLAT;
   return defaultIndexType;
