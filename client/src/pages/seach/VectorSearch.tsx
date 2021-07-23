@@ -98,7 +98,7 @@ const VectorSearch = () => {
       const selectedFieldInfo = fieldOptions.find(
         f => f.value === selectedField
       );
-
+      console.log('===== selected field info', selectedFieldInfo);
       const index = selectedFieldInfo?.indexInfo;
 
       const embeddingType =
@@ -107,13 +107,13 @@ const VectorSearch = () => {
           : EmbeddingTypeEnum.float;
 
       const metric =
-        index!._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
+        index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
 
       const indexParams = index?._indexParameterPairs || [];
 
       return {
         metricType: metric,
-        indexType: index!._indexType,
+        indexType: index?._indexType || 'FLAT',
         indexParams,
         fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
       };

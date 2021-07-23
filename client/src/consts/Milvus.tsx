@@ -55,7 +55,7 @@ export type indexConfigType = {
     create: string[];
     search: searchKeywordsType[];
   };
-}
+};
 
 // index
 export const FLOAT_INDEX_CONFIG: indexConfigType = {
@@ -91,9 +91,10 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
   //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
   //   search: ['search_length'],
   // },}
-}
+};
 
 export const BINARY_INDEX_CONFIG: indexConfigType = {
+  // },
   BIN_FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -120,8 +121,14 @@ export const m_OPTIONS = [
 ];
 
 export const INDEX_OPTIONS_MAP = {
-  FLOAT_INDEX: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({ label: v, value: v })),
-  BINARY_INDEX: Object.keys(BINARY_INDEX_CONFIG).map(v => ({ label: v, value: v })),
+  FLOAT_INDEX: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({
+    label: v,
+    value: v,
+  })),
+  BINARY_INDEX: Object.keys(BINARY_INDEX_CONFIG).map(v => ({
+    label: v,
+    value: v,
+  })),
 };
 
 export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
@@ -180,11 +187,11 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   [key in searchKeywordsType]: number;
 } = {
   // range: [top_k, 32768]
-  ef: 50,
+  ef: 250,
   // range: [1, nlist]
   nprobe: 1,
   // range: {-1} ∪ [top_k, n × n_trees]
-  search_k: 50,
+  search_k: 250,
   // range: [10, 300]
   search_length: 10,
 };

@@ -1,3 +1,4 @@
+import { IndexType } from '../pages/schema/Types';
 import { SearchResult, SearchResultView } from '../pages/seach/Types';
 
 export const transferSearchResult = (
@@ -13,3 +14,7 @@ export const transferSearchResult = (
 
   return resultView;
 };
+
+// export const getDefaultIndexType = (fieldType: ): IndexType => {
+
+// }
