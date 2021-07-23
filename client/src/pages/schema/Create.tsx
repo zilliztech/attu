@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
 import {
-  EmbeddingTypeEnum,
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   MetricType,
@@ -10,6 +9,7 @@ import {
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm, getMetricOptions } from '../../utils/Form';
+import { getEmbeddingType } from '../../utils/search';
 import { DataType } from '../collections/Types';
 import CreateForm from './CreateForm';
 import { IndexType, ParamPair, INDEX_TYPES_ENUM } from './Types';
@@ -26,8 +26,14 @@ const CreateIndex = (props: {
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
 
-  const defaultIndexType = fieldType === 'BinaryVector' ? INDEX_TYPES_ENUM.BIN_IVF_FLAT : INDEX_TYPES_ENUM.IVF_FLAT;
-  const defaultMetricType = fieldType === 'BinaryVector' ? METRIC_TYPES_VALUES.HAMMING : METRIC_TYPES_VALUES.L2;
+  const defaultIndexType =
+    fieldType === 'BinaryVector'
+      ? INDEX_TYPES_ENUM.BIN_IVF_FLAT
+      : INDEX_TYPES_ENUM.IVF_FLAT;
+  const defaultMetricType =
+    fieldType === 'BinaryVector'
+      ? METRIC_TYPES_VALUES.HAMMING
+      : METRIC_TYPES_VALUES.L2;
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
@@ -68,10 +74,7 @@ const CreateIndex = (props: {
   }, [indexCreateParams, indexSetting]);
 
   const indexOptions = useMemo(() => {
-    const type =
-      fieldType === 'BinaryVector'
-        ? EmbeddingTypeEnum.binary
-        : EmbeddingTypeEnum.float;
+    const type = getEmbeddingType(fieldType);
     return INDEX_OPTIONS_MAP[type];
   }, [fieldType]);
 

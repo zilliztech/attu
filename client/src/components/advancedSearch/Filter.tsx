@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   makeStyles,
   Theme,
   createStyles,
-  Button,
   Chip,
   Tooltip,
 } from '@material-ui/core';
@@ -11,12 +10,14 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import AdvancedDialog from './Dialog';
 import { FilterProps, ConditionData } from './Types';
 import { generateIdByHash } from '../../utils/Common';
+import CustomButton from '../customButton/CustomButton';
 
 const Filter = function Filter(props: FilterProps) {
   const {
     title = 'title',
     showTitle = true,
     className = '',
+    filterDisabled = false,
     tooltipPlacement = 'top',
     onSubmit,
     fields = [],
@@ -25,16 +26,22 @@ const Filter = function Filter(props: FilterProps) {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  const [conditionSum, setConditionSum] = useState(0);
   const [flatConditions, setFlatConditions] = useState<any[]>([]);
   const [initConditions, setInitConditions] = useState<any[]>([]);
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
   const [filterExpression, setFilterExpression] = useState('');
 
+  // if fields if empty array, reset all conditions
+  useEffect(() => {
+    if (fields.length === 0) {
+      setFlatConditions([]);
+      setInitConditions([]);
+    }
+  }, [fields]);
+
   // Check all conditions are all correct.
   useEffect(() => {
     // Calc the sum of conditions.
-    setConditionSum(flatConditions.filter(i => i.type === 'condition').length);
     for (let i = 0; i < flatConditions.length; i++) {
       const { data, type } = flatConditions[i];
       if (type !== 'condition') continue;
@@ -256,11 +263,15 @@ const Filter = function Filter(props: FilterProps) {
   return (
     <>
       <div className={`${classes.wrapper} ${className}`} {...others}>
-        <Button className={`${classes.afBtn} af-btn`} onClick={handleClickOpen}>
+        <CustomButton
+          disabled={filterDisabled}
+          className={`${classes.afBtn} af-btn`}
+          onClick={handleClickOpen}
+        >
           <FilterListIcon />
           {showTitle ? title : ''}
-        </Button>
-        {conditionSum > 0 && (
+        </CustomButton>
+        {initConditions.length > 0 && (
           <Tooltip
             arrow
             interactive
@@ -268,7 +279,7 @@ const Filter = function Filter(props: FilterProps) {
             placement={tooltipPlacement}
           >
             <Chip
-              label={conditionSum}
+              label={initConditions.filter(i => i.type === 'condition').length}
               onDelete={handleDeleteAll}
               variant="outlined"
               size="small"

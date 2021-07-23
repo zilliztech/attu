@@ -10,6 +10,8 @@ export type SimpleMenuType = {
   }[];
   buttonProps?: ButtonProps;
   className?: string;
+  // e.g. 160px
+  menuItemWidth?: string;
 };
 
 export type NavMenuItem = {

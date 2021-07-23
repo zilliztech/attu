@@ -1,6 +1,5 @@
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-// import { useParams } from 'react-router-dom';
 import { navContext } from '../context/Navigation';
 import { ALL_ROUTER_TYPES, NavInfo } from '../router/Types';
 
@@ -10,7 +9,7 @@ export const useNavigationHook = (
     collectionName: string;
   }
 ) => {
-  const { t } = useTranslation('nav');
+  const { t: navTrans } = useTranslation('nav');
   const { setNavInfo } = useContext(navContext);
   const { collectionName } = extraParam || { collectionName: '' };
 
@@ -18,7 +17,7 @@ export const useNavigationHook = (
     switch (type) {
       case ALL_ROUTER_TYPES.OVERVIEW: {
         const navInfo: NavInfo = {
-          navTitle: t('overview'),
+          navTitle: navTrans('overview'),
           backPath: '',
         };
         setNavInfo(navInfo);
@@ -26,7 +25,7 @@ export const useNavigationHook = (
       }
       case ALL_ROUTER_TYPES.COLLECTIONS: {
         const navInfo: NavInfo = {
-          navTitle: t('collection'),
+          navTitle: navTrans('collection'),
           backPath: '',
         };
         setNavInfo(navInfo);
@@ -40,9 +39,9 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
-      case ALL_ROUTER_TYPES.CONSOLE: {
+      case ALL_ROUTER_TYPES.SEARCH: {
         const navInfo: NavInfo = {
-          navTitle: t('console'),
+          navTitle: navTrans('search'),
           backPath: '',
         };
         setNavInfo(navInfo);
@@ -51,5 +50,5 @@ export const useNavigationHook = (
       default:
         break;
     }
-  }, [type, t, setNavInfo, collectionName]);
+  }, [type, navTrans, setNavInfo, collectionName]);
 };

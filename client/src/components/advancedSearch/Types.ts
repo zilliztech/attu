@@ -68,6 +68,7 @@ export interface FilterProps {
   className?: string;
   title: string;
   showTitle?: boolean;
+  filterDisabled?: boolean;
   others?: object;
   onSubmit: (data: any) => void;
   tooltipPlacement?: 'left' | 'right' | 'bottom' | 'top';
