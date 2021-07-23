@@ -29,7 +29,6 @@ export const transferSearchResult = (
 /**
  * function to get EmbeddingType
  * @param fieldType only vector type fields: 'BinaryVector' or 'FloatVector'
- * @returns 'FLOAT_INDEX' or 'BINARY_INDEX'
  */
 export const getEmbeddingType = (
   fieldType: DataType

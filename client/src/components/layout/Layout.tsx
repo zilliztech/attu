@@ -46,13 +46,17 @@ const Layout = (props: any) => {
   const { t: navTrans } = useTranslation('nav');
   const classes = useStyles();
   const location = useLocation();
-  const defaultActive = useMemo(
-    () =>
-      location.pathname.includes('collection')
-        ? navTrans('collection')
-        : navTrans('overview'),
-    [location, navTrans]
-  );
+  const defaultActive = useMemo(() => {
+    if (location.pathname.includes('collection')) {
+      return navTrans('collection');
+    }
+
+    if (location.pathname.includes('search')) {
+      return navTrans('search');
+    }
+
+    return navTrans('overview');
+  }, [location, navTrans]);
 
   const menuItems: NavMenuItem[] = [
     {
