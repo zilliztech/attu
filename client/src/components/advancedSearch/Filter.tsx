@@ -85,7 +85,7 @@ const Filter = function Filter(props: FilterProps) {
    * Insert "OR" operator into specified position.
    * @param targetId The break operator will be inserted after the target one.
    */
-  const addBreak = (targetId?: string) => {
+  const addOrOp = (targetId?: string) => {
     if (!targetId) {
       setFilteredFlatConditions([
         ...flatConditions,
@@ -169,7 +169,7 @@ const Filter = function Filter(props: FilterProps) {
   };
   const changeBinaryLogicalOp = (value: string, targetId: string) => {
     if (value === 'or') {
-      addBreak(targetId);
+      addOrOp(targetId);
     } else if (value === 'and') {
       removeOrOp(targetId);
     }
@@ -205,7 +205,7 @@ const Filter = function Filter(props: FilterProps) {
   };
 
   const handleConditions = {
-    addBreak,
+    addOrOp,
     removeOrOp,
     addCondition,
     removeCondition,
