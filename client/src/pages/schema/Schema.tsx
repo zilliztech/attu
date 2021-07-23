@@ -99,7 +99,6 @@ const Schema: FC<{
 
       try {
         const list = await fetchSchemaListWithIndex(collectionName);
-        console.log(list);
         const fields: FieldView[] = list.map(f =>
           Object.assign(f, {
             _fieldNameElement: (

@@ -59,9 +59,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     },
   },
 
-  active: {
-    color: theme.palette.primary.main,
-  },
   menuIcon: {
     color: theme.palette.milvusGrey.dark,
   },
@@ -91,6 +88,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   handleIsContainedChange,
   tableHeads,
   setTableHeads,
+  file,
 }) => {
   const classes = getStyles();
   const { t: insertTrans } = useTranslation('insert');

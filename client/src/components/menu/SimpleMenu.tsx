@@ -13,7 +13,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     borderRadius: '4px',
   },
   menuItem: {
-    minWidth: '160px',
+    minWidth: (props: { minWidth: string }) => props.minWidth,
     padding: theme.spacing(1),
 
     '&:hover': {
@@ -23,10 +23,16 @@ const getStyles = makeStyles((theme: Theme) => ({
 }));
 
 const SimpleMenu: FC<SimpleMenuType> = props => {
-  const { label, menuItems, buttonProps, className = '' } = props;
+  const {
+    label,
+    menuItems,
+    buttonProps,
+    menuItemWidth = '160px',
+    className = '',
+  } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const classes = getStyles();
+  const classes = getStyles({ minWidth: menuItemWidth });
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };

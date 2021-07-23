@@ -160,13 +160,16 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
-        return {
+        const data: any = {
           name: v.name,
           description: v.description,
           is_primary_key: v.is_primary_key,
           data_type: v.data_type,
           dimension: vectorType.includes(v.data_type) ? v.dimension : undefined,
         };
+
+        v.is_primary_key && (data.autoID = form.autoID);
+        return data;
       }),
     };
     handleCreate(param);

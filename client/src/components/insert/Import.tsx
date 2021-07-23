@@ -102,6 +102,7 @@ const InsertImport: FC<InsertImportProps> = ({
   handlePartitionChange,
 
   handleUploadedData,
+  handleUploadFileChange,
   fileName,
   setFileName,
 }) => {
@@ -162,6 +163,7 @@ const InsertImport: FC<InsertImportProps> = ({
             handleUploadedData={handleUploadedData}
             maxSize={parseByte('150m')}
             overSizeWarning={insertTrans('overSizeWarning')}
+            handleUploadFileChange={handleUploadFileChange}
           />
           <Typography className="text">
             {fileName || insertTrans('fileNamePlaceHolder')}

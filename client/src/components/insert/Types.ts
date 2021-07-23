@@ -54,6 +54,7 @@ export interface InsertImportProps {
   handlePartitionChange: (partitionName: string) => void;
   // handle uploaded data
   handleUploadedData: (data: string, uploader: HTMLFormElement) => void;
+  handleUploadFileChange: (file: File, uploader: HTMLFormElement) => void;
   fileName: string;
   setFileName: (fileName: string) => void;
 }
@@ -67,6 +68,7 @@ export interface InsertPreviewProps {
 
   isContainFieldNames: number;
   handleIsContainedChange: (isContained: number) => void;
+  file: File | null; // csv file
 }
 
 export interface InsertStatusProps {

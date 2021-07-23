@@ -17,6 +17,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       display: 'flex',
+
+      '& .normalSearchIcon': {
+        '& path': {
+          fill: theme.palette.milvusGrey.dark,
+        },
+      },
+
+      '& .activeSearchIcon': {
+        '& path': {
+          fill: theme.palette.primary.main,
+        },
+      },
     },
     body: {
       flex: 1,
@@ -34,13 +46,17 @@ const Layout = (props: any) => {
   const { t: navTrans } = useTranslation('nav');
   const classes = useStyles();
   const location = useLocation();
-  const defaultActive = useMemo(
-    () =>
-      location.pathname.includes('collection')
-        ? navTrans('collection')
-        : navTrans('overview'),
-    [location, navTrans]
-  );
+  const defaultActive = useMemo(() => {
+    if (location.pathname.includes('collection')) {
+      return navTrans('collection');
+    }
+
+    if (location.pathname.includes('search')) {
+      return navTrans('search');
+    }
+
+    return navTrans('overview');
+  }, [location, navTrans]);
 
   const menuItems: NavMenuItem[] = [
     {
@@ -52,6 +68,13 @@ const Layout = (props: any) => {
       icon: icons.navCollection,
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
+    },
+    {
+      icon: icons.navSearch,
+      label: navTrans('search'),
+      onClick: () => history.push('/search'),
+      iconActiveClass: 'activeSearchIcon',
+      iconNormalClass: 'normalSearchIcon',
     },
   ];
 

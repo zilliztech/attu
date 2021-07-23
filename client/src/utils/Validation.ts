@@ -14,15 +14,16 @@ export type ValidType =
   | 'dimension'
   | 'multiple'
   | 'partitionName'
-  | 'firstCharacter';
+  | 'firstCharacter'
+  | 'specValueOrRange';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
   rule: ValidType;
 }
 export interface IExtraParam {
-  // used for confirm type
-  compareValue?: string;
+  // used for confirm or any compare type
+  compareValue?: string | number;
   // used for length type
   min?: number;
   max?: number;
@@ -64,13 +65,13 @@ export const checkPasswordStrength = (value: string): boolean => {
 };
 
 export const checkRange = (param: {
-  value: string;
+  value: string | number;
   min?: number;
   max?: number;
   type?: 'string' | 'number';
 }): boolean => {
   const { value, min = 0, max = 0, type } = param;
-  const length = type === 'number' ? Number(value) : value.length;
+  const length = type === 'number' ? Number(value) : (value as string).length;
 
   let result = true;
   const conditionMap = {
@@ -181,6 +182,23 @@ export const checkDimension = (param: {
   return checkMultiple({ value, multipleNumber });
 };
 
+/**
+ * function to check whether value(type: number) is equal to specified value or in valid range
+ * @param param specValue and params checkRange function needed
+ * @returns whether input is valid
+ */
+export const checkSpecValueOrRange = (param: {
+  value: number;
+  min: number;
+  max: number;
+  compareValue: number;
+}): boolean => {
+  const { value, min, max, compareValue } = param;
+  return (
+    value === compareValue || checkRange({ min, max, value, type: 'number' })
+  );
+};
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
@@ -214,6 +232,12 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
     firstCharacter: checkFirstCharacter({
       value,
       invalidTypes: extraParam?.invalidTypes,
+    }),
+    specValueOrRange: checkSpecValueOrRange({
+      value: Number(value),
+      min: extraParam?.min || 0,
+      max: extraParam?.max || 0,
+      compareValue: Number(extraParam.compareValue) || 0,
     }),
   };
 

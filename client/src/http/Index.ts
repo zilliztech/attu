@@ -76,4 +76,8 @@ export class IndexHttp extends BaseModel implements IndexView {
   get _fieldName() {
     return this.field_name;
   }
+
+  get _metricType() {
+    return this.params.find(p => p.key === 'metric_type')?.value || '';
+  }
 }
