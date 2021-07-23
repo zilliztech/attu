@@ -29,18 +29,26 @@ import { cacheKeys } from '../cache/config';
 @ApiTags('collections')
 @Controller('collections')
 export class CollectionsController {
-  constructor(private collectionsService: CollectionsService, @Inject(CACHE_MANAGER) private cacheManager: Cache) { }
+  constructor(
+    private collectionsService: CollectionsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   // manually control cache if logic is complicated
   @Get()
   async getCollections(@Query() data?: ShowCollections) {
     if (Number(data.type) === 1) {
-      let loadedCollections = await this.cacheManager.get(cacheKeys.LOADEDCOLLECTIONS);
+      let loadedCollections = await this.cacheManager.get(
+        cacheKeys.LOADEDCOLLECTIONS,
+      );
       if (loadedCollections) {
         return loadedCollections;
       }
       loadedCollections = await this.collectionsService.getLoadedColletions();
-      await this.cacheManager.set(cacheKeys.LOADEDCOLLECTIONS, loadedCollections);
+      await this.cacheManager.set(
+        cacheKeys.LOADEDCOLLECTIONS,
+        loadedCollections,
+      );
       return loadedCollections;
     }
     let allCollections = await this.cacheManager.get(cacheKeys.ALLCOLLECTIONS);

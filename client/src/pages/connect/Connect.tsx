@@ -4,12 +4,7 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import icons from '../../components/icons/Icons';
 import ConnectContainer from './ConnectContainer';
 import CustomInput from '../../components/customInput/CustomInput';
-import {
-  useContext,
-  // useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import CustomButton from '../../components/customButton/CustomButton';
