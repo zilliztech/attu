@@ -51,7 +51,10 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
   // validation detail about form item
   const [validation, setValidation] = useState(initValidation);
   // overall validation result to control following actions
-  const [disabled, setDisabled] = useState<boolean>(true);
+  const isOverallValid = Object.values(validation).every(
+    v => !(v as IValidationItem).result
+  );
+  const [disabled, setDisabled] = useState<boolean>(!isOverallValid);
 
   const checkIsValid = (param: ICheckValidParam): IValidationItem => {
     const { value, key, rules } = param;

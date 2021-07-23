@@ -26,4 +26,5 @@ export type IconsType =
   | 'remove'
   | 'key'
   | 'upload'
-  | 'dropdown';
+  | 'dropdown'
+  | 'copyExpression';

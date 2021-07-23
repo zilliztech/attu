@@ -308,6 +308,8 @@ const Collections = () => {
       },
       label: collectionTrans('delete'),
       icon: 'delete',
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: data => data.length === 0,
     },
     {

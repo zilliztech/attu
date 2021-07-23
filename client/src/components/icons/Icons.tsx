@@ -29,6 +29,7 @@ import { ReactComponent as ReleaseIcon } from '../../assets/icons/release.svg';
 import { ReactComponent as LoadIcon } from '../../assets/icons/load.svg';
 import { ReactComponent as KeyIcon } from '../../assets/icons/key.svg';
 import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
+import { ReactComponent as CopyIcon } from '../../assets/icons/copy.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -77,6 +78,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   upload: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={UploadIcon} {...props} />
+  ),
+  copyExpression: (props = {}) => (
+    <SvgIcon viewBox="0 0 16 16" component={CopyIcon} {...props} />
   ),
 };
 

@@ -6,12 +6,13 @@ import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   MetricType,
+  METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { DataType } from '../collections/Types';
 import CreateForm from './CreateForm';
-import { IndexType, ParamPair } from './Types';
+import { IndexType, ParamPair, INDEX_TYPES_ENUM } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
@@ -25,14 +26,15 @@ const CreateIndex = (props: {
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
 
-  const defaultMetricType = fieldType === 'BinaryVector' ? 'Hamming' : 'L2';
+  const defaultIndexType = fieldType === 'BinaryVector' ? INDEX_TYPES_ENUM.BIN_IVF_FLAT : INDEX_TYPES_ENUM.IVF_FLAT;
+  const defaultMetricType = fieldType === 'BinaryVector' ? METRIC_TYPES_VALUES.HAMMING : METRIC_TYPES_VALUES.L2;
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
     metric_type: MetricType;
     [x: string]: string;
   }>({
-    index_type: 'IVF_FLAT',
+    index_type: defaultIndexType,
     metric_type: defaultMetricType,
     M: '',
     m: '4',
@@ -87,7 +89,8 @@ const CreateIndex = (props: {
 
   // reset index params
   useEffect(() => {
-    setDisabled(true);
+    // no need
+    // setDisabled(true);
     setIndexSetting(v => ({
       ...v,
       metric_type: defaultMetricType,
@@ -115,7 +118,8 @@ const CreateIndex = (props: {
       .forEach(item => {
         paramsForm[item] = '';
       });
-
+    // if no other params, the form should be valid.
+    setDisabled((INDEX_CONFIG[type].create || []).length === 0 ? false : true);
     const form = formatForm(paramsForm);
     resetValidation(form);
   };

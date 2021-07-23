@@ -216,6 +216,7 @@ const Schema: FC<{
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
         isLoading={loading}
+        openCheckBox={false}
       />
     </section>
   );

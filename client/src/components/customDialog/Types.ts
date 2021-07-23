@@ -31,4 +31,5 @@ export type DialogContainerProps = {
   confirmDisabled?: boolean;
   showActions?: boolean;
   showCancel?: boolean;
+  leftActions?: ReactElement;
 };
