@@ -1,11 +1,11 @@
 export enum METRIC_TYPES_VALUES {
   L2 = 'L2',
   IP = 'IP',
-  HAMMING = 'Hamming',
-  JACCARD = 'Jaccard',
-  TANIMOTO = 'Tanimoto',
-  SUBSTRUCTURE = 'Substructure',
-  SUPERSTRUCTURE = 'Superstructure',
+  HAMMING = 'HAMMING',
+  JACCARD = 'JACCARD',
+  TANIMOTO = 'TANIMOTO',
+  SUBSTRUCTURE = 'SUBSTRUCTURE',
+  SUPERSTRUCTURE = 'SUPERSTRUCTURE',
 }
 
 export const METRIC_TYPES = [
@@ -19,44 +19,46 @@ export const METRIC_TYPES = [
   },
   {
     value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-    label: 'Substructure',
+    label: 'SUBSTRUCTURE',
   },
   {
     value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-    label: 'Superstructure',
+    label: 'SUPERSTRUCTURE',
   },
   {
     value: METRIC_TYPES_VALUES.HAMMING,
-    label: 'Hamming',
+    label: 'HAMMING',
   },
   {
     value: METRIC_TYPES_VALUES.JACCARD,
-    label: 'Jaccard',
+    label: 'JACCARD',
   },
   {
     value: METRIC_TYPES_VALUES.TANIMOTO,
-    label: 'Tanimoto',
+    label: 'TANIMOTO',
   },
 ];
 
 export type MetricType =
   | 'L2'
   | 'IP'
-  | 'Hamming'
-  | 'Substructure'
-  | 'Superstructure'
-  | 'Jaccard'
-  | 'Tanimoto';
+  | 'HAMMING'
+  | 'SUBSTRUCTURE'
+  | 'SUPERSTRUCTURE'
+  | 'JACCARD'
+  | 'TANIMOTO';
 
 export type searchKeywordsType = 'nprobe' | 'ef' | 'search_k' | 'search_length';
 
-// index
-export const INDEX_CONFIG: {
+export type indexConfigType = {
   [x: string]: {
     create: string[];
     search: searchKeywordsType[];
   };
-} = {
+}
+
+// index
+export const FLOAT_INDEX_CONFIG: indexConfigType = {
   IVF_FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -88,7 +90,23 @@ export const INDEX_CONFIG: {
   // RNSG: {
   //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
   //   search: ['search_length'],
-  // },
+  // },}
+}
+
+export const BINARY_INDEX_CONFIG: indexConfigType = {
+  BIN_FLAT: {
+    create: ['nlist'],
+    search: ['nprobe'],
+  },
+  BIN_IVF_FLAT: {
+    create: ['nlist'],
+    search: ['nprobe'],
+  },
+};
+
+export const INDEX_CONFIG: indexConfigType = {
+  ...FLOAT_INDEX_CONFIG,
+  ...BINARY_INDEX_CONFIG,
 };
 
 export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
@@ -102,18 +120,15 @@ export const m_OPTIONS = [
 ];
 
 export const INDEX_OPTIONS_MAP = {
-  FLOAT_POINT: Object.keys(INDEX_CONFIG).map(v => ({ label: v, value: v })),
-  BINARY: [
-    { label: 'FLAT', value: 'FLAT' },
-    { label: 'IVF_FLAT', value: 'IVF_FLAT' },
-  ],
+  FLOAT_INDEX: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({ label: v, value: v })),
+  BINARY_INDEX: Object.keys(BINARY_INDEX_CONFIG).map(v => ({ label: v, value: v })),
 };
 
 export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
 
 export enum EmbeddingTypeEnum {
-  float = 'FLOAT_POINT',
-  binary = 'BINARY',
+  float = 'FLOAT_INDEX',
+  binary = 'BINARY_INDEX',
 }
 
 export const METRIC_OPTIONS_MAP = {
