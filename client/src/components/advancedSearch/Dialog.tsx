@@ -67,17 +67,17 @@ const AdvancedDialog = (props: DialogProps) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
+        <div
+          className={`${classes.expResult} ${
+            shouldSowPlaceholder && 'disable-exp'
+          }`}
+        >
+          {`${shouldSowPlaceholder ? 'Filter Expression' : filterExpression}`}
+          {!shouldSowPlaceholder && (
+            <CopyBtn label="copy expression" value={filterExpression} />
+          )}
+        </div>
         <DialogContent>
-          <div
-            className={`${classes.expResult} ${
-              shouldSowPlaceholder && 'disable-exp'
-            }`}
-          >
-            {`${shouldSowPlaceholder ? 'Filter Expression' : filterExpression}`}
-            {!shouldSowPlaceholder && (
-              <CopyBtn label="copy expression" value={filterExpression} />
-            )}
-          </div>
           <div className={classes.expWrapper}>
             <ConditionGroup
               fields={fields}
@@ -200,9 +200,8 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       minHeight: '40px',
-      marginBottom: '16px',
+      margin: '8px 32px',
       padding: '0 16px',
-      fontFamily: 'Source Code Pro',
       fontStyle: 'normal',
       fontWeight: 'normal',
       fontSize: '16px',
