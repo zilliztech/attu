@@ -142,33 +142,33 @@ export const METRIC_OPTIONS_MAP = {
   [EmbeddingTypeEnum.float]: [
     {
       value: METRIC_TYPES_VALUES.L2,
-      label: 'L2',
+      label: METRIC_TYPES_VALUES.L2,
     },
     {
       value: METRIC_TYPES_VALUES.IP,
-      label: 'IP',
+      label: METRIC_TYPES_VALUES.IP,
     },
   ],
   [EmbeddingTypeEnum.binary]: [
     {
       value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-      label: 'Substructure',
+      label: METRIC_TYPES_VALUES.SUBSTRUCTURE,
     },
     {
       value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-      label: 'Superstructure',
+      label: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
     },
     {
       value: METRIC_TYPES_VALUES.HAMMING,
-      label: 'Hamming',
+      label: METRIC_TYPES_VALUES.HAMMING,
     },
     {
       value: METRIC_TYPES_VALUES.JACCARD,
-      label: 'Jaccard',
+      label: METRIC_TYPES_VALUES.JACCARD,
     },
     {
       value: METRIC_TYPES_VALUES.TANIMOTO,
-      label: 'Tanimoto',
+      label: METRIC_TYPES_VALUES.TANIMOTO,
     },
   ],
 };

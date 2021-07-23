@@ -23,7 +23,11 @@ import { CollectionData, DataType, DataTypeEnum } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
 import { getVectorSearchStyles } from './Styles';
 import { parseValue } from '../../utils/Insert';
-import { transferSearchResult } from '../../utils/search';
+import {
+  getDefaultIndexType,
+  getEmbeddingType,
+  transferSearchResult,
+} from '../../utils/search';
 import { ColDefinitionsType } from '../../components/grid/Types';
 
 const VectorSearch = () => {
@@ -57,6 +61,21 @@ const VectorSearch = () => {
     total,
     data: result,
   } = usePaginationHook(searchResult);
+
+  const searchDisabled = useMemo(() => {
+    /**
+     * before search, user must:
+     * 1. enter vector value
+     * 2. choose collection and field
+     * 3. set extra search params
+     */
+    const isInvalid =
+      vectors === '' ||
+      selectedCollection === '' ||
+      selectedField === '' ||
+      paramDisabled;
+    return isInvalid;
+  }, [paramDisabled, selectedField, selectedCollection, vectors]);
 
   const collectionOptions: Option[] = useMemo(
     () =>
@@ -92,40 +111,36 @@ const VectorSearch = () => {
       : [];
   }, [searchResult]);
 
-  const { metricType, indexType, indexParams, fieldType } = useMemo(() => {
-    if (selectedField !== '') {
-      // field options must contain selected field, so selectedFieldInfo will never undefined
-      const selectedFieldInfo = fieldOptions.find(
-        f => f.value === selectedField
-      );
-      console.log('===== selected field info', selectedFieldInfo);
-      const index = selectedFieldInfo?.indexInfo;
+  const { metricType, indexType, indexParams, fieldType, embeddingType } =
+    useMemo(() => {
+      if (selectedField !== '') {
+        // field options must contain selected field, so selectedFieldInfo will never undefined
+        const selectedFieldInfo = fieldOptions.find(
+          f => f.value === selectedField
+        );
+        const index = selectedFieldInfo?.indexInfo;
+        const embeddingType = getEmbeddingType(selectedFieldInfo!.fieldType);
+        const metric =
+          index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
+        const indexParams = index?._indexParameterPairs || [];
 
-      const embeddingType =
-        selectedFieldInfo!.fieldType === 'BinaryVector'
-          ? EmbeddingTypeEnum.binary
-          : EmbeddingTypeEnum.float;
-
-      const metric =
-        index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
-
-      const indexParams = index?._indexParameterPairs || [];
+        return {
+          metricType: metric,
+          indexType: index?._indexType || getDefaultIndexType(embeddingType),
+          indexParams,
+          fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
+          embeddingType,
+        };
+      }
 
       return {
-        metricType: metric,
-        indexType: index?._indexType || 'FLAT',
-        indexParams,
-        fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
+        metricType: '',
+        indexType: '',
+        indexParams: [],
+        fieldType: 0,
+        embeddingType: EmbeddingTypeEnum.float,
       };
-    }
-
-    return {
-      metricType: '',
-      indexType: '',
-      indexParams: [],
-      fieldType: 0,
-    };
-  }, [selectedField, fieldOptions]);
+    }, [selectedField, fieldOptions]);
 
   // fetch data
   const fetchCollections = useCallback(async () => {
@@ -143,11 +158,13 @@ const VectorSearch = () => {
       const fieldOptions = fields
         // only vector type field can be select
         .filter(field => vectorTypes.includes(field._fieldType))
-        // use FLAT as default index type
         .map(f => {
+          const embeddingType = getEmbeddingType(f._fieldType);
+          const defaultIndex = getDefaultIndexType(embeddingType);
           const index = indexes.find(i => i._fieldName === f._fieldName);
+
           return {
-            label: `${f._fieldName} (${index?._indexType || 'FLAT'})`,
+            label: `${f._fieldName} (${index?._indexType || defaultIndex})`,
             value: f._fieldName,
             fieldType: f._fieldType,
             indexInfo: index || null,
@@ -180,8 +197,21 @@ const VectorSearch = () => {
   const handlePageChange = (e: any, page: number) => {
     handleCurrentPage(page);
   };
-  const handleReset = () => {};
-  const handleSearch = async () => {
+  const handleReset = () => {
+    /**
+     * reset search includes:
+     * 1. reset vectors
+     * 2. reset selected collection and field
+     * 3. reset search params
+     * 4. reset advanced filter
+     * 5. clear search result
+     */
+    setVectors('');
+    setSelectedField('');
+    setSelectedCollection('');
+    setSearchResult([]);
+  };
+  const handleSearch = async (topK: number) => {
     const searhParamPairs = [
       // dynamic search params
       {
@@ -211,14 +241,18 @@ const VectorSearch = () => {
     };
 
     setTableLoading(true);
-    const res = await CollectionHttp.vectorSearchData(
-      selectedCollection,
-      params
-    );
-    setTableLoading(false);
+    try {
+      const res = await CollectionHttp.vectorSearchData(
+        selectedCollection,
+        params
+      );
+      setTableLoading(false);
 
-    const result = transferSearchResult(res.results);
-    setSearchResult(result);
+      const result = transferSearchResult(res.results);
+      setSearchResult(result);
+    } catch (err) {
+      setTableLoading(false);
+    }
   };
   const handleFilter = () => {};
   const handleClearFilter = () => {};
@@ -244,7 +278,8 @@ const VectorSearch = () => {
             multiline
             rows={5}
             placeholder={searchTrans('vectorPlaceholder')}
-            onBlur={(e: React.ChangeEvent<{ value: unknown }>) => {
+            value={vectors}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               handleVectorChange(e.target.value as string);
             }}
           />
@@ -284,7 +319,7 @@ const VectorSearch = () => {
           <SearchParams
             wrapperClass={classes.paramsWrapper}
             metricType={metricType!}
-            embeddingType={EmbeddingTypeEnum.float}
+            embeddingType={embeddingType}
             indexType={indexType}
             indexParams={indexParams!}
             searchParamsForm={searchParam}
@@ -311,8 +346,9 @@ const VectorSearch = () => {
               label: item.toString(),
               callback: () => {
                 setTopK(item);
-                // TODO: check search validation before search
-                // handleSearch();
+                if (!searchDisabled) {
+                  handleSearch(item);
+                }
               },
               wrapperClass: classes.menuItem,
             }))}
@@ -346,7 +382,11 @@ const VectorSearch = () => {
             <ResetIcon classes={{ root: 'icon' }} />
             {btnTrans('reset')}
           </CustomButton>
-          <CustomButton variant="contained" onClick={handleSearch}>
+          <CustomButton
+            variant="contained"
+            disabled={searchDisabled}
+            onClick={() => handleSearch(topK)}
+          >
             {btnTrans('search')}
           </CustomButton>
         </div>

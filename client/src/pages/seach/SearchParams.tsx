@@ -93,7 +93,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           },
         ],
       };
-      if (!isSearchK && (min || max)) {
+      if (!isSearchK && min && max) {
         config.validations?.push({
           rule: 'range',
           errorText: warningTrans('range', { min, max }),
