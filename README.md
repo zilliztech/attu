@@ -11,8 +11,8 @@ Milvus insight is under rapid development nad we are adding new features weekly,
 - Basic statistics overview
 - Load/release collections for search
 - Insert entities
-- Vector search with advanced filter(TBD)
-- Milvus cluster info topology view(TBD)
+- Vector search with advanced filter
+- Milvus system view(TBD)
 - View milvus node configuration(TBD)
 - Data view (TBD)
 - more...
