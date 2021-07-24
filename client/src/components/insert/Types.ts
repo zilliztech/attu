@@ -75,3 +75,7 @@ export interface InsertStatusProps {
   status: InsertStatusEnum;
   failMsg: string;
 }
+
+export interface SchemaOption extends Option {
+  isPrimaryKey: boolean;
+}

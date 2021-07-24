@@ -19,6 +19,7 @@ import {
   InsertContentProps,
   InsertStatusEnum,
   InsertStepperEnum,
+  SchemaOption,
 } from './Types';
 import { Option } from '../customSelector/Types';
 import { parse } from 'papaparse';
@@ -203,19 +204,23 @@ const InsertContainer: FC<InsertContentProps> = ({
     [collections, defaultSelectedCollection]
   );
 
-  const schemaOptions: Option[] = useMemo(() => {
+  const schemaOptions: SchemaOption[] = useMemo(() => {
     const list =
       schema && schema.length > 0
         ? schema
         : collections.find(c => c._name === collectionValue)?._fields;
+
     return (list || []).map(s => ({
       label: s._fieldName,
       value: s._fieldId,
+      isPrimaryKey: s._isPrimaryKey,
     }));
   }, [schema, collectionValue, collections]);
 
   const checkUploadFileValidation = (fieldNamesLength: number): boolean => {
-    return schemaOptions.length === fieldNamesLength;
+    return (
+      schemaOptions.filter(s => !s.isPrimaryKey).length === fieldNamesLength
+    );
   };
 
   const handleUploadedData = (csv: string, uploader: HTMLFormElement) => {
