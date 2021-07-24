@@ -20,7 +20,7 @@ import { PartitionsService } from './partitions.service';
 @ApiTags('partitions')
 @Controller('partitions')
 export class PartitionsController {
-  constructor(private partitionsService: PartitionsService) {}
+  constructor(private partitionsService: PartitionsService) { }
 
   @Get()
   @UsePipes(new ValidationPipe())

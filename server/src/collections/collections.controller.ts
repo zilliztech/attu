@@ -25,7 +25,7 @@ import {
 } from './dto';
 import { cacheKeys } from '../cache/config';
 
-//Including 2 kind of cache check getCollections and getStatistics for detail
+//Including 2 kind of cache contorl, check getCollections and getStatistics for detail
 @ApiTags('collections')
 @Controller('collections')
 export class CollectionsController {
