@@ -53,17 +53,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const CollectionCard: FC<CollectionCardProps> = ({
   data,
+  handleRelease,
   wrapperClass = '',
 }) => {
   const classes = useStyles();
-  const { name, status, rowCount } = data;
+  const { _name: name, _status: status, _rowCount: rowCount } = data;
   const RightArrowIcon = icons.rightArrow;
   const InfoIcon = icons.info;
   const ReleaseIcon = icons.release;
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
-  const handleRelease = () => {};
+  const onReleaseClick = () => {
+    handleRelease(data);
+  };
 
   return (
     <div className={`card-wrapper ${classes.wrapper} ${wrapperClass}`}>
@@ -86,7 +89,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <Typography className={classes.rowCount}>{rowCount}</Typography>
       </div>
       <Divider classes={{ root: classes.divider }} />
-      <CustomButton variant="contained" onClick={handleRelease}>
+      <CustomButton variant="contained" onClick={onReleaseClick}>
         <ReleaseIcon classes={{ root: `${classes.icon} ${classes.release}` }} />
         {btnTrans('release')}
       </CustomButton>

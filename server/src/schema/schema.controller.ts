@@ -16,11 +16,10 @@ import {
   GetIndexState,
 } from './dto';
 import { SchemaService } from './schema.service';
-
 @ApiTags('schema')
 @Controller('schema')
 export class SchemaController {
-  constructor(private schemaService: SchemaService) {}
+  constructor(private schemaService: SchemaService) { }
 
   @Post('index')
   @UsePipes(new ValidationPipe())
@@ -28,10 +27,10 @@ export class SchemaController {
     const { type, collection_name, extra_params, field_name } = body;
     return type === ManageType.CREATE
       ? await this.schemaService.createIndex({
-          collection_name,
-          extra_params,
-          field_name,
-        })
+        collection_name,
+        extra_params,
+        field_name,
+      })
       : await this.schemaService.dropIndex({ collection_name, field_name });
   }
 

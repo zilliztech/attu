@@ -38,15 +38,15 @@ export const getMetricOptions = (
   const baseBinaryOptions = [
     {
       value: METRIC_TYPES_VALUES.HAMMING,
-      label: 'Hamming',
+      label: 'HAMMING',
     },
     {
       value: METRIC_TYPES_VALUES.JACCARD,
-      label: 'Jaccard',
+      label: 'JACCARD',
     },
     {
       value: METRIC_TYPES_VALUES.TANIMOTO,
-      label: 'Tanimoto',
+      label: 'TANIMOTO',
     },
   ];
 
@@ -54,18 +54,18 @@ export const getMetricOptions = (
 
   const baseOptionsMap: { [key: string]: any } = {
     BinaryVector: {
-      FLAT: [
+      BIN_FLAT: [
         ...baseBinaryOptions,
         {
           value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-          label: 'Substructure',
+          label: 'SUBSTRUCTURE',
         },
         {
           value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-          label: 'Superstructure',
+          label: 'SUPERSTRUCTURE',
         },
       ],
-      IVF_FLAT: baseBinaryOptions,
+      BIN_IVF_FLAT: baseBinaryOptions,
     },
     FloatVector: {
       ALL: baseFloatOptions,

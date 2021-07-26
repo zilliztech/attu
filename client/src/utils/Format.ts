@@ -74,18 +74,29 @@ export const getEnumKeyByValue = (enumObj: any, enumValue: any) => {
   return '--';
 };
 
-export const getKeyValueListFromJSON = (
-  paramJSON: string
+/**
+ *
+ * @param obj e.g. {name: 'test'}
+ * @returns key value pair, e.g. [{key: 'name', value: 'test'}]
+ */
+export const getKeyValuePairFromObj = (
+  obj: { [key in string]: any }
+): { key: string; value: any }[] => {
+  const pairs: { key: string; value: string }[] = Object.entries(obj).map(
+    ([key, value]) => ({
+      key,
+      value: value as string,
+    })
+  );
+  return pairs;
+};
+
+export const getKeyValueListFromJsonString = (
+  json: string
 ): { key: string; value: string }[] => {
   try {
-    const obj = JSON.parse(paramJSON);
-
-    const pairs: { key: string; value: string }[] = Object.entries(obj).map(
-      ([key, value]) => ({
-        key,
-        value: value as string,
-      })
-    );
+    const obj = JSON.parse(json);
+    const pairs = getKeyValuePairFromObj(obj);
 
     return pairs;
   } catch (err) {
@@ -114,3 +125,6 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 
   return 'number';
 };
+
+// Trim the address
+export const formatAddress = (address: string): string => address.trim();

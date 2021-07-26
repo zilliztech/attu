@@ -3,9 +3,15 @@ import { ReactElement } from 'react';
 
 export type SimpleMenuType = {
   label: string;
-  menuItems: { label: string | ReactElement; callback?: () => void }[];
+  menuItems: {
+    label: string | ReactElement;
+    callback?: () => void;
+    wrapperClass?: string;
+  }[];
   buttonProps?: ButtonProps;
   className?: string;
+  // e.g. 160px
+  menuItemWidth?: string;
 };
 
 export type NavMenuItem = {

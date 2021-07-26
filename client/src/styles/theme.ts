@@ -158,5 +158,14 @@ export const theme = createMuiTheme({
         marginLeft: 0,
       },
     },
+    MuiFilledInput: {
+      root: {
+        backgroundColor: '#f9f9f9',
+
+        '&:hover': {
+          backgroundColor: '#f9f9f9',
+        },
+      },
+    },
   },
 });

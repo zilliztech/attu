@@ -21,6 +21,13 @@ import { ManageRequestMethods } from '../../types/Common';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
+import { useInsertDialogHook } from '../../hooks/Dialog';
+import InsertContainer from '../../components/insert/Container';
+import { CollectionHttp } from '../../http/Collection';
+import { FieldHttp } from '../../http/Field';
+import { Field } from '../schema/Types';
+import { InsertDataParam } from '../collections/Types';
+import { MilvusHttp } from '../../http/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -49,6 +56,8 @@ const Partitions: FC<{
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const InfoIcon = icons.info;
+
+  const { handleInsertDialog } = useInsertDialogHook();
   // const LoadIcon = icons.load;
   // const ReleaseIcon = icons.release;
 
@@ -101,6 +110,11 @@ const Partitions: FC<{
     },
     [classes.highlight]
   );
+
+  const fetchCollectionDetail = async (name: string) => {
+    const res = await CollectionHttp.getCollection(name);
+    return res;
+  };
 
   useEffect(() => {
     fetchPartitions(collectionName);
@@ -172,6 +186,32 @@ const Partitions: FC<{
     }, 300);
   };
 
+  const handleInsert = async (
+    collectionName: string,
+    partitionName: string,
+    fieldData: any[]
+  ): Promise<{ result: boolean; msg: string }> => {
+    const param: InsertDataParam = {
+      partition_names: [partitionName],
+      fields_data: fieldData,
+    };
+    try {
+      await CollectionHttp.insertData(collectionName, param);
+      await MilvusHttp.flush(collectionName);
+      // update partitions
+      fetchPartitions(collectionName);
+
+      return { result: true, msg: '' };
+    } catch (err) {
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      return { result: false, msg: message || '' };
+    }
+  };
+
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: t('create'),
@@ -190,6 +230,36 @@ const Partitions: FC<{
         });
       },
       icon: 'add',
+    },
+    {
+      label: btnTrans('insert'),
+      onClick: async () => {
+        const collection = await fetchCollectionDetail(collectionName);
+        const schema = collection.schema.fields.map(
+          (f: Field) => new FieldHttp(f)
+        );
+
+        handleInsertDialog(
+          <InsertContainer
+            schema={schema}
+            defaultSelectedCollection={collectionName}
+            defaultSelectedPartition={
+              selectedPartitions.length === 1
+                ? selectedPartitions[0]._formatName
+                : ''
+            }
+            partitions={partitions}
+            handleInsert={handleInsert}
+          />
+        );
+      },
+      /**
+       * insert validation:
+       * 1. At least 1 available partition
+       * 2. selected partition quantity shouldn't over 1
+       */
+      disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
+      btnVariant: 'outlined',
     },
     {
       type: 'iconBtn',
@@ -319,8 +389,6 @@ const Partitions: FC<{
         rows={partitionList}
         rowCount={total}
         primaryKey="id"
-        openCheckBox={true}
-        showHoverStyle={true}
         selected={selectedPartitions}
         setSelected={handleSelectChange}
         page={currentPage}

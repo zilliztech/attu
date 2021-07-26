@@ -155,6 +155,7 @@ const Schema: FC<{
       align: 'left',
       disablePadding: true,
       label: collectionTrans('fieldName'),
+      sortBy: '_fieldName',
     },
     {
       id: '_fieldType',
@@ -180,12 +181,14 @@ const Schema: FC<{
       align: 'left',
       disablePadding: true,
       label: indexTrans('type'),
+      sortBy: '_indexType',
     },
     {
       id: '_indexParamElement',
       align: 'left',
       disablePadding: false,
       label: indexTrans('param'),
+      notSort: true,
     },
     {
       id: '_desc',
@@ -207,13 +210,13 @@ const Schema: FC<{
         rows={schemaList}
         rowCount={total}
         primaryKey="_fieldId"
-        openCheckBox={false}
         showHoverStyle={false}
         page={currentPage}
         onChangePage={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
         isLoading={loading}
+        openCheckBox={false}
       />
     </section>
   );

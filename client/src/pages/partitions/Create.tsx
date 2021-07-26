@@ -63,7 +63,7 @@ const CreatePartition: FC<PartitionCreateProps> = ({
   return (
     <DialogTemplate
       title={partitionTrans('createTitle')}
-      handleCancel={handleClose}
+      handleClose={handleClose}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreatePartition}
       confirmDisabled={disabled}

@@ -6,8 +6,10 @@ import {
   DropCollectionReq,
   GetCollectionStatisticsReq,
   GetIndexStateReq,
+  InsertReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
+  SearchReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
@@ -66,6 +68,18 @@ export class CollectionsService {
     return res;
   }
 
+  async insert(data: InsertReq) {
+    const res = await this.milvusClient.insert(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async vectorSearch(data: SearchReq) {
+    const res = await this.milvusClient.search(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
   /**
    * We do not throw error for this.
    * Because if collection dont have index, it will throw error.
@@ -86,7 +100,7 @@ export class CollectionsService {
     const data = [];
     const res = await this.getCollectionNames();
     const loadedCollections = await this.getCollectionNames({
-      type: ShowCollectionsType.InMemory,
+      type: ShowCollectionsType.Loaded,
     });
     if (res.collection_names.length > 0) {
       for (const name of res.collection_names) {
@@ -104,6 +118,7 @@ export class CollectionsService {
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
           isLoaded: loadedCollections.collection_names.includes(name),
+          createdTime: collectionInfo.created_utc_timestamp,
         });
       }
     }
@@ -113,7 +128,7 @@ export class CollectionsService {
   async getLoadedColletions() {
     const data = [];
     const res = await this.getCollectionNames({
-      type: ShowCollectionsType.InMemory,
+      type: ShowCollectionsType.Loaded,
     });
     if (res.collection_names.length > 0) {
       for (const [index, value] of res.collection_names.entries()) {

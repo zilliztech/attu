@@ -148,6 +148,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ) => {
     return (
       <CustomSelector
+        wrapperClass={classes.select}
         options={type === 'all' ? ALL_OPTIONS : VECTOR_FIELDS_OPTIONS}
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           onChange(e.target.value as DataTypeEnum);
@@ -155,7 +156,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         value={value}
         variant="filled"
         label={label}
-        classes={{ root: classes.select }}
       />
     );
   };
@@ -175,7 +175,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       <TextField
         label={label}
         // value={value}
-        onBlur={(e: React.ChangeEvent<{ value: unknown }>) => {
+        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           handleChange(e.target.value as string);
         }}
         variant="filled"
@@ -349,7 +349,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
             setAutoID(autoId);
           }}
           variant="filled"
-          classes={{ root: classes.select }}
+          wrapperClass={classes.select}
         />
 
         {generateDesc(field)}

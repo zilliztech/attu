@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { MilvusNode } from '@zilliz/milvus2-sdk-node';
+import { MilvusClient } from '@zilliz/milvus2-sdk-node';
+import { FlushReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 @Injectable()
 export class MilvusService {
   private milvusAddress: string;
-  private milvusClient: MilvusNode;
+  private milvusClient: MilvusClient;
 
   constructor() {
     this.milvusAddress = '';
@@ -20,7 +21,7 @@ export class MilvusService {
   async connectMilvus(address: string) {
     const milvusAddress = address.replace(/(http|https):\/\//, '');
     try {
-      this.milvusClient = new MilvusNode(milvusAddress);
+      this.milvusClient = new MilvusClient(milvusAddress);
       await this.milvusClient.hasCollection({
         collection_name: 'not_exist',
       });
@@ -39,5 +40,10 @@ export class MilvusService {
     return {
       connected: res.address ? true : false,
     };
+  }
+
+  async flush(data: FlushReq) {
+    const res = await this.milvusClient.flush(data);
+    return res;
   }
 }

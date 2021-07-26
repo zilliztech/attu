@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Post, Query, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  UsePipes,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ValidationPipe } from 'src/pipe/validation.pipe';
-import { CheckMilvus, ConnectMilvus } from './dto';
+import { CheckMilvus, ConnectMilvus, Flush } from './dto';
 import { MilvusService } from './milvus.service';
 
 @ApiTags('milvus')
@@ -18,5 +26,10 @@ export class MilvusController {
   @Get('check')
   async checkConnect(@Query() query: CheckMilvus): Promise<any> {
     return await this.milvusService.checkConnect(query.address);
+  }
+
+  @Put('flush')
+  async flush(@Body() data: Flush) {
+    return await this.milvusService.flush(data);
   }
 }

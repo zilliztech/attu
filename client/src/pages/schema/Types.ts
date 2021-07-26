@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { ManageRequestMethods } from '../../types/Common';
+import { MetricType } from '../../consts/Milvus';
 import { DataType } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {
@@ -11,6 +11,17 @@ export enum INDEX_TYPES_ENUM {
   HNSW = 'HNSW',
   ANNOY = 'ANNOY',
   RNSG = 'RNSG',
+  BIN_IVF_FLAT = 'BIN_IVF_FLAT',
+  BIN_FLAT = 'BIN_FLAT',
+}
+
+export interface Field {
+  data_type: DataType;
+  fieldID: string;
+  type_params: { key: string; value: string }[];
+  is_primary_key: true;
+  name: string;
+  description: string;
 }
 
 export interface FieldData {
@@ -37,17 +48,21 @@ export interface IndexView {
   _indexTypeElement?: ReactElement;
   _indexParameterPairs: { key: string; value: string }[];
   _indexParamElement?: ReactElement;
+  _metricType?: MetricType | string;
 }
 
 export type IndexType =
-  | 'FLAT'
-  | 'IVF_FLAT'
+  | INDEX_TYPES_ENUM.FLAT
+  | INDEX_TYPES_ENUM.IVF_FLAT
   // | 'IVF_SQ8'
   // | 'IVF_SQ8_HYBRID'
-  | 'IVF_PQ'
+  | INDEX_TYPES_ENUM.IVF_PQ
   // | 'RNSG'
-  | 'HNSW'
-  | 'ANNOY';
+  | INDEX_TYPES_ENUM.HNSW
+  | INDEX_TYPES_ENUM.ANNOY
+  | INDEX_TYPES_ENUM.BIN_IVF_FLAT
+  | INDEX_TYPES_ENUM.BIN_FLAT
+
 
 export interface IndexManageParam {
   collection_name: string;

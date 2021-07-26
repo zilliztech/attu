@@ -1,9 +1,11 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import { StatusEnum } from '../../components/status/Types';
+import { rootContext } from '../../context/Root';
+import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
@@ -29,9 +31,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
+  const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const classes = useStyles();
   const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: successTrans } = useTranslation('success');
   const [statistics, setStatistics] = useState<{
     collectionCount: number;
     totalData: number;
@@ -41,18 +45,34 @@ const Overview = () => {
   });
 
   const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
+  const { openSnackBar } = useContext(rootContext);
+
+  const fetchData = useCallback(async () => {
+    const res = await CollectionHttp.getStatistics();
+    const loadCollections = await CollectionHttp.getCollections({
+      type: ShowCollectionsType.InMemory,
+    });
+    setStatistics(res);
+    setLoadCollections(loadCollections);
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await CollectionHttp.getStatistics();
-      const loadCollections = await CollectionHttp.getCollections({
-        type: ShowCollectionsType.InMemory,
-      });
-      setStatistics(res);
-      setLoadCollections(loadCollections);
-    };
     fetchData();
-  }, []);
+  }, [fetchData]);
+
+  const fetchRelease = async (data: CollectionData) => {
+    const name = data._name;
+    const res = await CollectionHttp.releaseCollection(name);
+    openSnackBar(
+      successTrans('release', { name: collectionTrans('collection') })
+    );
+    fetchData();
+    return res;
+  };
+
+  const handleRelease = (data: CollectionData) => {
+    handleAction(data, fetchRelease);
+  };
 
   const statisticsData = useMemo(() => {
     return {
@@ -80,10 +100,10 @@ const Overview = () => {
 
   const loadCollectionsData: CollectionData[] = useMemo(() => {
     return loadCollections.map(v => ({
-      id: v._id,
-      name: v._name,
-      status: StatusEnum.loaded,
-      rowCount: Number(v._rowCount),
+      _id: v._id,
+      _name: v._name,
+      _status: StatusEnum.loaded,
+      _rowCount: v._rowCount,
     }));
   }, [loadCollections]);
 
@@ -98,7 +118,11 @@ const Overview = () => {
       {loadCollectionsData.length > 0 ? (
         <div className={classes.cardsWrapper}>
           {loadCollectionsData.map(collection => (
-            <CollectionCard key={collection.id} data={collection} />
+            <CollectionCard
+              key={collection._id}
+              data={collection}
+              handleRelease={handleRelease}
+            />
           ))}
         </div>
       ) : (

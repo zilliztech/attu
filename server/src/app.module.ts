@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { AppController } from './app.controller';
@@ -12,7 +12,8 @@ import { AuthModule } from './auth/auth.module';
 import { join } from 'path';
 import { PartitionsModule } from './partitions/partitions.module';
 import { SchemaModule } from './schema/schema.module';
-import { LoggerMiddleware } from './middlewares/logger';
+import { EventsModule } from './events/events.module';
+import { LoggingInterceptor } from './interceptors/index';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LoggerMiddleware } from './middlewares/logger';
     AuthModule,
     PartitionsModule,
     SchemaModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -39,13 +41,11 @@ import { LoggerMiddleware } from './middlewares/logger';
       provide: APP_INTERCEPTOR,
       useClass: TransformResInterceptor,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
     UsersService,
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }
-}
+export class AppModule { }
