@@ -4,6 +4,10 @@ import Layout from '../../layout/Layout';
 
 let container: any = null;
 
+jest.mock('@material-ui/core/styles/makeStyles', () => {
+  return () => () => ({});
+});
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: any) => key,
