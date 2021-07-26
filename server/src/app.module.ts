@@ -18,7 +18,7 @@ import { LoggingInterceptor } from './interceptors/index';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'build'),
+      rootPath: join(__dirname, '../../', 'build'),
       // renderPath: '/', // only root render static html
     }),
     MilvusModule,
@@ -48,4 +48,4 @@ import { LoggingInterceptor } from './interceptors/index';
     UsersService,
   ],
 })
-export class AppModule { }
+export class AppModule {}
