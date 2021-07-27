@@ -19,7 +19,6 @@ import {
   InsertContentProps,
   InsertStatusEnum,
   InsertStepperEnum,
-  SchemaOption,
 } from './Types';
 import { Option } from '../customSelector/Types';
 import { parse } from 'papaparse';
@@ -204,32 +203,83 @@ const InsertContainer: FC<InsertContentProps> = ({
     [collections, defaultSelectedCollection]
   );
 
-  const schemaOptions: SchemaOption[] = useMemo(() => {
+  const {
+    schemaOptions,
+    autoIdFieldName,
+  }: { schemaOptions: Option[]; autoIdFieldName: string } = useMemo(() => {
+    /**
+     * on collection page, we get schema data from collection
+     * on partition page, we pass schema as props
+     */
     const list =
       schema && schema.length > 0
         ? schema
         : collections.find(c => c._name === collectionValue)?._fields;
 
-    return (list || []).map(s => ({
-      label: s._fieldName,
-      value: s._fieldId,
-      isPrimaryKey: s._isPrimaryKey,
-    }));
+    const autoIdFieldName =
+      list?.find(item => item._isPrimaryKey && item._isAutoId)?._fieldName ||
+      '';
+    /**
+     * if below conditions all met, this schema shouldn't be selectable as head:
+     * 1. this field is primary key
+     * 2. this field auto id is true
+     */
+    const options = (list || [])
+      .filter(s => !s._isAutoId || !s._isPrimaryKey)
+      .map(s => ({
+        label: s._fieldName,
+        value: s._fieldId,
+      }));
+    return {
+      schemaOptions: options,
+      autoIdFieldName,
+    };
   }, [schema, collectionValue, collections]);
 
-  const checkUploadFileValidation = (fieldNamesLength: number): boolean => {
+  const checkUploadFileValidation = (firstRowItems: string[]): boolean => {
+    const uploadFieldNamesLength = firstRowItems.length;
     return (
-      schemaOptions.filter(s => !s.isPrimaryKey).length === fieldNamesLength
+      checkIsAutoIdFieldValid(firstRowItems) ||
+      checkColumnLength(uploadFieldNamesLength)
     );
+  };
+
+  /**
+   * when primary key field auto id is true
+   * no need to upload this field data
+   * @param firstRowItems uploaded file first row items
+   * @returns whether invalid, true means invalid
+   */
+  const checkIsAutoIdFieldValid = (firstRowItems: string[]): boolean => {
+    const isContainAutoIdField = firstRowItems.includes(autoIdFieldName);
+    isContainAutoIdField &&
+      openSnackBar(
+        insertTrans('uploadAutoIdFieldWarning', { fieldName: autoIdFieldName }),
+        'error'
+      );
+    return isContainAutoIdField;
+  };
+
+  /**
+   * uploaded file column length should be equal to schema length
+   * @param fieldNamesLength every row items length
+   * @returns whether invalid, true means invalid
+   */
+  const checkColumnLength = (fieldNamesLength: number): boolean => {
+    const isLengthEqual = schemaOptions.length === fieldNamesLength;
+    // if not equal, open warning snackbar
+    !isLengthEqual &&
+      openSnackBar(insertTrans('uploadFieldNamesLenWarning'), 'error');
+    return !isLengthEqual;
   };
 
   const handleUploadedData = (csv: string, uploader: HTMLFormElement) => {
     const { data } = parse(csv);
-    const uploadFieldNamesLength = (data as string[])[0].length;
-    const validation = checkUploadFileValidation(uploadFieldNamesLength);
-    if (!validation) {
-      // open snackbar
-      openSnackBar(insertTrans('uploadFieldNamesLenWarning'), 'error');
+    // if uploaded csv contains heads, firstRowItems is the list of all heads
+    const [firstRowItems = []] = data as string[][];
+
+    const invalid = checkUploadFileValidation(firstRowItems);
+    if (invalid) {
       // reset uploader value and filename
       setFileName('');
       setFile(null);

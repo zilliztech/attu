@@ -12,6 +12,8 @@ const Uploader: FC<UploaderProps> = ({
   label,
   accept,
   btnClass = '',
+  disabled = false,
+  disableTooltip = '',
   maxSize,
   overSizeWarning = '',
   handleUploadedData,
@@ -69,6 +71,8 @@ const Uploader: FC<UploaderProps> = ({
         variant="contained"
         className={`${classes.btn} ${btnClass}`}
         onClick={handleUpload}
+        disabled={disabled}
+        tooltip={disabled ? disableTooltip : ''}
       >
         {label}
       </CustomButton>

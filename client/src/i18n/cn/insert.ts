@@ -11,10 +11,14 @@ const insertTrans = {
     `Data size should be less than 5MB and the number of rows should be less than 100000, for the data to be imported properly.`,
     `The "Import Data" option will only append new records. You cannot update existing records using this option.`,
   ],
-  overSizeWarning: 'File data size should less than 5MB',
+  overSizeWarning: 'File data size should less than {{size}}MB',
   isContainFieldNames: 'First row contains field names?',
+
+  uploadFileDisableTooltip: 'Please select collection before uploading',
   uploadFieldNamesLenWarning:
     'Uploaded data column count is not equal to schema count',
+  uploadAutoIdFieldWarning:
+    'AutoId field ({{fieldName}}) does not require data',
   previewTipData: 'Data Preview(Top 4 rows shown)',
   previewTipAction: '*Change header cell selector value to edit field name',
   requiredFieldName: 'Field Name*',

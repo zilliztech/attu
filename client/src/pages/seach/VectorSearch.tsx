@@ -295,7 +295,10 @@ const VectorSearch = () => {
             options={collectionOptions}
             wrapperClass={classes.selector}
             variant="filled"
-            label={searchTrans('collection')}
+            label={searchTrans(
+              collectionOptions.length === 0 ? 'noCollection' : 'collection'
+            )}
+            disabled={collectionOptions.length === 0}
             value={selectedCollection}
             onChange={(e: { target: { value: unknown } }) => {
               const collection = e.target.value;
@@ -306,7 +309,8 @@ const VectorSearch = () => {
           />
           <CustomSelector
             options={fieldOptions}
-            readOnly={selectedCollection === ''}
+            // readOnly can't avoid all events, so we use disabled instead
+            disabled={selectedCollection === ''}
             wrapperClass={classes.selector}
             variant="filled"
             label={searchTrans('field')}
@@ -318,7 +322,7 @@ const VectorSearch = () => {
           />
         </fieldset>
         {/* search params selectors */}
-        <fieldset className="field">
+        <fieldset className="field field-params">
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
