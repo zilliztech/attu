@@ -4,7 +4,7 @@ import { makeStyles, Theme, Divider, Typography } from '@material-ui/core';
 import CustomSelector from '../customSelector/CustomSelector';
 import { InsertImportProps } from './Types';
 import Uploader from '../uploader/Uploader';
-import { INSERT_CSV_SAMPLE } from '../../consts/Insert';
+import { INSERT_CSV_SAMPLE, INSERT_MAX_SIZE } from '../../consts/Insert';
 import { parseByte } from '../../utils/Format';
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -159,10 +159,16 @@ const InsertImport: FC<InsertImportProps> = ({
             btnClass="uploader"
             label={insertTrans('uploaderLabel')}
             accept=".csv"
+            // selected collection will affect schema, which is required for uploaded data validation check
+            // so upload file should be disabled until user select one collection
+            disabled={!selectedCollection}
+            disableTooltip={insertTrans('uploadFileDisableTooltip')}
             setFileName={setFileName}
             handleUploadedData={handleUploadedData}
-            maxSize={parseByte('150m')}
-            overSizeWarning={insertTrans('overSizeWarning')}
+            maxSize={parseByte(`${INSERT_MAX_SIZE}m`)}
+            overSizeWarning={insertTrans('overSizeWarning', {
+              size: INSERT_MAX_SIZE,
+            })}
             handleUploadFileChange={handleUploadFileChange}
           />
           <Typography className="text">

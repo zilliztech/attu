@@ -192,3 +192,5 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   // range: [10, 300]
   search_length: 10,
 };
+
+export const DEFAULT_NLIST_VALUE = 1024;
