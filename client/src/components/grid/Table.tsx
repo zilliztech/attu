@@ -268,7 +268,7 @@ const EnhancedTable: FC<TableType> = props => {
                           ) : (
                             <TableCell
                               key={'cell' + row[primaryKey] + i}
-                              padding={i === 0 ? 'none' : 'default'}
+                              // padding={i === 0 ? 'none' : 'default'}
                               align={colDef.align || 'left'}
                               className={`${classes.cell} ${classes.tableCell}`}
                               style={cellStyle}
