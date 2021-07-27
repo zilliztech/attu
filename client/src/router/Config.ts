@@ -31,11 +31,6 @@ const RouterConfig: RouterConfigType[] = [
     component: VectorSearch,
     auth: true,
   },
-  {
-    path: '/search/:collectionName',
-    component: VectorSearch,
-    auth: true,
-  },
 ];
 
 export default RouterConfig;

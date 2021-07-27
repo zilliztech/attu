@@ -89,7 +89,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   };
 
   const onVectorSearchClick = () => {
-    history.push(`/search/${name}`);
+    history.push({ pathname: '/search', search: `?collectionName=${name}` });
   };
 
   return (
