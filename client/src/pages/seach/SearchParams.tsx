@@ -240,7 +240,8 @@ const SearchParams: FC<SearchParamsProps> = ({
           // not selectable now, so not set onChange event
         }}
         // not selectable now
-        readOnly={true}
+        // readOnly can't avoid all events, so we use disabled instead
+        disabled={true}
       />
 
       {/* dynamic params, now every type only has one param except metric type */}
