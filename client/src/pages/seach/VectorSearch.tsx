@@ -194,7 +194,11 @@ const VectorSearch = () => {
   useEffect(() => {
     if (location.search && collections.length > 0) {
       const { collectionName } = parseLocationSearch(location.search);
-      setSelectedCollection(collectionName);
+      // collection name validation
+      const isNameValid = collections
+        .map(c => c._name)
+        .includes(collectionName);
+      isNameValid && setSelectedCollection(collectionName);
     }
   }, [location, collections]);
 
