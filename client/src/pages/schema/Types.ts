@@ -27,6 +27,7 @@ export interface Field {
 export interface FieldData {
   _fieldId: string;
   _isPrimaryKey: boolean;
+  _isAutoId: boolean;
   _fieldName: string;
   _fieldNameElement?: ReactElement;
   _fieldType: DataType;
@@ -61,8 +62,7 @@ export type IndexType =
   | INDEX_TYPES_ENUM.HNSW
   | INDEX_TYPES_ENUM.ANNOY
   | INDEX_TYPES_ENUM.BIN_IVF_FLAT
-  | INDEX_TYPES_ENUM.BIN_FLAT
-
+  | INDEX_TYPES_ENUM.BIN_FLAT;
 
 export interface IndexManageParam {
   collection_name: string;

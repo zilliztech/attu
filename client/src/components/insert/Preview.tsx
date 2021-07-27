@@ -155,7 +155,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
     .map(key => ({
       id: key,
       align: 'left',
-      disablePadding: true,
+      disablePadding: false,
       label: '',
     }));
 

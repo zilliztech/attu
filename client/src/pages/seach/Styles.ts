@@ -10,7 +10,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       flexDirection: 'column',
       flexBasis: '33%',
 
-      padding: theme.spacing(2, 3, 3),
+      padding: theme.spacing(2, 3, 4),
       backgroundColor: '#fff',
       borderRadius: theme.spacing(0.5),
       boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
@@ -62,6 +62,12 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     '& .field-second': {
       flexGrow: 1,
       margin: theme.spacing(0, 1),
+    },
+
+    // Textfield component has more bottom space to show error msg when validation
+    // if still set padding-bottom, the whole form space will be stretched
+    '& .field-params': {
+      paddingBottom: 0,
     },
 
     '& .text': {
