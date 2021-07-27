@@ -318,7 +318,7 @@ const VectorSearch = () => {
           />
         </fieldset>
         {/* search params selectors */}
-        <fieldset className="field">
+        <fieldset className="field field-params">
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}

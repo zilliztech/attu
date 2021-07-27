@@ -138,7 +138,8 @@ const SearchParams: FC<SearchParamsProps> = ({
   const getSearchInputConfig = useCallback(
     (paramKey: searchKeywordsType): ITextfieldConfig => {
       const nlist = Number(
-        indexParams.find(p => p.key === 'nlist')?.value || 0
+        // nlist range is [1, 65536], if user didn't create index, we set 1024 as default nlist value
+        indexParams.find(p => p.key === 'nlist')?.value || 1024
       );
 
       const configParamMap: {

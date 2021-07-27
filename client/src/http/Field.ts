@@ -9,6 +9,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   is_primary_key!: true;
   name!: string;
   description!: string;
+  autoID!: boolean;
 
   constructor(props: {}) {
     super(props);
@@ -32,6 +33,10 @@ export class FieldHttp extends BaseModel implements FieldData {
 
   get _isPrimaryKey() {
     return this.is_primary_key;
+  }
+
+  get _isAutoId() {
+    return this.autoID;
   }
 
   get _fieldName() {
