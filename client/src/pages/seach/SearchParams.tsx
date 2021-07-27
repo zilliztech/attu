@@ -6,6 +6,7 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import { Option } from '../../components/customSelector/Types';
 import {
+  DEFAULT_NLIST_VALUE,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
   INDEX_CONFIG,
   METRIC_OPTIONS_MAP,
@@ -139,7 +140,7 @@ const SearchParams: FC<SearchParamsProps> = ({
     (paramKey: searchKeywordsType): ITextfieldConfig => {
       const nlist = Number(
         // nlist range is [1, 65536], if user didn't create index, we set 1024 as default nlist value
-        indexParams.find(p => p.key === 'nlist')?.value || 1024
+        indexParams.find(p => p.key === 'nlist')?.value || DEFAULT_NLIST_VALUE
       );
 
       const configParamMap: {

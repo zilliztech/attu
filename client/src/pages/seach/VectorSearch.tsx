@@ -295,11 +295,9 @@ const VectorSearch = () => {
             options={collectionOptions}
             wrapperClass={classes.selector}
             variant="filled"
-            label={
-              collectionOptions.length === 0
-                ? searchTrans('noCollection')
-                : searchTrans('collection')
-            }
+            label={searchTrans(
+              collectionOptions.length === 0 ? 'noCollection' : 'collection'
+            )}
             disabled={collectionOptions.length === 0}
             value={selectedCollection}
             onChange={(e: { target: { value: unknown } }) => {
