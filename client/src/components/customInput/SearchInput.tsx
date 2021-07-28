@@ -146,6 +146,7 @@ const SearchInput: FC<SearchType> = props => {
           endAdornment: (
             <InputAdornment position="end">
               <span
+                data-testid="clear-icon"
                 className={`flex-center ${classes.iconWrapper}`}
                 onClick={e => {
                   setSearchValue('');
