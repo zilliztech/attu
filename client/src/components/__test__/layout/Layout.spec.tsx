@@ -6,10 +6,6 @@ import { theme } from '../../../styles/theme';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/styles/makeStyles', () => {
-  return () => () => ({});
-});
-
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: any) => key,
@@ -30,7 +26,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../layout/GlobalEffect', () => {
   return () => {
-    return <div id="global">{ }</div>;
+    return <div id="global">{}</div>;
   };
 });
 
@@ -48,7 +44,12 @@ describe('Test Layout', () => {
 
   it('Test Render', () => {
     act(() => {
-      render(<MuiThemeProvider theme={theme}><Layout /></MuiThemeProvider>, container);
+      render(
+        <MuiThemeProvider theme={theme}>
+          <Layout />
+        </MuiThemeProvider>,
+        container
+      );
     });
 
     expect(container.querySelectorAll('#global').length).toEqual(1);
