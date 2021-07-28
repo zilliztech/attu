@@ -13,9 +13,10 @@ Milvus insight is under rapid development nad we are adding new features weekly,
 - Insert entities
 - Vector search with advanced filter
 - Milvus system view(TBD)
-- View milvus node configuration(TBD)
 - Data view (TBD)
-- more...
+- View milvus node configuration(TBD)
+- Visualization index (TBD)
+- More...
 
 ## Quick start
 
