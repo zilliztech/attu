@@ -26,7 +26,7 @@ describe('UsersService', () => {
     expect(res).toEqual({
       userId: 1,
       username: 'milvus',
-      password: 'milvus-em',
+      password: 'milvus-admin',
     });
   });
 });

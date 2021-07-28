@@ -6,12 +6,12 @@ import {
   GetIndexBuildProgressReq,
   GetIndexStateReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
-import { throwErrorFromSDK } from 'src/utils/Error';
+import { throwErrorFromSDK } from '../utils/Error';
 import { MilvusService } from '../milvus/milvus.service';
 
 @Injectable()
 export class SchemaService {
-  constructor(private milvusService: MilvusService) {}
+  constructor(private milvusService: MilvusService) { }
 
   get milvusClient() {
     return this.milvusService.milvusClientGetter;

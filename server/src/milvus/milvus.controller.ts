@@ -8,14 +8,14 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ValidationPipe } from 'src/pipe/validation.pipe';
+import { ValidationPipe } from '../pipe/validation.pipe';
 import { CheckMilvus, ConnectMilvus, Flush } from './dto';
 import { MilvusService } from './milvus.service';
 
 @ApiTags('milvus')
 @Controller('milvus')
 export class MilvusController {
-  constructor(private milvusService: MilvusService) {}
+  constructor(private milvusService: MilvusService) { }
 
   @Post('connect')
   @UsePipes(new ValidationPipe())
