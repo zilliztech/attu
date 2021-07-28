@@ -31,9 +31,14 @@ import {
 import { ColDefinitionsType } from '../../components/grid/Types';
 import Filter from '../../components/advancedSearch';
 import { Field } from '../../components/advancedSearch/Types';
+import { useLocation } from 'react-router-dom';
+import { parseLocationSearch } from '../../utils/Format';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
+  const location = useLocation();
+
+  // i18n
   const { t: searchTrans } = useTranslation('search');
   const { t: btnTrans } = useTranslation('btn');
   const classes = getVectorSearchStyles();
@@ -184,6 +189,18 @@ const VectorSearch = () => {
       fetchFieldsWithIndex(selectedCollection, collections);
     }
   }, [selectedCollection, collections, fetchFieldsWithIndex]);
+
+  // set default collection value if is from overview page
+  useEffect(() => {
+    if (location.search && collections.length > 0) {
+      const { collectionName } = parseLocationSearch(location.search);
+      // collection name validation
+      const isNameValid = collections
+        .map(c => c._name)
+        .includes(collectionName);
+      isNameValid && setSelectedCollection(collectionName);
+    }
+  }, [location, collections]);
 
   // icons
   const VectorSearchIcon = icons.vectorSearch;

@@ -1,4 +1,4 @@
-import { useState, FC } from 'react';
+import { useState, FC, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -96,6 +96,12 @@ const NavMenu: FC<NavMenuType> = props => {
       [label]: !v[label],
     }));
   };
+
+  useEffect(() => {
+    if (defaultActive) {
+      setActive(defaultActive);
+    }
+  }, [defaultActive]);
 
   const NestList = (props: { data: NavMenuItem[]; className?: string }) => {
     const { className, data } = props;

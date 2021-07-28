@@ -12,6 +12,8 @@ import Status from '../../../components/status/Status';
 import CustomToolTip from '../../../components/customToolTip/CustomToolTip';
 import { CollectionCardProps } from './Types';
 import { useTranslation } from 'react-i18next';
+import CustomIconButton from '../../../components/customButton/CustomIconButton';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -46,8 +48,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   release: {
-    marginLeft: 0,
+    fontSize: '16px',
+
+    '& path': {
+      fill: theme.palette.primary.main,
+    },
+  },
+  search: {
+    fontSize: '16px',
     marginRight: theme.spacing(0.5),
+
+    '& path': {
+      fill: '#fff',
+    },
+  },
+  btn: {
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -58,14 +74,22 @@ const CollectionCard: FC<CollectionCardProps> = ({
 }) => {
   const classes = useStyles();
   const { _name: name, _status: status, _rowCount: rowCount } = data;
+  const history = useHistory();
+  // icons
   const RightArrowIcon = icons.rightArrow;
   const InfoIcon = icons.info;
   const ReleaseIcon = icons.release;
+  const VectorSearchIcon = icons.navSearch;
+  // i18n
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
   const onReleaseClick = () => {
     handleRelease(data);
+  };
+
+  const onVectorSearchClick = () => {
+    history.push({ pathname: '/search', search: `?collectionName=${name}` });
   };
 
   return (
@@ -89,10 +113,17 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <Typography className={classes.rowCount}>{rowCount}</Typography>
       </div>
       <Divider classes={{ root: classes.divider }} />
-      <CustomButton variant="contained" onClick={onReleaseClick}>
-        <ReleaseIcon classes={{ root: `${classes.icon} ${classes.release}` }} />
-        {btnTrans('release')}
+      <CustomButton
+        variant="contained"
+        className={classes.btn}
+        onClick={onVectorSearchClick}
+      >
+        <VectorSearchIcon classes={{ root: classes.search }} />
+        {btnTrans('vectorSearch')}
       </CustomButton>
+      <CustomIconButton onClick={onReleaseClick}>
+        <ReleaseIcon classes={{ root: classes.release }} />
+      </CustomIconButton>
     </div>
   );
 };
