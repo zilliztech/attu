@@ -15,7 +15,7 @@ Milvus insight is under rapid development nad we are adding new features weekly,
 - Milvus system view(TBD)
 - Data view (TBD)
 - View milvus node configuration(TBD)
-- Visualization index (TBD)
+- Vector Visualization(TBD)
 - More...
 
 ## Quick start
