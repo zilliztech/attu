@@ -112,7 +112,7 @@ export class CollectionsService {
         });
         const autoID = collectionInfo.schema.fields.find(
           (v) => v.is_primary_key === true,
-        ).autoID;
+        )?.autoID;
 
         data.push({
           collection_name: name,
