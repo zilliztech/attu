@@ -110,11 +110,15 @@ export class CollectionsService {
         const collectionStatistics = await this.getCollectionStatistics({
           collection_name: name,
         });
+        const autoID = collectionInfo.schema.fields.find(
+          (v) => v.is_primary_key === true,
+        ).autoID;
+
         data.push({
           collection_name: name,
           schema: collectionInfo.schema,
           description: collectionInfo.schema.description,
-          autoID: collectionInfo.schema.autoID,
+          autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
           isLoaded: loadedCollections.collection_names.includes(name),

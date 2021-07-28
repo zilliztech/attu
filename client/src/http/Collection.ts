@@ -6,6 +6,7 @@ import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 import { FieldHttp } from './Field';
+import dayjs from 'dayjs';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private autoID!: string;
@@ -15,6 +16,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private index_status!: string;
   private id!: string;
   private isLoaded!: boolean;
+  private createdTime!: string;
   private schema!: {
     fields: Field[];
   };
@@ -125,5 +127,11 @@ export class CollectionHttp extends BaseModel implements CollectionView {
       default:
         return ChildrenStatusType.FINISH;
     }
+  }
+
+  get _createdTime(): string {
+    return this.createdTime
+      ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
+      : '';
   }
 }
