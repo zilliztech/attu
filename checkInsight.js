@@ -4,7 +4,7 @@ const BASE_URL = process.env.INSIGHT_URL;
 console.log('---- check start ----- ', BASE_URL);
 
 axios
-  .get(`${BASE_URL}/api/v1/healthy`)
+  .get(`${BASE_URL}/api/v1/collections`)
   .then(res => {
     console.log(res.data);
     if (res.data.statusCode === 200) {

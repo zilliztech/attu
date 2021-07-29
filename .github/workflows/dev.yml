@@ -6,7 +6,7 @@ on:
     types: [closed]
 
 jobs:
-  dev:
+  build:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
@@ -28,6 +28,10 @@ jobs:
       - name: Docker Push Dev
         run: docker push milvusdb/milvus-insight:dev
 
+  kbs:
+    runs-on: ubuntu-latest
+    need: build
+    steps:
       - name: Install OpenVPN and kubectl
         run: |
           sudo apt-get update
@@ -56,6 +60,10 @@ jobs:
           kubectl -n ued rollout status deploy milvus-insight
           sleep 60
 
+  check:
+    runs-on: ubuntu-latest
+    need: [build, kbs]
+    steps:
       - name: Check insight status
         run: |
           yarn add axios
