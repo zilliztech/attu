@@ -1,0 +1,22 @@
+name: Milvus insight check insight status
+
+on:
+  push:
+    branches: [feat/check-insight]
+
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Check insight status
+        env:
+          INSIGHT_URL: ${{ secrets.INSIGHT_URL }}
+        run: |
+          yarn add axios
+          node checkInsight.js
