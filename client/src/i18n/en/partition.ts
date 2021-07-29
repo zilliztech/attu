@@ -6,6 +6,7 @@ const partitionTrans = {
 
   id: 'ID',
   name: 'Name',
+  createdTime: 'Created Time',
   status: 'Status',
   rowCount: 'Entity Count',
   tooltip: 'data in one entity',
