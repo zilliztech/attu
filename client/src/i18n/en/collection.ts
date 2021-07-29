@@ -16,6 +16,7 @@ const collectionTrans = {
   name: 'Name',
   status: 'Status',
   desc: 'Description',
+  createdTime: 'Created Time',
 
   // create dialog
   createTitle: 'Create Collection',

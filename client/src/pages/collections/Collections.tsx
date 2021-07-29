@@ -363,6 +363,12 @@ const Collections = () => {
       label: collectionTrans('desc'),
     },
     {
+      id: '_createdTime',
+      align: 'left',
+      disablePadding: false,
+      label: collectionTrans('createdTime'),
+    },
+    {
       id: 'indexCreatingElement',
       align: 'left',
       disablePadding: false,
