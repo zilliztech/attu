@@ -29,7 +29,7 @@ jobs:
 
   kbs:
     runs-on: ubuntu-latest
-    need: build
+    needs: build
     steps:
       - name: Install OpenVPN and kubectl
         run: |
@@ -61,7 +61,7 @@ jobs:
 
   check:
     runs-on: ubuntu-latest
-    need: [build, kbs]
+    needs: [build, kbs]
     steps:
       - name: Check insight status
         run: |
