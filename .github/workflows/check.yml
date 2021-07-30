@@ -61,8 +61,7 @@ jobs:
           echo ${{ secrets.kubeconfig }} > config64
           base64 -d config64 > kubeconfig
           kubectl set image deployment/milvus-insight milvus-insight=milvusdb/milvus-insight:dev-${{ github.sha }} -n ued --kubeconfig=kubeconfig
-          kubectl -n ued rollout status deploy milvus-insight --kubeconfig=kubeconfig
-          sleep 60
+          sleep 120
 
   check:
     runs-on: ubuntu-latest
