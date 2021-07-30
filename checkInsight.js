@@ -4,7 +4,7 @@ const BASE_URL = process.env.INSIGHT_URL;
 console.log('---- check start ----- ', BASE_URL);
 
 axios
-  .get(`${BASE_URL}/api/v1/collections`)
+  .get(`${BASE_URL}/api/v1/asd`)
   .then(res => {
     console.log(res.data);
     if (res.data.statusCode === 200) {
@@ -14,7 +14,7 @@ axios
     }
   })
   .then(err => {
-    console.log(err.message || '---- Server has some error ----');
+    console.log('---- Server has some error ----');
     process.exit();
   });
 
@@ -29,6 +29,6 @@ axios
     }
   })
   .catch(err => {
-    console.log(err.message || '---- Client has some error ----');
+    console.log('---- Client has some error ----');
     process.exit();
   });
