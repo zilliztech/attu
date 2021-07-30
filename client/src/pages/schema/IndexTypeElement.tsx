@@ -118,14 +118,6 @@ const IndexTypeElement: FC<{
         if (value !== 100) {
           fetchProgress();
         } else {
-          console.log(
-            '--- percent value:',
-            value,
-            'indexed rows',
-            indexed_rows,
-            'total_rows',
-            total_rows
-          );
           timer && clearTimeout(timer);
           // reset build progress
           setCreateProgress(0);
