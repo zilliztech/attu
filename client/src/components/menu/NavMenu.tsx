@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
+const duration = '100ms';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'space-between',
       transition: theme.transitions.create('width', {
-        duration: '100ms',
+        duration,
       }),
       overflow: 'hidden',
     },
@@ -56,11 +58,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     itemText: {
-      opacity: 0,
       transition: theme.transitions.create('opacity', {
-        duration: '100ms',
+        duration,
       }),
       whiteSpace: 'nowrap',
+      opacity: 0,
     },
     itemTextExpand: {
       opacity: 1,
@@ -94,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) =>
         lineHeight: '86px',
         opacity: 0,
         transition: theme.transitions.create('opacity', {
-          duration: '100ms',
+          duration,
         }),
       },
     },
@@ -105,12 +107,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logo: {
       transition: theme.transitions.create('all', {
-        duration: '100ms',
+        duration,
       }),
     },
     logoExpand: {
       marginRight: theme.spacing(1),
-      // backgroundColor: theme.palette.primary.main,
       '& path': {
         fill: 'white',
       },
@@ -121,16 +122,14 @@ const useStyles = makeStyles((theme: Theme) =>
         fill: 'white',
       },
       transform: 'scale(1.5)',
-      // padding: theme.spacing(1),
-      // transform: 'scale(1.5)',
     },
     actionIcon: {
       position: 'fixed',
       borderRadius: '50%',
       backgroundColor: 'white',
-      top: '75px',
+      top: '74px',
       transition: theme.transitions.create('all', {
-        duration: '100ms',
+        duration,
       }),
       minWidth: '24px',
       padding: 0,
