@@ -14,7 +14,7 @@ import { ROW_COUNT } from '../utils/Const';
 
 @Injectable()
 export class PartitionsService {
-  constructor(private milvusService: MilvusService) { }
+  constructor(private milvusService: MilvusService) {}
 
   get milvusClient() {
     return this.milvusService.milvusClientGetter;
@@ -33,6 +33,7 @@ export class PartitionsService {
           name,
           id: res.partitionIDs[index],
           rowCount: findKeyValue(statistics.stats, ROW_COUNT),
+          createdTime: res.created_utc_timestamps[index],
         });
       }
     }

@@ -324,12 +324,6 @@ const Collections = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: '_id',
-      align: 'left',
-      disablePadding: true,
-      label: collectionTrans('id'),
-    },
-    {
       id: 'nameElement',
       align: 'left',
       disablePadding: true,
