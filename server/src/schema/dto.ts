@@ -100,9 +100,9 @@ export class GetIndexProgress {
     description: 'index name',
   })
   @IsString()
-  @IsNotEmpty({
-    message: 'index_name is empty',
-  })
+  // @IsNotEmpty({
+  //   message: 'index_name is empty',
+  // })
   readonly index_name: string;
 
   @ApiProperty({

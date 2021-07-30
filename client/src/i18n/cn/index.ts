@@ -8,7 +8,7 @@ const indexTrans = {
   desc: 'Description',
   creating: 'Creating Index',
 
-  createSuccess: 'Creating index successfully',
+  createSuccess: 'Start creating index',
   deleteWarning:
     'You are trying to delete an index. This action cannot be undone.',
 };
