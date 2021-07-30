@@ -75,6 +75,8 @@ jobs:
           node-version: 12
 
       - name: Check insight status
+        env:
+          INSIGHT_URL: ${{ secrets.INSIGHT_URL }}
         run: |
           yarn add axios
           node checkInsight.js

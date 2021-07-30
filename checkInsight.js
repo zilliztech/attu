@@ -14,7 +14,8 @@ axios
     }
   })
   .then(err => {
-    throw new Error(err.message || '---- Server has some error ----');
+    console.log(err.message || '---- Server has some error ----');
+    process.exit();
   });
 
 axios
@@ -28,5 +29,6 @@ axios
     }
   })
   .catch(err => {
-    throw new Error(err.message || '---- Client has some error ----');
+    console.log(err.message || '---- Client has some error ----');
+    process.exit();
   });
