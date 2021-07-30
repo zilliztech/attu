@@ -6,6 +6,7 @@ const indexTrans = {
   index: 'Index',
   metric: 'Metric Type',
   desc: 'Description',
+  creating: 'Creating Index',
 
   createSuccess: 'Creating index successfully',
   deleteWarning:

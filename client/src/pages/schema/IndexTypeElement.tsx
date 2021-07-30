@@ -8,14 +8,13 @@ import {
   IndexManageParam,
   ParamPair,
 } from './Types';
-import StatusIcon from '../../components/status/StatusIcon';
-import { ChildrenStatusType } from '../../components/status/Types';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import icons from '../../components/icons/Icons';
 import { rootContext } from '../../context/Root';
 import CreateIndex from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import CustomLinearProgress from '../../components/customProgress/CustomLinearProgress';
 
 const useStyles = makeStyles((theme: Theme) => ({
   item: {
@@ -75,6 +74,8 @@ const IndexTypeElement: FC<{
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
+
+  const [createProgress, setCreateProgress] = useState<number>(40);
 
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -179,7 +180,10 @@ const IndexTypeElement: FC<{
       }
       default: {
         return status === IndexState.InProgress ? (
-          <StatusIcon type={ChildrenStatusType.CREATING} />
+          <CustomLinearProgress
+            value={createProgress}
+            tooltip={indexTrans('creating')}
+          />
         ) : (
           <Chip
             label={data._indexType}
