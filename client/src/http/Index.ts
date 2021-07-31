@@ -24,9 +24,9 @@ export class IndexHttp extends BaseModel implements IndexView {
   static async getIndexStatus(
     collectionName: string,
     fieldName: string
-  ): Promise<IndexState> {
+  ): Promise<{ state: IndexState }> {
     const path = `${this.BASE_URL}/state`;
-    return super.findAll({
+    return super.search({
       path,
       params: { collection_name: collectionName, field_name: fieldName },
     });
@@ -57,6 +57,22 @@ export class IndexHttp extends BaseModel implements IndexView {
     const type: ManageRequestMethods = ManageRequestMethods.DELETE;
 
     return super.batchDelete({ path, data: { ...param, type } });
+  }
+
+  static async getIndexBuildProgress(
+    collectionName: string,
+    fieldName: string
+  ) {
+    const path = `${this.BASE_URL}/progress`;
+    return super.search({
+      path,
+      params: {
+        collection_name: collectionName,
+        field_name: fieldName,
+        // user can't set index_name, use empty string as its value
+        index_name: '',
+      },
+    });
   }
 
   get _indexType() {

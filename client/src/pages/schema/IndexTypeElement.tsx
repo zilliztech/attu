@@ -8,14 +8,13 @@ import {
   IndexManageParam,
   ParamPair,
 } from './Types';
-import StatusIcon from '../../components/status/StatusIcon';
-import { ChildrenStatusType } from '../../components/status/Types';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import icons from '../../components/icons/Icons';
 import { rootContext } from '../../context/Root';
 import CreateIndex from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import CustomLinearProgress from '../../components/customProgress/CustomLinearProgress';
 
 const useStyles = makeStyles((theme: Theme) => ({
   item: {
@@ -62,19 +61,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+let timer: NodeJS.Timeout | null = null;
+
 const IndexTypeElement: FC<{
   data: FieldView;
   collectionName: string;
   cb: (collectionName: string) => void;
 }> = ({ data, collectionName, cb }) => {
   const classes = useStyles();
-
-  const [status, setStatus] = useState<string>('');
+  // set in progress as defalut status
+  const [status, setStatus] = useState<string>(IndexState.InProgress);
 
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
+
+  const [createProgress, setCreateProgress] = useState<number>(0);
 
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -84,7 +87,7 @@ const IndexTypeElement: FC<{
 
   const fetchStatus = useCallback(async () => {
     if (data._indexType !== '') {
-      const status = await IndexHttp.getIndexStatus(
+      const { state: status } = await IndexHttp.getIndexStatus(
         collectionName,
         data._fieldName
       );
@@ -95,6 +98,40 @@ const IndexTypeElement: FC<{
   useEffect(() => {
     fetchStatus();
   }, [fetchStatus]);
+
+  const fetchProgress = useCallback(() => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    if (data._indexType !== '' && status === IndexState.InProgress) {
+      timer = setTimeout(async () => {
+        const res = await IndexHttp.getIndexBuildProgress(
+          collectionName,
+          data._fieldName
+        );
+
+        const { indexed_rows, total_rows } = res;
+        const percent = Number(indexed_rows) / Number(total_rows);
+        const value = Math.floor(percent * 100);
+        setCreateProgress(value);
+
+        if (value !== 100) {
+          fetchProgress();
+        } else {
+          timer && clearTimeout(timer);
+          // reset build progress
+          setCreateProgress(0);
+          // change index create status
+          setStatus(IndexState.Finished);
+        }
+      }, 500);
+    }
+  }, [collectionName, data._fieldName, status, data._indexType]);
+
+  // get index build progress
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
 
   const requestCreateIndex = async (params: ParamPair[]) => {
     const indexCreateParam: IndexCreateParam = {
@@ -179,7 +216,10 @@ const IndexTypeElement: FC<{
       }
       default: {
         return status === IndexState.InProgress ? (
-          <StatusIcon type={ChildrenStatusType.CREATING} />
+          <CustomLinearProgress
+            value={createProgress}
+            tooltip={indexTrans('creating')}
+          />
         ) : (
           <Chip
             label={data._indexType}
