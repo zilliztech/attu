@@ -6,8 +6,10 @@ const indexTrans = {
   index: 'Index',
   desc: 'Description',
 
+  creating: 'Creating Index',
+
   metric: 'Metric Type',
-  createSuccess: 'Creating index successfully',
+  createSuccess: 'Start creating index',
   deleteWarning:
     'You are trying to delete an index. This action cannot be undone.',
 };

@@ -1,33 +1,47 @@
 import { useState, FC, useEffect } from 'react';
+import clsx from 'clsx';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
 import { NavMenuItem, NavMenuType } from './Types';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
+const duration = '100ms';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: (props: any) => props.width || '100%',
       background: theme.palette.common.white,
-
+      paddingTop: 0,
       paddingBottom: theme.spacing(5),
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
+      transition: theme.transitions.create('width', {
+        duration,
+      }),
+      overflow: 'hidden',
+    },
+    rootCollapse: {
+      width: '86px',
+    },
+    rootExpand: {
+      width: (props: any) => props.width || '100%',
     },
     nested: {
       paddingLeft: theme.spacing(4),
     },
     item: {
       marginBottom: theme.spacing(2),
-      marginLeft: theme.spacing(3),
-
+      paddingLeft: theme.spacing(4),
+      boxSizing: 'content-box',
+      height: theme.spacing(3),
       width: 'initial',
       color: theme.palette.milvusGrey.dark,
     },
@@ -43,6 +57,16 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    itemText: {
+      transition: theme.transitions.create('opacity', {
+        duration,
+      }),
+      whiteSpace: 'nowrap',
+      opacity: 0,
+    },
+    itemTextExpand: {
+      opacity: 1,
+    },
     active: {
       color: theme.palette.primary.main,
       borderRight: `2px solid ${theme.palette.primary.main}`,
@@ -57,45 +81,90 @@ const useStyles = makeStyles((theme: Theme) =>
     logoWrapper: {
       width: '100%',
       display: 'flex',
-      justifyContent: 'center',
       alignItems: 'center',
-
-      marginTop: theme.spacing(3),
-
+      height: '86px',
       marginBottom: theme.spacing(8),
+      backgroundColor: theme.palette.primary.main,
+      paddingLeft: theme.spacing(4),
 
       '& .title': {
         margin: 0,
         fontSize: '16px',
-        lineHeight: '19px',
         letterSpacing: '0.15px',
-        color: '#323232',
+        color: 'white',
+        whiteSpace: 'nowrap',
+        lineHeight: '86px',
+        opacity: 0,
+        transition: theme.transitions.create('opacity', {
+          duration,
+        }),
+      },
+    },
+    logoWrapperExpand: {
+      '& .title': {
+        opacity: 1,
       },
     },
     logo: {
-      marginRight: theme.spacing(1),
+      transition: theme.transitions.create('all', {
+        duration,
+      }),
     },
+    logoExpand: {
+      marginRight: theme.spacing(1),
+      '& path': {
+        fill: 'white',
+      },
+    },
+    logoCollapse: {
+      backgroundColor: theme.palette.primary.main,
+      '& path': {
+        fill: 'white',
+      },
+      transform: 'scale(1.5)',
+    },
+    actionIcon: {
+      position: 'fixed',
+      borderRadius: '50%',
+      backgroundColor: 'white',
+      top: '74px',
+      transition: theme.transitions.create('all', {
+        duration,
+      }),
+      minWidth: '24px',
+      padding: 0,
+
+      '& svg path': {
+        fill: theme.palette.milvusGrey.dark,
+      },
+
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+
+        '& svg path': {
+          fill: 'white',
+        },
+      },
+    },
+    expandIcon: {
+      left: '187px',
+      transform: 'rotateZ(180deg)',
+    },
+    collapseIcon: {
+      left: '73px',
+    },
+
   })
 );
 
 const NavMenu: FC<NavMenuType> = props => {
-  const { width, data, defaultActive = '', defaultOpen = {} } = props;
+  const { width, data, defaultActive = '' } = props;
   const classes = useStyles({ width });
-  const [open, setOpen] = useState<{ [x: string]: boolean }>(defaultOpen);
+  const [expanded, setExpanded] = useState<boolean>(true);
   const [active, setActive] = useState<string>(defaultActive);
 
   const { t } = useTranslation();
   const milvusTrans: { [key in string]: string } = t('milvus');
-
-  const ExpandLess = icons.expandLess;
-  const ExpandMore = icons.expandMore;
-
-  const handleClick = (label: string) => {
-    setOpen(v => ({
-      ...v,
-      [label]: !v[label],
-    }));
-  };
 
   useEffect(() => {
     if (defaultActive) {
@@ -104,7 +173,7 @@ const NavMenu: FC<NavMenuType> = props => {
   }, [defaultActive]);
 
   const NestList = (props: { data: NavMenuItem[]; className?: string }) => {
-    const { className, data } = props;
+    const { className = '', data } = props;
     return (
       <>
         {data.map((v: NavMenuItem) => {
@@ -116,32 +185,17 @@ const NavMenu: FC<NavMenuType> = props => {
                 ? v.iconActiveClass
                 : v.iconNormalClass
               : 'icon';
-          if (v.children) {
-            return (
-              <div key={v.label}>
-                <ListItem button onClick={() => handleClick(v.label)}>
-                  <ListItemIcon>
-                    <IconComponent classes={{ root: iconClass }} />
-                  </ListItemIcon>
-
-                  <ListItemText primary={v.label} />
-                  {open[v.label] ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={open[v.label]} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <NestList data={v.children} className={classes.nested} />
-                  </List>
-                </Collapse>
-              </div>
-            );
-          }
           return (
             <ListItem
               button
               key={v.label}
-              className={`${className || ''} ${classes.item} ${
-                isActive ? classes.active : ''
-              }`}
+              title={v.label}
+              className={
+                clsx(classes.item, {
+                  [className]: className,
+                  [classes.active]: isActive,
+                })
+              }
               onClick={() => {
                 setActive(v.label);
                 v.onClick && v.onClick();
@@ -151,7 +205,13 @@ const NavMenu: FC<NavMenuType> = props => {
                 <IconComponent classes={{ root: iconClass }} />
               </ListItemIcon>
 
-              <ListItemText primary={v.label} />
+              <ListItemText
+                className={
+                  clsx(classes.itemText, {
+                    [classes.itemTextExpand]: expanded,
+                  })
+                }
+                primary={v.label} />
             </ListItem>
           );
         })}
@@ -162,15 +222,42 @@ const NavMenu: FC<NavMenuType> = props => {
   const Logo = icons.milvus;
 
   return (
-    <List component="nav" className={classes.root}>
+    <List component="nav" className={
+      clsx(classes.root, {
+        [classes.rootExpand]: expanded,
+        [classes.rootCollapse]: !expanded,
+      })
+    }>
       <div>
-        <div className={classes.logoWrapper}>
-          <Logo classes={{ root: classes.logo }} />
+        <div className={
+          clsx(classes.logoWrapper, {
+            [classes.logoWrapperExpand]: expanded,
+          })
+        }>
+          <Logo
+            classes={{ root: classes.logo }}
+            className={
+              clsx({
+                [classes.logoExpand]: expanded,
+                [classes.logoCollapse]: !expanded,
+              })
+            }
+          />
           <Typography variant="h3" className="title">
             {milvusTrans.admin}
           </Typography>
         </div>
-
+        <Button
+          onClick={() => { setExpanded(!expanded) }}
+          className={
+            clsx(classes.actionIcon, {
+              [classes.expandIcon]: expanded,
+              [classes.collapseIcon]: !expanded,
+            })
+          }
+        >
+          <ChevronRightIcon />
+        </Button>
         <NestList data={data} />
       </div>
     </List>
