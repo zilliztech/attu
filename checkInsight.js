@@ -1,4 +1,5 @@
 const axios = require('axios');
+const core = require('@actions/core');
 
 const BASE_URL = process.env.INSIGHT_URL;
 console.log('---- check start ----- ', BASE_URL);
@@ -9,13 +10,13 @@ const check = async () => {
   if (serverRes.data.statusCode === 200) {
     console.log('---- Server OK -----');
   } else {
-    throw new Error('---- Server has some error ----');
+    core.setFailed('---- Server has some error ----');
   }
 
   if (clientRes.data.includes('<html')) {
     console.log('---- Client OK -----');
   } else {
-    throw new Error('---- Client has some error ----');
+    core.setFailed('---- Client has some error ----');
   }
 };
 

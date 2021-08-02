@@ -79,4 +79,5 @@ jobs:
           INSIGHT_URL: ${{ secrets.INSIGHT_URL }}
         run: |
           yarn add axios
+          yarn add @actions/core
           node checkInsight.js
