@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
 
       '& .value': {
-        color: '#010e29',
+        color: theme.palette.milvusDark.main,
       },
     },
   },

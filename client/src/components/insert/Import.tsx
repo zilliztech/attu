@@ -24,7 +24,7 @@ const getStyles = makeStyles((theme: Theme) => ({
       '& .selectLabel': {
         fontSize: '14px',
         lineHeight: '20px',
-        color: '#010e29',
+        color: theme.palette.milvusDark.main,
       },
 
       '& .divider': {

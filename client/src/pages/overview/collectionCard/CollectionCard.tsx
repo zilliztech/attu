@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     margin: theme.spacing(2, 0),
 
-    color: '#010e29',
+    color: theme.palette.milvusDark.main,
     fontSize: '20px',
     lineHeight: '24px',
     fontWeight: 'bold',

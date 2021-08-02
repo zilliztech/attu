@@ -7,10 +7,12 @@ declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     milvusBlue: Palette['primary'];
     milvusGrey: Palette['primary'];
+    milvusDark: Palette['primary'];
   }
   interface PaletteOptions {
     milvusBlue: PaletteOptions['primary'];
     milvusGrey: PaletteOptions['primary'];
+    milvusDark: PaletteOptions['primary'];
   }
 }
 
@@ -54,6 +56,9 @@ const commonThemes = {
       light: '#dcdce3',
       dark: '#82838e',
       contrastText: '#f8f8fc',
+    },
+    milvusDark: {
+      main: '#010e29',
     },
   },
   breakpoints: {
