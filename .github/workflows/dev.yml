@@ -62,7 +62,7 @@ jobs:
         run: |
           echo ${{ secrets.kubeconfig }} > config64
           base64 -d config64 > kubeconfig
-          kubectl delete pods -n ued -l app=milvus-insight
+          kubectl delete pods -n ued -l app=milvus-insight --kubeconfig=kubeconfig
           sleep 60
 
   check:
