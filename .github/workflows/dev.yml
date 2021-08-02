@@ -62,8 +62,8 @@ jobs:
         run: |
           echo ${{ secrets.kubeconfig }} > config64
           base64 -d config64 > kubeconfig
-          kubectl set image deployment/milvus-insight milvus-insight=milvusdb/milvus-insight:dev-${{ github.sha }} -n ued --kubeconfig=kubeconfig
-          sleep 120
+          kubectl delete pods -n ued -l app=milvus-insight
+          sleep 60
 
   check:
     runs-on: ubuntu-latest
