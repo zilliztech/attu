@@ -89,6 +89,7 @@ export const getVectorFieldOptions = (
       value: f._fieldName,
       fieldType: f._fieldType,
       indexInfo: index || null,
+      dimension: Number(f._dimension),
     };
   });
 

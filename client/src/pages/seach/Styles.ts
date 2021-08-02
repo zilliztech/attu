@@ -122,4 +122,8 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     lineHeight: '16px',
     color: theme.palette.milvusGrey.dark,
   },
+  error: {
+    marginTop: theme.spacing(1),
+    color: theme.palette.error.main,
+  },
 }));

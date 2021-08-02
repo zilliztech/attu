@@ -1,5 +1,5 @@
 const searchTrans = {
-  firstTip: '1. Enter vector value',
+  firstTip: '1. Enter vector value {{dimensionTip}}',
   secondTip: '2. Choose collection and field',
   thirdTip: '3. Set search parameters',
   vectorPlaceholder: 'Please input your vector value here, e.g. [1, 2, 3, 4]',
@@ -11,6 +11,7 @@ const searchTrans = {
   result: 'Search Results',
   topK: 'TopK {{number}}',
   filter: 'Advanced Filter',
+  vectorValueWarning: 'Vector value should be an array of length {{dimension}}',
 };
 
 export default searchTrans;
