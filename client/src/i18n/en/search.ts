@@ -11,6 +11,7 @@ const searchTrans = {
   result: 'Search Results',
   topK: 'TopK {{number}}',
   filter: 'Advanced Filter',
+  vectorValueWarning: 'Vector value should be an array of length {{dimension}}',
 };
 
 export default searchTrans;

@@ -75,21 +75,6 @@ const VectorSearch = () => {
     data: result,
   } = usePaginationHook(searchResult || []);
 
-  const searchDisabled = useMemo(() => {
-    /**
-     * before search, user must:
-     * 1. enter vector value
-     * 2. choose collection and field
-     * 3. set extra search params
-     */
-    const isInvalid =
-      vectors === '' ||
-      selectedCollection === '' ||
-      selectedField === '' ||
-      paramDisabled;
-    return isInvalid;
-  }, [paramDisabled, selectedField, selectedCollection, vectors]);
-
   const collectionOptions: Option[] = useMemo(
     () =>
       collections.map(c => ({
@@ -124,36 +109,81 @@ const VectorSearch = () => {
       : [];
   }, [searchResult]);
 
-  const { metricType, indexType, indexParams, fieldType, embeddingType } =
-    useMemo(() => {
-      if (selectedField !== '') {
-        // field options must contain selected field, so selectedFieldInfo will never undefined
-        const selectedFieldInfo = fieldOptions.find(
-          f => f.value === selectedField
-        );
-        const index = selectedFieldInfo?.indexInfo;
-        const embeddingType = getEmbeddingType(selectedFieldInfo!.fieldType);
-        const metric =
-          index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
-        const indexParams = index?._indexParameterPairs || [];
-
-        return {
-          metricType: metric,
-          indexType: index?._indexType || getDefaultIndexType(embeddingType),
-          indexParams,
-          fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
-          embeddingType,
-        };
-      }
+  const {
+    metricType,
+    indexType,
+    indexParams,
+    fieldType,
+    embeddingType,
+    selectedFieldDimension,
+  } = useMemo(() => {
+    if (selectedField !== '') {
+      // field options must contain selected field, so selectedFieldInfo will never undefined
+      const selectedFieldInfo = fieldOptions.find(
+        f => f.value === selectedField
+      );
+      const index = selectedFieldInfo?.indexInfo;
+      const embeddingType = getEmbeddingType(selectedFieldInfo!.fieldType);
+      const metric =
+        index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
+      const indexParams = index?._indexParameterPairs || [];
+      const dim = selectedFieldInfo?.dimension || 0;
 
       return {
-        metricType: '',
-        indexType: '',
-        indexParams: [],
-        fieldType: 0,
-        embeddingType: DataTypeEnum.FloatVector,
+        metricType: metric,
+        indexType: index?._indexType || getDefaultIndexType(embeddingType),
+        indexParams,
+        fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
+        embeddingType,
+        selectedFieldDimension: dim,
       };
-    }, [selectedField, fieldOptions]);
+    }
+
+    return {
+      metricType: '',
+      indexType: '',
+      indexParams: [],
+      fieldType: 0,
+      embeddingType: DataTypeEnum.FloatVector,
+      selectedFieldDimension: 0,
+    };
+  }, [selectedField, fieldOptions]);
+
+  /**
+   * vector value validation
+   * @return whether is valid
+   */
+  const vectorValueValid = useMemo(() => {
+    // if user hasn't input value or not select field, don't trigger validation check
+    if (vectors === '' || selectedFieldDimension === 0) {
+      return true;
+    }
+    const value = parseValue(vectors);
+    const isArray = Array.isArray(value);
+    return isArray && value.length === selectedFieldDimension;
+  }, [vectors, selectedFieldDimension]);
+
+  const searchDisabled = useMemo(() => {
+    /**
+     * before search, user must:
+     * 1. enter vector value, it should be an array and length should be equal to selected field dimension
+     * 2. choose collection and field
+     * 3. set extra search params
+     */
+    const isInvalid =
+      vectors === '' ||
+      selectedCollection === '' ||
+      selectedField === '' ||
+      paramDisabled ||
+      !vectorValueValid;
+    return isInvalid;
+  }, [
+    paramDisabled,
+    selectedField,
+    selectedCollection,
+    vectors,
+    vectorValueValid,
+  ]);
 
   // fetch data
   const fetchCollections = useCallback(async () => {
@@ -285,8 +315,11 @@ const VectorSearch = () => {
     <section className="page-wrapper">
       {/* form section */}
       <form className={classes.form}>
-        {/* vector value textarea */}
-        <fieldset className="field">
+        {/**
+         * vector value textarea
+         * use field-params class because it also has error msg if invalid
+         */}
+        <fieldset className="field field-params">
           <Typography className="text">{searchTrans('firstTip')}</Typography>
           <TextField
             className="textarea"
@@ -304,6 +337,14 @@ const VectorSearch = () => {
               handleVectorChange(e.target.value as string);
             }}
           />
+          {/* validation */}
+          {!vectorValueValid && (
+            <Typography variant="caption" className={classes.error}>
+              {searchTrans('vectorValueWarning', {
+                dimension: selectedFieldDimension,
+              })}
+            </Typography>
+          )}
         </fieldset>
         {/* collection and field selectors */}
         <fieldset className="field field-second">
