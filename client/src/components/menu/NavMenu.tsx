@@ -1,6 +1,7 @@
 import { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -12,7 +13,8 @@ import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-const duration = '100ms';
+const timeout = 150;
+const duration = `${timeout}ms`;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,14 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     itemText: {
-      transition: theme.transitions.create('opacity', {
-        duration,
-      }),
       whiteSpace: 'nowrap',
-      opacity: 0,
-    },
-    itemTextExpand: {
-      opacity: 1,
     },
     active: {
       color: theme.palette.primary.main,
@@ -94,15 +89,6 @@ const useStyles = makeStyles((theme: Theme) =>
         color: 'white',
         whiteSpace: 'nowrap',
         lineHeight: '86px',
-        opacity: 0,
-        transition: theme.transitions.create('opacity', {
-          duration,
-        }),
-      },
-    },
-    logoWrapperExpand: {
-      '& .title': {
-        opacity: 1,
       },
     },
     logo: {
@@ -205,16 +191,14 @@ const NavMenu: FC<NavMenuType> = props => {
                 <IconComponent classes={{ root: iconClass }} />
               </ListItemIcon>
 
-              <ListItemText
-                className={
-                  clsx(classes.itemText, {
-                    [classes.itemTextExpand]: expanded,
-                  })
-                }
-                primary={v.label} />
+              <Fade in={expanded} timeout={timeout}>
+                <ListItemText className={classes.itemText}
+                  primary={v.label} />
+              </Fade>
             </ListItem>
           );
-        })}
+        })
+        }
       </>
     );
   };
@@ -229,11 +213,7 @@ const NavMenu: FC<NavMenuType> = props => {
       })
     }>
       <div>
-        <div className={
-          clsx(classes.logoWrapper, {
-            [classes.logoWrapperExpand]: expanded,
-          })
-        }>
+        <div className={classes.logoWrapper}>
           <Logo
             classes={{ root: classes.logo }}
             className={
@@ -243,9 +223,11 @@ const NavMenu: FC<NavMenuType> = props => {
               })
             }
           />
-          <Typography variant="h3" className="title">
-            {milvusTrans.admin}
-          </Typography>
+          <Fade in={expanded} timeout={timeout}>
+            <Typography variant="h3" className="title">
+              {milvusTrans.admin}
+            </Typography>
+          </Fade>
         </div>
         <Button
           onClick={() => { setExpanded(!expanded) }}
