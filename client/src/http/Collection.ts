@@ -129,8 +129,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     }
   }
 
+  // Befor milvus-2.0-rc3  will return '0'.
+  // If milvus is stable, we can remote this condition/
   get _createdTime(): string {
-    return this.createdTime
+    return this.createdTime && this.createdTime !== '0'
       ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
       : '';
   }

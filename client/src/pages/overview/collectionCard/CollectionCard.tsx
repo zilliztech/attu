@@ -121,7 +121,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <VectorSearchIcon classes={{ root: classes.search }} />
         {btnTrans('vectorSearch')}
       </CustomButton>
-      <CustomIconButton onClick={onReleaseClick}>
+      <CustomIconButton onClick={onReleaseClick} tooltip={btnTrans('release')}>
         <ReleaseIcon classes={{ root: classes.release }} />
       </CustomIconButton>
     </div>

@@ -301,16 +301,16 @@ const Partitions: FC<{
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: '_id',
-      align: 'left',
-      disablePadding: true,
-      label: t('id'),
-    },
-    {
       id: '_nameElement',
       align: 'left',
       disablePadding: false,
       label: t('name'),
+    },
+    {
+      id: '_createdTime',
+      align: 'left',
+      disablePadding: false,
+      label: t('createdTime'),
     },
     // {
     //   id: '_statusElement',
