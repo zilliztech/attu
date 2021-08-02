@@ -28,10 +28,16 @@ jobs:
       - name: Docker Push Dev
         run: docker push milvusdb/milvus-insight:dev
 
-  kbs:
+  k8s:
     runs-on: ubuntu-latest
-    need: build
+    needs: build
     steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
       - name: Install OpenVPN and kubectl
         run: |
           sudo apt-get update
@@ -56,15 +62,23 @@ jobs:
         run: |
           echo ${{ secrets.kubeconfig }} > config64
           base64 -d config64 > kubeconfig
-          kubectl set image deployment/milvus-insight milvus-insight=milvusdb/milvus-insight:dev:${{ github.sha }} -n ued --kubeconfig=kubeconfig
-          kubectl -n ued rollout status deploy milvus-insight
-          sleep 60
+          kubectl set image deployment/milvus-insight milvus-insight=milvusdb/milvus-insight:dev-${{ github.sha }} -n ued --kubeconfig=kubeconfig
+          sleep 120
 
   check:
     runs-on: ubuntu-latest
-    need: [build, kbs]
+    needs: [build, k8s]
     steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
       - name: Check insight status
+        env:
+          INSIGHT_URL: ${{ secrets.INSIGHT_URL }}
         run: |
           yarn add axios
+          yarn add @actions/core
           node checkInsight.js
