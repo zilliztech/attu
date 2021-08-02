@@ -320,7 +320,14 @@ const VectorSearch = () => {
          * use field-params class because it also has error msg if invalid
          */}
         <fieldset className="field field-params">
-          <Typography className="text">{searchTrans('firstTip')}</Typography>
+          <Typography className="text">
+            {searchTrans('firstTip', {
+              dimensionTip:
+                selectedFieldDimension !== 0
+                  ? `(dimension: ${selectedFieldDimension})`
+                  : '',
+            })}
+          </Typography>
           <TextField
             className="textarea"
             InputProps={{
