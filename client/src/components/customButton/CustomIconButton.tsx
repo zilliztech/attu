@@ -6,7 +6,7 @@ const CustomIconButton = (props: IconButtonProps & { tooltip?: string }) => {
   return (
     <>
       {tooltip ? (
-        <Tooltip title={tooltip}>
+        <Tooltip title={tooltip} arrow>
           <span>
             <IconButton {...otherProps}>{props.children}</IconButton>
           </span>

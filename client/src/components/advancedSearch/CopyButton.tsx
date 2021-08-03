@@ -17,7 +17,9 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const classes = useStyles();
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
-  const handleClick = (v: string) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {
+    event.stopPropagation();
+
     setTooltipTitle('Copied!');
     navigator.clipboard.writeText(v);
     setTimeout(() => {
@@ -30,7 +32,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
       tooltip={tooltipTitle}
       aria-label={label}
       className={`${classes.button} ${className}`}
-      onClick={() => handleClick(value || '')}
+      onClick={event => handleClick(event, value || '')}
       {...others}
     >
       {icon || <CopyIcon style={{ color: 'transparent' }} />}

@@ -12,9 +12,9 @@ import { Box, Button, Typography } from '@material-ui/core';
 import EnhancedTableHead from './TableHead';
 import EditableTableHead from './TableEditableHead';
 import { stableSort, getComparator } from './Utils';
-import Copy from '../../components/copy/Copy';
 import ActionBar from './ActionBar';
 import LoadingTable from './LoadingTable';
+import CopyButton from '../advancedSearch/CopyButton';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -98,6 +98,9 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     letterSpacing: '0.5px',
     color: 'rgba(0, 0, 0, 0.6)',
+  },
+  copyBtn: {
+    marginLeft: theme.spacing(0.5),
   },
 }));
 
@@ -313,7 +316,11 @@ const EnhancedTable: FC<TableType> = props => {
                               )}
 
                               {needCopy && row[colDef.id] && (
-                                <Copy data={row[colDef.id]} />
+                                <CopyButton
+                                  label="copy button"
+                                  value={row[colDef.id]}
+                                  className={classes.copyBtn}
+                                />
                               )}
                             </TableCell>
                           );
