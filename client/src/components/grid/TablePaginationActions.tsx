@@ -40,8 +40,10 @@ const useStyles = makeStyles((theme: Theme) =>
 const TablePaginationActions = (props: TablePaginationActionsProps) => {
   const classes = useStyles();
   const { count, page, rowsPerPage, onChangePage } = props;
-  const { t } = useTranslation();
-  const gridTrans = t('grid') as any;
+
+  // i18n
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid', { returnObjects: true });
 
   const handleBackButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>

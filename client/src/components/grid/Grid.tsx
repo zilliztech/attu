@@ -73,8 +73,11 @@ const userStyle = makeStyles(theme => ({
 
 const MilvusGrid: FC<MilvusGridType> = props => {
   const classes = userStyle();
-  const { t } = useTranslation();
-  const gridTrans = t('grid') as any;
+
+  // i18n
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid', { returnObjects: true });
+
   const {
     rowCount = 10,
     rowsPerPage = 5,

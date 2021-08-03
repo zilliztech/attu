@@ -15,6 +15,7 @@ import { stableSort, getComparator } from './Utils';
 import ActionBar from './ActionBar';
 import LoadingTable from './LoadingTable';
 import CopyButton from '../advancedSearch/CopyButton';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -136,6 +137,9 @@ const EnhancedTable: FC<TableType> = props => {
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
+
+  const { t: commonTrans } = useTranslation();
+  const copyTrans = commonTrans('copy', { returnObjects: true });
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -317,7 +321,7 @@ const EnhancedTable: FC<TableType> = props => {
 
                               {needCopy && row[colDef.id] && (
                                 <CopyButton
-                                  label="copy button"
+                                  label={copyTrans.label}
                                   value={row[colDef.id]}
                                   className={classes.copyBtn}
                                 />
