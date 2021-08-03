@@ -64,6 +64,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   btn: {
     marginRight: theme.spacing(1),
+    padding: theme.spacing(0.5, 1),
+
+    lineHeight: '20px',
+    fontSize: 14,
   },
 }));
 

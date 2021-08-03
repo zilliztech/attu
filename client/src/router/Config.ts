@@ -3,6 +3,7 @@ import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
 import Overview from '../pages/overview/Overview';
 import VectorSearch from '../pages/seach/VectorSearch';
+import CodePage from '../pages/test.component';
 import { RouterConfigType } from './Types';
 
 const RouterConfig: RouterConfigType[] = [
@@ -29,6 +30,11 @@ const RouterConfig: RouterConfigType[] = [
   {
     path: '/search',
     component: VectorSearch,
+    auth: true,
+  },
+  {
+    path: '/code',
+    component: CodePage,
     auth: true,
   },
 ];
