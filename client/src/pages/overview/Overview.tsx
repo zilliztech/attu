@@ -9,7 +9,6 @@ import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
-import { ShowCollectionsType } from '../../types/Milvus';
 import { formatNumber } from '../../utils/Common';
 import CollectionCard from './collectionCard/CollectionCard';
 import { CollectionData } from './collectionCard/Types';
@@ -49,9 +48,8 @@ const Overview = () => {
 
   const fetchData = useCallback(async () => {
     const res = await CollectionHttp.getStatistics();
-    const loadCollections = await CollectionHttp.getCollections({
-      type: ShowCollectionsType.InMemory,
-    });
+    const collections = await CollectionHttp.getCollections();
+    const loadCollections = collections.filter(c => c._isLoaded);
     setStatistics(res);
     setLoadCollections(loadCollections);
   }, []);
