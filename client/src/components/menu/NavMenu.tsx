@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const NavMenu: FC<NavMenuType> = props => {
   const { width, data, defaultActive = '' } = props;
   const classes = useStyles({ width });
-  const [expanded, setExpanded] = useState<boolean>(true);
+  const [expanded, setExpanded] = useState<boolean>(false);
   const [active, setActive] = useState<string>(defaultActive);
 
   const { t: commonTrans } = useTranslation();
