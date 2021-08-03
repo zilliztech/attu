@@ -18,9 +18,9 @@ const generateVector = (dimension) => {
   return JSON.stringify(vectors);
 };
 
-while (records.length < 50000) {
-  const value = generateVector(4);
-  records.push({ vector: value, age: 10 });
+while (records.length < 5000) {
+  const value = generateVector(128);
+  records.push({ vector: value });
 }
 
 csvWriter

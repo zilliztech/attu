@@ -34,6 +34,8 @@ export interface FieldOption extends Option {
   // used to get metric type, index type and index params for search params
   // if user doesn't create index, default value is null
   indexInfo: IndexView | null;
+  // used for check vector input validation
+  dimension: number;
 }
 
 export interface SearchParamInputConfig {
