@@ -44,7 +44,8 @@
     "test:watch": "react-app-rewired test --watch",
     "test:cov": "react-app-rewired test --watchAll=false --coverage",
     "test:report": "react-app-rewired test --watchAll=false --coverage --coverageReporters='text-summary'",
-    "eject": "react-app-rewired eject"
+    "eject": "react-app-rewired eject",
+    "format": "prettier --write '**/*.{ts,js,tsx,jsx,css}'"
   },
   "eslintConfig": {
     "extends": [
@@ -65,6 +66,7 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/react-hooks": "^7.0.1"
+    "@testing-library/react-hooks": "^7.0.1",
+    "prettier": "2.3.2"
   }
 }
