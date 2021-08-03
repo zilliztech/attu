@@ -1,9 +1,9 @@
 import * as helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { json } from 'body-parser';
+const hyperlinker = require('hyperlinker');
 
 /*
   Milvus insight API server bootstrap function
@@ -32,7 +32,20 @@ async function bootstrap() {
 
   // start listening
   await app.listen(port);
-  Logger.log(`Milvus insight API server is running on port ${port}`);
+
+  // output server info
+  require('dns').lookup(require('os').hostname(), (err, add, fam) => {
+    // get link
+    // add = `127.0.0.1`;
+    const link = `http://${add}:${port}/api`;
+    const blue = `\x1b[34m%s\x1b[0m`;
+    const light = '\x1b[1m%s\x1b[0m';
+    console.log(blue, '\n    Milvus insight server started.');
+    console.log(
+      light,
+      `    View the API docs on ${hyperlinker(link, link)} \n`,
+    );
+  });
 }
 // Start the server
 bootstrap();
