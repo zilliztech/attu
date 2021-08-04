@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import CopyButton from '../advancedSearch/CopyButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { FC } from 'react';
+import { CodeBlockProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -22,14 +24,15 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const code = `
-const a = 2;
-const testFunction = (input) => {
-  console.log(input)
-}
-testFunction(a)`;
+const CodeStyle = {
+  backgroundColor: '#fff',
+  padding: 0,
+  margin: 0,
+  marginRight: 32,
+  fontSize: 14,
+};
 
-const CodeBlock = () => {
+const CodeBlock: FC<CodeBlockProps> = ({ code, language }) => {
   const classes = getStyles();
 
   const { t: commonTrans } = useTranslation();
@@ -40,9 +43,13 @@ const CodeBlock = () => {
       <CopyButton
         className={classes.copy}
         label={copyTrans.label}
-        value="code block"
+        value={code}
       />
-      <SyntaxHighlighter language="javascript" style={docco}>
+      <SyntaxHighlighter
+        language={language}
+        style={docco}
+        customStyle={CodeStyle}
+      >
         {code}
       </SyntaxHighlighter>
     </div>

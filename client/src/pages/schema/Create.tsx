@@ -1,5 +1,7 @@
+import { Switch } from '@material-ui/core';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CodeView from '../../components/code/CodeView';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
 import {
   INDEX_CONFIG,
@@ -149,27 +151,30 @@ const CreateIndex = (props: {
   };
 
   return (
-    <DialogTemplate
-      title={dialogTrans('createTitle', {
-        type: indexTrans('index'),
-        name: collectionName,
-      })}
-      handleClose={handleCancel}
-      confirmLabel={btnTrans('create')}
-      handleConfirm={handleCreateIndex}
-      confirmDisabled={disabled}
-    >
-      <CreateForm
-        updateForm={updateStepTwoForm}
-        metricOptions={metricOptions}
-        indexOptions={indexOptions}
-        formValue={indexSetting}
-        checkIsValid={checkIsValid}
-        validation={validation}
-        indexParams={indexCreateParams}
-        indexTypeChange={onIndexTypeChange}
-      />
-    </DialogTemplate>
+    <>
+      <DialogTemplate
+        title={dialogTrans('createTitle', {
+          type: indexTrans('index'),
+          name: collectionName,
+        })}
+        handleClose={handleCancel}
+        confirmLabel={btnTrans('create')}
+        handleConfirm={handleCreateIndex}
+        confirmDisabled={disabled}
+        leftActions={<Switch />}
+      >
+        <CreateForm
+          updateForm={updateStepTwoForm}
+          metricOptions={metricOptions}
+          indexOptions={indexOptions}
+          formValue={indexSetting}
+          checkIsValid={checkIsValid}
+          validation={validation}
+          indexParams={indexCreateParams}
+          indexTypeChange={onIndexTypeChange}
+        />
+      </DialogTemplate>
+    </>
   );
 };
 
