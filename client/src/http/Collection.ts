@@ -110,6 +110,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return formatNumber(Number(this.rowCount));
   }
 
+  get _isLoaded() {
+    return this.isLoaded;
+  }
+
   get _status() {
     return this.isLoaded === true ? StatusEnum.loaded : StatusEnum.unloaded;
   }

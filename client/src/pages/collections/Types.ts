@@ -10,6 +10,7 @@ export interface CollectionData {
   _desc: string;
   _indexState: ChildrenStatusType;
   _fields?: FieldData[];
+  _isLoaded: boolean;
 }
 
 export interface CollectionView extends CollectionData {
