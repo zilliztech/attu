@@ -27,7 +27,7 @@ Ensure you have Milvus installed on [your server](https://milvus.io/docs/install
 ### ⭐️ Start a Milvus insight instance
 
 ```code
-docker run -p 8000:3000 -e HOST_URL=192.168.0.1:8000 -e MILVUS_URL=192.168.0.1:19530 milvusdb/milvus-insight:latest
+docker run -p 8000:3000 -e HOST_URL=http://192.168.0.1:8000 -e MILVUS_URL=192.168.0.1:19530 milvusdb/milvus-insight:latest
 ```
 
 Once you start the docker, open the browser, type `http://192.168.0.1:8000`, you can view the Milvus insight.
