@@ -15,8 +15,14 @@ import { rootContext } from '../../context/Root';
 import CreateIndex from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import CustomLinearProgress from '../../components/customProgress/CustomLinearProgress';
+import StatusIcon from '../../components/status/StatusIcon';
+import { ChildrenStatusType } from '../../components/status/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {
+    // give fixed width to prevent table cell stretching
+    width: 150,
+  },
   item: {
     paddingLeft: theme.spacing(1),
   },
@@ -69,8 +75,8 @@ const IndexTypeElement: FC<{
   cb: (collectionName: string) => void;
 }> = ({ data, collectionName, cb }) => {
   const classes = useStyles();
-  // set in progress as defalut status
-  const [status, setStatus] = useState<string>(IndexState.InProgress);
+  // set empty string as defalut status
+  const [status, setStatus] = useState<string>('');
 
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
@@ -86,18 +92,15 @@ const IndexTypeElement: FC<{
   const DeleteIcon = icons.delete;
 
   const fetchStatus = useCallback(async () => {
-    if (data._indexType !== '') {
+    // prevent delete index trigger fetching index status
+    if (data._indexType !== '' && status !== 'delete') {
       const { state: status } = await IndexHttp.getIndexStatus(
         collectionName,
         data._fieldName
       );
       setStatus(status);
     }
-  }, [collectionName, data._fieldName, data._indexType]);
-
-  useEffect(() => {
-    fetchStatus();
-  }, [fetchStatus]);
+  }, [collectionName, data._fieldName, data._indexType, status]);
 
   const fetchProgress = useCallback(() => {
     if (timer) {
@@ -128,10 +131,13 @@ const IndexTypeElement: FC<{
     }
   }, [collectionName, data._fieldName, status, data._indexType]);
 
-  // get index build progress
   useEffect(() => {
+    /**
+     * fetch index status, then fetch index build progress
+     */
+    fetchStatus();
     fetchProgress();
-  }, [fetchProgress]);
+  }, [fetchStatus, fetchProgress]);
 
   const requestCreateIndex = async (params: ParamPair[]) => {
     const indexCreateParam: IndexCreateParam = {
@@ -140,6 +146,8 @@ const IndexTypeElement: FC<{
       extra_params: params,
     };
     await IndexHttp.createIndex(indexCreateParam);
+    // reset status to default empty string
+    setStatus('');
     handleCloseDialog();
     openSnackBar(indexTrans('createSuccess'));
     cb(collectionName);
@@ -169,9 +177,11 @@ const IndexTypeElement: FC<{
     };
 
     await IndexHttp.deleteIndex(indexDeleteParam);
+    // use 'delete' as special status for whether fetching index status check
+    setStatus('delete');
+    cb(collectionName);
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: indexTrans('index') }));
-    cb(collectionName);
   };
 
   const handleDelete = () => {
@@ -215,6 +225,13 @@ const IndexTypeElement: FC<{
         );
       }
       default: {
+        /**
+         * empty string or 'delete' means fetching progress hasn't finished
+         * show loading animation for such situations
+         */
+        if (status === '' || status === 'delete') {
+          return <StatusIcon type={ChildrenStatusType.CREATING} />;
+        }
         return status === IndexState.InProgress ? (
           <CustomLinearProgress
             value={createProgress}
@@ -232,7 +249,7 @@ const IndexTypeElement: FC<{
     }
   };
 
-  return <>{generateElement()}</>;
+  return <div className={classes.wrapper}>{generateElement()}</div>;
 };
 
 export default IndexTypeElement;
