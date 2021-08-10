@@ -76,7 +76,7 @@ const IndexTypeElement: FC<{
 }> = ({ data, collectionName, cb }) => {
   const classes = useStyles();
   // set empty string as defalut status
-  const [status, setStatus] = useState<string>('');
+  const [status, setStatus] = useState<string>(IndexState.Default);
 
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
@@ -93,7 +93,7 @@ const IndexTypeElement: FC<{
 
   const fetchStatus = useCallback(async () => {
     // prevent delete index trigger fetching index status
-    if (data._indexType !== '' && status !== 'delete') {
+    if (data._indexType !== '' && status !== IndexState.Delete) {
       const { state: status } = await IndexHttp.getIndexStatus(
         collectionName,
         data._fieldName
@@ -147,7 +147,7 @@ const IndexTypeElement: FC<{
     };
     await IndexHttp.createIndex(indexCreateParam);
     // reset status to default empty string
-    setStatus('');
+    setStatus(IndexState.Default);
     handleCloseDialog();
     openSnackBar(indexTrans('createSuccess'));
     cb(collectionName);
@@ -178,7 +178,7 @@ const IndexTypeElement: FC<{
 
     await IndexHttp.deleteIndex(indexDeleteParam);
     // use 'delete' as special status for whether fetching index status check
-    setStatus('delete');
+    setStatus(IndexState.Delete);
     cb(collectionName);
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: indexTrans('index') }));
@@ -229,7 +229,7 @@ const IndexTypeElement: FC<{
          * empty string or 'delete' means fetching progress hasn't finished
          * show loading animation for such situations
          */
-        if (status === '' || status === 'delete') {
+        if (status === IndexState.Default || status === IndexState.Delete) {
           return <StatusIcon type={ChildrenStatusType.CREATING} />;
         }
         return status === IndexState.InProgress ? (
