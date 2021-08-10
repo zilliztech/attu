@@ -18,11 +18,28 @@ export class MilvusService {
     return this.milvusClient;
   }
 
+  get collectionManager() {
+    return this.milvusClient.collectionManager;
+  }
+
+  get partitionManager() {
+    return this.milvusClient.partitionManager;
+  }
+
+  get indexManager() {
+    return this.milvusClient.indexManager;
+  }
+
+  get dataManager() {
+    return this.milvusClient.dataManager;
+  }
+
   async connectMilvus(address: string) {
+    // grpc only need address without http
     const milvusAddress = address.replace(/(http|https):\/\//, '');
     try {
       this.milvusClient = new MilvusClient(milvusAddress);
-      await this.milvusClient.hasCollection({
+      await this.milvusClient.collectionManager.hasCollection({
         collection_name: 'not_exist',
       });
       this.milvusAddress = address;
@@ -43,7 +60,7 @@ export class MilvusService {
   }
 
   async flush(data: FlushReq) {
-    const res = await this.milvusClient.flush(data);
+    const res = await this.milvusClient.dataManager.flush(data);
     return res;
   }
 }

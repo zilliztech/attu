@@ -11,20 +11,20 @@ import { MilvusService } from '../milvus/milvus.service';
 
 @Injectable()
 export class SchemaService {
-  constructor(private milvusService: MilvusService) { }
+  constructor(private milvusService: MilvusService) {}
 
-  get milvusClient() {
-    return this.milvusService.milvusClientGetter;
+  get indexManager() {
+    return this.milvusService.indexManager;
   }
 
   async createIndex(data: CreateIndexReq) {
-    const res = await this.milvusClient.createIndex(data);
+    const res = await this.indexManager.createIndex(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async describeIndex(data: DescribeIndexReq) {
-    const res = await this.milvusClient.describeIndex(data);
+    const res = await this.indexManager.describeIndex(data);
     if (res.status.error_code === 'IndexNotExist') {
       return res;
     }
@@ -33,19 +33,19 @@ export class SchemaService {
   }
 
   async dropIndex(data: DropIndexReq) {
-    const res = await this.milvusClient.dropIndex(data);
+    const res = await this.indexManager.dropIndex(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getIndexState(data: GetIndexStateReq) {
-    const res = await this.milvusClient.getIndexState(data);
+    const res = await this.indexManager.getIndexState(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async getIndexBuildProgress(data: GetIndexBuildProgressReq) {
-    const res = await this.milvusClient.getIndexBuildProgress(data);
+    const res = await this.indexManager.getIndexBuildProgress(data);
     throwErrorFromSDK(res.status);
     return res;
   }
