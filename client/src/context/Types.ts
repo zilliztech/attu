@@ -25,7 +25,7 @@ export type DialogType = {
      * Usually we control open status in root context,
      * if we need a hoc component depend on setDialog in context,
      * we may need control open status by ourself
-     *  */
+     **/
     handleClose?: () => void;
 
     // used for dialog position
