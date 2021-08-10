@@ -16,6 +16,7 @@ import {
   GetIndexState,
 } from './dto';
 import { SchemaService } from './schema.service';
+
 @ApiTags('schema')
 @Controller('schema')
 export class SchemaController {
