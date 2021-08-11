@@ -16,7 +16,7 @@ async function bootstrap() {
   // security patches
   app.use(
     helmet({
-      // this will
+      // If true will cause blank page after client build.
       contentSecurityPolicy: false,
     }),
   );
