@@ -1,8 +1,9 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomTabList from '../customTabList/CustomTabList';
 import CodeBlock from './CodeBlock';
-import { CodeLanguageEnum } from './Types';
+import { CodeLanguageEnum, CodeViewProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -86,7 +87,7 @@ a = 2
 b = 4
 print(maximum(a, b))`;
 
-const CodeView = () => {
+const CodeView: FC<CodeViewProps> = ({ wrapperClass = '' }) => {
   const classes = getStyles();
   const { t: commonTrans } = useTranslation();
 
@@ -104,7 +105,7 @@ const CodeView = () => {
   ];
 
   return (
-    <section className={classes.wrapper}>
+    <section className={`${classes.wrapper} ${wrapperClass}`}>
       <Typography variant="h5" className={classes.title}>
         {commonTrans('code')}
       </Typography>

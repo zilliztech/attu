@@ -1,3 +1,7 @@
+export interface CodeViewProps {
+  wrapperClass?: string;
+}
+
 export enum CodeLanguageEnum {
   javascript = 'javascript',
   python = 'python',

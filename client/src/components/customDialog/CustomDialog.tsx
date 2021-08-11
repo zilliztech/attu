@@ -16,12 +16,15 @@ import CustomDialogTitle from './CustomDialogTitle';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      minWidth: '480px',
-      borderRadius: '8px',
+      minWidth: 480,
+      borderRadius: 8,
       padding: 0,
+
+      backgroundColor: 'transparent',
+      boxShadow: 'initial',
     },
     noticePaper: {
-      maxWidth: '480px',
+      maxWidth: 480,
     },
     paperSm: {
       maxWidth: '80%',
@@ -31,12 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       '& p': {
-        fontWeight: '500',
+        fontWeight: 500,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        maxWidth: '300px',
-        fontSize: '20px',
+        maxWidth: 300,
+        fontSize: 20,
       },
     },
     padding: {
