@@ -53,14 +53,14 @@ out an open PR:
 
 1. Fork and clone the repo
 2. `cd server` go to the server directory
-3. `$ yarn install` to install dependencies
+3. `yarn install` to install dependencies
 4. Create a branch for your PR
 
 ### Build client
 
 1. Fork and clone the repo
 2. `cd client` go to the client directory
-3. `$ yarn install` to install dependencies
+3. `yarn install` to install dependencies
 4. Create a branch for your PR
 
 ### Milvus
