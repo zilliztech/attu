@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { json } from 'body-parser';
-const hyperlinker = require('hyperlinker');
+import * as hyperlinker from 'hyperlinker';
 
 /*
   Milvus insight API server bootstrap function
@@ -14,7 +14,12 @@ async function bootstrap() {
   // create the nest application with Cross-origin resource sharing
   const app = await NestFactory.create(AppModule, { cors: true });
   // security patches
-  app.use(helmet());
+  app.use(
+    helmet({
+      // this will
+      contentSecurityPolicy: false,
+    }),
+  );
   // set upload file size limit
   app.use(json({ limit: '150mb' }));
   // add an API prefix
@@ -34,6 +39,7 @@ async function bootstrap() {
   await app.listen(port);
 
   // output server info
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   require('dns').lookup(require('os').hostname(), (err, add, fam) => {
     // get link
     // add = `127.0.0.1`;
