@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   paramWrapper: {
+    // set min width to prevent other table cell stretching
+    minWidth: 180,
+
     '& .param': {
       marginRight: theme.spacing(2),
 

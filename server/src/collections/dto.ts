@@ -12,11 +12,9 @@ import {
   FieldType,
   ShowCollectionsType,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection'; // todo: need improve like export types in root file.
-import {
-  DataType,
-  KeyValuePair,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
+import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
 import { ApiProperty } from '@nestjs/swagger';
+import { SearchParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 enum VectorTypes {
   Binary = DataType.BinaryVector,
@@ -103,7 +101,7 @@ export class VectorSearch {
   })
   @IsArray()
   @ArrayMinSize(1)
-  search_params: KeyValuePair[];
+  search_params: SearchParam[];
 
   @ApiProperty({
     description: 'Searched vector value',

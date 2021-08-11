@@ -22,60 +22,68 @@ import {
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
 
-  get milvusClient() {
-    return this.milvusService.milvusClientGetter;
+  get collectionManager() {
+    return this.milvusService.collectionManager;
+  }
+
+  get dataManager() {
+    return this.milvusService.dataManager;
+  }
+
+  get indexManager() {
+    return this.milvusService.indexManager;
   }
 
   async getCollectionNames(data?: ShowCollectionsReq) {
-    const res = await this.milvusClient.showCollections(data);
+    const res = await this.collectionManager.showCollections(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async createCollection(data: CreateCollectionReq) {
-    const res = await this.milvusClient.createCollection(data);
+    const res = await this.collectionManager.createCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async describeCollection(data: DescribeCollectionReq) {
-    const res = await this.milvusClient.describeCollection(data);
+    const res = await this.collectionManager.describeCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async dropCollection(data: DropCollectionReq) {
-    const res = await this.milvusClient.dropCollection(data);
+    const res = await this.collectionManager.dropCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async loadCollection(data: LoadCollectionReq) {
-    const res = await this.milvusClient.loadCollection(data);
+    const res = await this.collectionManager.loadCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async releaseCollection(data: ReleaseLoadCollectionReq) {
-    const res = await this.milvusClient.releaseCollection(data);
+    const res = await this.collectionManager.releaseCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getCollectionStatistics(data: GetCollectionStatisticsReq) {
-    const res = await this.milvusClient.getCollectionStatistics(data);
+    const res = await this.collectionManager.getCollectionStatistics(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async insert(data: InsertReq) {
-    const res = await this.milvusClient.insert(data);
+    const res = await this.dataManager.insert(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async vectorSearch(data: SearchReq) {
-    const res = await this.milvusClient.search(data);
+    const res = await this.dataManager.search(data);
     throwErrorFromSDK(res.status);
     return res;
   }
@@ -88,7 +96,7 @@ export class CollectionsService {
    * @returns
    */
   async getIndexStatus(data: GetIndexStateReq) {
-    const res = await this.milvusClient.getIndexState(data);
+    const res = await this.indexManager.getIndexState(data);
     return res;
   }
 
