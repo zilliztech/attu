@@ -5,7 +5,9 @@ Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you 
 <img src="./.github/images/screenshot.png" alt="Miluvs insight" />
 
 ## Features and Roadmap
+
 Milvus insight is under rapid development nad we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
+
 - Manage collections/partitions
 - Manage index
 - Basic statistics overview
@@ -27,21 +29,26 @@ Ensure you have Milvus installed on [your server](https://milvus.io/docs/install
 ### ⭐️ Start a Milvus insight instance
 
 ```code
-docker run -p 8000:3000 -e HOST_URL=http://192.168.0.1:8000 -e MILVUS_URL=192.168.0.1:19530 milvusdb/milvus-insight:latest
+docker run -p 8000:3000 -e HOST_URL=http://{ your machine IP }:8000 -e MILVUS_URL={your machine IP}:19530 milvusdb/milvus-insight:latest
 ```
 
-Once you start the docker, open the browser, type `http://192.168.0.1:8000`, you can view the Milvus insight.
+Once you start the docker, open the browser, type `http://{ your machine IP }:8000`, you can view the Milvus insight.
 
 #### Params
+
 | Parameter  | Example                 | required | description                                 |
 | :--------- | :---------------------- | :------: | ------------------------------------------- |
 | HOST_URL   | http://192.168.0.1:8000 |   true   | Where Milvus insight container is installed |
 | MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL                 |
 
+Tip: **127.0.0.1 or localhost will not working when run by docker**
+
 #### Try the dev build
-***note*** We plan to release Milvus insight once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
+
+**_note_** We plan to release Milvus insight once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
+
 ```code
-docker run -p 8000:3000 -e HOST_URL=192.168.0.1:8000 -e MILVUS_URL=192.168.0.1:19530 milvusdb/milvus-insight:dev
+docker run -p 8000:3000 -e HOST_URL=http://{ your machine IP }:8000 -e MILVUS_URL={ your machine IP }:19530 milvusdb/milvus-insight:dev
 ```
 
 ## ✨ Building and Running Milvus insight, and/or Contributing Code
