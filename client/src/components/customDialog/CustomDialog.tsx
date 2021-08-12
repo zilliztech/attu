@@ -21,9 +21,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
 
       backgroundColor: 'transparent',
-      boxShadow: 'initial',
     },
     noticePaper: {
+      backgroundColor: '#fff',
       maxWidth: 480,
     },
     paperSm: {

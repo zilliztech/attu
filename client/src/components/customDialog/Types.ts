@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { DialogType } from '../../context/Types';
-import { CodeBlockProps } from '../code/Types';
+import { CodeViewData } from '../code/Types';
 export type CustomDialogType = DialogType & {
   onClose: () => void;
   containerClass?: string;
@@ -35,5 +35,5 @@ export type DialogContainerProps = {
   leftActions?: ReactElement;
   // code mode requirement
   showCode?: boolean;
-  codeBlocksData?: CodeBlockProps[];
+  codeBlocksData?: CodeViewData[];
 };

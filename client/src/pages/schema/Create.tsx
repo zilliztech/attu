@@ -1,7 +1,8 @@
-import { Switch } from '@material-ui/core';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CodeLanguageEnum, CodeViewData } from '../../components/code/Types';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
+import CustomSwitch from '../../components/customSwitch/CustomSwitch';
 import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
@@ -9,6 +10,7 @@ import {
   METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
+import { getCreateIndexJSCode, getCreateIndexPYCode } from '../../utils/Code';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { getEmbeddingType } from '../../utils/search';
 import { DataType } from '../collections/Types';
@@ -26,6 +28,7 @@ const CreateIndex = (props: {
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: commonTrans } = useTranslation();
 
   const defaultIndexType =
     fieldType === 'BinaryVector'
@@ -53,6 +56,9 @@ const CreateIndex = (props: {
     searchLength: '',
     knng: '',
   });
+
+  // control whether show code mode
+  const [showCode, setShowCode] = useState<boolean>(false);
 
   const indexCreateParams = useMemo(() => {
     if (!INDEX_CONFIG[indexSetting.index_type]) {
@@ -87,6 +93,25 @@ const CreateIndex = (props: {
     const form = formatForm(paramsForm);
     return form;
   }, [indexSetting, indexCreateParams]);
+
+  /**
+   * create index code mode
+   */
+  const codeBlockData: CodeViewData[] = useMemo(
+    () => [
+      {
+        label: commonTrans('js'),
+        language: CodeLanguageEnum.javascript,
+        code: getCreateIndexJSCode(),
+      },
+      {
+        label: commonTrans('py'),
+        language: CodeLanguageEnum.python,
+        code: getCreateIndexPYCode(),
+      },
+    ],
+    [commonTrans]
+  );
 
   const { validation, checkIsValid, disabled, setDisabled, resetValidation } =
     useFormValidation(checkedForm);
@@ -149,6 +174,11 @@ const CreateIndex = (props: {
     handleCreate(params);
   };
 
+  const handleShowCode = (event: React.ChangeEvent<{ checked: boolean }>) => {
+    const isChecked = event.target.checked;
+    setShowCode(isChecked);
+  };
+
   return (
     <DialogTemplate
       title={dialogTrans('createTitle', {
@@ -159,8 +189,9 @@ const CreateIndex = (props: {
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateIndex}
       confirmDisabled={disabled}
-      leftActions={<Switch />}
-      showCode={true}
+      leftActions={<CustomSwitch onChange={handleShowCode} />}
+      showCode={showCode}
+      codeBlocksData={codeBlockData}
     >
       <CreateForm
         updateForm={updateStepTwoForm}

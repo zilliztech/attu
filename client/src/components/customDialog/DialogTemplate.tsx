@@ -22,8 +22,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   dialog: {
     minWidth: 480,
   },
+  codeWrapper: {
+    width: (props: { showCode: boolean }) => (props.showCode ? 480 : 0),
+    transition: 'width 0.2s',
+  },
   code: {
     height: '100%',
+    // set code view padding 0 if not show
+    padding: (props: { showCode: boolean }) =>
+      props.showCode ? theme.spacing(4) : 0,
   },
   actions: {
     paddingTop: theme.spacing(2),
@@ -51,7 +58,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   const { t } = useTranslation('btn');
   const cancel = cancelLabel || t('cancel');
   const confirm = confirmLabel || t('confirm');
-  const classes = useStyles();
+  const classes = useStyles({ showCode });
   const onCancel = handleCancel || handleClose;
 
   return (
@@ -83,8 +90,11 @@ const DialogTemplate: FC<DialogContainerProps> = ({
           </DialogActions>
         )}
       </div>
-      <div className={classes.block}>
-        {showCode && <CodeView wrapperClass={classes.code} />}
+
+      <div className={`${classes.block} ${classes.codeWrapper}`}>
+        {showCode && (
+          <CodeView wrapperClass={classes.code} data={codeBlocksData} />
+        )}
       </div>
     </section>
   );

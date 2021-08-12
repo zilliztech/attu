@@ -25,6 +25,9 @@ const commonTrans = {
   param: 'Parameter',
   search: 'Search by name',
   code: 'Code View',
+  view: 'View Code',
+  js: 'NODE.JS',
+  py: 'PYTHON',
 };
 
 export default commonTrans;

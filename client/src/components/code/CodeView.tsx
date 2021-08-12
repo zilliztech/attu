@@ -2,13 +2,14 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomTabList from '../customTabList/CustomTabList';
+import { ITab } from '../customTabList/Types';
 import CodeBlock from './CodeBlock';
-import { CodeLanguageEnum, CodeViewProps } from './Types';
+import { CodeViewProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     boxSizing: 'border-box',
-    width: 480,
+    width: '100%',
 
     padding: theme.spacing(4),
     backgroundColor: theme.palette.milvusDark.main,
@@ -67,49 +68,21 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const jsCode = `const a = 2;
-const testFunction = (input) => {
-  console.log(input)
-}
-testFunction(a)`;
-
-const pyCode = `# Python program to find the
-# maximum of two numbers
-  
-def maximum(a, b):
-  if a >= b:
-      return a
-  else:
-      return b
-      
-# Driver code
-a = 2
-b = 4
-print(maximum(a, b))`;
-
-const CodeView: FC<CodeViewProps> = ({ wrapperClass = '' }) => {
+const CodeView: FC<CodeViewProps> = ({ wrapperClass = '', data }) => {
   const classes = getStyles();
   const { t: commonTrans } = useTranslation();
 
-  const mockTabs = [
-    {
-      label: 'node.js',
-      component: (
-        <CodeBlock language={CodeLanguageEnum.javascript} code={jsCode} />
-      ),
-    },
-    {
-      label: 'python',
-      component: <CodeBlock language={CodeLanguageEnum.python} code={pyCode} />,
-    },
-  ];
+  const tabs: ITab[] = data.map(item => ({
+    label: item.label,
+    component: <CodeBlock language={item.language} code={item.code} />,
+  }));
 
   return (
     <section className={`${classes.wrapper} ${wrapperClass}`}>
       <Typography variant="h5" className={classes.title}>
         {commonTrans('code')}
       </Typography>
-      <CustomTabList tabs={mockTabs} wrapperClass={classes.tabs} />
+      <CustomTabList tabs={tabs} wrapperClass={classes.tabs} />
     </section>
   );
 };
