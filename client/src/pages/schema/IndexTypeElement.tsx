@@ -1,4 +1,11 @@
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import Chip from '@material-ui/core/Chip';
 import { IndexHttp } from '../../http/Index';
 import { IndexState } from '../../types/Milvus';
@@ -91,6 +98,11 @@ const IndexTypeElement: FC<{
   const AddIcon = icons.add;
   const DeleteIcon = icons.delete;
 
+  const isIndexCreating: boolean = useMemo(
+    () => status === IndexState.InProgress || status === IndexState.Unissued,
+    [status]
+  );
+
   const fetchStatus = useCallback(async () => {
     // prevent delete index trigger fetching index status
     if (data._indexType !== '' && status !== IndexState.Delete) {
@@ -106,7 +118,7 @@ const IndexTypeElement: FC<{
     if (timer) {
       clearTimeout(timer);
     }
-    if (data._indexType !== '' && status === IndexState.InProgress) {
+    if (data._indexType !== '' && isIndexCreating) {
       timer = setTimeout(async () => {
         const res = await IndexHttp.getIndexBuildProgress(
           collectionName,
@@ -129,7 +141,7 @@ const IndexTypeElement: FC<{
         }
       }, 500);
     }
-  }, [collectionName, data._fieldName, status, data._indexType]);
+  }, [collectionName, data._fieldName, isIndexCreating, data._indexType]);
 
   useEffect(() => {
     /**
@@ -202,6 +214,7 @@ const IndexTypeElement: FC<{
   };
 
   const generateElement = () => {
+    // only vector type field is able to create index
     if (
       data._fieldType !== 'BinaryVector' &&
       data._fieldType !== 'FloatVector'
@@ -209,6 +222,7 @@ const IndexTypeElement: FC<{
       return <div className={classes.item}>--</div>;
     }
 
+    // _indexType example: FLAT
     switch (data._indexType) {
       case '': {
         return (
@@ -232,7 +246,11 @@ const IndexTypeElement: FC<{
         if (status === IndexState.Default || status === IndexState.Delete) {
           return <StatusIcon type={ChildrenStatusType.CREATING} />;
         }
-        return status === IndexState.InProgress ? (
+        /**
+         * if creating not finished, show progress bar
+         * if creating finished, show chip that contains index type
+         */
+        return isIndexCreating ? (
           <CustomLinearProgress
             value={createProgress}
             tooltip={indexTrans('creating')}
