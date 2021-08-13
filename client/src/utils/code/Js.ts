@@ -7,8 +7,8 @@ export const getCreateIndexJSCode = (params: CreateIndexCodeParam) => {
 const client = new MilvusClient(milvus_address)
 
 client.indexManager.createIndex({
-  collection_name: ${collectionName},
-  field_name: ${fieldName},
+  collection_name: '${collectionName}',
+  field_name: '${fieldName}',
   extra_params: ${JSON.stringify(extraParams, null, 2)},
 });`;
 

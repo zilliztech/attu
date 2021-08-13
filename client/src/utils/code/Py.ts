@@ -17,7 +17,7 @@ export const getCreateIndexPYCode = (params: CreateIndexCodeParam) => {
     ...obj,
     params: parseValue(obj.params),
   };
-  const pyCode = `from pymilvus_orm import Collection,
+  const pyCode = `from pymilvus_orm import Collection
 
 collection = Collection('${collectionName}')
 index = ${JSON.stringify(index, replacer, 4)}
