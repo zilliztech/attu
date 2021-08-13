@@ -87,7 +87,6 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
   );
 
   const handleCloseDialog = () => {
-    console.log('---- handle close dialog', dialog);
     setDialog({
       ...dialog,
       open: false,
