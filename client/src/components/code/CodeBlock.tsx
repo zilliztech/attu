@@ -32,14 +32,18 @@ const CodeStyle = {
   fontSize: 14,
 };
 
-const CodeBlock: FC<CodeBlockProps> = ({ code, language }) => {
+const CodeBlock: FC<CodeBlockProps> = ({
+  code,
+  language,
+  wrapperClass = '',
+}) => {
   const classes = getStyles();
 
   const { t: commonTrans } = useTranslation();
   const copyTrans = commonTrans('copy', { returnObjects: true });
 
   return (
-    <div className={classes.wrapper}>
+    <div className={`${classes.wrapper} ${wrapperClass}`}>
       <CopyButton
         className={classes.copy}
         label={copyTrans.label}

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DialogContent,
@@ -61,9 +61,23 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   const classes = useStyles({ showCode });
   const onCancel = handleCancel || handleClose;
 
+  const dialogRef = useRef(null);
+  const [dialogHeight, setDialogHeight] = useState<number>(0);
+
+  /**
+   * code mode height should not over original dialog height
+   * everytime children change, should recalculate dialog height
+   */
+  useEffect(() => {
+    if (dialogRef.current) {
+      const height = (dialogRef.current as any).offsetHeight;
+      setDialogHeight(height);
+    }
+  }, [children]);
+
   return (
     <section className={classes.wrapper}>
-      <div className={`${classes.dialog} ${classes.block}`}>
+      <div ref={dialogRef} className={`${classes.dialog} ${classes.block}`}>
         <CustomDialogTitle onClose={handleClose} showCloseIcon={showCloseIcon}>
           {title}
         </CustomDialogTitle>
@@ -93,7 +107,11 @@ const DialogTemplate: FC<DialogContainerProps> = ({
 
       <div className={`${classes.block} ${classes.codeWrapper}`}>
         {showCode && (
-          <CodeView wrapperClass={classes.code} data={codeBlocksData} />
+          <CodeView
+            height={dialogHeight}
+            wrapperClass={classes.code}
+            data={codeBlocksData}
+          />
         )}
       </div>
     </section>

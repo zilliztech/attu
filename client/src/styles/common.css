@@ -61,3 +61,17 @@ fieldset {
 .dialog-content::first-letter {
   text-transform: uppercase;
 }
+
+/* change scrollbar style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f9f9f9;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #eee;
+}

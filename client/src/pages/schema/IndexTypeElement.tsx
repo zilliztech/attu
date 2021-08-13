@@ -173,6 +173,7 @@ const IndexTypeElement: FC<{
         component: (
           <CreateIndex
             collectionName={collectionName}
+            fieldName={data._fieldName}
             fieldType={data._fieldType}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}

@@ -10,7 +10,8 @@ import {
   METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
-import { getCreateIndexJSCode, getCreateIndexPYCode } from '../../utils/Code';
+import { getCreateIndexJSCode } from '../../utils/code/Js';
+import { getCreateIndexPYCode } from '../../utils/code/Py';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { getEmbeddingType } from '../../utils/search';
 import { DataType } from '../collections/Types';
@@ -22,8 +23,12 @@ const CreateIndex = (props: {
   fieldType: DataType;
   handleCreate: (params: ParamPair[]) => void;
   handleCancel: () => void;
+
+  // used for code mode
+  fieldName: string;
 }) => {
-  const { collectionName, fieldType, handleCreate, handleCancel } = props;
+  const { collectionName, fieldType, handleCreate, handleCancel, fieldName } =
+    props;
 
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
@@ -72,12 +77,30 @@ const CreateIndex = (props: {
     [indexSetting.index_type, fieldType]
   );
 
-  const indexParams = useMemo(() => {
+  const extraParams = useMemo(() => {
     const params: { [x: string]: string } = {};
     indexCreateParams.forEach(v => {
       params[v] = indexSetting[v];
     });
-    return params;
+
+    const { index_type, metric_type } = indexSetting;
+
+    const extraParams: ParamPair[] = [
+      {
+        key: 'index_type',
+        value: index_type,
+      },
+      {
+        key: 'metric_type',
+        value: metric_type,
+      },
+      {
+        key: 'params',
+        value: JSON.stringify(params),
+      },
+    ];
+
+    return extraParams;
   }, [indexCreateParams, indexSetting]);
 
   const indexOptions = useMemo(() => {
@@ -102,15 +125,15 @@ const CreateIndex = (props: {
       {
         label: commonTrans('js'),
         language: CodeLanguageEnum.javascript,
-        code: getCreateIndexJSCode(),
+        code: getCreateIndexJSCode({ collectionName, fieldName, extraParams }),
       },
       {
         label: commonTrans('py'),
         language: CodeLanguageEnum.python,
-        code: getCreateIndexPYCode(),
+        code: getCreateIndexPYCode({ collectionName, fieldName, extraParams }),
       },
     ],
-    [commonTrans]
+    [commonTrans, extraParams, collectionName, fieldName]
   );
 
   const { validation, checkIsValid, disabled, setDisabled, resetValidation } =
@@ -154,24 +177,7 @@ const CreateIndex = (props: {
   };
 
   const handleCreateIndex = () => {
-    const { index_type, metric_type } = indexSetting;
-
-    const params: ParamPair[] = [
-      {
-        key: 'index_type',
-        value: index_type,
-      },
-      {
-        key: 'metric_type',
-        value: metric_type,
-      },
-      {
-        key: 'params',
-        value: JSON.stringify(indexParams),
-      },
-    ];
-
-    handleCreate(params);
+    handleCreate(extraParams);
   };
 
   const handleShowCode = (event: React.ChangeEvent<{ checked: boolean }>) => {

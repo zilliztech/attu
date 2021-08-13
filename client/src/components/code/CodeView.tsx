@@ -66,15 +66,38 @@ const getStyles = makeStyles((theme: Theme) => ({
       borderBottom: 'none',
     },
   },
+
+  block: {
+    /**
+     * container height minus:
+     * 1. CodeView padding top and bottom (32 * 2)
+     * 2. CodeBlock padding top and bottom (24 * 2)
+     * 3. title height and margin bottom (24 + 16)
+     * 4. tab title height and margin bottom (36 + 16)
+     */
+    height: (props: { height: number }) =>
+      props.height - 32 * 2 - 24 * 2 - (24 + 16) - (36 + 16),
+    overflowY: 'auto',
+  },
 }));
 
-const CodeView: FC<CodeViewProps> = ({ wrapperClass = '', data }) => {
-  const classes = getStyles();
+const CodeView: FC<CodeViewProps> = ({
+  wrapperClass = '',
+  data,
+  height = 0,
+}) => {
+  const classes = getStyles({ height });
   const { t: commonTrans } = useTranslation();
 
   const tabs: ITab[] = data.map(item => ({
     label: item.label,
-    component: <CodeBlock language={item.language} code={item.code} />,
+    component: (
+      <CodeBlock
+        wrapperClass={height !== 0 ? classes.block : ''}
+        language={item.language}
+        code={item.code}
+      />
+    ),
   }));
 
   return (
