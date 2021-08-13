@@ -123,14 +123,14 @@ const CreateIndex = (props: {
   const codeBlockData: CodeViewData[] = useMemo(
     () => [
       {
-        label: commonTrans('js'),
-        language: CodeLanguageEnum.javascript,
-        code: getCreateIndexJSCode({ collectionName, fieldName, extraParams }),
-      },
-      {
         label: commonTrans('py'),
         language: CodeLanguageEnum.python,
         code: getCreateIndexPYCode({ collectionName, fieldName, extraParams }),
+      },
+      {
+        label: commonTrans('js'),
+        language: CodeLanguageEnum.javascript,
+        code: getCreateIndexJSCode({ collectionName, fieldName, extraParams }),
       },
     ],
     [commonTrans, extraParams, collectionName, fieldName]
