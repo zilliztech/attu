@@ -3,25 +3,24 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import { CopyButtonProps } from './Types';
 import icons from '../icons/Icons';
 import CustomIconButton from '../customButton/CustomIconButton';
+import { useTranslation } from 'react-i18next';
 
 const CopyIcon = icons.copyExpression;
 
 const CopyButton: FC<CopyButtonProps> = props => {
-  const {
-    label = 'copy button',
-    icon,
-    className,
-    value = '',
-    ...others
-  } = props;
+  const { label, icon, className, value = '', ...others } = props;
   const classes = useStyles();
+  const { t: commonTrans } = useTranslation();
+  const copyTrans = commonTrans('copy');
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
-  const handleClick = (v: string) => {
-    setTooltipTitle('Copied!');
+  const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {
+    event.stopPropagation();
+
+    setTooltipTitle(copyTrans.copied);
     navigator.clipboard.writeText(v);
     setTimeout(() => {
-      setTooltipTitle('Copy');
+      setTooltipTitle(copyTrans.copy);
     }, 1000);
   };
 
@@ -30,7 +29,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
       tooltip={tooltipTitle}
       aria-label={label}
       className={`${classes.button} ${className}`}
-      onClick={() => handleClick(value || '')}
+      onClick={event => handleClick(event, value || '')}
       {...others}
     >
       {icon || <CopyIcon style={{ color: 'transparent' }} />}

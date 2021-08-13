@@ -14,15 +14,12 @@ const getStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  // closeButton: {
-  //   padding: theme.spacing(1),
-  // },
   title: {
     fontWeight: 500,
   },
   icon: {
     fontSize: '24px',
-    color: '#010e29',
+    color: theme.palette.milvusDark.main,
 
     cursor: 'pointer',
   },

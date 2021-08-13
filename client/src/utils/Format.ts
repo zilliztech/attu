@@ -91,6 +91,20 @@ export const getKeyValuePairFromObj = (
   return pairs;
 };
 
+/**
+ * @param pairs e.g. [{key: 'key', value: 'value'}]
+ * @returns object, e.g. {key: value}
+ */
+export const getObjFromKeyValuePair = (
+  pairs: { key: string; value: any }[]
+): { [key in string]: any } => {
+  const obj = pairs.reduce((acc, cur) => {
+    acc[cur.key] = cur.value;
+    return acc;
+  }, {} as { [key in string]: any });
+  return obj;
+};
+
 export const getKeyValueListFromJsonString = (
   json: string
 ): { key: string; value: string }[] => {
