@@ -72,7 +72,7 @@ const CustomTabList: FC<ITabListProps> = props => {
           flexContainer: classes.tabContainer,
         }}
         // if not provide this property, Material will add single span element by default
-        TabIndicatorProps={{ children: <div /> }}
+        TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={value}
         onChange={handleChange}
         aria-label="tabs"

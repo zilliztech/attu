@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Status: FC<StatusType> = props => {
   const { status } = props;
   const { t: commonTrans } = useTranslation();
-  const statusTrans = commonTrans('status', { returnObjects: true });
+  const statusTrans = commonTrans('status');
   const { label, color } = useMemo(() => {
     switch (status) {
       case StatusEnum.unloaded:

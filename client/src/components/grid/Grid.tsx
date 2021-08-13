@@ -76,7 +76,7 @@ const MilvusGrid: FC<MilvusGridType> = props => {
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid', { returnObjects: true });
+  const gridTrans = commonTrans('grid');
 
   const {
     rowCount = 10,

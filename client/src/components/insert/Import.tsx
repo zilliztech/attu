@@ -187,7 +187,7 @@ const InsertImport: FC<InsertImportProps> = ({
           {insertTrans('noteTitle')}
         </Typography>
         <ul className="noteList">
-          {insertTrans('notes', { returnObjects: true }).map(note => (
+          {insertTrans('notes').map(note => (
             <li key={note} className="text noteItem">
               <Typography>{note}</Typography>
             </li>

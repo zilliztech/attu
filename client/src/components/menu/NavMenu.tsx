@@ -149,7 +149,7 @@ const NavMenu: FC<NavMenuType> = props => {
   const [active, setActive] = useState<string>(defaultActive);
 
   const { t: commonTrans } = useTranslation();
-  const milvusTrans = commonTrans('milvus', { returnObjects: true });
+  const milvusTrans = commonTrans('milvus');
 
   useEffect(() => {
     if (defaultActive) {

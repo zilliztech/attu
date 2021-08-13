@@ -11,7 +11,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const { label, icon, className, value = '', ...others } = props;
   const classes = useStyles();
   const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy', { returnObjects: true });
+  const copyTrans = commonTrans('copy');
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {

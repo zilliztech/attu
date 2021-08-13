@@ -139,7 +139,7 @@ const EnhancedTable: FC<TableType> = props => {
   const containerRef = useRef(null);
 
   const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy', { returnObjects: true });
+  const copyTrans = commonTrans('copy');
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';

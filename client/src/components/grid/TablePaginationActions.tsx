@@ -43,7 +43,7 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid', { returnObjects: true });
+  const gridTrans = commonTrans('grid');
 
   const handleBackButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>

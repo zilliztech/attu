@@ -40,7 +40,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
   const classes = getStyles();
 
   const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy', { returnObjects: true });
+  const copyTrans = commonTrans('copy');
 
   return (
     <div className={`${classes.wrapper} ${wrapperClass}`}>

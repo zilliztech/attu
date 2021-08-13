@@ -54,7 +54,7 @@ const getStyles = makeStyles((theme: Theme) => ({
       top: 32,
       backgroundColor: 'transparent',
 
-      '& > div': {
+      '& .tab-indicator': {
         height: 1,
         width: '100%',
         maxWidth: 26,

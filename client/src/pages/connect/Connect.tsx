@@ -55,7 +55,7 @@ const Connect = () => {
   const classes = useStyles();
   const { t: commonTrans } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
-  const milvusTrans = commonTrans('milvus', { returnObjects: true });
+  const milvusTrans = commonTrans('milvus');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
 

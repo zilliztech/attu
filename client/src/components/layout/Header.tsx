@@ -62,9 +62,7 @@ const Header: FC<HeaderType> = props => {
   const { address, setAddress } = useContext(authContext);
   const history = useHistory();
   const { t: commonTrans } = useTranslation();
-  const statusTrans = commonTrans('status', {
-    returnObjects: true,
-  });
+  const statusTrans = commonTrans('status');
   const BackIcon = icons.back;
   const LogoutIcon = icons.logout;
 
