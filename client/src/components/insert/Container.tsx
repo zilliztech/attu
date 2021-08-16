@@ -126,9 +126,11 @@ const InsertContainer: FC<InsertContentProps> = ({
       }));
       setPartitionOptions(partitionOptions);
 
-      // set first partition option value as default value
-      const [{ value: defaultPartitionValue }] = partitionOptions;
-      setPartitionValue(defaultPartitionValue as string);
+      if (partitionOptions.length > 0) {
+        // set first partition option value as default value
+        const [{ value: defaultPartitionValue }] = partitionOptions;
+        setPartitionValue(defaultPartitionValue as string);
+      }
     }
   }, [collectionValue]);
 

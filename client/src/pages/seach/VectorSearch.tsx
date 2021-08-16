@@ -202,6 +202,12 @@ const VectorSearch = () => {
       // only vector type fields can be select
       const fieldOptions = getVectorFieldOptions(vectorFields, indexes);
       setFieldOptions(fieldOptions);
+      if (fieldOptions.length > 0) {
+        // set first option value as default field value
+        const [{ value: defaultFieldValue }] = fieldOptions;
+        setSelectedField(defaultFieldValue as string);
+      }
+
       // only non vector type fields can be advanced filter
       const filterFields = getNonVectorFieldsForFilter(nonVectorFields);
       setFilterFields(filterFields);
