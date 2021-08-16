@@ -1,4 +1,6 @@
 # Milvus insight
+[![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
+[![downloads](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)
 
 Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you to interact with your databases and manage your data with just few clicks.
 
