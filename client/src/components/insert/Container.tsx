@@ -116,6 +116,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     setTableHeads(heads);
   }, [previewData, isContainFieldNames]);
 
+  // every time selected collection value change, partition options and default value will change
   const fetchPartition = useCallback(async () => {
     if (collectionValue) {
       const partitions = await PartitionHttp.getPartitions(collectionValue);
@@ -124,6 +125,12 @@ const InsertContainer: FC<InsertContentProps> = ({
         value: p._name,
       }));
       setPartitionOptions(partitionOptions);
+
+      if (partitionOptions.length > 0) {
+        // set first partition option value as default value
+        const [{ value: defaultPartitionValue }] = partitionOptions;
+        setPartitionValue(defaultPartitionValue as string);
+      }
     }
   }, [collectionValue]);
 
@@ -310,8 +317,6 @@ const InsertContainer: FC<InsertContentProps> = ({
 
   const handleCollectionChange = (name: string) => {
     setCollectionValue(name);
-    // reset partition
-    setPartitionValue('');
   };
 
   const handleNext = () => {
