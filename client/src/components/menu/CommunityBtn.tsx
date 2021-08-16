@@ -10,8 +10,8 @@ import { ReactComponent as peopleIcon } from '../../assets/icons/people.svg';
 import { ReactComponent as slackIcon } from '../../assets/icons/slack.svg';
 import qrcodePath from '../../assets/imgs/wechat_qrcode.png';
 
-const slackLink = 'https://slack.milvus.io';
-const githubLink = 'https://github.com/milvus-io/milvus/discussions';
+const SLACK_LINK = 'https://slack.milvus.io';
+const GITHUB_LINK = 'https://github.com/milvus-io/milvus/discussions';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -19,6 +19,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     right: theme.spacing(3),
     width: theme.spacing(5),
+    zIndex: 1,
   },
   menuBtn: {
     border: '1px solid #E9E9ED',
@@ -150,12 +151,12 @@ const CommunityBtn = (props: any) => {
               </div>
               <Link
                 classes={{ root: classes.contentLink }}
-                href={slackLink}
+                href={SLACK_LINK}
                 underline='always'
                 target="_blank"
                 rel="noopener"
               >
-                {slackLink}
+                {SLACK_LINK}
               </Link>
 
               <SvgIcon viewBox="0 0 24 24" component={GitHubIcon} className={classes.icon} />
@@ -164,12 +165,12 @@ const CommunityBtn = (props: any) => {
               </div>
               <Link
                 classes={{ root: classes.contentLink }}
-                href={githubLink}
+                href={GITHUB_LINK}
                 underline='always'
                 target="_blank"
                 rel="noopener"
               >
-                {githubLink}
+                {GITHUB_LINK}
               </Link>
             </div>
           </div>
