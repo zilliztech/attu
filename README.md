@@ -41,7 +41,7 @@ Once you start the docker, open the browser, type `http://{ your machine IP }:80
 | HOST_URL   | http://192.168.0.1:8000 |   true   | Where Milvus insight container is installed |
 | MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL                 |
 
-Tip: **127.0.0.1 or localhost will not working when run by docker**
+Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
 #### Try the dev build
 
