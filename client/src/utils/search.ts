@@ -19,8 +19,8 @@ export const transferSearchResult = (
     .sort((a, b) => a.score - b.score)
     .map((r, index) => ({
       rank: index + 1,
-      distance: r.score,
       ...r,
+      distance: r.score,
     }));
 
   return resultView;
