@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { DialogType } from '../../context/Types';
+import { CodeViewData } from '../code/Types';
 export type CustomDialogType = DialogType & {
   onClose: () => void;
   containerClass?: string;
@@ -32,4 +33,7 @@ export type DialogContainerProps = {
   showActions?: boolean;
   showCancel?: boolean;
   leftActions?: ReactElement;
+  // code mode requirement
+  showCode?: boolean;
+  codeBlocksData?: CodeViewData[];
 };

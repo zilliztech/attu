@@ -12,9 +12,10 @@ import { Box, Button, Typography } from '@material-ui/core';
 import EnhancedTableHead from './TableHead';
 import EditableTableHead from './TableEditableHead';
 import { stableSort, getComparator } from './Utils';
-import Copy from '../../components/copy/Copy';
 import ActionBar from './ActionBar';
 import LoadingTable from './LoadingTable';
+import CopyButton from '../advancedSearch/CopyButton';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,6 +100,9 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: '0.5px',
     color: 'rgba(0, 0, 0, 0.6)',
   },
+  copyBtn: {
+    marginLeft: theme.spacing(0.5),
+  },
 }));
 
 const EnhancedTable: FC<TableType> = props => {
@@ -133,6 +137,9 @@ const EnhancedTable: FC<TableType> = props => {
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
+
+  const { t: commonTrans } = useTranslation();
+  const copyTrans = commonTrans('copy');
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -313,7 +320,11 @@ const EnhancedTable: FC<TableType> = props => {
                               )}
 
                               {needCopy && row[colDef.id] && (
-                                <Copy data={row[colDef.id]} />
+                                <CopyButton
+                                  label={copyTrans.label}
+                                  value={row[colDef.id]}
+                                  className={classes.copyBtn}
+                                />
                               )}
                             </TableCell>
                           );

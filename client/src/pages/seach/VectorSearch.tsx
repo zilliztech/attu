@@ -95,11 +95,28 @@ const VectorSearch = () => {
     return nonVectorFields.map(f => f._fieldName);
   }, [selectedCollection, collections]);
 
+  const primaryKeyField = useMemo(() => {
+    const selectedCollectionInfo = collections.find(
+      c => c._name === selectedCollection
+    );
+    const fields = selectedCollectionInfo?._fields || [];
+    return fields.find(f => f._isPrimaryKey)?._fieldName;
+  }, [selectedCollection, collections]);
+
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
-    // filter id and score
+    /**
+     * id represents primary key, score represents distance
+     * since we transfer score to distance in the view, and original field which is primary key has already in the table
+     * we filter 'id' and 'score' to avoid redundant data
+     */
     return searchResult && searchResult.length > 0
       ? Object.keys(searchResult[0])
-          .filter(item => item !== 'id' && item !== 'score')
+          .filter(item => {
+            // if primary key field name is id, don't filter it
+            const invalidItems =
+              primaryKeyField === 'id' ? ['score'] : ['id', 'score'];
+            return !invalidItems.includes(item);
+          })
           .map(key => ({
             id: key,
             align: 'left',
@@ -107,7 +124,7 @@ const VectorSearch = () => {
             label: key,
           }))
       : [];
-  }, [searchResult]);
+  }, [searchResult, primaryKeyField]);
 
   const {
     metricType,
@@ -367,6 +384,7 @@ const VectorSearch = () => {
             value={selectedCollection}
             onChange={(e: { target: { value: unknown } }) => {
               const collection = e.target.value;
+
               setSelectedCollection(collection as string);
               // every time selected collection changed, reset field
               setSelectedField('');
