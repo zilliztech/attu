@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginRight: theme.spacing(3),
   },
   tabPanel: {
+    flexBasis: 0,
     flexGrow: 1,
     marginTop: theme.spacing(2),
   },
@@ -52,7 +53,7 @@ const a11yProps = (index: number) => {
 };
 
 const CustomTabList: FC<ITabListProps> = props => {
-  const { tabs, activeIndex = 0, handleTabChange } = props;
+  const { tabs, activeIndex = 0, handleTabChange, wrapperClass = '' } = props;
   const classes = useStyles();
   const [value, setValue] = useState<number>(activeIndex);
 
@@ -66,10 +67,12 @@ const CustomTabList: FC<ITabListProps> = props => {
     <>
       <Tabs
         classes={{
-          root: classes.wrapper,
+          root: `${classes.wrapper} ${wrapperClass}`,
           indicator: classes.tab,
           flexContainer: classes.tabContainer,
         }}
+        // if not provide this property, Material will add single span element by default
+        TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={value}
         onChange={handleChange}
         aria-label="tabs"

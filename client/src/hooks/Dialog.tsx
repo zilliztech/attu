@@ -1,17 +1,20 @@
-import { useContext } from 'react';
+import { ReactElement, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import { rootContext } from '../context/Root';
 import { CollectionView } from '../pages/collections/Types';
 import { PartitionView } from '../pages/partitions/Types';
 import { StatusEnum } from '../components/status/Types';
+import { CollectionData } from '../pages/overview/collectionCard/Types';
 
 // handle release and load dialog
-export interface DialogHookProps {
+export interface LoadAndReleaseDialogHookProps {
   type: 'partition' | 'collection';
 }
 
-export const useDialogHook = (props: DialogHookProps) => {
+export const useLoadAndReleaseDialogHook = (
+  props: LoadAndReleaseDialogHookProps
+) => {
   const { type } = props;
   const { setDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
@@ -46,7 +49,7 @@ export const useDialogHook = (props: DialogHookProps) => {
   };
 
   const handleAction = (
-    data: PartitionView | CollectionView,
+    data: PartitionView | CollectionView | CollectionData,
     cb: (data: any) => Promise<any>
   ) => {
     const actionType: 'release' | 'load' =
@@ -67,5 +70,26 @@ export const useDialogHook = (props: DialogHookProps) => {
 
   return {
     handleAction,
+  };
+};
+
+export const useInsertDialogHook = () => {
+  const { setDialog } = useContext(rootContext);
+
+  const handleInsertDialog = (
+    // stepper container, contains all contents
+    component: ReactElement
+  ) => {
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component,
+      },
+    });
+  };
+
+  return {
+    handleInsertDialog,
   };
 };

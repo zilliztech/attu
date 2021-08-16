@@ -36,10 +36,13 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     onClick?: (arg0: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     disabled?: (data: any[]) => boolean;
     tooltip?: string;
+    // when disabled "disabledTooltip" will replace "tooltip"
+    disabledTooltip?: string;
     hidden?: boolean;
     type?: 'iconBtn' | 'buttton' | 'switch' | 'select' | 'groupSelect';
     position?: 'right' | 'left';
     component?: ReactElement;
+    btnVariant?: 'contained' | 'outlined' | 'text';
   };
 
 export type TableHeadType = {
@@ -51,6 +54,15 @@ export type TableHeadType = {
   colDefinitions: ColDefinitionsType[];
   onRequestSort: (e: any, p: string) => void;
   openCheckBox?: boolean;
+};
+
+export type TableEditableHeadType = {
+  editHeads: EditableHeads[];
+};
+
+export type EditableHeads = {
+  component: ReactElement;
+  value: string;
 };
 
 export type TableType = {
@@ -66,6 +78,11 @@ export type TableType = {
   noData?: string;
   showHoverStyle?: boolean;
   isLoading?: boolean;
+  setPageSize?: (size: number) => void;
+  headEditable?: boolean;
+  editHeads: EditableHeads[];
+  // with unit like '20px'
+  tableCellMaxWidth?: string;
 };
 
 export type ColDefinitionsType = {
@@ -77,6 +94,8 @@ export type ColDefinitionsType = {
   showActionCell?: boolean;
   isHoverAction?: boolean;
   notSort?: boolean;
+  // custom sort rule property, default is row id
+  sortBy?: string;
   onClick?: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     data?: any
@@ -93,6 +112,8 @@ export type ColDefinitionsType = {
 export type MilvusGridType = ToolBarType & {
   rowCount: number;
   rowsPerPage?: number;
+  // used to dynamic set page size by table container and row height
+  setRowsPerPage?: (size: number) => void;
   primaryKey: string;
   onChangePage?: (e: any, nextPageNum: number) => void;
   labelDisplayedRows?: (obj: any) => string;
@@ -109,6 +130,10 @@ export type MilvusGridType = ToolBarType & {
   disableSelect?: boolean;
   noData?: string;
   showHoverStyle?: boolean;
+  headEditable?: boolean;
+  editHeads?: EditableHeads[];
+  // with unit like '20px'
+  tableCellMaxWidth?: string;
 };
 
 export type ActionBarType = {

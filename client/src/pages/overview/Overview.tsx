@@ -1,15 +1,18 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import { StatusEnum } from '../../components/status/Types';
+import { rootContext } from '../../context/Root';
+import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
+import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import { formatNumber } from '../../utils/Common';
 import CollectionCard from './collectionCard/CollectionCard';
 import { CollectionData } from './collectionCard/Types';
 import StatisticsCard from './statisticsCard/StatisticsCard';
-import { StatisticsCardProps } from './statisticsCard/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   collectionTitle: {
@@ -27,78 +30,97 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
+  const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const classes = useStyles();
-  const { t } = useTranslation('overview');
+  const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: successTrans } = useTranslation('success');
+  const [statistics, setStatistics] = useState<{
+    collectionCount: number;
+    totalData: number;
+  }>({
+    collectionCount: 0,
+    totalData: 0,
+  });
 
-  const mockStatistics: StatisticsCardProps = {
-    data: [
-      {
-        label: t('load'),
-        value: formatNumber(4337),
-        valueColor: '#07d197',
-      },
-      {
-        label: t('all'),
-        value: formatNumber(30000),
-        valueColor: '#06aff2',
-      },
-      {
-        label: t('data'),
-        value: t('rows', { number: formatNumber(209379100) }) as string,
-        valueColor: '#0689d2',
-      },
-    ],
+  const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
+  const { openSnackBar } = useContext(rootContext);
+
+  const fetchData = useCallback(async () => {
+    const res = await CollectionHttp.getStatistics();
+    const collections = await CollectionHttp.getCollections();
+    const loadCollections = collections.filter(c => c._isLoaded);
+    setStatistics(res);
+    setLoadCollections(loadCollections);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const fetchRelease = async (data: CollectionData) => {
+    const name = data._name;
+    const res = await CollectionHttp.releaseCollection(name);
+    openSnackBar(
+      successTrans('release', { name: collectionTrans('collection') })
+    );
+    fetchData();
+    return res;
   };
 
-  const mockCollections: CollectionData[] = [
-    {
-      name: 'collection1',
-      id: 'c1',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection2',
-      id: 'c2',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection3',
-      id: 'c3',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection4',
-      id: 'c4',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection5',
-      id: 'c5',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-    {
-      name: 'collection6',
-      id: 'c6',
-      status: StatusEnum.loaded,
-      rowCount: 2,
-    },
-  ];
+  const handleRelease = (data: CollectionData) => {
+    handleAction(data, fetchRelease);
+  };
+
+  const statisticsData = useMemo(() => {
+    return {
+      data: [
+        {
+          label: overviewTrans('load'),
+          value: formatNumber(loadCollections.length),
+          valueColor: '#07d197',
+        },
+        {
+          label: overviewTrans('all'),
+          value: formatNumber(statistics.collectionCount),
+          valueColor: '#06aff2',
+        },
+        {
+          label: overviewTrans('data'),
+          value: overviewTrans('rows', {
+            number: formatNumber(statistics.totalData),
+          }) as string,
+          valueColor: '#0689d2',
+        },
+      ],
+    };
+  }, [overviewTrans, statistics, loadCollections]);
+
+  const loadCollectionsData: CollectionData[] = useMemo(() => {
+    return loadCollections.map(v => ({
+      _id: v._id,
+      _name: v._name,
+      _status: StatusEnum.loaded,
+      _rowCount: v._rowCount,
+    }));
+  }, [loadCollections]);
+
   const CollectionIcon = icons.navCollection;
 
   return (
     <section className="page-wrapper">
-      <StatisticsCard data={mockStatistics.data} />
-      <Typography className={classes.collectionTitle}>{t('load')}</Typography>
-      {mockCollections.length > 0 ? (
+      <StatisticsCard data={statisticsData.data} />
+      <Typography className={classes.collectionTitle}>
+        {overviewTrans('load')}
+      </Typography>
+      {loadCollectionsData.length > 0 ? (
         <div className={classes.cardsWrapper}>
-          {mockCollections.map(collection => (
-            <CollectionCard key={collection.id} data={collection} />
+          {loadCollectionsData.map(collection => (
+            <CollectionCard
+              key={collection._id}
+              data={collection}
+              handleRelease={handleRelease}
+            />
           ))}
         </div>
       ) : (

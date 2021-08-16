@@ -16,34 +16,34 @@ import CustomDialogTitle from './CustomDialogTitle';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      // maxWidth: '480px',
-      minWidth: '480px',
-      // width: '100%',
-      borderRadius: '8px',
+      minWidth: 480,
+      borderRadius: 8,
       padding: 0,
+
+      backgroundColor: 'transparent',
     },
     noticePaper: {
-      maxWidth: '480px',
+      backgroundColor: '#fff',
+      maxWidth: 480,
     },
     paperSm: {
       maxWidth: '80%',
     },
     dialogContent: {
-      marginTop: theme.spacing(4),
+      marginTop: theme.spacing(2),
     },
     title: {
-      // padding: theme.spacing(4),
       '& p': {
-        fontWeight: '500',
+        fontWeight: 500,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        maxWidth: '300px',
-        fontSize: '20px',
+        maxWidth: 300,
+        fontSize: 20,
       },
     },
     padding: {
-      padding: theme.spacing(4),
+      padding: theme.spacing(3, 4, 4),
     },
     cancel: {
       color: theme.palette.common.black,

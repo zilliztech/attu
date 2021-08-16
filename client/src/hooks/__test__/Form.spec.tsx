@@ -1,10 +1,5 @@
-import { render } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { IForm, useFormValidation } from '../Form';
-
-// jest.mock('react', () => ({
-//   ...jest.requireActual('react'),
-//   useState: jest.fn().mockReturnValue([[], jest.fn]),
-// }));
 
 const mockForm: IForm[] = [
   {
@@ -19,42 +14,38 @@ const mockForm: IForm[] = [
   },
 ];
 
-const setupUseFormValidation = () => {
-  const returnVal: any = {};
-
-  const TestComponent = () => {
-    Object.assign(returnVal, useFormValidation(mockForm));
-    return null;
-  };
-
-  render(<TestComponent />);
-  return returnVal;
-};
-
 test('test useFormValidation hook', () => {
-  const { checkFormValid, checkIsValid, validation } = setupUseFormValidation();
+  const { result } = renderHook(() => useFormValidation(mockForm));
+  const { checkFormValid, checkIsValid, validation } = result.current;
 
   expect(checkFormValid(mockForm)).toBeFalsy();
   expect(Object.keys(validation)).toEqual(['username']);
-  expect(
-    checkIsValid({
+
+  act(() => {
+    const { result } = checkIsValid({
       value: '',
       key: 'username',
       rules: [{ rule: 'require', errorText: 'name is required' }],
-    }).result
-  ).toBeTruthy();
-  expect(
-    checkIsValid({
+    });
+
+    expect(result).toBeTruthy();
+  });
+
+  act(() => {
+    const { result } = checkIsValid({
       value: '11111',
       key: 'email',
       rules: [{ rule: 'email', errorText: 'email is invalid' }],
-    }).result
-  ).toBeTruthy();
-  expect(
-    checkIsValid({
+    });
+    expect(result).toBeTruthy();
+  });
+
+  act(() => {
+    const { result } = checkIsValid({
       value: '12345678aQ',
       key: 'password',
       rules: [{ rule: 'password', errorText: 'password is invalid' }],
-    }).result
-  ).toBeTruthy();
+    });
+    expect(result).toBeTruthy();
+  });
 });

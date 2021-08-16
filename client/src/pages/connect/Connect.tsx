@@ -13,6 +13,8 @@ import { authContext } from '../../context/Auth';
 import { MilvusHttp } from '../../http/Milvus';
 import { rootContext } from '../../context/Root';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
+import { formatAddress } from '../../utils/Format';
+// import { io } from "socket.io-client";
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -24,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   titleWrapper: {
     display: 'flex',
+    alignItems: 'center',
     padding: theme.spacing(3),
     margin: '0 auto',
 
@@ -42,20 +45,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(3, 0, 0.5),
   },
 }));
+const MILVUS_URL =
+  ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';
 
 const Connect = () => {
   const history = useHistory();
   const { setAddress } = useContext(authContext);
   const { openSnackBar } = useContext(rootContext);
   const classes = useStyles();
-  const { t } = useTranslation();
+  const { t: commonTrans } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
-  const milvusTrans: { [key in string]: string } = t('milvus');
+  const milvusTrans = commonTrans('milvus');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
 
   const [form, setForm] = useState({
-    address: '',
+    address: MILVUS_URL,
   });
   const checkedForm = useMemo(() => {
     const { address } = form;
@@ -70,10 +75,11 @@ const Connect = () => {
   };
 
   const handleConnect = async () => {
-    await MilvusHttp.connect(form.address);
+    const address = formatAddress(form.address);
+    await MilvusHttp.connect(address);
     openSnackBar(successTrans('connect'));
-    setAddress(form.address);
-    window.localStorage.setItem(MILVUS_ADDRESS, form.address);
+    setAddress(address);
+    window.localStorage.setItem(MILVUS_ADDRESS, address);
     history.push('/');
   };
 
@@ -91,7 +97,35 @@ const Connect = () => {
         errorText: warningTrans('required', { name: milvusTrans.address }),
       },
     ],
+    defaultValue: form.address,
   };
+
+  // test code for socket
+  // useEffect(() => {
+  //   const socket = io('http://localhost:3002');
+  //   socket.on('connect', function () {
+  //     console.log('Connected');
+
+  //     socket.emit('identity', 0, (res: any) =>
+  //       console.log(res));
+
+  //     socket.emit('events', { test: 'events' });
+
+  //     socket.emit('senddata', { test: 'senddata' });
+  //   });
+  //   socket.on('events', (data: any) => {
+  //     console.log('event', data);
+  //   });
+  //   socket.on('senddata', (data: any) => {
+  //     console.log('senddata', data);
+  //   });
+  //   socket.on('exception', (data: any) => {
+  //     console.log('event', data);
+  //   });
+  //   socket.on('disconnect', () => {
+  //     console.log('Disconnected');
+  //   });
+  // }, []);
 
   return (
     <ConnectContainer>
@@ -110,7 +144,7 @@ const Connect = () => {
         />
         <CustomButton
           variant="contained"
-          disabled={disabled}
+          disabled={form.address ? false : disabled}
           onClick={handleConnect}
         >
           {btnTrans('connect')}

@@ -33,3 +33,31 @@ export const formatNumber = (number: number): string => {
 export const throwErrorForDev = (text: string) => {
   throw new Error(text);
 };
+
+/**
+ *
+ * @param obj key value pair Array
+ * @param key the target you want to find.
+ * @returns undefined | string
+ */
+export const findKeyValue = (
+  obj: { key: string; value: string }[],
+  key: string
+) => obj.find(v => v.key === key)?.value;
+
+export const generateHashCode = (source: string) => {
+  let hash = 0,
+    i,
+    chr;
+  if (source.length === 0) return hash;
+  for (i = 0; i < source.length; i++) {
+    chr = source.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash.toString();
+};
+
+export const generateIdByHash = (salt?: string) => {
+  return generateHashCode(`${new Date().getTime().toString()}-${salt}`);
+};

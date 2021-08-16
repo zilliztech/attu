@@ -23,7 +23,7 @@ const StatusIcon: FC<StatusIconType> = props => {
       case 'creating':
         return (
           <CircularProgress
-            size={24}
+            size={20}
             thickness={8}
             classes={{ svg: classes.svg }}
           />

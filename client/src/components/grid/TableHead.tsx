@@ -74,20 +74,24 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
             key={headCell.id}
             align={headCell.align || 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            sortDirection={
+              orderBy === (headCell.sortBy || headCell.id) ? order : false
+            }
             className={classes.tableCell}
           >
             {headCell.label && !headCell.notSort ? (
               <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
+                active={orderBy === (headCell.sortBy || headCell.id)}
+                direction={
+                  orderBy === (headCell.sortBy || headCell.id) ? order : 'asc'
+                }
+                onClick={createSortHandler(headCell.sortBy || headCell.id)}
               >
                 <Typography variant="body1" className={classes.tableHeader}>
                   {headCell.label}
                 </Typography>
 
-                {orderBy === headCell.id ? (
+                {orderBy === (headCell.sortBy || headCell.id) ? (
                   <Typography className={classes.visuallyHidden}>
                     {order === 'desc'
                       ? 'sorted descending'

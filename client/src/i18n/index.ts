@@ -19,6 +19,12 @@ import partitionCn from './cn/partition';
 import partitionEn from './en/partition';
 import successEn from './en/success';
 import successCn from './cn/success';
+import indexEn from './en/index';
+import indexCn from './cn/index';
+import insertEn from './en/insert';
+import insertCn from './cn/insert';
+import searchEn from './en/search';
+import searchCn from './cn/search';
 
 export const resources = {
   cn: {
@@ -31,6 +37,9 @@ export const resources = {
     dialog: dialogCn,
     partition: partitionCn,
     success: successCn,
+    index: indexCn,
+    insert: insertCn,
+    search: searchCn,
   },
   en: {
     translation: commonEn,
@@ -42,6 +51,9 @@ export const resources = {
     dialog: dialogEn,
     partition: partitionEn,
     success: successEn,
+    index: indexEn,
+    insert: insertEn,
+    search: searchEn,
   },
 };
 

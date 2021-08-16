@@ -18,7 +18,7 @@ const CreatePartition: FC<PartitionCreateProps> = ({
   handleCreate,
   handleClose,
 }) => {
-  const { t } = useTranslation('partition');
+  const { t: partitionTrans } = useTranslation('partition');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
 
@@ -38,7 +38,7 @@ const CreatePartition: FC<PartitionCreateProps> = ({
   };
 
   const nameInputConfig: ITextfieldConfig = {
-    label: t('name'),
+    label: partitionTrans('name'),
     variant: 'filled',
     key: 'name',
     fullWidth: true,
@@ -47,11 +47,11 @@ const CreatePartition: FC<PartitionCreateProps> = ({
     validations: [
       {
         rule: 'require',
-        errorText: warningTrans('required', { name: t('name') }),
+        errorText: warningTrans('required', { name: partitionTrans('name') }),
       },
       {
         rule: 'partitionName',
-        errorText: t('nameWarning'),
+        errorText: partitionTrans('nameWarning'),
       },
     ],
   };
@@ -62,8 +62,8 @@ const CreatePartition: FC<PartitionCreateProps> = ({
 
   return (
     <DialogTemplate
-      title={t('createTitle')}
-      handleCancel={handleClose}
+      title={partitionTrans('createTitle')}
+      handleClose={handleClose}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreatePartition}
       confirmDisabled={disabled}

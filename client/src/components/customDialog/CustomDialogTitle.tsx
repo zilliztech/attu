@@ -14,12 +14,12 @@ const getStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  // closeButton: {
-  //   padding: theme.spacing(1),
-  // },
+  title: {
+    fontWeight: 500,
+  },
   icon: {
     fontSize: '24px',
-    color: '#010e29',
+    color: theme.palette.milvusDark.main,
 
     cursor: 'pointer',
   },
@@ -27,10 +27,17 @@ const getStyles = makeStyles((theme: Theme) => ({
 
 interface IProps extends DialogTitleProps {
   onClose?: () => void;
+  showCloseIcon?: boolean;
 }
 
 const CustomDialogTitle = (props: IProps) => {
-  const { children, classes = { root: '' }, onClose, ...other } = props;
+  const {
+    children,
+    classes = { root: '' },
+    onClose,
+    showCloseIcon = true,
+    ...other
+  } = props;
   const innerClass = getStyles();
 
   const ClearIcon = icons.clear;
@@ -41,9 +48,15 @@ const CustomDialogTitle = (props: IProps) => {
       className={`${innerClass.root} ${classes.root}`}
       {...other}
     >
-      <Typography variant="h5">{children}</Typography>
-      {onClose ? (
-        <ClearIcon classes={{ root: innerClass.icon }} onClick={onClose} />
+      <Typography variant="h4" className={innerClass.title}>
+        {children}
+      </Typography>
+      {showCloseIcon && onClose ? (
+        <ClearIcon
+          data-testid="clear-icon"
+          classes={{ root: innerClass.icon }}
+          onClick={onClose}
+        />
       ) : null}
     </MuiDialogTitle>
   );

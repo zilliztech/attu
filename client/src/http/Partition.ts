@@ -1,17 +1,18 @@
+import dayjs from 'dayjs';
 import { StatusEnum } from '../components/status/Types';
 import {
   PartitionManageParam,
   PartitionParam,
-  PartitionView,
+  PartitionData,
 } from '../pages/partitions/Types';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 
-export class PartitionHttp extends BaseModel implements PartitionView {
+export class PartitionHttp extends BaseModel implements PartitionData {
   private id!: string;
   private name!: string;
   private rowCount!: string;
-  private status!: StatusEnum;
+  private createdTime!: string;
 
   constructor(props: {}) {
     super(props);
@@ -51,6 +52,18 @@ export class PartitionHttp extends BaseModel implements PartitionView {
     });
   }
 
+  static releasePartition(param: PartitionParam) {
+    const { collectionName, partitionNames } = param;
+    const path = `${this.URL_BASE}/release`;
+    return super.update({
+      path,
+      data: {
+        collection_name: collectionName,
+        partition_names: partitionNames,
+      },
+    });
+  }
+
   get _id() {
     return this.id;
   }
@@ -70,5 +83,13 @@ export class PartitionHttp extends BaseModel implements PartitionView {
   get _status() {
     // @TODO replace mock data
     return StatusEnum.unloaded;
+  }
+
+  // Befor milvus-2.0-rc3  will return '0'.
+  // If milvus is stable, we can remote this condition/
+  get _createdTime(): string {
+    return this.createdTime && this.createdTime !== '0'
+      ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
+      : '';
   }
 }

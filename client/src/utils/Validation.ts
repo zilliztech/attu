@@ -1,4 +1,4 @@
-import { METRIC_TYPES_VALUES } from '../consts/Milvus';
+import { MetricType, METRIC_TYPES_VALUES } from '../consts/Milvus';
 
 export type ValidType =
   | 'email'
@@ -13,29 +13,38 @@ export type ValidType =
   | 'collectionName'
   | 'dimension'
   | 'multiple'
-  | 'partitionName';
+  | 'partitionName'
+  | 'firstCharacter'
+  | 'specValueOrRange';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
   rule: ValidType;
 }
 export interface IExtraParam {
-  // used for confirm type
-  compareValue?: string;
+  // used for confirm or any compare type
+  compareValue?: string | number;
   // used for length type
   min?: number;
   max?: number;
   type?: 'string' | 'number';
 
   // used for dimension
-  metricType?: number;
+  metricType?: MetricType;
   multipleNumber?: number;
+
+  // used for check start item
+  invalidTypes?: TypeEnum[];
 }
 export type CheckMap = {
   [key in ValidType]: boolean;
 };
 
-export const checkIsEmpty = (value: string): boolean => {
+export enum TypeEnum {
+  'number' = 'number',
+}
+
+export const checkEmptyValid = (value: string): boolean => {
   return value.trim() !== '';
 };
 
@@ -56,13 +65,13 @@ export const checkPasswordStrength = (value: string): boolean => {
 };
 
 export const checkRange = (param: {
-  value: string;
+  value: string | number;
   min?: number;
   max?: number;
   type?: 'string' | 'number';
 }): boolean => {
   const { value, min = 0, max = 0, type } = param;
-  const length = type === 'number' ? Number(value) : value.length;
+  const length = type === 'number' ? Number(value) : (value as string).length;
 
   let result = true;
   const conditionMap = {
@@ -103,20 +112,47 @@ export const checkIpOrCIDR = (value: string): boolean => {
 };
 
 // collection name can only be combined with number, letter or _
-// name max length 255 and can't start with number
 export const checkCollectionName = (value: string): boolean => {
-  const length = value.length;
-  if (length > 254) {
-    return false;
-  }
-
-  const start = Number(value[0]);
-  if (!isNaN(start)) {
-    return false;
-  }
-
-  const re = /^[0-9,a-z,A-Z$_]+$/;
+  const re = /^[0-9,a-z,A-Z_]+$/;
   return re.test(value);
+};
+
+/**
+ * check data type
+ * @param type data types, like string, number
+ * @param value
+ * @returns whether value's value is equal to param type
+ */
+export const checkType = (type: TypeEnum, value: string): boolean => {
+  switch (type) {
+    case TypeEnum.number:
+      return !isNaN(Number(value));
+    default:
+      return true;
+  }
+};
+
+/**
+ * check input first character
+ * @param value
+ * @param invalidTypes
+ * @returns whether start letter type not belongs to invalid types
+ */
+export const checkFirstCharacter = (param: {
+  value: string;
+  invalidTypes?: TypeEnum[];
+}): boolean => {
+  const { value, invalidTypes } = param;
+  const start = value[0];
+  const types = invalidTypes || [];
+  for (let type of types) {
+    const result = checkType(type, start);
+    if (result) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const checkPartitionName = (value: string): boolean => {
@@ -133,7 +169,7 @@ export const checkMultiple = (param: {
 
 export const checkDimension = (param: {
   value: string;
-  metricType?: number;
+  metricType?: MetricType;
   multipleNumber?: number;
 }): boolean => {
   const { value, metricType, multipleNumber } = param;
@@ -146,13 +182,30 @@ export const checkDimension = (param: {
   return checkMultiple({ value, multipleNumber });
 };
 
+/**
+ * function to check whether value(type: number) is equal to specified value or in valid range
+ * @param param specValue and params checkRange function needed
+ * @returns whether input is valid
+ */
+export const checkSpecValueOrRange = (param: {
+  value: number;
+  min: number;
+  max: number;
+  compareValue: number;
+}): boolean => {
+  const { value, min, max, compareValue } = param;
+  return (
+    value === compareValue || checkRange({ min, max, value, type: 'number' })
+  );
+};
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
 
   const checkMap = {
     email: checkEmail(value),
-    require: checkIsEmpty(value),
+    require: checkEmptyValid(value),
     confirm: value === extraParam?.compareValue,
     range: checkRange({
       value,
@@ -176,6 +229,16 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       multipleNumber: extraParam?.multipleNumber,
     }),
     partitionName: checkPartitionName(value),
+    firstCharacter: checkFirstCharacter({
+      value,
+      invalidTypes: extraParam?.invalidTypes,
+    }),
+    specValueOrRange: checkSpecValueOrRange({
+      value: Number(value),
+      min: extraParam?.min || 0,
+      max: extraParam?.max || 0,
+      compareValue: Number(extraParam.compareValue) || 0,
+    }),
   };
 
   return checkMap[rule];

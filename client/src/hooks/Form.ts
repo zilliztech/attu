@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IValidation } from '../components/customInput/Types';
-import { checkIsEmpty, getCheckResult } from '../utils/Validation';
+import { checkEmptyValid, getCheckResult } from '../utils/Validation';
 
 export interface IForm {
   key: string;
@@ -51,7 +51,10 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
   // validation detail about form item
   const [validation, setValidation] = useState(initValidation);
   // overall validation result to control following actions
-  const [disabled, setDisabled] = useState<boolean>(true);
+  const isOverallValid = Object.values(validation).every(
+    v => !(v as IValidationItem).result
+  );
+  const [disabled, setDisabled] = useState<boolean>(!isOverallValid);
 
   const checkIsValid = (param: ICheckValidParam): IValidationItem => {
     const { value, key, rules } = param;
@@ -95,7 +98,7 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
 
   const checkFormValid = (form: IForm[]): boolean => {
     const requireCheckItems = form.filter(f => f.needCheck);
-    if (requireCheckItems.some(item => !checkIsEmpty(item.value))) {
+    if (requireCheckItems.some(item => !checkEmptyValid(item.value))) {
       return false;
     }
 

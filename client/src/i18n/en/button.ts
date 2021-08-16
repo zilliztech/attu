@@ -11,6 +11,11 @@ const btnTrans = {
   delete: 'Delete',
   release: 'Release',
   load: 'Load',
+  insert: 'Import Data',
+  next: 'Next',
+  previous: 'Previous',
+  done: 'Done',
+  vectorSearch: 'Vector search',
 };
 
 export default btnTrans;

@@ -2,11 +2,12 @@ const collectionTrans = {
   noLoadData: 'No Loaded Collection',
   noData: 'No Collection',
 
-  rowCount: 'Row Count',
-  tooltip: 'data in one row',
+  rowCount: 'Entity Count',
+  tooltip: 'data in one entity',
 
   create: 'Create Collection',
   delete: 'delete',
+  deleteTooltip: 'Please select at least one item to delete.',
 
   collection: 'Collection',
 
@@ -15,18 +16,26 @@ const collectionTrans = {
   name: 'Name',
   status: 'Status',
   desc: 'Description',
+  createdTime: 'Created Time',
 
   // create dialog
   createTitle: 'Create Collection',
   general: '1. General Info',
-  structure: '2. Define Structure',
+  schema: '2. Define Schema',
   description: 'Description (Optional)',
   fieldType: 'Field Type',
   vectorFieldType: 'Vector Field Type',
   fieldName: 'Field Name',
   autoId: 'Auto ID',
   dimension: 'Dimension',
+  dimensionTooltip: 'Only vector type has dimension',
+  dimensionMutipleWarning: 'Dimension should be 8 multiple',
+  dimensionPositiveWarning: 'Dimension should be positive number',
   newBtn: 'add new field',
+  nameLengthWarning: 'Name length should be less than 256',
+  nameContentWarning: 'Name can only contain numbers, letters, and underscores',
+  nameFirstLetterWarning:
+    'Name first character must be underscore or character(a~z, A~Z)',
 
   // load dialog
   loadTitle: 'Load Collection',
@@ -46,7 +55,7 @@ const collectionTrans = {
 
   // collection tabs
   partitionTab: 'Partitions',
-  structureTab: 'Structure',
+  schemaTab: 'Schema',
 };
 
 export default collectionTrans;

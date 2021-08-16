@@ -95,6 +95,7 @@ export interface IAdornmentConfig {
 
 export type SearchType = {
   searchText?: string;
+  placeholder?: string;
   onClear?: () => void;
   onSearch: (value: string) => void;
 };

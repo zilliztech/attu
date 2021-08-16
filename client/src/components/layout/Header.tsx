@@ -61,8 +61,8 @@ const Header: FC<HeaderType> = props => {
   const { navInfo } = useContext(navContext);
   const { address, setAddress } = useContext(authContext);
   const history = useHistory();
-  const { t } = useTranslation();
-  const statusTrans: { [key in string]: string } = t('status');
+  const { t: commonTrans } = useTranslation();
+  const statusTrans = commonTrans('status');
   const BackIcon = icons.back;
   const LogoutIcon = icons.logout;
 

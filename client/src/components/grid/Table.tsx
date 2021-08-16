@@ -10,17 +10,19 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { TableType } from './Types';
 import { Box, Button, Typography } from '@material-ui/core';
 import EnhancedTableHead from './TableHead';
+import EditableTableHead from './TableEditableHead';
 import { stableSort, getComparator } from './Utils';
-import Copy from '../../components/copy/Copy';
 import ActionBar from './ActionBar';
 import LoadingTable from './LoadingTable';
+import CopyButton from '../advancedSearch/CopyButton';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    // minHeight: '29vh',
     width: '100%',
     flexGrow: 1,
-    // flexBasis: 0,
+    /* set flex basis to make child item height 100% work on Safari */
+    flexBasis: 0,
 
     // change scrollbar style
     '&::-webkit-scrollbar': {
@@ -78,28 +80,28 @@ const useStyles = makeStyles(theme => ({
     },
   },
   cell: {
+    borderBottom: '1px solid #e9e9ed',
+
     '& p': {
       display: 'inline-block',
       verticalAlign: 'middle',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      maxWidth: '300px',
-      fontSize: '12.8px',
+      maxWidth: (props: { tableCellMaxWidth: string }) =>
+        props.tableCellMaxWidth,
+      fontSize: '14px',
+      lineHeight: '20px',
     },
-    '& button': {
-      textTransform: 'inherit',
-      justifyContent: 'flex-start',
-    },
-    // '& svg': {
-    //   color: 'rgba(0, 0, 0, 0.33)',
-    // },
   },
   noData: {
     paddingTop: theme.spacing(6),
     textAlign: 'center',
     letterSpacing: '0.5px',
     color: 'rgba(0, 0, 0, 0.6)',
+  },
+  copyBtn: {
+    marginLeft: theme.spacing(0.5),
   },
 }));
 
@@ -112,19 +114,32 @@ const EnhancedTable: FC<TableType> = props => {
     rows = [],
     colDefinitions,
     primaryKey,
+    // whether show checkbox in the first column
+    // set true as default
     openCheckBox = true,
     disableSelect,
     noData,
-    showHoverStyle,
+    // whether change table row background color when mouse hover
+    // set true as default
+    showHoverStyle = true,
     isLoading,
+    setPageSize,
+    headEditable = false,
+    // editable heads required param, contains heads components and its value
+    editHeads = [],
+    // if table cell max width not be passed, table row will use 300px as default
+    tableCellMaxWidth = '300px',
   } = props;
-  const classes = useStyles();
+  const classes = useStyles({ tableCellMaxWidth });
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState<string>('');
   const [tableMouseStatus, setTableMouseStatus] = React.useState<boolean[]>([]);
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
+
+  const { t: commonTrans } = useTranslation();
+  const copyTrans = commonTrans('copy');
 
   const handleRequestSort = (event: any, property: string) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -139,6 +154,25 @@ const EnhancedTable: FC<TableType> = props => {
     setLoadingRowCount(count);
   }, []);
 
+  useEffect(() => {
+    if (setPageSize) {
+      const containerHeight: number = (containerRef.current as any)!
+        .offsetHeight;
+
+      // table default row height is 54
+      // if pass component as row item, its max height should be 54 too
+      const rowHeight = 54;
+      // table header default height is 57
+      const tableHeaderHeight: number = 57;
+      if (rowHeight > 0) {
+        const pageSize = Math.floor(
+          (containerHeight - tableHeaderHeight) / rowHeight
+        );
+        setPageSize(pageSize);
+      }
+    }
+  }, [setPageSize]);
+
   return (
     <TableContainer ref={containerRef} className={classes.root}>
       <Box height="100%" className={classes.box}>
@@ -149,16 +183,20 @@ const EnhancedTable: FC<TableType> = props => {
           size="medium"
           aria-label="enhanced table"
         >
-          <EnhancedTableHead
-            colDefinitions={colDefinitions}
-            numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={onSelectedAll}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-            openCheckBox={openCheckBox}
-          />
+          {!headEditable ? (
+            <EnhancedTableHead
+              colDefinitions={colDefinitions}
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={onSelectedAll}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+              openCheckBox={openCheckBox}
+            />
+          ) : (
+            <EditableTableHead editHeads={editHeads} />
+          )}
           {!isLoading && (
             <TableBody>
               {rows && rows.length ? (
@@ -237,7 +275,7 @@ const EnhancedTable: FC<TableType> = props => {
                           ) : (
                             <TableCell
                               key={'cell' + row[primaryKey] + i}
-                              padding={i === 0 ? 'none' : 'default'}
+                              // padding={i === 0 ? 'none' : 'default'}
                               align={colDef.align || 'left'}
                               className={`${classes.cell} ${classes.tableCell}`}
                               style={cellStyle}
@@ -282,7 +320,11 @@ const EnhancedTable: FC<TableType> = props => {
                               )}
 
                               {needCopy && row[colDef.id] && (
-                                <Copy data={row[colDef.id]} />
+                                <CopyButton
+                                  label={copyTrans.label}
+                                  value={row[colDef.id]}
+                                  className={classes.copyBtn}
+                                />
                               )}
                             </TableCell>
                           );
@@ -295,7 +337,11 @@ const EnhancedTable: FC<TableType> = props => {
                 <tr>
                   <td
                     className={classes.noData}
-                    colSpan={colDefinitions.length}
+                    colSpan={
+                      openCheckBox
+                        ? colDefinitions.length + 1
+                        : colDefinitions.length
+                    }
                   >
                     {noData}
                   </td>

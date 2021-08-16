@@ -3,33 +3,33 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomTabList from '../../components/customTabList/CustomTabList';
 import { ITab } from '../../components/customTabList/Types';
-import Partitions from '../partitions/partitions';
+import Partitions from '../partitions/Partitions';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
+import Schema from '../schema/Schema';
 
 enum TAB_EMUM {
+  'schema',
   'partition',
-  'structure',
 }
 
 const Collection = () => {
-  const { collectionName = '' } =
-    useParams<{
-      collectionName: string;
-    }>();
+  const { collectionName = '' } = useParams<{
+    collectionName: string;
+  }>();
 
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
 
   const history = useHistory();
   const location = useLocation();
 
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
 
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
       ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_EMUM.partition };
+      : { activeIndex: TAB_EMUM.schema };
     return Number(activeIndex);
   }, [location]);
 
@@ -40,12 +40,12 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: t('partitionTab'),
-      component: <Partitions collectionName={collectionName} />,
+      label: collectionTrans('schemaTab'),
+      component: <Schema collectionName={collectionName} />,
     },
     {
-      label: t('structureTab'),
-      component: <section>structure section</section>,
+      label: collectionTrans('partitionTab'),
+      component: <Partitions collectionName={collectionName} />,
     },
   ];
 

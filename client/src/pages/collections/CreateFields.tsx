@@ -1,11 +1,13 @@
 import { makeStyles, Theme, TextField, IconButton } from '@material-ui/core';
-import { FC, Fragment, ReactElement } from 'react';
+import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import icons from '../../components/icons/Icons';
+import { PRIMARY_KEY_FIELD } from '../../consts/Milvus';
 import { generateId } from '../../utils/Common';
 import { getCreateFieldType } from '../../utils/Format';
+import { checkEmptyValid, getCheckResult } from '../../utils/Validation';
 import {
   ALL_OPTIONS,
   AUTO_ID_OPTIONS,
@@ -19,12 +21,23 @@ import {
 } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  optionalWrapper: {
+    width: '100%',
+    paddingRight: theme.spacing(1),
+    maxHeight: '240px',
+    overflowY: 'auto',
+  },
   rowWrapper: {
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    gap: '10px',
+    // only Safari 14.1+ support flexbox gap
+    // gap: '10px',
     width: '100%',
+
+    '& > *': {
+      marginLeft: '10px',
+    },
 
     '& .dimension': {
       maxWidth: '160px',
@@ -35,9 +48,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   primaryInput: {
     maxWidth: '160px',
+
+    '&:first-child': {
+      marginLeft: 0,
+    },
   },
   select: {
     width: '160px',
+    marginBottom: '22px',
+
+    '&:first-child': {
+      marginLeft: 0,
+    },
   },
   descInput: {
     minWidth: '270px',
@@ -47,81 +69,223 @@ const useStyles = makeStyles((theme: Theme) => ({
     textTransform: 'uppercase',
   },
   iconBtn: {
+    marginLeft: 0,
+
     padding: 0,
     width: '20px',
     height: '20px',
   },
-  mb3: {
-    marginBottom: theme.spacing(3),
-  },
   mb2: {
     marginBottom: theme.spacing(2),
   },
+  helperText: {
+    lineHeight: '20px',
+    margin: theme.spacing(0.25, 0),
+    marginLeft: '12px',
+  },
 }));
+
+type inputType = {
+  label: string;
+  value: string | number | null;
+  handleChange?: (value: string) => void;
+  className?: string;
+  inputClassName?: string;
+  isReadOnly?: boolean;
+  validate?: (value: string | number | null) => string;
+  type?: 'number' | 'text';
+};
 
 const CreateFields: FC<CreateFieldsProps> = ({
   fields,
   setFields,
-  // @TODO validation
-  setfieldsAllValid,
   setAutoID,
   autoID,
+  setFieldsValidation,
 }) => {
-  const { t } = useTranslation('collection');
+  const { t: collectionTrans } = useTranslation('collection');
+  const { t: warningTrans } = useTranslation('warning');
+
   const classes = useStyles();
 
-  const primaryInt64Value = 'INT64 (Primary key)';
   const AddIcon = icons.add;
   const RemoveIcon = icons.remove;
+
+  const { requiredFields, optionalFields } = useMemo(
+    () =>
+      fields.reduce(
+        (acc, field) => {
+          const createType: CreateFieldType = getCreateFieldType(field);
+          const requiredTypes: CreateFieldType[] = [
+            'primaryKey',
+            'defaultVector',
+          ];
+          const key = requiredTypes.includes(createType)
+            ? 'requiredFields'
+            : 'optionalFields';
+
+          acc[key].push({
+            ...field,
+            createType,
+          });
+
+          return acc;
+        },
+        {
+          requiredFields: [] as Field[],
+          optionalFields: [] as Field[],
+        }
+      ),
+
+    [fields]
+  );
 
   const getSelector = (
     type: 'all' | 'vector',
     label: string,
     value: number,
     onChange: (value: DataTypeEnum) => void
-  ) => (
-    <CustomSelector
-      options={type === 'all' ? ALL_OPTIONS : VECTOR_FIELDS_OPTIONS}
-      onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-        onChange(e.target.value as DataTypeEnum);
-      }}
-      value={value}
-      variant="filled"
-      label={label}
-      classes={{ root: classes.select }}
-    />
-  );
-
-  const getInput = (
-    label: string,
-    value: string | number,
-    handleChange: (value: string) => void,
-    className = '',
-    inputClassName = '',
-    isReadOnly = false
-  ) => (
-    <TextField
-      label={label}
-      value={value}
-      onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-        handleChange(e.target.value as string);
-      }}
-      variant="filled"
-      className={className}
-      InputProps={{
-        classes: {
-          input: inputClassName,
-        },
-      }}
-      disabled={isReadOnly}
-    />
-  );
-
-  const changeFields = (
-    id: string,
-    key: string,
-    value: string | DataTypeEnum
   ) => {
+    return (
+      <CustomSelector
+        wrapperClass={classes.select}
+        options={type === 'all' ? ALL_OPTIONS : VECTOR_FIELDS_OPTIONS}
+        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+          onChange(e.target.value as DataTypeEnum);
+        }}
+        value={value}
+        variant="filled"
+        label={label}
+      />
+    );
+  };
+
+  const getInput = (data: inputType) => {
+    const {
+      label,
+      value,
+      handleChange = () => {},
+      className = '',
+      inputClassName = '',
+      isReadOnly = false,
+      validate = (value: string | number | null) => ' ',
+      type = 'text',
+    } = data;
+    return (
+      <TextField
+        label={label}
+        // value={value}
+        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+          handleChange(e.target.value as string);
+        }}
+        variant="filled"
+        className={className}
+        InputProps={{
+          classes: {
+            input: inputClassName,
+          },
+        }}
+        disabled={isReadOnly}
+        error={validate(value) !== ' '}
+        helperText={validate(value)}
+        FormHelperTextProps={{
+          className: classes.helperText,
+        }}
+        defaultValue={value}
+        type={type}
+      />
+    );
+  };
+
+  const generateFieldName = (field: Field) => {
+    return getInput({
+      label: collectionTrans('fieldName'),
+      value: field.name,
+      handleChange: (value: string) => {
+        const isValid = checkEmptyValid(value);
+        setFieldsValidation(v =>
+          v.map(item =>
+            item.id === field.id! ? { ...item, name: isValid } : item
+          )
+        );
+
+        changeFields(field.id!, 'name', value);
+      },
+      validate: (value: any) => {
+        if (value === null) return ' ';
+        const isValid = checkEmptyValid(value);
+
+        return isValid
+          ? ' '
+          : warningTrans('required', { name: collectionTrans('fieldName') });
+      },
+    });
+  };
+
+  const generateDesc = (field: Field) => {
+    return getInput({
+      label: collectionTrans('description'),
+      value: field.description,
+      handleChange: (value: string) =>
+        changeFields(field.id!, 'description', value),
+      className: classes.descInput,
+    });
+  };
+
+  const generateDimension = (field: Field) => {
+    const validateDimension = (value: string) => {
+      const isPositive = getCheckResult({
+        value,
+        rule: 'positiveNumber',
+      });
+      const isMutiple = getCheckResult({
+        value,
+        rule: 'multiple',
+        extraParam: {
+          multipleNumber: 8,
+        },
+      });
+      if (field.data_type === DataTypeEnum.BinaryVector) {
+        return {
+          isMutiple,
+          isPositive,
+        };
+      }
+      return {
+        isPositive,
+      };
+    };
+    return getInput({
+      label: collectionTrans('dimension'),
+      value: field.dimension as number,
+      handleChange: (value: string) => {
+        const { isPositive, isMutiple } = validateDimension(value);
+        const isValid =
+          field.data_type === DataTypeEnum.BinaryVector
+            ? !!isMutiple && isPositive
+            : isPositive;
+
+        changeFields(field.id!, 'dimension', `${value}`);
+
+        setFieldsValidation(v =>
+          v.map(item =>
+            item.id === field.id! ? { ...item, dimension: isValid } : item
+          )
+        );
+      },
+      type: 'number',
+      validate: (value: any) => {
+        const { isPositive, isMutiple } = validateDimension(value);
+        if (isMutiple === false) {
+          return collectionTrans('dimensionMutipleWarning');
+        }
+
+        return isPositive ? ' ' : collectionTrans('dimensionPositiveWarning');
+      },
+    });
+  };
+
+  const changeFields = (id: string, key: string, value: any) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
         return f;
@@ -131,25 +295,33 @@ const CreateFields: FC<CreateFieldsProps> = ({
         [key]: value,
       };
     });
-
     setFields(newFields);
   };
 
   const handleAddNewField = () => {
+    const id = generateId();
     const newDefaultItem: Field = {
-      name: '',
+      name: null,
       data_type: DataTypeEnum.Int16,
       is_primary_key: false,
       description: '',
       isDefault: false,
-      id: generateId(),
+      dimension: '128',
+      id,
+    };
+    const newValidation = {
+      id,
+      name: false,
+      dimension: true,
     };
     setFields([...fields, newDefaultItem]);
+    setFieldsValidation(v => [...v, newValidation]);
   };
 
   const handleRemoveField = (field: Field) => {
     const newFields = fields.filter(f => f.id !== field.id);
     setFields(newFields);
+    setFieldsValidation(v => v.filter(item => item.id !== field.id));
   };
 
   const generatePrimaryKeyRow = (
@@ -157,22 +329,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
     autoID: boolean
   ): ReactElement => {
     return (
-      <div className={`${classes.rowWrapper} ${classes.mb3}`}>
-        {getInput(
-          t('fieldType'),
-          primaryInt64Value,
-          () => {},
-          classes.primaryInput,
-          classes.input,
-          true
-        )}
+      <div className={`${classes.rowWrapper}`}>
+        {getInput({
+          label: collectionTrans('fieldType'),
+          value: PRIMARY_KEY_FIELD,
+          className: classes.primaryInput,
+          inputClassName: classes.input,
+          isReadOnly: true,
+        })}
 
-        {getInput(t('fieldName'), field.name, (value: string) =>
-          changeFields(field.id, 'name', value)
-        )}
+        {generateFieldName(field)}
 
         <CustomSelector
-          label={t('autoId')}
+          label={collectionTrans('autoId')}
           options={AUTO_ID_OPTIONS}
           value={autoID ? 'true' : 'false'}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
@@ -180,15 +349,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
             setAutoID(autoId);
           }}
           variant="filled"
-          classes={{ root: classes.select }}
+          wrapperClass={classes.select}
         />
 
-        {getInput(
-          t('description'),
-          field.description,
-          (value: string) => changeFields(field.id, 'description', value),
-          classes.descInput
-        )}
+        {generateDesc(field)}
       </div>
     );
   };
@@ -196,36 +360,24 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateDefaultVectorRow = (field: Field): ReactElement => {
     return (
       <>
-        <div className={`${classes.rowWrapper} ${classes.mb2}`}>
+        <div className={`${classes.rowWrapper}`}>
           {getSelector(
             'vector',
-            t('fieldType'),
+            collectionTrans('fieldType'),
             field.data_type,
-            (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
+            (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
           )}
 
-          {getInput(t('fieldName'), field.name, (value: string) =>
-            changeFields(field.id, 'name', value)
-          )}
+          {generateFieldName(field)}
 
-          {getInput(
-            t('dimension'),
-            field.dimension as number,
-            (value: string) => changeFields(field.id, 'dimension', value),
-            'dimension'
-          )}
+          {generateDimension(field)}
 
-          {getInput(
-            t('description'),
-            field.description,
-            (value: string) => changeFields(field.id, 'description', value),
-            classes.descInput
-          )}
+          {generateDesc(field)}
         </div>
 
         <CustomButton onClick={handleAddNewField} className={classes.mb2}>
           <AddIcon />
-          <span className={classes.btnTxt}>{t('newBtn')}</span>
+          <span className={classes.btnTxt}>{collectionTrans('newBtn')}</span>
         </CustomButton>
       </>
     );
@@ -233,7 +385,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const generateNumberRow = (field: Field): ReactElement => {
     return (
-      <div className={`${classes.rowWrapper} ${classes.mb2}`}>
+      <div className={`${classes.rowWrapper}`}>
         <IconButton
           onClick={() => handleRemoveField(field)}
           classes={{ root: classes.iconBtn }}
@@ -241,82 +393,70 @@ const CreateFields: FC<CreateFieldsProps> = ({
         >
           <RemoveIcon />
         </IconButton>
-        {getInput(t('fieldName'), field.name, (value: string) =>
-          changeFields(field.id, 'name', value)
-        )}
+        {generateFieldName(field)}
         {getSelector(
           'all',
-          t('fieldType'),
+          collectionTrans('fieldType'),
           field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id, 'type', value)
+          (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
 
-        {getInput(
-          t('description'),
-          field.description,
-          (value: string) => changeFields(field.id, 'desc', value),
-          classes.descInput
-        )}
+        {generateDesc(field)}
       </div>
     );
   };
 
   const generateVectorRow = (field: Field) => {
     return (
-      <div className={`${classes.rowWrapper} ${classes.mb2}`}>
+      <div className={`${classes.rowWrapper}`}>
         <IconButton classes={{ root: classes.iconBtn }} aria-label="delete">
           <RemoveIcon />
         </IconButton>
-        {getInput(t('fieldName'), field.name, (value: string) =>
-          changeFields(field.id, 'name', value)
-        )}
+        {generateFieldName(field)}
         {getSelector(
           'all',
-          t('fieldType'),
+          collectionTrans('fieldType'),
           field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id, 'data_type', value)
+          (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
-        {getInput(
-          t('dimension'),
-          field.dimension as number,
-          (value: string) => changeFields(field.id, 'dimension', value),
-          'dimension'
-        )}
+        {generateDimension(field)}
 
-        {getInput(
-          t('description'),
-          field.description,
-          (value: string) => changeFields(field.id, 'description', value),
-          classes.descInput
-        )}
+        {generateDesc(field)}
       </div>
     );
   };
 
-  const generateFieldRow = (field: Field, autoID: boolean) => {
-    const createType: CreateFieldType = getCreateFieldType(field);
-    switch (createType) {
-      case 'primaryKey': {
-        return generatePrimaryKeyRow(field, autoID);
-      }
-      case 'defaultVector': {
-        return generateDefaultVectorRow(field);
-      }
-      case 'vector': {
-        return generateVectorRow(field);
-      }
-      // use number as default createType
-      default: {
-        return generateNumberRow(field);
-      }
+  const generateRequiredFieldRow = (field: Field, autoID: boolean) => {
+    // required type is primaryKey or defaultVector
+    if (field.createType === 'primaryKey') {
+      return generatePrimaryKeyRow(field, autoID);
     }
+    // use defaultVector as default return type
+    return generateDefaultVectorRow(field);
+  };
+
+  const generateOptionalFieldRow = (field: Field) => {
+    // optional type is vector or number
+    if (field.createType === 'vector') {
+      return generateVectorRow(field);
+    }
+
+    // use number as default createType
+    return generateNumberRow(field);
   };
 
   return (
     <>
-      {fields.map((field, index) => (
-        <Fragment key={index}>{generateFieldRow(field, autoID)}</Fragment>
+      {requiredFields.map((field, index) => (
+        <Fragment key={index}>
+          {generateRequiredFieldRow(field, autoID)}
+        </Fragment>
       ))}
+      <div className={classes.optionalWrapper}>
+        {optionalFields.map((field, index) => (
+          <Fragment key={index}>{generateOptionalFieldRow(field)}</Fragment>
+        ))}
+      </div>
     </>
   );
 };

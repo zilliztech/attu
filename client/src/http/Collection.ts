@@ -1,7 +1,12 @@
 import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
-import { CollectionView } from '../pages/collections/Types';
-import { IndexState } from '../types/Milvus';
+import { CollectionView, InsertDataParam } from '../pages/collections/Types';
+import { Field } from '../pages/schema/Types';
+import { VectorSearchParam } from '../pages/seach/Types';
+import { IndexState, ShowCollectionsType } from '../types/Milvus';
+import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
+import { FieldHttp } from './Field';
+import dayjs from 'dayjs';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private autoID!: string;
@@ -9,9 +14,16 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private description!: string;
   private rowCount!: string;
   private index_status!: string;
+  private id!: string;
+  private isLoaded!: boolean;
+  private createdTime!: string;
+  private schema!: {
+    fields: Field[];
+  };
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
+  static COLLECTIONS_STATISTICS_URL = '/collections/statistics';
 
   static CHECK_URL = '/milvus/check';
 
@@ -20,8 +32,17 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     Object.assign(this, props);
   }
 
-  static getCollections(): Promise<CollectionHttp[]> {
-    return super.findAll({ path: this.COLLECTIONS_URL, params: {} });
+  static getCollections(data?: {
+    type: ShowCollectionsType;
+  }): Promise<CollectionHttp[]> {
+    return super.findAll({ path: this.COLLECTIONS_URL, params: data || {} });
+  }
+
+  static getCollection(name: string) {
+    return super.search({
+      path: `${this.COLLECTIONS_URL}/${name}`,
+      params: {},
+    });
   }
 
   static createCollection(data: any) {
@@ -51,16 +72,34 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
+  static getStatistics() {
+    return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
+  }
+
+  static insertData(collectionName: string, param: InsertDataParam) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
+      data: param,
+    });
+  }
+
+  static vectorSearchData(collectionName: string, params: VectorSearchParam) {
+    return super.vectorSearch({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/search`,
+      data: params,
+    });
+  }
+
   get _autoId() {
     return this.autoID;
   }
 
   get _desc() {
-    return this.description;
+    return this.description || '--';
   }
 
   get _id() {
-    return '12';
+    return this.id;
   }
 
   get _name() {
@@ -68,11 +107,19 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _rowCount() {
-    return this.rowCount;
+    return formatNumber(Number(this.rowCount));
+  }
+
+  get _isLoaded() {
+    return this.isLoaded;
   }
 
   get _status() {
-    return StatusEnum.loaded;
+    return this.isLoaded === true ? StatusEnum.loaded : StatusEnum.unloaded;
+  }
+
+  get _fields() {
+    return this.schema.fields.map(f => new FieldHttp(f));
   }
 
   get _indexState() {
@@ -84,5 +131,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
       default:
         return ChildrenStatusType.FINISH;
     }
+  }
+
+  // Befor milvus-2.0-rc3  will return '0'.
+  // If milvus is stable, we can remote this condition/
+  get _createdTime(): string {
+    return this.createdTime && this.createdTime !== '0'
+      ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
+      : '';
   }
 }

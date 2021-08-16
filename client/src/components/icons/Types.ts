@@ -15,6 +15,7 @@ export type IconsType =
   | 'navOverview'
   | 'navCollection'
   | 'navConsole'
+  | 'navSearch'
   | 'expandLess'
   | 'expandMore'
   | 'back'
@@ -23,4 +24,11 @@ export type IconsType =
   | 'info'
   | 'release'
   | 'load'
-  | 'remove';
+  | 'remove'
+  | 'key'
+  | 'upload'
+  | 'dropdown'
+  | 'vectorSearch'
+  | 'refresh'
+  | 'filter'
+  | 'copyExpression';

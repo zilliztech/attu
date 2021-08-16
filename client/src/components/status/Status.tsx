@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Status: FC<StatusType> = props => {
   const { status } = props;
-  const { t } = useTranslation();
-  const statusTrans: { [key in string]: string } = t('status');
+  const { t: commonTrans } = useTranslation();
+  const statusTrans = commonTrans('status');
   const { label, color } = useMemo(() => {
     switch (status) {
       case StatusEnum.unloaded:

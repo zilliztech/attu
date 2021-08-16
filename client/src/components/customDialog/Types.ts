@@ -1,4 +1,6 @@
+import { ReactElement } from 'react';
 import { DialogType } from '../../context/Types';
+import { CodeViewData } from '../code/Types';
 export type CustomDialogType = DialogType & {
   onClose: () => void;
   containerClass?: string;
@@ -21,9 +23,17 @@ export type DeleteDialogContentType = {
 
 export type DialogContainerProps = {
   title: string;
-  cancelLabel?: string;
-  confirmLabel?: string;
-  handleCancel: () => void;
+  cancelLabel?: string | ReactElement;
+  confirmLabel?: string | ReactElement;
+  showCloseIcon?: boolean;
+  handleClose: () => void;
+  handleCancel?: () => void;
   handleConfirm: (param: any) => void;
   confirmDisabled?: boolean;
+  showActions?: boolean;
+  showCancel?: boolean;
+  leftActions?: ReactElement;
+  // code mode requirement
+  showCode?: boolean;
+  codeBlocksData?: CodeViewData[];
 };

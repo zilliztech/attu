@@ -8,6 +8,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   GetPartitionsInfo,
   LoadPartitions,
@@ -16,9 +17,10 @@ import {
 } from './dto';
 import { PartitionsService } from './partitions.service';
 
+@ApiTags('partitions')
 @Controller('partitions')
 export class PartitionsController {
-  constructor(private partitionsService: PartitionsService) {}
+  constructor(private partitionsService: PartitionsService) { }
 
   @Get()
   @UsePipes(new ValidationPipe())

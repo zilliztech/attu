@@ -1,6 +1,6 @@
 const commonTrans = {
   milvus: {
-    admin: 'Milvus Admin',
+    admin: 'Milvus Insight',
     address: 'Milvus Address',
   },
   status: {
@@ -19,8 +19,15 @@ const commonTrans = {
   },
   copy: {
     copy: 'Copy',
-    copied: 'Copied',
+    copied: 'Copied!',
+    label: 'copy button',
   },
+  param: 'Parameter',
+  search: 'Search by name',
+  code: 'Code View',
+  view: 'View Code',
+  js: 'NODE.JS',
+  py: 'PYTHON',
 };
 
 export default commonTrans;

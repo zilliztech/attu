@@ -1,5 +1,6 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
 import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
+import { FieldData } from '../schema/Types';
 
 export interface CollectionData {
   _name: string;
@@ -8,6 +9,8 @@ export interface CollectionData {
   _rowCount: string;
   _desc: string;
   _indexState: ChildrenStatusType;
+  _fields?: FieldData[];
+  _isLoaded: boolean;
 }
 
 export interface CollectionView extends CollectionData {
@@ -38,15 +41,26 @@ export enum DataTypeEnum {
   FloatVector = 101,
 }
 
+export type DataType =
+  | 'Int8'
+  | 'Int16'
+  | 'Int32'
+  | 'Int64'
+  | 'Float'
+  | 'Double'
+  | 'BinaryVector'
+  | 'FloatVector';
+
 export interface Field {
-  name: string;
+  name: string | null;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
   description: string;
   dimension?: number | string;
   isDefault?: boolean;
-  id: string;
+  id?: string;
   type_params?: { key: string; value: any }[];
+  createType?: CreateFieldType;
 }
 
 export type CreateFieldType =
@@ -58,7 +72,15 @@ export type CreateFieldType =
 export interface CreateFieldsProps {
   fields: Field[];
   setFields: Dispatch<SetStateAction<Field[]>>;
-  setfieldsAllValid: Dispatch<SetStateAction<boolean>>;
+  setFieldsValidation: Dispatch<
+    SetStateAction<{ [x: string]: string | boolean }[]>
+  >;
   autoID: boolean;
   setAutoID: (value: boolean) => void;
+}
+
+export interface InsertDataParam {
+  partition_names: string[];
+  // e.g. [{vector: [1,2,3], age: 10}]
+  fields_data: any[];
 }

@@ -47,7 +47,7 @@ export default class BaseModel {
       url: path,
       params,
     });
-    return res.data;
+    return res.data.data;
   }
 
   /**
@@ -55,9 +55,7 @@ export default class BaseModel {
    */
   static async create(options: updateParamsType) {
     const { path, data } = options;
-
     const res = await http.post(path, data);
-
     return new this(res.data.data || {});
   }
 
@@ -79,5 +77,11 @@ export default class BaseModel {
     const { path, data } = options;
     const res = await http.post(path, data);
     return res.data;
+  }
+
+  static async vectorSearch(options: updateParamsType) {
+    const { path, data } = options;
+    const res = await http.post(path, data);
+    return res.data.data;
   }
 }
