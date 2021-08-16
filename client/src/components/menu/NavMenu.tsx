@@ -12,6 +12,7 @@ import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CommunityBtn from './CommunityBtn';
 
 const timeout = 150;
 const duration = `${timeout}ms`;
@@ -28,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: theme.transitions.create('width', {
         duration,
       }),
-      overflow: 'hidden',
     },
     rootCollapse: {
       width: '86px',
@@ -74,7 +74,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     logoWrapper: {
-      width: '100%',
       display: 'flex',
       alignItems: 'center',
       height: '86px',
@@ -235,6 +234,7 @@ const NavMenu: FC<NavMenuType> = props => {
           <ChevronRightIcon />
         </Button>
         <NestList data={data} />
+        <CommunityBtn />
       </div>
     </List>
   );
