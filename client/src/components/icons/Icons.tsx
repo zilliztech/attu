@@ -73,6 +73,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   navSearch: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={VectorSearchIcon} {...props} />
   ),
+  navSystem: (props = {}) => (
+    <SvgIcon viewBox="0 0 20 20" component={VectorSearchIcon} {...props} />
+  ),
   info: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={InfoIcon} {...props} />
   ),
