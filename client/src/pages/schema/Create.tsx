@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CodeLanguageEnum, CodeViewData } from '../../components/code/Types';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
+import CustomSwitch from '../../components/customSwitch/CustomSwitch';
 import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
@@ -8,6 +10,8 @@ import {
   METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
+import { getCreateIndexJSCode } from '../../utils/code/Js';
+import { getCreateIndexPYCode } from '../../utils/code/Py';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { getEmbeddingType } from '../../utils/search';
 import { DataType } from '../collections/Types';
@@ -19,12 +23,17 @@ const CreateIndex = (props: {
   fieldType: DataType;
   handleCreate: (params: IndexExtraParam) => void;
   handleCancel: () => void;
+
+  // used for code mode
+  fieldName: string;
 }) => {
-  const { collectionName, fieldType, handleCreate, handleCancel } = props;
+  const { collectionName, fieldType, handleCreate, handleCancel, fieldName } =
+    props;
 
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: commonTrans } = useTranslation();
 
   const defaultIndexType =
     fieldType === 'BinaryVector'
@@ -53,6 +62,9 @@ const CreateIndex = (props: {
     knng: '',
   });
 
+  // control whether show code mode
+  const [showCode, setShowCode] = useState<boolean>(false);
+
   const indexCreateParams = useMemo(() => {
     if (!INDEX_CONFIG[indexSetting.index_type]) {
       return [];
@@ -65,12 +77,21 @@ const CreateIndex = (props: {
     [indexSetting.index_type, fieldType]
   );
 
-  const indexParams = useMemo(() => {
+  const extraParams = useMemo(() => {
     const params: { [x: string]: string } = {};
     indexCreateParams.forEach(v => {
       params[v] = indexSetting[v];
     });
-    return params;
+
+    const { index_type, metric_type } = indexSetting;
+  
+    const extraParams: IndexExtraParam = {
+      index_type,
+      metric_type,
+      params: JSON.stringify(params),
+    };
+
+    return extraParams;
   }, [indexCreateParams, indexSetting]);
 
   const indexOptions = useMemo(() => {
@@ -86,6 +107,25 @@ const CreateIndex = (props: {
     const form = formatForm(paramsForm);
     return form;
   }, [indexSetting, indexCreateParams]);
+
+  /**
+   * create index code mode
+   */
+  const codeBlockData: CodeViewData[] = useMemo(
+    () => [
+      {
+        label: commonTrans('py'),
+        language: CodeLanguageEnum.python,
+        code: getCreateIndexPYCode({ collectionName, fieldName, extraParams }),
+      },
+      {
+        label: commonTrans('js'),
+        language: CodeLanguageEnum.javascript,
+        code: getCreateIndexJSCode({ collectionName, fieldName, extraParams }),
+      },
+    ],
+    [commonTrans, extraParams, collectionName, fieldName]
+  );
 
   const { validation, checkIsValid, disabled, setDisabled, resetValidation } =
     useFormValidation(checkedForm);
@@ -128,15 +168,12 @@ const CreateIndex = (props: {
   };
 
   const handleCreateIndex = () => {
-    const { index_type, metric_type } = indexSetting;
+    handleCreate(extraParams);
+  };
 
-    const params: IndexExtraParam = {
-      index_type,
-      metric_type,
-      params: JSON.stringify(indexParams),
-    };
-
-    handleCreate(params);
+  const handleShowCode = (event: React.ChangeEvent<{ checked: boolean }>) => {
+    const isChecked = event.target.checked;
+    setShowCode(isChecked);
   };
 
   return (
@@ -149,6 +186,9 @@ const CreateIndex = (props: {
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateIndex}
       confirmDisabled={disabled}
+      leftActions={<CustomSwitch onChange={handleShowCode} />}
+      showCode={showCode}
+      codeBlocksData={codeBlockData}
     >
       <CreateForm
         updateForm={updateStepTwoForm}

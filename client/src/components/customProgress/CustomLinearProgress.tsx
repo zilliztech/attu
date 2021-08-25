@@ -17,7 +17,7 @@ const getProgressStyles = makeStyles((theme: Theme) => ({
   percent: {
     minWidth: '35px',
     marginLeft: theme.spacing(1),
-    color: '#010e29',
+    color: theme.palette.milvusDark.main,
   },
 }));
 

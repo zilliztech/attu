@@ -39,9 +39,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   }, [setAddress]);
 
   useEffect(() => {
-    document.title = address
-      ? `${address} - Milvus Insight`
-      : 'Milvus Insight';
+    document.title = address ? `${address} - Milvus Insight` : 'Milvus Insight';
   }, [address]);
 
   return (

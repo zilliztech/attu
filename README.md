@@ -1,4 +1,6 @@
 # Milvus insight
+[![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
+[![downloads](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)
 
 Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you to interact with your databases and manage your data with just few clicks.
 
@@ -41,7 +43,7 @@ Once you start the docker, open the browser, type `http://{ your machine IP }:80
 | HOST_URL   | http://192.168.0.1:8000 |   true   | Where Milvus insight container is installed |
 | MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL                 |
 
-Tip: **127.0.0.1 or localhost will not working when run by docker**
+Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
 #### Try the dev build
 
@@ -60,14 +62,14 @@ out an open PR:
 
 1. Fork and clone the repo
 2. `cd server` go to the server directory
-3. `$ yarn install` to install dependencies
+3. `yarn install` to install dependencies
 4. Create a branch for your PR
 
 ### Build client
 
 1. Fork and clone the repo
 2. `cd client` go to the client directory
-3. `$ yarn install` to install dependencies
+3. `yarn install` to install dependencies
 4. Create a branch for your PR
 
 ### Milvus

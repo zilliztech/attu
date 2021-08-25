@@ -16,6 +16,7 @@ import { rootContext } from '../../context/Root';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     maxWidth: '480px',
+    backgroundColor: '#fff',
   },
   mb: {
     marginBottom: theme.spacing(2.5),
