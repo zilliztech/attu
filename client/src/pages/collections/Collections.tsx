@@ -172,7 +172,10 @@ const Collections = () => {
       vectorType.includes(v.data_type)
         ? {
             ...v,
-            type_params: [{ key: 'dim', value: v.dimension }],
+            type_params: {
+              // if data type is vector, dimension must exist.
+              dim: v.dimension!,
+            },
           }
         : v
     );

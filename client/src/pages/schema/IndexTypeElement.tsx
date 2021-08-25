@@ -12,8 +12,8 @@ import { IndexState } from '../../types/Milvus';
 import {
   FieldView,
   IndexCreateParam,
+  IndexExtraParam,
   IndexManageParam,
-  ParamPair,
 } from './Types';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
@@ -151,7 +151,7 @@ const IndexTypeElement: FC<{
     fetchProgress();
   }, [fetchStatus, fetchProgress]);
 
-  const requestCreateIndex = async (params: ParamPair[]) => {
+  const requestCreateIndex = async (params: IndexExtraParam) => {
     const indexCreateParam: IndexCreateParam = {
       collection_name: collectionName,
       field_name: data._fieldName,
