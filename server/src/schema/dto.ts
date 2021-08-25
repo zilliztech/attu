@@ -1,13 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateIndexParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import {
   IsNotEmpty,
   IsString,
-  IsArray,
   IsEnum,
   IsOptional,
+  IsObject,
 } from 'class-validator';
 
+// todo import CreateIndexParam from sdk.
+interface CreateIndexParam {
+  index_type: string;
+  metric_type: string;
+  params: string;
+}
 class KeyValuePair {
   @ApiProperty()
   key: string;
@@ -46,9 +51,8 @@ export class ManageIndex {
   @ApiProperty({
     type: [KeyValuePair],
   })
-  @IsArray()
-  @IsOptional()
-  readonly extra_params?: CreateIndexParam[];
+  @IsObject()
+  readonly extra_params?: CreateIndexParam;
 }
 
 export class DescribeIndex {
