@@ -51,7 +51,12 @@ export interface SearchParamInputConfig {
 
 export interface VectorSearchParam {
   expr?: string;
-  search_params: { key: string; value: string | number }[];
+  search_params: {
+    anns_field: string; // your vector field name
+    topk: string | number;
+    metric_type: string;
+    params: string;
+  };
   vectors: any;
   output_fields: string[];
   vector_type: number | DataTypeEnum;

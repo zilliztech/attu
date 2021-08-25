@@ -58,9 +58,8 @@ const VectorSearch = () => {
   // search params disable state
   const [paramDisabled, setParamDisabled] = useState<boolean>(true);
   // use null as init value before search, empty array means no results
-  const [searchResult, setSearchResult] = useState<SearchResultView[] | null>(
-    null
-  );
+  const [searchResult, setSearchResult] =
+    useState<SearchResultView[] | null>(null);
   // default topK is 100
   const [topK, setTopK] = useState<number>(100);
   const [expression, setExpression] = useState<string>('');
@@ -258,25 +257,12 @@ const VectorSearch = () => {
     setExpression('');
   };
   const handleSearch = async (topK: number, expr = expression) => {
-    const searhParamPairs = [
-      // dynamic search params
-      {
-        key: 'params',
-        value: JSON.stringify(searchParam),
-      },
-      {
-        key: 'anns_field',
-        value: selectedField,
-      },
-      {
-        key: 'topk',
-        value: topK,
-      },
-      {
-        key: 'metric_type',
-        value: metricType,
-      },
-    ];
+    const searhParamPairs = {
+      params: JSON.stringify(searchParam),
+      anns_field: selectedField,
+      topk: topK,
+      metric_type: metricType,
+    };
 
     const params: VectorSearchParam = {
       output_fields: outputFields,

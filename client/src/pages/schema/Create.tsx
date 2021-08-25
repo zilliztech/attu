@@ -12,12 +12,12 @@ import { formatForm, getMetricOptions } from '../../utils/Form';
 import { getEmbeddingType } from '../../utils/search';
 import { DataType } from '../collections/Types';
 import CreateForm from './CreateForm';
-import { IndexType, ParamPair, INDEX_TYPES_ENUM } from './Types';
+import { IndexType, IndexExtraParam, INDEX_TYPES_ENUM } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
   fieldType: DataType;
-  handleCreate: (params: ParamPair[]) => void;
+  handleCreate: (params: IndexExtraParam) => void;
   handleCancel: () => void;
 }) => {
   const { collectionName, fieldType, handleCreate, handleCancel } = props;
@@ -130,20 +130,11 @@ const CreateIndex = (props: {
   const handleCreateIndex = () => {
     const { index_type, metric_type } = indexSetting;
 
-    const params: ParamPair[] = [
-      {
-        key: 'index_type',
-        value: index_type,
-      },
-      {
-        key: 'metric_type',
-        value: metric_type,
-      },
-      {
-        key: 'params',
-        value: JSON.stringify(indexParams),
-      },
-    ];
+    const params: IndexExtraParam = {
+      index_type,
+      metric_type,
+      params: JSON.stringify(indexParams),
+    };
 
     handleCreate(params);
   };

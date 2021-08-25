@@ -52,6 +52,7 @@ export class ManageIndex {
     type: [KeyValuePair],
   })
   @IsObject()
+  @IsOptional()
   readonly extra_params?: CreateIndexParam;
 }
 

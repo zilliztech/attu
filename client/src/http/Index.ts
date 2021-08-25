@@ -2,7 +2,6 @@ import {
   IndexCreateParam,
   IndexManageParam,
   IndexView,
-  ParamPair,
 } from '../pages/schema/Types';
 import { ManageRequestMethods } from '../types/Common';
 import { IndexState } from '../types/Milvus';
@@ -11,7 +10,7 @@ import { getKeyValueListFromJsonString } from '../utils/Format';
 import BaseModel from './BaseModel';
 
 export class IndexHttp extends BaseModel implements IndexView {
-  params!: ParamPair[];
+  params!: { key: string; value: string }[];
   field_name!: string;
 
   constructor(props: {}) {

@@ -59,7 +59,9 @@ export interface Field {
   dimension?: number | string;
   isDefault?: boolean;
   id?: string;
-  type_params?: { key: string; value: any }[];
+  type_params?: {
+    dim: string | number;
+  };
   createType?: CreateFieldType;
 }
 
