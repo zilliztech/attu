@@ -15,14 +15,7 @@ import {
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
 import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
 import { ApiProperty } from '@nestjs/swagger';
-
-// todo import SearchParam from sdk.
-interface SearchParam {
-  anns_field: string; // your vector field name
-  topk: string;
-  metric_type: string;
-  params: string;
-}
+import { SearchParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 enum VectorTypes {
   Binary = DataType.BinaryVector,
