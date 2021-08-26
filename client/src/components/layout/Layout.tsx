@@ -69,6 +69,11 @@ const Layout = (props: any) => {
       onClick: () => history.push('/'),
     },
     {
+      icon: icons.navSystem,
+      label: navTrans('system'),
+      onClick: () => history.push('/system'),
+    },
+    {
       icon: icons.navCollection,
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
@@ -79,11 +84,6 @@ const Layout = (props: any) => {
       onClick: () => history.push('/search'),
       iconActiveClass: 'activeSearchIcon',
       iconNormalClass: 'normalSearchIcon',
-    },
-    {
-      icon: icons.navSystem,
-      label: navTrans('system'),
-      onClick: () => history.push('/system'),
     },
   ];
 
