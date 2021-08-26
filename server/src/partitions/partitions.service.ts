@@ -7,7 +7,7 @@ import {
   LoadPartitionsReq,
   ReleasePartitionsReq,
   ShowPartitionsReq,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types'; // todo: need improve like export types in root file.
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils/Const';

@@ -7,11 +7,12 @@ import {
   ArrayNotEmpty,
   IsEnum,
   ArrayMinSize,
+  IsObject,
 } from 'class-validator';
 import {
   FieldType,
   ShowCollectionsType,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection'; // todo: need improve like export types in root file.
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
 import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
 import { ApiProperty } from '@nestjs/swagger';
 import { SearchParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
@@ -99,9 +100,8 @@ export class VectorSearch {
     description: 'Vector search params',
     default: [{ key: 'metric_type', value: 'L2' }],
   })
-  @IsArray()
-  @ArrayMinSize(1)
-  search_params: SearchParam[];
+  @IsObject()
+  search_params: SearchParam;
 
   @ApiProperty({
     description: 'Searched vector value',

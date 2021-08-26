@@ -1,10 +1,6 @@
-export interface KeyValuePairs {
-  key: string;
-  value: string;
-}
-
+import { IndexExtraParam } from "../../pages/schema/Types";
 export interface CreateIndexCodeParam {
   collectionName: string;
   fieldName: string;
-  extraParams: KeyValuePairs[];
+  extraParams: IndexExtraParam
 }

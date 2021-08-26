@@ -70,10 +70,11 @@ export interface IndexManageParam {
 }
 
 export interface IndexCreateParam extends IndexManageParam {
-  extra_params: ParamPair[];
+  extra_params: IndexExtraParam;
 }
 
-export interface ParamPair {
-  key: string;
-  value: string;
+export interface IndexExtraParam {
+  index_type: string;
+  metric_type: string;
+  params: string;
 }

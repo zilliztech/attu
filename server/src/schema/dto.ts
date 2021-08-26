@@ -3,9 +3,9 @@ import { CreateIndexParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import {
   IsNotEmpty,
   IsString,
-  IsArray,
   IsEnum,
   IsOptional,
+  IsObject,
 } from 'class-validator';
 
 class KeyValuePair {
@@ -46,9 +46,9 @@ export class ManageIndex {
   @ApiProperty({
     type: [KeyValuePair],
   })
-  @IsArray()
+  @IsObject()
   @IsOptional()
-  readonly extra_params?: CreateIndexParam[];
+  readonly extra_params?: CreateIndexParam;
 }
 
 export class DescribeIndex {

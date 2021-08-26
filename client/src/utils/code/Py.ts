@@ -1,4 +1,3 @@
-import { getObjFromKeyValuePair } from '../Format';
 import { parseValue } from '../Insert';
 import { CreateIndexCodeParam } from './Types';
 
@@ -12,10 +11,9 @@ const replacer = (key: string, value: any) => {
 
 export const getCreateIndexPYCode = (params: CreateIndexCodeParam) => {
   const { collectionName, fieldName, extraParams } = params;
-  const obj = getObjFromKeyValuePair(extraParams);
   const index = {
-    ...obj,
-    params: parseValue(obj.params),
+    ...extraParams,
+    params: parseValue(extraParams.params),
   };
   const pyCode = `from pymilvus_orm import Collection
 

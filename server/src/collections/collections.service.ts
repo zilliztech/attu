@@ -34,7 +34,7 @@ export class CollectionsService {
     return this.milvusService.indexManager;
   }
 
-  async getCollectionNames(data?: ShowCollectionsReq) {
+  async getCollections(data?: ShowCollectionsReq) {
     const res = await this.collectionManager.showCollections(data);
     throwErrorFromSDK(res.status);
     return res;
@@ -106,12 +106,13 @@ export class CollectionsService {
    */
   async getAllCollections() {
     const data = [];
-    const res = await this.getCollectionNames();
-    const loadedCollections = await this.getCollectionNames({
+    const res = await this.getCollections();
+    const loadedCollections = await this.getCollections({
       type: ShowCollectionsType.Loaded,
     });
-    if (res.collection_names.length > 0) {
-      for (const name of res.collection_names) {
+    if (res.data.length > 0) {
+      for (const item of res.data) {
+        const { name } = item;
         const collectionInfo = await this.describeCollection({
           collection_name: name,
         });
@@ -129,7 +130,9 @@ export class CollectionsService {
           autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
-          isLoaded: loadedCollections.collection_names.includes(name),
+          isLoaded: !!loadedCollections.data.find(
+            (v) => v.name === name && Number(v.loadedPercentage) === 100,
+          ),
           createdTime: collectionInfo.created_utc_timestamp,
         });
       }
@@ -139,17 +142,18 @@ export class CollectionsService {
 
   async getLoadedColletions() {
     const data = [];
-    const res = await this.getCollectionNames({
+    const res = await this.getCollections({
       type: ShowCollectionsType.Loaded,
     });
-    if (res.collection_names.length > 0) {
-      for (const [index, value] of res.collection_names.entries()) {
+    if (res.data.length > 0) {
+      for (const item of res.data) {
+        const { id, name } = item;
         const collectionStatistics = await this.getCollectionStatistics({
-          collection_name: value,
+          collection_name: name,
         });
         data.push({
-          id: res.collection_ids[index],
-          collection_name: value,
+          id: id,
+          collection_name: name,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
         });
       }
@@ -166,12 +170,12 @@ export class CollectionsService {
       collectionCount: 0,
       totalData: 0,
     };
-    const res = await this.getCollectionNames();
-    data.collectionCount = res.collection_names.length;
-    if (res.collection_names.length > 0) {
-      for (const name of res.collection_names) {
+    const res = await this.getCollections();
+    data.collectionCount = res.data.length;
+    if (res.data.length > 0) {
+      for (const item of res.data) {
         const collectionStatistics = await this.getCollectionStatistics({
-          collection_name: name,
+          collection_name: item.name,
         });
         const rowCount = findKeyValue(collectionStatistics.stats, ROW_COUNT);
         data.totalData += isNaN(Number(rowCount)) ? 0 : Number(rowCount);
@@ -186,12 +190,14 @@ export class CollectionsService {
    */
   async getCollectionsIndexStatus() {
     const data = [];
-    const res = await this.getCollectionNames();
-    if (res.collection_names.length > 0) {
-      for (const name of res.collection_names) {
-        const indexRes = await this.getIndexStatus({ collection_name: name });
+    const res = await this.getCollections();
+    if (res.data.length > 0) {
+      for (const item of res.data) {
+        const indexRes = await this.getIndexStatus({
+          collection_name: item.name,
+        });
         data.push({
-          collection_name: name,
+          collection_name: item.name,
           index_state: indexRes.state,
         });
       }
