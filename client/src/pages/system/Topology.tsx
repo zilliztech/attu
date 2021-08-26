@@ -6,6 +6,8 @@ const getStyles = makeStyles((theme: Theme) => ({
   rootNode: {
     transition: 'all .25s',
     cursor: 'pointer',
+    transformOrigin: '50% 50%',
+    transformBox: 'fill-box',
 
     '& circle': {
       transition: 'all .25s',
@@ -16,7 +18,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     },
 
     '&:hover, &:focus': {
-      transform: 'translate(-15px, -16px) scale(1.05)',
+      transform: 'scale(1.1)',
       filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .5))',
     },
 
@@ -36,6 +38,8 @@ const getStyles = makeStyles((theme: Theme) => ({
   childNode: {
     transition: 'all .25s',
     cursor: 'pointer',
+    transformOrigin: '50% 50%',
+    transformBox: 'fill-box',
 
     '& circle': {
       transition: 'all .25s',
@@ -46,8 +50,8 @@ const getStyles = makeStyles((theme: Theme) => ({
     },
 
     '&:hover, &:focus': {
-      transform: 'translate(-15px, -16px) scale(1.05)',
-      filter: 'drop-shadow(3px 3px。 5px rgba(0, 0, 0, .5))',
+      transform: 'scale(1.1)',
+      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .5))',
     },
 
     '&:focus': {
@@ -66,6 +70,36 @@ const getStyles = makeStyles((theme: Theme) => ({
         fill: 'white',
       }
     }
+  },
+  subChild: {
+    transition: 'all .25s',
+    cursor: 'pointer',
+    outline: 'none',
+
+    '& circle': {
+      transition: 'all .25s',
+    },
+
+    '& rect': {
+      transition: 'all .25s',
+    },
+
+    '&:hover, &:focus': {
+      transform: 'scale(1.05)',
+      transformOrigin: 'center',
+      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .5))',
+
+      "& rect": {
+        opacity: 0,
+      },
+
+      "& .selected": {
+        opacity: 1,
+        transform: 'translate(-40px, -77px) scale(3)',
+      },
+    },
+
+
   }
 }));
 
@@ -117,31 +151,16 @@ const Topo = (props: any) => {
 
   return (
     <svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <g id="child">
-          <circle r="29.5" fill="white" stroke="#06AFF2" />
-          <rect opacity="0.28" x="-20" y="-22" width="1" height="44" fill="#E9E9ED" />
-          <rect opacity="0.5" x="-23" y="13" width="7" height="6" fill="#06AFF2" />
-          <rect opacity="0.5" x="-23" y="-12" width="7" height="6" fill="#06AFF2" />
-          <rect opacity="0.28" x="-7" y="-29" width="1" height="59" fill="#E9E9ED" />
-          <rect x="-10" y="3" width="7" height="6" fill="#06AFF2" />
-          <rect x="-10" y="-25" width="7" height="6" fill="#06AFF2" />
-          <rect opacity="0.28" x="6" y="-29" width="1" height="58" fill="#E9E9ED" />
-          <rect opacity="0.3" x="3" y="16" width="7" height="6" fill="#06AFF2" />
-          <rect opacity="0.3" x="3" y="-10" width="7" height="6" fill="#06AFF2" />
-          <rect opacity="0.28" x="19" y="-22" width="1" height="44" fill="#E9E9ED" />
-          <rect x="16" y="6" width="7" height="6" fill="#06AFF2" />
-          <rect x="16" y="-19" width="7" height="6" fill="#06AFF2" />
-        </g>
-      </defs>
-
       {nodes.map((node, index) => {
-        if (nodes.length < 7) {
-          const angle = index * Math.PI / 3;
+        if (nodes.length < 11) {
+          let angle = index * Math.PI * 2 / nodes.length;
+          if (nodes.length > 2) {
+            angle = (index * 360 / nodes.length + 45) * Math.PI / 180;
+          }
           const nodeCenterX = 300 + 150 * Math.cos(angle);
           const nodeCenterY = 300 + 150 * Math.sin(angle);
 
-          const childAngle = (60 * index + 15) * Math.PI / 180;
+          const childAngle = (360 * index / nodes.length + 30) * Math.PI / 180;
           const childNodeCenterX = 300 + 250 * Math.cos(childAngle);
           const childNodeCenterY = 300 + 250 * Math.sin(childAngle);
 
@@ -198,7 +217,22 @@ const Topo = (props: any) => {
                 {icon && <svg x={nodeCenterX - 12} y={nodeCenterY - 25} width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="none">{icon}</svg>}
                 <text fontFamily="Roboto" textAnchor="middle" fill="#06AFF2" fontWeight="700" fontSize="16" x={nodeCenterX} y={nodeCenterY + 20}>{capitalize(node.name)}</text>
               </g>
-              <use xlinkHref="#child" x={childNodeCenterX} y={childNodeCenterY} />
+
+              <svg tabIndex={0} width="60" height="60" viewBox="0 0 60 60" x={childNodeCenterX - 30} y={childNodeCenterY - 30} className={classes.subChild} >
+                <circle cx="30" cy="30" r="29.5" fill="white" stroke="#06AFF2" />
+                <rect opacity="0.28" x="10" y="8" width="1" height="44" fill="#E9E9ED" />
+                <rect opacity="0.5" x="7" y="43" width="7" height="6" fill="#06AFF2" />
+                <rect opacity="0.5" x="7" y="18" width="7" height="6" fill="#06AFF2" />
+                <rect opacity="0.28" x="23" y="1" width="1" height="59" fill="#E9E9ED" />
+                <rect className="selected" x="20" y="33" width="7" height="6" fill="#06AFF2" />
+                <rect x="20" y="8" width="7" height="6" fill="#06AFF2" />
+                <rect opacity="0.28" x="36" y="1" width="1" height="58" fill="#E9E9ED" />
+                <rect opacity="0.3" x="33" y="46" width="7" height="6" fill="#06AFF2" />
+                <rect opacity="0.3" x="33" y="20" width="7" height="6" fill="#06AFF2" />
+                <rect opacity="0.28" x="49" y="8" width="1" height="44" fill="#E9E9ED" />
+                <rect x="46" y="36" width="7" height="6" fill="#06AFF2" />
+                <rect x="46" y="11" width="7" height="6" fill="#06AFF2" />
+              </svg>
               <text fontFamily="Roboto" textAnchor="middle" fill="#82838E" fontSize="12" x={childNodeCenterX} y={childNodeCenterY + 50}>1500+Nodes</text>
             </g>
           );
