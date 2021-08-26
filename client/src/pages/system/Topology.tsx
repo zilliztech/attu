@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -128,25 +127,25 @@ const Topo = (props: any) => {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
-  const [show, setShow] = useState<boolean>(true);
-  const svgclick = (e: any) => {
-    console.log(e.target);
-  }
+  // const [show, setShow] = useState<boolean>(true);
+  // const svgclick = (e: any) => {
+  //   console.log(e.target);
+  // }
 
-  console.log(classes.childNode);
-  useEffect(() => {
-    if (document) {
-      const c4 = document.querySelector(`.${classes.childNode}`);
-      console.log('ueseffect');
-      console.log(c4);
-      if (c4) {
-        console.log("c4", c4);
-        c4.addEventListener('click', (e) => {
-          console.log(e.target);
-        }, true);
-      }
-    }
-  })
+  // console.log(classes.childNode);
+  // useEffect(() => {
+  //   if (document) {
+  //     const c4 = document.querySelector(`.${classes.childNode}`);
+  //     console.log('ueseffect');
+  //     console.log(c4);
+  //     if (c4) {
+  //       console.log("c4", c4);
+  //       c4.addEventListener('click', (e) => {
+  //         console.log(e.target);
+  //       }, true);
+  //     }
+  //   }
+  // })
 
   return (
     <svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
