@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { makeStyles, Theme, Link } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 
 const getStyles = makeStyles((theme: Theme) => ({
   rootNode: {
@@ -19,7 +19,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 
     '&:hover, &:focus': {
       transform: 'scale(1.1)',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .5))',
+      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
     },
 
     '&:focus': {
@@ -51,7 +51,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 
     '&:hover, &:focus': {
       transform: 'scale(1.1)',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .5))',
+      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
     },
 
     '&:focus': {
@@ -87,7 +87,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     '&:hover, &:focus': {
       transform: 'scale(1.05)',
       transformOrigin: 'center',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .5))',
+      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
 
       "& rect": {
         opacity: 0,
@@ -98,8 +98,6 @@ const getStyles = makeStyles((theme: Theme) => ({
         transform: 'translate(-40px, -77px) scale(3)',
       },
     },
-
-
   }
 }));
 
@@ -123,6 +121,7 @@ const Topo = (props: any) => {
       name: 'storage',
       nodes: 1902
     },
+
   ]
 
   const capitalize = (s: string) => {
@@ -160,7 +159,7 @@ const Topo = (props: any) => {
           const nodeCenterX = 300 + 150 * Math.cos(angle);
           const nodeCenterY = 300 + 150 * Math.sin(angle);
 
-          const childAngle = (360 * index / nodes.length + 30) * Math.PI / 180;
+          const childAngle = (360 * index / nodes.length + 35) * Math.PI / 180;
           const childNodeCenterX = 300 + 250 * Math.cos(childAngle);
           const childNodeCenterY = 300 + 250 * Math.sin(childAngle);
 
@@ -214,8 +213,8 @@ const Topo = (props: any) => {
               <line x1={nodeCenterX} y1={nodeCenterY} x2={childNodeCenterX} y2={childNodeCenterY} stroke="#06AFF2" />
               <g className={classes.childNode} tabIndex={0}>
                 <circle cx={nodeCenterX} cy={nodeCenterY} r="40" fill="white" stroke="#06AFF2" />
-                {icon && <svg x={nodeCenterX - 12} y={nodeCenterY - 25} width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="none">{icon}</svg>}
-                <text fontFamily="Roboto" textAnchor="middle" fill="#06AFF2" fontWeight="700" fontSize="16" x={nodeCenterX} y={nodeCenterY + 20}>{capitalize(node.name)}</text>
+                {icon && <svg x={nodeCenterX - 12} y={nodeCenterY - 20} width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="none">{icon}</svg>}
+                <text fontFamily="Roboto" textAnchor="middle" fill="#06AFF2" fontWeight="700" fontSize="16" x={nodeCenterX} y={nodeCenterY + 18}>{capitalize(node.name)}</text>
               </g>
 
               <svg tabIndex={0} width="60" height="60" viewBox="0 0 60 60" x={childNodeCenterX - 30} y={childNodeCenterY - 30} className={classes.subChild} >
