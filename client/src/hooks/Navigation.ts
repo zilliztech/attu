@@ -47,6 +47,14 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
+      case ALL_ROUTER_TYPES.SYSTEM: {
+        const navInfo: NavInfo = {
+          navTitle: navTrans('system'),
+          backPath: '',
+        };
+        setNavInfo(navInfo);
+        break;
+      }
       default:
         break;
     }

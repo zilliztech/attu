@@ -55,6 +55,10 @@ const Layout = (props: any) => {
       return navTrans('search');
     }
 
+    if (location.pathname.includes('system')) {
+      return navTrans('system');
+    }
+
     return navTrans('overview');
   }, [location, navTrans]);
 
@@ -63,6 +67,11 @@ const Layout = (props: any) => {
       icon: icons.navOverview,
       label: navTrans('overview'),
       onClick: () => history.push('/'),
+    },
+    {
+      icon: icons.navSystem,
+      label: navTrans('system'),
+      onClick: () => history.push('/system'),
     },
     {
       icon: icons.navCollection,

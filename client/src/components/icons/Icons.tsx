@@ -34,6 +34,7 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
 import { ReactComponent as VectorSearchIcon } from '../../assets/icons/nav-search.svg';
 import { ReactComponent as SearchEmptyIcon } from '../../assets/icons/search.svg';
 import { ReactComponent as CopyIcon } from '../../assets/icons/copy.svg';
+import { ReactComponent as SystemIcon } from '../../assets/icons/system.svg';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -72,6 +73,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   navSearch: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={VectorSearchIcon} {...props} />
+  ),
+  navSystem: (props = {}) => (
+    <SvgIcon viewBox="0 0 20 20" component={SystemIcon} {...props} />
   ),
   info: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={InfoIcon} {...props} />

@@ -3,6 +3,7 @@ const navTrans = {
   collection: 'Collection',
   console: 'Search Console',
   search: 'Vector Search',
+  system: 'System View',
 };
 
 export default navTrans;

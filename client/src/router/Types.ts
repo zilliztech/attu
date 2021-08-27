@@ -7,6 +7,8 @@ export enum ALL_ROUTER_TYPES {
   COLLECTION_DETAIL = 'collection_detail',
   // 'search'
   SEARCH = 'search',
+  // 'system'
+  SYSTEM = 'system'
 }
 
 export type NavInfo = {
