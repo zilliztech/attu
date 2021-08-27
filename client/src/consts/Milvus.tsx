@@ -194,3 +194,9 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;
+
+export enum LOADING_STATE {
+  LOADED,
+  LOADING,
+  UNLOADED,
+}

@@ -1,7 +1,9 @@
 import { FC, useMemo } from 'react';
-import { StatusType, StatusEnum } from './Types';
+import { ChildrenStatusType, StatusType } from './Types';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
+import { LOADING_STATE } from '../../consts/Milvus';
+import StatusIcon from './StatusIcon';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,6 +21,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '10px',
       height: '10px',
       marginRight: theme.spacing(0.5),
+    },
+
+    loading:{
+      marginRight:"10px"
     },
 
     flash: {
@@ -45,20 +51,20 @@ const Status: FC<StatusType> = props => {
   const statusTrans = commonTrans('status');
   const { label, color } = useMemo(() => {
     switch (status) {
-      case StatusEnum.unloaded:
+      case LOADING_STATE.UNLOADED:
         return {
           label: statusTrans.unloaded,
           color: '#06aff2',
         };
 
-      case StatusEnum.loaded:
+      case LOADING_STATE.LOADED:
         return {
           label: statusTrans.loaded,
           color: '#06f3af',
         };
-      case StatusEnum.error:
+      case LOADING_STATE.LOADING:
         return {
-          label: statusTrans.error,
+          label: statusTrans.loading,
           color: '#f25c06',
         };
 
@@ -74,7 +80,9 @@ const Status: FC<StatusType> = props => {
 
   return (
     <div className={classes.root}>
-      {status === StatusEnum.loaded && <div className={classes.circle}></div>}
+      {status === LOADING_STATE.LOADED && <div className={classes.circle}></div>}
+      {status === LOADING_STATE.LOADING && <StatusIcon type={ChildrenStatusType.CREATING} className={classes.loading} />}
+
       <Typography variant="body2" className={classes.label}>
         {label}
       </Typography>

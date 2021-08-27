@@ -1,10 +1,12 @@
-export enum StatusEnum {
-  'unloaded',
-  'loaded',
-  'error',
-}
+import { LOADING_STATE } from "../../consts/Milvus";
+
+// export enum StatusEnum {
+//   'unloaded',
+//   'loaded',
+//   'error',
+// }
 export type StatusType = {
-  status: StatusEnum;
+  status: LOADING_STATE;
 };
 
 // @todo need rename
@@ -16,4 +18,5 @@ export enum ChildrenStatusType {
 
 export type StatusIconType = {
   type: ChildrenStatusType;
+  className?: string;
 };

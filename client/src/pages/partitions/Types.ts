@@ -1,11 +1,11 @@
 import { ReactElement } from 'react';
-import { StatusEnum } from '../../components/status/Types';
+import { LOADING_STATE } from '../../consts/Milvus';
 import { ManageRequestMethods } from '../../types/Common';
 
 export interface PartitionData {
   _id: string;
   _name: string;
-  _status: StatusEnum;
+  _status: LOADING_STATE;
   _rowCount: string;
   _formatName: string;
 }

@@ -8,6 +8,7 @@ const commonTrans = {
     unloaded: 'unloaded',
     error: 'error',
     running: 'running',
+    loading: 'loading'
   },
   grid: {
     action: 'action',

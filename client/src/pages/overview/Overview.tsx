@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
-import { StatusEnum } from '../../components/status/Types';
+import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '../../context/Root';
 import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
@@ -49,7 +49,7 @@ const Overview = () => {
   const fetchData = useCallback(async () => {
     const res = await CollectionHttp.getStatistics();
     const collections = await CollectionHttp.getCollections();
-    const loadCollections = collections.filter(c => c._isLoaded);
+    const loadCollections = collections.filter(c => c._loadState !== LOADING_STATE.UNLOADED);
     setStatistics(res);
     setLoadCollections(loadCollections);
   }, []);
@@ -100,7 +100,7 @@ const Overview = () => {
     return loadCollections.map(v => ({
       _id: v._id,
       _name: v._name,
-      _status: StatusEnum.loaded,
+      _status: v._loadState,
       _rowCount: v._rowCount,
     }));
   }, [loadCollections]);

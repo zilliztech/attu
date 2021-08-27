@@ -1,4 +1,4 @@
-import { StatusEnum } from '../../../components/status/Types';
+import { LOADING_STATE } from '../../../consts/Milvus';
 
 export interface CollectionCardProps {
   data: CollectionData;
@@ -8,7 +8,7 @@ export interface CollectionCardProps {
 
 export interface CollectionData {
   _name: string;
-  _status: StatusEnum;
+  _status: LOADING_STATE;
   _id: string;
   _rowCount: string;
 }
