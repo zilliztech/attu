@@ -110,7 +110,7 @@ const Overview = () => {
         {overviewTrans('load')}
       </Typography>
 
-      {false && loadCollections.length > 0 ? (
+      {loadCollections.length > 0 ? (
         <div className={classes.cardsWrapper}>
           {loadCollections.map(collection => (
             <CollectionCard
