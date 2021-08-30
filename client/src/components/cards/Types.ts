@@ -1,11 +1,8 @@
 import { ReactElement } from 'react';
 
-interface CardProps {
+export interface EmptyCardProps {
   text: string;
+  icon?: ReactElement;
   wrapperClass?: string;
+  loading?: boolean;
 }
-export interface EmptyCardProps extends CardProps {
-  icon: ReactElement;
-}
-
-export interface LoadingCardProps extends CardProps {}

@@ -2,7 +2,6 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
-import LoadingCard from '../../components/cards/LoadingCard';
 import icons from '../../components/icons/Icons';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '../../context/Root';
@@ -111,12 +110,7 @@ const Overview = () => {
         {overviewTrans('load')}
       </Typography>
 
-      {loading ? (
-        <LoadingCard
-          text={overviewTrans('loading')}
-          wrapperClass="page-empty-card"
-        />
-      ) : loadCollections.length > 0 ? (
+      {false && loadCollections.length > 0 ? (
         <div className={classes.cardsWrapper}>
           {loadCollections.map(collection => (
             <CollectionCard
@@ -128,9 +122,12 @@ const Overview = () => {
         </div>
       ) : (
         <EmptyCard
+          loading={loading}
           wrapperClass="page-empty-card"
-          icon={<CollectionIcon />}
-          text={collectionTrans('noLoadData')}
+          icon={!loading ? <CollectionIcon /> : undefined}
+          text={
+            loading ? overviewTrans('loading') : collectionTrans('noLoadData')
+          }
         />
       )}
     </section>
