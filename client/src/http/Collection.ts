@@ -16,7 +16,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private rowCount!: string;
   private index_status!: string;
   private id!: string;
-  private loadState!: LOADING_STATE;
+  private loadedPercentage!: string;
   private createdTime!: string;
   private schema!: {
     fields: Field[];
@@ -111,12 +111,17 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return formatNumber(Number(this.rowCount));
   }
 
-  get _loadState() {
-    return this.loadState;
+  get _loadedPercentage() {
+    return this.loadedPercentage;
   }
-
+  // load status
   get _status() {
-    return this.loadState;
+    // If not load, insight server will return '-1'. Otherwise milvus will return percentage
+    return this._loadedPercentage === '-1'
+      ? LOADING_STATE.UNLOADED
+      : this._loadedPercentage === '100'
+      ? LOADING_STATE.LOADED
+      : LOADING_STATE.LOADING;
   }
 
   get _fields() {

@@ -10,8 +10,8 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import { formatNumber } from '../../utils/Common';
+import { CollectionData } from '../collections/Types';
 import CollectionCard from './collectionCard/CollectionCard';
-import { CollectionData } from './collectionCard/Types';
 import StatisticsCard from './statisticsCard/StatisticsCard';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -49,7 +49,9 @@ const Overview = () => {
   const fetchData = useCallback(async () => {
     const res = await CollectionHttp.getStatistics();
     const collections = await CollectionHttp.getCollections();
-    const loadCollections = collections.filter(c => c._loadState !== LOADING_STATE.UNLOADED);
+    const loadCollections = collections.filter(
+      c => c._status !== LOADING_STATE.UNLOADED
+    );
     setStatistics(res);
     setLoadCollections(loadCollections);
   }, []);
@@ -96,15 +98,6 @@ const Overview = () => {
     };
   }, [overviewTrans, statistics, loadCollections]);
 
-  const loadCollectionsData: CollectionData[] = useMemo(() => {
-    return loadCollections.map(v => ({
-      _id: v._id,
-      _name: v._name,
-      _status: v._loadState,
-      _rowCount: v._rowCount,
-    }));
-  }, [loadCollections]);
-
   const CollectionIcon = icons.navCollection;
 
   return (
@@ -113,9 +106,9 @@ const Overview = () => {
       <Typography className={classes.collectionTitle}>
         {overviewTrans('load')}
       </Typography>
-      {loadCollectionsData.length > 0 ? (
+      {loadCollections.length > 0 ? (
         <div className={classes.cardsWrapper}>
-          {loadCollectionsData.map(collection => (
+          {loadCollections.map(collection => (
             <CollectionCard
               key={collection._id}
               data={collection}

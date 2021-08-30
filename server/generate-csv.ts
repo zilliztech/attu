@@ -18,8 +18,8 @@ const generateVector = (dimension) => {
   return JSON.stringify(vectors);
 };
 
-while (records.length < 5000) {
-  const value = generateVector(128);
+while (records.length < 100000) {
+  const value = generateVector(4);
   records.push({ vector: value });
 }
 

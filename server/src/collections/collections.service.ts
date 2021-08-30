@@ -125,12 +125,10 @@ export class CollectionsService {
         const loadCollection = loadedCollections.data.find(
           (v) => v.name === name,
         );
-        const loadingState = !loadCollection
-          ? LOADING_STATE.UNLOADED
-          : loadCollection.loadedPercentage === '100'
-          ? LOADING_STATE.LOADED
-          : LOADING_STATE.LOADING;
 
+        const loadedPercentage = !loadCollection
+          ? '-1'
+          : loadCollection.loadedPercentage;
         data.push({
           collection_name: name,
           schema: collectionInfo.schema,
@@ -138,7 +136,7 @@ export class CollectionsService {
           autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
-          loadState: loadingState,
+          loadedPercentage,
           createdTime: collectionInfo.created_utc_timestamp,
         });
       }

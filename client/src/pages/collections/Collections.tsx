@@ -16,7 +16,7 @@ import icons from '../../components/icons/Icons';
 import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
-import { ChildrenStatusType,  } from '../../components/status/Types';
+import { ChildrenStatusType } from '../../components/status/Types';
 import { makeStyles, Theme } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
@@ -383,7 +383,9 @@ const Collections = () => {
         {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
             const cb =
-              row._status === LOADING_STATE.UNLOADED ? handleLoad : handleRelease;
+              row._status === LOADING_STATE.UNLOADED
+                ? handleLoad
+                : handleRelease;
             handleAction(row, cb);
           },
           icon: 'load',
@@ -392,7 +394,11 @@ const Collections = () => {
           getLabel: (row: CollectionView) =>
             row._status === LOADING_STATE.UNLOADED ? 'load' : 'release',
           renderIconFn: (row: CollectionView) =>
-            row._status === LOADING_STATE.UNLOADED ?  <LoadIcon />:<ReleaseIcon />,
+            row._status === LOADING_STATE.UNLOADED ? (
+              <LoadIcon />
+            ) : (
+              <ReleaseIcon />
+            ),
         },
       ],
     },

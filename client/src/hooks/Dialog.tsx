@@ -2,9 +2,8 @@ import { ReactElement, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import { rootContext } from '../context/Root';
-import { CollectionView } from '../pages/collections/Types';
+import { CollectionData, CollectionView } from '../pages/collections/Types';
 import { PartitionView } from '../pages/partitions/Types';
-import { CollectionData } from '../pages/overview/collectionCard/Types';
 import { LOADING_STATE } from '../consts/Milvus';
 
 // handle release and load dialog

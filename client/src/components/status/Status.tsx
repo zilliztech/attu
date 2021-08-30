@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(0.5),
     },
 
-    loading:{
-      marginRight:"10px"
+    loading: {
+      marginRight: '10px',
     },
 
     flash: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Status: FC<StatusType> = props => {
-  const { status } = props;
+  const { status, percentage = 0 } = props;
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
   const { label, color } = useMemo(() => {
@@ -64,7 +64,7 @@ const Status: FC<StatusType> = props => {
         };
       case LOADING_STATE.LOADING:
         return {
-          label: statusTrans.loading,
+          label: `${percentage}% ${statusTrans.loading}`,
           color: '#f25c06',
         };
 
@@ -74,14 +74,21 @@ const Status: FC<StatusType> = props => {
           color: '#f25c06',
         };
     }
-  }, [status, statusTrans]);
+  }, [status, statusTrans, percentage]);
 
   const classes = useStyles({ color });
 
   return (
     <div className={classes.root}>
-      {status === LOADING_STATE.LOADED && <div className={classes.circle}></div>}
-      {status === LOADING_STATE.LOADING && <StatusIcon type={ChildrenStatusType.CREATING} className={classes.loading} />}
+      {status === LOADING_STATE.LOADED && (
+        <div className={classes.circle}></div>
+      )}
+      {status === LOADING_STATE.LOADING && (
+        <StatusIcon
+          type={ChildrenStatusType.CREATING}
+          className={classes.loading}
+        />
+      )}
 
       <Typography variant="body2" className={classes.label}>
         {label}

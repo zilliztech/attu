@@ -1,4 +1,4 @@
-import { LOADING_STATE } from "../../consts/Milvus";
+import { LOADING_STATE } from '../../consts/Milvus';
 
 // export enum StatusEnum {
 //   'unloaded',
@@ -7,6 +7,7 @@ import { LOADING_STATE } from "../../consts/Milvus";
 // }
 export type StatusType = {
   status: LOADING_STATE;
+  percentage?: string;
 };
 
 // @todo need rename
