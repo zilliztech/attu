@@ -20,4 +20,5 @@ export enum ChildrenStatusType {
 export type StatusIconType = {
   type: ChildrenStatusType;
   className?: string;
+  size?: number;
 };

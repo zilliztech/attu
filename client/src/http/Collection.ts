@@ -122,6 +122,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
       : this._loadedPercentage === '100'
       ? LOADING_STATE.LOADED
       : LOADING_STATE.LOADING;
+    // return LOADING_STATE.LOADING
   }
 
   get _fields() {

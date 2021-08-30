@@ -2,6 +2,7 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
+import LoadingCard from '../../components/cards/LoadingCard';
 import icons from '../../components/icons/Icons';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '../../context/Root';
@@ -42,11 +43,13 @@ const Overview = () => {
     collectionCount: 0,
     totalData: 0,
   });
+  const [loading, setLoading] = useState(false);
 
   const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     const res = await CollectionHttp.getStatistics();
     const collections = await CollectionHttp.getCollections();
     const loadCollections = collections.filter(
@@ -54,6 +57,7 @@ const Overview = () => {
     );
     setStatistics(res);
     setLoadCollections(loadCollections);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -106,7 +110,13 @@ const Overview = () => {
       <Typography className={classes.collectionTitle}>
         {overviewTrans('load')}
       </Typography>
-      {loadCollections.length > 0 ? (
+
+      {loading ? (
+        <LoadingCard
+          text={overviewTrans('loading')}
+          wrapperClass="page-empty-card"
+        />
+      ) : loadCollections.length > 0 ? (
         <div className={classes.cardsWrapper}>
           {loadCollections.map(collection => (
             <CollectionCard
