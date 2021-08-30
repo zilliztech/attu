@@ -113,7 +113,9 @@ const Collections = () => {
               />
             </Link>
           ),
-          statusElement: <Status status={v._status} />,
+          statusElement: (
+            <Status status={v._status} percentage={v._loadedPercentage} />
+          ),
           indexCreatingElement: (
             <StatusIcon
               type={indexStatus?._indexState || ChildrenStatusType.FINISH}
