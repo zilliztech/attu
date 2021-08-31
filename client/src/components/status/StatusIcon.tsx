@@ -16,14 +16,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const StatusIcon: FC<StatusIconType> = props => {
   const classes = useStyles();
-  const { type } = props;
+  const { type, className = '', size = 20 } = props;
 
   const getElement = (type: ChildrenStatusType): ReactElement => {
     switch (type) {
       case 'creating':
         return (
           <CircularProgress
-            size={20}
+            size={size}
             thickness={8}
             classes={{ svg: classes.svg }}
           />
@@ -35,7 +35,9 @@ const StatusIcon: FC<StatusIconType> = props => {
     }
   };
 
-  return <div className={classes.wrapper}>{getElement(type)}</div>;
+  return (
+    <div className={`${classes.wrapper} ${className}`}>{getElement(type)}</div>
+  );
 };
 
 export default StatusIcon;

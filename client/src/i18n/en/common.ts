@@ -8,6 +8,7 @@ const commonTrans = {
     unloaded: 'unloaded',
     error: 'error',
     running: 'running',
+    loading: 'is loaded',
   },
   grid: {
     action: 'action',
@@ -35,7 +36,7 @@ const commonTrans = {
     qr: 'Scan WeChat QR code to get access',
     more: 'More Channels to Explore',
     join: 'Join our growing social community today',
-    get: 'Get insight, tips and share ideas'
+    get: 'Get insight, tips and share ideas',
   },
 };
 

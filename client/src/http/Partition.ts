@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { StatusEnum } from '../components/status/Types';
+import { LOADING_STATE } from '../consts/Milvus';
 import {
   PartitionManageParam,
   PartitionParam,
@@ -82,7 +82,7 @@ export class PartitionHttp extends BaseModel implements PartitionData {
 
   get _status() {
     // @TODO replace mock data
-    return StatusEnum.unloaded;
+    return LOADING_STATE.UNLOADED
   }
 
   // Befor milvus-2.0-rc3  will return '0'.

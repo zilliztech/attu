@@ -13,7 +13,7 @@ import {
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
-import { ROW_COUNT } from '../utils/Const';
+import { LOADING_STATE, ROW_COUNT } from '../utils/Const';
 import {
   ShowCollectionsReq,
   ShowCollectionsType,
@@ -122,7 +122,13 @@ export class CollectionsService {
         const autoID = collectionInfo.schema.fields.find(
           (v) => v.is_primary_key === true,
         )?.autoID;
+        const loadCollection = loadedCollections.data.find(
+          (v) => v.name === name,
+        );
 
+        const loadedPercentage = !loadCollection
+          ? '-1'
+          : loadCollection.loadedPercentage;
         data.push({
           collection_name: name,
           schema: collectionInfo.schema,
@@ -130,9 +136,7 @@ export class CollectionsService {
           autoID,
           rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
           id: collectionInfo.collectionID,
-          isLoaded: !!loadedCollections.data.find(
-            (v) => v.name === name && Number(v.loadedPercentage) === 100,
-          ),
+          loadedPercentage,
           createdTime: collectionInfo.created_utc_timestamp,
         });
       }

@@ -16,7 +16,7 @@ import icons from '../../components/icons/Icons';
 import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
 import { useTranslation } from 'react-i18next';
-import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
+import { ChildrenStatusType } from '../../components/status/Types';
 import { makeStyles, Theme } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
@@ -32,6 +32,7 @@ import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
 import { MilvusHttp } from '../../http/Milvus';
+import { LOADING_STATE } from '../../consts/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -112,7 +113,9 @@ const Collections = () => {
               />
             </Link>
           ),
-          statusElement: <Status status={v._status} />,
+          statusElement: (
+            <Status status={v._status} percentage={v._loadedPercentage} />
+          ),
           indexCreatingElement: (
             <StatusIcon
               type={indexStatus?._indexState || ChildrenStatusType.FINISH}
@@ -382,16 +385,22 @@ const Collections = () => {
         {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
             const cb =
-              row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
+              row._status === LOADING_STATE.UNLOADED
+                ? handleLoad
+                : handleRelease;
             handleAction(row, cb);
           },
           icon: 'load',
           label: 'load',
           showIconMethod: 'renderFn',
           getLabel: (row: CollectionView) =>
-            row._status === StatusEnum.loaded ? 'release' : 'load',
+            row._status === LOADING_STATE.UNLOADED ? 'load' : 'release',
           renderIconFn: (row: CollectionView) =>
-            row._status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
+            row._status === LOADING_STATE.UNLOADED ? (
+              <LoadIcon />
+            ) : (
+              <ReleaseIcon />
+            ),
         },
       ],
     },

@@ -2,10 +2,9 @@ import { ReactElement, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import { rootContext } from '../context/Root';
-import { CollectionView } from '../pages/collections/Types';
+import { CollectionData, CollectionView } from '../pages/collections/Types';
 import { PartitionView } from '../pages/partitions/Types';
-import { StatusEnum } from '../components/status/Types';
-import { CollectionData } from '../pages/overview/collectionCard/Types';
+import { LOADING_STATE } from '../consts/Milvus';
 
 // handle release and load dialog
 export interface LoadAndReleaseDialogHookProps {
@@ -53,7 +52,7 @@ export const useLoadAndReleaseDialogHook = (
     cb: (data: any) => Promise<any>
   ) => {
     const actionType: 'release' | 'load' =
-      data._status === StatusEnum.loaded ? 'release' : 'load';
+      data._status === LOADING_STATE.UNLOADED ? 'load' : 'release';
     const { title, component, confirmLabel } = actionsMap[actionType];
 
     setDialog({

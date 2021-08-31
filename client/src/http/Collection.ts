@@ -1,4 +1,4 @@
-import { ChildrenStatusType, StatusEnum } from '../components/status/Types';
+import { ChildrenStatusType } from '../components/status/Types';
 import { CollectionView, InsertDataParam } from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
 import { VectorSearchParam } from '../pages/seach/Types';
@@ -7,6 +7,7 @@ import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 import { FieldHttp } from './Field';
 import dayjs from 'dayjs';
+import { LOADING_STATE } from '../consts/Milvus';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private autoID!: string;
@@ -15,7 +16,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private rowCount!: string;
   private index_status!: string;
   private id!: string;
-  private isLoaded!: boolean;
+  private loadedPercentage!: string;
   private createdTime!: string;
   private schema!: {
     fields: Field[];
@@ -110,12 +111,18 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return formatNumber(Number(this.rowCount));
   }
 
-  get _isLoaded() {
-    return this.isLoaded;
+  get _loadedPercentage() {
+    return this.loadedPercentage;
   }
-
+  // load status
   get _status() {
-    return this.isLoaded === true ? StatusEnum.loaded : StatusEnum.unloaded;
+    // If not load, insight server will return '-1'. Otherwise milvus will return percentage
+    return this._loadedPercentage === '-1'
+      ? LOADING_STATE.UNLOADED
+      : this._loadedPercentage === '100'
+      ? LOADING_STATE.LOADED
+      : LOADING_STATE.LOADING;
+    // return LOADING_STATE.LOADING
   }
 
   get _fields() {

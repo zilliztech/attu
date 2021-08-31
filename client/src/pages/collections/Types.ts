@@ -1,16 +1,17 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { ChildrenStatusType, StatusEnum } from '../../components/status/Types';
+import { ChildrenStatusType } from '../../components/status/Types';
+import { LOADING_STATE } from '../../consts/Milvus';
 import { FieldData } from '../schema/Types';
 
 export interface CollectionData {
   _name: string;
   _id: string;
-  _status: StatusEnum;
+  _loadedPercentage:string;
+  _status: LOADING_STATE;
   _rowCount: string;
   _desc: string;
   _indexState: ChildrenStatusType;
   _fields?: FieldData[];
-  _isLoaded: boolean;
 }
 
 export interface CollectionView extends CollectionData {
@@ -75,7 +76,7 @@ export interface CreateFieldsProps {
   fields: Field[];
   setFields: Dispatch<SetStateAction<Field[]>>;
   setFieldsValidation: Dispatch<
-    SetStateAction<{ [x: string]: string | boolean }[]>
+    SetStateAction<{ [x: string]: string | boolean; }[]>
   >;
   autoID: boolean;
   setAutoID: (value: boolean) => void;

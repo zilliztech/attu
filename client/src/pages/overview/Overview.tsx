@@ -3,15 +3,15 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
-import { StatusEnum } from '../../components/status/Types';
+import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '../../context/Root';
 import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import { formatNumber } from '../../utils/Common';
+import { CollectionData } from '../collections/Types';
 import CollectionCard from './collectionCard/CollectionCard';
-import { CollectionData } from './collectionCard/Types';
 import StatisticsCard from './statisticsCard/StatisticsCard';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,16 +42,21 @@ const Overview = () => {
     collectionCount: 0,
     totalData: 0,
   });
+  const [loading, setLoading] = useState(false);
 
   const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     const res = await CollectionHttp.getStatistics();
     const collections = await CollectionHttp.getCollections();
-    const loadCollections = collections.filter(c => c._isLoaded);
+    const loadCollections = collections.filter(
+      c => c._status !== LOADING_STATE.UNLOADED
+    );
     setStatistics(res);
     setLoadCollections(loadCollections);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -96,15 +101,6 @@ const Overview = () => {
     };
   }, [overviewTrans, statistics, loadCollections]);
 
-  const loadCollectionsData: CollectionData[] = useMemo(() => {
-    return loadCollections.map(v => ({
-      _id: v._id,
-      _name: v._name,
-      _status: StatusEnum.loaded,
-      _rowCount: v._rowCount,
-    }));
-  }, [loadCollections]);
-
   const CollectionIcon = icons.navCollection;
 
   return (
@@ -113,9 +109,10 @@ const Overview = () => {
       <Typography className={classes.collectionTitle}>
         {overviewTrans('load')}
       </Typography>
-      {loadCollectionsData.length > 0 ? (
+
+      {loadCollections.length > 0 ? (
         <div className={classes.cardsWrapper}>
-          {loadCollectionsData.map(collection => (
+          {loadCollections.map(collection => (
             <CollectionCard
               key={collection._id}
               data={collection}
@@ -125,9 +122,12 @@ const Overview = () => {
         </div>
       ) : (
         <EmptyCard
+          loading={loading}
           wrapperClass="page-empty-card"
-          icon={<CollectionIcon />}
-          text={collectionTrans('noLoadData')}
+          icon={!loading ? <CollectionIcon /> : undefined}
+          text={
+            loading ? overviewTrans('loading') : collectionTrans('noLoadData')
+          }
         />
       )}
     </section>

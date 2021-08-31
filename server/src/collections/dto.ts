@@ -21,6 +21,7 @@ enum VectorTypes {
   Binary = DataType.BinaryVector,
   Float = DataType.FloatVector,
 }
+
 export class CreateCollection {
   @ApiProperty({
     description: 'Milvus collection name',

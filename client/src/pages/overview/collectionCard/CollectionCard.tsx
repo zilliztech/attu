@@ -14,11 +14,16 @@ import { CollectionCardProps } from './Types';
 import { useTranslation } from 'react-i18next';
 import CustomIconButton from '../../../components/customButton/CustomIconButton';
 import { useHistory } from 'react-router-dom';
+import { LOADING_STATE } from '../../../consts/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     padding: theme.spacing(2),
     textAlign: 'end',
+  },
+  loading: {
+    background: '#F0F4F9',
+    border: `1px dashed #06AFF2`,
   },
   link: {
     display: 'flex',
@@ -77,7 +82,12 @@ const CollectionCard: FC<CollectionCardProps> = ({
   wrapperClass = '',
 }) => {
   const classes = useStyles();
-  const { _name: name, _status: status, _rowCount: rowCount } = data;
+  const {
+    _name: name,
+    _status: status,
+    _rowCount: rowCount,
+    _loadedPercentage,
+  } = data;
   const history = useHistory();
   // icons
   const RightArrowIcon = icons.rightArrow;
@@ -97,9 +107,13 @@ const CollectionCard: FC<CollectionCardProps> = ({
   };
 
   return (
-    <div className={`card-wrapper ${classes.wrapper} ${wrapperClass}`}>
+    <div
+      className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
+        data._status === LOADING_STATE.LOADING && classes.loading
+      }`}
+    >
       <div>
-        <Status status={status} />
+        <Status status={status} percentage={_loadedPercentage} />
       </div>
       <Link
         classes={{ root: classes.link }}
