@@ -66,6 +66,7 @@ const Collections = () => {
   const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const { handleInsertDialog } = useInsertDialogHook();
   const [collections, setCollections] = useState<CollectionView[]>([]);
+
   const [searchedCollections, setSearchedCollections] = useState<
     CollectionView[]
   >([]);
@@ -76,6 +77,9 @@ const Collections = () => {
     handleCurrentPage,
     total,
     data: collectionList,
+    handleGridSort,
+    order,
+    orderBy,
   } = usePaginationHook(searchedCollections);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCollections, setSelectedCollections] = useState<
@@ -433,6 +437,9 @@ const Collections = () => {
           rowsPerPage={pageSize}
           setRowsPerPage={handlePageSize}
           isLoading={loading}
+          handleSort={handleGridSort}
+          order={order}
+          orderBy={orderBy}
         />
       ) : (
         <>

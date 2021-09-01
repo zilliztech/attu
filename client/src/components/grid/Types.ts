@@ -1,12 +1,14 @@
 import { IconsType } from '../icons/Types';
 import { SearchType } from '../customInput/Types';
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 export type IconConfigType = {
   [x: string]: JSX.Element;
 };
 
 export type ColorType = 'default' | 'inherit' | 'primary' | 'secondary';
+
+export type SortDirection = 'asc' | 'desc';
 
 /**
  * selected: selected data in table checkbox
@@ -47,12 +49,12 @@ export type ToolBarConfig = Partial<TableSwitchType> &
 
 export type TableHeadType = {
   onSelectAllClick: (e: React.ChangeEvent) => void;
-  order: any;
-  orderBy: string;
+  order?: SortDirection;
+  orderBy?: string;
   numSelected: number;
   rowCount: number;
   colDefinitions: ColDefinitionsType[];
-  onRequestSort: (e: any, p: string) => void;
+  handleSort?: (e: any, p: string) => void;
   openCheckBox?: boolean;
 };
 
@@ -83,6 +85,9 @@ export type TableType = {
   editHeads: EditableHeads[];
   // with unit like '20px'
   tableCellMaxWidth?: string;
+  handleSort?: (e: any, orderBy: string) => void;
+  order?: SortDirection;
+  orderBy?: string;
 };
 
 export type ColDefinitionsType = {
@@ -123,10 +128,7 @@ export type MilvusGridType = ToolBarType & {
   colDefinitions: ColDefinitionsType[];
   isLoading?: boolean;
   title?: string[];
-  searchForm?: React.ReactNode;
   openCheckBox?: boolean;
-  titleIcon?: React.ReactNode;
-  pageUnit?: string;
   disableSelect?: boolean;
   noData?: string;
   showHoverStyle?: boolean;
@@ -134,12 +136,14 @@ export type MilvusGridType = ToolBarType & {
   editHeads?: EditableHeads[];
   // with unit like '20px'
   tableCellMaxWidth?: string;
+  handleSort?: (e: any, orderBy: string) => void;
+  order?: SortDirection;
+  orderBy?: string;
 };
 
 export type ActionBarType = {
   configs: ActionBarConfig[];
   row: any;
-  showLabel?: boolean;
   isHoverType?: boolean;
 };
 

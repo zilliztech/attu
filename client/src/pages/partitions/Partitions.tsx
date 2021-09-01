@@ -76,6 +76,9 @@ const Partitions: FC<{
     handleCurrentPage,
     total,
     data: partitionList,
+    order,
+    orderBy,
+    handleGridSort,
   } = usePaginationHook(searchedPartitions);
   const [loading, setLoading] = useState<boolean>(true);
   const { setDialog, handleCloseDialog, openSnackBar } =
@@ -396,6 +399,9 @@ const Partitions: FC<{
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
         isLoading={loading}
+        order={order}
+        orderBy={orderBy}
+        handleSort={handleGridSort}
       />
     </section>
   );

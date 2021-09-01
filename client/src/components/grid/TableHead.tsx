@@ -46,12 +46,12 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
     numSelected,
     rowCount,
     colDefinitions = [],
-    onRequestSort,
+    handleSort,
     openCheckBox,
   } = props;
   const classes = useStyles();
   const createSortHandler = (property: string) => (event: React.MouseEvent) => {
-    onRequestSort(event, property);
+    handleSort && handleSort(event, property);
   };
 
   return (
@@ -79,7 +79,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
             }
             className={classes.tableCell}
           >
-            {headCell.label && !headCell.notSort ? (
+            {headCell.label && handleSort && !headCell.notSort ? (
               <TableSortLabel
                 active={orderBy === (headCell.sortBy || headCell.id)}
                 direction={

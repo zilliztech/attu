@@ -91,25 +91,6 @@ describe('Test Grid index', () => {
     expect(titleNodes[1].textContent).toEqual(title[1]);
   });
 
-  it('Test SearchForm', () => {
-    const SearchForm = () => <div id="search-form"></div>;
-    act(() => {
-      render(
-        <MilvusGrid
-          primaryKey="id"
-          rows={[]}
-          colDefinitions={[]}
-          rowCount={0}
-          toolbarConfigs={[]}
-          searchForm={<SearchForm />}
-        />,
-        container
-      );
-    });
-
-    expect(container.querySelectorAll('#search-form').length).toEqual(1);
-  });
-
   it('Test Toolbar ', () => {
     const ToolbarConfig: ToolBarConfig[] = [
       {

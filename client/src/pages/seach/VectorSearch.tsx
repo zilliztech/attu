@@ -58,8 +58,9 @@ const VectorSearch = () => {
   // search params disable state
   const [paramDisabled, setParamDisabled] = useState<boolean>(true);
   // use null as init value before search, empty array means no results
-  const [searchResult, setSearchResult] =
-    useState<SearchResultView[] | null>(null);
+  const [searchResult, setSearchResult] = useState<SearchResultView[] | null>(
+    null
+  );
   // default topK is 100
   const [topK, setTopK] = useState<number>(100);
   const [expression, setExpression] = useState<string>('');
@@ -72,6 +73,9 @@ const VectorSearch = () => {
     handleCurrentPage,
     total,
     data: result,
+    order,
+    orderBy,
+    handleGridSort,
   } = usePaginationHook(searchResult || []);
 
   const collectionOptions: Option[] = useMemo(
@@ -482,6 +486,9 @@ const VectorSearch = () => {
           setRowsPerPage={handlePageSize}
           openCheckBox={false}
           isLoading={tableLoading}
+          orderBy={orderBy}
+          order={order}
+          handleSort={handleGridSort}
         />
       ) : (
         <EmptyCard

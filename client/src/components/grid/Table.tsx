@@ -11,7 +11,6 @@ import { TableType } from './Types';
 import { Box, Button, Typography } from '@material-ui/core';
 import EnhancedTableHead from './TableHead';
 import EditableTableHead from './TableEditableHead';
-import { stableSort, getComparator } from './Utils';
 import ActionBar from './ActionBar';
 import LoadingTable from './LoadingTable';
 import CopyButton from '../advancedSearch/CopyButton';
@@ -129,23 +128,17 @@ const EnhancedTable: FC<TableType> = props => {
     editHeads = [],
     // if table cell max width not be passed, table row will use 300px as default
     tableCellMaxWidth = '300px',
+    handleSort,
+    order,
+    orderBy,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState<string>('');
-  const [tableMouseStatus, setTableMouseStatus] = React.useState<boolean[]>([]);
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
 
   const { t: commonTrans } = useTranslation();
   const copyTrans = commonTrans('copy');
-
-  const handleRequestSort = (event: any, property: string) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
 
   useEffect(() => {
     const height: number = (containerRef.current as any)!.offsetHeight;
@@ -190,7 +183,7 @@ const EnhancedTable: FC<TableType> = props => {
               order={order}
               orderBy={orderBy}
               onSelectAllClick={onSelectedAll}
-              onRequestSort={handleRequestSort}
+              handleSort={handleSort}
               rowCount={rows.length}
               openCheckBox={openCheckBox}
             />
@@ -200,139 +193,116 @@ const EnhancedTable: FC<TableType> = props => {
           {!isLoading && (
             <TableBody>
               {rows && rows.length ? (
-                stableSort(rows, getComparator(order, orderBy)).map(
-                  (row, index) => {
-                    const isItemSelected = isSelected(row);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                rows.map((row, index) => {
+                  const isItemSelected = isSelected(row);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                    const handleMouseEnter = () => {
-                      setTableMouseStatus(v => {
-                        const copy = [...v];
-                        copy[index] = true;
-                        return copy;
-                      });
-                    };
-                    const handleMouseLeave = () =>
-                      setTableMouseStatus(v => {
-                        const copy = [...v];
-                        copy[index] = false;
-                        return copy;
-                      });
+                  return (
+                    <TableRow
+                      hover={showHoverStyle}
+                      key={'row' + row[primaryKey] + index}
+                      onClick={event => onSelected(event, row)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      selected={isItemSelected && !disableSelect}
+                      classes={{
+                        hover: classes.rowHover,
+                      }}
+                    >
+                      {openCheckBox && (
+                        <TableCell
+                          padding="checkbox"
+                          className={classes.checkbox}
+                        >
+                          <Checkbox
+                            checked={isItemSelected}
+                            color="primary"
+                            inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </TableCell>
+                      )}
 
-                    return (
-                      <TableRow
-                        hover={showHoverStyle}
-                        key={'row' + row[primaryKey] + index}
-                        onClick={event => onSelected(event, row)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        selected={isItemSelected && !disableSelect}
-                        classes={{
-                          hover: classes.rowHover,
-                        }}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        {openCheckBox && (
+                      {colDefinitions.map((colDef, i) => {
+                        const { actionBarConfigs = [], needCopy = false } =
+                          colDef;
+                        const cellStyle = colDef.getStyle
+                          ? colDef.getStyle(row[colDef.id])
+                          : {};
+                        return colDef.showActionCell ? (
                           <TableCell
-                            padding="checkbox"
-                            className={classes.checkbox}
+                            className={`${classes.cell} ${classes.tableCell} ${
+                              colDef.isHoverAction
+                                ? classes.hoverActionCell
+                                : ''
+                            }`}
+                            key="manage"
+                            style={cellStyle}
                           >
-                            <Checkbox
-                              checked={isItemSelected}
-                              color="primary"
-                              inputProps={{ 'aria-labelledby': labelId }}
-                            />
+                            <ActionBar
+                              configs={actionBarConfigs}
+                              isHoverType={colDef.isHoverAction}
+                              row={row}
+                            ></ActionBar>
                           </TableCell>
-                        )}
+                        ) : (
+                          <TableCell
+                            key={'cell' + row[primaryKey] + i}
+                            // padding={i === 0 ? 'none' : 'default'}
+                            align={colDef.align || 'left'}
+                            className={`${classes.cell} ${classes.tableCell}`}
+                            style={cellStyle}
+                          >
+                            {row[colDef.id] &&
+                            typeof row[colDef.id] === 'string' ? (
+                              <Typography title={row[colDef.id]}>
+                                {colDef.onClick ? (
+                                  <Button
+                                    color="primary"
+                                    data-data={row[colDef.id]}
+                                    data-index={index}
+                                    onClick={e => {
+                                      colDef.onClick && colDef.onClick(e, row);
+                                    }}
+                                  >
+                                    {row[colDef.id]}
+                                  </Button>
+                                ) : (
+                                  row[colDef.id]
+                                )}
+                              </Typography>
+                            ) : (
+                              <>
+                                {colDef.onClick ? (
+                                  <Button
+                                    color="primary"
+                                    data-data={row[colDef.id]}
+                                    data-index={index}
+                                    onClick={e => {
+                                      colDef.onClick && colDef.onClick(e, row);
+                                    }}
+                                  >
+                                    {row[colDef.id]}
+                                  </Button>
+                                ) : (
+                                  row[colDef.id]
+                                )}
+                              </>
+                            )}
 
-                        {colDefinitions.map((colDef, i) => {
-                          const { actionBarConfigs = [], needCopy = false } =
-                            colDef;
-                          const cellStyle = colDef.getStyle
-                            ? colDef.getStyle(row[colDef.id])
-                            : {};
-                          return colDef.showActionCell ? (
-                            <TableCell
-                              className={`${classes.cell} ${
-                                classes.tableCell
-                              } ${
-                                colDef.isHoverAction
-                                  ? classes.hoverActionCell
-                                  : ''
-                              }`}
-                              key="manage"
-                              style={cellStyle}
-                            >
-                              <ActionBar
-                                showLabel={tableMouseStatus[index]}
-                                configs={actionBarConfigs}
-                                isHoverType={colDef.isHoverAction}
-                                row={row}
-                              ></ActionBar>
-                            </TableCell>
-                          ) : (
-                            <TableCell
-                              key={'cell' + row[primaryKey] + i}
-                              // padding={i === 0 ? 'none' : 'default'}
-                              align={colDef.align || 'left'}
-                              className={`${classes.cell} ${classes.tableCell}`}
-                              style={cellStyle}
-                            >
-                              {row[colDef.id] &&
-                              typeof row[colDef.id] === 'string' ? (
-                                <Typography title={row[colDef.id]}>
-                                  {colDef.onClick ? (
-                                    <Button
-                                      color="primary"
-                                      data-data={row[colDef.id]}
-                                      data-index={index}
-                                      onClick={e => {
-                                        colDef.onClick &&
-                                          colDef.onClick(e, row);
-                                      }}
-                                    >
-                                      {row[colDef.id]}
-                                    </Button>
-                                  ) : (
-                                    row[colDef.id]
-                                  )}
-                                </Typography>
-                              ) : (
-                                <>
-                                  {colDef.onClick ? (
-                                    <Button
-                                      color="primary"
-                                      data-data={row[colDef.id]}
-                                      data-index={index}
-                                      onClick={e => {
-                                        colDef.onClick &&
-                                          colDef.onClick(e, row);
-                                      }}
-                                    >
-                                      {row[colDef.id]}
-                                    </Button>
-                                  ) : (
-                                    row[colDef.id]
-                                  )}
-                                </>
-                              )}
-
-                              {needCopy && row[colDef.id] && (
-                                <CopyButton
-                                  label={copyTrans.label}
-                                  value={row[colDef.id]}
-                                  className={classes.copyBtn}
-                                />
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  }
-                )
+                            {needCopy && row[colDef.id] && (
+                              <CopyButton
+                                label={copyTrans.label}
+                                value={row[colDef.id]}
+                                className={classes.copyBtn}
+                              />
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })
               ) : (
                 <tr>
                   <td
