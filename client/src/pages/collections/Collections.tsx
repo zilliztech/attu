@@ -66,6 +66,9 @@ const Collections = () => {
   const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const { handleInsertDialog } = useInsertDialogHook();
   const [collections, setCollections] = useState<CollectionView[]>([]);
+  const [orderBy, setOrderBy] = useState('');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+
   const [searchedCollections, setSearchedCollections] = useState<
     CollectionView[]
   >([]);
@@ -76,7 +79,7 @@ const Collections = () => {
     handleCurrentPage,
     total,
     data: collectionList,
-  } = usePaginationHook(searchedCollections);
+  } = usePaginationHook(searchedCollections, orderBy, order);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCollections, setSelectedCollections] = useState<
     CollectionView[]
@@ -415,6 +418,12 @@ const Collections = () => {
     setSelectedCollections([]);
   };
 
+  const handleGridSort = (e: any, property: string) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
   const CollectionIcon = icons.navCollection;
 
   return (
@@ -433,6 +442,9 @@ const Collections = () => {
           rowsPerPage={pageSize}
           setRowsPerPage={handlePageSize}
           isLoading={loading}
+          handleSort={handleGridSort}
+          order={order}
+          orderBy={orderBy}
         />
       ) : (
         <>

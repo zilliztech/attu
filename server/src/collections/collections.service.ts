@@ -13,7 +13,7 @@ import {
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
-import { LOADING_STATE, ROW_COUNT } from '../utils/Const';
+import { ROW_COUNT } from '../utils/Const';
 import {
   ShowCollectionsReq,
   ShowCollectionsType,
@@ -141,6 +141,8 @@ export class CollectionsService {
         });
       }
     }
+    // add default sort - Descending order
+    data.sort((a, b) => b.createdTime - a.createdTime);
     return data;
   }
 

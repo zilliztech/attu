@@ -20,12 +20,7 @@ const userStyle = makeStyles(theme => ({
     padding: theme.spacing(20),
     width: '100%',
   },
-  titleIcon: {
-    verticalAlign: '-3px',
-    '& svg': {
-      fill: '#32363c',
-    },
-  },
+
   tableTitle: {
     '& .last': {
       color: 'rgba(0, 0, 0, 0.54)',
@@ -71,6 +66,31 @@ const userStyle = makeStyles(theme => ({
   },
 }));
 
+/**
+ *
+ * @param rowCount required. totoal data count for pagination
+ * @param rowsPerPage per page for pagination, default is 10
+ * @param primaryKey required. The unique column for your data. use for checkbox and render key.
+ * @param onChangePage handle page change
+ * @param labelDisplayedRows Custom pagination label function, return string;
+ * @param page current page for pagination
+ * @param showToolbar control toolbar display. default is false
+ * @param rows table data you want to render
+ * @param colDefinitions Define how to render table heder.
+ * @param isLoading table loading status
+ * @param title  Render breadcrumbs
+ * @param openCheckBox control checkbox display. default is true
+ * @param disableSelect disable table row select. default false
+ * @param noData when table is empty, what tip we need to show.
+ * @param showHoverStyle control table row hover style display
+ * @param headEditable if true, user can edit header.
+ * @param editHeads Only headEditable is true will render editHeads
+ * @param tableCellMaxWidth Define table cell max width, default is 300
+ * @param handlesort how to sort table, if it's undefined, then you can not sort table
+ * @param order 'desc' | 'asc'. sort direction
+ * @param order order by which table field
+ * @returns
+ */
 const MilvusGrid: FC<MilvusGridType> = props => {
   const classes = userStyle();
 
@@ -79,8 +99,8 @@ const MilvusGrid: FC<MilvusGridType> = props => {
   const gridTrans = commonTrans('grid');
 
   const {
-    rowCount = 10,
-    rowsPerPage = 5,
+    rowCount = 20,
+    rowsPerPage = 10,
     primaryKey = 'id',
     showToolbar = false,
     toolbarConfigs = [],
@@ -91,14 +111,11 @@ const MilvusGrid: FC<MilvusGridType> = props => {
       console.log('nextPageNum', nextPageNum);
     },
     labelDisplayedRows,
-    // pageUnit = 'item',
     page = 0,
     rows = [],
     colDefinitions = [],
     isLoading = false,
     title,
-    // titleIcon = <CollectionIcon />,
-    searchForm,
     openCheckBox = true,
     disableSelect = false,
     noData = gridTrans.noData,
@@ -109,6 +126,9 @@ const MilvusGrid: FC<MilvusGridType> = props => {
     setSelected = () => {},
     setRowsPerPage = () => {},
     tableCellMaxWidth,
+    handleSort,
+    order,
+    orderBy,
   } = props;
 
   const _isSelected = (row: { [x: string]: any }) => {
@@ -135,16 +155,6 @@ const MilvusGrid: FC<MilvusGridType> = props => {
     }
     setSelected([]);
   };
-
-  // const defaultLabelRows = ({ from = 0, to = 0, count = 0 }) => {
-  //   const plural = pageUnit.charAt(pageUnit.length - 1) === 'y' ? 'ies' : 's';
-  //   const formatUnit =
-  //     pageUnit.charAt(pageUnit.length - 1) === 'y'
-  //       ? pageUnit.slice(0, pageUnit.length - 1)
-  //       : pageUnit;
-  //   const unit = count > 1 ? `${formatUnit}${plural}` : pageUnit;
-  //   return `${count} ${unit}`;
-  // };
 
   const defaultLabelRows = ({ from = 0, to = 0, count = 0 }) => {
     return (
@@ -184,12 +194,6 @@ const MilvusGrid: FC<MilvusGridType> = props => {
         </Grid>
       )}
 
-      {searchForm && (
-        <Grid item xs={12}>
-          {searchForm}
-        </Grid>
-      )}
-
       {(showToolbar || toolbarConfigs.length > 0) && (
         <Grid item>
           <CustomToolbar
@@ -217,6 +221,9 @@ const MilvusGrid: FC<MilvusGridType> = props => {
           headEditable={headEditable}
           editHeads={editHeads}
           tableCellMaxWidth={tableCellMaxWidth}
+          handleSort={handleSort}
+          order={order}
+          orderBy={orderBy}
         ></Table>
         {rowCount ? (
           <TablePagination
