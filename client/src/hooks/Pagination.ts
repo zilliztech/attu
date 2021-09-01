@@ -1,13 +1,11 @@
 import { useMemo, useState } from 'react';
 import { stableSort, getComparator } from '../utils/Sort';
 
-export const usePaginationHook = (
-  list: any[],
-  orderBy?: string,
-  order?: 'asc' | 'desc'
-) => {
+export const usePaginationHook = (list: any[]) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [orderBy, setOrderBy] = useState('');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 
   const total = list.length;
   const { data, offset } = useMemo(() => {
@@ -30,6 +28,11 @@ export const usePaginationHook = (
   const handlePageSize = (size: number) => {
     setPageSize(size);
   };
+  const handleGridSort = (e: any, property: string) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
   return {
     offset,
@@ -39,5 +42,8 @@ export const usePaginationHook = (
     handleCurrentPage,
     total,
     data,
+    handleGridSort,
+    orderBy,
+    order,
   };
 };

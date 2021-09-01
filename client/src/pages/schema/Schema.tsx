@@ -69,6 +69,9 @@ const Schema: FC<{
     handleCurrentPage,
     total,
     data: schemaList,
+    order,
+    orderBy,
+    handleGridSort,
   } = usePaginationHook(fields);
 
   const fetchSchemaListWithIndex = async (
@@ -220,6 +223,9 @@ const Schema: FC<{
         setRowsPerPage={handlePageSize}
         isLoading={loading}
         openCheckBox={false}
+        order={order}
+        orderBy={orderBy}
+        handleSort={handleGridSort}
       />
     </section>
   );
