@@ -133,7 +133,6 @@ const EnhancedTable: FC<TableType> = props => {
     orderBy,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
-  const [tableMouseStatus, setTableMouseStatus] = React.useState<boolean[]>([]);
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   const containerRef = useRef(null);
@@ -198,20 +197,6 @@ const EnhancedTable: FC<TableType> = props => {
                   const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
-                  const handleMouseEnter = () => {
-                    setTableMouseStatus(v => {
-                      const copy = [...v];
-                      copy[index] = true;
-                      return copy;
-                    });
-                  };
-                  const handleMouseLeave = () =>
-                    setTableMouseStatus(v => {
-                      const copy = [...v];
-                      copy[index] = false;
-                      return copy;
-                    });
-
                   return (
                     <TableRow
                       hover={showHoverStyle}
@@ -224,8 +209,6 @@ const EnhancedTable: FC<TableType> = props => {
                       classes={{
                         hover: classes.rowHover,
                       }}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
                     >
                       {openCheckBox && (
                         <TableCell
@@ -257,7 +240,6 @@ const EnhancedTable: FC<TableType> = props => {
                             style={cellStyle}
                           >
                             <ActionBar
-                              showLabel={tableMouseStatus[index]}
                               configs={actionBarConfigs}
                               isHoverType={colDef.isHoverAction}
                               row={row}

@@ -144,7 +144,6 @@ export type MilvusGridType = ToolBarType & {
 export type ActionBarType = {
   configs: ActionBarConfig[];
   row: any;
-  showLabel?: boolean;
   isHoverType?: boolean;
 };
 
