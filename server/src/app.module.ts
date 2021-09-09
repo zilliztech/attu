@@ -11,6 +11,8 @@ import { PartitionsModule } from './partitions/partitions.module';
 import { SchemaModule } from './schema/schema.module';
 import { EventsModule } from './events/events.module';
 import { LoggingInterceptor } from './interceptors/index';
+import { CronsModule } from './crons/crons.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { LoggingInterceptor } from './interceptors/index';
     SchemaModule,
     // used for events communication
     EventsModule,
+    CronsModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [

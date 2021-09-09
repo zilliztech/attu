@@ -5,3 +5,12 @@ export enum LOADING_STATE {
   LOADING,
   UNLOADED,
 }
+
+export enum WS_EVENTS {
+  COLLECTION = 'COLLECTION',
+}
+
+export enum WS_EVENTS_TYPE {
+  START,
+  STOP,
+}

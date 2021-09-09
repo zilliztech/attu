@@ -8,21 +8,21 @@ import {
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Server } from 'socket.io';
+import { WS_EVENTS } from 'src/utils/Const';
 
-@WebSocketGateway(3002, {
+@WebSocketGateway({
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  }
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
 })
 export class EventsGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('senddata')
+  @SubscribeMessage(WS_EVENTS.COLLECTION)
   data(@MessageBody() data: unknown): WsResponse<unknown> {
-    const event = 'senddata';
-    return { event, data };
+    return { event: WS_EVENTS.COLLECTION + '', data };
   }
 
   @SubscribeMessage('events')
@@ -30,9 +30,7 @@ export class EventsGateway {
     const event = 'events';
     const response = [1, 2, 3];
 
-    return from(response).pipe(
-      map(data => ({ event, data })),
-    );
+    return from(response).pipe(map((data) => ({ event, data })));
   }
 
   @SubscribeMessage('identity')
