@@ -135,10 +135,11 @@ const Collections = () => {
     try {
       setLoading(true);
       const res = await CollectionHttp.getCollections();
-      const hasLoadingCollection = res.find(v => checkLoading(v));
-
-      const hasIndexBuilding = res.find(v => checkIndexBuilding(v));
-      if (hasLoadingCollection || hasIndexBuilding) {
+      const hasLoadingOrBuildingCollection = res.some(
+        v => checkLoading(v) || checkIndexBuilding(v)
+      );
+      // if some collection is building index or loading, start pulling data
+      if (hasLoadingOrBuildingCollection) {
         MilvusHttp.triggerCron({
           name: WS_EVENTS.COLLECTION,
           type: WS_EVENTS_TYPE.START,

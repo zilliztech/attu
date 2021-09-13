@@ -19,7 +19,6 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
 
   // test code for socket
   useEffect(() => {
-    console.log('----in websocket-----');
     const socket = io('http://localhost:3000');
 
     socket.on('connect', function () {
@@ -37,14 +36,14 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
         (v: any) => new CollectionHttp(v)
       );
 
-      const hasLoadingCollection = collections.find(v => checkLoading(v));
-
-      const hasIndexBuilding = collections.find(v => checkIndexBuilding(v));
+      const hasLoadingOrBuildingCollection = collections.some(
+        v => checkLoading(v) || checkIndexBuilding(v)
+      );
 
       setCollections(collections);
       // If no collection is building index or loading collection
       // stop server cron job
-      if (!hasLoadingCollection && !hasIndexBuilding) {
+      if (!hasLoadingOrBuildingCollection) {
         MilvusHttp.triggerCron({
           name: WS_EVENTS.COLLECTION,
           type: WS_EVENTS_TYPE.STOP,
