@@ -113,15 +113,23 @@ export class CollectionsService {
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { name } = item;
+
         const collectionInfo = await this.describeCollection({
           collection_name: name,
         });
+
         const collectionStatistics = await this.getCollectionStatistics({
           collection_name: name,
         });
+
+        const indexRes = await this.getIndexStatus({
+          collection_name: item.name,
+        });
+
         const autoID = collectionInfo.schema.fields.find(
           (v) => v.is_primary_key === true,
         )?.autoID;
+
         const loadCollection = loadedCollections.data.find(
           (v) => v.name === name,
         );
@@ -129,6 +137,7 @@ export class CollectionsService {
         const loadedPercentage = !loadCollection
           ? '-1'
           : loadCollection.loadedPercentage;
+
         data.push({
           collection_name: name,
           schema: collectionInfo.schema,
@@ -138,6 +147,7 @@ export class CollectionsService {
           id: collectionInfo.collectionID,
           loadedPercentage,
           createdTime: collectionInfo.created_utc_timestamp,
+          index_status: indexRes.state,
         });
       }
     }
@@ -192,7 +202,7 @@ export class CollectionsService {
 
   /**
    * Get all collection index status
-   * @returns {collection_name:string, index_state: IndexState}[]
+   * @returns {collection_name:string, index_status: IndexState}[]
    */
   async getCollectionsIndexStatus() {
     const data = [];
@@ -204,7 +214,7 @@ export class CollectionsService {
         });
         data.push({
           collection_name: item.name,
-          index_state: indexRes.state,
+          index_status: indexRes.state,
         });
       }
     }

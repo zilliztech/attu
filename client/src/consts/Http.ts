@@ -4,3 +4,12 @@ export enum CODE_STATUS {
 }
 
 export const START_LOADING_TIME = 350;
+
+export enum WS_EVENTS {
+  COLLECTION = 'COLLECTION',
+}
+
+export enum WS_EVENTS_TYPE {
+  START,
+  STOP,
+}

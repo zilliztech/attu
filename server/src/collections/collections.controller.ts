@@ -11,8 +11,8 @@ import {
   ValidationPipe,
   // CACHE_MANAGER,
   // Inject,
-  UseInterceptors,
-  CacheInterceptor,
+  // UseInterceptors,
+  // CacheInterceptor,
 } from '@nestjs/common';
 // import { Cache } from 'cache-manager';
 import { ApiTags } from '@nestjs/swagger';
@@ -64,7 +64,7 @@ export class CollectionsController {
 
   // use interceptor to control cache automatically
   @Get('statistics')
-  @UseInterceptors(CacheInterceptor)
+  // @UseInterceptors(CacheInterceptor)
   async getStatistics() {
     return await this.collectionsService.getStatistics();
   }

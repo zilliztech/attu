@@ -13,5 +13,6 @@ import { ttl } from '../cache/config';
   ],
   providers: [CollectionsService],
   controllers: [CollectionsController],
+  exports: [CollectionsService],
 })
-export class CollectionsModule { }
+export class CollectionsModule {}
