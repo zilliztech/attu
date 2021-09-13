@@ -19,7 +19,7 @@ export class CronsService {
       : cronJob.start();
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS, { name: WS_EVENTS.COLLECTION })
+  @Cron(CronExpression.EVERY_SECOND, { name: WS_EVENTS.COLLECTION })
   async getCollections() {
     const res = await this.collectionService.getAllCollections();
     this.eventService.server.emit(WS_EVENTS.COLLECTION, res);

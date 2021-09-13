@@ -1,29 +1,65 @@
 import { createContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '../consts/Http';
 import { CollectionHttp } from '../http/Collection';
+import { MilvusHttp } from '../http/Milvus';
+import { CollectionView } from '../pages/collections/Types';
+import { checkIndexBuilding, checkLoading } from '../utils/Validation';
+import { WebSocketType } from './Types';
 
-export const navContext = createContext<{}>({});
+export const webSokcetContext = createContext<WebSocketType>({
+  collections: [],
+  setCollections: data => {},
+});
 
-const { Provider } = navContext;
+const { Provider } = webSokcetContext;
 
 export const WebSocketProvider = (props: { children: React.ReactNode }) => {
+  const [collections, setCollections] = useState<CollectionView[]>([]);
+
   // test code for socket
   useEffect(() => {
     console.log('----in websocket-----');
     const socket = io('http://localhost:3000');
+
     socket.on('connect', function () {
-      console.log('Connected');
-
-      socket.emit('identity', 0, (res: any) => console.log(res));
-
-      socket.emit('events', { test: 'events' });
-
-      socket.emit('senddata', { test: 'senddata' });
+      console.log('--- ws connected ---');
     });
-    socket.on('COLLECTION', (data: any) => {
-      const collections = data.map((v: any) => new CollectionHttp(v));
-      console.log('event', collections);
+
+    /**
+     * Because of collections data may be big, so we still use ajax to fetch data.
+     * Only when collection list includes index building or loading collection,
+     * server will keep push collections data from milvus every seconds.
+     * After all collections are not loading or building index, tell server stop pulling data.
+     */
+    socket.on(WS_EVENTS.COLLECTION, (data: any) => {
+      const collections: CollectionHttp[] = data.map(
+        (v: any) => new CollectionHttp(v)
+      );
+
+      const hasLoadingCollection = collections.find(v => checkLoading(v));
+
+      const hasIndexBuilding = collections.find(v => checkIndexBuilding(v));
+
+      setCollections(collections);
+      // If no collection is building index or loading collection
+      // stop server cron job
+      if (!hasLoadingCollection && !hasIndexBuilding) {
+        MilvusHttp.triggerCron({
+          name: WS_EVENTS.COLLECTION,
+          type: WS_EVENTS_TYPE.STOP,
+        });
+      }
     });
   }, []);
-  return <Provider value={{}}>{props.children}</Provider>;
+  return (
+    <Provider
+      value={{
+        collections,
+        setCollections,
+      }}
+    >
+      {props.children}
+    </Provider>
+  );
 };

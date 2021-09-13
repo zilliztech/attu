@@ -1,9 +1,11 @@
+import { WS_EVENTS, WS_EVENTS_TYPE } from '../consts/Http';
 import BaseModel from './BaseModel';
 
 export class MilvusHttp extends BaseModel {
   static CONNECT_URL = '/milvus/connect';
   static CHECK_URL = '/milvus/check';
   static FLUSH_URL = '/milvus/flush';
+  static TIGGER_CRON_URL = '/crons';
 
   constructor(props: {}) {
     super(props);
@@ -24,6 +26,13 @@ export class MilvusHttp extends BaseModel {
       data: {
         collection_names: [collectionName],
       },
+    });
+  }
+
+  static triggerCron(data: { name: WS_EVENTS; type: WS_EVENTS_TYPE }) {
+    return super.update({
+      path: this.TIGGER_CRON_URL,
+      data,
     });
   }
 }

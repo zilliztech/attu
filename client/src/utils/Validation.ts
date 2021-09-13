@@ -1,3 +1,4 @@
+import { ChildrenStatusType } from '../components/status/Types';
 import { MetricType, METRIC_TYPES_VALUES } from '../consts/Milvus';
 
 export type ValidType =
@@ -243,3 +244,17 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
 
   return checkMap[rule];
 };
+
+/**
+ * Check collection is loading or not
+ */
+export const checkLoading = (v: any): boolean =>
+  v._loadedPercentage !== '-1' && v._loadedPercentage !== '100';
+
+/**
+ * Check collection is index building or not.
+ * @param v
+ * @returns boolean
+ */
+export const checkIndexBuilding = (v: any): boolean =>
+  v._indexState === ChildrenStatusType.CREATING;

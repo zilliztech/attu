@@ -8,7 +8,6 @@ export class CronsController {
 
   @Put()
   async toggleCron(@Body() data: ToggleCron) {
-    console.log(data);
     return await this.cronsService.toggleCronJobByName(data);
   }
 }

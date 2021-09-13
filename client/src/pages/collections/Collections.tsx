@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
@@ -33,6 +33,9 @@ import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
 import { MilvusHttp } from '../../http/Milvus';
 import { LOADING_STATE } from '../../consts/Milvus';
+import { webSokcetContext } from '../../context/WebSocket';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
+import { checkIndexBuilding, checkLoading } from '../../utils/Validation';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -59,17 +62,63 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 let timer: NodeJS.Timeout | null = null;
 // get init search value from url
-const { search = '' } = parseLocationSearch(window.location.search);
+const { urlSearch = '' } = parseLocationSearch(window.location.search);
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const { handleInsertDialog } = useInsertDialogHook();
-  const [collections, setCollections] = useState<CollectionView[]>([]);
 
-  const [searchedCollections, setSearchedCollections] = useState<
+  const [search, setSearch] = useState<string>(urlSearch);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedCollections, setSelectedCollections] = useState<
     CollectionView[]
   >([]);
+
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
+  const { collections, setCollections } = useContext(webSokcetContext);
+  const { t: collectionTrans } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
+  const { t: dialogTrans } = useTranslation('dialog');
+  const { t: successTrans } = useTranslation('success');
+  const classes = useStyles();
+
+  const LoadIcon = icons.load;
+  const ReleaseIcon = icons.release;
+  const InfoIcon = icons.info;
+
+  const searchedCollections = useMemo(
+    () => collections.filter(collection => collection._name.includes(search)),
+    [collections, search]
+  );
+
+  const formatCollections = useMemo(() => {
+    const data = searchedCollections.map(v => {
+      // const indexStatus = statusRes.find(item => item._name === v._name);
+      Object.assign(v, {
+        nameElement: (
+          <Link to={`/collections/${v._name}`} className={classes.link}>
+            <Highlighter
+              textToHighlight={v._name}
+              searchWords={[search]}
+              highlightClassName={classes.highlight}
+            />
+          </Link>
+        ),
+        statusElement: (
+          <Status status={v._status} percentage={v._loadedPercentage} />
+        ),
+        indexCreatingElement: (
+          <StatusIcon type={v._indexState || ChildrenStatusType.FINISH} />
+        ),
+      });
+
+      return v;
+    });
+    return data;
+  }, [classes.highlight, classes.link, search, searchedCollections]);
+
   const {
     pageSize,
     handlePageSize,
@@ -80,67 +129,27 @@ const Collections = () => {
     handleGridSort,
     order,
     orderBy,
-  } = usePaginationHook(searchedCollections);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [selectedCollections, setSelectedCollections] = useState<
-    CollectionView[]
-  >([]);
-
-  const { setDialog, handleCloseDialog, openSnackBar } =
-    useContext(rootContext);
-  const { t: collectionTrans } = useTranslation('collection');
-  const { t: btnTrans } = useTranslation('btn');
-  const { t: dialogTrans } = useTranslation('dialog');
-  const { t: successTrans } = useTranslation('success');
-
-  const classes = useStyles();
-
-  const LoadIcon = icons.load;
-  const ReleaseIcon = icons.release;
-  const InfoIcon = icons.info;
+  } = usePaginationHook(formatCollections);
 
   const fetchData = useCallback(async () => {
     try {
+      setLoading(true);
       const res = await CollectionHttp.getCollections();
-      const statusRes = await CollectionHttp.getCollectionsIndexState();
-      setLoading(false);
+      const hasLoadingCollection = res.find(v => checkLoading(v));
 
-      const collections = res.map(v => {
-        const indexStatus = statusRes.find(item => item._name === v._name);
-        Object.assign(v, {
-          nameElement: (
-            <Link to={`/collections/${v._name}`} className={classes.link}>
-              <Highlighter
-                textToHighlight={v._name}
-                searchWords={[search]}
-                highlightClassName={classes.highlight}
-              />
-            </Link>
-          ),
-          statusElement: (
-            <Status status={v._status} percentage={v._loadedPercentage} />
-          ),
-          indexCreatingElement: (
-            <StatusIcon
-              type={indexStatus?._indexState || ChildrenStatusType.FINISH}
-            />
-          ),
+      const hasIndexBuilding = res.find(v => checkIndexBuilding(v));
+      if (hasLoadingCollection || hasIndexBuilding) {
+        MilvusHttp.triggerCron({
+          name: WS_EVENTS.COLLECTION,
+          type: WS_EVENTS_TYPE.START,
         });
+      }
 
-        return v;
-      });
-
-      // filter collection if url contains search param
-      const filteredCollections = collections.filter(collection =>
-        collection._name.includes(search)
-      );
-
-      setCollections(collections);
-      setSearchedCollections(filteredCollections);
-    } catch (err) {
+      setCollections(res);
+    } finally {
       setLoading(false);
     }
-  }, [classes.link, classes.highlight]);
+  }, [setCollections]);
 
   useEffect(() => {
     fetchData();
@@ -226,32 +235,7 @@ const Collections = () => {
     if (timer) {
       clearTimeout(timer);
     }
-    // add loading manually
-    setLoading(true);
-    timer = setTimeout(() => {
-      const searchWords = [value];
-      const list = value
-        ? collections.filter(c => c._name.includes(value))
-        : collections;
-
-      const highlightList = list.map(c => {
-        Object.assign(c, {
-          nameElement: (
-            <Link to={`/collections/${c._name}`} className={classes.link}>
-              <Highlighter
-                textToHighlight={c._name}
-                searchWords={searchWords}
-                highlightClassName={classes.highlight}
-              />
-            </Link>
-          ),
-        });
-        return c;
-      });
-
-      setLoading(false);
-      setSearchedCollections(highlightList);
-    }, 300);
+    setSearch(value);
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -275,7 +259,7 @@ const Collections = () => {
       onClick: () => {
         handleInsertDialog(
           <InsertContainer
-            collections={collections}
+            collections={formatCollections}
             defaultSelectedCollection={
               selectedCollections.length === 1
                 ? selectedCollections[0]._name
