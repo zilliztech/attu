@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../consts/Http';
+import { url } from '../http/Axios';
 import { CollectionHttp } from '../http/Collection';
 import { MilvusHttp } from '../http/Milvus';
 import { CollectionView } from '../pages/collections/Types';
@@ -19,7 +20,7 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
 
   // test code for socket
   useEffect(() => {
-    const socket = io('http://localhost:3000');
+    const socket = io(url);
 
     socket.on('connect', function () {
       console.log('--- ws connected ---');
