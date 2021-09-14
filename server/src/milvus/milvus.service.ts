@@ -19,19 +19,29 @@ export class MilvusService {
   }
 
   get collectionManager() {
+    this.checkMilvus();
     return this.milvusClient.collectionManager;
   }
 
   get partitionManager() {
+    this.checkMilvus();
     return this.milvusClient.partitionManager;
   }
 
   get indexManager() {
+    this.checkMilvus();
     return this.milvusClient.indexManager;
   }
 
   get dataManager() {
+    this.checkMilvus();
     return this.milvusClient.dataManager;
+  }
+
+  private checkMilvus() {
+    if (!this.milvusClient) {
+      throw new Error('Please connect milvus first');
+    }
   }
 
   async connectMilvus(address: string) {

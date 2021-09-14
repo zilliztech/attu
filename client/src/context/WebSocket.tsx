@@ -18,7 +18,6 @@ const { Provider } = webSokcetContext;
 export const WebSocketProvider = (props: { children: React.ReactNode }) => {
   const [collections, setCollections] = useState<CollectionView[]>([]);
 
-  // test code for socket
   useEffect(() => {
     const socket = io(url);
 
@@ -52,6 +51,7 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
       }
     });
   }, []);
+
   return (
     <Provider
       value={{
