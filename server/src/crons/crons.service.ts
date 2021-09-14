@@ -21,8 +21,17 @@ export class CronsService {
 
   @Cron(CronExpression.EVERY_SECOND, { name: WS_EVENTS.COLLECTION })
   async getCollections() {
-    const res = await this.collectionService.getAllCollections();
-    this.eventService.server.emit(WS_EVENTS.COLLECTION, res);
-    return res;
+    try {
+      const res = await this.collectionService.getAllCollections();
+      this.eventService.server.emit(WS_EVENTS.COLLECTION, res);
+      return res;
+    } catch (error) {
+      // When user not connect milvus, stop cron
+      this.toggleCronJobByName({
+        name: WS_EVENTS.COLLECTION,
+        type: WS_EVENTS_TYPE.STOP,
+      });
+      throw new Error(error);
+    }
   }
 }
