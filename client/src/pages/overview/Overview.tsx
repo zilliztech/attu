@@ -3,13 +3,17 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '../../context/Root';
+import { webSokcetContext } from '../../context/WebSocket';
 import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
+import { MilvusHttp } from '../../http/Milvus';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import { formatNumber } from '../../utils/Common';
+import { checkLoading, checkIndexBuilding } from '../../utils/Validation';
 import { CollectionData } from '../collections/Types';
 import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
@@ -44,24 +48,37 @@ const Overview = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const [loadCollections, setLoadCollections] = useState<CollectionHttp[]>([]);
+  const { collections, setCollections } = useContext(webSokcetContext);
+
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     const res = await CollectionHttp.getStatistics();
     const collections = await CollectionHttp.getCollections();
-    const loadCollections = collections.filter(
-      c => c._status !== LOADING_STATE.UNLOADED
+    const hasLoadingOrBuildingCollection = collections.some(
+      v => checkLoading(v) || checkIndexBuilding(v)
     );
+    // if some collection is building index or loading, start pulling data
+    if (hasLoadingOrBuildingCollection) {
+      MilvusHttp.triggerCron({
+        name: WS_EVENTS.COLLECTION,
+        type: WS_EVENTS_TYPE.START,
+      });
+    }
     setStatistics(res);
-    setLoadCollections(loadCollections);
+    setCollections(collections);
     setLoading(false);
-  }, []);
+  }, [setCollections]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const loadCollections = useMemo(
+    () => collections.filter(c => c._status !== LOADING_STATE.UNLOADED),
+    [collections]
+  );
 
   const fetchRelease = async (data: CollectionData) => {
     const name = data._name;
