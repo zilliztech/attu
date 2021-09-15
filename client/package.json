@@ -20,7 +20,7 @@
     "@types/react-highlight-words": "^0.16.2",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-syntax-highlighter": "^13.5.2",
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "dayjs": "^1.10.5",
     "i18next": "^20.3.1",
     "papaparse": "^5.3.1",
