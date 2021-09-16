@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { MilvusClient } from '@zilliz/milvus2-sdk-node';
-import { FlushReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+import {
+  FlushReq,
+  GetMetricsResponse,
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 @Injectable()
 export class MilvusService {
   private milvusAddress: string;
@@ -71,6 +74,13 @@ export class MilvusService {
 
   async flush(data: FlushReq) {
     const res = await this.milvusClient.dataManager.flush(data);
+    return res;
+  }
+
+  async getMetrics(): Promise<GetMetricsResponse> {
+    const res = await this.milvusClient.dataManager.getMetric({
+      request: { metric_type: 'system_info' },
+    });
     return res;
   }
 }
