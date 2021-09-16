@@ -15,7 +15,7 @@ import { MilvusService } from './milvus.service';
 @ApiTags('milvus')
 @Controller('milvus')
 export class MilvusController {
-  constructor(private milvusService: MilvusService) { }
+  constructor(private milvusService: MilvusService) {}
 
   @Post('connect')
   @UsePipes(new ValidationPipe())
@@ -31,5 +31,10 @@ export class MilvusController {
   @Put('flush')
   async flush(@Body() data: Flush) {
     return await this.milvusService.flush(data);
+  }
+
+  @Get('metrics')
+  async getMetrics() {
+    return await this.milvusService.getMetrics();
   }
 }
