@@ -31,5 +31,9 @@ RUN apk add --no-cache bash
 # Make our shell script executable
 RUN chmod +x /app/build/env.sh
 
+# Make all files accessible such that the image supports arbitrary  user ids
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
+
 # RUN echo -e window.__version="{\"version\":\""$VERSION"\"}" > /app/build/version.js
 CMD [ "/bin/bash", "-c", "/app/build/env.sh && yarn start:prod" ]

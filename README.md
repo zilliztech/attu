@@ -87,7 +87,7 @@ New to milvus? Milvus is an open-source vector database built to power AI applic
 👉 Join the Milvus community on [Slack](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ) to share your suggestions, advice, and questions with our engineering team.
 
 <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">
-    <img src="https://zillizstorage.blob.core.windows.net/zilliz-assets/zilliz-assets/assets/readme_slack_4a07c4c92f.png" alt="Miluvs Slack Channel"  height="150" width="500">
+    <img src="https://camo.githubusercontent.com/fa0663f8947e22e589e75ebbc84f0a835191d3ddab9a3a0f1dd054ef18eabbaa/68747470733a2f2f7a696c6c697a2d636d732e73332e75732d776573742d322e616d617a6f6e6177732e636f6d2f726561646d655f736c61636b5f346130376334633932662e706e67" alt="Miluvs Slack Channel"  height="150" width="500">
 </a>
 
 #### ❓ Questions? Problems?
