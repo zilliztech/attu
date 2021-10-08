@@ -25,6 +25,8 @@ import insertEn from './en/insert';
 import insertCn from './cn/insert';
 import searchEn from './en/search';
 import searchCn from './cn/search';
+import systemViewTransEn from './en/systemView';
+import systemViewTransCn from './cn/systemView';
 
 export const resources = {
   cn: {
@@ -40,6 +42,7 @@ export const resources = {
     index: indexCn,
     insert: insertCn,
     search: searchCn,
+    systemView: systemViewTransCn,
   },
   en: {
     translation: commonEn,
@@ -54,6 +57,7 @@ export const resources = {
     index: indexEn,
     insert: insertEn,
     search: searchEn,
+    systemView: systemViewTransEn
   },
 };
 

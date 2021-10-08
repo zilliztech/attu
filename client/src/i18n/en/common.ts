@@ -38,6 +38,14 @@ const commonTrans = {
     join: 'Join our growing social community today',
     get: 'Get insight, tips and share ideas',
   },
+  capacity: {
+    b: 'B',
+    kb: 'KB',
+    mb: 'MB',
+    gb: 'GB',
+    tb: 'TB',
+    pb: 'PB',
+  },
 };
 
 export default commonTrans;
