@@ -41,8 +41,8 @@ export interface DataProgressProps {
 }
 
 export interface DataSectionProps {
-  title: string[],
-  content: { label: string, value: string }[],
+  titles: string[],
+  contents: { label: string, value: string }[],
 }
 
 export interface DataCardProps {

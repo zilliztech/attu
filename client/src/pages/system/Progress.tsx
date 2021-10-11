@@ -3,36 +3,6 @@ import { FC } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { ProgressProps } from './Types';
 
-export const getByteString = (value1: number, value2: number, capacityTrans: { [key in string]: string }) => {
-  if (!value1 || !value2) return `0${capacityTrans.b}`;
-  const power = Math.round(Math.log(value1) / Math.log(1024));
-  let unit = '';
-  switch (power) {
-    case 1:
-      unit = capacityTrans.kb;
-      break;
-    case 2:
-      unit = capacityTrans.mb;
-      break;
-    case 3:
-      unit = capacityTrans.gb;
-      break;
-    case 4:
-      unit = capacityTrans.tb;
-      break;
-    case 5:
-      unit = capacityTrans.pb;
-      break;
-    default:
-      unit = capacityTrans.b;
-      break;
-  }
-  const byteValue1 = value1 / (1024 ** power);
-  const byteValue2 = value2 / (1024 ** power);
-
-  return `${(byteValue1).toFixed(2)}/${(byteValue2).toFixed(2)} ${unit}`;
-}
-
 const getStyles = makeStyles(() => ({
   root: {
     height: 'auto',

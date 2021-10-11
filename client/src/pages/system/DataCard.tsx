@@ -2,7 +2,8 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core';
-import Progress, { getByteString } from './Progress';
+import Progress from './Progress';
+import { getByteString } from '../../utils/Format';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 
 const getStyles = makeStyles(() => ({
@@ -95,14 +96,14 @@ const getStyles = makeStyles(() => ({
 
 const DataSection: FC<DataSectionProps> = (props) => {
   const classes = getStyles();
-  const { title, content } = props;
+  const { titles, contents } = props;
 
   return (
     <div className={classes.sectionRoot}>
       <div className={classes.sectionRow}>
-        {title.map((titleEntry) => <div key={titleEntry} className={classes.sectionHeaderCell}>{titleEntry}</div>)}
+        {titles.map((titleEntry) => <div key={titleEntry} className={classes.sectionHeaderCell}>{titleEntry}</div>)}
       </div>
-      {content.map((contentEntry) => {
+      {contents.map((contentEntry) => {
         return (
           <div key={contentEntry.label} className={classes.sectionRow}>
             <div className={classes.sectionCell}>
@@ -136,8 +137,8 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
   const { t: commonTrans } = useTranslation();
   const capacityTrans: { [key in string]: string } = commonTrans('capacity');
   const { node, extend } = props;
-  const dataTitle1 = [t('hardwareTitle'), t('valueTitle')];
-  const dataContent1 = [];
+  const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
+  const hardwareContent = [];
   const infos = node?.infos?.hardware_infos || {};
 
   const {
@@ -150,20 +151,20 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
   } = infos;
 
   if (extend) {
-    dataContent1.push({ label: t('thCPUCount'), value: cpu });
-    dataContent1.push({
+    hardwareContent.push({ label: t('thCPUCount'), value: cpu });
+    hardwareContent.push({
       label: t('thCPUUsage'), value: <DataProgress percent={cpuUsage / 100} />
     });
-    dataContent1.push({
+    hardwareContent.push({
       label: t('thMemUsage'), value: <DataProgress percent={memoryUsage / memory} desc={getByteString(memoryUsage, memory, capacityTrans)} />
     });
-    dataContent1.push({
+    hardwareContent.push({
       label: t('thDiskUsage'), value: <DataProgress percent={diskUsage / disk} desc={getByteString(diskUsage, disk, capacityTrans)} />
     });
   }
 
-  const dataTitle2 = [t('systemTitle'), t('valueTitle')];
-  const dataContent2 = [];
+  const systemTitle = [t('systemTitle'), t('valueTitle')];
+  const systemContent = [];
   const sysInfos = node?.infos?.system_info || {};
   const {
     system_version: version,
@@ -171,10 +172,10 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
     created_time: create = '',
     updated_time: update = '',
   } = sysInfos;
-  dataContent2.push({ label: t('thVersion'), value: version });
-  dataContent2.push({ label: t('thDeployMode'), value: mode });
-  dataContent2.push({ label: t('thCreateTime'), value: create });
-  dataContent2.push({ label: t('thUpdateTime'), value: update });
+  systemContent.push({ label: t('thVersion'), value: version });
+  systemContent.push({ label: t('thDeployMode'), value: mode });
+  systemContent.push({ label: t('thCreateTime'), value: create });
+  systemContent.push({ label: t('thUpdateTime'), value: update });
 
   return (
     <div className={classes.root}>
@@ -185,8 +186,8 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
         </div>
         <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
       </div>
-      {extend && <DataSection title={dataTitle1} content={dataContent1} />}
-      <DataSection title={dataTitle2} content={dataContent2} />
+      {extend && <DataSection titles={hardwareTitle} contents={hardwareContent} />}
+      <DataSection titles={systemTitle} contents={systemContent} />
     </div>
   );
 };

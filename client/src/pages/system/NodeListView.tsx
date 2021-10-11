@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
@@ -6,7 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MiniTopo from './MiniTopology';
-import { getByteString } from './Progress';
+import { getByteString } from '../../utils/Format';
 import DataCard from './DataCard';
 import { NodeListViewProps, Node } from './Types';
 
@@ -101,24 +101,28 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
       flex: 1,
     },
   ];
-  if (selectedCord) {
-    const connectedIds = selectedCord.connected.map(node => node.connected_identifier);
-    rows = [];
-    childNodes.forEach(node => {
-      if (connectedIds.includes(node.identifier)) {
-        const dataRow = {
-          id: node?.identifier,
-          ip: node?.infos?.hardware_infos.ip,
-          cpuCore: node?.infos?.hardware_infos.cpu_core_count,
-          cpuUsage: node?.infos?.hardware_infos.cpu_core_usage,
-          diskUsage: getByteString(node?.infos?.hardware_infos.disk_usage, node?.infos?.hardware_infos.disk, capacityTrans),
-          memUsage: getByteString(node?.infos?.hardware_infos.memory_usage, node?.infos?.hardware_infos.memory, capacityTrans),
-          name: node?.infos?.name,
+
+  useEffect(() => {
+    if (selectedCord) {
+      const connectedIds = selectedCord.connected.map(node => node.connected_identifier);
+      rows = [];
+      childNodes.forEach(node => {
+        if (connectedIds.includes(node.identifier)) {
+          const dataRow = {
+            id: node?.identifier,
+            ip: node?.infos?.hardware_infos.ip,
+            cpuCore: node?.infos?.hardware_infos.cpu_core_count,
+            cpuUsage: node?.infos?.hardware_infos.cpu_core_usage,
+            diskUsage: getByteString(node?.infos?.hardware_infos.disk_usage, node?.infos?.hardware_infos.disk, capacityTrans),
+            memUsage: getByteString(node?.infos?.hardware_infos.memory_usage, node?.infos?.hardware_infos.memory, capacityTrans),
+            name: node?.infos?.name,
+          }
+          rows.push(dataRow);
         }
-        rows.push(dataRow);
-      }
-    })
-  }
+      })
+    }
+  }, [selectedCord, childNodes]);
+
 
   return (
     <div className={classes.root}>

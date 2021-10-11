@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import { MilvusHttp } from '../../http/Milvus';
+import { useInterval } from '../../hooks/SystemView';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
 import LineChartCard from './LineChartCard';
@@ -68,8 +69,10 @@ const parseJson = (jsonData: any) => {
 
   jsonData?.response?.nodes_info.forEach((node: any) => {
     const type = node?.infos?.type;
+    // coordinator node
     if (type.includes("Coord")) {
       nodes.push(node);
+      // other nodes
     } else {
       childNodes.push(node);
     }
@@ -83,30 +86,13 @@ const parseJson = (jsonData: any) => {
   return { nodes, childNodes, system };
 }
 
-const useInterval = (callback: Function, delay: number) => {
-  const savedCallback = useRef() as { current: any };
-
-  useEffect(() => {
-    savedCallback.current = callback;
-  });
-
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
 
 const SystemView: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
   const { t } = useTranslation('systemView');
 
   const classes = getStyles();
-  const interval = 10000;
+  const INTERVAL = 10000;
 
   const [data, setData] = useState<{ nodes: any, childNodes: any, system: any }>({ nodes: [], childNodes: [], system: {} });
   const [selectedNode, setNode] = useState<any>();
@@ -118,7 +104,7 @@ const SystemView: any = () => {
       const res = await MilvusHttp.getMetrics();
       setData(parseJson(res));
     }
-  }, interval);
+  }, INTERVAL);
 
   useEffect(() => {
     async function fetchData() {
