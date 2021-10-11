@@ -66,9 +66,9 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
 
   const classes = getStyles();
   const [selectedChildNode, setSelectedChildNode] = useState<Node | undefined>();
+  const [rows, setRows] = useState<any[]>([]);
   const { selectedCord, childNodes, setCord } = props;
 
-  let rows: any[] = [];
   let columns: any[] = [
     {
       field: 'name',
@@ -105,7 +105,7 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
   useEffect(() => {
     if (selectedCord) {
       const connectedIds = selectedCord.connected.map(node => node.connected_identifier);
-      rows = [];
+      const newRows: any[] = [];
       childNodes.forEach(node => {
         if (connectedIds.includes(node.identifier)) {
           const dataRow = {
@@ -117,12 +117,12 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
             memUsage: getByteString(node?.infos?.hardware_infos.memory_usage, node?.infos?.hardware_infos.memory, capacityTrans),
             name: node?.infos?.name,
           }
-          rows.push(dataRow);
+          newRows.push(dataRow);
         }
       })
+      setRows(newRows);
     }
-  }, [selectedCord, childNodes]);
-
+  }, [selectedCord, childNodes, capacityTrans]);
 
   return (
     <div className={classes.root}>

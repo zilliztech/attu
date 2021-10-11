@@ -129,50 +129,50 @@ const Topo = (props: any) => {
     }
   }, [nodes.length]);
 
-  const width = 800;                // width for svg
-  const height = 600;               // height for svg
-  const line1 = 160;                // line lenght from lv1 node
-  const line2 = 270;                // line lenght from lv2 node
-  const angle2 = 10;                // angle offset for lv2 node
-  const r1 = 68;                    // root node radius
-  const r2 = 45;                    // lv1 node radius
-  const r3 = 30;                    // lv2 node radius
-  const limit = 10;                  // limit to show lv1 node
-  const boundaryAngle = 45;         // boundary angle
+  const WIDTH = 800;                // width for svg
+  const HEIGHT = 600;               // height for svg
+  const LINE1 = 160;                // line lenght from lv1 node
+  const LINE2 = 270;                // line lenght from lv2 node
+  const ANGLE2 = 10;                // angle offset for lv2 node
+  const R1 = 68;                    // root node radius
+  const R2 = 45;                    // lv1 node radius
+  const R3 = 30;                    // lv2 node radius
+  const LIMIT = 10;                  // limit to show lv1 node
+  const BOUNDARY_ANGLE = 45;         // boundary angle
   let steps = 0;                    // angle step to avoid graph out of boundary
   let centerNode: any;
 
   return (
     <div className={classes.container} >
-      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} xmlns="http://www.w3.org/2000/svg">
+      <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="white" />
         {nodes.map((node: any, index: number) => {
           if (node?.infos?.type === 'RootCoord') {
+            centerNode = node;
             return null;
           }
           const connectedLength = node?.connected.length;
-          if (index < limit) {
-            let angle = 270 / nodes.length * index + boundaryAngle * steps;
-            if (((90 - boundaryAngle / 2) < angle && angle < (90 + boundaryAngle / 2))
-              || ((270 - boundaryAngle / 2) < angle && angle < (270 + boundaryAngle / 2))) {
+          if (index < LIMIT) {
+            let angle = 270 / nodes.length * index + BOUNDARY_ANGLE * steps;
+            if (((90 - BOUNDARY_ANGLE / 2) < angle && angle < (90 + BOUNDARY_ANGLE / 2))
+              || ((270 - BOUNDARY_ANGLE / 2) < angle && angle < (270 + BOUNDARY_ANGLE / 2))) {
               steps++;
-              angle = angle + boundaryAngle;
+              angle = angle + BOUNDARY_ANGLE;
             }
-            const nodeCenterX = width / 2 + line1 * Math.cos(angle * Math.PI / 180);
-            const nodeCenterY = height / 2 + line1 * Math.sin(angle * Math.PI / 180);
+            const nodeCenterX = WIDTH / 2 + LINE1 * Math.cos(angle * Math.PI / 180);
+            const nodeCenterY = HEIGHT / 2 + LINE1 * Math.sin(angle * Math.PI / 180);
 
             let childAngle = angle;
-            if ((angle > boundaryAngle && angle < 90) || (angle > (180 + boundaryAngle) && angle < 270)) {
-              childAngle = angle - angle2;
+            if ((angle > BOUNDARY_ANGLE && angle < 90) || (angle > (180 + BOUNDARY_ANGLE) && angle < 270)) {
+              childAngle = angle - ANGLE2;
             }
-            if ((angle > 270 && angle < (270 + boundaryAngle)) || (angle > 90 && angle < (90 + boundaryAngle))) {
-              childAngle = angle + angle2;
+            if ((angle > 270 && angle < (270 + BOUNDARY_ANGLE)) || (angle > 90 && angle < (90 + BOUNDARY_ANGLE))) {
+              childAngle = angle + ANGLE2;
             }
 
-            const childNodeCenterX = width / 2 + line2 * Math.cos(childAngle * Math.PI / 180);
-            const childNodeCenterY = height / 2 + line2 * Math.sin(childAngle * Math.PI / 180);
+            const childNodeCenterX = WIDTH / 2 + LINE2 * Math.cos(childAngle * Math.PI / 180);
+            const childNodeCenterY = HEIGHT / 2 + LINE2 * Math.sin(childAngle * Math.PI / 180);
 
-            console.log(node);
             let icon;
             switch (node?.infos?.type) {
               case 'DataCoord':
@@ -219,13 +219,13 @@ const Topo = (props: any) => {
 
             return (
               <g key={`${node?.infos?.name}`}>
-                <line x1={`${width / 2}`} y1={`${height / 2}`} x2={nodeCenterX} y2={nodeCenterY} stroke="#06AFF2" />
+                <line x1={`${WIDTH / 2}`} y1={`${HEIGHT / 2}`} x2={nodeCenterX} y2={nodeCenterY} stroke="#06AFF2" />
                 {connectedLength && (<line x1={nodeCenterX} y1={nodeCenterY} x2={childNodeCenterX} y2={childNodeCenterY} stroke="#06AFF2" />)}
                 <g className={classes.childNode} tabIndex={0} onClick={() => {
                   setNode(node);
                 }}
                 >
-                  <circle cx={nodeCenterX} cy={nodeCenterY} r={r2} fill="white" stroke="#06AFF2" />
+                  <circle cx={nodeCenterX} cy={nodeCenterY} r={R2} fill="white" stroke="#06AFF2" />
                   {icon && <svg x={nodeCenterX - 12} y={nodeCenterY - 20} width="25" height="25" viewBox="0 0 25 25" preserveAspectRatio="none">{icon}</svg>}
                   <text fontFamily="Roboto" textAnchor="middle" fill="#06AFF2" fontWeight="700" fontSize="12" x={nodeCenterX} y={nodeCenterY + 18}>{capitalize(node?.infos?.name)}</text>
                 </g>
@@ -233,7 +233,7 @@ const Topo = (props: any) => {
                 {connectedLength && (
                   <>
                     <svg tabIndex={0} width="60" height="60" viewBox="0 0 60 60" x={childNodeCenterX - 30} y={childNodeCenterY - 30} className={classes.subChild} onClick={() => { setCord(node) }}>
-                      <circle cx="30" cy="30" r={r3} fill="white" stroke="#06AFF2" />
+                      <circle cx="30" cy="30" r={R3} fill="white" stroke="#06AFF2" />
                       <rect opacity="0.28" x="10" y="8" width="1" height="44" fill="#E9E9ED" />
                       <rect opacity="0.5" x="7" y="43" width="7" height="6" fill="#06AFF2" />
                       <rect opacity="0.5" x="7" y="18" width="7" height="6" fill="#06AFF2" />
@@ -258,8 +258,8 @@ const Topo = (props: any) => {
         <g id="center" className={classes.rootNode} tabIndex={0} onClick={() => {
           setNode(centerNode);
         }} >
-          <circle cx={`${width / 2}`} cy={`${height / 2}`} r={r1} fill="white" stroke="#06AFF2" />
-          <text fontFamily="Roboto" textAnchor="middle" alignmentBaseline="middle" fill="#06AFF2" fontWeight="700" fontSize="24" x={`${width / 2}`} y={`${height / 2}`}>Milvus</text>
+          <circle cx={`${WIDTH / 2}`} cy={`${HEIGHT / 2}`} r={R1} fill="white" stroke="#06AFF2" />
+          <text fontFamily="Roboto" textAnchor="middle" alignmentBaseline="middle" fill="#06AFF2" fontWeight="700" fontSize="24" x={`${WIDTH / 2}`} y={`${HEIGHT / 2}`}>Milvus</text>
         </g>
       </svg >
     </div>

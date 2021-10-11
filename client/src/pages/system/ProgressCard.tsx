@@ -2,7 +2,8 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import BaseCard from './BaseCard';
-import Progress, { getByteString } from './Progress';
+import Progress from './Progress';
+import { getByteString } from '../../utils/Format';
 import { ProgressCardProps } from './Types';
 
 const color1 = '#06F3AF';

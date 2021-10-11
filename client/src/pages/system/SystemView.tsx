@@ -46,6 +46,14 @@ const getStyles = makeStyles((theme: Theme) => ({
     zIndex: 1000,
     backgroundColor: 'white',
   },
+  showChildView: {
+    top: 0,
+    maxHeight: 'auto',
+  },
+  hideChildView: {
+    top: '1000px',
+    maxHeight: 0,
+  },
   childCloseBtn: {
     border: 0,
     backgroundColor: 'white',
@@ -118,19 +126,6 @@ const SystemView: any = () => {
   const letency = system?.letency || 0;
   const childView = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (childView.current) {
-      if (selectedCord) {
-        childView.current.style.top = '0px';
-        childView.current.style.maxHeight = '';
-      } else {
-        childView.current.style.top = '1000px';
-        childView.current.style.maxHeight = '0px';
-      }
-
-    }
-  }, [selectedCord]);
-
   return (
     <div className={classes.root}>
       <div className={clsx(classes.cardContainer, selectedCord && classes.transparent)}>
@@ -144,7 +139,11 @@ const SystemView: any = () => {
         <DataCard node={selectedNode} extend />
       </div>
 
-      <div ref={childView} className={classes.childView} >
+      <div
+        ref={childView}
+        className={clsx(classes.childView,
+          selectedCord ? classes.showChildView : classes.hideChildView)}
+      >
         {selectedCord && (<NodeListView selectedCord={selectedCord} childNodes={childNodes} setCord={setCord} />)}
       </div>
     </div >
