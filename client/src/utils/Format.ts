@@ -142,3 +142,34 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 
 // Trim the address
 export const formatAddress = (address: string): string => address.trim();
+
+// generate a sting like 20.22/98.33MB with proper unit
+export const getByteString = (value1: number, value2: number, capacityTrans: { [key in string]: string }) => {
+  if (!value1 || !value2) return `0${capacityTrans.b}`;
+  const power = Math.round(Math.log(value1) / Math.log(1024));
+  let unit = '';
+  switch (power) {
+    case 1:
+      unit = capacityTrans.kb;
+      break;
+    case 2:
+      unit = capacityTrans.mb;
+      break;
+    case 3:
+      unit = capacityTrans.gb;
+      break;
+    case 4:
+      unit = capacityTrans.tb;
+      break;
+    case 5:
+      unit = capacityTrans.pb;
+      break;
+    default:
+      unit = capacityTrans.b;
+      break;
+  }
+  const byteValue1 = value1 / (1024 ** power);
+  const byteValue2 = value2 / (1024 ** power);
+
+  return `${(byteValue1).toFixed(2)}/${(byteValue2).toFixed(2)} ${unit}`;
+}
