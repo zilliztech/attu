@@ -8,7 +8,7 @@ Milvus insight provides an intuitive and efficient GUI for Milvus, allowing you 
 
 ## Features and Roadmap
 
-Milvus insight is under rapid development nad we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
+Milvus insight is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
 
 - Manage collections/partitions
 - Manage index
