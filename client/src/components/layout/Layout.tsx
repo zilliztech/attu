@@ -68,11 +68,11 @@ const Layout = (props: any) => {
       label: navTrans('overview'),
       onClick: () => history.push('/'),
     },
-    {
-      icon: icons.navSystem,
-      label: navTrans('system'),
-      onClick: () => history.push('/system'),
-    },
+    // {
+    //   icon: icons.navSystem,
+    //   label: navTrans('system'),
+    //   onClick: () => history.push('/system'),
+    // },
     {
       icon: icons.navCollection,
       label: navTrans('collection'),
