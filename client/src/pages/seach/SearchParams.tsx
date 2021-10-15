@@ -158,7 +158,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         [key in searchKeywordsType]: SearchParamInputConfig;
       } = {
         round_decimal: {
-          label: 'round_decimal',
+          label: 'Round Decimals',
           key: 'round_decimal',
           value: searchParamsForm['round_decimal'] || '',
           min: -1,
