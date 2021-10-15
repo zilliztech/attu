@@ -289,6 +289,7 @@ const VectorSearch = () => {
       anns_field: selectedField,
       topk: topK,
       metric_type: metricType,
+      round_decimal: searchParam.round_decimal,
     };
 
     const params: VectorSearchParam = {

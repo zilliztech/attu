@@ -50,7 +50,12 @@ export type MetricType =
   | 'JACCARD'
   | 'TANIMOTO';
 
-export type searchKeywordsType = 'nprobe' | 'ef' | 'search_k' | 'search_length';
+export type searchKeywordsType =
+  | 'nprobe'
+  | 'ef'
+  | 'search_k'
+  | 'search_length'
+  | 'round_decimal';
 
 export type indexConfigType = {
   [x: string]: {
@@ -191,6 +196,7 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   search_k: 250,
   // range: [10, 300]
   search_length: 10,
+  round_decimal: -1,
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;

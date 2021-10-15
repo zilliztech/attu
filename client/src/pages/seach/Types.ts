@@ -47,6 +47,7 @@ export interface SearchParamInputConfig {
   // no value: empty string
   value: number | string;
   handleChange: (value: number) => void;
+  className?: string;
 }
 
 export interface VectorSearchParam {

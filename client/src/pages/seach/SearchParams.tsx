@@ -24,6 +24,14 @@ const getStyles = makeStyles((theme: Theme) => ({
   input: {
     marginTop: theme.spacing(2),
   },
+  inlineInput: {
+    marginTop: theme.spacing(2),
+    width: '48%',
+  },
+  inlineInputWrapper: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 }));
 
 const SearchParams: FC<SearchParamsProps> = ({
@@ -46,7 +54,10 @@ const SearchParams: FC<SearchParamsProps> = ({
   // search params key list, depends on index type
   // e.g. ['nprobe']
   const searchParams = useMemo(
-    () => (indexType !== '' ? INDEX_CONFIG[indexType].search : []),
+    (): searchKeywordsType[] =>
+      indexType !== ''
+        ? [...INDEX_CONFIG[indexType].search, 'round_decimal']
+        : ['round_decimal'],
     [indexType]
   );
 
@@ -83,7 +94,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         onChange: value => {
           handleChange(value);
         },
-        className: classes.input,
+        className: classes.inlineInput,
         variant: 'filled',
         type: 'number',
         value,
@@ -133,7 +144,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       }
       return config;
     },
-    [warningTrans, classes.input]
+    [classes.inlineInput, warningTrans]
   );
 
   const getSearchInputConfig = useCallback(
@@ -146,6 +157,18 @@ const SearchParams: FC<SearchParamsProps> = ({
       const configParamMap: {
         [key in searchKeywordsType]: SearchParamInputConfig;
       } = {
+        round_decimal: {
+          label: 'Round Decimals',
+          key: 'round_decimal',
+          value: searchParamsForm['round_decimal'] || '',
+          min: -1,
+          max: 10,
+          isInt: true,
+          handleChange: value => {
+            handleInputChange('round_decimal', value);
+          },
+          className: classes.inlineInput,
+        },
         nprobe: {
           label: 'nprobe',
           key: 'nprobe',
@@ -156,7 +179,9 @@ const SearchParams: FC<SearchParamsProps> = ({
           handleChange: value => {
             handleInputChange('nprobe', value);
           },
+          className: classes.inlineInput,
         },
+
         ef: {
           label: 'ef',
           key: 'ef',
@@ -198,8 +223,9 @@ const SearchParams: FC<SearchParamsProps> = ({
     },
     [
       indexParams,
-      topK,
       searchParamsForm,
+      classes.inlineInput,
+      topK,
       getNumberInputConfig,
       handleInputChange,
     ]
@@ -244,17 +270,18 @@ const SearchParams: FC<SearchParamsProps> = ({
         // readOnly can't avoid all events, so we use disabled instead
         disabled={true}
       />
-
-      {/* dynamic params, now every type only has one param except metric type */}
-      {searchParams.map(param => (
-        <CustomInput
-          key={param}
-          type="text"
-          textConfig={getSearchInputConfig(param)}
-          checkValid={checkIsValid}
-          validInfo={validation}
-        />
-      ))}
+      <div className={classes.inlineInputWrapper}>
+        {/* dynamic params, now every type only has one param except metric type */}
+        {searchParams.map(param => (
+          <CustomInput
+            key={param}
+            type="text"
+            textConfig={getSearchInputConfig(param)}
+            checkValid={checkIsValid}
+            validInfo={validation}
+          />
+        ))}
+      </div>
     </div>
   );
 };

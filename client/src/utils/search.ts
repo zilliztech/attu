@@ -12,16 +12,20 @@ import {
   SearchResultView,
 } from '../pages/seach/Types';
 
+/**
+ * Do not change  vector search result default sort  by ourself.
+ * Different index may has different sort in milvus.
+ * @param result
+ * @returns
+ */
 export const transferSearchResult = (
   result: SearchResult[]
 ): SearchResultView[] => {
-  const resultView = result
-    .sort((a, b) => a.score - b.score)
-    .map((r, index) => ({
-      rank: index + 1,
-      ...r,
-      distance: r.score,
-    }));
+  const resultView = result.map((r, index) => ({
+    rank: index + 1,
+    ...r,
+    distance: r.score,
+  }));
 
   return resultView;
 };
