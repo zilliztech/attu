@@ -1,0 +1,7 @@
+{
+  "name": "get-server-time",
+  "devDependencies": {},
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

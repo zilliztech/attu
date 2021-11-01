@@ -25,6 +25,7 @@ import {
 } from "./interceptors";
 
 const PLUGIN_DEV = process.env?.PLUGIN_DEV;
+const pluginDir = PLUGIN_DEV ? "../../src/*/server" : "src/plugins";
 
 const app = express();
 const PORT = 3000;
@@ -54,6 +55,7 @@ app.use(TransformResInterceptor);
 app.use(LoggingInterceptor);
 
 const router = express.Router();
+const pluginsRouter = express.Router();
 
 // Init WebSocket server event listener
 io.on("connection", (socket: Socket) => {
@@ -95,40 +97,40 @@ const getDirectories = (
 };
 
 // Read plugin files and start express server
-getDirectories("../../src", (dirErr: Error, dirRes: [string]) => {
+getDirectories(pluginDir, (dirErr: Error, dirRes: [string]) => {
   const cfgs: any = [];
   if (dirErr) {
     console.log("Reading plugin directory Error", dirErr);
   } else {
     dirRes.forEach((item: string) => {
-      console.log(item);
       if (item.endsWith("/config.json")) {
         const fileData = fs.readFileSync(item);
-        const json = JSON.parse(fileData.toString());
+        const jsonData = JSON.parse(fileData.toString());
+        const apiPath = jsonData?.server?.api;
         const cfg = {
           path: item,
           dir: item.split("/config.json").shift(),
-          data: json,
+          dirName: item.split("/config.json").shift().split("/").pop(),
+          api: apiPath,
+          data: jsonData,
         };
-        // console.log(cfg);
         cfgs.push(cfg);
       }
     });
   }
   console.log(cfgs);
   cfgs.forEach(async (cfg: any) => {
-    // const pluginPath = cfg.data.api;
     const {
       dir,
-      data: { api: pluginPath },
+      dirName,
+      api: pluginPath,
     } = cfg;
     if (!pluginPath) return;
+    const componentPath = PLUGIN_DEV ? `../${dir}/app` : `./plugins/${dirName}/app`;
     const {
       default: { router: pluginRouter },
-    } = await import(`../${dir}/server/app`);
-    console.log(pluginPath);
-    console.log(pluginRouter);
-    router.use(`/${pluginPath}`, pluginRouter);
+    } = await import(componentPath);
+    pluginsRouter.use(`/${pluginPath}`, pluginRouter);
   });
 
   router.use("/milvus", connectRouter);
@@ -143,6 +145,8 @@ getDirectories("../../src", (dirErr: Error, dirRes: [string]) => {
   });
 
   app.use("/api/v1", router);
+  app.use("/api/plugins", pluginsRouter);
+
   // ErrorInterceptor
   app.use(ErrorInterceptor);
   // start server

@@ -6,6 +6,7 @@
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "^1.0.18",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "glob": "^7.2.0",
     "helmet": "^4.6.0",
@@ -30,6 +31,7 @@
     "prestart": "yarn build",
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/app.js"
   }
 }
