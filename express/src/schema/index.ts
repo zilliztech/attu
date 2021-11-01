@@ -6,7 +6,7 @@ const router = express.Router();
 
 const schemaService = new SchemaService(milvusService);
 
-router.post("/index", async (req, res) => {
+router.post("/index", async (req, res, next) => {
   const { type, collection_name, extra_params, field_name } = req.body;
   try {
     const result =
@@ -17,38 +17,38 @@ router.post("/index", async (req, res) => {
             field_name,
           })
         : await schemaService.dropIndex({ collection_name, field_name });
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
-router.get("/index", async (req, res) => {
+router.get("/index", async (req, res, next) => {
   const data = "" + req.query?.collection_name;
   try {
     const result = await schemaService.describeIndex({ collection_name: data });
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
-router.get("/index/progress", async (req, res) => {
+router.get("/index/progress", async (req, res, next) => {
   const data = "" + req.query?.collection_name;
   try {
     const result = await schemaService.getIndexBuildProgress({
       collection_name: data,
     });
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
-router.get("/index/state", async (req, res) => {
+router.get("/index/state", async (req, res, next) => {
   const data = "" + req.query?.collection_name;
   try {
     const result = await schemaService.getIndexState({ collection_name: data });
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
 

@@ -5,36 +5,40 @@ const router = express.Router();
 
 const milvusService = new MilvusService();
 
-router.post("/connect", async (req, res) => {
+router.post("/connect", async (req, res, next) => {
   const address = req.body?.address;
   try {
     const result = await milvusService.connectMilvus(address);
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
-router.get("/check", async (req, res) => {
+router.get("/check", async (req, res, next) => {
   const address = "" + req.query?.address;
   try {
     const result = await milvusService.checkConnect(address);
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
-router.put("/flush", async (req, res) => {
+router.put("/flush", async (req, res, next) => {
   const collectionNames = req.body;
   try {
     const result = await milvusService.flush(collectionNames);
-    res.send({ data: result, statusCode: 200 });
+    res.send(result);
   } catch (error) {
-    res.status(500).send({ error });
+    next(error);
   }
 });
-router.get("/metrics", async (req, res) => {
-  const result = await milvusService.getMetrics();
-  res.send({ data: result, statusCode: 200 });
+router.get("/metrics", async (req, res, next) => {
+  try {
+    const result = await milvusService.getMetrics();
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export { router, milvusService };

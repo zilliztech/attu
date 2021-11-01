@@ -6,15 +6,16 @@ const router = express.Router();
 
 const schedulerRegistry = new SchedulerRegistry([]);
 
-const cronsService = new CronsService(
-  collectionsService,
-  schedulerRegistry
-);
+const cronsService = new CronsService(collectionsService, schedulerRegistry);
 
-router.put("/", async (req, res) => {
+router.put("/", async (req, res, next) => {
   const cronData = req.body;
-  const result = await cronsService.toggleCronJobByName(cronData)
-  res.send(result);
+  try {
+    const result = await cronsService.toggleCronJobByName(cronData);
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export { router };
