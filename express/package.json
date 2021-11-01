@@ -32,6 +32,6 @@
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist",
-    "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/milvus_insight/express/src/app.js"
+    "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/milvus-insight/express/src/app.js"
   }
 }
