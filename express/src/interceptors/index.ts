@@ -6,12 +6,17 @@ export const TransformResInterceptor = (
   res: Response,
   next: NextFunction
 ) => {
-  const oldSend = res.send;
-  res.send = (data) => {
+  const oldSend = res.json;
+  res.json = (data) => {
     // console.log(data); // do something with the data
-    res.send = oldSend; // set function back to avoid the 'double-send'
-    return res.send({ data });
-    // return res.send({ data, statusCode: 200 }); // just call as normal with data
+    const statusCode = data?.statusCode;
+    const message = data?.message;
+    const error = data?.error;
+    res.json = oldSend; // set function back to avoid the 'double-send'
+    if (statusCode || message || error) {
+      return res.json({ statusCode, message, error });
+    }
+    return res.json({ data, statusCode: 200 }); // just call as normal with data
   };
   next();
 };
@@ -49,6 +54,7 @@ export const LoggingInterceptor = (
   res.on("close", () => {
     const durationInMilliseconds = getDurationInMilliseconds(start);
     const { statusCode = "" } = res;
+    // TODO: Need some special log instead of console.log
     console.log(
       `${req.method} ${
         req.originalUrl
@@ -73,5 +79,10 @@ export const ErrorInterceptor = (
   if (res.headersSent) {
     return next(err);
   }
-  res.status(500).json({ error: err });
+  if (err) {
+    res
+      .status(500)
+      .json({ message: `${err}`, error: "Bad Request", statusCode: 500 });
+  }
+  next();
 };
