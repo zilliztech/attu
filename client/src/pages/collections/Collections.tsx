@@ -171,7 +171,7 @@ const Collections = () => {
       // update collections
       fetchData();
       return { result: true, msg: '' };
-    } catch (err) {
+    } catch (err: any) {
       const {
         response: {
           data: { message },

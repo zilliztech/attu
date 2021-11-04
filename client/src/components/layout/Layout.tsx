@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 
+const PLUGIN_DEV = process.env?.REACT_APP_PLUGIN_DEV;
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -86,6 +88,29 @@ const Layout = (props: any) => {
       iconNormalClass: 'normalSearchIcon',
     },
   ];
+
+  function importAll(r: any) {
+    r.keys().forEach((key: any) => {
+      const content = r(key);
+      const pathName = content.client?.path;
+      const icon = content.client?.icon || icons.navSystem;
+      const iconActiveClass =
+        content.client?.iconActiveClass || 'activeSearchIcon';
+      const iconNormalClass =
+        content.client?.iconNormalClass || 'normalSearchIcon';
+      if (!pathName) return;
+      menuItems.push({
+        icon,
+        label: content.client?.label,
+        onClick: () => history.push(`${pathName}`),
+        iconActiveClass,
+        iconNormalClass,
+      });
+    });
+  }
+  importAll(require.context('../../plugins', true, /config\.json$/));
+  PLUGIN_DEV &&
+    importAll(require.context('all_plugins/', true, /config\.json$/));
 
   return (
     <div className={classes.root}>
