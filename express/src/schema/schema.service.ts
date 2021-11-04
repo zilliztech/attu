@@ -6,7 +6,7 @@ import {
   GetIndexStateReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
-import { MilvusService } from '../connect/milvus.service';
+import { MilvusService } from '../milvus/milvus.service';
 
 export class SchemaService {
   constructor(private milvusService: MilvusService) {}

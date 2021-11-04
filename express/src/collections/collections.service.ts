@@ -1,4 +1,4 @@
-import { MilvusService } from "../connect/milvus.service";
+import { MilvusService } from "../milvus/milvus.service";
 import {
   CreateCollectionReq,
   DescribeCollectionReq,

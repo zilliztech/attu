@@ -1,6 +1,6 @@
 import express from "express";
 import { SchemaService } from "./schema.service";
-import { milvusService } from "../connect";
+import { milvusService } from "../milvus";
 
 const router = express.Router();
 

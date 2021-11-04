@@ -1,6 +1,6 @@
 import express from "express";
 import { CollectionsService } from "./collections.service";
-import { milvusService } from "../connect";
+import { milvusService } from "../milvus";
 
 const router = express.Router();
 

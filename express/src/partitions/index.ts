@@ -1,6 +1,6 @@
 import express from "express";
 import { PartitionsService } from "./partitions.service";
-import { milvusService } from "../connect";
+import { milvusService } from "../milvus";
 
 const router = express.Router();
 

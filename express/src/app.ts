@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import * as http from "http";
 import { Server, Socket } from "socket.io";
-import { router as connectRouter } from "./connect";
+import { router as connectRouter } from "./milvus";
 import { router as collectionsRouter } from "./collections";
 import { router as partitionsRouter } from "./partitions";
 import { router as schemaRouter } from "./schema";
