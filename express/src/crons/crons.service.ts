@@ -52,9 +52,20 @@ export class SchedulerRegistry {
   }
 
   setCronJobEverySecond(name: string, func: () => {}) {
+    // The cron job will run every second
     this.setCronJob(name, "* * * * * *", func);
   }
 
+  // ┌────────────── second (optional)
+  // │ ┌──────────── minute
+  // │ │ ┌────────── hour
+  // │ │ │ ┌──────── day of month
+  // │ │ │ │ ┌────── month
+  // │ │ │ │ │ ┌──── day of week
+  // │ │ │ │ │ │
+  // │ │ │ │ │ │
+  // * * * * * *
+  // https://www.npmjs.com/package/node-cron
   setCronJob(name: string, scheduler: string, func: () => {}) {
     const target = this.cronJobList.find((item) => item.name === name);
     if (target) {
