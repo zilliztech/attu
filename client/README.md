@@ -22,6 +22,15 @@
       ├── types                   # Global types
       └── utils                   # The common functoins
 
+### Fixed pacakge version
+
+Temporarily we specify 3 packages' version for ts build.
+```
+"@material-ui/core": "4.11.4",
+"@material-ui/lab": "4.0.0-alpha.58",
+"react-i18next": "11.10.0",
+```
+
 ### How to name the file
 
 We use Camel-Case to name the file.

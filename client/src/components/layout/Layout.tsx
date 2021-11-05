@@ -8,6 +8,7 @@ import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
+import { IconsType } from '../icons/Types';
 
 const PLUGIN_DEV = process.env?.REACT_APP_PLUGIN_DEV;
 
@@ -99,7 +100,7 @@ const Layout = (props: any) => {
         label: content.client?.label || 'PLGUIN',
       };
       result.onClick = () => history.push(`${pathName}`);
-      const iconName: string = content.client?.iconName;
+      const iconName: IconsType = content.client?.iconName;
       if (iconName) {
         // TODO: support custom icon
         result.icon = icons[iconName];

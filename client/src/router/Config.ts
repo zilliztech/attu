@@ -41,14 +41,13 @@ function importAll(r: any, outOfRoot = false) {
     const content = r(key);
     const dirName = key.split('/config.json').shift().split('/')[1];
     const pathName = content.client?.path;
-    const entry = content.client?.entry;
-    if (!(pathName || entry)) return;
-    console.log(content);
+    const fileEntry = content.client?.entry;
+    if (!(pathName || fileEntry)) return;
+    // console.log(content);
     const auth = content.client?.auth || false;
     const OtherComponent = outOfRoot
-      ? loadable(() => import(`all_plugins/${dirName}/client/${entry}`))
-      : loadable(() => import(`../plugins/${dirName}/${entry}`));
-    console.log(OtherComponent);
+      ? loadable(() => import(`all_plugins/${dirName}/client/${fileEntry}`))
+      : loadable(() => import(`../plugins/${dirName}/${fileEntry}`));
     RouterConfig.push({
       path: `/${pathName}`,
       component: OtherComponent,

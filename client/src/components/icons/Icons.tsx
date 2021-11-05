@@ -36,7 +36,7 @@ import { ReactComponent as SearchEmptyIcon } from '../../assets/icons/search.svg
 import { ReactComponent as CopyIcon } from '../../assets/icons/copy.svg';
 import { ReactComponent as SystemIcon } from '../../assets/icons/system.svg';
 
-const icons: { [key: string]: (props?: any) => React.ReactElement } = {
+const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
   add: (props = {}) => <AddIcon {...props} />,
   delete: (props = {}) => <DeleteIcon {...props} />,
