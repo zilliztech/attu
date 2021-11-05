@@ -42,7 +42,7 @@ function importAll(r: any, outOfRoot = false) {
     const dirName = key.split('/config.json').shift().split('/')[1];
     const pathName = content.client?.path;
     const fileEntry = content.client?.entry;
-    if (!(pathName || fileEntry)) return;
+    if (!pathName || !fileEntry) return;
     // console.log(content);
     const auth = content.client?.auth || false;
     const OtherComponent = outOfRoot
