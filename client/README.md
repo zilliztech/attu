@@ -25,11 +25,18 @@
 ### Fixed pacakge version
 
 Temporarily we specify 3 packages' version for ts build.
+
 ```
 "@material-ui/core": "4.11.4",
 "@material-ui/lab": "4.0.0-alpha.58",
 "react-i18next": "11.10.0",
 ```
+
+`react-i18next`'s `useTranslation(<name>)` will return a `t` function, which used to return `string` and `string{}` type. But in latest version it only return `string` and cause typecheck error.
+
+`@material-ui/core` change `TablePagination`(from '@material-ui/core/TablePagination') type in latest version. We specified a former version to prevent error here.
+
+In future we will fix all type issues and remove specified package version usage.
 
 ### How to name the file
 
