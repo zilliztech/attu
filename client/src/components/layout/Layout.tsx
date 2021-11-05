@@ -93,19 +93,22 @@ const Layout = (props: any) => {
     r.keys().forEach((key: any) => {
       const content = r(key);
       const pathName = content.client?.path;
-      const icon = content.client?.icon || icons.navSystem;
-      const iconActiveClass =
-        content.client?.iconActiveClass || 'activeSearchIcon';
-      const iconNormalClass =
-        content.client?.iconNormalClass || 'normalSearchIcon';
       if (!pathName) return;
-      menuItems.push({
-        icon,
-        label: content.client?.label,
-        onClick: () => history.push(`${pathName}`),
-        iconActiveClass,
-        iconNormalClass,
-      });
+      const result: NavMenuItem = {
+        icon: icons.navOverview,
+        label: content.client?.label || 'PLGUIN',
+      };
+      result.onClick = () => history.push(`${pathName}`);
+      const iconName: string = content.client?.iconName;
+      if (iconName) {
+        // TODO: support custom icon
+        result.icon = icons[iconName];
+      }
+      content.client?.iconActiveClass &&
+        (result.iconActiveClass = content.client?.iconActiveClass);
+      content.client?.iconNormalClass &&
+        (result.iconNormalClass = content.client?.iconNormalClass);
+      menuItems.push(result);
     });
   }
   importAll(require.context('../../plugins', true, /config\.json$/));

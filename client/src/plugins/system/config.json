@@ -4,6 +4,7 @@
   "client": {
     "path": "system",
     "entry": "SystemView.tsx",
-    "label": "System View"
+    "label": "System View",
+    "iconName": "navSystem"
   }
 }
