@@ -6,9 +6,10 @@
   "bugs": "https://github.com/milvus-io/milvus-insight/issues",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.11.4",
+    "@loadable/component": "^5.15.0",
+    "@material-ui/core": "4.11.4",
     "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.58",
+    "@material-ui/lab": "4.0.0-alpha.58",
     "@mui/x-data-grid": "^4.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -26,10 +27,11 @@
     "i18next": "^20.3.1",
     "papaparse": "^5.3.1",
     "react": "^17.0.2",
+    "react-app-rewire-alias": "^1.1.4",
     "react-app-rewired": "^2.1.8",
     "react-dom": "^17.0.2",
     "react-highlight-words": "^0.17.0",
-    "react-i18next": "^11.10.0",
+    "react-i18next": "11.10.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-syntax-highlighter": "^15.4.4",
@@ -43,6 +45,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start -FAST_REFRESH=true",
+    "start:plugin": "REACT_APP_PLUGIN_DEV=true react-app-rewired start -FAST_REFRESH=true",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "test:watch": "react-app-rewired test --watch",
@@ -71,6 +74,8 @@
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^7.0.1",
+    "@types/loadable__component": "^5.13.4",
+    "@types/webpack-env": "^1.16.3",
     "prettier": "2.3.2"
   }
 }

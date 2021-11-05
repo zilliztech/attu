@@ -8,6 +8,9 @@ import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
+import { IconsType } from '../icons/Types';
+
+const PLUGIN_DEV = process.env?.REACT_APP_PLUGIN_DEV;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,6 +89,32 @@ const Layout = (props: any) => {
       iconNormalClass: 'normalSearchIcon',
     },
   ];
+
+  function importAll(r: any) {
+    r.keys().forEach((key: any) => {
+      const content = r(key);
+      const pathName = content.client?.path;
+      if (!pathName) return;
+      const result: NavMenuItem = {
+        icon: icons.navOverview,
+        label: content.client?.label || 'PLGUIN',
+      };
+      result.onClick = () => history.push(`${pathName}`);
+      const iconName: IconsType = content.client?.iconName;
+      if (iconName) {
+        // TODO: support custom icon
+        result.icon = icons[iconName];
+      }
+      content.client?.iconActiveClass &&
+        (result.iconActiveClass = content.client?.iconActiveClass);
+      content.client?.iconNormalClass &&
+        (result.iconNormalClass = content.client?.iconNormalClass);
+      menuItems.push(result);
+    });
+  }
+  importAll(require.context('../../plugins', true, /config\.json$/));
+  PLUGIN_DEV &&
+    importAll(require.context('all_plugins/', true, /config\.json$/));
 
   return (
     <div className={classes.root}>

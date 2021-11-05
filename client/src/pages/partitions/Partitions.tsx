@@ -205,7 +205,7 @@ const Partitions: FC<{
       fetchPartitions(collectionName);
 
       return { result: true, msg: '' };
-    } catch (err) {
+    } catch (err: any) {
       const {
         response: {
           data: { message },

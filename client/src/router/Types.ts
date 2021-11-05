@@ -18,6 +18,6 @@ export type NavInfo = {
 
 export type RouterConfigType = {
   path: string;
-  component: () => JSX.Element;
+  component: any;
   auth: boolean;
 };

@@ -1,0 +1,10 @@
+{
+  "name": "system-view",
+  "version": "0.1.0",
+  "client": {
+    "path": "system",
+    "entry": "SystemView.tsx",
+    "label": "System View",
+    "iconName": "navSystem"
+  }
+}
