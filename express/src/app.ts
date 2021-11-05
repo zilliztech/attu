@@ -56,15 +56,6 @@ io.on("connection", (socket: Socket) => {
   socket.on("COLLECTION", (message: any) => {
     socket.emit("COLLECTION", { data: message });
   });
-  socket.on("events", (message: any) => {
-    const response = [1, 2, 3];
-    response.map((item) => {
-      setImmediate(() => socket.emit("events", { data: item }));
-    });
-  });
-  socket.on("identity", (message: any) => {
-    socket.emit("identity", `identity data: ${message}`);
-  });
   pubSub.on("ws_pubsub", (msg) => {
     const { event, data } = msg;
     socket.emit(event, data);
