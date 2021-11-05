@@ -30,8 +30,9 @@
     "build": "yarn clean && tsc",
     "prestart": "yarn build",
     "start": "node .",
+    "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/milvus-insight/express/src/app.js",
+    "start:prod": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rimraf dist",
-    "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/milvus-insight/express/src/app.js"
+    "clean": "rimraf dist"
   }
 }
