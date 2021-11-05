@@ -76,6 +76,8 @@ export const ErrorInterceptor = (
   next: NextFunction
 ) => {
   console.log("---error interceptor---\n%s", err);
+  // Boolean property that indicates if the app sent HTTP headers for the response.
+  // Here to prevent sending response after header has been sent.
   if (res.headersSent) {
     return next(err);
   }
