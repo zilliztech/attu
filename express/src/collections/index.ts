@@ -127,4 +127,18 @@ router.post("/:name/search", async (req, res, next) => {
   }
 });
 
+router.post("/:name/alias", async (req, res, next) => {
+  const name = req.params?.name;
+  const data = req.body;
+  try {
+    const result = await collectionsService.createAlias({
+      collection_name: name,
+      ...data,
+    });
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export { router };

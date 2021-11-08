@@ -6,7 +6,7 @@ import { FieldData } from '../schema/Types';
 export interface CollectionData {
   _name: string;
   _id: string;
-  _loadedPercentage:string;
+  _loadedPercentage: string;
   _status: LOADING_STATE;
   _rowCount: string;
   _desc: string;
@@ -76,10 +76,14 @@ export interface CreateFieldsProps {
   fields: Field[];
   setFields: Dispatch<SetStateAction<Field[]>>;
   setFieldsValidation: Dispatch<
-    SetStateAction<{ [x: string]: string | boolean; }[]>
+    SetStateAction<{ [x: string]: string | boolean }[]>
   >;
   autoID: boolean;
   setAutoID: (value: boolean) => void;
+}
+export interface CreateAliasProps {
+  collectionName: string;
+  cb?: () => void;
 }
 
 export interface InsertDataParam {

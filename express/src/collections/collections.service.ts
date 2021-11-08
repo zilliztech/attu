@@ -14,6 +14,9 @@ import { throwErrorFromSDK } from "../utils/Error";
 import { findKeyValue } from "../utils/Helper";
 import { ROW_COUNT } from "../utils/Const";
 import {
+  AlterAliasReq,
+  CreateAliasReq,
+  DropAliasReq,
   ShowCollectionsReq,
   ShowCollectionsType,
 } from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
@@ -84,6 +87,24 @@ export class CollectionsService {
   async vectorSearch(data: SearchReq) {
     const res = await this.dataManager.search(data);
     throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async createAlias(data: CreateAliasReq) {
+    const res = await this.collectionManager.createAlias(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  async alterAlias(data: AlterAliasReq) {
+    const res = await this.collectionManager.alterAlias(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  async dropAlias(data: DropAliasReq) {
+    const res = await this.collectionManager.dropAlias(data);
+    throwErrorFromSDK(res);
     return res;
   }
 

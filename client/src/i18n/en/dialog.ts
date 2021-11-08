@@ -3,6 +3,7 @@ const dialogTrans = {
   deleteTipPurpose: 'to confirm.',
   deleteTitle: `Delete {{type}}`,
   releaseTitle: `Release {{type}}`,
+  createAlias: `Create alias for {{type}}`,
   loadTitle: `Load {{type}}`,
 
   loadContent: `You are trying to load a {{type}} with data. Only loaded {{type}} can be searched.`,
