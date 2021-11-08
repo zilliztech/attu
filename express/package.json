@@ -4,7 +4,7 @@
   "main": "dist/app.js",
   "license": "MIT",
   "dependencies": {
-    "@zilliz/milvus2-sdk-node": "^1.0.18",
+    "@zilliz/milvus2-sdk-node": "^1.0.19",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",

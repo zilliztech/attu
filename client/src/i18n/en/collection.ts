@@ -8,6 +8,8 @@ const collectionTrans = {
   create: 'Create Collection',
   delete: 'delete',
   deleteTooltip: 'Please select at least one item to delete.',
+  alias: 'alias',
+  aliasTooltip: 'Please select one collection to create alias',
 
   collection: 'Collection',
 

@@ -91,6 +91,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
+  static createAlias(collectionName: string, params: { alias: string }) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/alias`,
+      data: params,
+    });
+  }
+
   get _autoId() {
     return this.autoID;
   }

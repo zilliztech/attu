@@ -32,4 +32,5 @@ export type IconsType =
   | 'vectorSearch'
   | 'refresh'
   | 'filter'
-  | 'copyExpression';
+  | 'copyExpression'
+  | 'alias';
