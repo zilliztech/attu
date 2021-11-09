@@ -2,7 +2,7 @@ name: Milvus insight dev release
 
 on:
   pull_request_target:
-    branches: [main]
+    branches: [dev]
     types: [closed]
 
 jobs:
@@ -16,6 +16,19 @@ jobs:
         with:
           node-version: 12
 
+      - name: Run express tests
+        run: |
+          cd express
+          yarn install
+          yarn test:cov
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          directory: '../../express/coverage/'
+          flags: express
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -23,49 +36,49 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
 
       - name: Docker Build
-        run: docker build -t milvusdb/milvus-insight:dev --build-arg VERSION=dev .
+        run: docker build -t tumao/milvus-insight:dev --build-arg VERSION=dev .
 
       - name: Docker Push Dev
-        run: docker push milvusdb/milvus-insight:dev
+        run: docker push tumao/milvus-insight:dev
 
-  k8s:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
+  # k8s:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 12
 
-      - name: Install OpenVPN and kubectl
-        run: |
-          sudo apt-get update
-          sudo apt-get install openvpn -y
-          sudo apt-get install -y apt-transport-https ca-certificates curl
-          sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-          echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-          sudo apt-get update
-          sudo apt-get install kubectl -y
+  #     - name: Install OpenVPN and kubectl
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install openvpn -y
+  #         sudo apt-get install -y apt-transport-https ca-certificates curl
+  #         sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  #         echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+  #         sudo apt-get update
+  #         sudo apt-get install kubectl -y
 
-      - name: Connect VPN
-        uses: golfzaptw/action-connect-ovpn@master
-        id: connect_vpn
-        with:
-          FILE_OVPN: '.github/workflows/client.ovpn'
-        env:
-          CA_CRT: ${{ secrets.VPN_CA}}
-          USER_CRT: ${{ secrets.VPN_CRT }}
-          USER_KEY: ${{ secrets.VPN_KEY }}
+  #     - name: Connect VPN
+  #       uses: golfzaptw/action-connect-ovpn@master
+  #       id: connect_vpn
+  #       with:
+  #         FILE_OVPN: '.github/workflows/client.ovpn'
+  #       env:
+  #         CA_CRT: ${{ secrets.VPN_CA}}
+  #         USER_CRT: ${{ secrets.VPN_CRT }}
+  #         USER_KEY: ${{ secrets.VPN_KEY }}
 
-      - name: Deploy to cluster
-        run: |
-          echo ${{ secrets.kubeconfig }} > config64
-          base64 -d config64 > kubeconfig
-          kubectl delete pods -n ued -l app=milvus-insight --kubeconfig=kubeconfig
-          sleep 60
+  #     - name: Deploy to cluster
+  #       run: |
+  #         echo ${{ secrets.kubeconfig }} > config64
+  #         base64 -d config64 > kubeconfig
+  #         kubectl delete pods -n ued -l app=milvus-insight --kubeconfig=kubeconfig
+  #         sleep 60
 
-  check:
+  # check:
     runs-on: ubuntu-latest
     needs: [build, k8s]
     steps:
