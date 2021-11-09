@@ -13,9 +13,12 @@ coverage:
         target: auto
         flags:
           - express
+
 comment:
   layout: "reach, diff, flags, files"
+  behavior: default
   require_changes: true
+
 flags:
   client:
     paths:
