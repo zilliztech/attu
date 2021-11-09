@@ -22,50 +22,6 @@ export const TransformResMiddlerware = (
   next();
 };
 
-const getDurationInMilliseconds = (start: any) => {
-  const NS_PER_SEC = 1e9;
-  const NS_TO_MS = 1e6;
-  const diff = process.hrtime(start);
-
-  return (diff[0] * NS_PER_SEC + diff[1]) / NS_TO_MS;
-};
-
-/**
- * Add spent time looger when accessing milvus.
- */
-// export const LoggingMiddleware = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   console.log(`${req.method} ${req.originalUrl} [STARTED]`);
-//   const start = process.hrtime();
-//   const { ip = "", method = "", originalUrl = "", headers = {} } = req;
-//   const ua = headers["user-agent"] || "";
-
-//   res.on("finish", () => {
-//     const durationInMilliseconds = getDurationInMilliseconds(start);
-//     console.log(
-//       `${req.method} ${
-//         req.originalUrl
-//       } [FINISHED] ${durationInMilliseconds.toLocaleString()} ms`
-//     );
-//   });
-
-//   res.on("close", () => {
-//     const durationInMilliseconds = getDurationInMilliseconds(start);
-//     const { statusCode = "" } = res;
-//     // TODO: Need some special log instead of console.log
-//     console.log(
-//       `${req.method} ${
-//         req.originalUrl
-//       } [CLOSED] ${durationInMilliseconds.toLocaleString()} ms ip:${ip} ua:${ua} status:${statusCode}`
-//     );
-//   });
-
-//   next();
-// };
-
 /**
  * Handle error in here.
  * Normally depend on status which from milvus service.

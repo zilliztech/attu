@@ -4,8 +4,6 @@
   "main": "dist/app.js",
   "license": "MIT",
   "dependencies": {
-    "@types/chalk": "^2.2.0",
-    "@types/morgan": "^1.9.3",
     "@zilliz/milvus2-sdk-node": "^1.0.19",
     "chalk": "^4.1.2",
     "cors": "^2.8.5",
@@ -19,6 +17,8 @@
     "socket.io": "^4.3.1"
   },
   "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/morgan": "^1.9.3",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/glob": "^7.2.0",
