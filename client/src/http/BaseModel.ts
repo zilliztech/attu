@@ -84,4 +84,10 @@ export default class BaseModel {
     const res = await http.post(path, data);
     return res.data.data;
   }
+
+  static async query(options: updateParamsType) {
+    const { path, data } = options;
+    const res = await http.post(path, data);
+    return res.data.data;
+  }
 }

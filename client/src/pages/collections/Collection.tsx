@@ -8,6 +8,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
 import Schema from '../schema/Schema';
+import Query from '../query/Query';
 
 enum TAB_EMUM {
   'schema',
@@ -46,6 +47,10 @@ const Collection = () => {
     {
       label: collectionTrans('partitionTab'),
       component: <Partitions collectionName={collectionName} />,
+    },
+    {
+      label: collectionTrans('queryTab'),
+      component: <Query collectionName={collectionName} />,
     },
   ];
 
