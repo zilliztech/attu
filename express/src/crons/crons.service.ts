@@ -7,13 +7,14 @@ export class CronsService {
   constructor(
     private collectionService: CollectionsService,
     private schedulerRegistry: SchedulerRegistry
-  ) {
-    this.getCollections(WS_EVENTS.COLLECTION + "");
-  }
+  ) {}
 
   async toggleCronJobByName(data: { name: string; type: WS_EVENTS_TYPE }) {
     const { name, type } = data;
     const cronJobEntity = this.schedulerRegistry.getCronJob(name);
+    if (!cronJobEntity && Number(type) === WS_EVENTS_TYPE.START) {
+      return this.getCollections(WS_EVENTS.COLLECTION);
+    }
     return Number(type) === WS_EVENTS_TYPE.STOP
       ? cronJobEntity.stop()
       : cronJobEntity.start();

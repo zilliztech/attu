@@ -10,12 +10,13 @@ import { router as schemaRouter } from "./schema";
 import { router as cronsRouter } from "./crons";
 import { pubSub } from "./events";
 import {
-  TransformResInterceptor,
-  LoggingInterceptor,
-  ErrorInterceptor,
-} from "./interceptors";
+  TransformResMiddlerware,
+  LoggingMiddleware,
+  ErrorMiddleware,
+} from "./middlewares";
 import { getDirectories, generateCfgs } from "./utils";
 import * as path from "path";
+import chalk from "chalk";
 
 const PLUGIN_DEV = process.env?.PLUGIN_DEV;
 const SRC_PLUGIN_DIR = "src/plugins";
@@ -42,11 +43,10 @@ app.use(
   })
 );
 app.use(express.json({ limit: "150MB" }));
-
 // TransformResInterceptor
-app.use(TransformResInterceptor);
+app.use(TransformResMiddlerware);
 // LoggingInterceptor
-app.use(LoggingInterceptor);
+app.use(LoggingMiddleware);
 
 const router = express.Router();
 const pluginsRouter = express.Router();
@@ -118,9 +118,9 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
   });
 
   // ErrorInterceptor
-  app.use(ErrorInterceptor);
+  app.use(ErrorMiddleware);
   // start server
   server.listen(PORT, () => {
-    console.log(`Server started on port ${PORT} :)`);
+    console.log(chalk.green.bold(`Insight Server started on port ${PORT} :)`));
   });
 });
