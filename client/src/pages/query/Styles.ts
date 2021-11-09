@@ -31,4 +31,9 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       gap: theme.spacing(2),
     },
   },
+  vectorTableCell: {
+    maxWidth: theme.spacing(50),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
 }));

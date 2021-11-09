@@ -1,11 +1,4 @@
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
+import { FC, useEffect, useState, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import EmptyCard from '../../components/cards/EmptyCard';
@@ -35,6 +28,32 @@ const Query: FC<{
 
   const classes = getQueryStyles();
 
+  // Format result list
+  const queryResultMemo = useMemo(
+    () =>
+      queryResult?.map((resultItem: { [key: string]: any }) => {
+        // Iterate resultItem keys, then format vector(array) items.
+        const tmp = Object.keys(resultItem).reduce(
+          (prev: { [key: string]: any }, item: string) => {
+            if (Array.isArray(resultItem[item])) {
+              const list2Str = `[${resultItem[item]}]`;
+              prev[item] = (
+                <div className={classes.vectorTableCell} title={list2Str}>
+                  {list2Str}
+                </div>
+              );
+            } else {
+              prev[item] = resultItem[item];
+            }
+            return prev;
+          },
+          {}
+        );
+        return tmp;
+      }),
+    [queryResult, classes.vectorTableCell]
+  );
+
   const {
     pageSize,
     handlePageSize,
@@ -45,7 +64,7 @@ const Query: FC<{
     order,
     orderBy,
     handleGridSort,
-  } = usePaginationHook(queryResult || []);
+  } = usePaginationHook(queryResultMemo || []);
 
   const handlePageChange = (e: any, page: number) => {
     handleCurrentPage(page);
