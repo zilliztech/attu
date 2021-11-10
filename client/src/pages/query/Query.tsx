@@ -112,7 +112,7 @@ const Query: FC<{
   };
 
   return (
-    <>
+    <div className={classes.root}>
       <div className={classes.toolbar}>
         <div className="left">
           <div>{`${
@@ -175,7 +175,7 @@ const Query: FC<{
           }
         />
       )}
-    </>
+    </div>
   );
 };
 

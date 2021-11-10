@@ -1,9 +1,15 @@
 import { makeStyles, Theme } from '@material-ui/core';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
-  root: {},
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
   emptyCard: {
     height: '100%',
+    borderRadius: theme.spacing(0, 0, 0.5, 0.5),
+    boxShadow: 'none',
   },
   toolbar: {
     display: 'flex',
