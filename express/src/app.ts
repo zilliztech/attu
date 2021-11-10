@@ -17,6 +17,8 @@ import {
 import { getDirectories, generateCfgs } from "./utils";
 import * as path from "path";
 import chalk from "chalk";
+import { surveSwaggerSpecification } from "./swagger";
+import swaggerUi from "swagger-ui-express";
 
 const PLUGIN_DEV = process.env?.PLUGIN_DEV;
 const SRC_PLUGIN_DIR = "src/plugins";
@@ -111,6 +113,10 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
 
   // Return client build files
   app.use(express.static("build"));
+
+  const data = surveSwaggerSpecification();
+  app.use("/api/v1/swagger", swaggerUi.serve, swaggerUi.setup(data));
+
   // handle every other route with index.html, which will contain
   // a script tag to your application's JavaScript file(s).
   app.get("*", (request, response) => {
