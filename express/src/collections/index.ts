@@ -129,12 +129,24 @@ router.post("/:name/search", async (req, res, next) => {
 router.post("/:name/query", async (req, res, next) => {
   const name = req.params?.name;
   const data = req.body;
+  const resultiLmit: any = req.query?.limit;
+  const resultPage: any = req.query?.page;
   try {
+    const limit = isNaN(resultiLmit) ? 100 : parseInt(resultiLmit, 10);
+    const page = isNaN(resultPage) ? 0 : parseInt(resultPage, 10);
+  // TODO: add page and limit to node SDK
+  // Here may raise "Error: 8 RESOURCE_EXHAUSTED: Received message larger than max"
     const result = await collectionsService.query({
       collection_name: name,
       ...data,
     });
-    res.send(result);
+    const queryResultList = result.data;
+    const queryResultLength = result.data.length;
+    const startNum = page * limit;
+    const endNum = (page + 1) * limit;
+    const slicedResult = queryResultList.slice(startNum, endNum);
+    result.data = slicedResult;
+    res.send({ ...result, limit, page, total: queryResultLength });
   } catch (error) {
     next(error);
   }
