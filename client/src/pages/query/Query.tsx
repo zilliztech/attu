@@ -169,7 +169,7 @@ const Query: FC<{
           wrapperClass={`page-empty-card ${classes.emptyCard}`}
           icon={<VectorSearchIcon />}
           text={
-            queryResult !== null
+            queryResult?.length > 0
               ? searchTrans('empty')
               : collectionTrans('startTip')
           }
