@@ -10,6 +10,7 @@ import Filter from '../../components/advancedSearch';
 import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { usePaginationHook } from '../../hooks/Pagination';
+import CopyButton from '../../components/advancedSearch/CopyButton';
 
 const Query: FC<{
   collectionName: string;
@@ -25,6 +26,8 @@ const Query: FC<{
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: commonTrans } = useTranslation();
+  const copyTrans = commonTrans('copy');
 
   const classes = getQueryStyles();
 
@@ -38,8 +41,13 @@ const Query: FC<{
             if (Array.isArray(resultItem[item])) {
               const list2Str = `[${resultItem[item]}]`;
               prev[item] = (
-                <div className={classes.vectorTableCell} title={list2Str}>
-                  {list2Str}
+                <div className={classes.vectorTableCell}>
+                  <div>{list2Str}</div>
+                  <CopyButton
+                    label={copyTrans.label}
+                    value={list2Str}
+                    className={classes.copyBtn}
+                  />
                 </div>
               );
             } else {
@@ -51,7 +59,7 @@ const Query: FC<{
         );
         return tmp;
       }),
-    [queryResult, classes.vectorTableCell]
+    [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
   );
 
   const {

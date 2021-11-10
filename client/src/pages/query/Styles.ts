@@ -38,8 +38,14 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
   },
   vectorTableCell: {
-    maxWidth: theme.spacing(50),
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    '& >div': {
+      maxWidth: theme.spacing(50),
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
+  copyBtn: {},
 }));
