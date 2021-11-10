@@ -23,9 +23,6 @@ enum VectorTypes {
 
 export class CreateCollectionDto {
   @IsString()
-  @IsNotEmpty({
-    message: "collection_name is empty",
-  })
   readonly collection_name: string;
 
   @IsBoolean()
@@ -34,9 +31,6 @@ export class CreateCollectionDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  @IsNotEmpty({
-    message: "fields is required",
-  })
   readonly fields: FieldType[];
 }
 
@@ -50,17 +44,12 @@ export class InsertDataDto {
   @IsOptional()
   readonly partition_names?: string[];
 
-  @IsNotEmpty({
-    message: "fields_data is requried",
-  })
+  @IsArray()
   readonly fields_data: any[];
 }
 
 export class VectorSearchDto {
   @IsString()
-  @IsNotEmpty({
-    message: "collection_name is requried",
-  })
   collection_name: string;
 
   @IsOptional()
@@ -71,16 +60,10 @@ export class VectorSearchDto {
   expr?: string;
 
   @IsObject()
-  @IsNotEmpty({
-    message: "search_params is requried",
-  })
   search_params: SearchParam;
 
   @IsArray()
   @ArrayMinSize(1)
-  @IsNotEmpty({
-    message: "vectors is requried",
-  })
   vectors: number[][];
 
   @IsArray()
@@ -88,16 +71,10 @@ export class VectorSearchDto {
   output_fields?: string[];
 
   @IsEnum(VectorTypes, { message: "Type allow all->0 inmemory->1" })
-  @IsNotEmpty({
-    message: "vector_type is requried",
-  })
   vector_type: DataType.BinaryVector | DataType.FloatVector;
 }
 
 export class CreateAliasDto {
   @IsString()
-  @IsNotEmpty({
-    message: "alias is required",
-  })
   alias: string;
 }

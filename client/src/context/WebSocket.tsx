@@ -32,6 +32,7 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
      * After all collections are not loading or building index, tell server stop pulling data.
      */
     socket.on(WS_EVENTS.COLLECTION, (data: any) => {
+      console.log(data);
       const collections: CollectionHttp[] = data.map(
         (v: any) => new CollectionHttp(v)
       );

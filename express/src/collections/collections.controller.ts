@@ -11,8 +11,8 @@ import {
 } from "./dto";
 
 export class CollectionController {
-  public collectionsService: CollectionsService;
-  public router: Router;
+  private collectionsService: CollectionsService;
+  private router: Router;
 
   constructor() {
     this.collectionsService = new CollectionsService(milvusService);
@@ -66,7 +66,7 @@ export class CollectionController {
 
     this.router.put("/:name/release", this.releaseCollection.bind(this));
 
-    this.router.put(
+    this.router.post(
       "/:name/insert",
       dtoValidationMiddleware(InsertDataDto),
       this.insert.bind(this)

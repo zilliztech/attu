@@ -139,6 +139,8 @@ const Collections = () => {
       const hasLoadingOrBuildingCollection = res.some(
         v => checkLoading(v) || checkIndexBuilding(v)
       );
+      console.log(hasLoadingOrBuildingCollection);
+
       // if some collection is building index or loading, start pulling data
       if (hasLoadingOrBuildingCollection) {
         MilvusHttp.triggerCron({
