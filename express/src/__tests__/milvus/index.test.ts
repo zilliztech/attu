@@ -4,7 +4,8 @@ import supertest from 'supertest';
 import { router as connectRouter } from '../../milvus/index';
 import { TransformResInterceptor } from '../../interceptors';
 import MilvusService from '../../__mocks__/milvus/milvus.service';
-import { mockAddress } from '../utils/Consts';
+
+const mockAddress = '127.0.0.1';
 
 // mock Milvus client service
 jest.mock('../../__mocks__/milvus/milvus.service');

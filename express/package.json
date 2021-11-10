@@ -55,7 +55,7 @@
     "start:prod": "node dist/app.js",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:cov": "cross-env NODE_ENV=test jest --passWithNoTests --coverage --detectOpenHandles",
+    "test:cov": "cross-env NODE_ENV=test jest --passWithNoTests --coverage",
     "test:report": "cross-env NODE_ENV=test jest --watchAll=false --coverage --coverageReporters='text-summary'",
     "clean": "rimraf dist"
   }
