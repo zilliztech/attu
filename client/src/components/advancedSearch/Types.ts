@@ -69,8 +69,9 @@ export interface FilterProps {
   className?: string;
   title: string;
   showTitle?: boolean;
+  showTooltip?: boolean;
   filterDisabled?: boolean;
-  others?: object;
+  others?: { [key: string]: any };
   onSubmit: (data: any) => void;
   tooltipPlacement?: 'left' | 'right' | 'bottom' | 'top';
   fields: Field[];

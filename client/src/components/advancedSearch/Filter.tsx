@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
 import {
   makeStyles,
   Theme,
@@ -12,10 +12,11 @@ import { FilterProps, ConditionData } from './Types';
 import { generateIdByHash } from '../../utils/Common';
 import CustomButton from '../customButton/CustomButton';
 
-const Filter = function Filter(props: FilterProps) {
+const Filter = forwardRef((props: FilterProps, ref) => {
   const {
     title = 'title',
     showTitle = true,
+    showTooltip = true,
     className = '',
     filterDisabled = false,
     tooltipPlacement = 'top',
@@ -245,6 +246,7 @@ const Filter = function Filter(props: FilterProps) {
     setInitConditions(flatConditions);
     setOpen(false);
   };
+  // Only reset current conditions. Former conditions are remained.
   const handleReset = () => {
     setFilteredFlatConditions([
       {
@@ -256,9 +258,23 @@ const Filter = function Filter(props: FilterProps) {
       },
     ]);
   };
+  // Reset all conditions(both current and former).
+  const handleHardReset = () => {
+    setInitConditions([]);
+    handleReset();
+  };
   const handleFallback = () => {
     setFilteredFlatConditions(initConditions);
   };
+  // Expose func
+  // useImperativeHandle customizes the instance value that is exposed to parent components when using ref.
+  // https://reactjs.org/docs/hooks-reference.html#useimperativehandle
+  useImperativeHandle(ref, () => ({
+    // Expose handleHardReset, parent components can call it by `ref.current.getReset()`
+    getReset() {
+      handleHardReset();
+    },
+  }));
 
   return (
     <>
@@ -271,7 +287,7 @@ const Filter = function Filter(props: FilterProps) {
           <FilterListIcon />
           {showTitle ? title : ''}
         </CustomButton>
-        {initConditions.length > 0 && (
+        {showTooltip && initConditions.length > 0 && (
           <Tooltip
             arrow
             interactive
@@ -304,7 +320,7 @@ const Filter = function Filter(props: FilterProps) {
       </div>
     </>
   );
-};
+});
 
 Filter.displayName = 'AdvancedFilter';
 
