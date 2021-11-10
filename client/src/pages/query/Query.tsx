@@ -95,6 +95,7 @@ const Query: FC<{
   };
   const handleFilterSubmit = (expression: string) => {
     setExpression(expression);
+    setQueryResult(null);
   };
   const handleQuery = async () => {
     setTableLoading(true);
