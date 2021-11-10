@@ -41,7 +41,7 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     // when disabled "disabledTooltip" will replace "tooltip"
     disabledTooltip?: string;
     hidden?: boolean;
-    type?: 'iconBtn' | 'buttton' | 'switch' | 'select' | 'groupSelect';
+    type?: 'iconBtn' | 'button' | 'switch' | 'select' | 'groupSelect';
     position?: 'right' | 'left';
     component?: ReactElement;
     btnVariant?: 'contained' | 'outlined' | 'text';

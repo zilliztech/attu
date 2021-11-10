@@ -2,6 +2,7 @@ import { ChildrenStatusType } from '../components/status/Types';
 import { CollectionView, InsertDataParam } from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
 import { VectorSearchParam } from '../pages/seach/Types';
+import { QueryParam } from '../pages/query/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
@@ -85,7 +86,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   static vectorSearchData(collectionName: string, params: VectorSearchParam) {
-    return super.vectorSearch({
+    return super.query({
       path: `${this.COLLECTIONS_URL}/${collectionName}/search`,
       data: params,
     });
@@ -94,6 +95,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   static createAlias(collectionName: string, params: { alias: string }) {
     return super.create({
       path: `${this.COLLECTIONS_URL}/${collectionName}/alias`,
+      data: params,
+    });
+  }
+
+  static queryData(collectionName: string, params: QueryParam) {
+    return super.query({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/query`,
       data: params,
     });
   }

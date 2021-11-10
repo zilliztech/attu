@@ -108,6 +108,17 @@ export class CollectionsService {
     return res;
   }
 
+  async query(data: {
+    collection_name: string;
+    expr: string;
+    partitions_names?: string[];
+    output_fields?: string[];
+  }) {
+    const res = await this.dataManager.query(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
   /**
    * We do not throw error for this.
    * Because if collection dont have index, it will throw error.

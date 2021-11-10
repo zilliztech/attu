@@ -79,7 +79,7 @@ export default class BaseModel {
     return res.data;
   }
 
-  static async vectorSearch(options: updateParamsType) {
+  static async query(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.post(path, data);
     return res.data.data;
