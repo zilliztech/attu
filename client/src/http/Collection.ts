@@ -86,7 +86,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   static vectorSearchData(collectionName: string, params: VectorSearchParam) {
-    return super.vectorSearch({
+    return super.query({
       path: `${this.COLLECTIONS_URL}/${collectionName}/search`,
       data: params,
     });

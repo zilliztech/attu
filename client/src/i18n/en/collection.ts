@@ -59,7 +59,8 @@ const collectionTrans = {
   partitionTab: 'Partitions',
   schemaTab: 'Schema',
   queryTab: 'Data Query',
-  startTip: 'Start your data query'
+  startTip: 'Start your data query',
+  exprPlaceHolder: 'Please enter your query by using advanced filter ->',
 };
 
 export default collectionTrans;

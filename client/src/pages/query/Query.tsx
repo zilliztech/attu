@@ -112,10 +112,11 @@ const Query: FC<{
         expr: expression,
         output_fields: fields.map(i => i.name),
       });
-      setTableLoading(false);
       const result = res.data;
       setQueryResult(result);
     } catch (err) {
+      setQueryResult([]);
+    } finally {
       setTableLoading(false);
     }
   };
@@ -125,7 +126,7 @@ const Query: FC<{
       <div className={classes.toolbar}>
         <div className="left">
           <div>{`${
-            expression || 'Please enter your query or use advanced filter ->'
+            expression || collectionTrans('exprPlaceHolder')
           }`}</div>
           <Filter
             ref={filterRef}
@@ -151,7 +152,7 @@ const Query: FC<{
           </CustomButton>
         </div>
       </div>
-      {tableLoading || queryResult ? (
+      {tableLoading || queryResult?.length ? (
         <MilvusGrid
           toolbarConfigs={[]}
           colDefinitions={fields.map(i => ({
@@ -178,7 +179,7 @@ const Query: FC<{
           wrapperClass={`page-empty-card ${classes.emptyCard}`}
           icon={<VectorSearchIcon />}
           text={
-            queryResult?.length > 0
+            queryResult?.length === 0
               ? searchTrans('empty')
               : collectionTrans('startTip')
           }

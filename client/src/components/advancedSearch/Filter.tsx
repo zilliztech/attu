@@ -267,8 +267,10 @@ const Filter = forwardRef((props: FilterProps, ref) => {
     setFilteredFlatConditions(initConditions);
   };
   // Expose func
+  // useImperativeHandle customizes the instance value that is exposed to parent components when using ref.
+  // https://reactjs.org/docs/hooks-reference.html#useimperativehandle
   useImperativeHandle(ref, () => ({
-    // Expose handleHardReset
+    // Expose handleHardReset, parent components can call it by `ref.current.getReset()`
     getReset() {
       handleHardReset();
     },
