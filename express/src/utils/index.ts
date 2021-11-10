@@ -4,14 +4,27 @@ import fs from "fs";
 // Utils: read files under specified directories
 export const getDirectories = (
   src: string,
-  callback: (err: Error, res: [string]) => void
+  callback: (err: Error, res: string[]) => void
 ) => {
   glob(src + "/**/*", callback);
 };
 
+// sync: read files under specified directories
+export const getDirectoriesSync = (
+  src: string,
+  callback: (err: Error, res: string[]) => void
+) => {
+  try {
+    const results = glob.sync(src + "/**/*");
+    callback(undefined, results);
+  } catch (error) {
+    callback(error, []);
+  }
+};
+
 export const generateCfgs = (
-  cfgs: [any],
-  dirRes: [string],
+  cfgs: any[],
+  dirRes: string[],
   isSrcPlugin: boolean = true
 ) => {
   dirRes.forEach((item: string) => {

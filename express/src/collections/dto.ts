@@ -49,9 +49,6 @@ export class InsertDataDto {
 }
 
 export class VectorSearchDto {
-  @IsString()
-  collection_name: string;
-
   @IsOptional()
   partition_names?: string[];
 
@@ -77,4 +74,17 @@ export class VectorSearchDto {
 export class CreateAliasDto {
   @IsString()
   alias: string;
+}
+
+export class QueryDto {
+  @IsString()
+  readonly expr: string;
+
+  @IsArray()
+  @IsOptional()
+  readonly partitions_names: string[];
+
+  @IsArray()
+  @IsOptional()
+  readonly output_fields: string[];
 }

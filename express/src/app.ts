@@ -14,7 +14,8 @@ import {
   LoggingMiddleware,
   ErrorMiddleware,
 } from "./middlewares";
-import { getDirectories, generateCfgs } from "./utils";
+
+import { getDirectories, getDirectoriesSync, generateCfgs } from "./utils";
 import * as path from "path";
 import chalk from "chalk";
 import { surveSwaggerSpecification } from "./swagger";
@@ -67,8 +68,8 @@ io.on("connection", (socket: Socket) => {
 
 // Read plugin files and start express server
 // Import all plguins under "src/plugins"
-getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
-  const cfgs: any = [];
+getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: string[]) => {
+  const cfgs: any[] = [];
   if (dirErr) {
     console.log("Reading plugin directory Error", dirErr);
   } else {
@@ -76,18 +77,18 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
   }
   // If under plugin dev mode, import all plugins under "../../src/*/server"
   if (PLUGIN_DEV) {
-    await getDirectories(
+    getDirectoriesSync(
       DEV_PLUGIN_DIR,
-      (devDirErr: Error, devDirRes: [string]) => {
+      (devDirErr: Error, devDirRes: string[]) => {
         if (devDirErr) {
-          console.log("Reading plugin directory Error", dirErr);
+          console.log("Reading dev plugin directory Error", devDirErr);
         } else {
           generateCfgs(cfgs, devDirRes, false);
         }
       }
     );
   }
-  console.log(cfgs);
+  console.log("======/api/plugins configs======", cfgs);
   cfgs.forEach(async (cfg: any) => {
     const { api: pluginPath, componentPath } = cfg;
     if (!pluginPath) return;

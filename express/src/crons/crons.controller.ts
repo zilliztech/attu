@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { dtoValidationMiddleware } from "../middlewares/validation";
 import { CronsService, SchedulerRegistry } from "./crons.service";
 import { collectionsService } from "../collections";
-import { toggleCronJobByNameDto } from "./dto";
+import { ToggleCronJobByNameDto } from "./dto";
 
 export class CronsController {
   private router: Router;
@@ -21,7 +21,7 @@ export class CronsController {
   generateRoutes() {
     this.router.put(
       "/",
-      dtoValidationMiddleware(toggleCronJobByNameDto),
+      dtoValidationMiddleware(ToggleCronJobByNameDto),
       this.toggleCronJobByName.bind(this)
     );
 

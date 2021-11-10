@@ -1,7 +1,7 @@
 import { IsEnum, IsString } from "class-validator";
 import { WS_EVENTS_TYPE } from "../utils/Const";
 
-export class toggleCronJobByNameDto {
+export class ToggleCronJobByNameDto {
   @IsString()
   name: string;
 

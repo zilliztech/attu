@@ -71,23 +71,24 @@ const Condition: FC<ConditionProps> = props => {
   useEffect(() => {
     const regInt = /^\d+$/;
     const regFloat = /^\d+\.\d+$/;
-    const regIntInterval = /^\[\d+,\d+\]$/;
-    const regFloatInterval = /^\[\d+\.\d+,\d+\.\d+]$/;
+    const regIntInterval = /^\[\d+(,\d+)*\]$/;
+    const regFloatInterval = /^\[\d+\.\d+(,\d+\.\d+)*\]$/;
 
     const type = conditionField?.type;
     const isIn = operator === 'in';
     let isLegal = false;
+    const conditionValueWithNoSpace = conditionValue.replaceAll(' ', '');
 
     switch (type) {
       case 'int':
         isLegal = isIn
-          ? regIntInterval.test(conditionValue)
-          : regInt.test(conditionValue);
+          ? regIntInterval.test(conditionValueWithNoSpace)
+          : regInt.test(conditionValueWithNoSpace);
         break;
       case 'float':
         isLegal = isIn
-          ? regFloatInterval.test(conditionValue)
-          : regFloat.test(conditionValue);
+          ? regFloatInterval.test(conditionValueWithNoSpace)
+          : regFloat.test(conditionValueWithNoSpace);
         break;
       default:
         isLegal = false;

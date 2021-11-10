@@ -20,6 +20,7 @@ import {
   ShowCollectionsReq,
   ShowCollectionsType,
 } from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
+import { QueryDto } from "./dto";
 
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -105,6 +106,16 @@ export class CollectionsService {
   async dropAlias(data: DropAliasReq) {
     const res = await this.collectionManager.dropAlias(data);
     throwErrorFromSDK(res);
+    return res;
+  }
+
+  async query(
+    data: {
+      collection_name: string;
+    } & QueryDto
+  ) {
+    const res = await this.dataManager.query(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 

@@ -8,6 +8,7 @@ import {
   InsertDataDto,
   ShowCollectionsDto,
   VectorSearchDto,
+  QueryDto,
 } from "./dto";
 
 export class CollectionController {
@@ -72,10 +73,16 @@ export class CollectionController {
       this.insert.bind(this)
     );
 
-    this.router.put(
+    this.router.post(
       "/:name/search",
       dtoValidationMiddleware(VectorSearchDto),
       this.vectorSearch.bind(this)
+    );
+
+    this.router.post(
+      "/:name/query",
+      dtoValidationMiddleware(QueryDto),
+      this.query.bind(this)
     );
 
     this.router.post(
@@ -221,6 +228,33 @@ export class CollectionController {
         ...data,
       });
       res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async query(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    const data = req.body;
+    const resultiLmit: any = req.query?.limit;
+    const resultPage: any = req.query?.page;
+
+    try {
+      const limit = isNaN(resultiLmit) ? 100 : parseInt(resultiLmit, 10);
+      const page = isNaN(resultPage) ? 0 : parseInt(resultPage, 10);
+      // TODO: add page and limit to node SDK
+      // Here may raise "Error: 8 RESOURCE_EXHAUSTED: Received message larger than max"
+      const result = await this.collectionsService.query({
+        collection_name: name,
+        ...data,
+      });
+      const queryResultList = result.data;
+      const queryResultLength = result.data.length;
+      const startNum = page * limit;
+      const endNum = (page + 1) * limit;
+      const slicedResult = queryResultList.slice(startNum, endNum);
+      result.data = slicedResult;
+      res.send({ ...result, limit, page, total: queryResultLength });
     } catch (error) {
       next(error);
     }

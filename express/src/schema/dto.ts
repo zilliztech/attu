@@ -1,10 +1,10 @@
 import { CreateIndexParam } from "@zilliz/milvus2-sdk-node/dist/milvus/types";
 import {
-  IsNotEmpty,
   IsString,
   IsEnum,
   IsOptional,
   IsObject,
+  IsArray,
 } from "class-validator";
 
 class KeyValuePair {
