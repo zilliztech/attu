@@ -16,13 +16,14 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "testTimeout": 10000,
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
     "rootDir": "src",
     "testRegex": ".*\\.test\\.ts$",
     "collectCoverageFrom": [
-      "**/*.{js,ts}"
+      "**/*.service.{js,ts}"
     ],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -54,7 +55,7 @@
     "start:prod": "node dist/app.js",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:cov": "cross-env NODE_ENV=test jest --passWithNoTests --coverage",
+    "test:cov": "cross-env NODE_ENV=test jest --passWithNoTests --coverage --detectOpenHandles",
     "test:report": "cross-env NODE_ENV=test jest --watchAll=false --coverage --coverageReporters='text-summary'",
     "clean": "rimraf dist"
   }

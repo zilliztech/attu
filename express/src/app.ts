@@ -21,7 +21,7 @@ const PLUGIN_DEV = process.env?.PLUGIN_DEV;
 const SRC_PLUGIN_DIR = "src/plugins";
 const DEV_PLUGIN_DIR = "../../src/*/server";
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 // initialize a simple http server
 const server = http.createServer(app);

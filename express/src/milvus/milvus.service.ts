@@ -1,15 +1,15 @@
-import { MilvusClient } from "@zilliz/milvus2-sdk-node";
+import { MilvusClient } from '@zilliz/milvus2-sdk-node';
 import {
   FlushReq,
   GetMetricsResponse,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 export class MilvusService {
   private milvusAddress: string;
   private milvusClient: MilvusClient;
 
   constructor() {
-    this.milvusAddress = "";
+    this.milvusAddress = '';
   }
 
   get milvusAddressGetter() {
@@ -42,22 +42,22 @@ export class MilvusService {
 
   private checkMilvus() {
     if (!this.milvusClient) {
-      throw new Error("Please connect milvus first");
+      throw new Error('Please connect milvus first');
     }
   }
 
   async connectMilvus(address: string) {
     // grpc only need address without http
-    const milvusAddress = address.replace(/(http|https):\/\//, "");
+    const milvusAddress = address.replace(/(http|https):\/\//, '');
     try {
       this.milvusClient = new MilvusClient(milvusAddress);
       await this.milvusClient.collectionManager.hasCollection({
-        collection_name: "not_exist",
+        collection_name: 'not_exist',
       });
       this.milvusAddress = address;
       return { address: this.milvusAddress };
     } catch (error) {
-      throw new Error("Connect milvus failed, check your milvus address.");
+      throw new Error('Connect milvus failed, check your milvus address.');
     }
   }
 
@@ -78,7 +78,7 @@ export class MilvusService {
 
   async getMetrics(): Promise<GetMetricsResponse> {
     const res = await this.milvusClient.dataManager.getMetric({
-      request: { metric_type: "system_info" },
+      request: { metric_type: 'system_info' },
     });
     return res;
   }
