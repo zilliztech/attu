@@ -2,17 +2,23 @@ import {
   AlterAliasReq,
   CreateAliasReq,
   CreateCollectionReq,
+  CreatePartitionReq,
   DescribeCollectionReq,
   DropAliasReq,
   DropCollectionReq,
+  DropPartitionReq,
   FlushReq,
   GetCollectionStatisticsReq,
   GetIndexStateReq,
+  GetPartitionStatisticsReq,
   InsertReq,
   LoadCollectionReq,
+  LoadPartitionsReq,
   ReleaseLoadCollectionReq,
+  ReleasePartitionsReq,
   SearchReq,
   ShowCollectionsReq,
+  ShowPartitionsReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { QueryDto } from '../../collections/dto';
 import {
@@ -25,6 +31,7 @@ import {
   mockCollections,
   mockIndexState,
   mockLoadedCollections,
+  mockPartition,
 } from '../../__tests__/utils/constants';
 import { mockStatusInfo } from '../../__tests__/utils/mock.util';
 
@@ -151,7 +158,62 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
         };
       },
     },
-    partitionManager: {},
+    partitionManager: {
+      createPartition: (param: CreatePartitionReq) => {
+        const { collection_name, partition_name } = param;
+        if (!collection_name) {
+          return mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION);
+        }
+        return { ...mockStatusInfo(CodeEnum.success), data: partition_name };
+      },
+      dropPartition: (param: DropPartitionReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION);
+        }
+        return { ...mockStatusInfo(CodeEnum.success), data: param };
+      },
+      loadPartitions: (param: LoadPartitionsReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION);
+        }
+        return { ...mockStatusInfo(CodeEnum.success), data: param };
+      },
+      releasePartitions: (param: ReleasePartitionsReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION);
+        }
+        return { ...mockStatusInfo(CodeEnum.success), data: param };
+      },
+      showPartitions: (param: ShowPartitionsReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
+        }
+        return {
+          status: mockStatusInfo(CodeEnum.success),
+          ...mockPartition,
+        };
+      },
+      getPartitionStatistics: (param: GetPartitionStatisticsReq) => {
+        const { collection_name, partition_name } = param;
+        if (!collection_name) {
+          return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
+        }
+
+        const data = {
+          name: partition_name,
+          stats: [{ key: 'row_count', value: 7 }],
+        };
+
+        return {
+          status: mockStatusInfo(CodeEnum.success),
+          ...data,
+        };
+      },
+    },
     indexManager: {
       getIndexState: (param: GetIndexStateReq) => {
         const { collection_name } = param;

@@ -9,7 +9,6 @@ import {
   mockCollectionNames,
   mockCollections,
   mockGetAllCollectionsData,
-  mockIndexState,
   mockLoadedCollections,
   mockLoadedCollectionsData,
 } from '../utils/constants';
@@ -25,14 +24,14 @@ describe('Test collections service', () => {
   let milvusService: any;
   let service: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     // setup Milvus service and connect to mock Milvus client
     milvusService = new MilvusService();
     await milvusService.connectMilvus(mockAddress);
     service = new CollectionsService(milvusService);
   });
 
-  afterEach(() => {
+  afterAll(() => {
     milvusService = null;
     service = null;
   });
@@ -245,7 +244,7 @@ describe('Test collections service', () => {
 
   test('test getIndexStatus method', async () => {
     const res = await service.getIndexStatus({ collection_name: 'c1' });
-    const { error_code, ...data } = res;
+    const { error_code, reason, ...data } = res;
     expect(data).toEqual({ collection_name: 'c1', state: 3 });
   });
 

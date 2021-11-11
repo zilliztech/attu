@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { dtoValidationMiddleware } from "../middlewares/validation";
-import { PartitionsService } from "./partitions.service";
-import { milvusService } from "../milvus";
+import { NextFunction, Request, Response, Router } from 'express';
+import { dtoValidationMiddleware } from '../middlewares/validation';
+import { PartitionsService } from './partitions.service';
+import { milvusService } from '../milvus';
 
 import {
   GetPartitionsInfoDto,
   ManagePartitionDto,
   LoadPartitionsDto,
-} from "./dto";
+} from './dto';
 
 export class PartitionController {
   private router: Router;
@@ -20,25 +20,25 @@ export class PartitionController {
 
   generateRoutes() {
     this.router.get(
-      "/",
+      '/',
       dtoValidationMiddleware(GetPartitionsInfoDto),
-      this.getPatitionsInfo.bind(this)
+      this.getPartitionsInfo.bind(this)
     );
 
     this.router.post(
-      "/",
+      '/',
       dtoValidationMiddleware(ManagePartitionDto),
       this.managePartition.bind(this)
     );
 
     this.router.post(
-      "/load",
+      '/load',
       dtoValidationMiddleware(LoadPartitionsDto),
       this.loadPartition.bind(this)
     );
 
     this.router.post(
-      "/release",
+      '/release',
       dtoValidationMiddleware(LoadPartitionsDto),
       this.releasePartition.bind(this)
     );
@@ -46,10 +46,10 @@ export class PartitionController {
     return this.router;
   }
 
-  async getPatitionsInfo(req: Request, res: Response, next: NextFunction) {
-    const collectionName = "" + req.query?.collection_name;
+  async getPartitionsInfo(req: Request, res: Response, next: NextFunction) {
+    const collectionName = '' + req.query?.collection_name;
     try {
-      const result = await this.partitionsService.getPatitionsInfo({
+      const result = await this.partitionsService.getPartitionsInfo({
         collection_name: collectionName,
       });
       res.send(result);
@@ -62,9 +62,9 @@ export class PartitionController {
     const { type, ...params } = req.body;
     try {
       const result =
-        type.toLocaleLowerCase() === "create"
-          ? await this.partitionsService.createParition(params)
-          : await this.partitionsService.deleteParition(params);
+        type.toLocaleLowerCase() === 'create'
+          ? await this.partitionsService.createPartition(params)
+          : await this.partitionsService.deletePartition(params);
       res.send(result);
     } catch (error) {
       next(error);

@@ -84,6 +84,13 @@ export const mockIndexState = [
   { collection_name: 'c2', state: 2 },
 ];
 
+export const mockPartition = {
+  partition_names: ['p1', 'p2'],
+  partitionIDs: [1, 2],
+  created_timestamps: ['12345', '12354'],
+  created_utc_timestamps: ['12345', '12354'],
+};
+
 // mock results
 export const mockGetAllCollectionsData = [
   {
@@ -154,6 +161,21 @@ export const mockLoadedCollectionsData = [
   {
     collection_name: 'c1',
     id: 1,
+    rowCount: 7,
+  },
+];
+
+export const mockGetPartitionsInfoData = [
+  {
+    name: 'p1',
+    id: 1,
+    createdTime: '12345',
+    rowCount: 7,
+  },
+  {
+    name: 'p2',
+    id: 2,
+    createdTime: '12354',
     rowCount: 7,
   },
 ];
