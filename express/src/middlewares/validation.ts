@@ -30,7 +30,6 @@ export const dtoValidationMiddleware = (
         } else {
           // sanitize the object and call the next middleware
           sanitize(dtoObj);
-          console.log(dtoObj);
           req.body = dtoObj;
           next();
         }
