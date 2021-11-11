@@ -1,0 +1,78 @@
+paths:
+  /schema/index:
+    get:
+      tags: 
+        - Schema
+      description: Get index information
+      parameters:
+        - $ref: '#/definitions/CollectionName'
+      responses:
+        200:
+          schema:
+            type: object
+  
+    post:
+      tags: 
+        - Schema
+      description: Create or delete index in collection
+      requestBody:
+        description: Only type is create need extra_params
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - collection_name
+                - field_name
+              properties:
+                type:
+                  type: string
+                  example: create
+                collection_name:
+                  type: string
+                  example: ''
+                field_name:
+                  type: string
+                  example: 'vector field'
+                extra_params:
+                  type: object
+                  example: {"index_type":"","metric_type":"","params":""}
+      responses:
+        200:
+          schema:
+            type: object
+
+  /schema/index/progress:
+    get:
+      tags: 
+        - Schema
+      description: Get index building progress percentage
+      parameters:
+        - $ref: '#/definitions/CollectionName'
+      responses:
+        200:
+          schema:
+            type: object
+
+  /schema/index/state:
+    get:
+      tags: 
+        - Schema
+      description: Get index state 
+      parameters:
+        - $ref: '#/definitions/CollectionName'
+      responses:
+        200:
+          schema:
+            type: object
+ 
+
+
+definitions:
+  CollectionName:
+    in: query
+    name: collection_name
+    type: string
+    description: Collection name
