@@ -16,6 +16,7 @@ const btnTrans = {
   previous: 'Previous',
   done: 'Done',
   vectorSearch: 'Vector search',
+  query: 'Query',
 };
 
 export default btnTrans;

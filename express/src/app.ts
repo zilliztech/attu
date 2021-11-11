@@ -10,12 +10,16 @@ import { router as schemaRouter } from "./schema";
 import { router as cronsRouter } from "./crons";
 import { pubSub } from "./events";
 import {
-  TransformResInterceptor,
-  LoggingInterceptor,
-  ErrorInterceptor,
-} from "./interceptors";
-import { getDirectories, generateCfgs } from "./utils";
+  TransformResMiddlerware,
+  LoggingMiddleware,
+  ErrorMiddleware,
+} from "./middlewares";
+
+import { getDirectories, getDirectoriesSync, generateCfgs } from "./utils";
 import * as path from "path";
+import chalk from "chalk";
+import { surveSwaggerSpecification } from "./swagger";
+import swaggerUi from "swagger-ui-express";
 
 const PLUGIN_DEV = process.env?.PLUGIN_DEV;
 const SRC_PLUGIN_DIR = "src/plugins";
@@ -42,11 +46,10 @@ app.use(
   })
 );
 app.use(express.json({ limit: "150MB" }));
-
 // TransformResInterceptor
-app.use(TransformResInterceptor);
+app.use(TransformResMiddlerware);
 // LoggingInterceptor
-app.use(LoggingInterceptor);
+app.use(LoggingMiddleware);
 
 const router = express.Router();
 const pluginsRouter = express.Router();
@@ -65,8 +68,8 @@ io.on("connection", (socket: Socket) => {
 
 // Read plugin files and start express server
 // Import all plguins under "src/plugins"
-getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
-  const cfgs: any = [];
+getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: string[]) => {
+  const cfgs: any[] = [];
   if (dirErr) {
     console.log("Reading plugin directory Error", dirErr);
   } else {
@@ -74,18 +77,18 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
   }
   // If under plugin dev mode, import all plugins under "../../src/*/server"
   if (PLUGIN_DEV) {
-    await getDirectories(
+    getDirectoriesSync(
       DEV_PLUGIN_DIR,
-      (devDirErr: Error, devDirRes: [string]) => {
+      (devDirErr: Error, devDirRes: string[]) => {
         if (devDirErr) {
-          console.log("Reading plugin directory Error", dirErr);
+          console.log("Reading dev plugin directory Error", devDirErr);
         } else {
           generateCfgs(cfgs, devDirRes, false);
         }
       }
     );
   }
-  console.log(cfgs);
+  console.log("======/api/plugins configs======", cfgs);
   cfgs.forEach(async (cfg: any) => {
     const { api: pluginPath, componentPath } = cfg;
     if (!pluginPath) return;
@@ -111,6 +114,10 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
 
   // Return client build files
   app.use(express.static("build"));
+
+  const data = surveSwaggerSpecification();
+  app.use("/api/v1/swagger", swaggerUi.serve, swaggerUi.setup(data));
+
   // handle every other route with index.html, which will contain
   // a script tag to your application's JavaScript file(s).
   app.get("*", (request, response) => {
@@ -118,9 +125,9 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: [string]) => {
   });
 
   // ErrorInterceptor
-  app.use(ErrorInterceptor);
+  app.use(ErrorMiddleware);
   // start server
   server.listen(PORT, () => {
-    console.log(`Server started on port ${PORT} :)`);
+    console.log(chalk.green.bold(`Insight Server started on port ${PORT} :)`));
   });
 });
