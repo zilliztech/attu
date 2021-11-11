@@ -6,7 +6,6 @@ import {
   CreateAliasDto,
   CreateCollectionDto,
   InsertDataDto,
-  ShowCollectionsDto,
   VectorSearchDto,
   QueryDto,
 } from "./dto";
@@ -26,20 +25,7 @@ export class CollectionController {
   }
 
   generateRoutes() {
-    /**
-     * @swagger
-     * /collections:
-     *   get:
-     *     description: Get all or loaded collection
-     *     responses:
-     *       200:
-     *         Collections List
-     */
-    this.router.get(
-      "/",
-      dtoValidationMiddleware(ShowCollectionsDto),
-      this.showCollections.bind(this)
-    );
+    this.router.get("/", this.showCollections.bind(this));
 
     this.router.post(
       "/",

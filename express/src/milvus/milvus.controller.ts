@@ -23,11 +23,7 @@ export class MilvusController {
       this.connectMilvus.bind(this)
     );
 
-    this.router.get(
-      "/check",
-      dtoValidationMiddleware(CheckMilvusDto),
-      this.checkConnect.bind(this)
-    );
+    this.router.get("/check", this.checkConnect.bind(this));
 
     this.router.put(
       "/flush",
@@ -42,8 +38,11 @@ export class MilvusController {
 
   async connectMilvus(req: Request, res: Response, next: NextFunction) {
     const address = req.body?.address;
+    console.log(address);
     try {
       const result = await this.milvusService.connectMilvus(address);
+      console.log(result);
+
       res.send(result);
     } catch (error) {
       next(error);
