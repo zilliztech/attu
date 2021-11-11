@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { dtoValidationMiddleware } from "../middlewares/validation";
 import { MilvusService } from "./milvus.service";
-import { CheckMilvusDto, ConnectMilvusDto, FlushDto } from "./dto";
+import { ConnectMilvusDto, FlushDto } from "./dto";
 
 export class MilvusController {
   private router: Router;
@@ -38,10 +38,8 @@ export class MilvusController {
 
   async connectMilvus(req: Request, res: Response, next: NextFunction) {
     const address = req.body?.address;
-    console.log(address);
     try {
       const result = await this.milvusService.connectMilvus(address);
-      console.log(result);
 
       res.send(result);
     } catch (error) {
