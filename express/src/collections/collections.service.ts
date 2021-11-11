@@ -1,4 +1,4 @@
-import { MilvusService } from "../milvus/milvus.service";
+import { MilvusService } from '../milvus/milvus.service';
 import {
   CreateCollectionReq,
   DescribeCollectionReq,
@@ -9,17 +9,17 @@ import {
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
   SearchReq,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types";
-import { throwErrorFromSDK } from "../utils/Error";
-import { findKeyValue } from "../utils/Helper";
-import { ROW_COUNT } from "../utils/Const";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+import { throwErrorFromSDK } from '../utils/Error';
+import { findKeyValue } from '../utils/Helper';
+import { ROW_COUNT } from '../utils/Const';
 import {
   AlterAliasReq,
   CreateAliasReq,
   DropAliasReq,
   ShowCollectionsReq,
   ShowCollectionsType,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
 
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -155,7 +155,7 @@ export class CollectionsService {
         );
 
         const loadedPercentage = !loadCollection
-          ? "-1"
+          ? '-1'
           : loadCollection.loadedPercentage;
 
         data.push({

@@ -1,8 +1,7 @@
 import mockMilvusClient from '../../__mocks__/milvus/milvusClient';
 import { MilvusService } from '../../milvus/milvus.service';
+import { mockAddress } from '../utils/constants';
 
-// variables
-const mockAddress = '127.0.0.1';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {
