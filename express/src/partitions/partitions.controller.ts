@@ -19,11 +19,7 @@ export class PartitionController {
   }
 
   generateRoutes() {
-    this.router.get(
-      "/",
-      dtoValidationMiddleware(GetPartitionsInfoDto),
-      this.getPatitionsInfo.bind(this)
-    );
+    this.router.get("/", this.getPatitionsInfo.bind(this));
 
     this.router.post(
       "/",
@@ -31,13 +27,13 @@ export class PartitionController {
       this.managePartition.bind(this)
     );
 
-    this.router.post(
+    this.router.put(
       "/load",
       dtoValidationMiddleware(LoadPartitionsDto),
       this.loadPartition.bind(this)
     );
 
-    this.router.post(
+    this.router.put(
       "/release",
       dtoValidationMiddleware(LoadPartitionsDto),
       this.releasePartition.bind(this)
