@@ -19,8 +19,8 @@ import {
   DropAliasReq,
   ShowCollectionsReq,
   ShowCollectionsType,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
-import { QueryDto } from "./dto";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
+import { QueryDto } from './dto';
 
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -144,7 +144,6 @@ export class CollectionsService {
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { name } = item;
-
         const collectionInfo = await this.describeCollection({
           collection_name: name,
         });

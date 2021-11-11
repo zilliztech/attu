@@ -1,11 +1,12 @@
 import express from 'express';
 import http from 'http';
 import supertest from 'supertest';
+import { TransformResMiddlerware } from '../../middlewares';
 import { router as connectRouter } from '../../milvus/index';
-import { TransformResInterceptor } from '../../interceptors';
-import MilvusService from '../../__mocks__/milvus/milvus.service';
 
-const mockAddress = '127.0.0.1';
+import MilvusService from '../../__mocks__/milvus/milvus.service';
+import { mockAddress } from '../utils/constants';
+
 
 // mock Milvus client service
 jest.mock('../../__mocks__/milvus/milvus.service');
@@ -20,7 +21,7 @@ describe('Test Milvus Module', () => {
     app = express();
     const router = express.Router();
     router.use('/milvus', connectRouter);
-    app.use(TransformResInterceptor);
+    app.use(TransformResMiddlerware);
     app.use('/api/v1', router);
     server = http.createServer(app);
     server.listen(done);
