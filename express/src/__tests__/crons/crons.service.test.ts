@@ -157,5 +157,6 @@ describe('test crons service', () => {
 
     await newCronsService.getCollections(WS_EVENTS.COLLECTION);
     expect(schedule).toBeCalledWith(mockCronEverySec, expect.any(Function));
+    expect(handleEndTask).toBeCalled();
   });
 });
