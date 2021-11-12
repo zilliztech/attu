@@ -20,6 +20,7 @@ export class PubSub {
     // const handlerArgs = Array.prototype.slice.call(arguments, 1);
     if (!(eventType in this.handlers)) {
       console.warn(`eventType: ${eventType} missing`);
+      // throw new Error(`eventType: ${eventType} missing`);
       return;
     }
     this.handlers[eventType].forEach((handler) => {
