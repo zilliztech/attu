@@ -144,18 +144,6 @@ describe('test crons service', () => {
 
   test('test getCollections error', async () => {
     // reset setup to trigger error
-    // jest.mock('../../collections/collections.service', () => {
-    //   return {
-    //     CollectionService: jest.fn().mockImplementation((milvusService) => ({
-    //       getAllCollections: () => {
-    //         throw new Error('error');
-    //       },
-    //     })),
-    //   };
-    // });
-
-    // await setup();
-
     const newCollectionService = new CollectionsService(milvusService);
     const newSchedulerRegistry = new SchedulerRegistry([]);
     newCollectionService.getAllCollections = () => {

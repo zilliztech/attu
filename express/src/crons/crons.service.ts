@@ -47,7 +47,10 @@ export class CronsService {
         //   type: WS_EVENTS_TYPE.STOP,
         // });
         const cronJobEntity = this.schedulerRegistry.getCronJob(name);
-        cronJobEntity && cronJobEntity.stop();
+        if (cronJobEntity) {
+          cronJobEntity.stop();
+        }
+
         throw new Error(error);
       }
     };
