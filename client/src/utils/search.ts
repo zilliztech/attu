@@ -10,7 +10,7 @@ import {
   FieldOption,
   SearchResult,
   SearchResultView,
-} from '../pages/search/Types';
+} from '../types/SearchTypes';
 
 /**
  * Do not change  vector search result default sort  by ourself.
