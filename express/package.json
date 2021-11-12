@@ -82,6 +82,6 @@
     "watch": [
       "src"
     ],
-    "ext": "ts"
+    "ext": "ts yml"
   }
 }

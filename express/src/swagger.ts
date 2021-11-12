@@ -15,7 +15,7 @@ export const surveSwaggerSpecification = () => {
       },
       servers: [{ url: "/api/v1" }],
     },
-    apis: ["./src/**/*.ts"],
+    apis: ["./src/**/*.yml"],
   };
   const swaggerSpec = swaggerJsdoc(options);
 
