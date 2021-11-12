@@ -1,6 +1,7 @@
 export enum CodeEnum {
   success = 'Success',
   error = 'Error',
+  indexNoExist = 'IndexNotExist',
 }
 
 export type CodeStatus = {
@@ -13,6 +14,7 @@ export const ERR_NO_COLLECTION = 'collection name is invalid';
 export const ERR_NO_ADDRESS = 'no address';
 export const ERR_NO_PARAM = 'no valid param';
 export const ERR_NO_ALIAS = 'no valid alias';
+export const ERR_NO_INDEX = 'index not exist';
 
 // mock data
 export const mockAddress = '127.0.0.1';

@@ -244,7 +244,7 @@ describe('Test collections service', () => {
 
   test('test getIndexStatus method', async () => {
     const res = await service.getIndexStatus({ collection_name: 'c1' });
-    const { error_code, reason, ...data } = res;
+    const { status, ...data } = res;
     expect(data).toEqual({ collection_name: 'c1', state: 3 });
   });
 

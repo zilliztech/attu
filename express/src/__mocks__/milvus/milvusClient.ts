@@ -2,13 +2,17 @@ import {
   AlterAliasReq,
   CreateAliasReq,
   CreateCollectionReq,
+  CreateIndexReq,
   CreatePartitionReq,
   DescribeCollectionReq,
+  DescribeIndexReq,
   DropAliasReq,
   DropCollectionReq,
+  DropIndexReq,
   DropPartitionReq,
   FlushReq,
   GetCollectionStatisticsReq,
+  GetIndexBuildProgressReq,
   GetIndexStateReq,
   GetPartitionStatisticsReq,
   InsertReq,
@@ -26,6 +30,7 @@ import {
   ERR_NO_ADDRESS,
   ERR_NO_ALIAS,
   ERR_NO_COLLECTION,
+  ERR_NO_INDEX,
   ERR_NO_PARAM,
   mockCollectionNames,
   mockCollections,
@@ -217,12 +222,64 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
     indexManager: {
       getIndexState: (param: GetIndexStateReq) => {
         const { collection_name } = param;
+        if (!collection_name) {
+          return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
+        }
         const data =
           mockIndexState.find((i) => i.collection_name === collection_name) ||
           {};
         return {
-          ...mockStatusInfo(CodeEnum.success),
+          status: mockStatusInfo(CodeEnum.success),
           ...data,
+        };
+      },
+      createIndex: (param: CreateIndexReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION);
+        }
+
+        return {
+          ...mockStatusInfo(CodeEnum.success),
+          data: param,
+        };
+      },
+      describeIndex: (param: DescribeIndexReq) => {
+        const { collection_name, field_name } = param;
+        if (!collection_name) {
+          return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
+        }
+        if (!field_name) {
+          return {
+            status: mockStatusInfo(CodeEnum.indexNoExist, ERR_NO_INDEX),
+          };
+        }
+
+        return {
+          status: mockStatusInfo(CodeEnum.success),
+          data: param,
+        };
+      },
+      dropIndex: (param: DropIndexReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION);
+        }
+
+        return {
+          ...mockStatusInfo(CodeEnum.success),
+          data: param,
+        };
+      },
+      getIndexBuildProgress: (param: GetIndexBuildProgressReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
+        }
+
+        return {
+          status: mockStatusInfo(CodeEnum.success),
+          data: param,
         };
       },
     },
