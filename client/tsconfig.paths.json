@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "all_plugins/*": ["src/plugins"]
+      "all_plugins/*": ["src/plugins"],
+      "insight_src/*": ["src/*"]
     }
   }
 }

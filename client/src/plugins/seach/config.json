@@ -1,0 +1,13 @@
+{
+  "name": "search",
+  "version": "0.1.0",
+  "client": {
+    "path": "search",
+    "entry": "VectorSearch.tsx",
+    "label": "Vector Search",
+    "iconName": "navSearch",
+    "auth": true,
+    "iconActiveClass": "activeSearchIcon",
+    "iconNormalClass": "normalSearchIcon"
+  }
+}

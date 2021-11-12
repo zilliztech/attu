@@ -82,13 +82,13 @@ const Layout = (props: any) => {
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
     },
-    {
-      icon: icons.navSearch,
-      label: navTrans('search'),
-      onClick: () => history.push('/search'),
-      iconActiveClass: 'activeSearchIcon',
-      iconNormalClass: 'normalSearchIcon',
-    },
+    // {
+    //   icon: icons.navSearch,
+    //   label: navTrans('search'),
+    //   onClick: () => history.push('/search'),
+    //   iconActiveClass: 'activeSearchIcon',
+    //   iconNormalClass: 'normalSearchIcon',
+    // },
   ];
 
   function importAll(r: any, outOfRoot = false) {
