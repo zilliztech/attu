@@ -42,10 +42,12 @@ export class CronsService {
         return res;
       } catch (error) {
         // When user not connect milvus, stop cron
-        this.toggleCronJobByName({
-          name: WS_EVENTS.COLLECTION,
-          type: WS_EVENTS_TYPE.STOP,
-        });
+        // this.toggleCronJobByName({
+        //   name: WS_EVENTS.COLLECTION,
+        //   type: WS_EVENTS_TYPE.STOP,
+        // });
+        const cronJobEntity = this.schedulerRegistry.getCronJob(name);
+        cronJobEntity && cronJobEntity.stop();
         throw new Error(error);
       }
     };

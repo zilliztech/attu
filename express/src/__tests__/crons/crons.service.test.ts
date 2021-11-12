@@ -24,6 +24,9 @@ jest.mock('node-cron', () => {
 const mockCronFrequency = '30 00 * * *';
 const mockCronEverySec = '* * * * * *';
 const mockCb = jest.fn();
+const mockErrCb = jest.fn(() => {
+  throw new Error('error');
+});
 const mockName = 'j1';
 const mockSecName = 'everySec';
 
@@ -36,14 +39,18 @@ describe('test crons service', () => {
   const handleStartTask = jest.fn();
   const handleEndTask = jest.fn();
 
-  beforeAll(async () => {
-    // setup Milvus service and connect to mock Milvus client
+  const setup = async () => {
     milvusService = new MilvusService();
     await milvusService.connectMilvus(mockAddress);
     collectionService = new CollectionsService(milvusService);
 
     schedulerRegistry = new SchedulerRegistry([]);
     cronsService = new CronsService(collectionService, schedulerRegistry);
+  };
+
+  beforeAll(async () => {
+    // setup Milvus service and connect to mock Milvus client
+    await setup();
   });
 
   beforeEach(() => {
@@ -85,6 +92,13 @@ describe('test crons service', () => {
 
     schedulerRegistry.setCronJob(mockName, mockCronFrequency, () => mockCb());
     expect(handleEndTask).toBeCalled();
+
+    schedulerRegistry.setCronJob(mockName, mockCronFrequency, () =>
+      mockErrCb()
+    );
+    expect(() => {
+      mockErrCb();
+    }).toThrow();
   });
 
   test('test CronService related methods', async () => {
@@ -130,17 +144,30 @@ describe('test crons service', () => {
 
   test('test getCollections error', async () => {
     // reset setup to trigger error
-    cronsService = new CronsService(null, schedulerRegistry);
+    // jest.mock('../../collections/collections.service', () => {
+    //   return {
+    //     CollectionService: jest.fn().mockImplementation((milvusService) => ({
+    //       getAllCollections: () => {
+    //         throw new Error('error');
+    //       },
+    //     })),
+    //   };
+    // });
 
-    try {
-      await cronsService.toggleCronJobByName({
-        name: WS_EVENTS.COLLECTION,
-        type: WS_EVENTS_TYPE.START,
-      });
-    } catch (err) {
-      expect(err).toBeDefined();
-    }
+    // await setup();
 
+    const newCollectionService = new CollectionsService(milvusService);
+    const newSchedulerRegistry = new SchedulerRegistry([]);
+    newCollectionService.getAllCollections = () => {
+      throw new Error('error');
+    };
+
+    const newCronsService = new CronsService(
+      newCollectionService,
+      newSchedulerRegistry
+    );
+
+    await newCronsService.getCollections(WS_EVENTS.COLLECTION);
     expect(schedule).toBeCalledWith(mockCronEverySec, expect.any(Function));
   });
 });
