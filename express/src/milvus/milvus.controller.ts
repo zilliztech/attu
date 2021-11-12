@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { dtoValidationMiddleware } from "../middlewares/validation";
 import { MilvusService } from "./milvus.service";
-import { CheckMilvusDto, ConnectMilvusDto, FlushDto } from "./dto";
+import { ConnectMilvusDto, FlushDto } from "./dto";
 
 export class MilvusController {
   private router: Router;
@@ -23,11 +23,7 @@ export class MilvusController {
       this.connectMilvus.bind(this)
     );
 
-    this.router.get(
-      "/check",
-      dtoValidationMiddleware(CheckMilvusDto),
-      this.checkConnect.bind(this)
-    );
+    this.router.get("/check", this.checkConnect.bind(this));
 
     this.router.put(
       "/flush",
@@ -44,6 +40,7 @@ export class MilvusController {
     const address = req.body?.address;
     try {
       const result = await this.milvusService.connectMilvus(address);
+
       res.send(result);
     } catch (error) {
       next(error);
