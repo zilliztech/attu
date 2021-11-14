@@ -91,3 +91,8 @@ export interface InsertDataParam {
   // e.g. [{vector: [1,2,3], age: 10}]
   fields_data: any[];
 }
+
+export interface DeleteEntitiesReq {
+  expr: string;
+  partition_name?: string;
+}

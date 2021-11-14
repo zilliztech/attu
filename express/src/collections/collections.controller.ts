@@ -59,6 +59,8 @@ export class CollectionController {
       this.insert.bind(this)
     );
 
+    this.router.put("/:name/entities", this.deleteEntities.bind(this));
+
     this.router.post(
       "/:name/search",
       dtoValidationMiddleware(VectorSearchDto),
@@ -196,6 +198,20 @@ export class CollectionController {
     const data = req.body;
     try {
       const result = await this.collectionsService.insert({
+        collection_name: name,
+        ...data,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteEntities(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    const data = req.body;
+    try {
+      const result = await this.collectionsService.deleteEntities({
         collection_name: name,
         ...data,
       });
