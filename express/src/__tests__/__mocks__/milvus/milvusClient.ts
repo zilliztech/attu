@@ -24,7 +24,7 @@ import {
   ShowCollectionsReq,
   ShowPartitionsReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
-import { QueryDto } from '../../collections/dto';
+import { QueryDto } from '../../../collections/dto';
 import {
   CodeEnum,
   ERR_NO_ADDRESS,
@@ -32,13 +32,15 @@ import {
   ERR_NO_COLLECTION,
   ERR_NO_INDEX,
   ERR_NO_PARAM,
+} from '../../utils/constants';
+import { mockStatusInfo } from '../../utils/mock.util';
+import {
   mockCollectionNames,
   mockCollections,
   mockIndexState,
   mockLoadedCollections,
   mockPartition,
-} from '../../__tests__/utils/constants';
-import { mockStatusInfo } from '../../__tests__/utils/mock.util';
+} from '../consts';
 
 const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
   return {

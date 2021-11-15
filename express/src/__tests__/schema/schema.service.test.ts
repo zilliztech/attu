@@ -1,7 +1,8 @@
-import mockMilvusClient from '../../__mocks__/milvus/milvusClient';
+import mockMilvusClient from '../__mocks__/milvus/milvusClient';
 import { MilvusService } from '../../milvus/milvus.service';
-import { CodeEnum, ERR_NO_COLLECTION, mockAddress } from '../utils/constants';
+import { CodeEnum, ERR_NO_COLLECTION } from '../utils/constants';
 import { SchemaService } from '../../schema/schema.service';
+import { mockAddress } from '../__mocks__/consts';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {

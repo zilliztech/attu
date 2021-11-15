@@ -1,10 +1,10 @@
-import mockMilvusClient from '../../__mocks__/milvus/milvusClient';
+import mockMilvusClient from '../__mocks__/milvus/milvusClient';
 import { schedule } from 'node-cron';
 import { CollectionsService } from '../../collections/collections.service';
 import { CronsService, SchedulerRegistry } from '../../crons/crons.service';
 import { MilvusService } from '../../milvus/milvus.service';
-import { mockAddress } from '../utils/constants';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../utils/Const';
+import { mockAddress } from '../__mocks__/consts';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {

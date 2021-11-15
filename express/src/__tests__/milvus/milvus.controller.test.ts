@@ -3,13 +3,12 @@ import http from 'http';
 import supertest from 'supertest';
 import { TransformResMiddlerware } from '../../middlewares';
 import { router as connectRouter } from '../../milvus/index';
+import { mockAddress } from '../__mocks__/consts';
 
-import MilvusService from '../../__mocks__/milvus/milvus.service';
-import { mockAddress } from '../utils/constants';
-
+import MilvusService from '../__mocks__/milvus/milvusService';
 
 // mock Milvus client service
-jest.mock('../../__mocks__/milvus/milvus.service');
+jest.mock('../__mocks__/milvus/milvusService');
 
 describe('Test Milvus Module', () => {
   let app: any;

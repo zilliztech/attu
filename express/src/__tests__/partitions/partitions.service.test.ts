@@ -1,12 +1,12 @@
-import mockMilvusClient from '../../__mocks__/milvus/milvusClient';
+import mockMilvusClient from '../__mocks__/milvus/milvusClient';
 import { MilvusService } from '../../milvus/milvus.service';
+import { ERR_NO_COLLECTION } from '../utils/constants';
+import { PartitionsService } from '../../partitions/partitions.service';
 import {
-  ERR_NO_COLLECTION,
   mockAddress,
   mockGetPartitionsInfoData,
   mockPartition,
-} from '../utils/constants';
-import { PartitionsService } from '../../partitions/partitions.service';
+} from '../__mocks__/consts';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {

@@ -1,17 +1,19 @@
-import mockMilvusClient from '../../__mocks__/milvus/milvusClient';
+import mockMilvusClient from '../__mocks__/milvus/milvusClient';
 import { CollectionsService } from '../../collections/collections.service';
 import { MilvusService } from '../../milvus/milvus.service';
 import {
   ERR_NO_ALIAS,
   ERR_NO_COLLECTION,
   ERR_NO_PARAM,
+} from '../utils/constants';
+import {
   mockAddress,
   mockCollectionNames,
   mockCollections,
   mockGetAllCollectionsData,
   mockLoadedCollections,
   mockLoadedCollectionsData,
-} from '../utils/constants';
+} from '../__mocks__/consts';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {
