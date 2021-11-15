@@ -19,7 +19,7 @@ export class CronsService {
           return this.getCollections(WS_EVENTS.COLLECTION);
         }
         if (!cronJobEntity) {
-          throw new Error('No existed job entity');
+          return;
         }
         return Number(type) === WS_EVENTS_TYPE.STOP
           ? cronJobEntity.stop()
@@ -42,10 +42,6 @@ export class CronsService {
         return res;
       } catch (error) {
         // When user not connect milvus, stop cron
-        // this.toggleCronJobByName({
-        //   name: WS_EVENTS.COLLECTION,
-        //   type: WS_EVENTS_TYPE.STOP,
-        // });
         const cronJobEntity = this.schedulerRegistry.getCronJob(name);
         if (cronJobEntity) {
           cronJobEntity.stop();
