@@ -1,16 +1,21 @@
-import { FC, useEffect, useState, useRef, useMemo } from 'react';
+import { FC, useEffect, useState, useRef, useMemo, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { rootContext } from '../../context/Root';
 
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
 import MilvusGrid from '../../components/grid/Grid';
+import { ToolBarConfig } from '../../components/grid/Types';
 import { getQueryStyles } from './Styles';
 import Filter from '../../components/advancedSearch';
 import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { usePaginationHook } from '../../hooks/Pagination';
 import CopyButton from '../../components/advancedSearch/CopyButton';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import CustomToolBar from '../../components/grid/ToolBar';
 
 const Query: FC<{
   collectionName: string;
@@ -19,10 +24,16 @@ const Query: FC<{
   const [expression, setExpression] = useState('');
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
+  const [selectedDatas, setSelectedDatas] = useState<any[]>([]);
+  const [primaryKey, setPrimaryKey] = useState<string>('');
 
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
   const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
 
+  const { t: dialogTrans } = useTranslation('dialog');
+  const { t: successTrans } = useTranslation('success');
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -80,10 +91,13 @@ const Query: FC<{
 
   const getFields = async (collectionName: string) => {
     const schemaList = await FieldHttp.getFields(collectionName);
-    const nameList = schemaList.map(i => ({
-      name: i.name,
-      type: i.data_type.includes('Int') ? 'int' : 'float',
+    const nameList = schemaList.map(v => ({
+      name: v.name,
+      type: v.data_type.includes('Int') ? 'int' : 'float',
     }));
+    const primaryKey =
+      schemaList.find(v => v._isPrimaryKey === true)?._fieldName || '';
+    setPrimaryKey(primaryKey);
     setFields(nameList);
   };
 
@@ -101,10 +115,12 @@ const Query: FC<{
     setTableLoading(null);
     setQueryResult(null);
   };
+
   const handleFilterSubmit = (expression: string) => {
     setExpression(expression);
     setQueryResult(null);
   };
+
   const handleQuery = async () => {
     setTableLoading(true);
     try {
@@ -121,13 +137,55 @@ const Query: FC<{
     }
   };
 
+  const handleSelectChange = (value: any) => {
+    setSelectedDatas(value);
+  };
+
+  const handleDelete = async () => {
+    await CollectionHttp.deleteEntities(collectionName, {
+      expr: `${primaryKey} in [${selectedDatas.map(v => v.id).join(',')}]`,
+    });
+    handleCloseDialog();
+    openSnackBar(successTrans('delete', { name: collectionTrans('entites') }));
+    handleQuery();
+  };
+
+  const toolbarConfigs: ToolBarConfig[] = [
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('delete')}
+                title={dialogTrans('deleteTitle', {
+                  type: collectionTrans('entites'),
+                })}
+                text={collectionTrans('deleteDataWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
+      },
+      label: collectionTrans('delete'),
+      icon: 'delete',
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('deleteTooltip'),
+      disabled: () => selectedDatas.length === 0,
+    },
+  ];
+
   return (
     <div className={classes.root}>
+      <CustomToolBar toolbarConfigs={toolbarConfigs} />
+
       <div className={classes.toolbar}>
         <div className="left">
-          <div>{`${
-            expression || collectionTrans('exprPlaceHolder')
-          }`}</div>
+          <div>{`${expression || collectionTrans('exprPlaceHolder')}`}</div>
           <Filter
             ref={filterRef}
             title="Advanced Filter"
@@ -162,10 +220,12 @@ const Query: FC<{
             label: i.name,
           }))}
           primaryKey={fields.find(i => i.is_primary_key)?.name}
-          openCheckBox={false}
+          openCheckBox={true}
           isLoading={!!tableLoading}
           rows={result}
           rowCount={total}
+          selected={selectedDatas}
+          setSelected={handleSelectChange}
           page={currentPage}
           onChangePage={handlePageChange}
           rowsPerPage={pageSize}
