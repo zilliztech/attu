@@ -59,6 +59,7 @@ export class CollectionController {
       this.insert.bind(this)
     );
 
+    // we need use req.body, so we can't use delete here
     this.router.put("/:name/entities", this.deleteEntities.bind(this));
 
     this.router.post(
