@@ -5,7 +5,7 @@ import {
   InsertDataParam,
 } from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
-import { VectorSearchParam } from '../pages/seach/Types';
+import { VectorSearchParam } from '../types/SearchTypes';
 import { QueryParam } from '../pages/query/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';

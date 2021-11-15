@@ -2,7 +2,7 @@ import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
 import Overview from '../pages/overview/Overview';
-import VectorSearch from '../pages/seach/VectorSearch';
+// import VectorSearch from '../pages/seach/VectorSearch';
 import { RouterConfigType } from './Types';
 import loadable from '@loadable/component';
 
@@ -29,11 +29,11 @@ const RouterConfig: RouterConfigType[] = [
     component: Collection,
     auth: true,
   },
-  {
-    path: '/search',
-    component: VectorSearch,
-    auth: true,
-  },
+  // {
+  //   path: '/search',
+  //   component: VectorSearch,
+  //   auth: true,
+  // },
 ];
 
 function importAll(r: any, outOfRoot = false) {

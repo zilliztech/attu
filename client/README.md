@@ -16,7 +16,8 @@
       ├── hooks                   # React hooks
       ├── http                    # Http request api. And we have http interceptor in GlobalEffect.tsx file
       ├── i18n                    # Language i18n
-      ├── pages                   # All pages , business components and types.
+      ├── pages                   # All pages, business components and types.
+      ├── plugins                 # All import plugins.
       ├── router                  # React router, control the page auth.
       ├── styles                  # Styles, normally we use material to control styles.
       ├── types                   # Global types
@@ -60,6 +61,14 @@ Like utils / consts / utils / hooks , we dont want put all functions or datas in
 
 So when we need to create new file , treat the file like Class then name it.
 
+### Plugins Folder
+
+You can deploy any plugin developed by [template](https://github.com/zilliztech/insight-plugin-template). All client plugins should be placed at `src/plugins` folder. We have transferred `System View` and `Vector Search` to plugins. For more plugins development details please refer to [template repo](https://github.com/zilliztech/insight-plugin-template).
+
+### Alias Map
+
+As `react-app-rewire-alias` in `config-overrides.js`, we can use alias import. `insight_src/` is equal to `client/src` .
+
 ### Icon
 
 We put all icons in components/icons file. Normally we use material icon.
@@ -74,4 +83,4 @@ We use react-app-rewired to change webpack config.
 
 If we want to change the webpack config, we can edit config-overrides.js file.
 
-And we use milvus insight server to host our client site. So our build path is `../server/build` .
+Our build path is `./build`. And we use milvus insight server to host our client site.

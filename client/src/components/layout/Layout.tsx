@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { IconsType } from '../icons/Types';
+import loadable from '@loadable/component';
 
 const PLUGIN_DEV = process.env?.REACT_APP_PLUGIN_DEV;
 
@@ -81,16 +82,16 @@ const Layout = (props: any) => {
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
     },
-    {
-      icon: icons.navSearch,
-      label: navTrans('search'),
-      onClick: () => history.push('/search'),
-      iconActiveClass: 'activeSearchIcon',
-      iconNormalClass: 'normalSearchIcon',
-    },
+    // {
+    //   icon: icons.navSearch,
+    //   label: navTrans('search'),
+    //   onClick: () => history.push('/search'),
+    //   iconActiveClass: 'activeSearchIcon',
+    //   iconNormalClass: 'normalSearchIcon',
+    // },
   ];
 
-  function importAll(r: any) {
+  function importAll(r: any, outOfRoot = false) {
     r.keys().forEach((key: any) => {
       const content = r(key);
       const pathName = content.client?.path;
@@ -101,9 +102,16 @@ const Layout = (props: any) => {
       };
       result.onClick = () => history.push(`${pathName}`);
       const iconName: IconsType = content.client?.iconName;
+      const iconEntry = content.client?.icon;
+      const dirName = key.split('/config.json').shift().split('/')[1];
+      // const fileEntry = content.client?.entry;
       if (iconName) {
-        // TODO: support custom icon
         result.icon = icons[iconName];
+      } else if (iconEntry) {
+        const customIcon = outOfRoot
+          ? loadable(() => import(`all_plugins/${dirName}/client/${iconEntry}`))
+          : loadable(() => import(`../../plugins/${dirName}/${iconEntry}`));
+        result.icon = customIcon;
       }
       content.client?.iconActiveClass &&
         (result.iconActiveClass = content.client?.iconActiveClass);
@@ -114,7 +122,7 @@ const Layout = (props: any) => {
   }
   importAll(require.context('../../plugins', true, /config\.json$/));
   PLUGIN_DEV &&
-    importAll(require.context('all_plugins/', true, /config\.json$/));
+    importAll(require.context('all_plugins/', true, /config\.json$/), true);
 
   return (
     <div className={classes.root}>

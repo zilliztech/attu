@@ -6,12 +6,15 @@ import { ALL_ROUTER_TYPES, NavInfo } from '../router/Types';
 export const useNavigationHook = (
   type: ALL_ROUTER_TYPES,
   extraParam?: {
-    collectionName: string;
+    collectionName?: string;
+    title?: string;
   }
 ) => {
   const { t: navTrans } = useTranslation('nav');
   const { setNavInfo } = useContext(navContext);
-  const { collectionName } = extraParam || { collectionName: '' };
+  const { collectionName = '', title = 'PLUGIN TITLE' } = extraParam || {
+    collectionName: '',
+  };
 
   useEffect(() => {
     switch (type) {
@@ -55,8 +58,16 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
+      case ALL_ROUTER_TYPES.PLUGIN: {
+        const navInfo: NavInfo = {
+          navTitle: title,
+          backPath: '',
+        };
+        setNavInfo(navInfo);
+        break;
+      }
       default:
         break;
     }
-  }, [type, navTrans, setNavInfo, collectionName]);
+  }, [type, navTrans, setNavInfo, collectionName, title]);
 };

@@ -1,7 +1,7 @@
-import { Option } from '../../components/customSelector/Types';
-import { searchKeywordsType } from '../../consts/Milvus';
-import { DataType, DataTypeEnum } from '../collections/Types';
-import { IndexView } from '../schema/Types';
+import { Option } from '../components/customSelector/Types';
+import { searchKeywordsType } from '../consts/Milvus';
+import { DataType, DataTypeEnum } from '../pages/collections/Types';
+import { IndexView } from '../pages/schema/Types';
 
 export interface SearchParamsProps {
   // if user created index, pass metric type choosed when creating
