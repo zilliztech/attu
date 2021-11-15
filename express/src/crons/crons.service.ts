@@ -1,7 +1,7 @@
-import { CollectionsService } from "../collections/collections.service";
-import { WS_EVENTS, WS_EVENTS_TYPE } from "../utils/Const";
-import { schedule, ScheduledTask } from "node-cron";
-import { pubSub } from "../events";
+import { CollectionsService } from '../collections/collections.service';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '../utils/Const';
+import { schedule, ScheduledTask } from 'node-cron';
+import { pubSub } from '../events';
 
 export class CronsService {
   constructor(
@@ -11,13 +11,22 @@ export class CronsService {
 
   async toggleCronJobByName(data: { name: string; type: WS_EVENTS_TYPE }) {
     const { name, type } = data;
-    const cronJobEntity = this.schedulerRegistry.getCronJob(name);
-    if (!cronJobEntity && Number(type) === WS_EVENTS_TYPE.START) {
-      return this.getCollections(WS_EVENTS.COLLECTION);
+
+    switch (name) {
+      case WS_EVENTS.COLLECTION:
+        const cronJobEntity = this.schedulerRegistry.getCronJob(name);
+        if (!cronJobEntity && Number(type) === WS_EVENTS_TYPE.START) {
+          return this.getCollections(WS_EVENTS.COLLECTION);
+        }
+        if (!cronJobEntity) {
+          return;
+        }
+        return Number(type) === WS_EVENTS_TYPE.STOP
+          ? cronJobEntity.stop()
+          : cronJobEntity.start();
+      default:
+        throw new Error('Unsupported event type');
     }
-    return Number(type) === WS_EVENTS_TYPE.STOP
-      ? cronJobEntity.stop()
-      : cronJobEntity.start();
   }
 
   async getCollections(name: string) {
@@ -26,17 +35,18 @@ export class CronsService {
         const res = await this.collectionService.getAllCollections();
         // TODO
         // this.eventService.server.emit("COLLECTION", res);
-        pubSub.emit("ws_pubsub", {
-          event: WS_EVENTS.COLLECTION + "",
+        pubSub.emit('ws_pubsub', {
+          event: WS_EVENTS.COLLECTION + '',
           data: res,
         });
         return res;
       } catch (error) {
         // When user not connect milvus, stop cron
-        this.toggleCronJobByName({
-          name: WS_EVENTS.COLLECTION,
-          type: WS_EVENTS_TYPE.STOP,
-        });
+        const cronJobEntity = this.schedulerRegistry.getCronJob(name);
+        if (cronJobEntity) {
+          cronJobEntity.stop();
+        }
+
         throw new Error(error);
       }
     };
@@ -54,7 +64,7 @@ export class SchedulerRegistry {
 
   setCronJobEverySecond(name: string, func: () => {}) {
     // The cron job will run every second
-    this.setCronJob(name, "* * * * * *", func);
+    this.setCronJob(name, '* * * * * *', func);
   }
 
   // ┌────────────── second (optional)

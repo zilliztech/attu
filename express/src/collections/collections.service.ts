@@ -1,4 +1,4 @@
-import { MilvusService } from "../milvus/milvus.service";
+import { MilvusService } from '../milvus/milvus.service';
 import {
   CreateCollectionReq,
   DescribeCollectionReq,
@@ -9,19 +9,19 @@ import {
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
   SearchReq,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types";
-import { throwErrorFromSDK } from "../utils/Error";
-import { findKeyValue } from "../utils/Helper";
-import { ROW_COUNT } from "../utils/Const";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+import { throwErrorFromSDK } from '../utils/Error';
+import { findKeyValue } from '../utils/Helper';
+import { ROW_COUNT } from '../utils/Const';
 import {
   AlterAliasReq,
   CreateAliasReq,
   DropAliasReq,
   ShowCollectionsReq,
   ShowCollectionsType,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
-import { QueryDto } from "./dto";
-import { DeleteEntitiesReq } from "@zilliz/milvus2-sdk-node/dist/milvus/types/Data";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
+import { QueryDto } from './dto';
+import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
 
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -88,6 +88,7 @@ export class CollectionsService {
 
   async deleteEntities(data: DeleteEntitiesReq) {
     const res = await this.dataManager.deleteEntities(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 
@@ -150,7 +151,6 @@ export class CollectionsService {
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { name } = item;
-
         const collectionInfo = await this.describeCollection({
           collection_name: name,
         });
@@ -172,7 +172,7 @@ export class CollectionsService {
         );
 
         const loadedPercentage = !loadCollection
-          ? "-1"
+          ? '-1'
           : loadCollection.loadedPercentage;
 
         data.push({

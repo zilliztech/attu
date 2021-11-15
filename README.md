@@ -1,4 +1,5 @@
 # Milvus insight
+
 [![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
 [![downloads](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)
 
