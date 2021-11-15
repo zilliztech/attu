@@ -24,6 +24,7 @@ import {
   ShowCollectionsReq,
   ShowPartitionsReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
 import { QueryDto } from '../../../collections/dto';
 import {
   CodeEnum,
@@ -330,6 +331,16 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
           return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
         }
 
+        return {
+          status: mockStatusInfo(CodeEnum.success),
+          data: param,
+        };
+      },
+      deleteEntities: (param: DeleteEntitiesReq) => {
+        const { collection_name } = param;
+        if (!collection_name) {
+          return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
+        }
         return {
           status: mockStatusInfo(CodeEnum.success),
           data: param,

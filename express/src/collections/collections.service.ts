@@ -88,6 +88,7 @@ export class CollectionsService {
 
   async deleteEntities(data: DeleteEntitiesReq) {
     const res = await this.dataManager.deleteEntities(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 

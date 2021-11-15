@@ -283,4 +283,20 @@ describe('Test collections service', () => {
       },
     ]);
   });
+
+  test('test deleteEntities method', async () => {
+    const mockParam = {
+      collection_name: 'c1',
+      expr: 'age > 7',
+    };
+
+    const res = await service.deleteEntities(mockParam);
+    expect(res.data).toEqual(mockParam);
+
+    try {
+      await service.deleteEntities({ collection_name: '', expr: '' });
+    } catch (err) {
+      expect(err).toBe(ERR_NO_COLLECTION);
+    }
+  });
 });
