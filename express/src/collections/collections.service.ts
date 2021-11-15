@@ -21,6 +21,7 @@ import {
   ShowCollectionsType,
 } from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
 import { QueryDto } from "./dto";
+import { DeleteEntitiesReq } from "@zilliz/milvus2-sdk-node/dist/milvus/types/Data";
 
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -82,6 +83,11 @@ export class CollectionsService {
   async insert(data: InsertReq) {
     const res = await this.dataManager.insert(data);
     throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async deleteEntities(data: DeleteEntitiesReq) {
+    const res = await this.dataManager.deleteEntities(data);
     return res;
   }
 
