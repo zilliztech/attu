@@ -83,7 +83,7 @@ export class SchedulerRegistry {
       target?.entity?.stop();
     } else {
       const task = schedule(scheduler, () => {
-        console.log(`${name}: running a task every seconds`);
+        console.log(`[Scheduler:${scheduler}] ${name}: running a task.`);
         func();
       });
       this.cronJobList.push({

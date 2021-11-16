@@ -100,7 +100,7 @@ const Layout = (props: any) => {
         icon: icons.navOverview,
         label: content.client?.label || 'PLGUIN',
       };
-      result.onClick = () => history.push(`${pathName}`);
+      result.onClick = () => history.push(`/${pathName}`);
       const iconName: IconsType = content.client?.iconName;
       const iconEntry = content.client?.icon;
       const dirName = key.split('/config.json').shift().split('/')[1];
