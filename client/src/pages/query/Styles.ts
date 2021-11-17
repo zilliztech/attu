@@ -24,10 +24,19 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: 'calc(100% - 206px)',
+      flex: 1,
       padding: theme.spacing(0, 0, 0, 2),
       fontSize: theme.spacing(2),
       backgroundColor: '#F9F9F9',
+
+      '& .expression': {
+        display: 'flex',
+        justifyContent: 'space-between',
+        flex: 1,
+        alignItems: 'center',
+        padding: theme.spacing(0, 1.5),
+        backgroundColor: '#F9F9F9',
+      },
     },
 
     '& .right': {
