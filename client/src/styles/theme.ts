@@ -2,7 +2,15 @@ import {
   // for strict mode
   unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core/styles';
+import { MuiPickersOverrides } from '@material-ui/pickers/typings/overrides';
 
+type overridesNameToClassKey = {
+  [P in keyof MuiPickersOverrides]: keyof MuiPickersOverrides[P];
+};
+
+declare module '@material-ui/core/styles/overrides' {
+  export interface ComponentNameToClassKey extends overridesNameToClassKey {}
+}
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     milvusBlue: Palette['primary'];
@@ -170,6 +178,59 @@ export const theme = createMuiTheme({
         '&:hover': {
           backgroundColor: '#f9f9f9',
         },
+      },
+    },
+
+    // Date time picker theme overrides
+    MuiPickersToolbar: {
+      toolbar: {
+        '& .MuiTypography-h3': {
+          fontSize: '3rem',
+          lineHeight: 1.04,
+        },
+        '& .MuiTypography-h4': {
+          fontSize: '1.5rem',
+          lineHeight: 1.17,
+        },
+      },
+    },
+    MuiPickerDTTabs: {
+      tabs: {
+        backgroundColor: '#fff',
+        '& .MuiTabs-indicator': {
+          backgroundColor: commonThemes.palette.primary.main,
+        },
+      },
+    },
+    MuiPickersCalendarHeader: {
+      switchHeader: {
+        '& .MuiTypography-body1': {
+          fontSize: '0.85rem',
+        },
+      },
+      daysHeader: {
+        '& .MuiTypography-caption': {
+          fontSize: '0.85rem',
+        },
+      },
+    },
+
+    MuiPickersDay: {
+      day: {
+        '& .MuiTypography-body2': {
+          fontSize: '0.85rem',
+        },
+      },
+      daySelected: {
+        backgroundColor: commonThemes.palette.primary.main,
+        color: '#fff',
+      },
+      dayDisabled: {},
+      current: {},
+    },
+    MuiPickersModal: {
+      dialogAction: {
+        color: commonThemes.palette.primary.main,
       },
     },
   },
