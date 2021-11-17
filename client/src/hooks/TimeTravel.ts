@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { formatUtcToMilvus } from 'insight_src/utils/Format';
+import { formatUtcToMilvus } from '../utils/Format';
 import { useMemo, useState } from 'react';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useTranslation } from 'react-i18next';
