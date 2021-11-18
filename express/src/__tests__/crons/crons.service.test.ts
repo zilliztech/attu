@@ -72,9 +72,7 @@ describe('test crons service', () => {
   });
 
   test('test SchedulerRegistry related methods', async () => {
-    const logSpy = jest.spyOn(console, 'log');
     schedulerRegistry.setCronJob(mockName, mockCronFrequency, () => mockCb());
-    expect(logSpy).toBeCalledWith(`${mockName}: running a task every seconds`);
     expect(mockCb).toBeCalledTimes(1);
     expect(schedule).toBeCalledWith(mockCronFrequency, expect.any(Function));
 
