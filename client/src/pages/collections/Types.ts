@@ -32,6 +32,7 @@ export interface CollectionCreateParam {
 }
 
 export enum DataTypeEnum {
+  Bool = 1,
   Int8 = 2,
   Int16 = 3,
   Int32 = 4,
@@ -43,6 +44,7 @@ export enum DataTypeEnum {
 }
 
 export type DataType =
+  | 'Bool'
   | 'Int8'
   | 'Int16'
   | 'Int32'

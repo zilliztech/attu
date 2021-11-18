@@ -21,11 +21,19 @@ import {
 export const transferSearchResult = (
   result: SearchResult[]
 ): SearchResultView[] => {
-  const resultView = result.map((r, index) => ({
-    rank: index + 1,
-    ...r,
-    distance: r.score,
-  }));
+  const resultView = result.map((r, index) => {
+    const { rank, distance, ...others } = r;
+    const data: any = {
+      rank: index + 1,
+      distance: r.score,
+    };
+    // When value is boolean ,table will not render bool value.
+    // So we need to use toString() here.
+    Object.keys(others).forEach(v => {
+      data[v] = others[v].toString();
+    });
+    return data;
+  });
 
   return resultView;
 };
@@ -104,6 +112,10 @@ export const getNonVectorFieldsForFilter = (fields: FieldData[]): Field[] => {
   const intTypes: DataType[] = ['Int8', 'Int16', 'Int32', 'Int64'];
   return fields.map(f => ({
     name: f._fieldName,
-    type: intTypes.includes(f._fieldType) ? 'int' : 'float',
+    type: intTypes.includes(f._fieldType)
+      ? 'int'
+      : f._fieldType === 'Bool'
+      ? 'bool'
+      : 'float',
   }));
 };
