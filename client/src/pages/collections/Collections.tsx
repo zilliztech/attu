@@ -36,7 +36,7 @@ import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { checkIndexBuilding, checkLoading } from '../../utils/Validation';
-import CreateAlias from './CreateAlias';
+// import CreateAlias from './CreateAlias';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
