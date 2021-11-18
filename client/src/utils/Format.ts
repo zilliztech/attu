@@ -144,7 +144,11 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 export const formatAddress = (address: string): string => address.trim();
 
 // generate a sting like 20.22/98.33MB with proper unit
-export const getByteString = (value1: number, value2: number, capacityTrans: { [key in string]: string }) => {
+export const getByteString = (
+  value1: number,
+  value2: number,
+  capacityTrans: { [key in string]: string }
+) => {
   if (!value1 || !value2) return `0${capacityTrans.b}`;
   const power = Math.round(Math.log(value1) / Math.log(1024));
   let unit = '';
@@ -168,8 +172,18 @@ export const getByteString = (value1: number, value2: number, capacityTrans: { [
       unit = capacityTrans.b;
       break;
   }
-  const byteValue1 = value1 / (1024 ** power);
-  const byteValue2 = value2 / (1024 ** power);
+  const byteValue1 = value1 / 1024 ** power;
+  const byteValue2 = value2 / 1024 ** power;
 
-  return `${(byteValue1).toFixed(2)}/${(byteValue2).toFixed(2)} ${unit}`;
-}
+  return `${byteValue1.toFixed(2)}/${byteValue2.toFixed(2)} ${unit}`;
+};
+
+/**
+ * When number is larger than js max number, transform to string by BigInt.
+ * @param bigNumber
+ * @returns
+ */
+export const formatUtcToMilvus = (bigNumber: number) => {
+  const milvusTimeStamp = BigInt(bigNumber) << BigInt(18);
+  return milvusTimeStamp.toString();
+};

@@ -33,4 +33,5 @@ export type IconsType =
   | 'refresh'
   | 'filter'
   | 'copyExpression'
-  | 'alias';
+  | 'alias'
+  | 'datePicker';

@@ -13,9 +13,12 @@ import Filter from '../../components/advancedSearch';
 import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { usePaginationHook } from '../../hooks/Pagination';
+// import { useTimeTravelHook } from '../../hooks/TimeTravel';
+
 import CopyButton from '../../components/advancedSearch/CopyButton';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '../../components/grid/ToolBar';
+// import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 
 const Query: FC<{
   collectionName: string;
@@ -41,6 +44,9 @@ const Query: FC<{
   const copyTrans = commonTrans('copy');
 
   const classes = getQueryStyles();
+
+  // const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
+  //   useTimeTravelHook();
 
   // Format result list
   const queryResultMemo = useMemo(
@@ -127,6 +133,7 @@ const Query: FC<{
       const res = await CollectionHttp.queryData(collectionName, {
         expr: expression,
         output_fields: fields.map(i => i.name),
+        // travel_timestamp: timeTravelInfo.timestamp,
       });
       const result = res.data;
       setQueryResult(result);
@@ -185,6 +192,7 @@ const Query: FC<{
 
       <div className={classes.toolbar}>
         <div className="left">
+          {/* <div className="expression"> */}
           <div>{`${expression || collectionTrans('exprPlaceHolder')}`}</div>
           <Filter
             ref={filterRef}
@@ -195,6 +203,14 @@ const Query: FC<{
             showTitle={false}
             showTooltip={false}
           />
+          {/* </div> */}
+
+          {/* <CustomDatePicker
+            label={timeTravelInfo.label}
+            onChange={handleDateTimeChange}
+            date={timeTravel}
+            setDate={setTimeTravel}
+          /> */}
         </div>
         <div className="right">
           <CustomButton className="btn" onClick={handleFilterReset}>

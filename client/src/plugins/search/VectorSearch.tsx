@@ -16,7 +16,10 @@ import SimpleMenu from '../../components/menu/SimpleMenu';
 import { TOP_K_OPTIONS } from './Constants';
 import { Option } from '../../components/customSelector/Types';
 import { CollectionHttp } from '../../http/Collection';
-import { CollectionData, DataTypeEnum } from 'insight_src/pages/collections/Types';
+import {
+  CollectionData,
+  DataTypeEnum,
+} from 'insight_src/pages/collections/Types';
 import { IndexHttp } from '../../http/Index';
 import { getVectorSearchStyles } from './Styles';
 import { parseValue } from '../../utils/Insert';
@@ -33,6 +36,8 @@ import Filter from '../../components/advancedSearch';
 import { Field } from '../../components/advancedSearch/Types';
 import { useLocation } from 'react-router-dom';
 import { parseLocationSearch } from '../../utils/Format';
+import { CustomDatePicker } from 'insight_src/components/customDatePicker/CustomDatePicker';
+import { useTimeTravelHook } from 'insight_src/hooks/TimeTravel';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -51,6 +56,7 @@ const VectorSearch = () => {
   // fields for advanced filter
   const [filterFields, setFilterFields] = useState<Field[]>([]);
   const [selectedField, setSelectedField] = useState<string>('');
+
   // search params form
   const [searchParam, setSearchParam] = useState<{ [key in string]: number }>(
     {}
@@ -77,6 +83,9 @@ const VectorSearch = () => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResult || []);
+
+  const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
+    useTimeTravelHook();
 
   const collectionOptions: Option[] = useMemo(
     () =>
@@ -282,7 +291,9 @@ const VectorSearch = () => {
     setSearchResult(null);
     setFilterFields([]);
     setExpression('');
+    setTimeTravel(null);
   };
+
   const handleSearch = async (topK: number, expr = expression) => {
     const searhParamPairs = {
       params: JSON.stringify(searchParam),
@@ -298,6 +309,7 @@ const VectorSearch = () => {
       search_params: searhParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
+      travel_timestamp: timeTravelInfo.timestamp,
     };
 
     setTableLoading(true);
@@ -456,6 +468,12 @@ const VectorSearch = () => {
             fields={filterFields}
             filterDisabled={selectedField === '' || selectedCollection === ''}
             onSubmit={handleAdvancedFilterChange}
+          />
+          <CustomDatePicker
+            label={timeTravelInfo.label}
+            onChange={handleDateTimeChange}
+            date={timeTravel}
+            setDate={setTimeTravel}
           />
         </div>
         <div className="right">

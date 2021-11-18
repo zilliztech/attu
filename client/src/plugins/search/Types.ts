@@ -61,6 +61,7 @@ export interface VectorSearchParam {
   vectors: any;
   output_fields: string[];
   vector_type: number | DataTypeEnum;
+  travel_timestamp?: string;
 }
 
 export interface SearchResult {
