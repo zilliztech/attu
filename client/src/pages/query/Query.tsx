@@ -19,6 +19,8 @@ import CopyButton from '../../components/advancedSearch/CopyButton';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '../../components/grid/ToolBar';
 // import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
+import { saveAs } from 'file-saver';
+import { generateCsvData } from '../../utils/Format';
 
 const Query: FC<{
   collectionName: string;
@@ -78,6 +80,14 @@ const Query: FC<{
       }),
     [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
   );
+
+  const csvDataMemo = useMemo(() => {
+    const headers = fields?.map(i => i.name);
+    if (headers && queryResult) {
+      return generateCsvData(headers, queryResult);
+    }
+    return '';
+  }, [fields, queryResult]);
 
   const {
     pageSize,
@@ -184,12 +194,25 @@ const Query: FC<{
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: () => selectedDatas.length === 0,
     },
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        const csvData = new Blob([csvDataMemo.toString()], {
+          type: 'text/csv;charset=utf-8',
+        });
+        saveAs(csvData, 'query_result.csv');
+      },
+      label: collectionTrans('delete'),
+      icon: 'download',
+      tooltip: collectionTrans('download'),
+      disabledTooltip: collectionTrans('downloadTooltip'),
+      disabled: () => !queryResult?.length,
+    },
   ];
 
   return (
     <div className={classes.root}>
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
-
       <div className={classes.toolbar}>
         <div className="left">
           {/* <div className="expression"> */}

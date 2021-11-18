@@ -187,3 +187,31 @@ export const formatUtcToMilvus = (bigNumber: number) => {
   const milvusTimeStamp = BigInt(bigNumber) << BigInt(18);
   return milvusTimeStamp.toString();
 };
+
+/**
+ * Convert headers and rows to csv string.
+ * @param headers csv headers: string[]
+ * @param rows csv data rows: {[key in headers]: any}[]
+ * @returns csv string
+ */
+export const generateCsvData = (headers: string[], rows: any[]) => {
+  const rowsData = rows.reduce((prev, item: any[]) => {
+    headers.forEach((colName: any, idx: number) => {
+      const val = item[colName];
+      if (typeof val === 'string') {
+        prev += val;
+      } else if (typeof val === 'object') {
+        prev += `"[${val}]"`;
+      } else {
+        prev += `${val}`;
+      }
+      if (idx === headers.length - 1) {
+        prev += '\n';
+      } else {
+        prev += ',';
+      }
+    });
+    return prev;
+  }, '');
+  return headers.join(',') + '\n' + rowsData;
+};

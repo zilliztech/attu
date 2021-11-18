@@ -10,6 +10,8 @@ const collectionTrans = {
   deleteTooltip: 'Please select at least one item to delete.',
   alias: 'alias',
   aliasTooltip: 'Please select one collection to create alias',
+  download: 'Download',
+  downloadTooltip: 'Download all query results',
 
   collection: 'Collection',
   entites: 'entites',

@@ -34,4 +34,5 @@ export type IconsType =
   | 'filter'
   | 'copyExpression'
   | 'alias'
-  | 'datePicker';
+  | 'datePicker'
+  | 'download';
