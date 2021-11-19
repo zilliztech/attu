@@ -112,18 +112,8 @@ export const getVectorFieldOptions = (
 };
 
 export const getNonVectorFieldsForFilter = (fields: FieldData[]): Field[] => {
-  const intTypes: DataTypeStringEnum[] = [
-    DataTypeStringEnum.Int8,
-    DataTypeStringEnum.Int16,
-    DataTypeStringEnum.Int32,
-    DataTypeStringEnum.Int64,
-  ];
   return fields.map(f => ({
     name: f._fieldName,
-    type: intTypes.includes(f._fieldType)
-      ? 'int'
-      : f._fieldType === 'Bool'
-      ? 'bool'
-      : 'float',
+    type: f._fieldType,
   }));
 };

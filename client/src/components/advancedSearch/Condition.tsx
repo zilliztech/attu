@@ -10,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { ConditionProps, Field } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS } from '../../consts/Util';
+import { DataTypeStringEnum } from '../../pages/collections/Types';
 
 const Condition: FC<ConditionProps> = props => {
   const {
@@ -48,17 +49,23 @@ const Condition: FC<ConditionProps> = props => {
     const conditionValueWithNoSpace = conditionValue.replaceAll(' ', '');
 
     switch (type) {
-      case 'int':
+      case DataTypeStringEnum.Int8:
+      case DataTypeStringEnum.Int16:
+      case DataTypeStringEnum.Int32:
+      case DataTypeStringEnum.Int64:
+        // case DataTypeStringEnum:
         isLegal = isIn
           ? regIntInterval.test(conditionValueWithNoSpace)
           : regInt.test(conditionValueWithNoSpace);
         break;
-      case 'float':
+      case DataTypeStringEnum.Float:
+      case DataTypeStringEnum.Double:
+      case DataTypeStringEnum.FloatVector:
         isLegal = isIn
           ? regFloatInterval.test(conditionValueWithNoSpace)
           : regFloat.test(conditionValueWithNoSpace);
         break;
-      case 'bool':
+      case DataTypeStringEnum.Bool:
         const legalValues = ['false', 'true'];
         isLegal = legalValues.includes(conditionValueWithNoSpace);
         break;
@@ -81,7 +88,7 @@ const Condition: FC<ConditionProps> = props => {
   const classes = useStyles();
 
   const logicalOperators = useMemo(() => {
-    if (conditionField.type === 'bool') {
+    if (conditionField.type === DataTypeStringEnum.Bool) {
       const data = LOGICAL_OPERATORS.filter(v => v.value === '==');
       setOperator(data[0].value);
       // bool only support ==

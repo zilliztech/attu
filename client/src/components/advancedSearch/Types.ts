@@ -1,4 +1,4 @@
-// import { ReactElement } from 'react';
+import { DataTypeStringEnum } from '../../pages/collections/Types';
 
 export interface ConditionProps {
   others?: object;
@@ -12,7 +12,7 @@ export interface ConditionProps {
 
 export interface Field {
   name: string;
-  type: 'int' | 'float' | 'bool';
+  type: DataTypeStringEnum;
 }
 
 export interface TriggerChangeData {

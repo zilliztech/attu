@@ -21,6 +21,7 @@ import CustomToolBar from '../../components/grid/ToolBar';
 // import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { saveAs } from 'file-saver';
 import { generateCsvData } from '../../utils/Format';
+import { DataTypeStringEnum } from '../collections/Types';
 
 const Query: FC<{
   collectionName: string;
@@ -58,7 +59,7 @@ const Query: FC<{
         const tmp = Object.keys(resultItem).reduce(
           (prev: { [key: string]: any }, item: string) => {
             if (Array.isArray(resultItem[item])) {
-              const list2Str = `[${resultItem[item]}]`;
+              const list2Str = JSON.stringify(resultItem[item]);
               prev[item] = (
                 <div className={classes.vectorTableCell}>
                   <div>{list2Str}</div>
@@ -70,7 +71,7 @@ const Query: FC<{
                 </div>
               );
             } else {
-              prev[item] = resultItem[item];
+              prev[item] = `${resultItem[item]}`;
             }
             return prev;
           },
@@ -109,12 +110,16 @@ const Query: FC<{
     const schemaList = await FieldHttp.getFields(collectionName);
     const nameList = schemaList.map(v => ({
       name: v.name,
-      type: v.data_type.includes('Int') ? 'int' : 'float',
+      type: v.data_type,
     }));
     const primaryKey =
       schemaList.find(v => v._isPrimaryKey === true)?._fieldName || '';
     setPrimaryKey(primaryKey);
-    setFields(nameList);
+    // Temporarily hide bool field due to incorrect return from SDK.
+    const fieldWithoutBool = nameList.filter(
+      i => i.type !== DataTypeStringEnum.Bool
+    );
+    setFields(fieldWithoutBool);
   };
 
   // Get fields at first or collection name changed.
