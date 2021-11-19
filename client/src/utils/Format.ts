@@ -201,7 +201,8 @@ export const generateCsvData = (headers: string[], rows: any[]) => {
       if (typeof val === 'string') {
         prev += val;
       } else if (typeof val === 'object') {
-        prev += `"[${val}]"`;
+        // Use double quote to ensure csv display correctly
+        prev += `"${JSON.stringify(val)}"`;
       } else {
         prev += `${val}`;
       }

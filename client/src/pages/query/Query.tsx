@@ -82,8 +82,8 @@ const Query: FC<{
   );
 
   const csvDataMemo = useMemo(() => {
-    const headers = fields?.map(i => i.name);
-    if (headers && queryResult) {
+    const headers: string[] = fields?.map(i => i.name);
+    if (headers?.length && queryResult?.length) {
       return generateCsvData(headers, queryResult);
     }
     return '';
