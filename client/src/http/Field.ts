@@ -1,9 +1,9 @@
-import { DataType } from '../pages/collections/Types';
+import { DataTypeStringEnum } from '../pages/collections/Types';
 import { FieldData } from '../pages/schema/Types';
 import BaseModel from './BaseModel';
 
 export class FieldHttp extends BaseModel implements FieldData {
-  data_type!: DataType;
+  data_type!: DataTypeStringEnum;
   fieldID!: string;
   type_params!: { key: string; value: string }[];
   is_primary_key!: true;

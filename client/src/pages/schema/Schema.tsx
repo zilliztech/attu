@@ -9,7 +9,7 @@ import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { FieldHttp } from '../../http/Field';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
-import { DataType } from '../collections/Types';
+import { DataTypeStringEnum } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -77,7 +77,10 @@ const Schema: FC<{
   const fetchSchemaListWithIndex = async (
     collectionName: string
   ): Promise<FieldView[]> => {
-    const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
+    const vectorTypes: DataTypeStringEnum[] = [
+      DataTypeStringEnum.BinaryVector,
+      DataTypeStringEnum.FloatVector,
+    ];
     const indexList = await IndexHttp.getIndexInfo(collectionName);
     const schemaList = await FieldHttp.getFields(collectionName);
     let fields: FieldView[] = [];

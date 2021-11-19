@@ -14,13 +14,13 @@ import { getCreateIndexJSCode } from '../../utils/code/Js';
 import { getCreateIndexPYCode } from '../../utils/code/Py';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { getEmbeddingType } from '../../utils/search';
-import { DataType } from '../collections/Types';
+import { DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
 import { IndexType, IndexExtraParam, INDEX_TYPES_ENUM } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
-  fieldType: DataType;
+  fieldType: DataTypeStringEnum;
   handleCreate: (params: IndexExtraParam) => void;
   handleCancel: () => void;
 
@@ -84,7 +84,7 @@ const CreateIndex = (props: {
     });
 
     const { index_type, metric_type } = indexSetting;
-  
+
     const extraParams: IndexExtraParam = {
       index_type,
       metric_type,

@@ -1,5 +1,5 @@
 import { Field } from '../components/advancedSearch/Types';
-import { DataType, DataTypeEnum } from '../pages/collections/Types';
+import { DataTypeEnum, DataTypeStringEnum } from '../pages/collections/Types';
 import {
   FieldData,
   IndexType,
@@ -43,7 +43,7 @@ export const transferSearchResult = (
  * @param fieldType only vector type fields: 'BinaryVector' or 'FloatVector'
  */
 export const getEmbeddingType = (
-  fieldType: DataType
+  fieldType: DataTypeStringEnum
 ): DataTypeEnum.BinaryVector | DataTypeEnum.FloatVector => {
   const type =
     fieldType === 'BinaryVector'
@@ -72,7 +72,10 @@ export const getDefaultIndexType = (embeddingType: DataTypeEnum): IndexType => {
 export const classifyFields = (
   fields: FieldData[]
 ): { vectorFields: FieldData[]; nonVectorFields: FieldData[] } => {
-  const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
+  const vectorTypes: DataTypeStringEnum[] = [
+    DataTypeStringEnum.BinaryVector,
+    DataTypeStringEnum.FloatVector,
+  ];
   return fields.reduce(
     (result, cur) => {
       const changedFieldType = vectorTypes.includes(cur._fieldType)
@@ -109,7 +112,12 @@ export const getVectorFieldOptions = (
 };
 
 export const getNonVectorFieldsForFilter = (fields: FieldData[]): Field[] => {
-  const intTypes: DataType[] = ['Int8', 'Int16', 'Int32', 'Int64'];
+  const intTypes: DataTypeStringEnum[] = [
+    DataTypeStringEnum.Int8,
+    DataTypeStringEnum.Int16,
+    DataTypeStringEnum.Int32,
+    DataTypeStringEnum.Int64,
+  ];
   return fields.map(f => ({
     name: f._fieldName,
     type: intTypes.includes(f._fieldType)

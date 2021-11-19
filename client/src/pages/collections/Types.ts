@@ -42,17 +42,17 @@ export enum DataTypeEnum {
   BinaryVector = 100,
   FloatVector = 101,
 }
-
-export type DataType =
-  | 'Bool'
-  | 'Int8'
-  | 'Int16'
-  | 'Int32'
-  | 'Int64'
-  | 'Float'
-  | 'Double'
-  | 'BinaryVector'
-  | 'FloatVector';
+export enum DataTypeStringEnum {
+  Bool = 'Bool',
+  Int8 = 'Int8',
+  Int16 = 'Int16',
+  Int32 = 'Int32',
+  Int64 = 'Int64',
+  Float = 'Float',
+  Double = 'Double',
+  BinaryVector = 'BinaryVector',
+  FloatVector = 'FloatVector',
+}
 
 export interface Field {
   name: string | null;
