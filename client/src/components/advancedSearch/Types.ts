@@ -12,7 +12,7 @@ export interface ConditionProps {
 
 export interface Field {
   name: string;
-  type: 'int' | 'float';
+  type: 'int' | 'float' | 'bool';
 }
 
 export interface TriggerChangeData {

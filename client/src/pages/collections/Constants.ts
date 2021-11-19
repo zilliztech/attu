@@ -38,6 +38,11 @@ export const ALL_OPTIONS: KeyValuePair[] = [
     label: 'Double',
     value: DataTypeEnum.Double,
   },
+
+  {
+    label: 'Boolean',
+    value: DataTypeEnum.Bool,
+  },
 ];
 
 export const AUTO_ID_OPTIONS: KeyValuePair[] = [

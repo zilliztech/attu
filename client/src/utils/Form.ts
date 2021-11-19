@@ -1,7 +1,7 @@
 import { Option } from '../components/customSelector/Types';
 import { METRIC_TYPES_VALUES } from '../consts/Milvus';
 import { IForm } from '../hooks/Form';
-import { DataType } from '../pages/collections/Types';
+import { DataTypeStringEnum } from '../pages/collections/Types';
 import { IndexType } from '../pages/schema/Types';
 
 interface IInfo {
@@ -22,7 +22,7 @@ export const formatForm = (info: IInfo): IForm[] => {
 
 export const getMetricOptions = (
   indexType: IndexType,
-  fieldType: DataType
+  fieldType: DataTypeStringEnum
 ): Option[] => {
   const baseFloatOptions = [
     {

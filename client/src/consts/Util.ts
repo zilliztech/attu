@@ -4,3 +4,34 @@ export const BYTE_UNITS: { [x: string]: number } = {
   m: 1024 * 1024,
   g: 1024 * 1024 * 1024,
 };
+
+export const LOGICAL_OPERATORS = [
+  {
+    value: '<',
+    label: '<',
+  },
+  {
+    value: '<=',
+    label: '<=',
+  },
+  {
+    value: '>',
+    label: '>',
+  },
+  {
+    value: '>=',
+    label: '>=',
+  },
+  {
+    value: '==',
+    label: '==',
+  },
+  {
+    value: '!=',
+    label: '!=',
+  },
+  {
+    value: 'in',
+    label: 'in',
+  },
+];
