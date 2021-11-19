@@ -21,6 +21,7 @@ import CustomToolBar from '../../components/grid/ToolBar';
 // import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { saveAs } from 'file-saver';
 import { generateCsvData } from '../../utils/Format';
+import { DataTypeStringEnum } from '../collections/Types';
 
 const Query: FC<{
   collectionName: string;
@@ -107,20 +108,17 @@ const Query: FC<{
 
   const getFields = async (collectionName: string) => {
     const schemaList = await FieldHttp.getFields(collectionName);
-    const generateDataType = (rawType: string) => {
-      if (rawType.includes('Int')) return 'int';
-      if (rawType.includes('Bool')) return 'bool';
-      return 'float';
-    };
     const nameList = schemaList.map(v => ({
       name: v.name,
-      type: generateDataType(v.data_type),
+      type: v.data_type,
     }));
     const primaryKey =
       schemaList.find(v => v._isPrimaryKey === true)?._fieldName || '';
     setPrimaryKey(primaryKey);
     // Temporarily hide bool field due to incorrect return from SDK.
-    const fieldWithoutBool = nameList.filter(i => i.type !== 'bool');
+    const fieldWithoutBool = nameList.filter(
+      i => i.type !== DataTypeStringEnum.Bool
+    );
     setFields(fieldWithoutBool);
   };
 
