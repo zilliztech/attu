@@ -5,6 +5,9 @@ export interface Node {
     hardware_infos: any,
     system_info: any,
     name: string,
+    created_time: string,
+    updated_time: string,
+    system_configurations: any,
   },
   connected: {
     connected_identifier: number,

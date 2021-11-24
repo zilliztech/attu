@@ -21,7 +21,6 @@ const getStyles = makeStyles((theme: Theme) => ({
       `"a a"
        "b ."
        "b d"`,
-    height: 'calc(100% - 28px)',
   },
   cardContainer: {
     display: 'grid',
@@ -123,6 +122,16 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
       setRows(newRows);
     }
   }, [selectedCord, childNodes, capacityTrans]);
+
+  useEffect(() => {
+    const timeoutID = window.setTimeout(() => {
+      const el = document.querySelectorAll<HTMLElement>(".MuiDataGrid-row")[0];
+      if (el instanceof HTMLElement) {
+        el.click();
+      }
+    }, 300);
+    return () => window.clearTimeout(timeoutID);
+  }, [childNodes]);
 
   return (
     <div className={classes.root}>
