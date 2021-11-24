@@ -148,8 +148,8 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
   const systemContent = [];
 
   const {
-    created_time: create,
-    updated_time: update,
+    created_time: createTime,
+    updated_time: updateTime,
     system_info = {},
     hardware_infos: infos = {},
     system_configurations,
@@ -189,8 +189,8 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
   } = system_info;
   systemContent.push({ label: t('thVersion'), value: version });
   systemContent.push({ label: t('thDeployMode'), value: mode });
-  systemContent.push({ label: t('thCreateTime'), value: create ? new Date(create.substr(0, 37)).toLocaleString() : '' });
-  systemContent.push({ label: t('thUpdateTime'), value: update ? new Date(update.substr(0, 37)).toLocaleString() : '' });
+  systemContent.push({ label: t('thCreateTime'), value: createTime ? new Date(createTime.substr(0, 37)).toLocaleString() : '' });
+  systemContent.push({ label: t('thUpdateTime'), value: updateTime ? new Date(updateTime.substr(0, 37)).toLocaleString() : '' });
 
   return (
     <div className={classes.root}>

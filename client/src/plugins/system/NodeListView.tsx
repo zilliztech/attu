@@ -68,7 +68,7 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
   const [rows, setRows] = useState<any[]>([]);
   const { selectedCord, childNodes, setCord } = props;
 
-  let columns: any[] = [
+  const columns: any[] = [
     {
       field: 'name',
       headerName: t('thName'),
@@ -123,6 +123,7 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
     }
   }, [selectedCord, childNodes, capacityTrans]);
 
+  // select first node
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
       const el = document.querySelectorAll<HTMLElement>(".MuiDataGrid-row")[0];
