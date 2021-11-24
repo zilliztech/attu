@@ -17,7 +17,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     fontFamily: 'Roboto',
     margin: '14px 40px',
     position: 'relative',
-    height: 'calc(100vh - 80px)',
+    height: 'fit-content',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -48,10 +48,11 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   showChildView: {
     top: 0,
-    maxHeight: 'auto',
+    minHeight: '100%',
+    height: 'fit-content',
   },
   hideChildView: {
-    top: '1000px',
+    top: '1500px',
     maxHeight: 0,
   },
   childCloseBtn: {
@@ -68,7 +69,7 @@ const parseJson = (jsonData: any) => {
 
   const system = {
     // qps: Math.random() * 1000,
-    letency: Math.random() * 1000,
+    latency: Math.random() * 1000,
     disk: 0,
     diskUsage: 0,
     memory: 0,
@@ -93,7 +94,6 @@ const parseJson = (jsonData: any) => {
   });
   return { nodes, childNodes, system };
 }
-
 
 const SystemView: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
@@ -123,8 +123,10 @@ const SystemView: any = () => {
   }, []);
 
   let qps = system?.qps || 0;
-  const letency = system?.letency || 0;
+  const latency = system?.latency || 0;
   const childView = useRef<HTMLInputElement>(null);
+
+
 
   return (
     <div className={classes.root}>
@@ -132,7 +134,7 @@ const SystemView: any = () => {
         <ProgressCard title={t('diskTitle')} usage={system.diskUsage} total={system.disk} />
         <ProgressCard title={t('memoryTitle')} usage={system.memoryUsage} total={system.memory} />
         <LineChartCard title={t('qpsTitle')} value={qps} />
-        <LineChartCard title={t('letencyTitle')} value={letency} />
+        <LineChartCard title={t('latencyTitle')} value={latency} />
       </div>
       <div className={classes.contentContainer}>
         <Topo nodes={nodes} setNode={setNode} setCord={setCord} />
