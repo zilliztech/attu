@@ -225,7 +225,11 @@ const Query: FC<{
           <Filter
             ref={filterRef}
             title="Advanced Filter"
-            fields={fields}
+            fields={fields.filter(
+              i =>
+                i.type !== DataTypeStringEnum.FloatVector &&
+                i.type !== DataTypeStringEnum.BinaryVector
+            )}
             filterDisabled={false}
             onSubmit={handleFilterSubmit}
             showTitle={false}
