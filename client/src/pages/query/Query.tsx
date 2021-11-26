@@ -135,6 +135,7 @@ const Query: FC<{
     setExpression('');
     setTableLoading(null);
     setQueryResult(null);
+    handleCurrentPage(0);
   };
 
   const handleFilterSubmit = (expression: string) => {

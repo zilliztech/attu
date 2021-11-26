@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { dtoValidationMiddleware } from "../middlewares/validation";
-import { milvusService } from "../milvus";
-import { CollectionsService } from "./collections.service";
+import { NextFunction, Request, Response, Router } from 'express';
+import { dtoValidationMiddleware } from '../middlewares/validation';
+import { milvusService } from '../milvus';
+import { CollectionsService } from './collections.service';
 import {
   CreateAliasDto,
   CreateCollectionDto,
   InsertDataDto,
   VectorSearchDto,
   QueryDto,
-} from "./dto";
+} from './dto';
 
 export class CollectionController {
   private collectionsService: CollectionsService;
@@ -25,57 +25,57 @@ export class CollectionController {
   }
 
   generateRoutes() {
-    this.router.get("/", this.showCollections.bind(this));
+    this.router.get('/', this.showCollections.bind(this));
 
     this.router.post(
-      "/",
+      '/',
       dtoValidationMiddleware(CreateCollectionDto),
       this.createCollection.bind(this)
     );
 
-    this.router.get("/statistics", this.getStatistics.bind(this));
+    this.router.get('/statistics', this.getStatistics.bind(this));
 
     this.router.get(
-      "/:name/statistics",
+      '/:name/statistics',
       this.getCollectionStatistics.bind(this)
     );
 
     this.router.get(
-      "/indexes/status",
+      '/indexes/status',
       this.getCollectionsIndexStatus.bind(this)
     );
 
-    this.router.delete("/:name", this.dropCollection.bind(this));
+    this.router.delete('/:name', this.dropCollection.bind(this));
 
-    this.router.get("/:name", this.describeCollection.bind(this));
+    this.router.get('/:name', this.describeCollection.bind(this));
 
-    this.router.put("/:name/load", this.loadCollection.bind(this));
+    this.router.put('/:name/load', this.loadCollection.bind(this));
 
-    this.router.put("/:name/release", this.releaseCollection.bind(this));
+    this.router.put('/:name/release', this.releaseCollection.bind(this));
 
     this.router.post(
-      "/:name/insert",
+      '/:name/insert',
       dtoValidationMiddleware(InsertDataDto),
       this.insert.bind(this)
     );
 
     // we need use req.body, so we can't use delete here
-    this.router.put("/:name/entities", this.deleteEntities.bind(this));
+    this.router.put('/:name/entities', this.deleteEntities.bind(this));
 
     this.router.post(
-      "/:name/search",
+      '/:name/search',
       dtoValidationMiddleware(VectorSearchDto),
       this.vectorSearch.bind(this)
     );
 
     this.router.post(
-      "/:name/query",
+      '/:name/query',
       dtoValidationMiddleware(QueryDto),
       this.query.bind(this)
     );
 
     this.router.post(
-      "/:name/alias",
+      '/:name/alias',
       dtoValidationMiddleware(CreateAliasDto),
       this.createAlias.bind(this)
     );
@@ -84,7 +84,7 @@ export class CollectionController {
   }
 
   async showCollections(req: Request, res: Response, next: NextFunction) {
-    const type = parseInt("" + req.query?.type, 10);
+    const type = parseInt('' + req.query?.type, 10);
     try {
       const result =
         type === 1
@@ -251,12 +251,12 @@ export class CollectionController {
         collection_name: name,
         ...data,
       });
-      const queryResultList = result.data;
+      // const queryResultList = result.data;
       const queryResultLength = result.data.length;
-      const startNum = page * limit;
-      const endNum = (page + 1) * limit;
-      const slicedResult = queryResultList.slice(startNum, endNum);
-      result.data = slicedResult;
+      // const startNum = page * limit;
+      // const endNum = (page + 1) * limit;
+      // const slicedResult = queryResultList.slice(startNum, endNum);
+      // result.data = slicedResult;
       res.send({ ...result, limit, page, total: queryResultLength });
     } catch (error) {
       next(error);
