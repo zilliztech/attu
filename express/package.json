@@ -7,6 +7,10 @@
     "email": "zizhao.chen@zilliz.com"
   },
   "description": "Milvus Insight help to manage Milvus easily",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zilliztech/milvus-insight"
+  },
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "^1.0.19",
     "chalk": "^4.1.2",
