@@ -21,15 +21,12 @@ jobs:
         with:
           node-version: 14
     
-      - name: Build client and server
+      - name: Build client
         run: |
           cd client
           yarn
           yarn build
           cp -r build ../express
-          cd ../express
-          yarn 
-          yarn build
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1

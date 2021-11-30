@@ -2,6 +2,7 @@
   "name": "express",
   "version": "1.0.0",
   "license": "MIT",
+  "author": "nameczz zizhao.chen@zilliz.com",
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "^1.0.19",
     "chalk": "^4.1.2",
@@ -74,7 +75,7 @@
     "clean": "rimraf dist",
     "format": "prettier --write '**/*.{ts,js}'",
     "mac": "rm -rf electron-app && electron-builder --mac",
-    "linux": "rm -rf electron-app && electron-builder --mac"
+    "linux": "rm -rf electron-app && electron-builder --linux"
   },
   "nodemonConfig": {
     "ignore": [
@@ -89,6 +90,7 @@
     ],
     "ext": "ts yml"
   },
+  "homepage": "./",
   "main": "electron-starter.js",
   "build": {
     "appId": "milvus",
