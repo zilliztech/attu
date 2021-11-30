@@ -1,4 +1,4 @@
-name: Build/release
+name: Build electron app
 
 on:
   release:
@@ -26,7 +26,7 @@ jobs:
           cd client
           yarn
           yarn build
-          cp -r build ../express
+          node electron-helper.js
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
