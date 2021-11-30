@@ -1,9 +1,9 @@
 name: Milvus insight prod release
 
-# on:
-#   release:
-    # types: [released]
-    # branches: [main]
+on:
+  release:
+    types: [released]
+    branches: [main]
 
 jobs:
   publish:
