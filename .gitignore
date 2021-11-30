@@ -37,6 +37,8 @@ server/vectors.csv
 express/node_modules
 express/dist
 express/build
+express/electron-app
+
 
 
 # package.lock.json
