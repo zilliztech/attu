@@ -2,7 +2,11 @@
   "name": "express",
   "version": "1.0.0",
   "license": "MIT",
-  "author": "nameczz zizhao.chen@zilliz.com",
+  "author": {
+    "name": "zizhao.chen",
+    "email": "zizhao.chen@zilliz.com"
+  },
+  "description": "Milvus Insight help to manage Milvus easily",
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "^1.0.19",
     "chalk": "^4.1.2",
