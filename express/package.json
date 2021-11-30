@@ -61,7 +61,6 @@
     "typescript": "^4.4.4"
   },
   "scripts": {
-    "electron": "ELECTRON_START_URL=http://localhost:3001 electron .",
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "yarn clean && tsc",
     "prestart": "rm -rf dist && yarn build",
@@ -74,7 +73,8 @@
     "test:report": "cross-env NODE_ENV=test jest --watchAll=false --coverage --coverageReporters='text-summary'",
     "clean": "rimraf dist",
     "format": "prettier --write '**/*.{ts,js}'",
-    "mac": "rm -rf electron-app && electron-builder --mac"
+    "mac": "rm -rf electron-app && electron-builder --mac",
+    "linux": "rm -rf electron-app && electron-builder --mac"
   },
   "nodemonConfig": {
     "ignore": [
@@ -89,7 +89,6 @@
     ],
     "ext": "ts yml"
   },
-  "homepage": "./",
   "main": "electron-starter.js",
   "build": {
     "appId": "milvus",

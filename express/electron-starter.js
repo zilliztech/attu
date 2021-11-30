@@ -36,13 +36,9 @@ function createWindow() {
       protocol: 'file:',
       slashes: true,
     });
-  console.log(startUrl);
   mainWindow.loadURL(startUrl);
   // mainWindow.loadURL('http://127.0.0.1:3000');
   mainWindow.focus();
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

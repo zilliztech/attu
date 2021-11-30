@@ -1,4 +1,4 @@
-import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, HashRouter } from 'react-router-dom';
 import routerConfig from './Config';
 import Layout from '../components/layout/Layout';
 import { useContext } from 'react';
@@ -12,7 +12,7 @@ const RouterWrapper = () => {
   const { isAuth } = useContext(authContext);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Layout>
         <Switch>
           {routerConfig.map(v => (
@@ -48,7 +48,7 @@ const RouterWrapper = () => {
           ></Route>
         </Switch>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 export default RouterWrapper;
