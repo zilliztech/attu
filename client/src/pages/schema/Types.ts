@@ -79,17 +79,6 @@ export interface IndexExtraParam {
   params: string;
 }
 
-export interface SizingToolParam {
-  // type is float or bytes
-  type: string;
-  indexType: string;
-  dimension: number;
-  vectors: number;
-  segmentFileSize: number;
-  nlist?: number;
-  m?: number;
-}
-
 export interface SizingInfoParam {
   info: {
     memory: string;
