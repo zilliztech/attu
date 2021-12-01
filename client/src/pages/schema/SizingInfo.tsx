@@ -34,8 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: theme.spacing(2),
       color: theme.palette.milvusGrey.dark,
     },
-
-    '& .value': {},
   },
 }));
 
@@ -59,11 +57,11 @@ const SizingInfo: FC<SizingInfoParam> = props => {
         <div className={classes.info}>
           <div className={classes.pair}>
             <Typography className="key">{commonTrans('memory')}</Typography>
-            <Typography className="value">{info.memory}</Typography>
+            <Typography>{info.memory}</Typography>
           </div>
           <div className={classes.pair}>
             <Typography className="key">{commonTrans('disk')}</Typography>
-            <Typography className="value">{info.disk}</Typography>
+            <Typography>{info.disk}</Typography>
           </div>
         </div>
       </section>
