@@ -1,6 +1,6 @@
 {
   "name": "milvus-insight",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "author": {
     "name": "zizhao.chen",
@@ -9,7 +9,7 @@
   "description": "Milvus Insight help to manage Milvus easily",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zilliztech/milvus-insight"
+    "url": "https://github.com/nameczz/milvus-insight"
   },
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "^1.0.19",
