@@ -16,6 +16,20 @@ jobs:
         with:
           node-version: 12
 
+      - name: Run Express tests
+        run: |
+          cd express
+          yarn install
+          yarn test:cov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          # public repo needn't pass token
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          # only upload express test coverage
+          flags: express
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:

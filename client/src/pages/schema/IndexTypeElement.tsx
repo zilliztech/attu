@@ -175,6 +175,7 @@ const IndexTypeElement: FC<{
             collectionName={collectionName}
             fieldName={data._fieldName}
             fieldType={data._fieldType}
+            dimension={Number(data._dimension)}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}
           />

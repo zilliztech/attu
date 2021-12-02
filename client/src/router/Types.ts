@@ -8,7 +8,9 @@ export enum ALL_ROUTER_TYPES {
   // 'search'
   SEARCH = 'search',
   // 'system'
-  SYSTEM = 'system'
+  SYSTEM = 'system',
+  // plugins
+  PLUGIN = 'plugin',
 }
 
 export type NavInfo = {

@@ -36,7 +36,7 @@ import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { checkIndexBuilding, checkLoading } from '../../utils/Validation';
-import CreateAlias from './CreateAlias';
+// import CreateAlias from './CreateAlias';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -309,29 +309,30 @@ const Collections = () => {
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: data => data.length === 0,
     },
-    {
-      type: 'iconBtn',
-      onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: (
-              <CreateAlias
-                collectionName={selectedCollections[0]._name}
-                cb={() => {
-                  setSelectedCollections([]);
-                }}
-              />
-            ),
-          },
-        });
-      },
-      label: collectionTrans('alias'),
-      icon: 'alias',
-      disabledTooltip: collectionTrans('aliasTooltip'),
-      disabled: data => data.length !== 1,
-    },
+    // Todo: hide alias after we can get all alias from milvus.
+    // {
+    //   type: 'iconBtn',
+    //   onClick: () => {
+    //     setDialog({
+    //       open: true,
+    //       type: 'custom',
+    //       params: {
+    //         component: (
+    //           <CreateAlias
+    //             collectionName={selectedCollections[0]._name}
+    //             cb={() => {
+    //               setSelectedCollections([]);
+    //             }}
+    //           />
+    //         ),
+    //       },
+    //     });
+    //   },
+    //   label: collectionTrans('alias'),
+    //   icon: 'alias',
+    //   disabledTooltip: collectionTrans('aliasTooltip'),
+    //   disabled: data => data.length !== 1,
+    // },
     {
       label: 'Search',
       icon: 'search',

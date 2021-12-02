@@ -1,16 +1,27 @@
-import { FC, useEffect, useState, useRef, useMemo } from 'react';
+import { FC, useEffect, useState, useRef, useMemo, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { rootContext } from '../../context/Root';
 
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
 import MilvusGrid from '../../components/grid/Grid';
+import { ToolBarConfig } from '../../components/grid/Types';
 import { getQueryStyles } from './Styles';
 import Filter from '../../components/advancedSearch';
 import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { usePaginationHook } from '../../hooks/Pagination';
+// import { useTimeTravelHook } from '../../hooks/TimeTravel';
+
 import CopyButton from '../../components/advancedSearch/CopyButton';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import CustomToolBar from '../../components/grid/ToolBar';
+// import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
+import { saveAs } from 'file-saver';
+import { generateCsvData } from '../../utils/Format';
+import { DataTypeStringEnum } from '../collections/Types';
 
 const Query: FC<{
   collectionName: string;
@@ -19,10 +30,16 @@ const Query: FC<{
   const [expression, setExpression] = useState('');
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
+  const [selectedDatas, setSelectedDatas] = useState<any[]>([]);
+  const [primaryKey, setPrimaryKey] = useState<string>('');
 
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
   const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
 
+  const { t: dialogTrans } = useTranslation('dialog');
+  const { t: successTrans } = useTranslation('success');
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -30,6 +47,9 @@ const Query: FC<{
   const copyTrans = commonTrans('copy');
 
   const classes = getQueryStyles();
+
+  // const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
+  //   useTimeTravelHook();
 
   // Format result list
   const queryResultMemo = useMemo(
@@ -39,7 +59,7 @@ const Query: FC<{
         const tmp = Object.keys(resultItem).reduce(
           (prev: { [key: string]: any }, item: string) => {
             if (Array.isArray(resultItem[item])) {
-              const list2Str = `[${resultItem[item]}]`;
+              const list2Str = JSON.stringify(resultItem[item]);
               prev[item] = (
                 <div className={classes.vectorTableCell}>
                   <div>{list2Str}</div>
@@ -51,7 +71,7 @@ const Query: FC<{
                 </div>
               );
             } else {
-              prev[item] = resultItem[item];
+              prev[item] = `${resultItem[item]}`;
             }
             return prev;
           },
@@ -61,6 +81,14 @@ const Query: FC<{
       }),
     [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
   );
+
+  const csvDataMemo = useMemo(() => {
+    const headers: string[] = fields?.map(i => i.name);
+    if (headers?.length && queryResult?.length) {
+      return generateCsvData(headers, queryResult);
+    }
+    return '';
+  }, [fields, queryResult]);
 
   const {
     pageSize,
@@ -80,11 +108,18 @@ const Query: FC<{
 
   const getFields = async (collectionName: string) => {
     const schemaList = await FieldHttp.getFields(collectionName);
-    const nameList = schemaList.map(i => ({
-      name: i.name,
-      type: i.data_type.includes('Int') ? 'int' : 'float',
+    const nameList = schemaList.map(v => ({
+      name: v.name,
+      type: v.data_type,
     }));
-    setFields(nameList);
+    const primaryKey =
+      schemaList.find(v => v._isPrimaryKey === true)?._fieldName || '';
+    setPrimaryKey(primaryKey);
+    // Temporarily hide bool field due to incorrect return from SDK.
+    const fieldWithoutBool = nameList.filter(
+      i => i.type !== DataTypeStringEnum.Bool
+    );
+    setFields(fieldWithoutBool);
   };
 
   // Get fields at first or collection name changed.
@@ -100,17 +135,21 @@ const Query: FC<{
     setExpression('');
     setTableLoading(null);
     setQueryResult(null);
+    handleCurrentPage(0);
   };
+
   const handleFilterSubmit = (expression: string) => {
     setExpression(expression);
     setQueryResult(null);
   };
+
   const handleQuery = async () => {
     setTableLoading(true);
     try {
       const res = await CollectionHttp.queryData(collectionName, {
         expr: expression,
         output_fields: fields.map(i => i.name),
+        // travel_timestamp: timeTravelInfo.timestamp,
       });
       const result = res.data;
       setQueryResult(result);
@@ -121,22 +160,90 @@ const Query: FC<{
     }
   };
 
+  const handleSelectChange = (value: any) => {
+    setSelectedDatas(value);
+  };
+
+  const handleDelete = async () => {
+    await CollectionHttp.deleteEntities(collectionName, {
+      expr: `${primaryKey} in [${selectedDatas.map(v => v.id).join(',')}]`,
+    });
+    handleCloseDialog();
+    openSnackBar(successTrans('delete', { name: collectionTrans('entites') }));
+    handleQuery();
+  };
+
+  const toolbarConfigs: ToolBarConfig[] = [
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('delete')}
+                title={dialogTrans('deleteTitle', {
+                  type: collectionTrans('entites'),
+                })}
+                text={collectionTrans('deleteDataWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
+      },
+      label: collectionTrans('delete'),
+      icon: 'delete',
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('deleteTooltip'),
+      disabled: () => selectedDatas.length === 0,
+    },
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        const csvData = new Blob([csvDataMemo.toString()], {
+          type: 'text/csv;charset=utf-8',
+        });
+        saveAs(csvData, 'query_result.csv');
+      },
+      label: collectionTrans('delete'),
+      icon: 'download',
+      tooltip: collectionTrans('download'),
+      disabledTooltip: collectionTrans('downloadTooltip'),
+      disabled: () => !queryResult?.length,
+    },
+  ];
+
   return (
     <div className={classes.root}>
+      <CustomToolBar toolbarConfigs={toolbarConfigs} />
       <div className={classes.toolbar}>
         <div className="left">
-          <div>{`${
-            expression || collectionTrans('exprPlaceHolder')
-          }`}</div>
+          {/* <div className="expression"> */}
+          <div>{`${expression || collectionTrans('exprPlaceHolder')}`}</div>
           <Filter
             ref={filterRef}
             title="Advanced Filter"
-            fields={fields}
+            fields={fields.filter(
+              i =>
+                i.type !== DataTypeStringEnum.FloatVector &&
+                i.type !== DataTypeStringEnum.BinaryVector
+            )}
             filterDisabled={false}
             onSubmit={handleFilterSubmit}
             showTitle={false}
             showTooltip={false}
           />
+          {/* </div> */}
+
+          {/* <CustomDatePicker
+            label={timeTravelInfo.label}
+            onChange={handleDateTimeChange}
+            date={timeTravel}
+            setDate={setTimeTravel}
+          /> */}
         </div>
         <div className="right">
           <CustomButton className="btn" onClick={handleFilterReset}>
@@ -162,10 +269,12 @@ const Query: FC<{
             label: i.name,
           }))}
           primaryKey={fields.find(i => i.is_primary_key)?.name}
-          openCheckBox={false}
+          openCheckBox={true}
           isLoading={!!tableLoading}
           rows={result}
           rowCount={total}
+          selected={selectedDatas}
+          setSelected={handleSelectChange}
           page={currentPage}
           onChangePage={handlePageChange}
           rowsPerPage={pageSize}

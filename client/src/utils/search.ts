@@ -1,5 +1,5 @@
 import { Field } from '../components/advancedSearch/Types';
-import { DataType, DataTypeEnum } from '../pages/collections/Types';
+import { DataTypeEnum, DataTypeStringEnum } from '../pages/collections/Types';
 import {
   FieldData,
   IndexType,
@@ -10,7 +10,7 @@ import {
   FieldOption,
   SearchResult,
   SearchResultView,
-} from '../pages/seach/Types';
+} from '../types/SearchTypes';
 
 /**
  * Do not change  vector search result default sort  by ourself.
@@ -21,11 +21,19 @@ import {
 export const transferSearchResult = (
   result: SearchResult[]
 ): SearchResultView[] => {
-  const resultView = result.map((r, index) => ({
-    rank: index + 1,
-    ...r,
-    distance: r.score,
-  }));
+  const resultView = result.map((r, index) => {
+    const { rank, distance, ...others } = r;
+    const data: any = {
+      rank: index + 1,
+      distance: r.score,
+    };
+    // When value is boolean ,table will not render bool value.
+    // So we need to use toString() here.
+    Object.keys(others).forEach(v => {
+      data[v] = others[v].toString();
+    });
+    return data;
+  });
 
   return resultView;
 };
@@ -35,7 +43,7 @@ export const transferSearchResult = (
  * @param fieldType only vector type fields: 'BinaryVector' or 'FloatVector'
  */
 export const getEmbeddingType = (
-  fieldType: DataType
+  fieldType: DataTypeStringEnum
 ): DataTypeEnum.BinaryVector | DataTypeEnum.FloatVector => {
   const type =
     fieldType === 'BinaryVector'
@@ -64,7 +72,10 @@ export const getDefaultIndexType = (embeddingType: DataTypeEnum): IndexType => {
 export const classifyFields = (
   fields: FieldData[]
 ): { vectorFields: FieldData[]; nonVectorFields: FieldData[] } => {
-  const vectorTypes: DataType[] = ['BinaryVector', 'FloatVector'];
+  const vectorTypes: DataTypeStringEnum[] = [
+    DataTypeStringEnum.BinaryVector,
+    DataTypeStringEnum.FloatVector,
+  ];
   return fields.reduce(
     (result, cur) => {
       const changedFieldType = vectorTypes.includes(cur._fieldType)
@@ -101,9 +112,8 @@ export const getVectorFieldOptions = (
 };
 
 export const getNonVectorFieldsForFilter = (fields: FieldData[]): Field[] => {
-  const intTypes: DataType[] = ['Int8', 'Int16', 'Int32', 'Int64'];
   return fields.map(f => ({
     name: f._fieldName,
-    type: intTypes.includes(f._fieldType) ? 'int' : 'float',
+    type: f._fieldType,
   }));
 };

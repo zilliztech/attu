@@ -18,7 +18,7 @@ export class PartitionsService {
     return this.milvusService.partitionManager;
   }
 
-  async getPatitionsInfo(data: ShowPartitionsReq) {
+  async getPartitionsInfo(data: ShowPartitionsReq) {
     const result = [];
     const res = await this.getPartitions(data);
     if (res.partition_names && res.partition_names.length) {
@@ -44,13 +44,13 @@ export class PartitionsService {
     return res;
   }
 
-  async createParition(data: CreatePartitionReq) {
+  async createPartition(data: CreatePartitionReq) {
     const res = await this.partitionManager.createPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async deleteParition(data: DropPartitionReq) {
+  async deletePartition(data: DropPartitionReq) {
     const res = await this.partitionManager.dropPartition(data);
     throwErrorFromSDK(res);
     return res;

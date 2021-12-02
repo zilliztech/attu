@@ -4,6 +4,8 @@ import { CodeLanguageEnum, CodeViewData } from '../../components/code/Types';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
 import CustomSwitch from '../../components/customSwitch/CustomSwitch';
 import {
+  DEFAULT_SEFMENT_FILE_SIZE,
+  DEFAULT_VECTORS,
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   MetricType,
@@ -14,21 +16,31 @@ import { getCreateIndexJSCode } from '../../utils/code/Js';
 import { getCreateIndexPYCode } from '../../utils/code/Py';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { getEmbeddingType } from '../../utils/search';
-import { DataType } from '../collections/Types';
+import { computMilvusRecommonds, formatSize } from '../../utils/SizingTool';
+import { DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
+import SizingInfo from './SizingInfo';
 import { IndexType, IndexExtraParam, INDEX_TYPES_ENUM } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
-  fieldType: DataType;
+  fieldType: DataTypeStringEnum;
   handleCreate: (params: IndexExtraParam) => void;
   handleCancel: () => void;
 
   // used for code mode
   fieldName: string;
+  // used for sizing info
+  dimension: number;
 }) => {
-  const { collectionName, fieldType, handleCreate, handleCancel, fieldName } =
-    props;
+  const {
+    collectionName,
+    fieldType,
+    handleCreate,
+    handleCancel,
+    fieldName,
+    dimension,
+  } = props;
 
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
@@ -84,7 +96,7 @@ const CreateIndex = (props: {
     });
 
     const { index_type, metric_type } = indexSetting;
-  
+
     const extraParams: IndexExtraParam = {
       index_type,
       metric_type,
@@ -107,6 +119,58 @@ const CreateIndex = (props: {
     const form = formatForm(paramsForm);
     return form;
   }, [indexSetting, indexCreateParams]);
+
+  // sizing info needed param
+  const sizingInfo = useMemo(() => {
+    const { index_type } = indexSetting;
+    const { nlist, m } = indexSetting;
+    const floatTypes = [
+      INDEX_TYPES_ENUM.IVF_FLAT,
+      INDEX_TYPES_ENUM.IVF_PQ,
+      INDEX_TYPES_ENUM.IVF_SQ8,
+      INDEX_TYPES_ENUM.IVF_SQ8_HYBRID,
+      INDEX_TYPES_ENUM.FLAT,
+    ];
+    const bytesTyps = [
+      INDEX_TYPES_ENUM.BIN_FLAT,
+      INDEX_TYPES_ENUM.BIN_IVF_FLAT,
+    ];
+    const supportedTypes = [...floatTypes, ...bytesTyps];
+    // check param validation
+    if (!supportedTypes.includes(index_type)) {
+      return null;
+    }
+
+    if (!nlist) {
+      return null;
+    }
+    if (index_type === INDEX_TYPES_ENUM.IVF_PQ && !m) {
+      return null;
+    }
+    // vector 100000, segment file size 1024 as default value
+    const milvusRecommends = computMilvusRecommonds(
+      DEFAULT_VECTORS,
+      dimension,
+      Number(nlist),
+      Number(m),
+      DEFAULT_SEFMENT_FILE_SIZE * 1024 * 1024
+    );
+
+    let memoryType = 'byteMemorySize';
+    let diskType = 'byteDiskSize';
+    if (floatTypes.includes(index_type)) {
+      memoryType = 'memorySize';
+      diskType = 'diskSize';
+    }
+
+    const memorySize = milvusRecommends[memoryType][index_type];
+    const diskSize = milvusRecommends[diskType][index_type];
+
+    return {
+      memory: formatSize(memorySize),
+      disk: formatSize(diskSize),
+    };
+  }, [dimension, indexSetting]);
 
   /**
    * create index code mode
@@ -200,6 +264,8 @@ const CreateIndex = (props: {
         indexParams={indexCreateParams}
         indexTypeChange={onIndexTypeChange}
       />
+
+      <SizingInfo info={sizingInfo} />
     </DialogTemplate>
   );
 };

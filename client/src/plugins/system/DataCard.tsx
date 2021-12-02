@@ -137,9 +137,23 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
   const { t: commonTrans } = useTranslation();
   const capacityTrans: { [key in string]: string } = commonTrans('capacity');
   const { node, extend } = props;
+
   const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
   const hardwareContent = [];
-  const infos = node?.infos?.hardware_infos || {};
+
+  const configTitle = [t('configTitle'), t('valueTitle')];
+  const systemConfig: { label: string; value: any; }[] = [];
+
+  const systemTitle = [t('systemTitle'), t('valueTitle')];
+  const systemContent = [];
+
+  const {
+    created_time: createTime,
+    updated_time: updateTime,
+    system_info = {},
+    hardware_infos: infos = {},
+    system_configurations,
+  } = node?.infos || {};
 
   const {
     cpu_core_count: cpu = 0,
@@ -163,19 +177,20 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
     });
   }
 
-  const systemTitle = [t('systemTitle'), t('valueTitle')];
-  const systemContent = [];
-  const sysInfos = node?.infos?.system_info || {};
+  if (system_configurations) {
+    Object.keys(system_configurations).forEach(key => {
+      systemConfig.push({ label: key, value: system_configurations[key] });
+    });
+  }
+
   const {
     system_version: version,
     deploy_mode: mode = '',
-    created_time: create = '',
-    updated_time: update = '',
-  } = sysInfos;
+  } = system_info;
   systemContent.push({ label: t('thVersion'), value: version });
   systemContent.push({ label: t('thDeployMode'), value: mode });
-  systemContent.push({ label: t('thCreateTime'), value: create });
-  systemContent.push({ label: t('thUpdateTime'), value: update });
+  systemContent.push({ label: t('thCreateTime'), value: createTime ? new Date(createTime.substr(0, 37)).toLocaleString() : '' });
+  systemContent.push({ label: t('thUpdateTime'), value: updateTime ? new Date(updateTime.substr(0, 37)).toLocaleString() : '' });
 
   return (
     <div className={classes.root}>
@@ -188,6 +203,11 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
       </div>
       {extend && <DataSection titles={hardwareTitle} contents={hardwareContent} />}
       <DataSection titles={systemTitle} contents={systemContent} />
+      {systemConfig.length ?
+        <DataSection titles={configTitle} contents={systemConfig} />
+        :
+        null
+      }
     </div>
   );
 };

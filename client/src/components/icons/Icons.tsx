@@ -22,6 +22,8 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import CachedIcon from '@material-ui/icons/Cached';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
+import DatePicker from '@material-ui/icons/Event';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as MilvusIcon } from '../../assets/icons/milvus.svg';
 import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
@@ -60,6 +62,8 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   refresh: (props = {}) => <CachedIcon {...props} />,
   filter: (props = {}) => <FilterListIcon {...props} />,
   alias: (props = {}) => <AlternateEmailIcon {...props} />,
+  datePicker: (props = {}) => <DatePicker {...props} />,
+  download: (props = {}) => <GetAppIcon {...props} />,
 
   milvus: (props = {}) => (
     <SvgIcon viewBox="0 0 44 31" component={MilvusIcon} {...props} />

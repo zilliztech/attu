@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, useEffect, FC, useMemo } from 'react';
 import {
   makeStyles,
   Theme,
@@ -9,39 +9,8 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { ConditionProps, Field } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
-
-// Todo: Move to corrsponding Constant file.
-// Static logical operators.
-const LogicalOperators = [
-  {
-    value: '<',
-    label: '<',
-  },
-  {
-    value: '<=',
-    label: '<=',
-  },
-  {
-    value: '>',
-    label: '>',
-  },
-  {
-    value: '>=',
-    label: '>=',
-  },
-  {
-    value: '==',
-    label: '==',
-  },
-  {
-    value: '!=',
-    label: '!=',
-  },
-  {
-    value: 'in',
-    label: 'in',
-  },
-];
+import { LOGICAL_OPERATORS } from '../../consts/Util';
+import { DataTypeStringEnum } from '../../pages/collections/Types';
 
 const Condition: FC<ConditionProps> = props => {
   const {
@@ -54,9 +23,9 @@ const Condition: FC<ConditionProps> = props => {
     ...others
   } = props;
   const [operator, setOperator] = useState(
-    initData?.op || LogicalOperators[0].value
+    initData?.op || LOGICAL_OPERATORS[0].value
   );
-  const [conditionField, setConditionField] = useState<Field | any>(
+  const [conditionField, setConditionField] = useState<Field>(
     initData?.field || fields[0] || {}
   );
   const [conditionValue, setConditionValue] = useState(initData?.value || '');
@@ -80,15 +49,25 @@ const Condition: FC<ConditionProps> = props => {
     const conditionValueWithNoSpace = conditionValue.replaceAll(' ', '');
 
     switch (type) {
-      case 'int':
+      case DataTypeStringEnum.Int8:
+      case DataTypeStringEnum.Int16:
+      case DataTypeStringEnum.Int32:
+      case DataTypeStringEnum.Int64:
+        // case DataTypeStringEnum:
         isLegal = isIn
           ? regIntInterval.test(conditionValueWithNoSpace)
           : regInt.test(conditionValueWithNoSpace);
         break;
-      case 'float':
+      case DataTypeStringEnum.Float:
+      case DataTypeStringEnum.Double:
+      case DataTypeStringEnum.FloatVector:
         isLegal = isIn
           ? regFloatInterval.test(conditionValueWithNoSpace)
           : regFloat.test(conditionValueWithNoSpace);
+        break;
+      case DataTypeStringEnum.Bool:
+        const legalValues = ['false', 'true'];
+        isLegal = legalValues.includes(conditionValueWithNoSpace);
         break;
       default:
         isLegal = false;
@@ -107,6 +86,16 @@ const Condition: FC<ConditionProps> = props => {
   }, [conditionField, operator, conditionValue]);
 
   const classes = useStyles();
+
+  const logicalOperators = useMemo(() => {
+    if (conditionField.type === DataTypeStringEnum.Bool) {
+      const data = LOGICAL_OPERATORS.filter(v => v.value === '==');
+      setOperator(data[0].value);
+      // bool only support ==
+      return data;
+    }
+    return LOGICAL_OPERATORS;
+  }, [conditionField]);
 
   // Logic operator input change.
   const handleOpChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -140,7 +129,7 @@ const Condition: FC<ConditionProps> = props => {
         label="Logic"
         value={operator}
         onChange={handleOpChange}
-        options={LogicalOperators}
+        options={logicalOperators}
         variant="filled"
         wrapperClass={classes.logic}
       />

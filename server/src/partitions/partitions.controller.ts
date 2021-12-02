@@ -20,12 +20,12 @@ import { PartitionsService } from './partitions.service';
 @ApiTags('partitions')
 @Controller('partitions')
 export class PartitionsController {
-  constructor(private partitionsService: PartitionsService) { }
+  constructor(private partitionsService: PartitionsService) {}
 
   @Get()
   @UsePipes(new ValidationPipe())
   async getPartitions(@Query() query: GetPartitionsInfo) {
-    return await this.partitionsService.getPatitionsInfo(query);
+    return await this.partitionsService.getPartitionsInfo(query);
   }
 
   @Post()
@@ -34,8 +34,8 @@ export class PartitionsController {
     const { type, ...params } = body;
 
     return type.toLocaleLowerCase() === ManageType.CREATE
-      ? await this.partitionsService.createParition(params)
-      : await this.partitionsService.deleteParition(params);
+      ? await this.partitionsService.createPartition(params)
+      : await this.partitionsService.deletePartition(params);
   }
 
   @Put('load')

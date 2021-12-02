@@ -10,8 +10,11 @@ const collectionTrans = {
   deleteTooltip: 'Please select at least one item to delete.',
   alias: 'alias',
   aliasTooltip: 'Please select one collection to create alias',
+  download: 'Download',
+  downloadTooltip: 'Download all query results',
 
   collection: 'Collection',
+  entites: 'entites',
 
   // table
   id: 'ID',
@@ -54,6 +57,7 @@ const collectionTrans = {
   // delete dialog
   deleteWarning:
     'You are trying to delete a collection with data. This action cannot be undone.',
+  deleteDataWarning: `You are trying to delete entites. This action cannot be undone.`,
 
   // collection tabs
   partitionTab: 'Partitions',

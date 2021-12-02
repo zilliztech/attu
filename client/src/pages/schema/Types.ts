@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { MetricType } from '../../consts/Milvus';
-import { DataType } from '../collections/Types';
+import { DataTypeStringEnum } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {
   IVF_FLAT = 'IVF_FLAT',
@@ -16,7 +16,7 @@ export enum INDEX_TYPES_ENUM {
 }
 
 export interface Field {
-  data_type: DataType;
+  data_type: DataTypeStringEnum;
   fieldID: string;
   type_params: { key: string; value: string }[];
   is_primary_key: true;
@@ -30,7 +30,7 @@ export interface FieldData {
   _isAutoId: boolean;
   _fieldName: string;
   _fieldNameElement?: ReactElement;
-  _fieldType: DataType;
+  _fieldType: DataTypeStringEnum;
   _dimension: string;
   _desc: string;
 }
@@ -77,4 +77,11 @@ export interface IndexExtraParam {
   index_type: string;
   metric_type: string;
   params: string;
+}
+
+export interface SizingInfoParam {
+  info: {
+    memory: string;
+    disk: string;
+  } | null;
 }

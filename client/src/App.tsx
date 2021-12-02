@@ -1,3 +1,5 @@
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DayjsUtils from '@date-io/dayjs';
 import Router from './router/Router';
 import { RootProvider } from './context/Root';
 import { NavProvider } from './context/Navigation';
@@ -10,7 +12,9 @@ function App() {
       <AuthProvider>
         <WebSocketProvider>
           <NavProvider>
-            <Router></Router>
+            <MuiPickersUtilsProvider utils={DayjsUtils}>
+              <Router></Router>
+            </MuiPickersUtilsProvider>
           </NavProvider>
         </WebSocketProvider>
       </AuthProvider>

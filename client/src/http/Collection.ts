@@ -1,7 +1,11 @@
 import { ChildrenStatusType } from '../components/status/Types';
-import { CollectionView, InsertDataParam } from '../pages/collections/Types';
+import {
+  CollectionView,
+  DeleteEntitiesReq,
+  InsertDataParam,
+} from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
-import { VectorSearchParam } from '../pages/seach/Types';
+import { VectorSearchParam } from '../types/SearchTypes';
 import { QueryParam } from '../pages/query/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
@@ -81,6 +85,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   static insertData(collectionName: string, param: InsertDataParam) {
     return super.create({
       path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
+      data: param,
+    });
+  }
+
+  static deleteEntities(collectionName: string, param: DeleteEntitiesReq) {
+    return super.update({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/entities`,
       data: param,
     });
   }

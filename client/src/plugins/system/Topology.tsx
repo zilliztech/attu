@@ -25,14 +25,13 @@ const getStyles = makeStyles((theme: Theme) => ({
       transition: 'all .25s',
     },
 
-    '&:hover, &:focus': {
+    '&:hover, &.selectedNode': {
       transform: 'scale(1.1)',
       filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
+      outline: 'none',
     },
 
-    '&:focus': {
-      outline: 'none',
-
+    '&.selectedNode': {
       '& circle': {
         fill: '#06AFF2',
         stroke: '#06AFF2',
@@ -57,14 +56,13 @@ const getStyles = makeStyles((theme: Theme) => ({
       transition: 'all .25s',
     },
 
-    '&:hover, &:focus': {
+    '&:hover, &.selectedNode': {
       transform: 'scale(1.1)',
       filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
+      outline: 'none',
     },
 
-    '&:focus': {
-      outline: 'none',
-
+    '&.selectedNode': {
       '& svg path': {
         fill: 'white',
       },
@@ -111,6 +109,20 @@ const getStyles = makeStyles((theme: Theme) => ({
 
 const capitalize = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+const setSelected = (el: any) => {
+  const nodes = document.querySelectorAll<HTMLElement>('.selectedNode');
+  nodes.forEach(n => n.classList.remove('selectedNode'));
+
+  function getGParent(e: any): any {
+    if (e.tagName === 'g') {
+      return e;
+    } else {
+      return getGParent(e.parentElement);
+    }
+  }
+  getGParent(el).classList.add('selectedNode');
 }
 
 const Topo = (props: any) => {
@@ -221,8 +233,9 @@ const Topo = (props: any) => {
               <g key={`${node?.infos?.name}`}>
                 <line x1={`${WIDTH / 2}`} y1={`${HEIGHT / 2}`} x2={nodeCenterX} y2={nodeCenterY} stroke="#06AFF2" />
                 {connectedLength && (<line x1={nodeCenterX} y1={nodeCenterY} x2={childNodeCenterX} y2={childNodeCenterY} stroke="#06AFF2" />)}
-                <g className={classes.childNode} tabIndex={0} onClick={() => {
+                <g className={classes.childNode} tabIndex={0} onClick={e => {
                   setNode(node);
+                  setSelected(e.target);
                 }}
                 >
                   <circle cx={nodeCenterX} cy={nodeCenterY} r={R2} fill="white" stroke="#06AFF2" />
@@ -255,9 +268,10 @@ const Topo = (props: any) => {
           }
           return null;
         })}
-        <g id="center" className={classes.rootNode} tabIndex={0} onClick={() => {
+        <g id="center" className={classes.rootNode} tabIndex={0} onClick={e => {
           setNode(centerNode);
-        }} >
+          setSelected(e.target);
+        }}>
           <circle cx={`${WIDTH / 2}`} cy={`${HEIGHT / 2}`} r={R1} fill="white" stroke="#06AFF2" />
           <text fontFamily="Roboto" textAnchor="middle" alignmentBaseline="middle" fill="#06AFF2" fontWeight="700" fontSize="24" x={`${WIDTH / 2}`} y={`${HEIGHT / 2}`}>Milvus</text>
         </g>
