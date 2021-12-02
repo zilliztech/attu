@@ -82,8 +82,9 @@
     "test:report": "cross-env NODE_ENV=test jest --watchAll=false --coverage --coverageReporters='text-summary'",
     "clean": "rimraf dist",
     "format": "prettier --write '**/*.{ts,js}'",
-    "mac": "rm -rf electron-app && electron-builder --mac",
-    "linux": "rm -rf electron-app && electron-builder --linux"
+    "mac": "electron-builder --mac",
+    "linux": "electron-builder --linux",
+    "win": "electron-builder --win"
   },
   "nodemonConfig": {
     "ignore": [
