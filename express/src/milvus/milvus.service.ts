@@ -7,9 +7,11 @@ import {
 export class MilvusService {
   private milvusAddress: string;
   private milvusClient: MilvusClient;
+  private milvusClients: { [x: string]: MilvusClient };
 
   constructor() {
-    this.milvusAddress = "";
+    this.milvusAddress = '';
+    this.milvusClients = {};
   }
 
   get milvusAddressGetter() {
@@ -55,10 +57,24 @@ export class MilvusService {
         collection_name: "not_exist",
       });
       this.milvusAddress = address;
+      this.milvusClients = {
+        address: this.milvusClient,
+      };
       return { address: this.milvusAddress };
     } catch (error) {
       throw new Error("Connect milvus failed, check your milvus address.");
     }
+  }
+
+  async logout(address: string) {
+    if (this.milvusClients[address]) {
+      delete this.milvusClients[address];
+    }
+    if (this.milvusAddress === address) {
+      this.milvusAddress = '';
+    }
+
+    return { logout: true };
   }
 
   async checkConnect(address: string) {
