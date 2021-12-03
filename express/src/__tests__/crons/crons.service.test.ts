@@ -4,7 +4,8 @@ import { CollectionsService } from '../../collections/collections.service';
 import { CronsService, SchedulerRegistry } from '../../crons/crons.service';
 import { MilvusService } from '../../milvus/milvus.service';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../utils/Const';
-import { mockAddress } from '../__mocks__/consts';
+import { insightCacheForTest, mockAddress } from '../__mocks__/consts';
+import { MilvusClient } from '@zilliz/milvus2-sdk-node/dist/milvus';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {
@@ -41,7 +42,11 @@ describe('test crons service', () => {
 
   const setup = async () => {
     milvusService = new MilvusService();
-    await milvusService.connectMilvus(mockAddress);
+    MilvusService.activeAddress = mockAddress;
+    MilvusService.activeMilvusClient = new MilvusClient(mockAddress);
+
+    await milvusService.connectMilvus(mockAddress, insightCacheForTest);
+
     collectionService = new CollectionsService(milvusService);
 
     schedulerRegistry = new SchedulerRegistry([]);
