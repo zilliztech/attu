@@ -2,18 +2,23 @@ import { Request, Response, NextFunction, Errback } from 'express';
 import morgan from 'morgan';
 import chalk from 'chalk';
 import { MilvusService } from '../milvus/milvus.service';
-
-const MILVUS_ADDRESS = 'milvus_address';
+import { INSIGHT_CACHE, MILVUS_ADDRESS } from '../utils/Const';
+import { HttpError } from 'http-errors';
 
 export const ReqHeaderMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const insightCache = req.app.get(INSIGHT_CACHE);
   // all request need set milvus address in header.
   // server will set activeaddress in milvus service.
-  const milvusAddress = req.headers[MILVUS_ADDRESS] || '';
-  MilvusService.activeAddress = milvusAddress as string;
+  const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
+  MilvusService.activeAddress = milvusAddress;
+  // insight cache will update expire time when use insightCache.get
+  MilvusService.activeMilvusClient = insightCache.get(
+    MilvusService.formatAddress(milvusAddress)
+  );
   next();
 };
 
@@ -23,7 +28,7 @@ export const TransformResMiddlerware = (
   next: NextFunction
 ) => {
   const oldSend = res.json;
-  res.json = (data) => {
+  res.json = data => {
     // console.log(data); // do something with the data
     const statusCode = data?.statusCode;
     const message = data?.message;
@@ -42,12 +47,17 @@ export const TransformResMiddlerware = (
  * Normally depend on status which from milvus service.
  */
 export const ErrorMiddleware = (
-  err: Error,
+  err: HttpError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  console.log(chalk.blue.bold(req.method, req.url), chalk.red.bold(err));
+  const statusCode = err.statusCode || 500;
+  console.log(
+    chalk.blue.bold(req.method, req.url),
+    chalk.magenta.bold(statusCode),
+    chalk.red.bold(err)
+  );
   // Boolean property that indicates if the app sent HTTP headers for the response.
   // Here to prevent sending response after header has been sent.
   if (res.headersSent) {
@@ -55,8 +65,8 @@ export const ErrorMiddleware = (
   }
   if (err) {
     res
-      .status(500)
-      .json({ message: `${err}`, error: 'Bad Request', statusCode: 500 });
+      .status(statusCode)
+      .json({ message: `${err}`, error: 'Bad Request', statusCode });
   }
   next();
 };

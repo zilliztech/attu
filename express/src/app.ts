@@ -21,10 +21,17 @@ import * as path from 'path';
 import chalk from 'chalk';
 import { surveSwaggerSpecification } from './swagger';
 import swaggerUi from 'swagger-ui-express';
+import LruCache from 'lru-cache';
+import { EXPIRED_TIME, INSIGHT_CACHE } from './utils/Const';
 
 const PLUGIN_DEV = process.env?.PLUGIN_DEV;
 const SRC_PLUGIN_DIR = 'src/plugins';
 const DEV_PLUGIN_DIR = '../../src/*/server';
+
+const insightCache = new LruCache({
+  maxAge: EXPIRED_TIME,
+  updateAgeOnGet: true,
+});
 
 export const app = express();
 const PORT = 3000;
@@ -38,6 +45,7 @@ const io = new Server(server, {
   },
 });
 
+app.set(INSIGHT_CACHE, insightCache);
 // https://expressjs.com/en/resources/middleware/cors.html
 app.use(cors());
 // https://github.com/helmetjs/helmet
@@ -64,7 +72,7 @@ io.on('connection', (socket: Socket) => {
   socket.on('COLLECTION', (message: any) => {
     socket.emit('COLLECTION', { data: message });
   });
-  pubSub.on('ws_pubsub', (msg) => {
+  pubSub.on('ws_pubsub', msg => {
     const { event, data } = msg;
     socket.emit(event, data);
   });
