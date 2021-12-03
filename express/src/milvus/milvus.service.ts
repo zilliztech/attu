@@ -5,80 +5,70 @@ import {
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 export class MilvusService {
-  private milvusAddress: string;
-  private milvusClient: MilvusClient;
+  // Share with all instances, so activeAddress is static
+  static activeAddress: string;
   private milvusClients: { [x: string]: MilvusClient };
 
   constructor() {
-    this.milvusAddress = '';
     this.milvusClients = {};
   }
 
-  get milvusAddressGetter() {
-    return this.milvusAddress;
-  }
-
-  get milvusClientGetter() {
-    return this.milvusClient;
+  get activeMilvusClient() {
+    // undefined means not connect yet, will throw error to client.
+    return this.milvusClients[MilvusService.activeAddress];
   }
 
   get collectionManager() {
     this.checkMilvus();
-    return this.milvusClient.collectionManager;
+    return this.activeMilvusClient.collectionManager;
   }
 
   get partitionManager() {
     this.checkMilvus();
-    return this.milvusClient.partitionManager;
+    return this.activeMilvusClient.partitionManager;
   }
 
   get indexManager() {
     this.checkMilvus();
-    return this.milvusClient.indexManager;
+    return this.activeMilvusClient.indexManager;
   }
 
   get dataManager() {
     this.checkMilvus();
-    return this.milvusClient.dataManager;
+    return this.activeMilvusClient.dataManager;
   }
 
   private checkMilvus() {
-    if (!this.milvusClient) {
+    if (!this.activeMilvusClient) {
       throw new Error('Please connect milvus first');
     }
   }
 
+  formatAddress(address: string) {
+    return address.replace(/(http|https):\/\//, '');
+  }
+
   async connectMilvus(address: string) {
     // grpc only need address without http
-    const milvusAddress = address.replace(/(http|https):\/\//, '');
+    const milvusAddress = this.formatAddress(address);
     try {
-      this.milvusClient = new MilvusClient(milvusAddress);
-      await this.milvusClient.collectionManager.hasCollection({
+      const milvusClient = new MilvusClient(milvusAddress);
+      await milvusClient.collectionManager.hasCollection({
         collection_name: 'not_exist',
       });
-      this.milvusAddress = address;
-      this.milvusClients = {
-        address: this.milvusClient,
-      };
-      return { address: this.milvusAddress };
+      MilvusService.activeAddress = address;
+      this.milvusClients[milvusAddress] = milvusClient;
+      return { address };
     } catch (error) {
+      // if milvus is not working, delete connection.
+      delete this.milvusClients[milvusAddress];
       throw new Error('Connect milvus failed, check your milvus address.');
     }
   }
 
-  async logout(address: string) {
-    if (this.milvusClients[address]) {
-      delete this.milvusClients[address];
-    }
-    if (this.milvusAddress === address) {
-      this.milvusAddress = '';
-    }
-
-    return { logout: true };
-  }
-
   async checkConnect(address: string) {
-    if (address !== this.milvusAddress) {
+    const milvusAddress = this.formatAddress(address);
+    if (!Object.keys(this.milvusClients).includes(milvusAddress)) {
       return { connected: false };
     }
     const res = await this.connectMilvus(address);
@@ -88,12 +78,12 @@ export class MilvusService {
   }
 
   async flush(data: FlushReq) {
-    const res = await this.milvusClient.dataManager.flush(data);
+    const res = await this.activeMilvusClient.dataManager.flush(data);
     return res;
   }
 
   async getMetrics(): Promise<GetMetricsResponse> {
-    const res = await this.milvusClient.dataManager.getMetric({
+    const res = await this.activeMilvusClient.dataManager.getMetric({
       request: { metric_type: 'system_info' },
     });
     return res;

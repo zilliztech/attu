@@ -1,6 +1,21 @@
-import { Request, Response, NextFunction, Errback } from "express";
-import morgan from "morgan";
-import chalk from "chalk";
+import { Request, Response, NextFunction, Errback } from 'express';
+import morgan from 'morgan';
+import chalk from 'chalk';
+import { MilvusService } from '../milvus/milvus.service';
+
+const MILVUS_ADDRESS = 'milvus_address';
+
+export const ReqHeaderMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // all request need set milvus address in header.
+  // server will set activeaddress in milvus service.
+  const milvusAddress = req.headers[MILVUS_ADDRESS] || '';
+  MilvusService.activeAddress = milvusAddress as string;
+  next();
+};
 
 export const TransformResMiddlerware = (
   req: Request,
@@ -41,22 +56,22 @@ export const ErrorMiddleware = (
   if (err) {
     res
       .status(500)
-      .json({ message: `${err}`, error: "Bad Request", statusCode: 500 });
+      .json({ message: `${err}`, error: 'Bad Request', statusCode: 500 });
   }
   next();
 };
 
 export const LoggingMiddleware = morgan((tokens, req, res) => {
   return [
-    "\n",
+    '\n',
     chalk.blue.bold(tokens.method(req, res)),
     chalk.magenta.bold(tokens.status(req, res)),
     chalk.green.bold(tokens.url(req, res)),
-    chalk.green.bold(tokens["response-time"](req, res) + " ms"),
-    chalk.green.bold("@ " + tokens.date(req, res)),
-    chalk.yellow(tokens["remote-addr"](req, res)),
-    chalk.hex("#fffa65").bold("from " + tokens.referrer(req, res)),
-    chalk.hex("#1e90ff")(tokens["user-agent"](req, res)),
-    "\n",
-  ].join(" ");
+    chalk.green.bold(tokens['response-time'](req, res) + ' ms'),
+    chalk.green.bold('@ ' + tokens.date(req, res)),
+    chalk.yellow(tokens['remote-addr'](req, res)),
+    chalk.hex('#fffa65').bold('from ' + tokens.referrer(req, res)),
+    chalk.hex('#1e90ff')(tokens['user-agent'](req, res)),
+    '\n',
+  ].join(' ');
 });

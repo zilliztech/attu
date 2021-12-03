@@ -22,13 +22,8 @@ describe('Test Milvus service', () => {
   });
 
   test('test connectMilvus method', async () => {
-    expect(service.milvusClientGetter).toBeUndefined();
-    expect(service.milvusAddressGetter).toBe('');
-
     const res = await service.connectMilvus(mockAddress);
     expect(res.address).toBe(mockAddress);
-    expect(service.milvusAddressGetter).toBe(mockAddress);
-    expect(service.milvusClientGetter).toBeDefined();
   });
 
   test('test connectMilvus method error', async () => {
