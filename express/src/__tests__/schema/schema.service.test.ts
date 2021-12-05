@@ -2,7 +2,8 @@ import mockMilvusClient from '../__mocks__/milvus/milvusClient';
 import { MilvusService } from '../../milvus/milvus.service';
 import { CodeEnum, ERR_NO_COLLECTION } from '../utils/constants';
 import { SchemaService } from '../../schema/schema.service';
-import { mockAddress } from '../__mocks__/consts';
+import { insightCacheForTest, mockAddress } from '../__mocks__/consts';
+import { MilvusClient } from '@zilliz/milvus2-sdk-node/dist/milvus';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {
@@ -18,7 +19,10 @@ describe('Test schema service', () => {
   beforeAll(async () => {
     // setup Milvus service and connect to mock Milvus client
     milvusService = new MilvusService();
-    await milvusService.connectMilvus(mockAddress);
+    MilvusService.activeAddress = mockAddress;
+    MilvusService.activeMilvusClient = new MilvusClient(mockAddress);
+
+    await milvusService.connectMilvus(mockAddress, insightCacheForTest);
     service = new SchemaService(milvusService);
   });
 
