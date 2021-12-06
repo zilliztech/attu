@@ -3,6 +3,7 @@ import BaseModel from './BaseModel';
 
 export class MilvusHttp extends BaseModel {
   static CONNECT_URL = '/milvus/connect';
+
   static CHECK_URL = '/milvus/check';
   static FLUSH_URL = '/milvus/flush';
   static METRICS_URL = '/milvus/metrics';

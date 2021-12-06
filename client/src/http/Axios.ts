@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { MILVUS_ADDRESS } from '../consts/Localstorage';
 // import { SESSION } from '../consts/Localstorage';
 
 // console.log(process.env.NODE_ENV, 'api:', process.env.REACT_APP_BASE_URL);
@@ -16,9 +17,9 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    // const session = window.localStorage.getItem(SESSION);
+    const address = window.localStorage.getItem(MILVUS_ADDRESS);
 
-    // session && (config.headers[SESSION] = session);
+    address && (config.headers[MILVUS_ADDRESS] = address);
 
     return config;
   },
