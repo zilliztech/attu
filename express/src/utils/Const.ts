@@ -5,7 +5,7 @@ export const MILVUS_ADDRESS = 'milvus_address';
 
 // for lru cache
 export const INSIGHT_CACHE = 'insight_cache';
-export const EXPIRED_TIME = 1000 * 10;
+export const EXPIRED_TIME = 1000 * 60 * 60 * 24;
 
 export enum LOADING_STATE {
   LOADED,
