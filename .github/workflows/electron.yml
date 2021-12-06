@@ -2,7 +2,7 @@ name: Build electron app
 
 on:
   release:
-    types: [prereleased]
+    types: [released]
 
 jobs:
   release:
