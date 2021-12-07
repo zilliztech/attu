@@ -19,7 +19,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: {
-      devTools: true,
+      // devTools: true,
       webSecurity: false,
       nodeIntegration: true,
       enableRemoteModule: true,
