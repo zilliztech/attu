@@ -46,6 +46,7 @@
   "jest": {
     "coverageDirectory": "<rootDir>/coverage/"
   },
+  "homepage": "./",
   "scripts": {
     "start": "react-app-rewired start -FAST_REFRESH=true",
     "start:plugin": "REACT_APP_PLUGIN_DEV=true react-app-rewired start -FAST_REFRESH=true",
