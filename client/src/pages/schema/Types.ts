@@ -78,3 +78,10 @@ export interface IndexExtraParam {
   metric_type: string;
   params: string;
 }
+
+export interface SizingInfoParam {
+  info: {
+    memory: string;
+    disk: string;
+  } | null;
+}

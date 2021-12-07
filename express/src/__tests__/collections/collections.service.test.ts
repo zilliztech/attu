@@ -7,6 +7,7 @@ import {
   ERR_NO_PARAM,
 } from '../utils/constants';
 import {
+  insightCacheForTest,
   mockAddress,
   mockCollectionNames,
   mockCollections,
@@ -14,6 +15,7 @@ import {
   mockLoadedCollections,
   mockLoadedCollectionsData,
 } from '../__mocks__/consts';
+import { MilvusClient } from '@zilliz/milvus2-sdk-node/dist/milvus';
 
 // mock Milvus client
 jest.mock('@zilliz/milvus2-sdk-node', () => {
@@ -29,7 +31,10 @@ describe('Test collections service', () => {
   beforeAll(async () => {
     // setup Milvus service and connect to mock Milvus client
     milvusService = new MilvusService();
-    await milvusService.connectMilvus(mockAddress);
+    MilvusService.activeAddress = mockAddress;
+    MilvusService.activeMilvusClient = new MilvusClient(mockAddress);
+
+    await milvusService.connectMilvus(mockAddress, insightCacheForTest);
     service = new CollectionsService(milvusService);
   });
 

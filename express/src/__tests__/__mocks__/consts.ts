@@ -1,3 +1,11 @@
+import LRUCache from 'lru-cache';
+import { EXPIRED_TIME } from '../../utils/Const';
+
+export const insightCacheForTest = new LRUCache({
+  maxAge: EXPIRED_TIME,
+  updateAgeOnGet: true,
+});
+
 // mock data
 export const mockAddress = '127.0.0.1';
 export const mockCollectionNames = [{ name: 'c1' }, { name: 'c2' }];

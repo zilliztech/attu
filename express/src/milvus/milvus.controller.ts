@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { dtoValidationMiddleware } from "../middlewares/validation";
-import { MilvusService } from "./milvus.service";
-import { ConnectMilvusDto, FlushDto } from "./dto";
+import { NextFunction, Request, Response, Router } from 'express';
+import { dtoValidationMiddleware } from '../middlewares/validation';
+import { MilvusService } from './milvus.service';
+import { ConnectMilvusDto, FlushDto } from './dto';
+import { INSIGHT_CACHE } from '../utils/Const';
 
 export class MilvusController {
   private router: Router;
@@ -18,28 +19,32 @@ export class MilvusController {
 
   generateRoutes() {
     this.router.post(
-      "/connect",
+      '/connect',
       dtoValidationMiddleware(ConnectMilvusDto),
       this.connectMilvus.bind(this)
     );
 
-    this.router.get("/check", this.checkConnect.bind(this));
+    this.router.get('/check', this.checkConnect.bind(this));
 
     this.router.put(
-      "/flush",
+      '/flush',
       dtoValidationMiddleware(FlushDto),
       this.flush.bind(this)
     );
 
-    this.router.get("/metrics", this.getMetrics.bind(this));
+    this.router.get('/metrics', this.getMetrics.bind(this));
 
     return this.router;
   }
 
   async connectMilvus(req: Request, res: Response, next: NextFunction) {
     const address = req.body?.address;
+    const insightCache = req.app.get(INSIGHT_CACHE);
     try {
-      const result = await this.milvusService.connectMilvus(address);
+      const result = await this.milvusService.connectMilvus(
+        address,
+        insightCache
+      );
 
       res.send(result);
     } catch (error) {
@@ -48,9 +53,14 @@ export class MilvusController {
   }
 
   async checkConnect(req: Request, res: Response, next: NextFunction) {
-    const address = "" + req.query?.address;
+    const address = '' + req.query?.address;
+    const insightCache = req.app.get(INSIGHT_CACHE);
+
     try {
-      const result = await this.milvusService.checkConnect(address);
+      const result = await this.milvusService.checkConnect(
+        address,
+        insightCache
+      );
       res.send(result);
     } catch (error) {
       next(error);
