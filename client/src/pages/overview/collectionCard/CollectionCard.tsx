@@ -1,10 +1,4 @@
-import {
-  makeStyles,
-  Theme,
-  Link,
-  Typography,
-  Divider,
-} from '@material-ui/core';
+import { makeStyles, Theme, Typography, Divider } from '@material-ui/core';
 import { FC } from 'react';
 import CustomButton from '../../../components/customButton/CustomButton';
 import icons from '../../../components/icons/Icons';
@@ -13,29 +7,31 @@ import CustomToolTip from '../../../components/customToolTip/CustomToolTip';
 import { CollectionCardProps } from './Types';
 import { useTranslation } from 'react-i18next';
 import CustomIconButton from '../../../components/customButton/CustomIconButton';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { LOADING_STATE } from '../../../consts/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     padding: theme.spacing(2),
     textAlign: 'end',
+    '& .link': {
+      display: 'flex',
+      alignItems: 'center',
+
+      margin: theme.spacing(2, 0),
+
+      color: theme.palette.milvusDark.main,
+      fontSize: '20px',
+      lineHeight: '24px',
+      fontWeight: 'bold',
+      textDecoration: 'none',
+    },
   },
   loading: {
     background: '#F0F4F9',
     border: `1px dashed #06AFF2`,
   },
-  link: {
-    display: 'flex',
-    alignItems: 'center',
 
-    margin: theme.spacing(2, 0),
-
-    color: theme.palette.milvusDark.main,
-    fontSize: '20px',
-    lineHeight: '24px',
-    fontWeight: 'bold',
-  },
   icon: {
     color: theme.palette.primary.main,
     marginLeft: theme.spacing(0.5),
@@ -115,11 +111,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       <div>
         <Status status={status} percentage={_loadedPercentage} />
       </div>
-      <Link
-        classes={{ root: classes.link }}
-        underline="none"
-        href={`/collections/${name}`}
-      >
+      <Link className="link" to={`/collections/${name}`}>
         {name}
         <RightArrowIcon classes={{ root: classes.icon }} />
       </Link>
