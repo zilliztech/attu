@@ -32,10 +32,10 @@ const handleOnBlur = (param: IBlurParam) => {
   const input = event.target.value;
   const isValid = validations
     ? checkValid({
-        key,
-        value: input,
-        rules: validations,
-      })
+      key,
+      value: input,
+      rules: validations,
+    })
     : true;
 
   if (isValid) {
@@ -52,10 +52,10 @@ const handleOnChange = (param: IChangeParam) => {
   const input = event.target.value;
   const isValid = validations
     ? checkValid({
-        key,
-        value: input,
-        rules: validations,
-      })
+      key,
+      value: input,
+      rules: validations,
+    })
     : true;
 
   if (isValid) {
@@ -65,7 +65,7 @@ const handleOnChange = (param: IChangeParam) => {
 
 const getAdornmentStyles = makeStyles(theme => ({
   icon: {
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
   },
 }));
 
@@ -90,7 +90,7 @@ const getAdornmentInput = (
   const classes = getAdornmentStyles();
 
   const param = {
-    cb: onInputBlur || (() => {}),
+    cb: onInputBlur || (() => { }),
     validations: validations || [],
     checkValid,
   };
@@ -112,13 +112,13 @@ const getAdornmentInput = (
             key,
             param: {
               ...param,
-              cb: onInputChange || (() => {}),
+              cb: onInputChange || (() => { }),
             },
           });
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton onClick={onIconClick || (() => {})} edge="end">
+            <IconButton onClick={onIconClick || (() => { })} edge="end">
               {isPasswordType
                 ? showPassword
                   ? Icons.visible({ classes: { root: classes.icon } })
@@ -162,10 +162,10 @@ const getIconInput = (
         {inputType === 'icon'
           ? getTextfield(inputConfig as ITextfieldConfig, checkValid, validInfo)
           : getAdornmentInput(
-              inputConfig as IAdornmentConfig,
-              checkValid,
-              validInfo
-            )}
+            inputConfig as IAdornmentConfig,
+            checkValid,
+            validInfo
+          )}
       </Grid>
     </Grid>
   );
@@ -196,7 +196,7 @@ const getTextfield = (
   }
 
   const param = {
-    cb: onBlur || (() => {}),
+    cb: onBlur || (() => { }),
     validations: validations || [],
     checkValid,
   };
@@ -233,7 +233,7 @@ const getTextfield = (
         handleOnChange({
           event,
           key,
-          param: { ...param, cb: onChange || (() => {}) },
+          param: { ...param, cb: onChange || (() => { }) },
         });
       }}
     />

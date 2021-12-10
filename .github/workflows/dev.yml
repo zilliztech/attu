@@ -1,4 +1,4 @@
-name: Milvus insight dev release
+name: Attu dev release
 
 on:
   pull_request_target:
@@ -37,10 +37,10 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
 
       - name: Docker Build
-        run: docker build -t milvusdb/milvus-insight:dev --build-arg VERSION=dev .
+        run: docker build -t zilliz/attu:dev --build-arg VERSION=dev .
 
       - name: Docker Push Dev
-        run: docker push milvusdb/milvus-insight:dev
+        run: docker push zilliz/attu:dev
 
   k8s:
     runs-on: ubuntu-latest
@@ -76,7 +76,7 @@ jobs:
         run: |
           echo ${{ secrets.kubeconfig }} > config64
           base64 -d config64 > kubeconfig
-          kubectl delete pods -n ued -l app=milvus-insight --kubeconfig=kubeconfig
+          kubectl delete pods -n ued -l app=attu --kubeconfig=kubeconfig
           sleep 60
 
   check:

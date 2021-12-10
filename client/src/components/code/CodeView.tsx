@@ -12,7 +12,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '100%',
 
     padding: theme.spacing(4),
-    backgroundColor: theme.palette.milvusDark.main,
+    backgroundColor: theme.palette.attuDark.main,
     borderRadius: 8,
 
     color: '#fff',

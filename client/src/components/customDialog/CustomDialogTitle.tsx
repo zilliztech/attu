@@ -19,7 +19,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   icon: {
     fontSize: '24px',
-    color: theme.palette.milvusDark.main,
+    color: theme.palette.attuDark.main,
 
     cursor: 'pointer',
   },

@@ -1,9 +1,9 @@
 {
-  "name": "milvus-insight",
+  "name": "attu",
   "version": "0.1.0",
-  "description": "Milvus insight",
+  "description": "Attu",
   "license": "Apache-2.0",
-  "bugs": "https://github.com/milvus-io/milvus-insight/issues",
+  "bugs": "https://github.com/zilliztech/attu/issues",
   "release": {
     "branches": [
       "main",

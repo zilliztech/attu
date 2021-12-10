@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
-import MilvusGrid from '../../components/grid/Grid';
+import AttuGrid from '../../components/grid/Grid';
 import CustomToolBar from '../../components/grid/ToolBar';
 import {
   CollectionCreateParam,
@@ -190,12 +190,12 @@ const Collections = () => {
     data.fields = data.fields.map(v =>
       vectorType.includes(v.data_type)
         ? {
-            ...v,
-            type_params: {
-              // if data type is vector, dimension must exist.
-              dim: v.dimension!,
-            },
-          }
+          ...v,
+          type_params: {
+            // if data type is vector, dimension must exist.
+            dim: v.dimension!,
+          },
+        }
         : v
     );
     await CollectionHttp.createCollection(data);
@@ -435,7 +435,7 @@ const Collections = () => {
   return (
     <section className="page-wrapper">
       {collections.length > 0 || loading ? (
-        <MilvusGrid
+        <AttuGrid
           toolbarConfigs={toolbarConfigs}
           colDefinitions={colDefinitions}
           rows={collectionList}

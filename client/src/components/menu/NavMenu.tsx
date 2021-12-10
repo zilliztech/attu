@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: 'content-box',
       height: theme.spacing(3),
       width: 'initial',
-      color: theme.palette.milvusGrey.dark,
+      color: theme.palette.attuGrey.dark,
     },
     itemIcon: {
       minWidth: '20px',
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fill: 'transparent',
 
         '& path': {
-          stroke: theme.palette.milvusGrey.dark,
+          stroke: theme.palette.attuGrey.dark,
         },
       },
     },
@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
 
       '& svg path': {
-        fill: theme.palette.milvusGrey.dark,
+        fill: theme.palette.attuGrey.dark,
       },
 
       '&:hover': {
@@ -148,7 +148,7 @@ const NavMenu: FC<NavMenuType> = props => {
   const [active, setActive] = useState<string>(defaultActive);
 
   const { t: commonTrans } = useTranslation();
-  const milvusTrans = commonTrans('milvus');
+  const attuTrans = commonTrans('attu');
 
   useEffect(() => {
     if (defaultActive) {
@@ -197,7 +197,7 @@ const NavMenu: FC<NavMenuType> = props => {
     );
   };
 
-  const Logo = icons.milvus;
+  const Logo = icons.zilliz;
 
   return (
     <List
@@ -218,7 +218,7 @@ const NavMenu: FC<NavMenuType> = props => {
           />
           <Fade in={expanded} timeout={timeout}>
             <Typography variant="h3" className="title">
-              {milvusTrans.admin}
+              {attuTrans.admin}
             </Typography>
           </Fade>
         </div>

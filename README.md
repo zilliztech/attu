@@ -1,16 +1,16 @@
-# attu
+# Attu
 
 [![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
-[![downloads](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)](https://img.shields.io/docker/pulls/milvusdb/milvus-insight)
-[![codecov](https://codecov.io/gh/zilliztech/milvus-insight/branch/main/graph/badge.svg?token=jvIEVF9IwW)](https://codecov.io/gh/zilliztech/milvus-insight)
+[![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://img.shields.io/docker/pulls/zilliz/attu)
+[![codecov](https://codecov.io/gh/zilliztech/attu/branch/main/graph/badge.svg?token=jvIEVF9IwW)](https://codecov.io/gh/zilliztech/attu)
 
-attu provides an intuitive and efficient GUI for Milvus, allowing you to interact with your databases and manage your data with just few clicks.
+Attu provides an intuitive and efficient GUI for Milvus, allowing you to interact with your databases and manage your data with just few clicks.
 
 <img src="./.github/images/screenshot.png" alt="attu" />
 
 ## Features and Roadmap
 
-attu is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
+Attu is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
 
 - Manage collections/partitions
 - Manage index
@@ -18,9 +18,9 @@ attu is under rapid development and we are adding new features weekly, here are 
 - Load/release collections for search
 - Insert entities
 - Vector search with advanced filter
-- Milvus system view(TBD)
+- System view
 - Data view (TBD)
-- View milvus node configuration(TBD)
+- View root node configuration(TBD)
 - Vector Visualization(TBD)
 - More...
 
@@ -33,10 +33,10 @@ Ensure you have Milvus installed on [your server](https://milvus.io/docs/install
 ### ⭐️ Start a attu instance
 
 ```code
-docker run -p 8000:3000 -e HOST_URL=http://{ milvus insight ip }:8000 -e MILVUS_URL={milvus server ip}:19530 milvusdb/milvus-insight:latest
+docker run -p 8000:3000 -e HOST_URL=http://{ attu ip }:8000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:latest
 ```
 
-Once you start the docker, open the browser, type `http://{ milvus insight ip }:8000`, you can view the attu.
+Once you start the docker, open the browser, type `http://{ attu ip }:8000`, you can view the attu.
 
 #### Params
 
@@ -52,12 +52,12 @@ Tip: **127.0.0.1 or localhost will not work when runs on docker**
 **_note_** We plan to release attu once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
 
 ```code
-docker run -p 8000:3000 -e HOST_URL=http://{ your machine IP }:8000 -e MILVUS_URL={ your machine IP }:19530 milvusdb/milvus-insight:dev
+docker run -p 8000:3000 -e HOST_URL=http://{ your machine IP }:8000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
 ```
 
 ## ✨ Building and Running attu, and/or Contributing Code
 
-You might want to build Milvus-insight locally to contribute some code, test out the latest features, or try
+You might want to build Attu locally to contribute some code, test out the latest features, or try
 out an open PR:
 
 ### Build server

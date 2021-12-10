@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
       margin: theme.spacing(2, 0),
 
-      color: theme.palette.milvusDark.main,
+      color: theme.palette.attuDark.main,
       fontSize: '20px',
       lineHeight: '24px',
       fontWeight: 'bold',
@@ -104,9 +104,8 @@ const CollectionCard: FC<CollectionCardProps> = ({
 
   return (
     <div
-      className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
-        data._status === LOADING_STATE.LOADING && classes.loading
-      }`}
+      className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${data._status === LOADING_STATE.LOADING && classes.loading
+        }`}
     >
       <div>
         <Status status={status} percentage={_loadedPercentage} />

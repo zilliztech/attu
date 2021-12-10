@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
 import { Option } from '../customSelector/Types';
 import CustomSelector from '../customSelector/CustomSelector';
-import MilvusGrid from '../grid/Grid';
+import AttuGrid from '../grid/Grid';
 import { transferCsvArrayToTableData } from '../../utils/Insert';
 import { ColDefinitionsType } from '../grid/Types';
 import SimpleMenu from '../menu/SimpleMenu';
@@ -15,7 +15,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '75vw',
   },
   selectorTip: {
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
     fontWeight: 500,
     marginBottom: theme.spacing(1),
   },
@@ -42,7 +42,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
 
     '& .text': {
-      color: theme.palette.milvusGrey.dark,
+      color: theme.palette.attuGrey.dark,
       fontWeight: 500,
     },
   },
@@ -51,7 +51,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     minWidth: '160px',
 
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
     backgroundColor: '#fff',
 
     '&:hover': {
@@ -60,13 +60,13 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 
   menuIcon: {
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
   },
   menuItem: {
     fontWeight: 500,
     fontSize: '12px',
     lineHeight: '16px',
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
   },
   menuActive: {
     color: theme.palette.primary.main,
@@ -116,9 +116,8 @@ const InsertPreview: FC<InsertPreviewProps> = ({
             menuItems={schemaOptions.map(schema => ({
               label: schema.label,
               callback: () => handleTableHeadChange(index, schema.label),
-              wrapperClass: `${classes.menuItem} ${
-                head === schema.label ? classes.menuActive : ''
-              }`,
+              wrapperClass: `${classes.menuItem} ${head === schema.label ? classes.menuActive : ''
+                }`,
             }))}
             buttonProps={{
               className: classes.menuLabel,
@@ -189,7 +188,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
       </div>
       {tableData.length > 0 && (
         <div className={classes.gridWrapper}>
-          <MilvusGrid
+          <AttuGrid
             toolbarConfigs={[]}
             colDefinitions={colDefinitions}
             rows={tableData}

@@ -16,7 +16,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
 
       '& .textarea': {
-        border: `1px solid ${theme.palette.milvusGrey.main}`,
+        border: `1px solid ${theme.palette.attuGrey.main}`,
         borderRadius: theme.spacing(0.5),
         padding: theme.spacing(1),
         paddingBottom: '18px',
@@ -71,7 +71,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     },
 
     '& .text': {
-      color: theme.palette.milvusGrey.dark,
+      color: theme.palette.attuGrey.dark,
       fontWeight: 500,
     },
   },
@@ -95,7 +95,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
 
       '& .text': {
-        color: theme.palette.milvusGrey.main,
+        color: theme.palette.attuGrey.main,
       },
     },
     '& .right': {
@@ -114,13 +114,13 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0, 1),
 
     backgroundColor: '#fff',
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
   },
   menuItem: {
     fontWeight: 500,
     fontSize: '12px',
     lineHeight: '16px',
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
   },
   error: {
     marginTop: theme.spacing(1),

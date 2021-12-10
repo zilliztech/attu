@@ -7,7 +7,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Typography from '@material-ui/core/Typography';
 import CustomToolbar from './ToolBar';
 import Table from './Table';
-import { MilvusGridType } from './Types';
+import { AttuGridType } from './Types';
 import { useTranslation } from 'react-i18next';
 import TablePaginationActions from './TablePaginationActions';
 
@@ -91,7 +91,7 @@ const userStyle = makeStyles(theme => ({
  * @param order order by which table field
  * @returns
  */
-const MilvusGrid: FC<MilvusGridType> = props => {
+const AttuGrid: FC<AttuGridType> = props => {
   const classes = userStyle();
 
   // i18n
@@ -123,8 +123,8 @@ const MilvusGrid: FC<MilvusGridType> = props => {
     headEditable = false,
     editHeads = [],
     selected = [],
-    setSelected = () => {},
-    setRowsPerPage = () => {},
+    setSelected = () => { },
+    setRowsPerPage = () => { },
     tableCellMaxWidth,
     handleSort,
     order,
@@ -244,4 +244,4 @@ const MilvusGrid: FC<MilvusGridType> = props => {
   );
 };
 
-export default MilvusGrid;
+export default AttuGrid;

@@ -14,7 +14,7 @@ labels: defect
 2.
 3.
 
-**Milvus-insight version:**
+**Attu version:**
 
 
-**Milvus version:**
+**Attu version:**

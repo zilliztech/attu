@@ -6,7 +6,7 @@ import { AuthContextType } from './Types';
 export const authContext = createContext<AuthContextType>({
   isAuth: false,
   address: '',
-  setAddress: () => {},
+  setAddress: () => { },
 });
 
 const { Provider } = authContext;
@@ -39,7 +39,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   }, [setAddress]);
 
   useEffect(() => {
-    document.title = address ? `${address} - Milvus Insight` : 'Milvus Insight';
+    document.title = address ? `${address} - Attu` : 'Attu';
   }, [address]);
 
   return (

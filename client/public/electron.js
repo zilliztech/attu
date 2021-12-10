@@ -11,21 +11,21 @@ const template = [
   // { role: 'appMenu' }
   ...(isMac
     ? [
-        {
-          label: app.name,
-          submenu: [
-            { role: "about" },
-            { type: "separator" },
-            { role: "services" },
-            { type: "separator" },
-            { role: "hide" },
-            { role: "hideothers" },
-            { role: "unhide" },
-            { type: "separator" },
-            { role: "quit" }
-          ]
-        }
-      ]
+      {
+        label: app.name,
+        submenu: [
+          { role: "about" },
+          { type: "separator" },
+          { role: "services" },
+          { type: "separator" },
+          { role: "hide" },
+          { role: "hideothers" },
+          { role: "unhide" },
+          { type: "separator" },
+          { role: "quit" }
+        ]
+      }
+    ]
     : []),
   // { role: 'fileMenu' }
   {
@@ -44,15 +44,15 @@ const template = [
       { role: "paste" },
       ...(isMac
         ? [
-            { role: "pasteAndMatchStyle" },
-            { role: "delete" },
-            { role: "selectAll" },
-            { type: "separator" },
-            {
-              label: "Speech",
-              submenu: [{ role: "startspeaking" }, { role: "stopspeaking" }]
-            }
-          ]
+          { role: "pasteAndMatchStyle" },
+          { role: "delete" },
+          { role: "selectAll" },
+          { type: "separator" },
+          {
+            label: "Speech",
+            submenu: [{ role: "startspeaking" }, { role: "stopspeaking" }]
+          }
+        ]
         : [{ role: "delete" }, { type: "separator" }, { role: "selectAll" }])
     ]
   },
@@ -79,11 +79,11 @@ const template = [
       { role: "zoom" },
       ...(isMac
         ? [
-            { type: "separator" },
-            { role: "front" },
-            { type: "separator" },
-            { role: "window" }
-          ]
+          { type: "separator" },
+          { role: "front" },
+          { type: "separator" },
+          { role: "window" }
+        ]
         : [{ role: "close" }])
     ]
   },
@@ -130,7 +130,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: { devTools: false },
-    icon: "./milvus-icon.png"
+    icon: "./zilliz.png"
   });
   // mainWindow.maximize();
   // mainWindow.show();
@@ -149,7 +149,7 @@ function createWindow() {
   //   mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", function() {
+  mainWindow.on("closed", function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -163,7 +163,7 @@ function createWindow() {
 app.on("ready", createWindow);
 
 // Quit when all windows are closed.
-app.on("window-all-closed", function() {
+app.on("window-all-closed", function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {
@@ -171,7 +171,7 @@ app.on("window-all-closed", function() {
   }
 });
 
-app.on("activate", function() {
+app.on("activate", function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
