@@ -1,9 +1,9 @@
 {
-  "name": "milvus-insight-client",
+  "name": "attu-client",
   "version": "0.1.0",
-  "description": "Milvus insight UI Client",
+  "description": "Attu UI Client",
   "license": "Apache-2.0",
-  "bugs": "https://github.com/milvus-io/milvus-insight/issues",
+  "bugs": "https://github.com/zilliztech/attu/issues",
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "1.x",

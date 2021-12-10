@@ -54,7 +54,7 @@ const Connect = () => {
   const classes = useStyles();
   const { t: commonTrans } = useTranslation();
   const { t: warningTrans } = useTranslation('warning');
-  const milvusTrans = commonTrans('milvus');
+  const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
 
@@ -67,7 +67,7 @@ const Connect = () => {
   }, [form]);
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const Logo = icons.milvus;
+  const Logo = icons.zilliz;
 
   const handleInputChange = (value: string) => {
     setForm({ address: value });
@@ -83,17 +83,17 @@ const Connect = () => {
   };
 
   const addressInputConfig: ITextfieldConfig = {
-    label: milvusTrans.address,
+    label: attuTrans.address,
     key: 'address',
     onChange: handleInputChange,
     variant: 'filled',
     className: classes.input,
-    placeholder: milvusTrans.address,
+    placeholder: attuTrans.address,
     fullWidth: true,
     validations: [
       {
         rule: 'require',
-        errorText: warningTrans('required', { name: milvusTrans.address }),
+        errorText: warningTrans('required', { name: attuTrans.address }),
       },
     ],
     defaultValue: form.address,
@@ -105,7 +105,7 @@ const Connect = () => {
         <div className={classes.titleWrapper}>
           <Logo classes={{ root: classes.logo }} />
           <Typography variant="h2" className="title">
-            {milvusTrans.admin}
+            {attuTrans.admin}
           </Typography>
         </div>
         <CustomInput

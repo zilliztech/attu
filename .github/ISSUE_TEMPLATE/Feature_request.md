@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Milvus-insight can't do all the things, but maybe it can do your things.
+about: Attu can't do all the things, but maybe it can do your things.
 labels: feat
 
 ---

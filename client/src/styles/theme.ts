@@ -9,18 +9,18 @@ type overridesNameToClassKey = {
 };
 
 declare module '@material-ui/core/styles/overrides' {
-  export interface ComponentNameToClassKey extends overridesNameToClassKey {}
+  export interface ComponentNameToClassKey extends overridesNameToClassKey { }
 }
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
-    milvusBlue: Palette['primary'];
-    milvusGrey: Palette['primary'];
-    milvusDark: Palette['primary'];
+    attuBlue: Palette['primary'];
+    attuGrey: Palette['primary'];
+    attuDark: Palette['primary'];
   }
   interface PaletteOptions {
-    milvusBlue: PaletteOptions['primary'];
-    milvusGrey: PaletteOptions['primary'];
-    milvusDark: PaletteOptions['primary'];
+    attuBlue: PaletteOptions['primary'];
+    attuGrey: PaletteOptions['primary'];
+    attuDark: PaletteOptions['primary'];
   }
 }
 
@@ -55,17 +55,17 @@ const commonThemes = {
       light: '#ff8f68',
       dark: '#cd3804',
     },
-    milvusBlue: {
+    attuBlue: {
       main: '#f8f8fc',
       dark: '#dcdce3',
     },
-    milvusGrey: {
+    attuGrey: {
       main: '#aeaebb',
       light: '#dcdce3',
       dark: '#82838e',
       contrastText: '#f8f8fc',
     },
-    milvusDark: {
+    attuDark: {
       main: '#010e29',
     },
   },

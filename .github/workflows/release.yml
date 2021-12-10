@@ -1,4 +1,4 @@
-name: Milvus insight prod release
+name: Attu prod release
 
 on:
   release:
@@ -22,13 +22,10 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
 
       - name: Docker Build
-        run: docker build -t milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
+        run: docker build -t zilliz/attu:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
 
       - name: Docker tag
-        run: docker tag milvusdb/milvus-insight:${GITHUB_REF#refs/tags/} milvusdb/milvus-insight:latest
-
-      # - name: Docker Push version
-      #   run: docker push milvusdb/cloud-ui:${GITHUB_REF#refs/tags/}
+        run: docker tag zilliz/attu:${GITHUB_REF#refs/tags/} zilliz/attu:latest
 
       - name: Docker Push lastest
-        run: docker push milvusdb/milvus-insight
+        run: docker push zilliz/attu

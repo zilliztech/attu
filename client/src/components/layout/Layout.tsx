@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
       '& .normalSearchIcon': {
         '& path': {
-          fill: theme.palette.milvusGrey.dark,
+          fill: theme.palette.attuGrey.dark,
         },
       },
 

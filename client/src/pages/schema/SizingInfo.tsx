@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
 
     '& .title': {
-      color: theme.palette.milvusGrey.dark,
+      color: theme.palette.attuGrey.dark,
     },
   },
   icon: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& .key': {
       marginRight: theme.spacing(2),
-      color: theme.palette.milvusGrey.dark,
+      color: theme.palette.attuGrey.dark,
     },
   },
 }));

@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import MilvusGrid from '../../grid/Grid';
+import AttuGrid from '../../grid/Grid';
 import { ToolBarConfig } from '../../grid/Types';
 
 let container: any = null;
@@ -17,7 +17,7 @@ jest.mock('react-i18next', () => {
 
 jest.mock('../../grid/Table', () => {
   return () => {
-    return <div id="table">{}</div>;
+    return <div id="table">{ }</div>;
   };
 });
 
@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => {
   return {
     useHistory: () => {
       return {
-        listen: () => () => {},
+        listen: () => () => { },
         location: {
           name: '',
         },
@@ -55,7 +55,7 @@ describe('Test Grid index', () => {
   it('Has Table Data', () => {
     act(() => {
       render(
-        <MilvusGrid
+        <AttuGrid
           primaryKey="id"
           rows={[{}]}
           colDefinitions={[]}
@@ -73,7 +73,7 @@ describe('Test Grid index', () => {
     const title = ['collections', 'vectors'];
     act(() => {
       render(
-        <MilvusGrid
+        <AttuGrid
           primaryKey="id"
           rows={[]}
           colDefinitions={[]}
@@ -96,13 +96,13 @@ describe('Test Grid index', () => {
       {
         label: 'collection',
         icon: 'search',
-        onClick: () => {},
-        onSearch: () => {},
+        onClick: () => { },
+        onSearch: () => { },
       },
     ];
     act(() => {
       render(
-        <MilvusGrid
+        <AttuGrid
           primaryKey="id"
           rows={[]}
           colDefinitions={[]}

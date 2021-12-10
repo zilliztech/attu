@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(4),
     fontSize: '36px',
     lineHeight: '42px',
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
     fontWeight: 'bold',
     letterSpacing: '-0.02em',
   },

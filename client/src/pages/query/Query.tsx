@@ -6,7 +6,7 @@ import { rootContext } from '../../context/Root';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
-import MilvusGrid from '../../components/grid/Grid';
+import AttuGrid from '../../components/grid/Grid';
 import { ToolBarConfig } from '../../components/grid/Types';
 import { getQueryStyles } from './Styles';
 import Filter from '../../components/advancedSearch';
@@ -260,7 +260,7 @@ const Query: FC<{
         </div>
       </div>
       {tableLoading || queryResult?.length ? (
-        <MilvusGrid
+        <AttuGrid
           toolbarConfigs={[]}
           colDefinitions={fields.map(i => ({
             id: i.name,

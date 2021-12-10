@@ -1,6 +1,6 @@
 const commonTrans = {
-  milvus: {
-    admin: 'Milvus Insight',
+  attu: {
+    admin: 'Attu',
     address: 'Milvus Address',
   },
   status: {

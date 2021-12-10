@@ -5,7 +5,7 @@ import {
   // PartitionParam,
   PartitionView,
 } from './Types';
-import MilvusGrid from '../../components/grid/Grid';
+import AttuGrid from '../../components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '../../hooks/Pagination';
@@ -386,7 +386,7 @@ const Partitions: FC<{
 
   return (
     <section className={classes.wrapper}>
-      <MilvusGrid
+      <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
         rows={partitionList}

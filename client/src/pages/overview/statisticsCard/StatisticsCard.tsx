@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   label: {
     fontSize: '12px',
     lineHeight: '16px',
-    color: theme.palette.milvusDark.main,
+    color: theme.palette.attuDark.main,
   },
   value: {
     fontSize: '24px',

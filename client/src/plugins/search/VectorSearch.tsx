@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import SearchParams from './SearchParams';
 import { DEFAULT_METRIC_VALUE_MAP } from '../../consts/Milvus';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
-import MilvusGrid from '../../components/grid/Grid';
+import AttuGrid from '../../components/grid/Grid';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import { usePaginationHook } from '../../hooks/Pagination';
@@ -123,18 +123,18 @@ const VectorSearch = () => {
      */
     return searchResult && searchResult.length > 0
       ? Object.keys(searchResult[0])
-          .filter(item => {
-            // if primary key field name is id, don't filter it
-            const invalidItems =
-              primaryKeyField === 'id' ? ['score'] : ['id', 'score'];
-            return !invalidItems.includes(item);
-          })
-          .map(key => ({
-            id: key,
-            align: 'left',
-            disablePadding: false,
-            label: key,
-          }))
+        .filter(item => {
+          // if primary key field name is id, don't filter it
+          const invalidItems =
+            primaryKeyField === 'id' ? ['score'] : ['id', 'score'];
+          return !invalidItems.includes(item);
+        })
+        .map(key => ({
+          id: key,
+          align: 'left',
+          disablePadding: false,
+          label: key,
+        }))
       : [];
   }, [searchResult, primaryKeyField]);
 
@@ -421,8 +421,8 @@ const VectorSearch = () => {
             metricType={metricType!}
             embeddingType={
               embeddingType as
-                | DataTypeEnum.BinaryVector
-                | DataTypeEnum.FloatVector
+              | DataTypeEnum.BinaryVector
+              | DataTypeEnum.FloatVector
             }
             indexType={indexType}
             indexParams={indexParams!}
@@ -493,7 +493,7 @@ const VectorSearch = () => {
 
       {/* search result table section */}
       {(searchResult && searchResult.length > 0) || tableLoading ? (
-        <MilvusGrid
+        <AttuGrid
           toolbarConfigs={[]}
           colDefinitions={colDefinitions}
           rows={result}

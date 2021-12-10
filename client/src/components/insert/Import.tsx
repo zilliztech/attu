@@ -9,7 +9,7 @@ import { parseByte } from '../../utils/Format';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
     fontWeight: 500,
     marginBottom: theme.spacing(1),
   },
@@ -24,13 +24,13 @@ const getStyles = makeStyles((theme: Theme) => ({
       '& .selectLabel': {
         fontSize: '14px',
         lineHeight: '20px',
-        color: theme.palette.milvusDark.main,
+        color: theme.palette.attuDark.main,
       },
 
       '& .divider': {
         width: '20px',
         margin: theme.spacing(0, 4),
-        backgroundColor: theme.palette.milvusGrey.dark,
+        backgroundColor: theme.palette.attuGrey.dark,
       },
     },
 
@@ -46,7 +46,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     backgroundColor: '#f9f9f9',
 
     '& .text': {
-      color: theme.palette.milvusGrey.dark,
+      color: theme.palette.attuGrey.dark,
     },
 
     '& .file': {

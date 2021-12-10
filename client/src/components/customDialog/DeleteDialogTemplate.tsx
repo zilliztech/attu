@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '10px 12px',
   },
   cancelBtn: {
-    color: theme.palette.milvusGrey.dark,
+    color: theme.palette.attuGrey.dark,
   },
 }));
 

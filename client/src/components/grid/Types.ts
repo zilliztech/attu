@@ -114,7 +114,7 @@ export type ColDefinitionsType = {
   actionBarConfigs?: ActionBarConfig[];
 };
 
-export type MilvusGridType = ToolBarType & {
+export type AttuGridType = ToolBarType & {
   rowCount: number;
   rowsPerPage?: number;
   // used to dynamic set page size by table container and row height

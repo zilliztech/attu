@@ -1,4 +1,4 @@
-# Milvus insight client
+# Attu client
 
 ## How to run
 
@@ -73,7 +73,7 @@ As `react-app-rewire-alias` in `config-overrides.js`, we can use alias import. `
 
 We put all icons in components/icons file. Normally we use material icon.
 
-If we use custom svg, like: import { ReactComponent as MilvusEmIcon } from xxx/xxx.svg'.
+If we use custom svg, like: import { ReactComponent as CustomIcon } from xxx/xxx.svg'.
 
 It's react component because of svgr/webpack in webpack config.
 
@@ -83,4 +83,4 @@ We use react-app-rewired to change webpack config.
 
 If we want to change the webpack config, we can edit config-overrides.js file.
 
-Our build path is `./build`. And we use milvus insight server to host our client site.
+Our build path is `./build`. And we use Attu server to host our client site.
