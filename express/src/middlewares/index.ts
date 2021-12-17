@@ -11,14 +11,22 @@ export const ReqHeaderMiddleware = (
   next: NextFunction
 ) => {
   const insightCache = req.app.get(INSIGHT_CACHE);
-  // all request need set milvus address in header.
+  // all ape requests need set milvus address in header.
   // server will set activeaddress in milvus service.
   const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
-  MilvusService.activeAddress = milvusAddress;
-  // insight cache will update expire time when use insightCache.get
-  MilvusService.activeMilvusClient = insightCache.get(
-    MilvusService.formatAddress(milvusAddress)
-  );
+  /**
+   *  only api request has MILVUS_ADDRESS.
+   *  When client run in express, we dont need static files like: xx.js run this logic.
+   *  Otherwise will cause 401 error.
+   * */
+  if (milvusAddress && insightCache.has(milvusAddress)) {
+    MilvusService.activeAddress = milvusAddress;
+    // insight cache will update expire time when use insightCache.get
+    MilvusService.activeMilvusClient = insightCache.get(
+      MilvusService.formatAddress(milvusAddress)
+    );
+  }
+
   next();
 };
 

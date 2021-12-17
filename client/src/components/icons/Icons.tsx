@@ -66,7 +66,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   download: (props = {}) => <GetAppIcon {...props} />,
 
   zilliz: (props = {}) => (
-    <SvgIcon viewBox="0 0 44 31" component={ZillizIcon} {...props} />
+    <SvgIcon viewBox="0 0 30 30" component={ZillizIcon} {...props} />
   ),
   navOverview: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={OverviewIcon} {...props} />
