@@ -40,10 +40,10 @@ Once you start the docker, open the browser, type `http://{ attu ip }:8000`, you
 
 #### Params
 
-| Parameter  | Example                 | required | description                                 |
-| :--------- | :---------------------- | :------: | ------------------------------------------- |
+| Parameter  | Example                 | required | description                       |
+| :--------- | :---------------------- | :------: | --------------------------------- |
 | HOST_URL   | http://192.168.0.1:8000 |   true   | Where attu container is installed |
-| MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL                 |
+| MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL       |
 
 Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
@@ -84,8 +84,6 @@ New to milvus? Milvus is an open-source vector database built to power AI applic
 - [Milvus python sdk](https://milvus.io/docs/v2.0.0/explore_pymilvus.md)
 - [Milvus bootcamp](https://milvus.io/bootcamp)
 
-
-
 #### ❓ Questions? Problems?
 
 - If you've found a bug or want to request a feature, please create a [GitHub Issue](https://github.com/zilliztech/attu/issues/new/choose).
@@ -94,3 +92,11 @@ New to milvus? Milvus is an open-source vector database built to power AI applic
   Milvus engineer will be glad to help you out.
 
 [milvus-doc]: https://milvus.io/docs/home
+
+## Community
+
+👉 Join the Milvus community on [Milvus forum](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ) to share your suggestions, advice, and questions with our engineering team.
+
+<a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">
+    <img src="https://camo.githubusercontent.com/fa0663f8947e22e589e75ebbc84f0a835191d3ddab9a3a0f1dd054ef18eabbaa/68747470733a2f2f7a696c6c697a2d636d732e73332e75732d776573742d322e616d617a6f6e6177732e636f6d2f726561646d655f736c61636b5f346130376334633932662e706e67" alt="Miluvs Slack Channel"  height="150" width="500">
+</a>
