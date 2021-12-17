@@ -8,6 +8,11 @@ Attu provides an intuitive and efficient GUI for Milvus, allowing you to interac
 
 <img src="./.github/images/screenshot.png" alt="attu" />
 
+## Attu Doc
+
+- [English](./doc/en.md)
+- [中文](./doc/zh-cn.md)
+
 ## Features and Roadmap
 
 Attu is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
