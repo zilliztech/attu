@@ -24,7 +24,7 @@ Attu is under rapid development and we are adding new features weekly, here are 
 - Insert entities
 - Vector search with advanced filter
 - System view
-- Data view (TBD)
+- Data query
 - View root node configuration(TBD)
 - Vector Visualization(TBD)
 - More...
