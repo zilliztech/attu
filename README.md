@@ -8,6 +8,11 @@ Attu provides an intuitive and efficient GUI for Milvus, allowing you to interac
 
 <img src="./.github/images/screenshot.png" alt="attu" />
 
+## Attu Doc
+
+- [English](./doc/en.md)
+- [中文](./doc/zh-cn.md)
+
 ## Features and Roadmap
 
 Attu is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
@@ -40,10 +45,10 @@ Once you start the docker, open the browser, type `http://{ attu ip }:8000`, you
 
 #### Params
 
-| Parameter  | Example                 | required | description                                 |
-| :--------- | :---------------------- | :------: | ------------------------------------------- |
+| Parameter  | Example                 | required | description                       |
+| :--------- | :---------------------- | :------: | --------------------------------- |
 | HOST_URL   | http://192.168.0.1:8000 |   true   | Where attu container is installed |
-| MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL                 |
+| MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL       |
 
 Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
@@ -83,8 +88,6 @@ New to milvus? Milvus is an open-source vector database built to power AI applic
 - [Milvus installation guide](https://milvus.io/docs/v2.0.0/install_standalone-docker.md)
 - [Milvus python sdk](https://milvus.io/docs/v2.0.0/explore_pymilvus.md)
 - [Milvus bootcamp](https://milvus.io/bootcamp)
-
-
 
 #### ❓ Questions? Problems?
 
