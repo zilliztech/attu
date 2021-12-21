@@ -158,7 +158,10 @@ describe('test crons service', () => {
       newSchedulerRegistry
     );
 
-    await newCronsService.getCollections(WS_EVENTS.COLLECTION);
+    await newCronsService.getCollections(
+      WS_EVENTS.COLLECTION,
+      '127.0.0.1:19530'
+    );
     expect(schedule).toBeCalledWith(mockCronEverySec, expect.any(Function));
     expect(handleEndTask).toBeCalled();
   });
