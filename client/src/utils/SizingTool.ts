@@ -1,4 +1,4 @@
-import { INDEX_TYPES_ENUM } from '../pages/schema/Types';
+import { INDEX_TYPES_ENUM, SIZE_STATUS } from '../pages/schema/Types';
 
 const commonValueCalculator = (
   vector: number,
@@ -123,17 +123,7 @@ export const formatSize = (size: number) => {
     size = size / 1024;
     sizeStatus++;
   }
-  sizeStatus === 1
-    ? (status = 'B')
-    : sizeStatus === 2
-    ? (status = 'KB')
-    : sizeStatus === 3
-    ? (status = 'MB')
-    : sizeStatus === 4
-    ? (status = 'GB')
-    : sizeStatus === 5
-    ? (status = 'TB')
-    : (status = 'KB');
+  status = SIZE_STATUS[sizeStatus] ?? 'KB';
 
   size = Math.ceil(size);
 

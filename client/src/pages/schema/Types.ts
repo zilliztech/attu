@@ -85,3 +85,11 @@ export interface SizingInfoParam {
     disk: string;
   } | null;
 }
+
+export enum SIZE_STATUS {
+  'B',
+  'KB',
+  'MB',
+  'GB',
+  'TB',
+}
