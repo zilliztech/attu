@@ -1,4 +1,4 @@
-import { INDEX_TYPES_ENUM } from '../pages/schema/Types';
+import { INDEX_TYPES_ENUM, SIZE_STATUS } from '../pages/schema/Types';
 
 const commonValueCalculator = (
   vector: number,
@@ -117,21 +117,14 @@ export const computMilvusRecommonds = (
 };
 
 export const formatSize = (size: number) => {
+  // 1:B, 2:KB, 3:MB, 4:GB, 5:TB
   let sizeStatus = 1;
   let status = 'BYTE';
-  while (sizeStatus < 4 && size > 4096) {
+  while (sizeStatus < 4 && size > 1024) {
     size = size / 1024;
     sizeStatus++;
   }
-  sizeStatus === 2
-    ? (status = 'KB')
-    : sizeStatus === 3
-    ? (status = 'MB')
-    : sizeStatus === 4
-    ? (status = 'GB')
-    : sizeStatus === 5
-    ? (status = 'TB')
-    : (status = 'KB');
+  status = SIZE_STATUS[sizeStatus] ?? 'KB';
 
   size = Math.ceil(size);
 
