@@ -117,6 +117,7 @@ export const computMilvusRecommonds = (
 };
 
 export const formatSize = (size: number) => {
+  // 1:B, 2:KB, 3:MB, 4:GB, 5:TB
   let sizeStatus = 1;
   let status = 'BYTE';
   while (sizeStatus < 4 && size > 4096) {

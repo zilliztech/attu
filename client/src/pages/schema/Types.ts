@@ -87,9 +87,9 @@ export interface SizingInfoParam {
 }
 
 export enum SIZE_STATUS {
-  'B',
-  'KB',
-  'MB',
-  'GB',
-  'TB',
+  'B' = 1,
+  'KB' = 2,
+  'MB' = 3,
+  'GB' = 4,
+  'TB' = 5,
 }
