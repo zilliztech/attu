@@ -14,7 +14,7 @@ export const ReqHeaderMiddleware = (
   // all ape requests need set milvus address in header.
   // server will set activeaddress in milvus service.
   const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
-  console.log(req.headers);
+
   //  only api request has MILVUS_ADDRESS.
   //  When client run in express, we dont need static files like: xx.js run this logic.
   //  Otherwise will cause 401 error.

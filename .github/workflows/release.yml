@@ -27,5 +27,8 @@ jobs:
       - name: Docker tag
         run: docker tag zilliz/attu:${GITHUB_REF#refs/tags/} zilliz/attu:latest
 
+      - name: Docker Push version
+        run: docker push zilliz/attu:${GITHUB_REF#refs/tags/}
+
       - name: Docker Push lastest
         run: docker push zilliz/attu
