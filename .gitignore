@@ -9,7 +9,7 @@ node_modules
 
 # testing
 /clientcoverage
-/client/vectors.csv
+**/vectors.csv
 
 # production
 
