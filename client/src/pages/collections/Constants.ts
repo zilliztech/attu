@@ -13,7 +13,7 @@ export const VECTOR_FIELDS_OPTIONS: KeyValuePair[] = [
 ];
 
 export const ALL_OPTIONS: KeyValuePair[] = [
-  ...VECTOR_FIELDS_OPTIONS,
+  // ...VECTOR_FIELDS_OPTIONS,
   {
     label: 'Int8',
     value: DataTypeEnum.Int8,

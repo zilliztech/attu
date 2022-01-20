@@ -123,21 +123,20 @@ const VectorSearch = () => {
      */
     return searchResult && searchResult.length > 0
       ? Object.keys(searchResult[0])
-        .filter(item => {
-          // if primary key field name is id, don't filter it
-          const invalidItems =
-            primaryKeyField === 'id' ? ['score'] : ['id', 'score'];
-          return !invalidItems.includes(item);
-        })
-        .map(key => ({
-          id: key,
-          align: 'left',
-          disablePadding: false,
-          label: key,
-        }))
+          .filter(item => {
+            // if primary key field name is id, don't filter it
+            const invalidItems =
+              primaryKeyField === 'id' ? ['score'] : ['id', 'score'];
+            return !invalidItems.includes(item);
+          })
+          .map(key => ({
+            id: key,
+            align: 'left',
+            disablePadding: false,
+            label: key,
+          }))
       : [];
   }, [searchResult, primaryKeyField]);
-
   const {
     metricType,
     indexType,
@@ -157,7 +156,6 @@ const VectorSearch = () => {
         index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
       const indexParams = index?._indexParameterPairs || [];
       const dim = selectedFieldInfo?.dimension || 0;
-
       return {
         metricType: metric,
         indexType: index?._indexType || getDefaultIndexType(embeddingType),
@@ -187,10 +185,15 @@ const VectorSearch = () => {
     if (vectors === '' || selectedFieldDimension === 0) {
       return true;
     }
+    const dim =
+      fieldType === DataTypeEnum.BinaryVector
+        ? selectedFieldDimension / 8
+        : selectedFieldDimension;
+    console.log(fieldType);
     const value = parseValue(vectors);
     const isArray = Array.isArray(value);
-    return isArray && value.length === selectedFieldDimension;
-  }, [vectors, selectedFieldDimension]);
+    return isArray && value.length === dim;
+  }, [vectors, selectedFieldDimension, fieldType]);
 
   const searchDisabled = useMemo(() => {
     /**
@@ -374,7 +377,10 @@ const VectorSearch = () => {
           {!vectorValueValid && (
             <Typography variant="caption" className={classes.error}>
               {searchTrans('vectorValueWarning', {
-                dimension: selectedFieldDimension,
+                dimension:
+                  fieldType === DataTypeEnum.BinaryVector
+                    ? selectedFieldDimension / 8
+                    : selectedFieldDimension,
               })}
             </Typography>
           )}
@@ -421,8 +427,8 @@ const VectorSearch = () => {
             metricType={metricType!}
             embeddingType={
               embeddingType as
-              | DataTypeEnum.BinaryVector
-              | DataTypeEnum.FloatVector
+                | DataTypeEnum.BinaryVector
+                | DataTypeEnum.FloatVector
             }
             indexType={indexType}
             indexParams={indexParams!}

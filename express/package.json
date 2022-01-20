@@ -12,13 +12,14 @@
     "url": "https://github.com/zilliztech/attu"
   },
   "dependencies": {
-    "@zilliz/milvus2-sdk-node": "^1.0.19",
+    "@zilliz/milvus2-sdk-node": "^1.1.0",
     "chalk": "^4.1.2",
     "class-sanitizer": "^1.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "csv-writer": "^1.6.0",
     "express": "^4.17.1",
     "glob": "^7.2.0",
     "helmet": "^4.6.0",

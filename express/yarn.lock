@@ -1137,15 +1137,16 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@zilliz/milvus2-sdk-node@^1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-1.0.19.tgz#966e68a2d88e62ba475a138b382fb71209670a2e"
-  integrity sha512-LMRRM+vU+AiB3ETUAzIgiFxVZJJ63vyuEP7cZevz4tQPXUW1tN63MVCWFVikQKx3QNE+ikArnoQIGJc0I9+kEA==
+"@zilliz/milvus2-sdk-node@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-1.1.0.tgz#0fc8c0b630bb29056363f86a86e6cc470e5ac63a"
+  integrity sha512-yVfGbJ+qOttUAb/KOxFmj8Pn4tGoSgWcR7xaN3P2LGX8czo1gzywJVqYgE0H6J8xA3B48hUYQ3dA8ie5LbTtgQ==
   dependencies:
     "@grpc/grpc-js" "^1.2.12"
     "@grpc/proto-loader" "^0.6.0"
     "@microsoft/api-documenter" "^7.13.39"
     "@microsoft/api-extractor" "^7.18.5"
+    json-schema "^0.4.0"
     protobufjs "^6.11.2"
 
 abab@^2.0.3, abab@^2.0.5:
@@ -2004,6 +2005,11 @@ cssstyle@^2.3.0:
   integrity sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A==
   dependencies:
     cssom "~0.3.6"
+
+csv-writer@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/csv-writer/-/csv-writer-1.6.0.tgz#d0cea44b6b4d7d3baa2ecc6f3f7209233514bcf9"
+  integrity sha512-NOx7YDFWEsM/fTRAJjRpPp8t+MKRVvniAg9wQlUKx20MFrPs73WLJhFf5iteqrxNYnsy924K3Iroh3yNHeYd2g==
 
 data-urls@^2.0.0:
   version "2.0.0"
@@ -3636,6 +3642,11 @@ json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
   integrity sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
+
+json-schema@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.4.0.tgz#f7de4cf6efab838ebaeb3236474cbba5a1930ab5"
+  integrity sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==
 
 json-stringify-safe@^5.0.1:
   version "5.0.1"
