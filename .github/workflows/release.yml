@@ -2,8 +2,7 @@ name: Attu prod release
 
 on:
   release:
-    types: [released]
-    branches: [main]
+    types: [published]
 
 jobs:
   publish:
