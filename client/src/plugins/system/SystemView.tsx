@@ -79,7 +79,7 @@ const parseJson = (jsonData: any) => {
   jsonData?.response?.nodes_info.forEach((node: any) => {
     const type = node?.infos?.type;
     // coordinator node
-    if (type.includes("Coord")) {
+    if (type?.toLowerCase().includes("coord")) {
       nodes.push(node);
       // other nodes
     } else {
