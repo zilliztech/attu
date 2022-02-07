@@ -155,7 +155,6 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (prop
     system_configurations,
   } = node?.infos || {};
 
-
   const {
     cpu_core_count: cpu = 0,
     cpu_core_usage: cpuUsage = 0,
