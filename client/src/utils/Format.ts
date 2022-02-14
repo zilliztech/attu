@@ -141,7 +141,8 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 };
 
 // Trim the address
-export const formatAddress = (address: string): string => address.trim();
+export const formatAddress = (address: string): string =>
+  address.trim().replace(/(http|https):\/\//, '');
 
 // generate a sting like 20.22/98.33MB with proper unit
 export const getByteString = (
