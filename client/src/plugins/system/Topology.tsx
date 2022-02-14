@@ -159,7 +159,7 @@ const Topo = (props: any) => {
       <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="white" />
         {nodes.map((node: any, index: number) => {
-          if (node?.infos?.type === 'RootCoord') {
+          if (node?.infos?.type?.toLowerCase() === 'rootcoord') {
             centerNode = node;
             return null;
           }
