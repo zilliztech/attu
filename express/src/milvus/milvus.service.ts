@@ -36,7 +36,6 @@ export class MilvusService {
   }
 
   checkMilvus() {
-    console.log('---- check Milvus ----', MilvusService.activeMilvusClient);
     if (!MilvusService.activeMilvusClient) {
       throw HttpErrors(
         HTTP_STATUS_CODE.UNAUTHORIZED,

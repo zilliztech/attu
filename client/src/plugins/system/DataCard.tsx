@@ -1,9 +1,12 @@
-
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core';
 import Progress from './Progress';
-import { getByteString } from '../../utils/Format';
+import {
+  formatByteSize,
+  formatSystemTime,
+  getByteString,
+} from '../../utils/Format';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 
 const getStyles = makeStyles(() => ({
@@ -32,7 +35,7 @@ const getStyles = makeStyles(() => ({
     color: '#82838E',
     fontSize: '14px',
     lineHeight: '36px',
-    marginLeft: "8px",
+    marginLeft: '8px',
   },
 
   rootName: {
@@ -57,7 +60,7 @@ const getStyles = makeStyles(() => ({
     borderSpacing: '0 1px',
     display: 'table',
     marginTop: '24px',
-    width: '100%'
+    width: '100%',
   },
 
   sectionRow: {
@@ -91,32 +94,33 @@ const getStyles = makeStyles(() => ({
     lineHeight: '24px',
     display: 'flex',
     justifyContent: 'space-between',
-  }
+  },
 }));
 
-const DataSection: FC<DataSectionProps> = (props) => {
+const DataSection: FC<DataSectionProps> = props => {
   const classes = getStyles();
   const { titles, contents } = props;
 
   return (
     <div className={classes.sectionRoot}>
       <div className={classes.sectionRow}>
-        {titles.map((titleEntry) => <div key={titleEntry} className={classes.sectionHeaderCell}>{titleEntry}</div>)}
+        {titles.map(titleEntry => (
+          <div key={titleEntry} className={classes.sectionHeaderCell}>
+            {titleEntry}
+          </div>
+        ))}
       </div>
-      {contents.map((contentEntry) => {
+      {contents.map(contentEntry => {
         return (
           <div key={contentEntry.label} className={classes.sectionRow}>
-            <div className={classes.sectionCell}>
-              {contentEntry.label}
-            </div>
-            <div className={classes.sectionCell}>
-              {contentEntry.value}
-            </div>
-          </div>)
+            <div className={classes.sectionCell}>{contentEntry.label}</div>
+            <div className={classes.sectionCell}>{contentEntry.value}</div>
+          </div>
+        );
       })}
     </div>
   );
-}
+};
 
 const DataProgress: FC<DataProgressProps> = ({ percent = 0, desc = '' }) => {
   const classes = getStyles();
@@ -126,90 +130,102 @@ const DataProgress: FC<DataProgressProps> = ({ percent = 0, desc = '' }) => {
         <span>{`${Number(percent * 100).toFixed(2)}%`}</span>
         <span>{desc}</span>
       </div>
-      <Progress percent={percent} color='#06AFF2' />
-    </div>
-  )
-};
-
-const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> = (props) => {
-  const classes = getStyles();
-  const { t } = useTranslation('systemView');
-  const { t: commonTrans } = useTranslation();
-  const capacityTrans: { [key in string]: string } = commonTrans('capacity');
-  const { node, extend } = props;
-
-  const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
-  const hardwareContent = [];
-
-  const configTitle = [t('configTitle'), t('valueTitle')];
-  const systemConfig: { label: string; value: any; }[] = [];
-
-  const systemTitle = [t('systemTitle'), t('valueTitle')];
-  const systemContent = [];
-
-  const {
-    created_time: createTime,
-    updated_time: updateTime,
-    system_info = {},
-    hardware_infos: infos = {},
-    system_configurations,
-  } = node?.infos || {};
-
-  const {
-    cpu_core_count: cpu = 0,
-    cpu_core_usage: cpuUsage = 0,
-    memory = 1,
-    memory_usage: memoryUsage = 0,
-    disk = 1,
-    disk_usage: diskUsage = 0,
-  } = infos;
-
-  if (extend) {
-    hardwareContent.push({ label: t('thCPUCount'), value: cpu });
-    hardwareContent.push({
-      label: t('thCPUUsage'), value: <DataProgress percent={cpuUsage / 100} />
-    });
-    hardwareContent.push({
-      label: t('thMemUsage'), value: <DataProgress percent={memoryUsage / memory} desc={getByteString(memoryUsage, memory, capacityTrans)} />
-    });
-    hardwareContent.push({
-      label: t('thDiskUsage'), value: <DataProgress percent={diskUsage / disk} desc={getByteString(diskUsage, disk, capacityTrans)} />
-    });
-  }
-
-  if (system_configurations) {
-    Object.keys(system_configurations).forEach(key => {
-      systemConfig.push({ label: key, value: system_configurations[key] });
-    });
-  }
-
-  const {
-    system_version: version,
-    deploy_mode: mode = '',
-  } = system_info;
-  systemContent.push({ label: t('thVersion'), value: version });
-  systemContent.push({ label: t('thDeployMode'), value: mode });
-  systemContent.push({ label: t('thCreateTime'), value: createTime ? new Date(createTime.substring(0, 29)).toLocaleString() : '' });
-  systemContent.push({ label: t('thUpdateTime'), value: updateTime ? new Date(updateTime.substring(0, 29)).toLocaleString() : '' });
-
-  return (
-    <div className={classes.root}>
-      <div className={classes.title}>
-        <div>
-          <span className={classes.rootName}>Milvus / </span>
-          <span className={classes.childName}>{node?.infos?.name}</span>
-        </div>
-        <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
-      </div>
-      {extend && <DataSection titles={hardwareTitle} contents={hardwareContent} />}
-      <DataSection titles={systemTitle} contents={systemContent} />
-      {systemConfig.length ?
-        <DataSection titles={configTitle} contents={systemConfig} />
-        :
-        null
-      }
+      <Progress percent={percent} color="#06AFF2" />
     </div>
   );
 };
+
+const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
+  props => {
+    const classes = getStyles();
+    const { t } = useTranslation('systemView');
+    const { t: commonTrans } = useTranslation();
+    const capacityTrans: { [key in string]: string } = commonTrans('capacity');
+    const { node, extend } = props;
+
+    const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
+    const hardwareContent = [];
+
+    const configTitle = [t('configTitle'), t('valueTitle')];
+    const systemConfig: { label: string; value: any }[] = [];
+
+    const systemTitle = [t('systemTitle'), t('valueTitle')];
+    const systemContent = [];
+
+    const {
+      created_time: createTime,
+      updated_time: updateTime,
+      system_info = {},
+      hardware_infos: infos = {},
+      system_configurations,
+    } = node?.infos || {};
+
+    const {
+      cpu_core_count: cpu = 0,
+      cpu_core_usage: cpuUsage = 0,
+      // memory = 1,
+      memory_usage: memoryUsage = 0,
+      disk = 1,
+      disk_usage: diskUsage = 0,
+    } = infos;
+    const memUsage = formatByteSize(memoryUsage, capacityTrans);
+    if (extend) {
+      hardwareContent.push({ label: t('thCPUCount'), value: cpu });
+      hardwareContent.push({
+        label: t('thCPUUsage'),
+        value: <DataProgress percent={cpuUsage / 100} />,
+      });
+      hardwareContent.push({
+        label: t('thMemUsage'),
+        value: `${memUsage.value} ${memUsage.unit}`,
+      });
+      hardwareContent.push({
+        label: t('thDiskUsage'),
+        value: (
+          <DataProgress
+            percent={diskUsage / disk}
+            desc={getByteString(diskUsage, disk, capacityTrans)}
+          />
+        ),
+      });
+    }
+
+    if (system_configurations) {
+      Object.keys(system_configurations).forEach(key => {
+        systemConfig.push({ label: key, value: system_configurations[key] });
+      });
+    }
+
+    const { system_version: version, deploy_mode: mode = '' } = system_info;
+    systemContent.push({ label: t('thVersion'), value: version });
+    systemContent.push({ label: t('thDeployMode'), value: mode });
+    systemContent.push({
+      label: t('thCreateTime'),
+      value: createTime ? formatSystemTime(createTime) : '',
+    });
+    systemContent.push({
+      label: t('thUpdateTime'),
+      value: updateTime ? formatSystemTime(updateTime) : '',
+    });
+
+    return (
+      <div className={classes.root}>
+        <div className={classes.title}>
+          <div>
+            <span className={classes.rootName}>Milvus / </span>
+            <span className={classes.childName}>{node?.infos?.name}</span>
+          </div>
+          <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
+        </div>
+        {extend && (
+          <DataSection titles={hardwareTitle} contents={hardwareContent} />
+        )}
+        <DataSection titles={systemTitle} contents={systemContent} />
+        {systemConfig.length ? (
+          <DataSection titles={configTitle} contents={systemConfig} />
+        ) : null}
+      </div>
+    );
+  };
 
 export default DataCard;

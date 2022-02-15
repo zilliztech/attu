@@ -59,9 +59,8 @@ const getStyles = makeStyles((theme: Theme) => ({
     border: 0,
     backgroundColor: 'white',
     width: '100%',
-  }
+  },
 }));
-
 
 const parseJson = (jsonData: any) => {
   const nodes: any[] = [];
@@ -74,12 +73,12 @@ const parseJson = (jsonData: any) => {
     diskUsage: 0,
     memory: 0,
     memoryUsage: 0,
-  }
+  };
 
   jsonData?.response?.nodes_info.forEach((node: any) => {
     const type = node?.infos?.type;
     // coordinator node
-    if (type?.toLowerCase().includes("coord")) {
+    if (type?.toLowerCase().includes('coord')) {
       nodes.push(node);
       // other nodes
     } else {
@@ -93,8 +92,12 @@ const parseJson = (jsonData: any) => {
     system.diskUsage += info.disk_usage;
   });
   return { nodes, childNodes, system };
-}
+};
 
+/**
+ * Todo: Milvus V2.0.0 Memory data is not ready for now, open it after Milvus ready.
+ * @returns
+ */
 const SystemView: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
   const { t } = useTranslation('systemView');
@@ -102,7 +105,11 @@ const SystemView: any = () => {
   const classes = getStyles();
   const INTERVAL = 10000;
 
-  const [data, setData] = useState<{ nodes: any, childNodes: any, system: any }>({ nodes: [], childNodes: [], system: {} });
+  const [data, setData] = useState<{
+    nodes: any;
+    childNodes: any;
+    system: any;
+  }>({ nodes: [], childNodes: [], system: {} });
   const [selectedNode, setNode] = useState<any>();
   const [selectedCord, setCord] = useState<any>();
   const { nodes, childNodes, system } = data;
@@ -126,13 +133,26 @@ const SystemView: any = () => {
   const latency = system?.latency || 0;
   const childView = useRef<HTMLInputElement>(null);
 
-
-
   return (
     <div className={classes.root}>
-      <div className={clsx(classes.cardContainer, selectedCord && classes.transparent)}>
-        <ProgressCard title={t('diskTitle')} usage={system.diskUsage} total={system.disk} />
-        <ProgressCard title={t('memoryTitle')} usage={system.memoryUsage} total={system.memory} />
+      <div
+        className={clsx(
+          classes.cardContainer,
+          selectedCord && classes.transparent
+        )}
+      >
+        <ProgressCard
+          title={t('diskTitle')}
+          usage={system.diskUsage}
+          total={system.disk}
+        />
+        {/* <ProgressCard
+          title={t('memoryTitle')}
+          usage={system.memoryUsage}
+          total={system.memory}
+        /> */}
+        <LineChartCard title={t('memoryTitle')} value={qps} />
+
         <LineChartCard title={t('qpsTitle')} value={qps} />
         <LineChartCard title={t('latencyTitle')} value={latency} />
       </div>
@@ -143,13 +163,20 @@ const SystemView: any = () => {
 
       <div
         ref={childView}
-        className={clsx(classes.childView,
-          selectedCord ? classes.showChildView : classes.hideChildView)}
+        className={clsx(
+          classes.childView,
+          selectedCord ? classes.showChildView : classes.hideChildView
+        )}
       >
-        {selectedCord && (<NodeListView selectedCord={selectedCord} childNodes={childNodes} setCord={setCord} />)}
+        {selectedCord && (
+          <NodeListView
+            selectedCord={selectedCord}
+            childNodes={childNodes}
+            setCord={setCord}
+          />
+        )}
       </div>
-    </div >
-
+    </div>
   );
 };
 

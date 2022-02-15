@@ -76,7 +76,7 @@ const Connect = () => {
     const address = formatAddress(form.address);
     await MilvusHttp.connect(address);
     openSnackBar(successTrans('connect'));
-    setAddress(address);
+    setAddress(form.address);
     window.localStorage.setItem(MILVUS_ADDRESS, address);
     history.push('/');
   };

@@ -6,7 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import MiniTopo from './MiniTopology';
-import { getByteString } from '../../utils/Format';
+import { getByteString, formatByteSize } from '../../utils/Format';
 import DataCard from './DataCard';
 import { NodeListViewProps, Node } from './Types';
 
@@ -17,8 +17,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'grid',
     gridTemplateColumns: 'auto 400px',
     gridTemplateRows: '40px 400px auto',
-    gridTemplateAreas:
-      `"a a"
+    gridTemplateAreas: `"a a"
        "b ."
        "b d"`,
   },
@@ -54,17 +53,19 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   dataCard: {
     gridArea: 'd',
-  }
+  },
 }));
 
-const NodeListView: FC<NodeListViewProps> = (props) => {
+const NodeListView: FC<NodeListViewProps> = props => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
   const { t } = useTranslation('systemView');
   const { t: commonTrans } = useTranslation();
   const capacityTrans: { [key in string]: string } = commonTrans('capacity');
 
   const classes = getStyles();
-  const [selectedChildNode, setSelectedChildNode] = useState<Node | undefined>();
+  const [selectedChildNode, setSelectedChildNode] = useState<
+    Node | undefined
+  >();
   const [rows, setRows] = useState<any[]>([]);
   const { selectedCord, childNodes, setCord } = props;
 
@@ -103,22 +104,39 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
 
   useEffect(() => {
     if (selectedCord) {
-      const connectedIds = selectedCord.connected.map(node => node.connected_identifier);
+      const connectedIds = selectedCord.connected.map(
+        node => node.connected_identifier
+      );
       const newRows: any[] = [];
       childNodes.forEach(node => {
         if (connectedIds.includes(node.identifier)) {
+          const memUsage = formatByteSize(
+            node?.infos?.hardware_infos.memory_usage,
+            capacityTrans
+          );
           const dataRow = {
             id: node?.identifier,
             ip: node?.infos?.hardware_infos.ip,
             cpuCore: node?.infos?.hardware_infos.cpu_core_count,
-            cpuUsage: node?.infos?.hardware_infos.cpu_core_usage,
-            diskUsage: getByteString(node?.infos?.hardware_infos.disk_usage, node?.infos?.hardware_infos.disk, capacityTrans),
-            memUsage: getByteString(node?.infos?.hardware_infos.memory_usage, node?.infos?.hardware_infos.memory, capacityTrans),
+            cpuUsage: Number(
+              node?.infos?.hardware_infos.cpu_core_usage
+            ).toFixed(2),
+            diskUsage: getByteString(
+              node?.infos?.hardware_infos.disk_usage,
+              node?.infos?.hardware_infos.disk,
+              capacityTrans
+            ),
+            // memUsage: getByteString(
+            //   node?.infos?.hardware_infos.memory_usage,
+            //   node?.infos?.hardware_infos.memory,
+            //   capacityTrans
+            // ),
+            memUsage: `${memUsage.value}${memUsage.unit}`,
             name: node?.infos?.name,
-          }
+          };
           newRows.push(dataRow);
         }
-      })
+      });
       setRows(newRows);
     }
   }, [selectedCord, childNodes, capacityTrans]);
@@ -126,7 +144,7 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
   // select first node
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
-      const el = document.querySelectorAll<HTMLElement>(".MuiDataGrid-row")[0];
+      const el = document.querySelectorAll<HTMLElement>('.MuiDataGrid-row')[0];
       if (el instanceof HTMLElement) {
         el.click();
       }
@@ -145,16 +163,21 @@ const NodeListView: FC<NodeListViewProps> = (props) => {
           columns={columns}
           hideFooterPagination
           hideFooterSelectedRowCount
-          onRowClick={(rowData) => {
-            const selectedNode = childNodes.find(node => rowData.row.id === node.identifier);
+          onRowClick={rowData => {
+            const selectedNode = childNodes.find(
+              node => rowData.row.id === node.identifier
+            );
             setSelectedChildNode(selectedNode);
           }}
         />
       </div>
-      <MiniTopo selectedCord={selectedCord} setCord={setCord} selectedChildNode={selectedChildNode} />
+      <MiniTopo
+        selectedCord={selectedCord}
+        setCord={setCord}
+        selectedChildNode={selectedChildNode}
+      />
       <DataCard className={classes.dataCard} node={selectedChildNode} />
     </div>
-
   );
 };
 
