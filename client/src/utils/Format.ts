@@ -144,14 +144,11 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 export const formatAddress = (address: string): string =>
   address.trim().replace(/(http|https):\/\//, '');
 
-// generate a sting like 20.22/98.33MB with proper unit
-export const getByteString = (
-  value1: number,
-  value2: number,
+export const formatByteSize = (
+  size: number,
   capacityTrans: { [key in string]: string }
-) => {
-  if (!value1 || !value2) return `0${capacityTrans.b}`;
-  const power = Math.round(Math.log(value1) / Math.log(1024));
+): { value: string; unit: string; power: number } => {
+  const power = Math.round(Math.log(size) / Math.log(1024));
   let unit = '';
   switch (power) {
     case 1:
@@ -173,10 +170,34 @@ export const getByteString = (
       unit = capacityTrans.b;
       break;
   }
-  const byteValue1 = value1 / 1024 ** power;
-  const byteValue2 = value2 / 1024 ** power;
+  const byteValue = size / 1024 ** power;
+  return {
+    value: byteValue.toFixed(2),
+    unit,
+    power,
+  };
+};
 
-  return `${byteValue1.toFixed(2)}/${byteValue2.toFixed(2)} ${unit}`;
+// generate a sting like 20.22/98.33MB with proper unit
+export const getByteString = (
+  value1: number,
+  value2: number,
+  capacityTrans: { [key in string]: string }
+) => {
+  if (!value1 || !value2) return `0${capacityTrans.b}`;
+  const formatValue1 = formatByteSize(value1, capacityTrans);
+  const formatValue2 = value2 / 1024 ** formatValue1.power;
+  return `${formatValue1.value}/${formatValue2.toFixed(2)} ${
+    formatValue1.unit
+  }`;
+};
+
+/**
+ * time: 2022-02-15 07:03:32.2981238 +0000 UTC m=+2.434915801
+ * @returns 2022-02-15 07:03:32
+ */
+export const formatSystemTime = (time: string): string => {
+  return time.split('.')[0] || '';
 };
 
 /**
