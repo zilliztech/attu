@@ -10,7 +10,7 @@ const systemViewTrans = {
   thName: 'Node Name',
   thIP: 'IP',
   thCPUCount: 'CPU Core Count',
-  thCPUUsage: 'CUP Core Usage',
+  thCPUUsage: 'CPU Core Usage',
   thDiskUsage: 'Disk Usage',
   thMemUsage: 'Memory Usage',
   thVersion: 'version',

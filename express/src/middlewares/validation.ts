@@ -7,7 +7,7 @@ import HttpException from "../exception/HttpException";
 /**
  * Only check for req.body
  * When use req.query or req.params cant use dto to validate.
- * Because all datas are string in req.query.
+ * Because all data are string in req.query.
  * @param type
  * @param skipMissingProperties
  * @returns
