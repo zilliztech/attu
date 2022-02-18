@@ -30,7 +30,7 @@ const Query: FC<{
   const [expression, setExpression] = useState('');
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
-  const [selectedDatas, setSelectedDatas] = useState<any[]>([]);
+  const [selectedData, setSelectedData] = useState<any[]>([]);
   const [primaryKey, setPrimaryKey] = useState<string>('');
 
   const { setDialog, handleCloseDialog, openSnackBar } =
@@ -161,12 +161,12 @@ const Query: FC<{
   };
 
   const handleSelectChange = (value: any) => {
-    setSelectedDatas(value);
+    setSelectedData(value);
   };
 
   const handleDelete = async () => {
     await CollectionHttp.deleteEntities(collectionName, {
-      expr: `${primaryKey} in [${selectedDatas.map(v => v.id).join(',')}]`,
+      expr: `${primaryKey} in [${selectedData.map(v => v.id).join(',')}]`,
     });
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: collectionTrans('entites') }));
@@ -198,7 +198,7 @@ const Query: FC<{
       icon: 'delete',
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
-      disabled: () => selectedDatas.length === 0,
+      disabled: () => selectedData.length === 0,
     },
     {
       type: 'iconBtn',
@@ -273,7 +273,7 @@ const Query: FC<{
           isLoading={!!tableLoading}
           rows={result}
           rowCount={total}
-          selected={selectedDatas}
+          selected={selectedData}
           setSelected={handleSelectChange}
           page={currentPage}
           onChangePage={handlePageChange}
