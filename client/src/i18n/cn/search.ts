@@ -14,7 +14,7 @@ const searchTrans = {
   vectorValueWarning:
     'Vector value should be an array of length {{dimension}}(dimension)',
   timeTravel: 'Time Travel',
-  timeTravelPrefix: 'Datas before',
+  timeTravelPrefix: 'Data before',
 };
 
 export default searchTrans;

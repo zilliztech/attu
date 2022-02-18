@@ -13,7 +13,7 @@ const searchTrans = {
   filter: 'Advanced Filter',
   vectorValueWarning: 'Vector value should be an array of length {{dimension}}',
   timeTravel: 'Time Travel',
-  timeTravelPrefix: 'Datas before',
+  timeTravelPrefix: 'Data before',
 };
 
 export default searchTrans;

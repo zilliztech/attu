@@ -57,7 +57,7 @@ We use class getter to define our client fields like \_field, because of our ser
 
 ### Helper Folder
 
-Like utils / consts / utils / hooks , we dont want put all functions or datas in one file like index.ts because of maintainability.
+Like utils / consts / utils / hooks , we dont want put all functions or data in one file like index.ts because of maintainability.
 
 So when we need to create new file , treat the file like Class then name it.
 
