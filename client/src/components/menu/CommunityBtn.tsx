@@ -18,7 +18,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     right: theme.spacing(3),
     width: theme.spacing(5),
-    zIndex: 1,
+    zIndex: 3,
   },
   menuBtn: {
     border: '1px solid #E9E9ED',
