@@ -27,10 +27,10 @@ node_modules
 
 .DS_Store
 
-express/node_modules
-express/dist
-express/build
-express/electron-app
+server/node_modules
+server/dist
+server/build
+server/electron-app
 
 
 

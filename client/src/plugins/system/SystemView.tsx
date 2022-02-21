@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { useNavigationHook } from '../../hooks/Navigation';
@@ -8,8 +8,8 @@ import { MilvusHttp } from '../../http/Milvus';
 import { useInterval } from '../../hooks/SystemView';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
-import LineChartCard from './LineChartCard';
-import ProgressCard from './ProgressCard';
+// import LineChartCard from './LineChartCard';
+// import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -100,7 +100,7 @@ const parseJson = (jsonData: any) => {
  */
 const SystemView: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
-  const { t } = useTranslation('systemView');
+  // const { t } = useTranslation('systemView');
 
   const classes = getStyles();
   const INTERVAL = 10000;
@@ -129,13 +129,14 @@ const SystemView: any = () => {
     fetchData();
   }, []);
 
-  let qps = system?.qps || 0;
-  const latency = system?.latency || 0;
+  // let qps = system?.qps || 0;
+  // const latency = system?.latency || 0;
   const childView = useRef<HTMLInputElement>(null);
 
   return (
     <div className={classes.root}>
-      <div
+      {/* hide cards until metrics api can provide enough data*/}
+      {/* <div
         className={clsx(
           classes.cardContainer,
           selectedCord && classes.transparent
@@ -146,16 +147,14 @@ const SystemView: any = () => {
           usage={system.diskUsage}
           total={system.disk}
         />
-        {/* <ProgressCard
+        <ProgressCard
           title={t('memoryTitle')}
           usage={system.memoryUsage}
           total={system.memory}
-        /> */}
-        <LineChartCard title={t('memoryTitle')} value={qps} />
-
+        />
         <LineChartCard title={t('qpsTitle')} value={qps} />
         <LineChartCard title={t('latencyTitle')} value={latency} />
-      </div>
+      </div> */}
       <div className={classes.contentContainer}>
         <Topo nodes={nodes} setNode={setNode} setCord={setCord} />
         <DataCard node={selectedNode} extend />

@@ -3,7 +3,7 @@ name: Build electron app
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   release:
@@ -21,18 +21,18 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
-    
+
       - name: Build client
         run: |
           cd client
           yarn --network-timeout 100000
           yarn build
-          cp -r build ../express
+          cp -r build ../server
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          package_root: './express'
+          package_root: "./server"
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.GH_TOKEN }}

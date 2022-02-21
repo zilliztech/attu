@@ -16,9 +16,9 @@ jobs:
         with:
           node-version: 14
 
-      - name: Run Express tests
+      - name: Run server tests
         run: |
-          cd express
+          cd server
           yarn install
           yarn test:cov
 
@@ -27,8 +27,8 @@ jobs:
         with:
           # public repo needn't pass token
           # token: ${{ secrets.CODECOV_TOKEN }}
-          # only upload express test coverage
-          flags: express
+          # only upload server test coverage
+          flags: server
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -66,7 +66,7 @@ jobs:
         uses: golfzaptw/action-connect-ovpn@master
         id: connect_vpn
         with:
-          FILE_OVPN: '.github/workflows/client.ovpn'
+          FILE_OVPN: ".github/workflows/client.ovpn"
         env:
           CA_CRT: ${{ secrets.VPN_CA}}
           USER_CRT: ${{ secrets.VPN_CRT }}
