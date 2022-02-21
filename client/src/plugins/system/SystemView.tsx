@@ -112,7 +112,7 @@ const SystemView: any = () => {
   }>({ nodes: [], childNodes: [], system: {} });
   const [selectedNode, setNode] = useState<any>();
   const [selectedCord, setCord] = useState<any>();
-  const { nodes, childNodes, system } = data;
+  const { nodes, childNodes } = data;
 
   useInterval(async () => {
     if (!selectedCord) {
