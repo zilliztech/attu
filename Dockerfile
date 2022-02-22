@@ -1,5 +1,5 @@
 # => Building container
-FROM mhart/alpine-node:14 as builder
+FROM node:14.19-alpine3.14 as builder
 WORKDIR /app
 COPY . .
 
@@ -15,7 +15,7 @@ ENV PORT 80
 RUN yarn build
 
 # => Copy to Final container
-FROM mhart/alpine-node:14
+FROM node:14.19-alpine3.14
 WORKDIR /app
 COPY --from=builder /app/server/dist /app/dist
 COPY --from=builder /app/client/build /app/build

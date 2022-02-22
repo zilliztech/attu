@@ -189,7 +189,7 @@ const VectorSearch = () => {
       fieldType === DataTypeEnum.BinaryVector
         ? selectedFieldDimension / 8
         : selectedFieldDimension;
-    console.log(fieldType);
+
     const value = parseValue(vectors);
     const isArray = Array.isArray(value);
     return isArray && value.length === dim;
@@ -403,6 +403,7 @@ const VectorSearch = () => {
               setSelectedCollection(collection as string);
               // every time selected collection changed, reset field
               setSelectedField('');
+              setSearchResult([]);
             }}
           />
           <CustomSelector
