@@ -1137,16 +1137,17 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@zilliz/milvus2-sdk-node@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.0.0.tgz#4de2164204dbe8112ff7038c8259063d0dd60ab0"
-  integrity sha512-o7LGLd4nBvfJuhfBjIVJQDyLVlgssnEQBHaRoWPmmqh7CrBrl+dQUAtXBGyPjZojAtNBjckM6cr5rtFeD+0lsg==
+"@zilliz/milvus2-sdk-node@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.0.1.tgz#8b09dd43dd661c32ed932424265621051358af87"
+  integrity sha512-MQlu2M+zbxjghSwLS8Y3eeXOAQrqcxgLo3QSTORtnNaAdCj6JNm42++4QV+XhhZnsIHwV6rzueKfwZOPWrNTFg==
   dependencies:
     "@grpc/grpc-js" "^1.2.12"
     "@grpc/proto-loader" "^0.6.0"
     "@microsoft/api-documenter" "^7.13.39"
     "@microsoft/api-extractor" "^7.18.5"
     json-schema "^0.4.0"
+    node-forge "^1.0.0"
     protobufjs "^6.11.2"
 
 abab@^2.0.3, abab@^2.0.5:
@@ -3946,6 +3947,11 @@ node-cron@^3.0.0:
   integrity sha512-DDwIvvuCwrNiaU7HEivFDULcaQualDv7KoNlB/UU1wPW0n1tDEmBJKhEIE6DlF2FuoOHcNbLJ8ITL2Iv/3AWmA==
   dependencies:
     moment-timezone "^0.5.31"
+
+node-forge@^1.0.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.2.1.tgz#82794919071ef2eb5c509293325cec8afd0fd53c"
+  integrity sha512-Fcvtbb+zBcZXbTTVwqGA5W+MKBj56UjVRevvchv5XrcyXbmNdesfZL37nlcWOfpgHhgmxApw3tQbTr4CqNmX4w==
 
 node-int64@^0.4.0:
   version "0.4.0"
