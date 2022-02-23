@@ -33,4 +33,5 @@ export type NavMenuType = {
   defaultOpen?: { [x: string]: boolean };
   width: string;
   data: NavMenuItem[];
+  versionInfo: { attu: string; sdk: string };
 };
