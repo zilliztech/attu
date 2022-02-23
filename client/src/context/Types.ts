@@ -8,6 +8,7 @@ export type RootContextType = {
   setDialog: (params: DialogType) => void;
   handleCloseDialog: () => void;
   setDrawer: (params: any) => void;
+  versionInfo: { attu: string; sdk: string };
 };
 
 // this is for any custom dialog

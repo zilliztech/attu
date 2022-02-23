@@ -11,6 +11,13 @@ export class MilvusService {
   static activeAddress: string;
   static activeMilvusClient: MilvusClient;
 
+  get sdkInfo() {
+    if (!MilvusService.activeMilvusClient) {
+      return {};
+    }
+    return MilvusService.activeMilvusClient.sdkInfo;
+  }
+
   get collectionManager() {
     this.checkMilvus();
     return MilvusService.activeMilvusClient.collectionManager;

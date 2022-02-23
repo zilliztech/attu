@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import React from 'react';
 import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { SwipeableDrawer } from '@material-ui/core';
@@ -11,6 +11,7 @@ import {
 import CustomSnackBar from '../components/customSnackBar/CustomSnackBar';
 import CustomDialog from '../components/customDialog/CustomDialog';
 import { theme } from '../styles/theme';
+import { MilvusHttp } from 'insight_src/http/Milvus';
 
 const DefaultDialogConfigs: DialogType = {
   open: false,
@@ -34,6 +35,7 @@ export const rootContext = React.createContext<RootContextType>({
   setDialog: params => {},
   handleCloseDialog: () => {},
   setDrawer: (params: any) => {},
+  versionInfo: { attu: '1', sdk: '1' },
 });
 
 const { Provider } = rootContext;
@@ -64,6 +66,7 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     open: false,
     child: <></>,
   });
+  const [versionInfo, setVersionInfo] = useState({ attu: '', sdk: '' });
 
   const handleSnackBarClose = () => {
     setSnackBar(v => ({ ...v, open: false }));
@@ -106,6 +109,15 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
       setDrawer({ ...drawer, open: open });
     };
 
+  useEffect(() => {
+    const fetchVersion = async () => {
+      const res = await MilvusHttp.getVersion();
+      console.log(res);
+      setVersionInfo(res);
+    };
+    fetchVersion();
+  }, []);
+
   return (
     <Provider
       value={{
@@ -114,6 +126,7 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         setDialog,
         handleCloseDialog,
         setDrawer,
+        versionInfo,
       }}
     >
       <ThemeProvider theme={theme}>

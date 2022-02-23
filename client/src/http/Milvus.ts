@@ -7,6 +7,8 @@ export class MilvusHttp extends BaseModel {
   static CHECK_URL = '/milvus/check';
   static FLUSH_URL = '/milvus/flush';
   static METRICS_URL = '/milvus/metrics';
+  static VERSION_URL = '/milvus/version';
+
   static TIGGER_CRON_URL = '/crons';
 
   constructor(props: {}) {
@@ -16,6 +18,10 @@ export class MilvusHttp extends BaseModel {
 
   static connect(address: string) {
     return super.create({ path: this.CONNECT_URL, data: { address } });
+  }
+
+  static getVersion() {
+    return super.search({ path: this.VERSION_URL, params: {} });
   }
 
   static check(address: string) {

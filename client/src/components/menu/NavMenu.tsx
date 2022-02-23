@@ -138,13 +138,19 @@ const useStyles = makeStyles((theme: Theme) =>
     collapseIcon: {
       left: '73px',
     },
+    version: {
+      position: 'absolute',
+      left: '22px',
+      bottom: (props: any) => (props.expanded ? '20px' : '70px'),
+    },
   })
 );
 
 const NavMenu: FC<NavMenuType> = props => {
-  const { width, data, defaultActive = '' } = props;
-  const classes = useStyles({ width });
+  const { width, data, defaultActive = '', versionInfo } = props;
   const [expanded, setExpanded] = useState<boolean>(false);
+
+  const classes = useStyles({ width, expanded });
   const [active, setActive] = useState<string>(defaultActive);
 
   const { t: commonTrans } = useTranslation();
@@ -234,6 +240,13 @@ const NavMenu: FC<NavMenuType> = props => {
           <ChevronRightIcon />
         </Button>
         <NestList data={data} />
+        <Typography
+          classes={{
+            root: classes.version,
+          }}
+        >
+          v {versionInfo.attu}
+        </Typography>
         <CommunityBtn />
       </div>
     </List>

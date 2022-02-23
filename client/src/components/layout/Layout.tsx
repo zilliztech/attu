@@ -8,6 +8,7 @@ import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
+import { rootContext } from '../../context/Root';
 import { IconsType } from '../icons/Types';
 import loadable from '@loadable/component';
 
@@ -47,6 +48,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const Layout = (props: any) => {
   const history = useHistory();
   const { isAuth } = useContext(authContext);
+  const { versionInfo } = useContext(rootContext);
+
   const { t: navTrans } = useTranslation('nav');
   const classes = useStyles();
   const location = useLocation();
@@ -135,6 +138,7 @@ const Layout = (props: any) => {
               defaultActive={defaultActive}
               // used for nested child menu
               defaultOpen={{ [navTrans('overview')]: true }}
+              versionInfo={versionInfo}
             />
           )}
 

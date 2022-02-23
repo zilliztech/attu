@@ -3,6 +3,7 @@ import { dtoValidationMiddleware } from '../middlewares/validation';
 import { MilvusService } from './milvus.service';
 import { ConnectMilvusDto, FlushDto } from './dto';
 import { INSIGHT_CACHE } from '../utils/Const';
+import packageJson from '../../package.json';
 
 export class MilvusController {
   private router: Router;
@@ -18,6 +19,8 @@ export class MilvusController {
   }
 
   generateRoutes() {
+    this.router.get('/version', this.getInfo.bind(this));
+
     this.router.post(
       '/connect',
       dtoValidationMiddleware(ConnectMilvusDto),
@@ -84,5 +87,13 @@ export class MilvusController {
     } catch (error) {
       next(error);
     }
+  }
+
+  async getInfo(req: Request, res: Response, next: NextFunction) {
+    const data = {
+      sdk: this.milvusService.sdkInfo,
+      attu: packageJson.version,
+    };
+    res.send(data);
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "attu",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "license": "MIT",
   "author": {
     "name": "zilliz",
@@ -78,9 +78,9 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "yarn clean && tsc",
     "prestart": "rm -rf dist && yarn build",
-    "start": "nodemon dist/app.js",
+    "start": "nodemon dist/src/app.js",
     "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/attu/express/src/app.js",
-    "start:prod": "node dist/app.js",
+    "start:prod": "node dist/src/app.js",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "cross-env NODE_ENV=test jest --passWithNoTests --coverage",
