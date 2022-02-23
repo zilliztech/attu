@@ -12,10 +12,7 @@ export class MilvusService {
   static activeMilvusClient: MilvusClient;
 
   get sdkInfo() {
-    if (!MilvusService.activeMilvusClient) {
-      return {};
-    }
-    return MilvusService.activeMilvusClient.sdkInfo;
+    return MilvusClient.sdkInfo;
   }
 
   get collectionManager() {

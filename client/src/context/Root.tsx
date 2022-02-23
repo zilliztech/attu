@@ -35,7 +35,7 @@ export const rootContext = React.createContext<RootContextType>({
   setDialog: params => {},
   handleCloseDialog: () => {},
   setDrawer: (params: any) => {},
-  versionInfo: { attu: '1', sdk: '1' },
+  versionInfo: { attu: '', sdk: '' },
 });
 
 const { Provider } = rootContext;
@@ -112,7 +112,6 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchVersion = async () => {
       const res = await MilvusHttp.getVersion();
-      console.log(res);
       setVersionInfo(res);
     };
     fetchVersion();
