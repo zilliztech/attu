@@ -1,5 +1,5 @@
 const electron = require('electron');
-require('./dist/app');
+require('./dist/src/app');
 
 // Module to control application life.
 const app = electron.app;
