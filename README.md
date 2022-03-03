@@ -93,11 +93,13 @@ New to milvus? Milvus is an open-source vector database built to power AI applic
 
 - If you've found a bug or want to request a feature, please create a [GitHub Issue](https://github.com/zilliztech/attu/issues/new/choose).
   Please check to make sure someone else hasn't already created an issue for the same topic.
-- Need help using attu? Ask away on our [attu Discuss Forum](https://github.com/zilliztech/attu/discussions) and a fellow community member or
-  Milvus engineer will be glad to help you out.
 
 [milvus-doc]: https://milvus.io/docs/home
 
 ## Community
 
-👉 Join the Milvus community on [Milvus forum](https://discuss.milvus.io/c/milvus-tools/14) to share your suggestions, advice, and questions with our engineering team.
+💬 Community isn’t just about writing code together. Come join the conversation, share your knowledge and get your questions answered on [Milvus Slack Channel](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ)!
+
+<a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">
+    <img src="https://assets.zilliz.com/readme_slack_4a07c4c92f.png" alt="Miluvs Slack Channel"  height="150" width="500">
+</a>
