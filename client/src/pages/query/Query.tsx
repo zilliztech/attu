@@ -166,7 +166,9 @@ const Query: FC<{
 
   const handleDelete = async () => {
     await CollectionHttp.deleteEntities(collectionName, {
-      expr: `${primaryKey} in [${selectedData.map(v => v.id).join(',')}]`,
+      expr: `${primaryKey} in [${selectedData
+        .map(v => v[primaryKey])
+        .join(',')}]`,
     });
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: collectionTrans('entites') }));
