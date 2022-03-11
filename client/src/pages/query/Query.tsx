@@ -268,7 +268,7 @@ const Query: FC<{
             disablePadding: false,
             label: i.name,
           }))}
-          primaryKey={fields.find(i => i.is_primary_key)?.name}
+          primaryKey={primaryKey}
           openCheckBox={true}
           isLoading={!!tableLoading}
           rows={result}
