@@ -1,5 +1,5 @@
 const successTrans = {
-  connect: 'Connet milvus success',
+  connect: 'Connection to milvus successful',
   create: `{{name}} has been created`,
   load: `{{name}} has been loaded`,
   delete: `{{name}} successfully deleted`,
