@@ -1,5 +1,28 @@
 import { KeyValuePair } from '../../types/Common';
-import { DataTypeEnum } from './Types';
+import { DataTypeEnum, ConsistencyLevelEnum } from './Types';
+
+export const CONSISTENCY_LEVEL_OPTIONS: KeyValuePair[] = [
+  {
+    label: 'Strong',
+    value: ConsistencyLevelEnum.Strong,
+  },
+  {
+    label: 'Session',
+    value: ConsistencyLevelEnum.Session,
+  },
+  {
+    label: 'Bounded',
+    value: ConsistencyLevelEnum.Bounded,
+  },
+  {
+    label: 'Eventually',
+    value: ConsistencyLevelEnum.Eventually,
+  },
+  {
+    label: 'Customized',
+    value: ConsistencyLevelEnum.Customized,
+  },
+];
 
 export const VECTOR_FIELDS_OPTIONS: KeyValuePair[] = [
   {

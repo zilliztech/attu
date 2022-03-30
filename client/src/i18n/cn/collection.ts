@@ -27,6 +27,8 @@ const collectionTrans = {
   createTitle: 'Create Collection',
   general: '1. General Info',
   schema: '2. Define Schema',
+  consistency: '3. Consistency Level',
+  consistencyLevel: 'Consistency Level',
   description: 'Description (Optional)',
   fieldType: 'Field Type',
   vectorFieldType: 'Vector Field Type',
