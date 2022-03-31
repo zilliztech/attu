@@ -29,15 +29,15 @@ export interface CollectionCreateParam {
   description: string;
   autoID: boolean;
   fields: Field[];
-  consistency_level: number;
+  consistency_level: string;
 }
 
 export enum ConsistencyLevelEnum {
-  Strong = 0,
-  Session = 1, // default in PyMilvus
-  Bounded = 2,
-  Eventually = 3,
-  Customized = 4, // Users pass their own `guarantee_timestamp`.
+  Strong = "Strong",
+  Session = "Session", // default in PyMilvus
+  Bounded = "Bounded",
+  Eventually = "Eventually",
+  Customized = "Customized", // Users pass their own `guarantee_timestamp`.
 }
 
 export enum DataTypeEnum {

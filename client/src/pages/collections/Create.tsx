@@ -14,6 +14,7 @@ import {
   CollectionCreateParam,
   CollectionCreateProps,
   DataTypeEnum,
+  ConsistencyLevelEnum,
   Field,
 } from './Types';
 import { CONSISTENCY_LEVEL_OPTIONS } from './Constants';
@@ -63,7 +64,8 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     autoID: true,
   });
 
-  const [consistencyLevel, setConsistencyLevel] = useState(1);
+  const [consistencyLevel, setConsistencyLevel] =
+    useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Session); // Session is the default value of consistency level
 
   const [fields, setFields] = useState<Field[]>([
     {
@@ -227,9 +229,9 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
             wrapperClass={classes.select}
             options={CONSISTENCY_LEVEL_OPTIONS}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-              setConsistencyLevel(e.target.value as number);
+              setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
-            value={consistencyLevel} // 1(Session) by default
+            value={consistencyLevel}
             variant="filled"
             label={'Consistency'}
           />

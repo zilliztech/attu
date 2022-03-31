@@ -201,13 +201,7 @@ const Collections = () => {
 
     await CollectionHttp.createCollection({
       ...data,
-      consistency_level: [
-        'Strong',
-        'Session',
-        'Bounded',
-        'Eventually',
-        'Customized',
-      ][data.consistency_level],
+      consistency_level: data.consistency_level,
     });
     handleCloseDialog();
     openSnackBar(
