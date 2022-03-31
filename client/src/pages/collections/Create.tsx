@@ -3,6 +3,7 @@ import { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
 import CustomInput from '../../components/customInput/CustomInput';
+import CustomSelector from '../../components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
@@ -13,8 +14,10 @@ import {
   CollectionCreateParam,
   CollectionCreateProps,
   DataTypeEnum,
+  ConsistencyLevelEnum,
   Field,
 } from './Types';
+import { CONSISTENCY_LEVEL_OPTIONS } from './Constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
   fieldset: {
@@ -23,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    '&:last-child': {
+    '&:nth-last-child(2)': {
       flexDirection: 'column',
       alignItems: 'flex-start',
     },
@@ -37,6 +40,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   input: {
     width: '48%',
+  },
+  select: {
+    width: '160px',
+    marginBottom: '22px',
+
+    '&:first-child': {
+      marginLeft: 0,
+    },
   },
 }));
 
@@ -52,6 +63,9 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     description: '',
     autoID: true,
   });
+
+  const [consistencyLevel, setConsistencyLevel] =
+    useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Session); // Session is the default value of consistency level
 
   const [fields, setFields] = useState<Field[]>([
     {
@@ -171,6 +185,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
         v.is_primary_key && (data.autoID = form.autoID);
         return data;
       }),
+      consistency_level: consistencyLevel,
     };
     handleCreate(param);
   };
@@ -205,6 +220,20 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
             setFieldsValidation={setFieldsValidation}
             autoID={form.autoID}
             setAutoID={changeIsAutoID}
+          />
+        </fieldset>
+
+        <fieldset className={classes.fieldset}>
+          <legend>{collectionTrans('consistency')}</legend>
+          <CustomSelector
+            wrapperClass={classes.select}
+            options={CONSISTENCY_LEVEL_OPTIONS}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
+            }}
+            value={consistencyLevel}
+            variant="filled"
+            label={'Consistency'}
           />
         </fieldset>
       </form>

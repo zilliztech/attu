@@ -198,7 +198,11 @@ const Collections = () => {
         }
         : v
     );
-    await CollectionHttp.createCollection(data);
+
+    await CollectionHttp.createCollection({
+      ...data,
+      consistency_level: data.consistency_level,
+    });
     handleCloseDialog();
     openSnackBar(
       successTrans('create', { name: collectionTrans('collection') })
