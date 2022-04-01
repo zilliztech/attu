@@ -190,12 +190,12 @@ const Collections = () => {
     data.fields = data.fields.map(v =>
       vectorType.includes(v.data_type)
         ? {
-          ...v,
-          type_params: {
-            // if data type is vector, dimension must exist.
-            dim: v.dimension!,
-          },
-        }
+            ...v,
+            type_params: {
+              // if data type is vector, dimension must exist.
+              dim: v.dimension!,
+            },
+          }
         : v
     );
 
@@ -361,6 +361,12 @@ const Collections = () => {
       disablePadding: false,
       sortBy: '_status',
       label: collectionTrans('status'),
+    },
+    {
+      id: 'consistency_level',
+      align: 'left',
+      disablePadding: false,
+      label: collectionTrans('consistencyLevel'),
     },
     {
       id: '_rowCount',
