@@ -140,7 +140,7 @@ export class CollectionsService {
 
   /**
    * Get all collections meta data
-   * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string}
+   * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string, consistency_level:string}
    */
   async getAllCollections() {
     const data = [];
@@ -185,6 +185,7 @@ export class CollectionsService {
           loadedPercentage,
           createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
           index_status: indexRes.state,
+          consistency_level: collectionInfo.consistency_level,
         });
       }
     }

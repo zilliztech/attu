@@ -18,6 +18,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private autoID!: string;
   private collection_name!: string;
   private description!: string;
+  private consistency_level!: string;
   private rowCount!: string;
   private index_status!: string;
   private id!: string;
@@ -149,6 +150,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
       ? LOADING_STATE.LOADED
       : LOADING_STATE.LOADING;
     // return LOADING_STATE.LOADING
+  }
+
+  get _consistencyLevel() {
+    return this.consistency_level;
   }
 
   get _fields() {

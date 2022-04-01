@@ -12,6 +12,7 @@ export interface CollectionData {
   _desc: string;
   _indexState: ChildrenStatusType;
   _fields?: FieldData[];
+  _consistencyLevel?: string;
 }
 
 export interface CollectionView extends CollectionData {
