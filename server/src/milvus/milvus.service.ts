@@ -41,6 +41,7 @@ export class MilvusService {
 
   checkMilvus() {
     if (!MilvusService.activeMilvusClient) {
+      // todo, need test when activeMilvusClient is empty.
       throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, {
         status: 401,
         message: 'please connect milvus first',
