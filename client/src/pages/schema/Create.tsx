@@ -67,6 +67,7 @@ const CreateIndex = (props: {
     m: '4',
     efConstruction: '',
     nlist: '',
+    nbits: '',
     n_trees: '',
     outDegree: '',
     candidatePoolSize: '',
@@ -205,6 +206,7 @@ const CreateIndex = (props: {
       m: '4',
       efConstruction: '',
       nlist: '',
+      nbits: '8', // 8 by default
       n_trees: '',
       out_degree: '',
       candidate_pool_size: '',
