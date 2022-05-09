@@ -31,8 +31,6 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
   static COLLECTIONS_STATISTICS_URL = '/collections/statistics';
 
-  static CHECK_URL = '/milvus/check';
-
   constructor(props: CollectionView) {
     super(props);
     Object.assign(this, props);
