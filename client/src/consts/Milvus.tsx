@@ -74,7 +74,7 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     search: ['nprobe'],
   },
   IVF_PQ: {
-    create: ['nlist', 'm'],
+    create: ['nlist', 'm', 'nbits'],
     search: ['nprobe'],
   },
   IVF_SQ8: {

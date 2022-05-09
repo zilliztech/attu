@@ -86,6 +86,7 @@ const CreateForm = (
     };
 
     const nlist = generateNumberConfig('nlist', 'nlist', 1, 65536);
+    const nbits = generateNumberConfig('nbits', 'nbits', 1, 16);
     const nTrees = generateNumberConfig('nTrees', 'n_trees', 1, 1024);
 
     const M = generateNumberConfig('M', 'M', 4, 64);
@@ -113,6 +114,10 @@ const CreateForm = (
 
     if (indexParams.includes('nlist')) {
       result.push(nlist);
+    }
+
+    if (indexParams.includes('nbits')) {
+      result.push(nbits);
     }
 
     if (indexParams.includes('M')) {
