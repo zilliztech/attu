@@ -152,9 +152,6 @@ describe('test crons service', () => {
     // reset setup to trigger error
     const newCollectionService = new CollectionsService(milvusService);
     const newSchedulerRegistry = new SchedulerRegistry([]);
-    newCollectionService.getAllCollections = () => {
-      throw new Error('error');
-    };
 
     const newCronsService = new CronsService(
       newCollectionService,

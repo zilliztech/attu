@@ -32,16 +32,6 @@ describe('Test Milvus service', () => {
     expect(res.address).toBe(mockAddress);
   });
 
-  test('test connectMilvus method error', async () => {
-    try {
-      await service.connectMilvus({ address: '' }, insightCacheForTest);
-    } catch (err) {
-      expect(err.message).toBe(
-        'Connect milvus failed, check your milvus address.'
-      );
-    }
-  });
-
   test('test checkMilvus when not connect to Milvus', () => {
     try {
       service.checkMilvus();
