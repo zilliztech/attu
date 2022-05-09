@@ -41,11 +41,10 @@ export class MilvusService {
 
   checkMilvus() {
     if (!MilvusService.activeMilvusClient) {
-      // todo, need test when activeMilvusClient is empty.
-      throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, {
-        status: 401,
-        message: 'please connect milvus first',
-      });
+      throw HttpErrors(
+        HTTP_STATUS_CODE.FORBIDDEN,
+        'Can not find your connection, please connect Milvus again'
+      );
       // throw new Error('Please connect milvus first');
     }
   }
@@ -85,13 +84,7 @@ export class MilvusService {
 
   async checkConnect(address: string, cache: LruCache<any, any>) {
     const milvusAddress = MilvusService.formatAddress(address);
-    if (!cache.has(milvusAddress)) {
-      return { connected: false };
-    }
-    // const res = await this.connectMilvus(address, cache);
-    // return {
-    //   connected: res.address ? true : false,
-    // };
+    return { connected: cache.has(milvusAddress) };
   }
 
   async flush(data: FlushReq) {

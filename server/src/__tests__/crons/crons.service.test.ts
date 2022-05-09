@@ -45,7 +45,10 @@ describe('test crons service', () => {
     MilvusService.activeAddress = mockAddress;
     MilvusService.activeMilvusClient = new MilvusClient(mockAddress);
 
-    await milvusService.connectMilvus(mockAddress, insightCacheForTest);
+    await milvusService.connectMilvus(
+      { address: mockAddress },
+      insightCacheForTest
+    );
 
     collectionService = new CollectionsService(milvusService);
 
