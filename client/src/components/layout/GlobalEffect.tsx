@@ -2,15 +2,15 @@ import React, { useContext } from 'react';
 import axiosInstance from '../../http/Axios';
 import { rootContext } from '../../context/Root';
 import { CODE_STATUS } from '../../consts/Http';
-import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 import { authContext } from '../../context/Auth';
+import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 
 let axiosResInterceptor: number | null = null;
 // let timer: Record<string, ReturnType<typeof setTimeout> | number>[] = [];
 // we only take side effect here, nothing else
 const GlobalEffect = (props: { children: React.ReactNode }) => {
   const { openSnackBar } = useContext(rootContext);
-  const { setAddress } = useContext(authContext);
+  const { setIsAuth, setAddress } = useContext(authContext);
 
   // catch axios error here
   if (axiosResInterceptor === null) {
@@ -27,6 +27,9 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
         const { response = {} } = error;
         switch (response.status) {
           case CODE_STATUS.UNAUTHORIZED:
+            return Promise.reject(error);
+          case CODE_STATUS.FORBIDDEN:
+            setIsAuth(false);
             setAddress('');
             window.localStorage.removeItem(MILVUS_ADDRESS);
             break;

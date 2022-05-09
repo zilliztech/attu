@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
-  const { address, setAddress } = useContext(authContext);
+  const { address, setAddress, setIsAuth } = useContext(authContext);
   const history = useHistory();
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
@@ -72,6 +72,7 @@ const Header: FC<HeaderType> = props => {
 
   const handleLogout = () => {
     setAddress('');
+    setIsAuth(false);
     window.localStorage.removeItem(MILVUS_ADDRESS);
   };
 

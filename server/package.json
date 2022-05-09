@@ -12,7 +12,7 @@
     "url": "https://github.com/zilliztech/attu"
   },
   "dependencies": {
-    "@zilliz/milvus2-sdk-node": "^2.0.2",
+    "@zilliz/milvus2-sdk-node": "^2.0.3",
     "chalk": "^4.1.2",
     "class-sanitizer": "^1.0.1",
     "class-transformer": "^0.4.0",
@@ -78,7 +78,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "yarn clean && tsc",
     "prestart": "rm -rf dist && yarn build",
-    "start": "nodemon dist/src/app.js",
+    "start": "nodemon src/app.ts",
     "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/attu/express/src/app.js",
     "start:prod": "node dist/src/app.js",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",

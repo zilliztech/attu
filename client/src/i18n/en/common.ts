@@ -2,6 +2,10 @@ const commonTrans = {
   attu: {
     admin: 'Attu',
     address: 'Milvus Address',
+    unAuth: 'Username or password is not correct',
+    username: 'Username',
+    password: 'Password',
+    ssl: 'SSL',
   },
   status: {
     loaded: 'loaded for search',

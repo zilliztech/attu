@@ -16,8 +16,13 @@ export class MilvusHttp extends BaseModel {
     Object.assign(this, props);
   }
 
-  static connect(address: string) {
-    return super.create({ path: this.CONNECT_URL, data: { address } });
+  static connect(data: {
+    address: string;
+    username?: string;
+    password?: string;
+    ssl?: boolean;
+  }) {
+    return super.create({ path: this.CONNECT_URL, data });
   }
 
   static getVersion() {

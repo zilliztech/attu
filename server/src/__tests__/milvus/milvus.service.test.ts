@@ -25,18 +25,11 @@ describe('Test Milvus service', () => {
   });
 
   test('test connectMilvus method', async () => {
-    const res = await service.connectMilvus(mockAddress, insightCacheForTest);
+    const res = await service.connectMilvus(
+      { address: mockAddress },
+      insightCacheForTest
+    );
     expect(res.address).toBe(mockAddress);
-  });
-
-  test('test connectMilvus method error', async () => {
-    try {
-      await service.connectMilvus('', insightCacheForTest);
-    } catch (err) {
-      expect(err.message).toBe(
-        'Connect milvus failed, check your milvus address.'
-      );
-    }
   });
 
   test('test checkMilvus when not connect to Milvus', () => {
@@ -49,7 +42,7 @@ describe('Test Milvus service', () => {
 
   test('test checkConnect method', async () => {
     // mock connect first
-    await service.connectMilvus(mockAddress, insightCacheForTest);
+    await service.connectMilvus({ address: mockAddress }, insightCacheForTest);
     // different address
     const errorRes = await service.checkConnect('123', insightCacheForTest);
     expect(errorRes.connected).toBeFalsy();
@@ -58,7 +51,7 @@ describe('Test Milvus service', () => {
   });
 
   test('test managers after connected', async () => {
-    await service.connectMilvus(mockAddress, insightCacheForTest);
+    await service.connectMilvus({ address: mockAddress }, insightCacheForTest);
     expect(service.collectionManager).toBeDefined();
     expect(service.partitionManager).toBeDefined();
     expect(service.indexManager).toBeDefined();
@@ -66,14 +59,14 @@ describe('Test Milvus service', () => {
   });
 
   test('test flush method', async () => {
-    await service.connectMilvus(mockAddress, insightCacheForTest);
+    await service.connectMilvus({ address: mockAddress }, insightCacheForTest);
     const res = await service.flush({ collection_names: ['c1', 'c2'] });
     const data = res.data.collection_names;
     expect(data.length).toBe(2);
   });
 
   test('test getMetrics method', async () => {
-    await service.connectMilvus(mockAddress, insightCacheForTest);
+    await service.connectMilvus({ address: mockAddress }, insightCacheForTest);
     const res = await service.getMetrics();
     expect(res.type).toBe('system_info');
   });

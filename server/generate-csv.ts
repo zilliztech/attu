@@ -19,7 +19,7 @@ const generateVector = (dimension: number) => {
 };
 
 while (records.length < 50000) {
-  const value = generateVector(8);
+  const value = generateVector(4);
   records.push({ vector: value });
 }
 

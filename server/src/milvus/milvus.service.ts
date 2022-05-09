@@ -42,18 +42,30 @@ export class MilvusService {
   checkMilvus() {
     if (!MilvusService.activeMilvusClient) {
       throw HttpErrors(
-        HTTP_STATUS_CODE.UNAUTHORIZED,
-        'Please connect milvus first'
+        HTTP_STATUS_CODE.FORBIDDEN,
+        'Can not find your connection, please connect Milvus again'
       );
       // throw new Error('Please connect milvus first');
     }
   }
 
-  async connectMilvus(address: string, cache: LruCache<any, any>) {
+  async connectMilvus(
+    data: {
+      address: string;
+      username?: string;
+      password?: string;
+      ssl?: boolean;
+    },
+    cache: LruCache<any, any>
+  ) {
+    const { address, username, password, ssl = false } = data;
     // grpc only need address without http
     const milvusAddress = MilvusService.formatAddress(address);
+    const hasAuth = username !== undefined && password !== undefined;
     try {
-      const milvusClient = new MilvusClient(milvusAddress);
+      const milvusClient = hasAuth
+        ? new MilvusClient(milvusAddress, ssl, username, password)
+        : new MilvusClient(milvusAddress, ssl);
       await milvusClient.collectionManager.hasCollection({
         collection_name: 'not_exist',
       });
@@ -63,22 +75,16 @@ export class MilvusService {
     } catch (error) {
       // if milvus is not working, delete connection.
       cache.del(milvusAddress);
-      throw HttpErrors(
-        HTTP_STATUS_CODE.BAD_REQUEST,
-        'Connect milvus failed, check your milvus address.'
-      );
+      if (error.toString().includes('unauthenticated')) {
+        throw HttpErrors(HTTP_STATUS_CODE.UNAUTHORIZED, error);
+      }
+      throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, error);
     }
   }
 
   async checkConnect(address: string, cache: LruCache<any, any>) {
     const milvusAddress = MilvusService.formatAddress(address);
-    if (!cache.has(milvusAddress)) {
-      return { connected: false };
-    }
-    const res = await this.connectMilvus(address, cache);
-    return {
-      connected: res.address ? true : false,
-    };
+    return { connected: cache.has(milvusAddress) };
   }
 
   async flush(data: FlushReq) {

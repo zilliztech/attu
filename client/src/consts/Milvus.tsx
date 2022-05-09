@@ -1,5 +1,8 @@
 import { DataTypeEnum } from '../pages/collections/Types';
 
+export const MILVUS_URL =
+  ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';
+
 export enum METRIC_TYPES_VALUES {
   L2 = 'L2',
   IP = 'IP',
