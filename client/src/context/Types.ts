@@ -58,6 +58,7 @@ export type AuthContextType = {
   isAuth: boolean;
   address: string;
   setAddress: Dispatch<SetStateAction<string>>;
+  setIsAuth: Dispatch<SetStateAction<boolean>>;
 };
 
 export type NavContextType = {

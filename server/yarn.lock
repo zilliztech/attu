@@ -1137,10 +1137,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@zilliz/milvus2-sdk-node@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.0.2.tgz#d3e3272b20dfd11ed2ddc5a6c5b21fa6e0b08315"
-  integrity sha512-fuYzQKL1M87s4k/UXIYOSIRriC5Oe2uoP+fxI6p4+whSA80ftnztPiQNRgn/9KnDUFTF0ZVqaEe3P8UW7TSA1w==
+"@zilliz/milvus2-sdk-node@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.0.3.tgz#9007f6e5162ca9b51b522b1d6eff76a31dc6921c"
+  integrity sha512-BWTIRBhJI/z9HWCeJsfaCC6vueGcTVcL7Ai7SASnwFR4RIzfQ2bclo41G6767cHqZNiyOdoEyM+u0XuPpo8vjA==
   dependencies:
     "@grpc/grpc-js" "^1.2.12"
     "@grpc/proto-loader" "^0.6.0"
