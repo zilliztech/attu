@@ -25,6 +25,7 @@ import {
   ShowPartitionsReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
+import { CreateUserReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/User';
 import { QueryDto } from '../../../collections/dto';
 import {
   CodeEnum,
@@ -89,8 +90,7 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
             status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION),
           };
         }
-        const res =
-          mockCollections.find((c) => c.name === collection_name) || {};
+        const res = mockCollections.find(c => c.name === collection_name) || {};
         return {
           status: mockStatusInfo(CodeEnum.success),
           ...res,
@@ -229,8 +229,7 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
           return { status: mockStatusInfo(CodeEnum.error, ERR_NO_COLLECTION) };
         }
         const data =
-          mockIndexState.find((i) => i.collection_name === collection_name) ||
-          {};
+          mockIndexState.find(i => i.collection_name === collection_name) || {};
         return {
           status: mockStatusInfo(CodeEnum.success),
           ...data,
@@ -345,6 +344,20 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
           status: mockStatusInfo(CodeEnum.success),
           data: param,
         };
+      },
+    },
+    userManager: {
+      listUsers: () => {
+        return { ...mockStatusInfo(CodeEnum.success), usernames: ['root'] };
+      },
+      createUser: () => {
+        return { ...mockStatusInfo(CodeEnum.success) };
+      },
+      deleteUser: () => {
+        return { ...mockStatusInfo(CodeEnum.success) };
+      },
+      updateUser: () => {
+        return { ...mockStatusInfo(CodeEnum.success) };
       },
     },
   };
