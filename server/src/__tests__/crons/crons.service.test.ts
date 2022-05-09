@@ -45,7 +45,10 @@ describe('test crons service', () => {
     MilvusService.activeAddress = mockAddress;
     MilvusService.activeMilvusClient = new MilvusClient(mockAddress);
 
-    await milvusService.connectMilvus(mockAddress, insightCacheForTest);
+    await milvusService.connectMilvus(
+      { address: mockAddress },
+      insightCacheForTest
+    );
 
     collectionService = new CollectionsService(milvusService);
 
@@ -149,9 +152,6 @@ describe('test crons service', () => {
     // reset setup to trigger error
     const newCollectionService = new CollectionsService(milvusService);
     const newSchedulerRegistry = new SchedulerRegistry([]);
-    newCollectionService.getAllCollections = () => {
-      throw new Error('error');
-    };
 
     const newCronsService = new CronsService(
       newCollectionService,

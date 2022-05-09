@@ -16,7 +16,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [address, setAddress] = useState<string>(
     window.localStorage.getItem(MILVUS_ADDRESS) || ''
   );
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isAuth, setIsAuth] = useState<boolean>(address !== '');
   // const isAuth = useMemo(() => !!address, [address]);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       try {
         const res = await MilvusHttp.check(milvusAddress);
         setAddress(res.connected ? milvusAddress : '');
+        res.connected && setIsAuth(true);
         if (!res.connected) {
           window.localStorage.removeItem(MILVUS_ADDRESS);
         }
