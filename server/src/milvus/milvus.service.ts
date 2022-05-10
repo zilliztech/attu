@@ -50,6 +50,7 @@ export class MilvusService {
         HTTP_STATUS_CODE.FORBIDDEN,
         'Can not find your connection, please connect Milvus again'
       );
+
       // throw new Error('Please connect milvus first');
     }
   }

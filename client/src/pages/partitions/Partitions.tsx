@@ -58,10 +58,7 @@ const Partitions: FC<{
   const InfoIcon = icons.info;
 
   const { handleInsertDialog } = useInsertDialogHook();
-  // const LoadIcon = icons.load;
-  // const ReleaseIcon = icons.release;
 
-  // const { handleAction } = useDialogHook({ type: 'partition' });
   const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
     []
   );
@@ -137,28 +134,6 @@ const Partitions: FC<{
     fetchPartitions(collectionName);
     handleCloseDialog();
   };
-
-  // const handleRelease = async (data: PartitionView) => {
-  //   const param: PartitionParam = {
-  //     collectionName,
-  //     partitionNames: [data._name],
-  //   };
-  //   const res = await PartitionHttp.releasePartition(param);
-  //   openSnackBar(successTrans('release', { name: t('partition') }));
-  //   fetchPartitions(collectionName);
-  //   return res;
-  // };
-
-  // const handleLoad = async (data: PartitionView) => {
-  //   const param: PartitionParam = {
-  //     collectionName,
-  //     partitionNames: [data._name!],
-  //   };
-  //   const res = await PartitionHttp.loadPartition(param);
-  //   openSnackBar(successTrans('load', { name: t('partition') }));
-  //   fetchPartitions(collectionName);
-  //   return res;
-  // };
 
   const handleSearch = (value: string) => {
     if (timer) {

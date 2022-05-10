@@ -24,6 +24,8 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import DatePicker from '@material-ui/icons/Event';
 import GetAppIcon from '@material-ui/icons/GetApp';
+// import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import PersonOutlineIcon from '@material-ui/icons/Person';
 import { SvgIcon } from '@material-ui/core';
 import { ReactComponent as ZillizIcon } from '../../assets/icons/zilliz.svg';
 import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
@@ -67,6 +69,14 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
 
   zilliz: (props = {}) => (
     <SvgIcon viewBox="0 0 30 30" component={ZillizIcon} {...props} />
+  ),
+  navPerson: (props = {}) => (
+    <SvgIcon
+      viewBox="0 0 24 24"
+      component={PersonOutlineIcon}
+      strokeWidth="2"
+      {...props}
+    />
   ),
   navOverview: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={OverviewIcon} {...props} />

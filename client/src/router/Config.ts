@@ -5,6 +5,7 @@ import Overview from '../pages/overview/Overview';
 // import VectorSearch from '../pages/seach/VectorSearch';
 import { RouterConfigType } from './Types';
 import loadable from '@loadable/component';
+import Users from '../pages/user/User';
 
 const PLUGIN_DEV = process.env.REACT_APP_PLUGIN_DEV;
 
@@ -29,11 +30,7 @@ const RouterConfig: RouterConfigType[] = [
     component: Collection,
     auth: true,
   },
-  // {
-  //   path: '/search',
-  //   component: VectorSearch,
-  //   auth: true,
-  // },
+  { path: '/users', component: Users, auth: true },
 ];
 
 function importAll(r: any, outOfRoot = false) {

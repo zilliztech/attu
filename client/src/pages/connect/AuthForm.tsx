@@ -9,14 +9,14 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { MilvusHttp } from '../../http/Milvus';
-import { formatAddress } from 'insight_src/utils/Format';
+import { formatAddress } from '../../utils/Format';
 import { useHistory } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
-import { MILVUS_ADDRESS } from 'insight_src/consts/Localstorage';
-import { CODE_STATUS } from 'insight_src/consts/Http';
-import { MILVUS_URL } from 'insight_src/consts/Milvus';
-import { CustomRadio } from 'insight_src/components/customRadio/CustomRadio';
+import { MILVUS_ADDRESS } from '../../consts/Localstorage';
+import { CODE_STATUS } from '../../consts/Http';
+import { MILVUS_URL } from '../../consts/Milvus';
+import { CustomRadio } from '../../components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

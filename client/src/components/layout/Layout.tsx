@@ -66,6 +66,10 @@ const Layout = (props: any) => {
       return navTrans('system');
     }
 
+    if (location.pathname.includes('users')) {
+      return navTrans('user');
+    }
+
     return navTrans('overview');
   }, [location, navTrans]);
 
@@ -75,11 +79,11 @@ const Layout = (props: any) => {
       label: navTrans('overview'),
       onClick: () => history.push('/'),
     },
-    // {
-    //   icon: icons.navSystem,
-    //   label: navTrans('system'),
-    //   onClick: () => history.push('/system'),
-    // },
+    {
+      icon: icons.navPerson,
+      label: navTrans('user'),
+      onClick: () => history.push('/users'),
+    },
     {
       icon: icons.navCollection,
       label: navTrans('collection'),

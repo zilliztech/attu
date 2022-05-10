@@ -115,6 +115,7 @@ export type ColDefinitionsType = {
 };
 
 export type AttuGridType = ToolBarType & {
+  showPagination?: boolean;
   rowCount: number;
   rowsPerPage?: number;
   // used to dynamic set page size by table container and row height

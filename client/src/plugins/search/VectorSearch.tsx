@@ -16,10 +16,7 @@ import SimpleMenu from '../../components/menu/SimpleMenu';
 import { TOP_K_OPTIONS } from './Constants';
 import { Option } from '../../components/customSelector/Types';
 import { CollectionHttp } from '../../http/Collection';
-import {
-  CollectionData,
-  DataTypeEnum,
-} from 'insight_src/pages/collections/Types';
+import { CollectionData, DataTypeEnum } from '../../pages/collections/Types';
 import { IndexHttp } from '../../http/Index';
 import { getVectorSearchStyles } from './Styles';
 import { parseValue } from '../../utils/Insert';
@@ -36,8 +33,8 @@ import Filter from '../../components/advancedSearch';
 import { Field } from '../../components/advancedSearch/Types';
 import { useLocation } from 'react-router-dom';
 import { parseLocationSearch } from '../../utils/Format';
-import { CustomDatePicker } from 'insight_src/components/customDatePicker/CustomDatePicker';
-import { useTimeTravelHook } from 'insight_src/hooks/TimeTravel';
+import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
+import { useTimeTravelHook } from '../../hooks/TimeTravel';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
