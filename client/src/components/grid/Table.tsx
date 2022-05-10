@@ -320,7 +320,7 @@ const EnhancedTable: FC<TableType> = props => {
             </TableBody>
           )}
         </Table>
-
+        {/* TODO(wenyi): loadingRowCount wrong here*/}
         {isLoading && <LoadingTable count={loadingRowCount} />}
       </Box>
     </TableContainer>

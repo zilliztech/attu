@@ -24,6 +24,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 const LoadingTable = (props: { wrapperClass?: string; count: number }) => {
   const { wrapperClass = '', count } = props;
   const classes = getStyles();
+  //TODO(wenyi): There is a bug here, count is always -1, so returns Error: Invalid array length
   const rows = Array(count).fill(1);
 
   return (

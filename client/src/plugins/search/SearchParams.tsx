@@ -39,6 +39,7 @@ const SearchParams: FC<SearchParamsProps> = ({
   indexParams,
   searchParamsForm,
   handleFormChange,
+  handleMetricTypeChange,
   embeddingType,
   metricType,
   topK,
@@ -264,11 +265,10 @@ const SearchParams: FC<SearchParamsProps> = ({
         wrapperClass={classes.selector}
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
-          // not selectable now, so not set onChange event
+          const metricType = e.target.value as string;
+          console.log('metricType', metricType);
+          handleMetricTypeChange(metricType);
         }}
-        // not selectable now
-        // readOnly can't avoid all events, so we use disabled instead
-        disabled={true}
       />
       <div className={classes.inlineInputWrapper}>
         {/* dynamic params, now every type only has one param except metric type */}

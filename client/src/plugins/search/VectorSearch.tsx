@@ -52,6 +52,7 @@ const VectorSearch = () => {
   const [tableLoading, setTableLoading] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionData[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
+  const [selectedMetricType, setSelectedMetricType] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   // fields for advanced filter
   const [filterFields, setFilterFields] = useState<Field[]>([]);
@@ -302,7 +303,7 @@ const VectorSearch = () => {
       params: JSON.stringify(searchParam),
       anns_field: selectedField,
       topk: topK,
-      metric_type: metricType,
+      metric_type: selectedMetricType || metricType,
       round_decimal: searchParam.round_decimal,
     };
 
@@ -425,7 +426,7 @@ const VectorSearch = () => {
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
-            metricType={metricType!}
+            metricType={selectedMetricType || metricType!}
             embeddingType={
               embeddingType as
                 | DataTypeEnum.BinaryVector
@@ -435,6 +436,7 @@ const VectorSearch = () => {
             indexParams={indexParams!}
             searchParamsForm={searchParam}
             handleFormChange={setSearchParam}
+            handleMetricTypeChange={setSelectedMetricType}
             topK={topK}
             setParamsDisabled={setParamDisabled}
           />
