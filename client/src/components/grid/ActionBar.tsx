@@ -1,5 +1,11 @@
 import { FC } from 'react';
-import { IconButton, makeStyles, Theme, createStyles } from '@material-ui/core';
+import {
+  IconButton,
+  makeStyles,
+  Theme,
+  createStyles,
+  Button,
+} from '@material-ui/core';
 import Icons from '../icons/Icons';
 import { ActionBarType } from './Types';
 import CustomToolTip from '../customToolTip/CustomToolTip';
@@ -40,31 +46,48 @@ const ActionBar: FC<ActionBarType> = props => {
 
   return (
     <>
-      {configs.map(v => {
+      {configs.map((v, i) => {
         const label = v.getLabel ? v.getLabel(row) : v.label;
+
         return (
           <span
             className={`${classes.root} ${v.className} ${
               isHoverType ? classes.hoverType : ''
             }`}
-            key={label}
+            key={i}
           >
             <CustomToolTip title={label || ''} placement="bottom">
-              <IconButton
-                aria-label={label || ''}
-                onClickCapture={e => {
-                  e.stopPropagation();
-                  v.onClick(e, row);
-                }}
-                disabled={v.disabled ? v.disabled(row) : false}
-                classes={{
-                  disabled: classes.disabled,
-                }}
-              >
-                {v.showIconMethod === 'renderFn'
-                  ? v.renderIconFn && v.renderIconFn(row)
-                  : Icons[v.icon]()}
-              </IconButton>
+              {v.icon ? (
+                <IconButton
+                  aria-label={label || ''}
+                  onClickCapture={e => {
+                    e.stopPropagation();
+                    v.onClick(e, row);
+                  }}
+                  disabled={v.disabled ? v.disabled(row) : false}
+                  classes={{
+                    disabled: classes.disabled,
+                  }}
+                >
+                  {v.showIconMethod === 'renderFn'
+                    ? v.renderIconFn && v.renderIconFn(row)
+                    : Icons[v.icon]()}
+                </IconButton>
+              ) : (
+                <Button
+                  aria-label={label || ''}
+                  onClickCapture={e => {
+                    e.stopPropagation();
+                    v.onClick(e, row);
+                  }}
+                  disabled={v.disabled ? v.disabled(row) : false}
+                  classes={{
+                    disabled: classes.disabled,
+                  }}
+                >
+                  {v.text}
+                </Button>
+              )}
             </CustomToolTip>
           </span>
         );

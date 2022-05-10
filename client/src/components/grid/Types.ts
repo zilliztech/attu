@@ -115,6 +115,7 @@ export type ColDefinitionsType = {
 };
 
 export type AttuGridType = ToolBarType & {
+  showPagination?: boolean;
   rowCount: number;
   rowsPerPage?: number;
   // used to dynamic set page size by table container and row height
@@ -149,7 +150,8 @@ export type ActionBarType = {
 
 type ActionBarConfig = {
   onClick: (e: React.MouseEvent, row: any) => void;
-  icon: IconsType;
+  icon?: IconsType;
+  text?: string;
   showIconMethod?: 'iconType' | 'renderFn';
   renderIconFn?: (row: any) => ReactElement;
   label?: string;

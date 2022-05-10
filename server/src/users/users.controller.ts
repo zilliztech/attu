@@ -3,7 +3,7 @@ import { dtoValidationMiddleware } from '../middlewares/validation';
 import { UserService } from './users.service';
 import { milvusService } from '../milvus';
 
-import { CreateUserDto, UpdateUserDto, DeleteUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 export class UserController {
   private router: Router;
@@ -29,11 +29,7 @@ export class UserController {
       this.updateUsers.bind(this)
     );
 
-    this.router.delete(
-      '/',
-      dtoValidationMiddleware(DeleteUserDto),
-      this.deleteUsers.bind(this)
-    );
+    this.router.delete('/:username', this.deleteUser.bind(this));
 
     return this.router;
   }
@@ -50,7 +46,7 @@ export class UserController {
   async createUsers(req: Request, res: Response, next: NextFunction) {
     const { username, password } = req.body;
     try {
-      const result = this.userService.createUser({ username, password });
+      const result = await this.userService.createUser({ username, password });
       res.send(result);
     } catch (error) {
       next(error);
@@ -60,7 +56,7 @@ export class UserController {
   async updateUsers(req: Request, res: Response, next: NextFunction) {
     const { username, oldPassword, newPassword } = req.body;
     try {
-      const result = this.userService.updateUser({
+      const result = await this.userService.updateUser({
         username,
         oldPassword,
         newPassword,
@@ -71,10 +67,10 @@ export class UserController {
     }
   }
 
-  async deleteUsers(req: Request, res: Response, next: NextFunction) {
-    const { username } = req.body;
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    const { username } = req.params;
     try {
-      const result = this.userService.deleteUser({ username });
+      const result = await this.userService.deleteUser({ username });
       res.send(result);
     } catch (error) {
       next(error);

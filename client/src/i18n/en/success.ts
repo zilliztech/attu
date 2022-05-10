@@ -4,6 +4,7 @@ const successTrans = {
   load: `{{name}} has been loaded`,
   delete: `{{name}} successfully deleted`,
   release: `{{name}} has been released`,
+  update: `{{name}} has been updated`,
 };
 
 export default successTrans;

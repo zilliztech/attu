@@ -123,12 +123,13 @@ const AttuGrid: FC<AttuGridType> = props => {
     headEditable = false,
     editHeads = [],
     selected = [],
-    setSelected = () => { },
-    setRowsPerPage = () => { },
+    setSelected = () => {},
+    setRowsPerPage = () => {},
     tableCellMaxWidth,
     handleSort,
     order,
     orderBy,
+    showPagination = true,
   } = props;
 
   const _isSelected = (row: { [x: string]: any }) => {
@@ -225,7 +226,7 @@ const AttuGrid: FC<AttuGridType> = props => {
           order={order}
           orderBy={orderBy}
         ></Table>
-        {rowCount ? (
+        {rowCount && showPagination ? (
           <TablePagination
             component="div"
             colSpan={3}

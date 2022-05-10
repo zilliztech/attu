@@ -25,21 +25,28 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
       },
       function (error: any) {
         const { response = {} } = error;
+        const reset = () => {
+          setIsAuth(false);
+          setAddress('');
+          window.localStorage.removeItem(MILVUS_ADDRESS);
+        };
         switch (response.status) {
           case CODE_STATUS.UNAUTHORIZED:
             return Promise.reject(error);
           case CODE_STATUS.FORBIDDEN:
-            setIsAuth(false);
-            setAddress('');
-            window.localStorage.removeItem(MILVUS_ADDRESS);
+            reset();
             break;
           default:
             break;
         }
         if (response.data) {
           const { message: errMsg } = response.data;
-
+          // We need check status 401 in login page
+          // So server will return 500 when change the user password.
           errMsg && openSnackBar(errMsg, 'error');
+          if (errMsg.includes('unauthenticated')) {
+            reset();
+          }
           return Promise.reject(error);
         }
         if (error.message) {
