@@ -17,6 +17,8 @@ import CreateUser from './Create';
 import { useTranslation } from 'react-i18next';
 import DeleteTemplate from 'insight_src/components/customDialog/DeleteDialogTemplate';
 import UpdateUser from './Update';
+import { useNavigationHook } from 'insight_src/hooks/Navigation';
+import { ALL_ROUTER_TYPES } from 'insight_src/router/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   actionButton: {
@@ -29,6 +31,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Users = () => {
+  useNavigationHook(ALL_ROUTER_TYPES.USER);
+
   const classes = useStyles();
   const [users, setUsers] = useState<UserData[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserData[]>([]);
