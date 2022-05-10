@@ -266,7 +266,6 @@ const SearchParams: FC<SearchParamsProps> = ({
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
           const metricType = e.target.value as string;
-          console.log('metricType', metricType);
           handleMetricTypeChange(metricType);
         }}
       />

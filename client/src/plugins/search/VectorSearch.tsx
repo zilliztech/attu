@@ -52,7 +52,6 @@ const VectorSearch = () => {
   const [tableLoading, setTableLoading] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionData[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
-  const [selectedMetricType, setSelectedMetricType] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   // fields for advanced filter
   const [filterFields, setFilterFields] = useState<Field[]>([]);
@@ -166,7 +165,6 @@ const VectorSearch = () => {
         selectedFieldDimension: dim,
       };
     }
-
     return {
       metricType: '',
       indexType: '',
@@ -176,6 +174,8 @@ const VectorSearch = () => {
       selectedFieldDimension: 0,
     };
   }, [selectedField, fieldOptions]);
+  const [selectedMetricType, setSelectedMetricType] =
+    useState<string>(metricType);
 
   /**
    * vector value validation
@@ -303,7 +303,7 @@ const VectorSearch = () => {
       params: JSON.stringify(searchParam),
       anns_field: selectedField,
       topk: topK,
-      metric_type: selectedMetricType || metricType,
+      metric_type: selectedMetricType,
       round_decimal: searchParam.round_decimal,
     };
 
@@ -426,7 +426,7 @@ const VectorSearch = () => {
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
-            metricType={selectedMetricType || metricType!}
+            metricType={selectedMetricType}
             embeddingType={
               embeddingType as
                 | DataTypeEnum.BinaryVector
