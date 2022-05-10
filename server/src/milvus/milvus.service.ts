@@ -35,6 +35,11 @@ export class MilvusService {
     return MilvusService.activeMilvusClient.dataManager;
   }
 
+  get userManager() {
+    this.checkMilvus();
+    return MilvusService.activeMilvusClient.userManager;
+  }
+
   static formatAddress(address: string) {
     return address.replace(/(http|https):\/\//, '');
   }

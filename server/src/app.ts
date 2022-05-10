@@ -8,6 +8,8 @@ import { router as collectionsRouter } from './collections';
 import { router as partitionsRouter } from './partitions';
 import { router as schemaRouter } from './schema';
 import { router as cronsRouter } from './crons';
+import { router as userRouter } from './users';
+
 import { pubSub } from './events';
 import {
   TransformResMiddlerware,
@@ -115,6 +117,7 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: string[]) => {
   router.use('/partitions', partitionsRouter);
   router.use('/schema', schemaRouter);
   router.use('/crons', cronsRouter);
+  router.use('/users', userRouter);
 
   router.get('/healthy', (req, res, next) => {
     res.json({ status: 200 });

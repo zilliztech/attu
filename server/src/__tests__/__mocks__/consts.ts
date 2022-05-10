@@ -7,7 +7,7 @@ export const insightCacheForTest = new LRUCache({
 });
 
 // mock data
-export const mockAddress = '127.0.0.1';
+export const mockAddress = '127.0.0.1:19530';
 export const mockCollectionNames = [{ name: 'c1' }, { name: 'c2' }];
 export const mockCollections = [
   {
