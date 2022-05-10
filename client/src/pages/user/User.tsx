@@ -6,23 +6,25 @@ import {
   ToolBarConfig,
 } from 'insight_src/components/grid/Types';
 import { makeStyles, Theme } from '@material-ui/core';
-import { CreateUserParams, DeleteUserParams, UserData } from './Types';
+import {
+  CreateUserParams,
+  DeleteUserParams,
+  UpdateUserParams,
+  UserData,
+} from './Types';
 import { rootContext } from 'insight_src/context/Root';
 import CreateUser from './Create';
 import { useTranslation } from 'react-i18next';
 import DeleteTemplate from 'insight_src/components/customDialog/DeleteDialogTemplate';
+import UpdateUser from './Update';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: '100%',
-  },
-  icon: {
-    fontSize: '20px',
-    marginLeft: theme.spacing(0.5),
-  },
-  highlight: {
-    color: theme.palette.primary.main,
-    backgroundColor: 'transparent',
+  actionButton: {
+    position: 'relative',
+    left: ' -10px',
+    '& .MuiButton-root': {
+      color: theme.palette.primary.main,
+    },
   },
 }));
 
@@ -47,6 +49,13 @@ const Users = () => {
     await UserHttp.createUser(data);
     fetchUsers();
     openSnackBar(successTrans('create', { name: userTrans('user') }));
+    handleCloseDialog();
+  };
+
+  const handleUpdate = async (data: UpdateUserParams) => {
+    await UserHttp.updateUser(data);
+    fetchUsers();
+    openSnackBar(successTrans('update', { name: userTrans('user') }));
     handleCloseDialog();
   };
 
@@ -112,6 +121,33 @@ const Users = () => {
       align: 'left',
       disablePadding: false,
       label: 'Name',
+    },
+    {
+      id: 'action',
+      disablePadding: false,
+      label: 'Action',
+      showActionCell: true,
+      actionBarConfigs: [
+        {
+          onClick: (e: React.MouseEvent, row: UserData) => {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: (
+                  <UpdateUser
+                    username={row.name}
+                    handleUpdate={handleUpdate}
+                    handleClose={handleCloseDialog}
+                  />
+                ),
+              },
+            });
+          },
+          text: 'Update password',
+          className: classes.actionButton,
+        },
+      ],
     },
   ];
 

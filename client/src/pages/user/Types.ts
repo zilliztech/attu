@@ -10,11 +10,16 @@ export interface CreateUserProps {
   handleCreate: (data: CreateUserParams) => void;
   handleClose: () => void;
 }
+export interface UpdateUserProps {
+  handleUpdate: (data: UpdateUserParams) => void;
+  handleClose: () => void;
+  username: string;
+}
 
 export interface UpdateUserParams {
-  username: string;
   oldPassword: string;
   newPassword: string;
+  username: string;
 }
 
 export interface DeleteUserParams {

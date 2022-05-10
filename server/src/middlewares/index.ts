@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { MilvusService } from '../milvus/milvus.service';
 import { INSIGHT_CACHE, MILVUS_ADDRESS } from '../utils/Const';
 import { HttpError } from 'http-errors';
+import { HTTP_STATUS_CODE } from '../utils/Error';
 
 export const ReqHeaderMiddleware = (
   req: Request,
@@ -70,6 +71,7 @@ export const ErrorMiddleware = (
   if (res.headersSent) {
     return next(err);
   }
+
   if (err) {
     res
       .status(statusCode)

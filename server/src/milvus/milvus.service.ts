@@ -81,6 +81,10 @@ export class MilvusService {
     } catch (error) {
       // if milvus is not working, delete connection.
       cache.del(milvusAddress);
+      /**
+       * When user change the user password, milvus will also return unauthenticated error.
+       * Need to care it in cloud service.
+       */
       if (error.toString().includes('unauthenticated')) {
         throw HttpErrors(HTTP_STATUS_CODE.UNAUTHORIZED, error);
       }
