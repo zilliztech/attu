@@ -58,6 +58,14 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
+      case ALL_ROUTER_TYPES.USER: {
+        const navInfo: NavInfo = {
+          navTitle: navTrans('user'),
+          backPath: '',
+        };
+        setNavInfo(navInfo);
+        break;
+      }
       case ALL_ROUTER_TYPES.PLUGIN: {
         const navInfo: NavInfo = {
           navTitle: title,

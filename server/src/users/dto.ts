@@ -18,8 +18,3 @@ export class UpdateUserDto {
   @IsString()
   readonly newPassword: string;
 }
-
-export class DeleteUserDto {
-  @IsString()
-  readonly username: string;
-}

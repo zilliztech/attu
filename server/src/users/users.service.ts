@@ -4,6 +4,7 @@ import {
   UpdateUserReq,
   DeleteUserReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/User';
+import { throwErrorFromSDK } from '../utils/Error';
 
 export class UserService {
   constructor(private milvusService: MilvusService) {}
@@ -13,22 +14,29 @@ export class UserService {
   }
 
   async getUsers() {
-    const result = await this.userManager.listUsers();
-    return result;
+    const res = await this.userManager.listUsers();
+    throwErrorFromSDK(res.status);
+
+    return res;
   }
 
   async createUser(data: CreateUserReq) {
-    const result = await this.userManager.createUser(data);
-    return result;
+    const res = await this.userManager.createUser(data);
+    throwErrorFromSDK(res);
+
+    return res;
   }
 
   async updateUser(data: UpdateUserReq) {
-    const result = await this.userManager.updateUser(data);
-    return result;
+    const res = await this.userManager.updateUser(data);
+    throwErrorFromSDK(res);
+
+    return res;
   }
 
   async deleteUser(data: DeleteUserReq) {
-    const result = await this.userManager.deleteUser(data);
-    return result;
+    const res = await this.userManager.deleteUser(data);
+    throwErrorFromSDK(res);
+    return res;
   }
 }

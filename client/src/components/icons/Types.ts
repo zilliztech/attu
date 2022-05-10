@@ -17,6 +17,7 @@ export type IconsType =
   | 'navConsole'
   | 'navSearch'
   | 'navSystem'
+  | 'navPerson'
   | 'expandLess'
   | 'expandMore'
   | 'back'
