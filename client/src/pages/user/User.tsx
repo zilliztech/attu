@@ -115,6 +115,11 @@ const Users = () => {
         });
       },
       label: '',
+      disabled: () =>
+        selectedUser.length === 0 ||
+        selectedUser.findIndex(v => v.name === 'root') > -1,
+      disabledTooltip: userTrans('deleteTip'),
+
       icon: 'delete',
     },
   ];

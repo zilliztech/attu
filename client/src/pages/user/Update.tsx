@@ -116,7 +116,7 @@ const UpdateUser: FC<UpdateUserProps> = ({
 
   return (
     <DialogTemplate
-      title={userTrans('createTitle')}
+      title={userTrans('updateTitle')}
       handleClose={handleClose}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleUpdateUser}
