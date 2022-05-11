@@ -150,7 +150,9 @@ export const AuthForm = (props: any) => {
   const handleConnect = async () => {
     const address = formatAddress(form.address);
     try {
-      const data = showAuthForm ? { ...form, address } : { address };
+      const data = showAuthForm
+        ? { ...form, address }
+        : { address, ssl: form.ssl };
       await MilvusHttp.connect(data);
       setIsAuth(true);
       setAddress(address);
