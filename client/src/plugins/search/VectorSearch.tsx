@@ -162,7 +162,6 @@ const VectorSearch = () => {
         selectedFieldDimension: dim,
       };
     }
-
     return {
       metricType: '',
       indexType: '',
@@ -172,6 +171,8 @@ const VectorSearch = () => {
       selectedFieldDimension: 0,
     };
   }, [selectedField, fieldOptions]);
+  const [selectedMetricType, setSelectedMetricType] =
+    useState<string>(metricType);
 
   /**
    * vector value validation
@@ -299,7 +300,7 @@ const VectorSearch = () => {
       params: JSON.stringify(searchParam),
       anns_field: selectedField,
       topk: topK,
-      metric_type: metricType,
+      metric_type: selectedMetricType,
       round_decimal: searchParam.round_decimal,
     };
 
@@ -422,7 +423,7 @@ const VectorSearch = () => {
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
-            metricType={metricType!}
+            metricType={selectedMetricType}
             embeddingType={
               embeddingType as
                 | DataTypeEnum.BinaryVector
@@ -432,6 +433,7 @@ const VectorSearch = () => {
             indexParams={indexParams!}
             searchParamsForm={searchParam}
             handleFormChange={setSearchParam}
+            handleMetricTypeChange={setSelectedMetricType}
             topK={topK}
             setParamsDisabled={setParamDisabled}
           />

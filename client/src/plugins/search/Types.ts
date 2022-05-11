@@ -21,6 +21,7 @@ export interface SearchParamsProps {
   };
   topK: number;
   handleFormChange: (form: { [key in string]: number }) => void;
+  handleMetricTypeChange: (type: string) => void;
   wrapperClass?: string;
   setParamsDisabled: (isDisabled: boolean) => void;
 }

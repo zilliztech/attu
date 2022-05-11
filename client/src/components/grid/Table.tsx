@@ -46,6 +46,7 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 750,
+    minHeight: 57,
   },
   tableCell: {
     background: theme.palette.common.white,
@@ -135,17 +136,22 @@ const EnhancedTable: FC<TableType> = props => {
   const classes = useStyles({ tableCellMaxWidth });
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const { t: commonTrans } = useTranslation();
   const copyTrans = commonTrans('copy');
 
   useEffect(() => {
-    const height: number = (containerRef.current as any)!.offsetHeight;
+    // if the type of containerRef is null, set height 57px.
+    let height: number = containerRef.current?.offsetHeight || 57;
+    // table header is 57px. If offsetHeight is smaller than 57px (this might happen when users resize the screen), the count will be negative and will cause an error.
+    if (height < 57) {
+      height = 57;
+    }
     // table header 57px, loading row 40px
-    const count = Math.floor((height - 57) / 40);
+    let count = Math.floor((height - 57) / 40);
     setLoadingRowCount(count);
-  }, []);
+  }, [containerRef]);
 
   useEffect(() => {
     if (setPageSize) {
@@ -167,7 +173,12 @@ const EnhancedTable: FC<TableType> = props => {
   }, [setPageSize]);
 
   return (
-    <TableContainer ref={containerRef} className={classes.root}>
+    <TableContainer
+      ref={el => {
+        containerRef.current = el;
+      }}
+      className={classes.root}
+    >
       <Box height="100%" className={classes.box}>
         <Table
           stickyHeader
@@ -320,7 +331,6 @@ const EnhancedTable: FC<TableType> = props => {
             </TableBody>
           )}
         </Table>
-
         {isLoading && <LoadingTable count={loadingRowCount} />}
       </Box>
     </TableContainer>
