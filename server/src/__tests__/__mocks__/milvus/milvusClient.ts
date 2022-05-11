@@ -348,7 +348,10 @@ const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
     },
     userManager: {
       listUsers: () => {
-        return { ...mockStatusInfo(CodeEnum.success), usernames: ['root'] };
+        return {
+          status: { ...mockStatusInfo(CodeEnum.success) },
+          usernames: ['root'],
+        };
       },
       createUser: () => {
         return { ...mockStatusInfo(CodeEnum.success) };
