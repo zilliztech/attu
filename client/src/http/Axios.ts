@@ -6,8 +6,9 @@ import { MILVUS_ADDRESS } from '../consts/Localstorage';
 // console.log('docker env', (window as any)._env_);
 
 export const url =
-  ((window as any)._env_ && (window as any)._env_.HOST_URL) ||
-  process.env.REACT_APP_BASE_URL;
+  process.env.NODE_ENV === 'development'
+    ? (window as any)._env_ && (window as any)._env_.HOST_URL
+    : '';
 
 const axiosInstance = axios.create({
   baseURL: `${url}/api/v1`,
