@@ -33,6 +33,7 @@ export interface FieldData {
   _fieldType: DataTypeStringEnum;
   _dimension: string;
   _desc: string;
+  _maxLength: string;
 }
 
 export interface FieldView extends FieldData, IndexView {

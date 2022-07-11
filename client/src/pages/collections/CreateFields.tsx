@@ -4,13 +4,17 @@ import { useTranslation } from 'react-i18next';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import icons from '../../components/icons/Icons';
-import { PRIMARY_KEY_FIELD } from '../../consts/Milvus';
 import { generateId } from '../../utils/Common';
 import { getCreateFieldType } from '../../utils/Format';
-import { checkEmptyValid, getCheckResult } from '../../utils/Validation';
+import {
+  checkEmptyValid,
+  checkRange,
+  getCheckResult,
+} from '../../utils/Validation';
 import {
   ALL_OPTIONS,
   AUTO_ID_OPTIONS,
+  PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
 import {
@@ -62,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   descInput: {
-    minWidth: '270px',
+    minWidth: '100px',
     flexGrow: 1,
   },
   btnTxt: {
@@ -144,12 +148,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
     type: 'all' | 'vector',
     label: string,
     value: number,
-    onChange: (value: DataTypeEnum) => void
+    onChange: (value: DataTypeEnum) => void,
+    options?: any[]
   ) => {
     return (
       <CustomSelector
         wrapperClass={classes.select}
-        options={type === 'all' ? ALL_OPTIONS : VECTOR_FIELDS_OPTIONS}
+        options={
+          options
+            ? options
+            : type === 'all'
+            ? ALL_OPTIONS
+            : VECTOR_FIELDS_OPTIONS
+        }
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           onChange(e.target.value as DataTypeEnum);
         }}
@@ -285,6 +296,36 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
+  const generateMaxLength = (field: Field) => {
+    return getInput({
+      label: 'Max Length',
+      value: field.max_length!,
+      type: 'number',
+      handleChange: (value: string) =>
+        changeFields(field.id!, 'max_length', value),
+      validate: (value: any) => {
+        if (value === null) return ' ';
+        const isEmptyValid = checkEmptyValid(value);
+        const isRangeValid = checkRange({
+          value,
+          min: 1,
+          max: 65535,
+          type: 'number',
+        });
+        return !isEmptyValid
+          ? warningTrans('required', {
+              name: collectionTrans('fieldName'),
+            })
+          : !isRangeValid
+          ? warningTrans('range', {
+              min: 1,
+              max: 65535,
+            })
+          : ' ';
+      },
+    });
+  };
+
   const changeFields = (id: string, key: string, value: any) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
@@ -307,6 +348,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       description: '',
       isDefault: false,
       dimension: '128',
+      max_length: null,
       id,
     };
     const newValidation = {
@@ -328,29 +370,38 @@ const CreateFields: FC<CreateFieldsProps> = ({
     field: Field,
     autoID: boolean
   ): ReactElement => {
+    const isVarChar = field.data_type === DataTypeEnum.VarChar;
+    const autoIdOff = isVarChar ? 'false' : autoID ? 'true' : 'false';
     return (
       <div className={`${classes.rowWrapper}`}>
-        {getInput({
-          label: collectionTrans('fieldType'),
-          value: PRIMARY_KEY_FIELD,
-          className: classes.primaryInput,
-          inputClassName: classes.input,
-          isReadOnly: true,
-        })}
+        {getSelector(
+          'vector',
+          `Primary ${collectionTrans('fieldType')} `,
+          field.data_type,
+          (value: DataTypeEnum) => {
+            changeFields(field.id!, 'data_type', value);
+            if (value === DataTypeEnum.VarChar) {
+              setAutoID(false);
+            }
+          },
+          PRIMARY_FIELDS_OPTIONS
+        )}
 
         {generateFieldName(field)}
 
         <CustomSelector
           label={collectionTrans('autoId')}
           options={AUTO_ID_OPTIONS}
-          value={autoID ? 'true' : 'false'}
+          value={autoIdOff}
           onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
             const autoId = e.target.value === 'true';
             setAutoID(autoId);
           }}
           variant="filled"
           wrapperClass={classes.select}
+          disabled={isVarChar}
         />
+        {isVarChar && generateMaxLength(field)}
 
         {generateDesc(field)}
       </div>
@@ -384,6 +435,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateNumberRow = (field: Field): ReactElement => {
+    const isVarChar = field.data_type === DataTypeEnum.VarChar;
     return (
       <div className={`${classes.rowWrapper}`}>
         <IconButton
@@ -400,7 +452,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
-
+        {isVarChar && generateMaxLength(field)}
         {generateDesc(field)}
       </div>
     );

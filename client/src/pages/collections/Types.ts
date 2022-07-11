@@ -34,11 +34,11 @@ export interface CollectionCreateParam {
 }
 
 export enum ConsistencyLevelEnum {
-  Strong = "Strong",
-  Session = "Session", // default in PyMilvus
-  Bounded = "Bounded",
-  Eventually = "Eventually",
-  Customized = "Customized", // Users pass their own `guarantee_timestamp`.
+  Strong = 'Strong',
+  Session = 'Session', // default in PyMilvus
+  Bounded = 'Bounded',
+  Eventually = 'Eventually',
+  Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
 }
 
 export enum DataTypeEnum {
@@ -49,6 +49,8 @@ export enum DataTypeEnum {
   Int64 = 5,
   Float = 10,
   Double = 11,
+  String = 20,
+  VarChar = 21,
   BinaryVector = 100,
   FloatVector = 101,
 }
@@ -60,6 +62,8 @@ export enum DataTypeStringEnum {
   Int64 = 'Int64',
   Float = 'Float',
   Double = 'Double',
+  String = 'String',
+  VarChar = 'VarChar',
   BinaryVector = 'BinaryVector',
   FloatVector = 'FloatVector',
 }
@@ -73,9 +77,11 @@ export interface Field {
   isDefault?: boolean;
   id?: string;
   type_params?: {
-    dim: string | number;
+    dim?: string | number;
+    max_length?: string;
   };
   createType?: CreateFieldType;
+  max_length?: string | null;
 }
 
 export type CreateFieldType =

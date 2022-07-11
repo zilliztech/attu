@@ -196,6 +196,13 @@ const Collections = () => {
               dim: v.dimension!,
             },
           }
+        : v.data_type === DataTypeEnum.VarChar
+        ? {
+            ...v,
+            type_params: {
+              max_length: v.max_length!,
+            },
+          }
         : v
     );
 

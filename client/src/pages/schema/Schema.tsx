@@ -186,6 +186,12 @@ const Schema: FC<{
       ),
     },
     {
+      id: '_maxLength',
+      align: 'left',
+      disablePadding: true,
+      label: collectionTrans('maxLength'),
+    },
+    {
       id: '_indexTypeElement',
       align: 'left',
       disablePadding: true,

@@ -66,6 +66,10 @@ export const ALL_OPTIONS: KeyValuePair[] = [
     label: 'Boolean',
     value: DataTypeEnum.Bool,
   },
+  {
+    label: 'VarChar',
+    value: DataTypeEnum.VarChar,
+  },
 ];
 
 export const AUTO_ID_OPTIONS: KeyValuePair[] = [
@@ -76,5 +80,16 @@ export const AUTO_ID_OPTIONS: KeyValuePair[] = [
   {
     label: 'Off',
     value: 'false',
+  },
+];
+
+export const PRIMARY_FIELDS_OPTIONS: KeyValuePair[] = [
+  {
+    label: 'INT64',
+    value: DataTypeEnum.Int64,
+  },
+  {
+    label: 'VARCHAR',
+    value: DataTypeEnum.VarChar,
   },
 ];
