@@ -141,8 +141,6 @@ export const INDEX_OPTIONS_MAP = {
   })),
 };
 
-export const PRIMARY_KEY_FIELD = 'INT64 (Primary key)';
-
 export const METRIC_OPTIONS_MAP = {
   [DataTypeEnum.FloatVector]: [
     {

@@ -22,6 +22,7 @@ const collectionTrans = {
   status: 'Status',
   desc: 'Description',
   createdTime: 'Created Time',
+  maxLength: 'Max Length',
 
   // create dialog
   createTitle: 'Create Collection',

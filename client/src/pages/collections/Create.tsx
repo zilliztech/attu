@@ -74,6 +74,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
       name: null, // we need hide helpertext at first time, so we use null to detect user enter input or not.
       description: '',
       isDefault: true,
+      max_length: null,
       id: '1',
     },
     {
@@ -180,9 +181,11 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
           is_primary_key: v.is_primary_key,
           data_type: v.data_type,
           dimension: vectorType.includes(v.data_type) ? v.dimension : undefined,
+          max_length: v.max_length,
         };
 
         v.is_primary_key && (data.autoID = form.autoID);
+
         return data;
       }),
       consistency_level: consistencyLevel,

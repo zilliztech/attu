@@ -1137,10 +1137,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@zilliz/milvus2-sdk-node@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.0.3.tgz#9007f6e5162ca9b51b522b1d6eff76a31dc6921c"
-  integrity sha512-BWTIRBhJI/z9HWCeJsfaCC6vueGcTVcL7Ai7SASnwFR4RIzfQ2bclo41G6767cHqZNiyOdoEyM+u0XuPpo8vjA==
+"@zilliz/milvus2-sdk-node@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.1.2.tgz#9db28a4ba4d7f330ed2af86f83146cff53eacecd"
+  integrity sha512-By1p6OLn++DCA+4tL/Z/O7KUcgcMwM75UFafdwozqzH7l4jHTUvb2oJrWMk0zqk7bapt4To34OfTcKd+3EHnYw==
   dependencies:
     "@grpc/grpc-js" "^1.2.12"
     "@grpc/proto-loader" "^0.6.0"
@@ -1148,7 +1148,7 @@
     "@microsoft/api-extractor" "^7.18.5"
     json-schema "^0.4.0"
     node-forge "^1.0.0"
-    protobufjs "^6.11.2"
+    protobufjs "^6.11.3"
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
@@ -4233,10 +4233,29 @@ proto-list@~1.2.1:
   resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
   integrity sha1-IS1b/hMYMGpCD2QCuOJv85ZHqEk=
 
-protobufjs@^6.10.0, protobufjs@^6.11.2:
+protobufjs@^6.10.0:
   version "6.11.2"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.2.tgz#de39fabd4ed32beaa08e9bb1e30d08544c1edf8b"
   integrity sha512-4BQJoPooKJl2G9j3XftkIXjoC9C0Av2NOrWmbLWT1vH32GcSUHjM0Arra6UfTsVyfMAuFzaLucXn1sadxJydAw==
+  dependencies:
+    "@protobufjs/aspromise" "^1.1.2"
+    "@protobufjs/base64" "^1.1.2"
+    "@protobufjs/codegen" "^2.0.4"
+    "@protobufjs/eventemitter" "^1.1.0"
+    "@protobufjs/fetch" "^1.1.0"
+    "@protobufjs/float" "^1.0.2"
+    "@protobufjs/inquire" "^1.1.0"
+    "@protobufjs/path" "^1.1.2"
+    "@protobufjs/pool" "^1.1.0"
+    "@protobufjs/utf8" "^1.1.0"
+    "@types/long" "^4.0.1"
+    "@types/node" ">=13.7.0"
+    long "^4.0.0"
+
+protobufjs@^6.11.3:
+  version "6.11.3"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.3.tgz#637a527205a35caa4f3e2a9a4a13ddffe0e7af74"
+  integrity sha512-xL96WDdCZYdU7Slin569tFX712BxsxslWwAfAhCYjQKGTq7dAU91Lomy6nLLhh/dyGhk/YH4TwTSRxTzhuHyZg==
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"
