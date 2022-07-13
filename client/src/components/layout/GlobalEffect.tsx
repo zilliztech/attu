@@ -41,6 +41,11 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
         }
         if (response.data) {
           const { message: errMsg } = response.data;
+          // After create index ,we will try to get index progress
+          // if index created success before setTimeout , will throw this error, should ignore it.
+          if (errMsg.includes('no index is created')) {
+            return Promise.reject(error);
+          }
           // We need check status 401 in login page
           // So server will return 500 when change the user password.
           errMsg && openSnackBar(errMsg, 'error');

@@ -108,11 +108,12 @@ const IndexTypeElement: FC<{
     if (data._indexType !== '' && status !== IndexState.Delete) {
       const { state: status } = await IndexHttp.getIndexStatus(
         collectionName,
-        data._fieldName
+        data._fieldName,
+        data._indexName
       );
       setStatus(status);
     }
-  }, [collectionName, data._fieldName, data._indexType, status]);
+  }, [collectionName, data, status]);
 
   const fetchProgress = useCallback(() => {
     if (timer) {
@@ -120,28 +121,33 @@ const IndexTypeElement: FC<{
     }
     if (data._indexType !== '' && isIndexCreating) {
       timer = setTimeout(async () => {
-        const res = await IndexHttp.getIndexBuildProgress(
-          collectionName,
-          data._fieldName
-        );
+        try {
+          const res = await IndexHttp.getIndexBuildProgress(
+            collectionName,
+            data._fieldName,
+            data._indexName
+          );
 
-        const { indexed_rows, total_rows } = res;
-        const percent = Number(indexed_rows) / Number(total_rows);
-        const value = Math.floor(percent * 100);
-        setCreateProgress(value);
+          const { indexed_rows, total_rows } = res;
+          const percent = Number(indexed_rows) / Number(total_rows);
+          const value = Math.floor(percent * 100);
+          setCreateProgress(value);
 
-        if (value !== 100) {
-          fetchProgress();
-        } else {
-          timer && clearTimeout(timer);
-          // reset build progress
-          setCreateProgress(0);
-          // change index create status
+          if (value !== 100) {
+            fetchProgress();
+          } else {
+            timer && clearTimeout(timer);
+            // reset build progress
+            setCreateProgress(0);
+            // change index create status
+            setStatus(IndexState.Finished);
+          }
+        } catch (error) {
           setStatus(IndexState.Finished);
         }
       }, 500);
     }
-  }, [collectionName, data._fieldName, isIndexCreating, data._indexType]);
+  }, [collectionName, data, isIndexCreating]);
 
   useEffect(() => {
     /**
@@ -151,10 +157,14 @@ const IndexTypeElement: FC<{
     fetchProgress();
   }, [fetchStatus, fetchProgress]);
 
-  const requestCreateIndex = async (params: IndexExtraParam) => {
+  const requestCreateIndex = async (
+    params: IndexExtraParam,
+    index_name: string
+  ) => {
     const indexCreateParam: IndexCreateParam = {
       collection_name: collectionName,
       field_name: data._fieldName,
+      index_name,
       extra_params: params,
     };
     await IndexHttp.createIndex(indexCreateParam);
@@ -188,6 +198,7 @@ const IndexTypeElement: FC<{
     const indexDeleteParam: IndexManageParam = {
       collection_name: collectionName,
       field_name: data._fieldName,
+      index_name: data._indexName,
     };
 
     await IndexHttp.deleteIndex(indexDeleteParam);
@@ -217,13 +228,9 @@ const IndexTypeElement: FC<{
 
   const generateElement = () => {
     // only vector type field is able to create index
-    if (
-      data._fieldType !== 'BinaryVector' &&
-      data._fieldType !== 'FloatVector'
-    ) {
+    if (data._isPrimaryKey) {
       return <div className={classes.item}>--</div>;
     }
-
     // _indexType example: FLAT
     switch (data._indexType) {
       case '': {
