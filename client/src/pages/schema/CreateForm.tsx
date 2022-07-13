@@ -156,7 +156,7 @@ const CreateForm = (
     key: 'index_name',
     onChange: (value: string) => updateForm('index_name', value),
     variant: 'filled',
-    placeholder: 'alias name',
+    placeholder: 'Index name',
     fullWidth: true,
     validations: [
       {

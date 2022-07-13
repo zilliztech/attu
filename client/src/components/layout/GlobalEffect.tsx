@@ -41,7 +41,8 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
         }
         if (response.data) {
           const { message: errMsg } = response.data;
-          console.log('-----err ----', errMsg);
+          // After create index ,we will try to get index progress
+          // if index created success before setTimeout , will throw this error, should ignore it.
           if (errMsg.includes('no index is created')) {
             return Promise.reject(error);
           }

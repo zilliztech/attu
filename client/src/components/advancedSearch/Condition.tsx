@@ -116,7 +116,6 @@ const Condition: FC<ConditionProps> = props => {
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const type = conditionField?.type;
-    console.log('---value cahnge ---', type, value);
     setConditionValue(
       type === DataTypeStringEnum.VarChar ? `"${value}"` : value
     );
