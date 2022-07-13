@@ -32,7 +32,7 @@ server/dist
 server/build
 server/electron-app
 
-
+express/dist
 
 # package.lock.json
 # server/package.lock.json
