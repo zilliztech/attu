@@ -13,6 +13,8 @@ export enum INDEX_TYPES_ENUM {
   RNSG = 'RNSG',
   BIN_IVF_FLAT = 'BIN_IVF_FLAT',
   BIN_FLAT = 'BIN_FLAT',
+  SORT = 'sort',
+  MARISA_TRIE = 'marisa-trie',
 }
 
 export interface Field {
@@ -47,6 +49,7 @@ export interface Index {
 export interface IndexView {
   _fieldName: string;
   _indexType: string;
+  _indexName: string;
   _indexTypeElement?: ReactElement;
   _indexParameterPairs: { key: string; value: string }[];
   _indexParamElement?: ReactElement;
@@ -63,14 +66,18 @@ export type IndexType =
   | INDEX_TYPES_ENUM.HNSW
   | INDEX_TYPES_ENUM.ANNOY
   | INDEX_TYPES_ENUM.BIN_IVF_FLAT
-  | INDEX_TYPES_ENUM.BIN_FLAT;
+  | INDEX_TYPES_ENUM.BIN_FLAT
+  | INDEX_TYPES_ENUM.MARISA_TRIE
+  | INDEX_TYPES_ENUM.SORT;
 
 export interface IndexManageParam {
   collection_name: string;
   field_name: string;
+  index_name: string;
 }
 
 export interface IndexCreateParam extends IndexManageParam {
+  index_name: string;
   extra_params: IndexExtraParam;
 }
 

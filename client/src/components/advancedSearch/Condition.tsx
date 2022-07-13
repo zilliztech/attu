@@ -69,6 +69,9 @@ const Condition: FC<ConditionProps> = props => {
         const legalValues = ['false', 'true'];
         isLegal = legalValues.includes(conditionValueWithNoSpace);
         break;
+      case DataTypeStringEnum.VarChar:
+        isLegal = conditionValueWithNoSpace !== '';
+        break;
       default:
         isLegal = false;
         break;
@@ -112,7 +115,11 @@ const Condition: FC<ConditionProps> = props => {
   // Value input change.
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setConditionValue(value);
+    const type = conditionField?.type;
+    console.log('---value cahnge ---', type, value);
+    setConditionValue(
+      type === DataTypeStringEnum.VarChar ? `"${value}"` : value
+    );
   };
 
   return (
@@ -139,7 +146,6 @@ const Condition: FC<ConditionProps> = props => {
         variant="filled"
         // size="small"
         onChange={handleValueChange}
-        value={conditionValue}
         error={!isValuelegal}
       />
       <IconButton

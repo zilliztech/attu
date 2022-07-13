@@ -150,8 +150,31 @@ const CreateForm = (
 
     return result;
   }, [updateForm, warningTrans, indexParams, formValue]);
+
+  const indexNameConfig: ITextfieldConfig = {
+    label: 'Index Name',
+    key: 'index_name',
+    onChange: (value: string) => updateForm('index_name', value),
+    variant: 'filled',
+    placeholder: 'alias name',
+    fullWidth: true,
+    validations: [
+      {
+        rule: 'require',
+        errorText: warningTrans('required', {
+          name: 'Index Name',
+        }),
+      },
+    ],
+    defaultValue: '',
+  };
   return (
     <div className={classes.wrapper}>
+      <CustomInput
+        type="text"
+        textConfig={indexNameConfig}
+        checkValid={checkIsValid}
+      />
       <CustomSelector
         label={indexTrans('type')}
         value={formValue.index_type}
@@ -166,21 +189,25 @@ const CreateForm = (
         variant="filled"
         wrapperClass={classes.select}
       />
+      {metricOptions.length ? (
+        <Typography className={classes.paramTitle}>
+          {commonTrans('param')}
+        </Typography>
+      ) : null}
 
-      <Typography className={classes.paramTitle}>
-        {commonTrans('param')}
-      </Typography>
-      <CustomSelector
-        label={indexTrans('metric')}
-        value={formValue.metric_type}
-        options={metricOptions}
-        onChange={(e: { target: { value: unknown } }) => {
-          const type = e.target.value;
-          updateForm('metric_type', type as string);
-        }}
-        variant="filled"
-        wrapperClass={classes.select}
-      />
+      {metricOptions.length ? (
+        <CustomSelector
+          label={indexTrans('metric')}
+          value={formValue.metric_type}
+          options={metricOptions}
+          onChange={(e: { target: { value: unknown } }) => {
+            const type = e.target.value;
+            updateForm('metric_type', type as string);
+          }}
+          variant="filled"
+          wrapperClass={classes.select}
+        />
+      ) : null}
 
       {indexParams.includes('m') && (
         <CustomSelector
@@ -195,15 +222,17 @@ const CreateForm = (
         />
       )}
 
-      {paramsConfig.map(v => (
-        <CustomInput
-          type="text"
-          textConfig={v}
-          checkValid={checkIsValid}
-          validInfo={validation}
-          key={v.label}
-        />
-      ))}
+      {paramsConfig.length
+        ? paramsConfig.map(v => (
+            <CustomInput
+              type="text"
+              textConfig={v}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={v.label}
+            />
+          ))
+        : null}
     </div>
   );
 };

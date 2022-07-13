@@ -8,16 +8,14 @@ import {
   DEFAULT_VECTORS,
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
-  MetricType,
   METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
 import { useFormValidation } from '../../hooks/Form';
 import { getCreateIndexJSCode } from '../../utils/code/Js';
 import { getCreateIndexPYCode } from '../../utils/code/Py';
 import { formatForm, getMetricOptions } from '../../utils/Form';
-import { getEmbeddingType } from '../../utils/search';
 import { computMilvusRecommonds, formatSize } from '../../utils/SizingTool';
-import { DataTypeStringEnum } from '../collections/Types';
+import { DataTypeEnum, DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
 import SizingInfo from './SizingInfo';
 import { IndexType, IndexExtraParam, INDEX_TYPES_ENUM } from './Types';
@@ -25,7 +23,7 @@ import { IndexType, IndexExtraParam, INDEX_TYPES_ENUM } from './Types';
 const CreateIndex = (props: {
   collectionName: string;
   fieldType: DataTypeStringEnum;
-  handleCreate: (params: IndexExtraParam) => void;
+  handleCreate: (params: IndexExtraParam, index_name: string) => void;
   handleCancel: () => void;
 
   // used for code mode
@@ -47,20 +45,35 @@ const CreateIndex = (props: {
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
 
-  const defaultIndexType =
-    fieldType === 'BinaryVector'
-      ? INDEX_TYPES_ENUM.BIN_IVF_FLAT
-      : INDEX_TYPES_ENUM.IVF_FLAT;
-  const defaultMetricType =
-    fieldType === 'BinaryVector'
-      ? METRIC_TYPES_VALUES.HAMMING
-      : METRIC_TYPES_VALUES.L2;
+  const defaultIndexType = useMemo(() => {
+    switch (fieldType) {
+      case DataTypeStringEnum.BinaryVector:
+        return INDEX_TYPES_ENUM.BIN_IVF_FLAT;
+      case DataTypeStringEnum.FloatVector:
+        return INDEX_TYPES_ENUM.IVF_FLAT;
+      case DataTypeStringEnum.VarChar:
+        return INDEX_TYPES_ENUM.MARISA_TRIE;
+      default:
+        return INDEX_TYPES_ENUM.SORT;
+    }
+  }, [fieldType]);
+
+  const defaultMetricType = useMemo(() => {
+    switch (fieldType) {
+      case DataTypeStringEnum.BinaryVector:
+        return METRIC_TYPES_VALUES.HAMMING;
+      case DataTypeStringEnum.FloatVector:
+        return METRIC_TYPES_VALUES.L2;
+      default:
+        return '';
+    }
+  }, [fieldType]);
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
-    metric_type: MetricType;
     [x: string]: string;
   }>({
+    index_name: '',
     index_type: defaultIndexType,
     metric_type: defaultMetricType,
     M: '',
@@ -85,10 +98,15 @@ const CreateIndex = (props: {
     return INDEX_CONFIG[indexSetting.index_type].create;
   }, [indexSetting.index_type]);
 
-  const metricOptions = useMemo(
-    () => getMetricOptions(indexSetting.index_type, fieldType),
-    [indexSetting.index_type, fieldType]
-  );
+  const metricOptions = useMemo(() => {
+    const vectorType = [
+      DataTypeStringEnum.BinaryVector,
+      DataTypeStringEnum.FloatVector,
+    ];
+    return vectorType.includes(fieldType)
+      ? getMetricOptions(indexSetting.index_type, fieldType)
+      : [];
+  }, [indexSetting.index_type, fieldType]);
 
   const extraParams = useMemo(() => {
     const params: { [x: string]: string } = {};
@@ -108,18 +126,33 @@ const CreateIndex = (props: {
   }, [indexCreateParams, indexSetting]);
 
   const indexOptions = useMemo(() => {
-    const type = getEmbeddingType(fieldType);
-    return INDEX_OPTIONS_MAP[type];
+    switch (fieldType) {
+      case DataTypeStringEnum.BinaryVector:
+        return INDEX_OPTIONS_MAP[DataTypeEnum.BinaryVector];
+      case DataTypeStringEnum.FloatVector:
+        return INDEX_OPTIONS_MAP[DataTypeEnum.FloatVector];
+      case DataTypeStringEnum.VarChar:
+        return INDEX_OPTIONS_MAP[DataTypeEnum.VarChar];
+
+      default:
+        return [{ label: 'Ascending', value: 'sort' }];
+    }
   }, [fieldType]);
 
   const checkedForm = useMemo(() => {
+    if (
+      fieldType !== DataTypeStringEnum.BinaryVector &&
+      fieldType !== DataTypeStringEnum.FloatVector
+    ) {
+      return [];
+    }
     const paramsForm: any = { metric_type: indexSetting.metric_type };
     indexCreateParams.forEach(v => {
       paramsForm[v] = indexSetting[v];
     });
     const form = formatForm(paramsForm);
     return form;
-  }, [indexSetting, indexCreateParams]);
+  }, [indexSetting, indexCreateParams, fieldType]);
 
   // sizing info needed param
   const sizingInfo = useMemo(() => {
@@ -176,25 +209,47 @@ const CreateIndex = (props: {
   /**
    * create index code mode
    */
-  const codeBlockData: CodeViewData[] = useMemo(
-    () => [
+  const codeBlockData: CodeViewData[] = useMemo(() => {
+    const vectorTypes = [
+      DataTypeStringEnum.BinaryVector,
+      DataTypeStringEnum.FloatVector,
+    ];
+    const isScalarField = !vectorTypes.includes(fieldType);
+    return [
       {
         label: commonTrans('py'),
         language: CodeLanguageEnum.python,
-        code: getCreateIndexPYCode({ collectionName, fieldName, extraParams }),
+        code: getCreateIndexPYCode({
+          collectionName,
+          fieldName,
+          indexName: indexSetting.index_name,
+          extraParams,
+          isScalarField,
+        }),
       },
       {
         label: commonTrans('js'),
         language: CodeLanguageEnum.javascript,
-        code: getCreateIndexJSCode({ collectionName, fieldName, extraParams }),
+        code: getCreateIndexJSCode({
+          collectionName,
+          fieldName,
+          extraParams,
+          indexName: indexSetting.index_name,
+          isScalarField,
+        }),
       },
-    ],
-    [commonTrans, extraParams, collectionName, fieldName]
-  );
+    ];
+  }, [
+    commonTrans,
+    extraParams,
+    collectionName,
+    fieldName,
+    indexSetting.index_name,
+    fieldType,
+  ]);
 
   const { validation, checkIsValid, disabled, setDisabled, resetValidation } =
     useFormValidation(checkedForm);
-
   // reset index params
   useEffect(() => {
     // no need
@@ -234,7 +289,7 @@ const CreateIndex = (props: {
   };
 
   const handleCreateIndex = () => {
-    handleCreate(extraParams);
+    handleCreate(extraParams, indexSetting.index_name);
   };
 
   const handleShowCode = (event: React.ChangeEvent<{ checked: boolean }>) => {

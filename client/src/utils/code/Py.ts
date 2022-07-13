@@ -10,16 +10,26 @@ const replacer = (key: string, value: any) => {
 };
 
 export const getCreateIndexPYCode = (params: CreateIndexCodeParam) => {
-  const { collectionName, fieldName, extraParams } = params;
-  const index = {
+  const { collectionName, fieldName, indexName, extraParams, isScalarField } =
+    params;
+  const index_params = {
     ...extraParams,
     params: parseValue(extraParams.params),
   };
   const pyCode = `from pymilvus_orm import Collection
 
 collection = Collection('${collectionName}')
-index = ${JSON.stringify(index, replacer, 4)}
-collection.create_index(${fieldName}, index)`;
+${
+  isScalarField
+    ? ''
+    : `index_params = ${JSON.stringify(index_params, replacer, 4)}`
+}
+
+collection.create_index(
+  field_name="${fieldName}",
+  ${isScalarField ? '' : `index_params=index_params,`}
+  index_name="${indexName}"
+)`;
 
   return pyCode;
 };

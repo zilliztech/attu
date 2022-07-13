@@ -12,6 +12,7 @@ import BaseModel from './BaseModel';
 export class IndexHttp extends BaseModel implements IndexView {
   params!: { key: string; value: string }[];
   field_name!: string;
+  index_name!: string;
 
   constructor(props: {}) {
     super(props);
@@ -22,12 +23,17 @@ export class IndexHttp extends BaseModel implements IndexView {
 
   static async getIndexStatus(
     collectionName: string,
-    fieldName: string
+    fieldName: string,
+    indexName: string
   ): Promise<{ state: IndexState }> {
     const path = `${this.BASE_URL}/state`;
     return super.search({
       path,
-      params: { collection_name: collectionName, field_name: fieldName },
+      params: {
+        collection_name: collectionName,
+        field_name: fieldName,
+        index_name: indexName,
+      },
     });
   }
 
@@ -60,7 +66,8 @@ export class IndexHttp extends BaseModel implements IndexView {
 
   static async getIndexBuildProgress(
     collectionName: string,
-    fieldName: string
+    fieldName: string,
+    indexName: string
   ) {
     const path = `${this.BASE_URL}/progress`;
     return super.search({
@@ -68,14 +75,16 @@ export class IndexHttp extends BaseModel implements IndexView {
       params: {
         collection_name: collectionName,
         field_name: fieldName,
-        // user can't set index_name, use empty string as its value
-        index_name: '',
+        index_name: indexName,
       },
     });
   }
 
   get _indexType() {
     return this.params.find(p => p.key === 'index_type')?.value || '';
+  }
+  get _indexName() {
+    return this.index_name;
   }
 
   get _indexParameterPairs() {

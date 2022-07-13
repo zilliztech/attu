@@ -41,6 +41,10 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
         }
         if (response.data) {
           const { message: errMsg } = response.data;
+          console.log('-----err ----', errMsg);
+          if (errMsg.includes('no index is created')) {
+            return Promise.reject(error);
+          }
           // We need check status 401 in login page
           // So server will return 500 when change the user password.
           errMsg && openSnackBar(errMsg, 'error');
