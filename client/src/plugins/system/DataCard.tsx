@@ -143,7 +143,7 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
     const capacityTrans: { [key in string]: string } = commonTrans('capacity');
     const { node, extend } = props;
 
-    const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
+    // const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
     const hardwareContent = [];
 
     const configTitle = [t('configTitle'), t('valueTitle')];
@@ -196,8 +196,8 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
       });
     }
 
-    const { system_version: version, deploy_mode: mode = '' } = system_info;
-    systemContent.push({ label: t('thVersion'), value: version });
+    const { deploy_mode: mode = '' } = system_info;
+    // systemContent.push({ label: t('thVersion'), value: version });
     systemContent.push({ label: t('thDeployMode'), value: mode });
     systemContent.push({
       label: t('thCreateTime'),
@@ -215,11 +215,11 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
             <span className={classes.rootName}>Milvus / </span>
             <span className={classes.childName}>{node?.infos?.name}</span>
           </div>
-          <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
+          {/* <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div> */}
         </div>
-        {extend && (
+        {/* {extend && (
           <DataSection titles={hardwareTitle} contents={hardwareContent} />
-        )}
+        )} */}
         <DataSection titles={systemTitle} contents={systemContent} />
         {systemConfig.length ? (
           <DataSection titles={configTitle} contents={systemConfig} />
