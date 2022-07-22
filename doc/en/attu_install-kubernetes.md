@@ -32,26 +32,38 @@ Attu only supports Milvus 2.x.
 kubectl apply -f https://github.com/zilliztech/attu/blob/main/attu-k8s-deploy.yaml
 ```
 
-2. Check the established Ingress.
+2. Check the status of the running pods.
 
 ```shell
-kubectl get ingress
+kubectl get pod
 ```
 
 Get the following output:
 
 ```
-NAME              CLASS    HOSTS               ADDRESS                               PORTS     AGE
-my-attu-ingress   <none>   my-attu.local       10.100.32.1,10.100.32.2,10.100.32.3   80        19h
+NAME                                               READY   STATUS      RESTARTS   AGE
+my-attu-0                                          1/1     Running     0          30s
 ```
 
-3. Configure DNS on the device that requires the Attu service
-
-mapping the path `my-attu.local` onto any of the addresses returned above in the system file `/etc/hosts`.
+3. Check the service of Attu
 
 ```shell
-10.100.32.1  my-attu.local
+kubectl get svc
 ```
 
-4. Visit `http://my-attu.local` in the browser, and enter the address of the Milvus service.
+Get the following output:
 
+```shell
+NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+my-attu-svc                   ClusterIP   10.96.0.1       <none>        3000/TCP                               40s
+```
+
+4. Connect to Attu service
+
+Open a new terminal and run the following command to forward the local port to the port that Attu uses.
+
+```undefined
+$ kubectl port-forward service/my-attu-svc 3000
+```
+
+Visit `http://127.0.0.1:3000` in the browser, and enter the address of the Milvus service.

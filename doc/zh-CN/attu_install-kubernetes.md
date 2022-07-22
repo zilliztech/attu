@@ -31,35 +31,42 @@ Attu 只支持 Milvus 2.x。
 kubectl apply -f https://github.com/zilliztech/attu/blob/main/attu-k8s-deploy.yaml
 ```
 
-
-
-2. 检查启动的 ingress 资源
+2. 检查启动的 Attu pod 的运行状态
 
 ```shell
-kubectl get ingress
+kubectl get pod
 ```
 
 将获得以下输出：
 
 ```
-NAME              CLASS    HOSTS               ADDRESS                               PORTS     AGE
-my-attu-ingress   <none>   my-attu.local       10.100.32.1,10.100.32.2,10.100.32.3   80        19h
+NAME                                               READY   STATUS      RESTARTS   AGE
+my-attu-0                                          1/1     Running     0          30s
 
 ```
 
-
-
-3. 在需要访问 attu 服务的机器上配置 DNS
-
-在系统文件 `/etc/hosts` 中将路径 `my-attu.local` 映射为上述输出中 my-attu-ingress 对应的 ADDRESS 中的任意一地址。
+3. 查看 Attu 服务
 
 ```shell
-10.100.32.1  my-attu.local
+kubectl get svc
 ```
 
+将获得以下输出：
 
+```shell
+NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                               AGE
+my-attu-svc                   ClusterIP   10.96.0.1       <none>        3000/TCP                               40s
+```
 
-4. 在浏览器中访问 `http://my-attu.local`, 在页面框中输入想要访问的 Milvus 服务地址，即可查看对应的 Milvus 服务。
+4. 连接 Attu 服务
+
+打开一个新的终端，通过运行一下命令，以便在本地访问 attu 服务。
+
+```undefined
+$ kubectl port-forward service/my-attu-svc 3000
+```
+
+在浏览器中访问 `http://127.0.0.1:3000`, 在页面框中输入想要访问的 Milvus 服务地址，即可查看对应的 Milvus 服务。
 
 
 
