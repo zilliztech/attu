@@ -124,7 +124,8 @@
     "linux": {
       "icon": "./build/zilliz.icns",
       "target": [
-        "deb"
+        "deb",
+        "rpm"
       ]
     },
     "mac": {
