@@ -1,6 +1,6 @@
 {
   "name": "attu",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "license": "MIT",
   "author": {
     "name": "zilliz",
@@ -77,6 +77,7 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "yarn clean && tsc",
+    "build-electron": "node electron-prebuild && yarn build",
     "prestart": "rm -rf dist && yarn build",
     "start": "nodemon src/app.ts",
     "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/attu/express/src/app.js",

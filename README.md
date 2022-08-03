@@ -25,7 +25,8 @@ Attu is under rapid development and we are adding new features weekly, here are 
 - Vector search with advanced filter
 - System view
 - Data query
-- View root node configuration(TBD)
+- View root node configuration
+- Support TLS connection and username,password
 - Vector Visualization(TBD)
 - More...
 
@@ -37,18 +38,19 @@ Ensure you have Milvus installed on [your server](https://milvus.io/docs/install
 
 ### ⭐️ Start a attu instance
 
+**_ Before attu v2.1.0 , [check here](https://github.com/zilliztech/attu/tree/v2.0.5) _**
+
 ```code
-docker run -p 8000:3000 -e HOST_URL=http://{ attu ip }:8000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:latest
+docker run -p 8000:3000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:latest
 ```
 
 Once you start the docker, open the browser, type `http://{ attu ip }:8000`, you can view the attu.
 
 #### Params
 
-| Parameter  | Example                 | required | description                       |
-| :--------- | :---------------------- | :------: | --------------------------------- |
-| HOST_URL   | http://192.168.0.1:8000 |   true   | Where attu container is installed |
-| MILVUS_URL | 192.168.0.1:19530       |  false   | Optional, Milvus server URL       |
+| Parameter  | Example           | required | description                 |
+| :--------- | :---------------- | :------: | --------------------------- |
+| MILVUS_URL | 192.168.0.1:19530 |  false   | Optional, Milvus server URL |
 
 Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
@@ -57,7 +59,7 @@ Tip: **127.0.0.1 or localhost will not work when runs on docker**
 **_note_** We plan to release attu once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
 
 ```code
-docker run -p 8000:3000 -e HOST_URL=http://{ your machine IP }:8000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
+docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
 ```
 
 ## ✨ Building and Running attu, and/or Contributing Code

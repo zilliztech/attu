@@ -9,7 +9,6 @@ import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { FieldHttp } from '../../http/Field';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
-import { DataTypeStringEnum } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -77,10 +76,6 @@ const Schema: FC<{
   const fetchSchemaListWithIndex = async (
     collectionName: string
   ): Promise<FieldView[]> => {
-    const vectorTypes: DataTypeStringEnum[] = [
-      DataTypeStringEnum.BinaryVector,
-      DataTypeStringEnum.FloatVector,
-    ];
     const indexList = await IndexHttp.getIndexInfo(collectionName);
     const schemaList = await FieldHttp.getFields(collectionName);
     let fields: FieldView[] = [];
@@ -88,14 +83,12 @@ const Schema: FC<{
       let field: FieldView = Object.assign(schema, {
         _indexParameterPairs: [],
         _indexType: '',
+        _indexName: '',
       });
-      if (vectorTypes.includes(schema.data_type)) {
-        const index = indexList.find(i => i._fieldName === schema.name);
-
-        field._indexParameterPairs = index?._indexParameterPairs || [];
-        field._indexType = index?._indexType || '';
-        field._createIndexDisabled = indexList.length > 0;
-      }
+      const index = indexList.find(i => i._fieldName === schema.name);
+      field._indexParameterPairs = index?._indexParameterPairs || [];
+      field._indexType = index?._indexType || '';
+      field._indexName = index?._indexName || '';
 
       fields = [...fields, field];
     }
@@ -190,6 +183,12 @@ const Schema: FC<{
       align: 'left',
       disablePadding: true,
       label: collectionTrans('maxLength'),
+    },
+    {
+      id: '_indexName',
+      align: 'left',
+      disablePadding: true,
+      label: 'Index name',
     },
     {
       id: '_indexTypeElement',

@@ -14,23 +14,6 @@ spec:
   selector:
     app: attu
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-attu-ingress
-spec:
-  rules:
-  - host: my-attu.local
-    http:
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: my-attu-svc
-              port:
-                number: 3000
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -49,12 +32,12 @@ spec:
     spec:
       containers:
       - name: attu
-        image: zilliz/attu:latest
-        imagePullPolicy: Always
+        image: zilliz/attu:v2.1.0
+        imagePullPolicy: IfNotPresent
         ports:
         - name: attu
           containerPort: 3000
           protocol: TCP
         env:
-        - name: HOST_URL
-          value: http://my-attu.local
+        - name: MILVUS_URL
+          value: 127.0.0.1:19530

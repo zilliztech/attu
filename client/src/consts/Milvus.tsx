@@ -139,6 +139,12 @@ export const INDEX_OPTIONS_MAP = {
     label: v,
     value: v,
   })),
+  [DataTypeEnum.VarChar]: [
+    {
+      label: 'marisa-trie',
+      value: 'marisa-trie',
+    },
+  ],
 };
 
 export const METRIC_OPTIONS_MAP = {
