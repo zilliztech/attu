@@ -1,120 +1,120 @@
-const { app, Menu, BrowserWindow } = require("electron");
+const { app, Menu, BrowserWindow } = require('electron');
 // Module to control application life.
 // Module to create native browser window.
 
-const path = require("path");
-const url = require("url");
+const path = require('path');
+const url = require('url');
 
-const isMac = process.platform === "darwin";
+const isMac = process.platform === 'darwin';
 
 const template = [
   // { role: 'appMenu' }
   ...(isMac
     ? [
-      {
-        label: app.name,
-        submenu: [
-          { role: "about" },
-          { type: "separator" },
-          { role: "services" },
-          { type: "separator" },
-          { role: "hide" },
-          { role: "hideothers" },
-          { role: "unhide" },
-          { type: "separator" },
-          { role: "quit" }
-        ]
-      }
-    ]
+        {
+          label: app.name,
+          submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'services' },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideothers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit' },
+          ],
+        },
+      ]
     : []),
   // { role: 'fileMenu' }
   {
-    label: "File",
-    submenu: [isMac ? { role: "close" } : { role: "quit" }]
+    label: 'File',
+    submenu: [isMac ? { role: 'close' } : { role: 'quit' }],
   },
   // { role: 'editMenu' }
   {
-    label: "Edit",
+    label: 'Edit',
     submenu: [
-      { role: "undo" },
-      { role: "redo" },
-      { type: "separator" },
-      { role: "cut" },
-      { role: "copy" },
-      { role: "paste" },
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
       ...(isMac
         ? [
-          { role: "pasteAndMatchStyle" },
-          { role: "delete" },
-          { role: "selectAll" },
-          { type: "separator" },
-          {
-            label: "Speech",
-            submenu: [{ role: "startspeaking" }, { role: "stopspeaking" }]
-          }
-        ]
-        : [{ role: "delete" }, { type: "separator" }, { role: "selectAll" }])
-    ]
+            { role: 'pasteAndMatchStyle' },
+            { role: 'delete' },
+            { role: 'selectAll' },
+            { type: 'separator' },
+            {
+              label: 'Speech',
+              submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
+            },
+          ]
+        : [{ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' }]),
+    ],
   },
   // { role: 'viewMenu' }
   {
-    label: "View",
+    label: 'View',
     submenu: [
-      { role: "reload" },
-      { role: "forcereload" },
-      { role: "toggledevtools" },
-      { type: "separator" },
-      { role: "resetzoom" },
-      { role: "zoomin" },
-      { role: "zoomout" },
-      { type: "separator" },
-      { role: "togglefullscreen" }
-    ]
+      { role: 'reload' },
+      { role: 'forcereload' },
+      { role: 'toggledevtools' },
+      { type: 'separator' },
+      { role: 'resetzoom' },
+      { role: 'zoomin' },
+      { role: 'zoomout' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' },
+    ],
   },
   // { role: 'windowMenu' }
   {
-    label: "Window",
+    label: 'Window',
     submenu: [
-      { role: "minimize" },
-      { role: "zoom" },
+      { role: 'minimize' },
+      { role: 'zoom' },
       ...(isMac
         ? [
-          { type: "separator" },
-          { role: "front" },
-          { type: "separator" },
-          { role: "window" }
-        ]
-        : [{ role: "close" }])
-    ]
+            { type: 'separator' },
+            { role: 'front' },
+            { type: 'separator' },
+            { role: 'window' },
+          ]
+        : [{ role: 'close' }]),
+    ],
   },
   {
-    role: "help",
+    role: 'help',
     submenu: [
       {
-        label: "Learn More",
+        label: 'Learn More',
         click: async () => {
-          const { shell } = require("electron");
-          await shell.openExternal("https://www.milvus.io");
-        }
+          const { shell } = require('electron');
+          await shell.openExternal('https://www.milvus.io');
+        },
       },
       {
-        label: "Documentation",
+        label: 'Documentation',
         click: async () => {
-          const { shell } = require("electron");
+          const { shell } = require('electron');
           await shell.openExternal(
-            "https://www.milvus.io/docs/about_milvus/overview.md"
+            'https://www.milvus.io/docs/about_milvus/overview.md'
           );
-        }
+        },
       },
       {
-        label: "Github",
+        label: 'Github',
         click: async () => {
-          const { shell } = require("electron");
-          await shell.openExternal("https://github.com/milvus-io/milvus");
-        }
-      }
-    ]
-  }
+          const { shell } = require('electron');
+          await shell.openExternal('https://github.com/milvus-io/milvus');
+        },
+      },
+    ],
+  },
 ];
 
 const menu = Menu.buildFromTemplate(template);
@@ -130,7 +130,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: { devTools: false },
-    icon: "./zilliz.png"
+    icon: './attu.png',
   });
   // mainWindow.maximize();
   // mainWindow.show();
@@ -139,9 +139,9 @@ function createWindow() {
   const startUrl =
     process.env.ELECTRON_START_URL ||
     url.format({
-      pathname: path.join(__dirname, "./index.html"),
-      protocol: "file:",
-      slashes: true
+      pathname: path.join(__dirname, './index.html'),
+      protocol: 'file:',
+      slashes: true,
     });
   mainWindow.loadURL(startUrl);
 
@@ -149,7 +149,7 @@ function createWindow() {
   //   mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", function () {
+  mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -160,18 +160,18 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on('ready', createWindow);
 
 // Quit when all windows are closed.
-app.on("window-all-closed", function () {
+app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on("activate", function () {
+app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
