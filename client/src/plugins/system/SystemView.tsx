@@ -79,7 +79,7 @@ const parseJson = (jsonData: any) => {
     const type = node?.infos?.type;
     const has_error = node?.infos?.has_error;
 
-    if (String(has_error) === 'true') {
+    if (has_error) {
       return;
     }
 
