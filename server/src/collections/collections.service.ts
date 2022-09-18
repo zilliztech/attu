@@ -81,7 +81,6 @@ export class CollectionsService {
   }
 
   async insert(data: InsertReq) {
-    console.log('----- insert ----', data.fields_data[0]);
     const res = await this.dataManager.insert(data);
     throwErrorFromSDK(res.status);
     return res;
