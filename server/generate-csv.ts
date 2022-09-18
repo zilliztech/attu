@@ -3,19 +3,14 @@ import { createObjectCsvWriter as createCsvWriter } from 'csv-writer';
 // use to test vector insert
 const csvWriter = createCsvWriter({
   path: './vectors.csv',
-  header: [
-    { id: 'vector', title: 'vector' },
-    { id: 'name', title: 'name' },
-    { id: 'age', title: 'age' },
-    { id: 'job', title: 'job' },
-  ],
+  header: [{ id: 'vector', title: 'vector' }],
 });
 
-const records = [];
+const records: any[] = [];
 
 const generateVector = (dimension: number) => {
   let index = 0;
-  const vectors = [];
+  const vectors: any[] = [];
   while (index < dimension) {
     vectors.push(1 + Math.random());
     index++;
@@ -23,13 +18,13 @@ const generateVector = (dimension: number) => {
   return JSON.stringify(vectors);
 };
 
-while (records.length < 50000) {
-  const value = generateVector(4);
+while (records.length < 1000) {
+  const value = generateVector(960);
   records.push({
     vector: value,
-    name: `${records.length}_id`,
-    age: records.length * 2,
-    job: Math.random() * 1000 > 500 ? 'designer' : 'programer',
+    // name: `${records.length}_id`,
+    // age: records.length * 2,
+    // job: Math.random() * 1000 > 500 ? 'designer' : 'programer',
   });
 }
 

@@ -81,6 +81,7 @@ export class CollectionsService {
   }
 
   async insert(data: InsertReq) {
+    console.log('----- insert ----', data.fields_data[0]);
     const res = await this.dataManager.insert(data);
     throwErrorFromSDK(res.status);
     return res;
@@ -164,11 +165,11 @@ export class CollectionsService {
         });
 
         const autoID = collectionInfo.schema.fields.find(
-          (v) => v.is_primary_key === true
+          v => v.is_primary_key === true
         )?.autoID;
 
         const loadCollection = loadedCollections.data.find(
-          (v) => v.name === name
+          v => v.name === name
         );
 
         const loadedPercentage = !loadCollection
