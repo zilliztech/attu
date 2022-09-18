@@ -102,7 +102,6 @@ const parseJson = (jsonData: any) => {
     system.disk += info.disk;
     system.diskUsage += info.disk_usage;
   });
-  console.log(childNodes, nodes);
   return { nodes, childNodes, system };
 };
 
@@ -115,7 +114,7 @@ const SystemView: any = () => {
   // const { t } = useTranslation('systemView');
 
   const classes = getStyles();
-  const INTERVAL = 10000;
+  const INTERVAL = 60000;
 
   const [data, setData] = useState<{
     nodes: any;
