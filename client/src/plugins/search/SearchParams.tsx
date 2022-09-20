@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '../../components/customInput/CustomInput';
 import { ITextfieldConfig } from '../../components/customInput/Types';
@@ -12,6 +12,7 @@ import {
   METRIC_OPTIONS_MAP,
   searchKeywordsType,
 } from '../../consts/Milvus';
+import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { SearchParamInputConfig, SearchParamsProps } from './Types';
@@ -50,17 +51,26 @@ const SearchParams: FC<SearchParamsProps> = ({
   const { t: warningTrans } = useTranslation('warning');
   const classes = getStyles();
 
+  const { openSnackBar } = useContext(rootContext);
   const metricOptions: Option[] = METRIC_OPTIONS_MAP[embeddingType];
 
   // search params key list, depends on index type
   // e.g. ['nprobe']
-  const searchParams = useMemo(
-    (): searchKeywordsType[] =>
-      indexType !== ''
-        ? [...INDEX_CONFIG[indexType].search, 'round_decimal']
-        : ['round_decimal'],
-    [indexType]
-  );
+  const searchParams = useMemo((): searchKeywordsType[] => {
+    const isSupportedType = Object.keys(INDEX_CONFIG).includes(indexType);
+
+    // show warning snackbar for unsupported type
+    if (!isSupportedType) {
+      indexType !== '' &&
+        openSnackBar(
+          warningTrans('noSupportIndexType', { type: indexType }),
+          'warning'
+        );
+    }
+    return indexType !== '' && isSupportedType
+      ? [...INDEX_CONFIG[indexType].search, 'round_decimal']
+      : ['round_decimal'];
+  }, [indexType, openSnackBar, warningTrans]);
 
   const handleInputChange = useCallback(
     (key: string, value: number) => {

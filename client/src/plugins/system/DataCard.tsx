@@ -196,8 +196,8 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
       });
     }
 
-    const { deploy_mode: mode = '' } = system_info;
-    // systemContent.push({ label: t('thVersion'), value: version });
+    const { deploy_mode: mode = '', build_version: version = '' } = system_info;
+    systemContent.push({ label: t('thVersion'), value: version });
     systemContent.push({ label: t('thDeployMode'), value: mode });
     systemContent.push({
       label: t('thCreateTime'),
