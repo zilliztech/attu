@@ -5,6 +5,8 @@ const warningTrans = {
   range: 'range is {{min}} ~ {{max}}',
   specValueOrRange:
     '{{name}} should be {{specValue}}, or in range {{min}} ~ {{max}}',
+  noSupportIndexType:
+    'Attu has not supported {{type}} yet. Please change another field',
 };
 
 export default warningTrans;
