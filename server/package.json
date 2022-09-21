@@ -124,7 +124,8 @@
     "linux": {
       "icon": "./build/zilliz.icns",
       "target": [
-        "deb"
+        "deb",
+        "rpm"
       ]
     },
     "mac": {
@@ -132,7 +133,7 @@
       "target": "dmg"
     },
     "win": {
-      "icon": "./build/zilliz.png",
+      "icon": "./build/attu.png",
       "target": [
         {
           "target": "nsis"

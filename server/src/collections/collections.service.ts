@@ -164,11 +164,11 @@ export class CollectionsService {
         });
 
         const autoID = collectionInfo.schema.fields.find(
-          (v) => v.is_primary_key === true
+          v => v.is_primary_key === true
         )?.autoID;
 
         const loadCollection = loadedCollections.data.find(
-          (v) => v.name === name
+          v => v.name === name
         );
 
         const loadedPercentage = !loadCollection

@@ -43,7 +43,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     transition: 'all .25s',
     position: 'absolute',
-    zIndex: 1000,
+    // zIndex: 1000,
     backgroundColor: 'white',
   },
   showChildView: {
@@ -75,8 +75,19 @@ const parseJson = (jsonData: any) => {
     memoryUsage: 0,
   };
 
-  jsonData?.response?.nodes_info.forEach((node: any) => {
+  const workingNodes = jsonData?.response?.nodes_info.filter(
+    (node: any) => node?.infos?.has_error !== true
+  );
+
+  workingNodes.forEach((node: any) => {
     const type = node?.infos?.type;
+    if (node.connected) {
+      node.connected = node.connected.filter((v: any) =>
+        workingNodes.find(
+          (item: any) => v.connected_identifier === item.identifier
+        )
+      );
+    }
     // coordinator node
     if (type?.toLowerCase().includes('coord')) {
       nodes.push(node);
@@ -103,7 +114,7 @@ const SystemView: any = () => {
   // const { t } = useTranslation('systemView');
 
   const classes = getStyles();
-  const INTERVAL = 10000;
+  const INTERVAL = 60000;
 
   const [data, setData] = useState<{
     nodes: any;
@@ -156,7 +167,12 @@ const SystemView: any = () => {
         <LineChartCard title={t('latencyTitle')} value={latency} />
       </div> */}
       <div className={classes.contentContainer}>
-        <Topo nodes={nodes} setNode={setNode} setCord={setCord} />
+        <Topo
+          nodes={nodes}
+          childNodes={childNodes}
+          setNode={setNode}
+          setCord={setCord}
+        />
         <DataCard node={selectedNode} extend />
       </div>
 
