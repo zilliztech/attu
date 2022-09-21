@@ -37,7 +37,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     transition: 'all .25s',
     position: 'absolute',
-    zIndex: 1000,
+    // zIndex: 1000,
     backgroundColor: 'white',
   },
   childCloseBtn: {

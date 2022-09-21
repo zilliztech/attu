@@ -21,7 +21,7 @@ import icons from '../../components/icons/Icons';
 import { rootContext } from '../../context/Root';
 import CreateIndex from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-import CustomLinearProgress from '../../components/customProgress/CustomLinearProgress';
+// import CustomLinearProgress from '../../components/customProgress/CustomLinearProgress';
 import StatusIcon from '../../components/status/StatusIcon';
 import { ChildrenStatusType } from '../../components/status/Types';
 
@@ -90,7 +90,7 @@ const IndexTypeElement: FC<{
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
 
-  const [createProgress, setCreateProgress] = useState<number>(0);
+  // const [createProgress, setCreateProgress] = useState<number>(0);
 
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -104,58 +104,63 @@ const IndexTypeElement: FC<{
   );
 
   const fetchStatus = useCallback(async () => {
-    // prevent delete index trigger fetching index status
-    if (data._indexType !== '' && status !== IndexState.Delete) {
-      const { state: status } = await IndexHttp.getIndexStatus(
-        collectionName,
-        data._fieldName,
-        data._indexName
-      );
-      setStatus(status);
-    }
-  }, [collectionName, data, status]);
-
-  const fetchProgress = useCallback(() => {
     if (timer) {
       clearTimeout(timer);
     }
-    if (data._indexType !== '' && isIndexCreating) {
+    // prevent delete index trigger fetching index status
+    if (data._indexType !== '' && status !== IndexState.Delete) {
       timer = setTimeout(async () => {
-        try {
-          const res = await IndexHttp.getIndexBuildProgress(
-            collectionName,
-            data._fieldName,
-            data._indexName
-          );
+        const { state: status } = await IndexHttp.getIndexStatus(
+          collectionName,
+          data._fieldName,
+          data._indexName
+        );
 
-          const { indexed_rows, total_rows } = res;
-          const percent = Number(indexed_rows) / Number(total_rows);
-          const value = Math.floor(percent * 100);
-          setCreateProgress(value);
-
-          if (value !== 100) {
-            fetchProgress();
-          } else {
-            timer && clearTimeout(timer);
-            // reset build progress
-            setCreateProgress(0);
-            // change index create status
-            setStatus(IndexState.Finished);
-          }
-        } catch (error) {
-          setStatus(IndexState.Finished);
-        }
+        status !== IndexState.Finished
+          ? fetchStatus()
+          : timer && clearTimeout(timer);
+        setStatus(status);
       }, 500);
     }
-  }, [collectionName, data, isIndexCreating]);
+  }, [collectionName, data, status]);
+
+  // const fetchProgress = useCallback(() => {
+  //   if (timer) {
+  //     clearTimeout(timer);
+  //   }
+  //   if (data._indexType !== '' && isIndexCreating) {
+  //     timer = setTimeout(async () => {
+  //       try {
+  //         const res = await IndexHttp.getIndexBuildProgress(
+  //           collectionName,
+  //           data._fieldName,
+  //           data._indexName
+  //         );
+
+  //         const { indexed_rows, total_rows } = res;
+  //         const percent = Number(indexed_rows) / Number(total_rows);
+  //         const value = Math.floor(percent * 100);
+  //         setCreateProgress(value);
+
+  //         if (value !== 100) {
+  //           fetchProgress();
+  //         } else {
+  //           timer && clearTimeout(timer);
+  //           // reset build progress
+  //           setCreateProgress(0);
+  //           // change index create status
+  //           setStatus(IndexState.Finished);
+  //         }
+  //       } catch (error) {
+  //         setStatus(IndexState.Finished);
+  //       }
+  //     }, 500);
+  //   }
+  // }, [collectionName, data, isIndexCreating]);
 
   useEffect(() => {
-    /**
-     * fetch index status, then fetch index build progress
-     */
     fetchStatus();
-    fetchProgress();
-  }, [fetchStatus, fetchProgress]);
+  }, [fetchStatus]);
 
   const requestCreateIndex = async (
     params: IndexExtraParam,
@@ -252,19 +257,18 @@ const IndexTypeElement: FC<{
          * empty string or 'delete' means fetching progress hasn't finished
          * show loading animation for such situations
          */
-        if (status === IndexState.Default || status === IndexState.Delete) {
+        if (
+          status === IndexState.Default ||
+          status === IndexState.Delete ||
+          isIndexCreating
+        ) {
           return <StatusIcon type={ChildrenStatusType.CREATING} />;
         }
+
         /**
-         * if creating not finished, show progress bar
          * if creating finished, show chip that contains index type
          */
-        return isIndexCreating ? (
-          <CustomLinearProgress
-            value={createProgress}
-            tooltip={indexTrans('creating')}
-          />
-        ) : (
+        return (
           <Chip
             label={data._indexType}
             classes={{ root: classes.chip, label: classes.chipLabel }}
