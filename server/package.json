@@ -1,6 +1,6 @@
 {
   "name": "attu",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "license": "MIT",
   "author": {
     "name": "zilliz",
@@ -12,7 +12,7 @@
     "url": "https://github.com/zilliztech/attu"
   },
   "dependencies": {
-    "@zilliz/milvus2-sdk-node": "^2.1.2",
+    "@zilliz/milvus2-sdk-node": "^2.1.3",
     "chalk": "^4.1.2",
     "class-sanitizer": "^1.0.1",
     "class-transformer": "^0.4.0",
