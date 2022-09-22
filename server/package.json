@@ -122,14 +122,14 @@
       "preload.js"
     ],
     "linux": {
-      "icon": "./build/zilliz.icns",
+      "icon": "./build/attu.icns",
       "target": [
         "deb",
         "rpm"
       ]
     },
     "mac": {
-      "icon": "./build/zilliz.icns",
+      "icon": "./build/attu.icns",
       "target": "dmg"
     },
     "win": {
