@@ -21,7 +21,6 @@ import icons from '../../components/icons/Icons';
 import { rootContext } from '../../context/Root';
 import CreateIndex from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-// import CustomLinearProgress from '../../components/customProgress/CustomLinearProgress';
 import StatusIcon from '../../components/status/StatusIcon';
 import { ChildrenStatusType } from '../../components/status/Types';
 
@@ -82,7 +81,7 @@ const IndexTypeElement: FC<{
   cb: (collectionName: string) => void;
 }> = ({ data, collectionName, cb }) => {
   const classes = useStyles();
-  // set empty string as defalut status
+  // set empty string as default status
   const [status, setStatus] = useState<string>(IndexState.Default);
 
   const { t: indexTrans } = useTranslation('index');
@@ -104,9 +103,6 @@ const IndexTypeElement: FC<{
   );
 
   const fetchStatus = useCallback(async () => {
-    if (timer) {
-      clearTimeout(timer);
-    }
     // prevent delete index trigger fetching index status
     if (data._indexType !== '' && status !== IndexState.Delete) {
       timer = setTimeout(async () => {
@@ -123,40 +119,6 @@ const IndexTypeElement: FC<{
       }, 500);
     }
   }, [collectionName, data, status]);
-
-  // const fetchProgress = useCallback(() => {
-  //   if (timer) {
-  //     clearTimeout(timer);
-  //   }
-  //   if (data._indexType !== '' && isIndexCreating) {
-  //     timer = setTimeout(async () => {
-  //       try {
-  //         const res = await IndexHttp.getIndexBuildProgress(
-  //           collectionName,
-  //           data._fieldName,
-  //           data._indexName
-  //         );
-
-  //         const { indexed_rows, total_rows } = res;
-  //         const percent = Number(indexed_rows) / Number(total_rows);
-  //         const value = Math.floor(percent * 100);
-  //         setCreateProgress(value);
-
-  //         if (value !== 100) {
-  //           fetchProgress();
-  //         } else {
-  //           timer && clearTimeout(timer);
-  //           // reset build progress
-  //           setCreateProgress(0);
-  //           // change index create status
-  //           setStatus(IndexState.Finished);
-  //         }
-  //       } catch (error) {
-  //         setStatus(IndexState.Finished);
-  //       }
-  //     }, 500);
-  //   }
-  // }, [collectionName, data, isIndexCreating]);
 
   useEffect(() => {
     fetchStatus();
