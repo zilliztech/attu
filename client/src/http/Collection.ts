@@ -3,6 +3,7 @@ import {
   CollectionView,
   DeleteEntitiesReq,
   InsertDataParam,
+  LoadSampleParam
 } from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
 import { VectorSearchParam } from '../types/SearchTypes';
@@ -84,6 +85,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   static insertData(collectionName: string, param: InsertDataParam) {
     return super.create({
       path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
+      data: param,
+    });
+  }
+
+  static loadSample(collectionName: string, param: LoadSampleParam) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/loadSample`,
       data: param,
     });
   }

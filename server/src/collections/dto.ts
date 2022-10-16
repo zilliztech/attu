@@ -8,13 +8,13 @@ import {
   IsEnum,
   ArrayMinSize,
   IsObject,
-} from "class-validator";
+} from 'class-validator';
 import {
   FieldType,
   ShowCollectionsType,
-} from "@zilliz/milvus2-sdk-node/dist/milvus/types/Collection";
-import { DataType } from "@zilliz/milvus2-sdk-node/dist/milvus/types/Common";
-import { SearchParam } from "@zilliz/milvus2-sdk-node/dist/milvus/types";
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
+import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
+import { SearchParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 enum VectorTypes {
   Binary = DataType.BinaryVector,
@@ -36,7 +36,7 @@ export class CreateCollectionDto {
 
 export class ShowCollectionsDto {
   @IsOptional()
-  @IsEnum(ShowCollectionsType, { message: "Type allow all->0 inmemory->1" })
+  @IsEnum(ShowCollectionsType, { message: 'Type allow all->0 inmemory->1' })
   readonly type: ShowCollectionsType;
 }
 
@@ -46,6 +46,11 @@ export class InsertDataDto {
 
   @IsArray()
   readonly fields_data: any[];
+}
+
+export class LoadSampleDto {
+  readonly collection_name?: string;
+  readonly size: string;
 }
 
 export class VectorSearchDto {
@@ -67,7 +72,7 @@ export class VectorSearchDto {
   @IsOptional()
   output_fields?: string[];
 
-  @IsEnum(VectorTypes, { message: "Type allow all->0 inmemory->1" })
+  @IsEnum(VectorTypes, { message: 'Type allow all->0 inmemory->1' })
   vector_type: DataType.BinaryVector | DataType.FloatVector;
 }
 

@@ -6,6 +6,7 @@ import {
   CreateAliasDto,
   CreateCollectionDto,
   InsertDataDto,
+  LoadSampleDto,
   VectorSearchDto,
   QueryDto,
 } from './dto';
@@ -57,6 +58,12 @@ export class CollectionController {
       '/:name/insert',
       dtoValidationMiddleware(InsertDataDto),
       this.insert.bind(this)
+    );
+
+    this.router.post(
+      '/:name/loadSample',
+      dtoValidationMiddleware(LoadSampleDto),
+      this.loadSample.bind(this)
     );
 
     // we need use req.body, so we can't use delete here
@@ -208,6 +215,17 @@ export class CollectionController {
     }
   }
 
+  async loadSample(req: Request, res: Response, next: NextFunction) {
+    const data = req.body;
+    try {
+      const result = await this.collectionsService.loadSample({
+        ...data,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
   async deleteEntities(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     const data = req.body;

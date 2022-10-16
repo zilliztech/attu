@@ -9,6 +9,7 @@ import {
   CollectionView,
   DataTypeEnum,
   InsertDataParam,
+  LoadSampleParam,
 } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
@@ -31,6 +32,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
+import LoadDemo from '../../components/insert/LoadDemo';
 import { MilvusHttp } from '../../http/Milvus';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
@@ -183,6 +185,30 @@ const Collections = () => {
     }
   };
 
+  const handleLoadExample = async (
+    collectionName: string,
+    size: string
+  ): Promise<{ result: boolean; msg: string }> => {
+    const param: LoadSampleParam = {
+      collection_name: collectionName,
+      size: size,
+    };
+    try {
+      await CollectionHttp.loadSample(collectionName, param);
+      await MilvusHttp.flush(collectionName);
+      // update collections
+      fetchData();
+      return { result: true, msg: '' };
+    } catch (err: any) {
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      return { result: false, msg: message || '' };
+    }
+  };
+
   const handleCreateCollection = async (param: CollectionCreateParam) => {
     const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
     const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
@@ -292,6 +318,25 @@ const Collections = () => {
        */
       disabled: () =>
         collectionList.length === 0 || selectedCollections.length > 1,
+      btnVariant: 'outlined',
+    },
+    {
+      label: btnTrans('loadSampleData'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <LoadDemo
+                collection={selectedCollections[0]._name}
+                handleLoadSample={handleLoadExample}
+              />
+            ),
+          },
+        });
+      },
+      disabled: data => data.length === 0 || data.length > 1,
       btnVariant: 'outlined',
     },
     {
