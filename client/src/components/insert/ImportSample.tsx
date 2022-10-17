@@ -50,6 +50,7 @@ const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
     );
 
     const { t: insertTrans } = useTranslation('insert');
+    const { t: btnTrans } = useTranslation('btn');
     const { handleCloseDialog, openSnackBar } = useContext(rootContext);
     // selected collection name
 
@@ -100,11 +101,11 @@ const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
         handleClose={handleCloseDialog}
         confirmLabel={
           insertStatus === InsertStatusEnum.init
-            ? 'Import'
+            ? btnTrans('import')
             : insertStatus === InsertStatusEnum.loading
-            ? 'Loading...'
+            ? btnTrans('loading')
             : insertStatus === InsertStatusEnum.success
-            ? 'Done'
+            ? btnTrans('done')
             : insertStatus
         }
         handleConfirm={handleNext}
