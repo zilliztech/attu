@@ -269,13 +269,6 @@ export class CollectionsService {
       parseInt(size, 10)
     );
 
-    console.log('fields_data', fields_data, collectionInfo.schema.fields);
-
-    await this.insert({ collection_name, fields_data });
-
-    const data = {
-      loaded: true,
-    };
-    return data;
+    return await this.insert({ collection_name, fields_data });
   }
 }

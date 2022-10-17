@@ -41,7 +41,7 @@ const getStyles = makeStyles((theme: Theme) => ({
  * including import, preview and status
  */
 
-const LoadDemo: FC<{ collection: string; handleLoadSample: Function }> =
+const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
   props => {
     const classes = getStyles();
     const [size, setSize] = useState<string>('100');
@@ -118,7 +118,7 @@ const LoadDemo: FC<{ collection: string; handleLoadSample: Function }> =
           <div className="selectorWrapper">
             <div className="description">
               <Typography variant="inherit" component="p">
-                Load random data in to you collection based on your field types.
+                {insertTrans('loadSampleDataDesc')}
               </Typography>
             </div>
 
@@ -140,4 +140,4 @@ const LoadDemo: FC<{ collection: string; handleLoadSample: Function }> =
     );
   };
 
-export default LoadDemo;
+export default ImportSample;

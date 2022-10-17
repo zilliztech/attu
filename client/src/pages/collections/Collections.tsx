@@ -32,7 +32,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
-import LoadDemo from '../../components/insert/LoadDemo';
+import ImportSample from '../../components/insert/ImportSample';
 import { MilvusHttp } from '../../http/Milvus';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
@@ -484,7 +484,7 @@ const Collections = () => {
               type: 'custom',
               params: {
                 component: (
-                  <LoadDemo
+                  <ImportSample
                     collection={row._name}
                     handleLoadSample={handleLoadExample}
                   />

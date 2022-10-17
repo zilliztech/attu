@@ -5,7 +5,6 @@ export const findKeyValue = (obj: KeyValuePair[], key: string) =>
   obj.find(v => v.key === key)?.value;
 
 export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
-  console.log(222222, type_params);
   switch (data_type) {
     case 'Bool':
       return Math.random() > 0.5;
@@ -21,6 +20,8 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
       return Array.from({ length: (type_params as any)[0].value }).map(() =>
         Math.random()
       );
+    case 'VarChar':
+      return makeRandomId((type_params as any)[0].value);
   }
 };
 
@@ -38,6 +39,17 @@ export const genRows = (fields: FieldSchema[], size: number) => {
   const result = [];
   for (let i = 0; i < size; i++) {
     result[i] = genRow(fields);
+  }
+  return result;
+};
+
+export const makeRandomId = (length: number): string => {
+  var result = '';
+  var characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 };

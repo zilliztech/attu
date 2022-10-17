@@ -17,7 +17,7 @@ export const mockCollections = [
       fields: [
         {
           name: 'vector_field',
-          data_type: 'data_type',
+          data_type: 'FloatVector',
           type_params: [
             {
               key: 'dim',
@@ -44,7 +44,7 @@ export const mockCollections = [
       fields: [
         {
           name: 'vector_field',
-          data_type: 'data_type',
+          data_type: 'FloatVector',
           type_params: [
             {
               key: 'dim',
@@ -91,7 +91,7 @@ export const mockGetAllCollectionsData = [
       fields: [
         {
           name: 'vector_field',
-          data_type: 'data_type',
+          data_type: 'FloatVector',
           type_params: [
             {
               key: 'dim',
@@ -121,7 +121,7 @@ export const mockGetAllCollectionsData = [
       fields: [
         {
           name: 'vector_field',
-          data_type: 'data_type',
+          data_type: 'FloatVector',
           type_params: [
             {
               key: 'dim',

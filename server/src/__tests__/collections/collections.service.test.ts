@@ -171,6 +171,24 @@ describe('Test collections service', () => {
     }
   });
 
+  test('test loadSample method', async () => {
+    const mockParam = {
+      collection_name: 'c1',
+      size: 2
+    };
+    const res = await service.loadSample(mockParam);
+    expect(res.data.fields_data.length).toEqual(2);
+
+    try {
+      await service.loadSample({
+        collection_name: '',
+        size: 20
+      });
+    } catch (err) {
+      expect(err).toBe(ERR_NO_COLLECTION);
+    }
+  });
+
   test('test vectorSearch method', async () => {
     const mockParam = {
       collection_name: 'c1',
