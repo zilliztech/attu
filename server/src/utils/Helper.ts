@@ -10,13 +10,16 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
     case 'Bool':
       return Math.random() > 0.5;
     case 'Int8':
+      return Math.floor(Math.random() * 127);
     case 'Int16':
+      return Math.floor(Math.random() * 32767);
     case 'Int32':
+      return Math.floor(Math.random() * 214748364);
     case 'Int64':
-      return Math.floor(Math.random() * 100000000);
+      return Math.floor(Math.random() * 214748364);
     case 'FloatVector':
       return Array.from({ length: (type_params as any)[0].value }).map(() =>
-        Math.floor(Math.random() * 10)
+        Math.random()
       );
   }
 };

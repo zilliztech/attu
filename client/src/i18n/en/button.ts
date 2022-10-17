@@ -12,12 +12,13 @@ const btnTrans = {
   release: 'Release',
   load: 'Load',
   insert: 'Import Data',
+  refresh: 'Refresh',
   next: 'Next',
   previous: 'Previous',
   done: 'Done',
   vectorSearch: 'Vector search',
   query: 'Query',
-  loadSampleData: 'Load Sample data',
+  loadSampleData: 'Import Sample data',
 };
 
 export default btnTrans;

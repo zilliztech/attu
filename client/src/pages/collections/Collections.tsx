@@ -90,6 +90,7 @@ const Collections = () => {
   const LoadIcon = icons.load;
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
+  const SourceIcon = icons.source;
 
   const searchedCollections = useMemo(
     () => collections.filter(collection => collection._name.includes(search)),
@@ -196,8 +197,6 @@ const Collections = () => {
     try {
       await CollectionHttp.loadSample(collectionName, param);
       await MilvusHttp.flush(collectionName);
-      // update collections
-      fetchData();
       return { result: true, msg: '' };
     } catch (err: any) {
       const {
@@ -321,23 +320,12 @@ const Collections = () => {
       btnVariant: 'outlined',
     },
     {
-      label: btnTrans('loadSampleData'),
+      type: 'iconBtn',
       onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: (
-              <LoadDemo
-                collection={selectedCollections[0]._name}
-                handleLoadSample={handleLoadExample}
-              />
-            ),
-          },
-        });
+        fetchData();
       },
-      disabled: data => data.length === 0 || data.length > 1,
-      btnVariant: 'outlined',
+      label: collectionTrans('delete'),
+      icon: 'refresh',
     },
     {
       type: 'iconBtn',
@@ -415,12 +403,6 @@ const Collections = () => {
       label: collectionTrans('status'),
     },
     {
-      id: 'consistency_level',
-      align: 'left',
-      disablePadding: false,
-      label: collectionTrans('consistencyLevel'),
-    },
-    {
       id: '_rowCount',
       align: 'left',
       disablePadding: false,
@@ -432,6 +414,12 @@ const Collections = () => {
           </CustomToolTip>
         </span>
       ),
+    },
+    {
+      id: 'consistency_level',
+      align: 'left',
+      disablePadding: false,
+      label: collectionTrans('consistencyLevel'),
     },
     {
       id: '_desc',
@@ -478,6 +466,37 @@ const Collections = () => {
             ) : (
               <ReleaseIcon />
             ),
+        },
+      ],
+    },
+    {
+      id: 'insert',
+      align: 'center',
+      disablePadding: false,
+      label: '',
+      showActionCell: true,
+      isHoverAction: true,
+      actionBarConfigs: [
+        {
+          onClick: (e: React.MouseEvent, row: CollectionView) => {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: (
+                  <LoadDemo
+                    collection={row._name}
+                    handleLoadSample={handleLoadExample}
+                  />
+                ),
+              },
+            });
+          },
+          icon: 'source',
+          label: 'Insert',
+          showIconMethod: 'renderFn',
+          getLabel: () => 'Import sample data',
+          renderIconFn: (row: CollectionView) => <SourceIcon />,
         },
       ],
     },

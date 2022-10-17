@@ -1,20 +1,20 @@
-import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useState, useCallback, useContext } from 'react';
+import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { FC, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '../customDialog/DialogTemplate';
 import CustomSelector from '../customSelector/CustomSelector';
 import { rootContext } from '../../context/Root';
+import { InsertStatusEnum } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '16px',
   },
+
   selectors: {
     '& .selectorWrapper': {
       display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-
+      flexDirection: 'column',
       marginBottom: theme.spacing(2),
 
       '& .selectLabel': {
@@ -23,15 +23,14 @@ const getStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.attuDark.main,
       },
 
-      '& .divider': {
-        width: '20px',
-        margin: theme.spacing(0, 4),
-        backgroundColor: theme.palette.attuGrey.dark,
+      '& .description': {
+        color: theme.palette.attuGrey.dark,
+        marginBottom: theme.spacing(1),
+        fontSize: 12,
       },
     },
 
     '& .selector': {
-      flexBasis: '40%',
       minWidth: '128px',
     },
   },
@@ -45,11 +44,14 @@ const getStyles = makeStyles((theme: Theme) => ({
 const LoadDemo: FC<{ collection: string; handleLoadSample: Function }> =
   props => {
     const classes = getStyles();
+    const [size, setSize] = useState<string>('100');
+    const [insertStatus, setInsertStatus] = useState<InsertStatusEnum>(
+      InsertStatusEnum.init
+    );
 
     const { t: insertTrans } = useTranslation('insert');
     const { handleCloseDialog, openSnackBar } = useContext(rootContext);
     // selected collection name
-    const [size, setSize] = useState<string>('100');
 
     const sizeOptions = [
       {
@@ -71,34 +73,55 @@ const LoadDemo: FC<{ collection: string; handleLoadSample: Function }> =
     ];
 
     const handleNext = async () => {
+      if (insertStatus === InsertStatusEnum.success) {
+        handleCloseDialog();
+        return;
+      }
       // start loading
-      // setInsertStatus(InsertStatusEnum.loading);
+      setInsertStatus(InsertStatusEnum.loading);
       const { result, msg } = await props.handleLoadSample(
         props.collection,
         size
       );
 
-      // if (!result) {
-      //   setInsertFailMsg(msg);
-      // }
-      // const status = result ? InsertStatusEnum.success : InsertStatusEnum.error;
-      // setInsertStatus(status);
+      if (!result) {
+        openSnackBar(msg, 'error');
+        setInsertStatus(InsertStatusEnum.init);
+        return;
+      }
+      setInsertStatus(InsertStatusEnum.success);
+      // hide dialog
+      handleCloseDialog();
     };
 
     return (
       <DialogTemplate
         title={insertTrans('loadSampleData', { collection: props.collection })}
         handleClose={handleCloseDialog}
-        confirmLabel={'confirm'}
+        confirmLabel={
+          insertStatus === InsertStatusEnum.init
+            ? 'Load'
+            : insertStatus === InsertStatusEnum.loading
+            ? 'Loading...'
+            : insertStatus === InsertStatusEnum.success
+            ? 'Done'
+            : insertStatus
+        }
         handleConfirm={handleNext}
         confirmDisabled={false}
         showActions={true}
-        showCancel={true}
+        showCancel={false}
         // don't show close icon when insert not finish
         // showCloseIcon={insertStatus !== InsertStatusEnum.loading}
       >
         <form className={classes.selectors}>
           <div className="selectorWrapper">
+            <div className="description">
+              <Typography variant="inherit" component="p">
+                Load random data in to you collection based on your field types.
+              </Typography>
+            </div>
+
             <CustomSelector
               label={insertTrans('sampleDataSize')}
               options={sizeOptions}

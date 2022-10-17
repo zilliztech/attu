@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
     // borderBottom: 'none',
   },
   tableHeader: {
-    textTransform: 'capitalize',
     color: 'rgba(0, 0, 0, 0.6)',
     fontSize: '12.8px',
   },
