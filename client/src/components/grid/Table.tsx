@@ -247,7 +247,7 @@ const EnhancedTable: FC<TableType> = props => {
                                 ? classes.hoverActionCell
                                 : ''
                             }`}
-                            key="manage"
+                            key={colDef.id}
                             style={cellStyle}
                           >
                             <ActionBar
