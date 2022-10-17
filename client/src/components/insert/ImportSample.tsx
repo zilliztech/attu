@@ -100,7 +100,7 @@ const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
         handleClose={handleCloseDialog}
         confirmLabel={
           insertStatus === InsertStatusEnum.init
-            ? 'Load'
+            ? 'Import'
             : insertStatus === InsertStatusEnum.loading
             ? 'Loading...'
             : insertStatus === InsertStatusEnum.success

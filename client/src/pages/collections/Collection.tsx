@@ -41,16 +41,16 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: collectionTrans('queryTab'),
-      component: <Query collectionName={collectionName} />,
-    },
-    {
       label: collectionTrans('schemaTab'),
       component: <Schema collectionName={collectionName} />,
     },
     {
       label: collectionTrans('partitionTab'),
       component: <Partitions collectionName={collectionName} />,
+    },
+    {
+      label: collectionTrans('queryTab'),
+      component: <Query collectionName={collectionName} />,
     },
   ];
 
