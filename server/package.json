@@ -1,6 +1,6 @@
 {
   "name": "attu",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "license": "MIT",
   "author": {
     "name": "zilliz",
@@ -124,8 +124,7 @@
     "linux": {
       "icon": "./build/attu.icns",
       "target": [
-        "deb",
-        "rpm"
+        "deb"
       ]
     },
     "mac": {
