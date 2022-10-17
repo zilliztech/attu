@@ -20,6 +20,7 @@ const btnTrans = {
   query: 'Query',
   importSampleData: 'Import Sample data',
   loading: 'Loading...',
+  importing: 'Importing...'
 };
 
 export default btnTrans;

@@ -103,7 +103,7 @@ const ImportSample: FC<{ collection: string; handleImport: Function }> =
           insertStatus === InsertStatusEnum.init
             ? btnTrans('import')
             : insertStatus === InsertStatusEnum.loading
-            ? btnTrans('loading')
+            ? btnTrans('importing')
             : insertStatus === InsertStatusEnum.success
             ? btnTrans('done')
             : insertStatus
