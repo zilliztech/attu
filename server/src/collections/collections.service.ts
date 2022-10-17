@@ -20,7 +20,7 @@ import {
   ShowCollectionsReq,
   ShowCollectionsType,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
-import { QueryDto, LoadSampleDto } from './dto';
+import { QueryDto, ImportSampleDto } from './dto';
 import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
 
 export class CollectionsService {
@@ -262,7 +262,7 @@ export class CollectionsService {
   /**
    * Load sample data into collection
    */
-  async loadSample({ collection_name, size }: LoadSampleDto) {
+  async importSample({ collection_name, size }: ImportSampleDto) {
     const collectionInfo = await this.describeCollection({ collection_name });
     const fields_data = genRows(
       collectionInfo.schema.fields,

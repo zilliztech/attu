@@ -171,16 +171,16 @@ describe('Test collections service', () => {
     }
   });
 
-  test('test loadSample method', async () => {
+  test('test importSample method', async () => {
     const mockParam = {
       collection_name: 'c1',
       size: 2
     };
-    const res = await service.loadSample(mockParam);
+    const res = await service.importSample(mockParam);
     expect(res.data.fields_data.length).toEqual(2);
 
     try {
-      await service.loadSample({
+      await service.importSample({
         collection_name: '',
         size: 20
       });

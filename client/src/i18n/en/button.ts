@@ -18,7 +18,7 @@ const btnTrans = {
   done: 'Done',
   vectorSearch: 'Vector search',
   query: 'Query',
-  loadSampleData: 'Import Sample data',
+  importSampleData: 'Import Sample data',
   loading: 'Loading...',
 };
 

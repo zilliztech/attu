@@ -29,9 +29,9 @@ const insertTrans = {
   statusSuccess: 'Import Data Successfully!',
   statusError: 'Import Data Failed!',
 
-  loadSampleData: 'Import sample data into {{collection}}',
+  importSampleData: 'Import sample data into {{collection}}',
   sampleDataSize: 'Choose sample data size',
-  loadSampleDataDesc: `Import random data based on the collection's schema.`
+  importSampleDataDesc: `Import random data based on the collection's schema.`
 };
 
 export default insertTrans;

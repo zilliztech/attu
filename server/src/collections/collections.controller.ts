@@ -6,7 +6,7 @@ import {
   CreateAliasDto,
   CreateCollectionDto,
   InsertDataDto,
-  LoadSampleDto,
+  ImportSampleDto,
   VectorSearchDto,
   QueryDto,
 } from './dto';
@@ -61,9 +61,9 @@ export class CollectionController {
     );
 
     this.router.post(
-      '/:name/loadSample',
-      dtoValidationMiddleware(LoadSampleDto),
-      this.loadSample.bind(this)
+      '/:name/importSample',
+      dtoValidationMiddleware(ImportSampleDto),
+      this.importSample.bind(this)
     );
 
     // we need use req.body, so we can't use delete here
@@ -215,10 +215,10 @@ export class CollectionController {
     }
   }
 
-  async loadSample(req: Request, res: Response, next: NextFunction) {
+  async importSample(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
     try {
-      const result = await this.collectionsService.loadSample({
+      const result = await this.collectionsService.importSample({
         ...data,
       });
       res.send(result);

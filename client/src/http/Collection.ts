@@ -89,9 +89,9 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
-  static loadSample(collectionName: string, param: LoadSampleParam) {
+  static importSample(collectionName: string, param: LoadSampleParam) {
     return super.create({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/loadSample`,
+      path: `${this.COLLECTIONS_URL}/${collectionName}/importSample`,
       data: param,
     });
   }

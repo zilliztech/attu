@@ -41,7 +41,7 @@ const getStyles = makeStyles((theme: Theme) => ({
  * including import, preview and status
  */
 
-const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
+const ImportSample: FC<{ collection: string; handleImport: Function }> =
   props => {
     const classes = getStyles();
     const [size, setSize] = useState<string>('100');
@@ -80,7 +80,7 @@ const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
       }
       // start loading
       setInsertStatus(InsertStatusEnum.loading);
-      const { result, msg } = await props.handleLoadSample(
+      const { result, msg } = await props.handleImport(
         props.collection,
         size
       );
@@ -97,7 +97,7 @@ const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
 
     return (
       <DialogTemplate
-        title={insertTrans('loadSampleData', { collection: props.collection })}
+        title={insertTrans('importSampleData', { collection: props.collection })}
         handleClose={handleCloseDialog}
         confirmLabel={
           insertStatus === InsertStatusEnum.init
@@ -119,7 +119,7 @@ const ImportSample: FC<{ collection: string; handleLoadSample: Function }> =
           <div className="selectorWrapper">
             <div className="description">
               <Typography variant="inherit" component="p">
-                {insertTrans('loadSampleDataDesc')}
+                {insertTrans('importSampleDataDesc')}
               </Typography>
             </div>
 

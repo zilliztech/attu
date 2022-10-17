@@ -186,7 +186,7 @@ const Collections = () => {
     }
   };
 
-  const handleLoadExample = async (
+  const handleImportSample = async (
     collectionName: string,
     size: string
   ): Promise<{ result: boolean; msg: string }> => {
@@ -195,7 +195,7 @@ const Collections = () => {
       size: size,
     };
     try {
-      await CollectionHttp.loadSample(collectionName, param);
+      await CollectionHttp.importSample(collectionName, param);
       await MilvusHttp.flush(collectionName);
       return { result: true, msg: '' };
     } catch (err: any) {
@@ -470,7 +470,7 @@ const Collections = () => {
       ],
     },
     {
-      id: 'insert',
+      id: 'import',
       align: 'center',
       disablePadding: false,
       label: '',
@@ -486,14 +486,14 @@ const Collections = () => {
                 component: (
                   <ImportSample
                     collection={row._name}
-                    handleLoadSample={handleLoadExample}
+                    handleImport={handleImportSample}
                   />
                 ),
               },
             });
           },
           icon: 'source',
-          label: 'Insert',
+          label: 'Import',
           showIconMethod: 'renderFn',
           getLabel: () => 'Import sample data',
           renderIconFn: (row: CollectionView) => <SourceIcon />,

@@ -48,7 +48,7 @@ export class InsertDataDto {
   readonly fields_data: any[];
 }
 
-export class LoadSampleDto {
+export class ImportSampleDto {
   readonly collection_name?: string;
   readonly size: string;
 }
