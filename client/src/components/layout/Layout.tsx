@@ -80,14 +80,19 @@ const Layout = (props: any) => {
       onClick: () => history.push('/'),
     },
     {
-      icon: icons.navPerson,
-      label: navTrans('user'),
-      onClick: () => history.push('/users'),
-    },
-    {
       icon: icons.navCollection,
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
+    },
+    {
+      icon: icons.code,
+      label: navTrans('code'),
+      onClick: () => history.push('/code'),
+    },
+    {
+      icon: icons.navPerson,
+      label: navTrans('user'),
+      onClick: () => history.push('/users'),
     },
     // {
     //   icon: icons.navSearch,

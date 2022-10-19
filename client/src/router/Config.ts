@@ -6,6 +6,7 @@ import Overview from '../pages/overview/Overview';
 import { RouterConfigType } from './Types';
 import loadable from '@loadable/component';
 import Users from '../pages/user/User';
+import Code from '../pages/code/Code';
 
 const PLUGIN_DEV = process.env.REACT_APP_PLUGIN_DEV;
 
@@ -23,6 +24,11 @@ const RouterConfig: RouterConfigType[] = [
   {
     path: '/collections',
     component: Collections,
+    auth: true,
+  },
+  {
+    path: '/code',
+    component: Code,
     auth: true,
   },
   {
