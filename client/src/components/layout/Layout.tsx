@@ -70,6 +70,10 @@ const Layout = (props: any) => {
       return navTrans('user');
     }
 
+    if (location.pathname.includes('code')) {
+      return navTrans('code');
+    }
+
     return navTrans('overview');
   }, [location, navTrans]);
 
