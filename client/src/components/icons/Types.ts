@@ -38,4 +38,5 @@ export type IconsType =
   | 'datePicker'
   | 'download'
   | 'source'
-  | 'code';
+  | 'code'
+  | 'play';

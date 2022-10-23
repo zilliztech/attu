@@ -5,6 +5,10 @@ import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { basicSetup, TabKeyBindings } from './modules/extensions';
 import { theme, baseTheme, highlights } from './modules/theme';
+import icons from '../../components/icons/Icons';
+import CustomButton from '../../components/customButton/CustomButton';
+import CustomSelector from '../../components/customSelector/CustomSelector';
+import { getPlaygroundStyles } from './Styles';
 
 const doc = `const params = {
   collection_name: "book",
@@ -35,8 +39,13 @@ const doc = `const params = {
 
 const Code: FC<any> = () => {
   useNavigationHook(ALL_ROUTER_TYPES.CODE);
+  // init state
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
+
+  // style
+  const classes = getPlaygroundStyles();
+  const RunIcon = icons.play;
 
   useEffect(() => {
     if (editor.current) return;
@@ -55,7 +64,34 @@ const Code: FC<any> = () => {
 
   return (
     <section className="page-wrapper">
-      <div ref={editorEl}></div>
+      <section className={classes.toolbar}>
+        <CustomButton className="btn" onClick={() => {}}>
+          <RunIcon classes={{ root: 'icon' }} />
+          RUN
+          {/* {btnTrans('reset')} */}
+        </CustomButton>
+        <CustomSelector
+          options={[]}
+          wrapperClass={classes.selector}
+          variant="filled"
+          label={''}
+          disabled={false}
+          value={'d'}
+          onChange={() => {}}
+        />
+        <CustomSelector
+          options={[]}
+          wrapperClass={classes.selector}
+          variant="filled"
+          label={''}
+          disabled={false}
+          value={'d'}
+          onChange={() => {}}
+        />
+      </section>
+      <section className={classes.cmContainer}>
+        <div ref={editorEl}></div>
+      </section>
     </section>
   );
 };
