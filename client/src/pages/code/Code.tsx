@@ -37,6 +37,18 @@ const doc = `const params = {
 };
 `;
 
+const operationTypes = [
+  { label: 'Create collection', value: 'create' },
+  { label: 'Create index', value: 'index' },
+  { label: 'Load collection', value: 'data' },
+  { label: 'Insert data', value: 'data' },
+  { label: 'Vector search', value: 'search' },
+];
+const sdks = [
+  { label: 'Pymilvus', value: 'python' },
+  { label: 'Nodejs', value: 'nodejs' },
+];
+
 const Code: FC<any> = () => {
   useNavigationHook(ALL_ROUTER_TYPES.CODE);
   // init state
@@ -46,7 +58,9 @@ const Code: FC<any> = () => {
   // style
   const classes = getPlaygroundStyles();
   const RunIcon = icons.play;
+  const CopyIcon = icons.copy;
 
+  // editor
   useEffect(() => {
     if (editor.current) return;
 
@@ -70,27 +84,32 @@ const Code: FC<any> = () => {
           RUN
           {/* {btnTrans('reset')} */}
         </CustomButton>
+        <CustomButton className="btn" onClick={() => {}}>
+          <CopyIcon classes={{ root: 'icon' }} />
+          {/* {btnTrans('reset')} */}
+        </CustomButton>
         <CustomSelector
-          options={[]}
+          options={operationTypes}
           wrapperClass={classes.selector}
           variant="filled"
-          label={''}
+          label={'Milvus operations'}
           disabled={false}
-          value={'d'}
+          value={operationTypes[0].value}
           onChange={() => {}}
         />
         <CustomSelector
-          options={[]}
+          options={sdks}
           wrapperClass={classes.selector}
           variant="filled"
-          label={''}
           disabled={false}
-          value={'d'}
+          label={'SDK'}
+          value={sdks[0].value}
           onChange={() => {}}
         />
       </section>
       <section className={classes.cmContainer}>
-        <div ref={editorEl}></div>
+        <div ref={editorEl} className={classes.editor}></div>
+        <div className={classes.result}>result</div>
       </section>
     </section>
   );
