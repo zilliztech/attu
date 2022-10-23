@@ -1,3 +1,31 @@
+@font-face {
+  font-family: "ApercuMonoPro";
+  src: url("../assets/fonts/ApercuMonoProRegular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "ApercuMonoPro Bold";
+  src: url("../assets/fonts/ApercuMonoProBold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ApercuMonoPro Light";
+  src: url("../assets/fonts/ApercuMonoProLight.ttf");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ApercuMonoPro Medium";
+  src: url("../assets/fonts/ApercuMonoProMedium.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+
 /**
  * we usually use Material makeStyles to write component and page style
  * this file is used for some global scope reusable style
