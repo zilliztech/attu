@@ -10,15 +10,23 @@ export const theme = EditorView.theme({
   },
   '.cm-content': {
     color: '#484D52',
-    fontFamily: 'ApercuMonoPro Light',
+    fontFamily: 'ApercuMonoPro',
     fontSize: '13.5px',
-    minHeight: 'calc(100vh - 200px)',
+    minHeight: 'calc(100vh - 190px)',
+    maxHeight: 'calc(100vh - 190px)',
+    whiteSpace: "pre-wrap"
   },
   '.cm-wrap': {
-    minHeight: 'calc(100vh - 200px)',
+    minHeight: 'calc(100vh - 190px)',
+    maxHeight: 'calc(100vh - 190px)',
   },
   '.cm-gutter': {
-    minHeight: 'calc(100vh - 200px)',
+    minHeight: 'calc(100vh - 190px)',
+  },
+  '.cm-scroller': {
+    overflow: 'auto',
+    minHeight: 'calc(100vh - 190px)',
+    maxHeight: 'calc(100vh - 190px)',
   },
   '.cm-line': { padding: ' 0 4px 0 8px' },
   '&.cm-focused .cm-content': {

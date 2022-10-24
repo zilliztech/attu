@@ -20,7 +20,10 @@ const btnTrans = {
   query: 'Query',
   importSampleData: 'Import Sample data',
   loading: 'Loading...',
-  importing: 'Importing...'
+  importing: 'Importing...',
+  run: 'Run',
+  language: 'Language',
+  milvusOperations: 'Milvus operations',
 };
 
 export default btnTrans;
