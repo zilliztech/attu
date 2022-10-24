@@ -1,20 +1,12 @@
-import {
-  FC,
-  useRef,
-  useEffect,
-  useCallback,
-  useState,
-  ChangeEvent,
-} from 'react';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
+import { FC, useRef, useEffect, useState, ChangeEvent } from 'react';
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
-
-import { basicSetup, TabKeyBindings } from './modules/extensions';
-import { theme, baseTheme, highlights } from './modules/theme';
+import { useNavigationHook } from '../../hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '../../router/Types';
+import { basicSetup, TabKeyBindings } from './cm/extensions';
+import { theme, baseTheme, highlights } from './cm/theme';
 import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
@@ -28,13 +20,12 @@ const Code: FC<any> = () => {
   const [lang, setLang] = useState<string>(LANGS[0].value);
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
+  const language = new Compartment();
 
   // style
   const classes = getPlaygroundStyles();
   const RunIcon = icons.play;
   const CopyIcon = icons.copy;
-  let language = new Compartment(),
-    tabSize = new Compartment();
 
   // editor
   useEffect(() => {
