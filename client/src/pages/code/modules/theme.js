@@ -19,7 +19,7 @@ export const theme = EditorView.theme({
   },
   ".cm-activeLine": { backgroundColor: "transparent" },
   ".cm-lineNumbers .cm-gutterElement": {
-    padding: "0 22px 0 26px",
+    padding: "0 8px",
   },
   // auto completion box style
   ".cm-tooltip.cm-tooltip-autocomplete": {

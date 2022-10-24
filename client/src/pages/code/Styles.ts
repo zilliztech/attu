@@ -5,6 +5,9 @@ export const getPlaygroundStyles = makeStyles((theme: Theme) => ({
     width: '320px',
     marginTop: theme.spacing(1),
   },
+  sdk: {
+    width: '150px',
+  },
 
   toolbar: {
     display: 'flex',
@@ -17,13 +20,17 @@ export const getPlaygroundStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     gap: theme.spacing(2),
-    '& >div': {},
+    '& >div': {
+    },
   },
   editor: {
     background: '#f7f7f7',
+    minWidth: '500px',
+    width: '50%',
+    border: '1px dotted #c2c2c2',
   },
   result: {
     background: '#fff',
-    width: '100%',
+    width: '50%',
   },
 }));

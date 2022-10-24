@@ -1,4 +1,11 @@
-import { FC, useRef, useEffect, useCallback, useState } from 'react';
+import {
+  FC,
+  useRef,
+  useEffect,
+  useCallback,
+  useState,
+  ChangeEvent,
+} from 'react';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import { EditorState } from '@codemirror/state';
@@ -9,51 +16,38 @@ import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import { getPlaygroundStyles } from './Styles';
-
-const doc = `const params = {
-  collection_name: "book",
-  description: "Test book search"
-  fields: [
-    {
-      name: "book_intro",
-      description: "",
-      data_type: 101,  // DataType.FloatVector
-      type_params: {
-        dim: "2",
-      },
-    },
-	{
-      name: "book_id",
-      data_type: 5,   //DataType.Int64
-      is_primary_key: true,
-      description: "",
-    },
-    {
-      name: "word_count",
-      data_type: 5,    //DataType.Int64
-      description: "",
-    },
-  ],
-};
-`;
+import { BUILD_INDEX } from './examples/buildIndex';
+import { CREATE_COLLECTION } from './examples/createCollection';
+import { INSERT_DATA } from './examples/insertData';
+import { LOAD_COLLECTION } from './examples/loadCollection';
+import { VECTOR_SEARCH } from './examples/vectorSearch';
 
 const operationTypes = [
-  { label: 'Create collection', value: 'create' },
-  { label: 'Create index', value: 'index' },
-  { label: 'Load collection', value: 'data' },
-  { label: 'Insert data', value: 'data' },
-  { label: 'Vector search', value: 'search' },
+  { label: 'Create collection', value: 'CREATE_COLLECTION' },
+  { label: 'Build index', value: 'BUILD_INDEX' },
+  { label: 'Load collection', value: 'LOAD_COLLECTION' },
+  { label: 'Insert data', value: 'INSERT_DATA' },
+  { label: 'Vector search', value: 'VECTOR_SEARCH' },
 ];
-const sdks = [
-  { label: 'Pymilvus', value: 'python' },
+const langs = [
+  { label: 'Python', value: 'python' },
   { label: 'Nodejs', value: 'nodejs' },
 ];
 
 const Code: FC<any> = () => {
   useNavigationHook(ALL_ROUTER_TYPES.CODE);
   // init state
+  const [operationType, setOperationType] = useState(operationTypes[0].value);
+  const [lang, setLang] = useState<string>(langs[0].value);
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
+  const docMap = {
+    BUILD_INDEX,
+    CREATE_COLLECTION,
+    INSERT_DATA,
+    LOAD_COLLECTION,
+    VECTOR_SEARCH,
+  };
 
   // style
   const classes = getPlaygroundStyles();
@@ -62,19 +56,35 @@ const Code: FC<any> = () => {
 
   // editor
   useEffect(() => {
-    if (editor.current) return;
-
+    console.log(1);
+    const doc: string = docMap[operationType][lang];
     let state = EditorState.create({
       doc: doc,
       extensions: [basicSetup, TabKeyBindings, theme, baseTheme, highlights],
     });
+    if (editor.current) {
+      editor.current.setState(state);
+      return;
+    }
 
     // init view
     editor.current = new EditorView({
       state,
-      parent: editorEl.current as any,
+      parent: editorEl.current as Element,
     });
-  }, []);
+  }, [operationType, lang, docMap]);
+
+  // operation change
+  const handleOperationChange = (event: ChangeEvent<{ value: string }>) => {
+    setOperationType(event.target.value);
+    console.log(event.target.value);
+  };
+
+  // language change
+  const handleLangChange = (event: ChangeEvent<{ value: string }>) => {
+    setLang(event.target.value);
+    console.log(event.target.value);
+  };
 
   return (
     <section className="page-wrapper">
@@ -94,17 +104,17 @@ const Code: FC<any> = () => {
           variant="filled"
           label={'Milvus operations'}
           disabled={false}
-          value={operationTypes[0].value}
-          onChange={() => {}}
+          value={operationType}
+          onChange={handleOperationChange}
         />
         <CustomSelector
-          options={sdks}
-          wrapperClass={classes.selector}
+          options={langs}
+          wrapperClass={`${classes.selector} ${classes.sdk}`}
           variant="filled"
           disabled={false}
-          label={'SDK'}
-          value={sdks[0].value}
-          onChange={() => {}}
+          label={'Language'}
+          value={lang}
+          onChange={handleLangChange}
         />
       </section>
       <section className={classes.cmContainer}>
