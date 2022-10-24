@@ -24,13 +24,13 @@ export const getPlaygroundStyles = makeStyles((theme: Theme) => ({
     },
   },
   editor: {
-    background: '#f7f7f7',
+    background: '#fff',
     minWidth: '500px',
     width: '50%',
-    border: '1px dotted #c2c2c2',
   },
   result: {
     background: '#fff',
     width: '50%',
+    color: '#eee'
   },
 }));

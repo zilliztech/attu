@@ -13,7 +13,7 @@ export const theme = EditorView.theme({
     fontFamily: "ApercuMonoPro Light",
     fontSize: "13.5px",
   },
-  ".cm-line": { padding: " 0 4px 0 15px" },
+  ".cm-line": { padding: " 0 4px 0 8px" },
   "&.cm-focused .cm-content": {
     color: "#484D52",
   },
@@ -97,7 +97,6 @@ export const highlights = syntaxHighlighting(
     { tag: tags.bracket, color: "#333" },
     { tag: tags.number, color: "#0c7e5e" },
     { tag: tags.string, color: "#085bd7" },
-    { tag: tags.function, color: "blue" },
     { tag: tags.lineComment, color: "#a2a2a2", fontStyle: "italic" },
     { tag: tags.comment, color: "#a2a2a2", fontStyle: "italic" },
   ])

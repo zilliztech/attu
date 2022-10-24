@@ -8,82 +8,71 @@ import {
 } from 'react';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { python } from '@codemirror/lang-python';
+import { javascript } from '@codemirror/lang-javascript';
+
 import { basicSetup, TabKeyBindings } from './modules/extensions';
 import { theme, baseTheme, highlights } from './modules/theme';
 import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import { getPlaygroundStyles } from './Styles';
-import { BUILD_INDEX } from './examples/buildIndex';
-import { CREATE_COLLECTION } from './examples/createCollection';
-import { INSERT_DATA } from './examples/insertData';
-import { LOAD_COLLECTION } from './examples/loadCollection';
-import { VECTOR_SEARCH } from './examples/vectorSearch';
-
-const operationTypes = [
-  { label: 'Create collection', value: 'CREATE_COLLECTION' },
-  { label: 'Build index', value: 'BUILD_INDEX' },
-  { label: 'Load collection', value: 'LOAD_COLLECTION' },
-  { label: 'Insert data', value: 'INSERT_DATA' },
-  { label: 'Vector search', value: 'VECTOR_SEARCH' },
-];
-const langs = [
-  { label: 'Python', value: 'python' },
-  { label: 'Nodejs', value: 'nodejs' },
-];
+import { OPERATION_TYPES, LANGS, EXAMPLES } from './examples/index';
 
 const Code: FC<any> = () => {
   useNavigationHook(ALL_ROUTER_TYPES.CODE);
   // init state
-  const [operationType, setOperationType] = useState(operationTypes[0].value);
-  const [lang, setLang] = useState<string>(langs[0].value);
+  const [operationType, setOperationType] = useState(OPERATION_TYPES[0].value);
+  const [lang, setLang] = useState<string>(LANGS[0].value);
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
-  const docMap = {
-    BUILD_INDEX,
-    CREATE_COLLECTION,
-    INSERT_DATA,
-    LOAD_COLLECTION,
-    VECTOR_SEARCH,
-  };
 
   // style
   const classes = getPlaygroundStyles();
   const RunIcon = icons.play;
   const CopyIcon = icons.copy;
+  let language = new Compartment(),
+    tabSize = new Compartment();
 
   // editor
   useEffect(() => {
-    console.log(1);
-    const doc: string = docMap[operationType][lang];
-    let state = EditorState.create({
+    // get code string
+    const doc: string = EXAMPLES[operationType][lang];
+    // create state
+    const state = EditorState.create({
       doc: doc,
-      extensions: [basicSetup, TabKeyBindings, theme, baseTheme, highlights],
+      extensions: [
+        basicSetup,
+        TabKeyBindings,
+        language.of(lang === 'python' ? python() : javascript()),
+        theme,
+        baseTheme,
+        highlights,
+      ],
     });
+    // if the edtior is already initialized, update state
     if (editor.current) {
       editor.current.setState(state);
       return;
     }
 
-    // init view
+    // create the edtior
     editor.current = new EditorView({
       state,
       parent: editorEl.current as Element,
     });
-  }, [operationType, lang, docMap]);
+  }, [operationType, lang, EXAMPLES]);
 
   // operation change
-  const handleOperationChange = (event: ChangeEvent<{ value: string }>) => {
-    setOperationType(event.target.value);
-    console.log(event.target.value);
+  const handleOperationChange = (event: ChangeEvent<{ value: unknown }>) => {
+    setOperationType(event.target.value as string);
   };
 
   // language change
-  const handleLangChange = (event: ChangeEvent<{ value: string }>) => {
-    setLang(event.target.value);
-    console.log(event.target.value);
+  const handleLangChange = (event: ChangeEvent<{ value: unknown }>) => {
+    setLang(event.target.value as string);
   };
 
   return (
@@ -99,7 +88,7 @@ const Code: FC<any> = () => {
           {/* {btnTrans('reset')} */}
         </CustomButton>
         <CustomSelector
-          options={operationTypes}
+          options={OPERATION_TYPES}
           wrapperClass={classes.selector}
           variant="filled"
           label={'Milvus operations'}
@@ -108,7 +97,7 @@ const Code: FC<any> = () => {
           onChange={handleOperationChange}
         />
         <CustomSelector
-          options={langs}
+          options={LANGS}
           wrapperClass={`${classes.selector} ${classes.sdk}`}
           variant="filled"
           disabled={false}
