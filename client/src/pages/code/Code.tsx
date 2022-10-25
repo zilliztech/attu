@@ -23,17 +23,17 @@ const Code: FC<any> = () => {
   const [lang, setLang] = useState<string>(LANGS[0].value);
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
-  const language = new Compartment();
-  const lineWrappingComp = new Compartment();
 
   // style
   const classes = getPlaygroundStyles();
   const RunIcon = icons.play;
 
-  // editor
+  // code editor
   useEffect(() => {
     // get code string
     const doc: string = EXAMPLES[operationType][lang];
+    const language = new Compartment();
+    const lineWrappingComp = new Compartment();
     // create state
     const state = EditorState.create({
       doc: doc,
@@ -58,7 +58,7 @@ const Code: FC<any> = () => {
       state,
       parent: editorEl.current as Element,
     });
-  }, [operationType, lang, EXAMPLES]);
+  }, [operationType, lang]);
 
   // operation change
   const handleOperationChange = (event: ChangeEvent<{ value: unknown }>) => {
@@ -75,14 +75,24 @@ const Code: FC<any> = () => {
     return editor.current.state.doc;
   };
 
+  // tooltip
+  const tooltip =
+    lang !== 'nodejs' ? `Running ${lang} in Attu is not supported yet` : '';
+
   return (
     <section className="page-wrapper">
       <section className={classes.toolbar}>
-        <CustomButton className="btn" onClick={() => {}}>
+        <CustomButton
+          className="btn"
+          onClick={() => {}}
+          disabled={lang !== 'nodejs'}
+          tooltip={tooltip}
+        >
           <RunIcon classes={{ root: 'icon' }} />
           {btnTrans('run')}
         </CustomButton>
         <CopyButton label={''} value={getCopiedValue} />
+
         <CustomSelector
           options={OPERATION_TYPES}
           wrapperClass={classes.selector}
@@ -94,7 +104,7 @@ const Code: FC<any> = () => {
         />
         <CustomSelector
           options={LANGS}
-          wrapperClass={`${classes.selector} ${classes.sdk}`}
+          wrapperClass={`${classes.selector} ${classes.lang}`}
           variant="filled"
           disabled={false}
           label={btnTrans('language')}
@@ -102,6 +112,7 @@ const Code: FC<any> = () => {
           onChange={handleLangChange}
         />
       </section>
+
       <section className={classes.cmContainer}>
         <div ref={editorEl} className={classes.editor}></div>
         <div className={classes.result}>result</div>

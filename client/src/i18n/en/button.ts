@@ -21,7 +21,7 @@ const btnTrans = {
   importSampleData: 'Import Sample data',
   loading: 'Loading...',
   importing: 'Importing...',
-  run: 'Run',
+  run: 'Run Code',
   language: 'Language',
   milvusOperations: 'Milvus operations',
 };

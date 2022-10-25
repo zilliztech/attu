@@ -5,7 +5,7 @@ export const getPlaygroundStyles = makeStyles((theme: Theme) => ({
     width: '320px',
     marginTop: theme.spacing(1),
   },
-  sdk: {
+  lang: {
     width: '150px',
   },
 
