@@ -1,8 +1,8 @@
-import { isString, IsString, MinLength } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CodeStringDto {
   @IsString({
-    each: true
+    each: true,
   })
   readonly code: string[];
 }
