@@ -14,15 +14,17 @@ import CustomSelector from '../../components/customSelector/CustomSelector';
 import CopyButton from '../../components/advancedSearch/CopyButton';
 import { getPlaygroundStyles } from './Styles';
 import { OPERATION_TYPES, LANGS, EXAMPLES } from './examples/index';
+import { SandboxHttp, LANGUAGE_TYPES } from '../../http/Sandbox';
 
 const Code: FC<any> = () => {
   useNavigationHook(ALL_ROUTER_TYPES.CODE);
   // init state
   const { t: btnTrans } = useTranslation('btn');
   const [operationType, setOperationType] = useState(OPERATION_TYPES[0].value);
-  const [lang, setLang] = useState<string>(LANGS[0].value);
+  const [lang, setLang] = useState<LANGUAGE_TYPES>(LANGS[0].value as LANGUAGE_TYPES);
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
+  const [excRes, setExcRes] = useState<string>('');
 
   // style
   const classes = getPlaygroundStyles();
@@ -67,7 +69,16 @@ const Code: FC<any> = () => {
 
   // language change
   const handleLangChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setLang(event.target.value as string);
+    setLang(event.target.value as LANGUAGE_TYPES);
+  };
+
+  // run code
+  const handleRunCode = async () => {
+    const code = editor.current.state.doc.text;
+    console.log(code);
+    const res = await SandboxHttp.runCode(lang, code);
+    console.log('res', res)
+    setExcRes(res.output);
   };
 
   // copied
@@ -84,8 +95,8 @@ const Code: FC<any> = () => {
       <section className={classes.toolbar}>
         <CustomButton
           className="btn"
-          onClick={() => {}}
-          disabled={lang !== 'nodejs'}
+          onClick={handleRunCode}
+          // disabled={lang !== 'nodejs'}
           tooltip={tooltip}
         >
           <RunIcon classes={{ root: 'icon' }} />
@@ -115,7 +126,7 @@ const Code: FC<any> = () => {
 
       <section className={classes.cmContainer}>
         <div ref={editorEl} className={classes.editor}></div>
-        <div className={classes.result}>result</div>
+        <div className={classes.result}>{excRes}</div>
       </section>
     </section>
   );

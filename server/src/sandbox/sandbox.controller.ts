@@ -17,9 +17,9 @@ export class SandboxController {
     this.router.get('/', this.getSandbox.bind(this));
 
     this.router.post(
-      '/',
+      '/python',
       dtoValidationMiddleware(CodeStringDto),
-      this.runNode.bind(this)
+      this.runPython.bind(this)
     );
 
     return this.router;
@@ -42,5 +42,17 @@ export class SandboxController {
     // } catch (error) {
     //   next(error);
     // }
+  }
+
+  async runPython(req: Request, res: Response, next: NextFunction) {
+    console.log('run python');
+    try {
+      console.log('req.body', req.body.code)
+      const { code } = req.body;
+      const result = await this.sandboxService.runPython(code);
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
   }
 }

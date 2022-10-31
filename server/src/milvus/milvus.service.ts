@@ -10,6 +10,7 @@ export class MilvusService {
   // Share with all instances, so activeAddress is static
   static activeAddress: string;
   static activeMilvusClient: MilvusClient;
+  address: string;
 
   get sdkInfo() {
     return MilvusClient.sdkInfo;
@@ -65,6 +66,7 @@ export class MilvusService {
     cache: LruCache<any, any>
   ) {
     const { address, username, password, ssl = false } = data;
+    this.address = address;
     // grpc only need address without http
     const milvusAddress = MilvusService.formatAddress(address);
     const hasAuth = username !== undefined && password !== undefined;

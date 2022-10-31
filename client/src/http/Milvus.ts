@@ -22,6 +22,7 @@ export class MilvusHttp extends BaseModel {
     password?: string;
     ssl?: boolean;
   }) {
+    console.log('data', data)
     return super.create({ path: this.CONNECT_URL, data });
   }
 
@@ -55,4 +56,6 @@ export class MilvusHttp extends BaseModel {
       data,
     });
   }
+
+  static excuteScript(lang: string, script: string) {}
 }

@@ -60,6 +60,7 @@ Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
 ```code
 docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
+docker run -p 8000:3000 -e MILVUS_URL=192.168.0.1:19530 zilliz/attu:dev
 ```
 
 ## ✨ Building and Running attu, and/or Contributing Code
