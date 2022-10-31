@@ -31,6 +31,6 @@ export const getPlaygroundStyles = makeStyles((theme: Theme) => ({
   result: {
     background: '#fff',
     width: '50%',
-    color: '#eee'
+    color: '#555'
   },
 }));

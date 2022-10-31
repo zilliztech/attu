@@ -8,7 +8,16 @@ import { throwErrorFromSDK } from '../utils/Error';
 import fs from 'fs';
 import { spawn } from 'child_process';
 
+const commandSuffixMap = {
+  python: 'py',
+  python3: 'py',
+  node: 'mjs',
+} as {
+  [key: string]: string;
+};
+
 export class SandboxService {
+  static codeDir = '/tmp';
   constructor(private milvusService: MilvusService) {
     this.milvusService = milvusService;
   }
@@ -44,11 +53,10 @@ export class SandboxService {
     return res;
   }
 
-  runPython(code: string[]) {
-    return new Promise(res => {
-      const [host, port] = this.milvusService.address.split(':');
+  async runPython(code: string[]) {
+    const [host, port] = MilvusService.activeAddress.split(':');
 
-      const connectCode = `
+    const connectPart = `
 from pymilvus import connections, Collection
 connections.connect(
 alias="default",
@@ -56,27 +64,43 @@ host='${host}',
 port='${port}'
 )
 `;
-      console.log(code);
-      const importLineIndex = code.findIndex(text => !text.includes('import'));
-      code.splice(importLineIndex, 0, connectCode);
+    code.unshift(connectPart);
+    return await this.runCode('python3', code.join('\n'));
+  }
+
+  async runNode(code: string[]) {
+    const connectPart = `
+import { MilvusClient } from "@zilliz/milvus2-sdk-node";
+const address = "${MilvusService.activeAddress}";
+const milvusClient = new MilvusClient(address);  
+`;
+    const importLineIndex = code.findIndex(line => !line.includes('import'));
+    code.splice(importLineIndex, 0, connectPart)
+    return await this.runCode('node', code.join('\n'));
+  }
+
+  runCode(command: string, codeText: string) {
+    return new Promise(resolve => {
       const randomString = () => Math.random().toString(36).slice(-8);
       const foo = randomString();
-      const filePath = `/tmp/attu_sandbox_${foo}.py`;
-      fs.writeFileSync(filePath, code.join('\n'));
-      const python = spawn('python3', [filePath]);
+      const filePath = `${SandboxService.codeDir}/attu_sandbox_${command}_${foo}.${commandSuffixMap[command]}`;
+      fs.writeFileSync(filePath, codeText);
 
-      let output = 'default';
-      python.stdout.on('data', data => {
-        output = data.toString();
+      const shell = spawn(command, [filePath]);
+      let output = '';
+      shell.stdout.on('data', data => {
+        output += data.toString();
       });
-      python.stderr.on('data', data => {
-        output = data.toString();
-      })
-      python.on('exit', _code => {
-        console.log('exit', _code);
+      shell.stderr.on('data', data => {
+        output += data.toString();
+      });
+      shell.on('exit', code => {
+        const exitOutput = `==> exit with code ${code}`;
+        console.log(exitOutput);
         fs.unlinkSync(filePath);
-        res({
+        resolve({
           output,
+          code,
         });
       });
     });

@@ -75,9 +75,8 @@ const Code: FC<any> = () => {
   // run code
   const handleRunCode = async () => {
     const code = editor.current.state.doc.text;
-    console.log(code);
     const res = await SandboxHttp.runCode(lang, code);
-    console.log('res', res)
+    console.log('====> run code output', res)
     setExcRes(res.output);
   };
 
