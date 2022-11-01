@@ -95,8 +95,6 @@ const milvusClient = new MilvusClient(address);
         output += data.toString();
       });
       shell.on('exit', code => {
-        const exitOutput = `==> exit with code ${code}`;
-        console.log(exitOutput);
         fs.unlinkSync(filePath);
         resolve({
           output,

@@ -14,14 +14,16 @@ import CustomSelector from '../../components/customSelector/CustomSelector';
 import CopyButton from '../../components/advancedSearch/CopyButton';
 import { getPlaygroundStyles } from './Styles';
 import { OPERATION_TYPES, LANGS, EXAMPLES } from './examples/index';
-import { SandboxHttp, LANGUAGE_TYPES } from '../../http/Sandbox';
+import { SandboxHttp, LANGUAGE_ENUM } from '../../http/Sandbox';
 
 const Code: FC<any> = () => {
   useNavigationHook(ALL_ROUTER_TYPES.CODE);
   // init state
   const { t: btnTrans } = useTranslation('btn');
   const [operationType, setOperationType] = useState(OPERATION_TYPES[0].value);
-  const [lang, setLang] = useState<LANGUAGE_TYPES>(LANGS[0].value as LANGUAGE_TYPES);
+  const [lang, setLang] = useState<LANGUAGE_ENUM>(
+    LANGS[0].value as LANGUAGE_ENUM
+  );
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
   const [excRes, setExcRes] = useState<string>('');
@@ -43,7 +45,7 @@ const Code: FC<any> = () => {
         lineWrappingComp.of(EditorView.lineWrapping),
         basicSetup,
         TabKeyBindings,
-        language.of(lang === 'python' ? python() : javascript()),
+        language.of(lang === LANGUAGE_ENUM.PYTHON ? python() : javascript()),
         theme,
         baseTheme,
         highlights,
@@ -69,14 +71,13 @@ const Code: FC<any> = () => {
 
   // language change
   const handleLangChange = (event: ChangeEvent<{ value: unknown }>) => {
-    setLang(event.target.value as LANGUAGE_TYPES);
+    setLang(event.target.value as LANGUAGE_ENUM);
   };
 
   // run code
   const handleRunCode = async () => {
     const code = editor.current.state.doc.text;
     const res = await SandboxHttp.runCode(lang, code);
-    console.log('====> run code output', res)
     setExcRes(res.output);
   };
 
@@ -95,7 +96,6 @@ const Code: FC<any> = () => {
         <CustomButton
           className="btn"
           onClick={handleRunCode}
-          // disabled={lang !== 'nodejs'}
           tooltip={tooltip}
         >
           <RunIcon classes={{ root: 'icon' }} />

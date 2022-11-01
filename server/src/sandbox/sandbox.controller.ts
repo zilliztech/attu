@@ -41,7 +41,6 @@ export class SandboxController {
   }
 
   async runNode(req: Request, res: Response, next: NextFunction) {
-    console.log('run node');
     try {
       const { code } = req.body;
       const result = await this.sandboxService.runNode(code);
@@ -52,7 +51,6 @@ export class SandboxController {
   }
 
   async runPython(req: Request, res: Response, next: NextFunction) {
-    console.log('run python');
     try {
       const { code } = req.body;
       const result = await this.sandboxService.runPython(code);
