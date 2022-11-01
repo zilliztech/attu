@@ -22,7 +22,7 @@ const Code: FC<any> = () => {
   const { t: btnTrans } = useTranslation('btn');
   const [operationType, setOperationType] = useState(OPERATION_TYPES[0].value);
   const [lang, setLang] = useState<LANGUAGE_ENUM>(
-    LANGS[0].value as LANGUAGE_ENUM
+    LANGS[0].value
   );
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<any>(null);
