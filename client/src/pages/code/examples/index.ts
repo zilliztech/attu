@@ -1,3 +1,4 @@
+import { LANGUAGE_ENUM } from '../../../http/Sandbox';
 import { BUILD_INDEX } from './buildIndex';
 import { CREATE_COLLECTION } from './createCollection';
 import { INSERT_DATA } from './insertData';
@@ -11,9 +12,9 @@ export const OPERATION_TYPES: { label: string; value: string }[] = [
   { label: 'Insert data', value: 'INSERT_DATA' },
   { label: 'Vector search', value: 'VECTOR_SEARCH' },
 ];
-export const LANGS: { label: string; value: string }[] = [
-  { label: 'Python', value: 'python' },
-  { label: 'Nodejs', value: 'nodejs' },
+export const LANGS: { label: string; value: LANGUAGE_ENUM }[] = [
+  { label: 'Python', value: LANGUAGE_ENUM.PYTHON },
+  { label: 'Nodejs', value: LANGUAGE_ENUM.NODEJS },
 ];
 
 export const EXAMPLES: { [key: string]: { [key: string]: string } } = {
