@@ -60,7 +60,7 @@
   "scripts": {
     "start": "react-app-rewired start -FAST_REFRESH=true",
     "start:plugin": "REACT_APP_PLUGIN_DEV=true react-app-rewired start -FAST_REFRESH=true",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired --openssl-legacy-provider build",
     "test": "react-app-rewired test",
     "test:watch": "react-app-rewired test --watch",
     "test:cov": "react-app-rewired test --watchAll=false --coverage",
