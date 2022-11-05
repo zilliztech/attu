@@ -3,18 +3,19 @@ import { act } from 'react-dom/test-utils';
 import { fireEvent } from '@testing-library/react';
 import CustomGroupedSelect from '../../customSelector/CustomGroupedSelect';
 import { GroupOption } from '../../customSelector/Types';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/FormControl', () => {
-  return props => {
+vi.mock('@material-ui/core/FormControl', () => {
+  return (props: any) => {
     const { children } = props;
     return <div className="form-control">{children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/Select', () => {
-  return props => {
+vi.mock('@material-ui/core/Select', () => {
+  return (props: any) => {
     const { children, onChange } = props;
     return (
       <select className="group-select" onChange={onChange}>
@@ -24,15 +25,15 @@ jest.mock('@material-ui/core/Select', () => {
   };
 });
 
-jest.mock('@material-ui/core/ListSubheader', () => {
-  return props => {
+vi.mock('@material-ui/core/ListSubheader', () => {
+  return (props: any) => {
     const { children } = props;
     return <option className="group-header">{children}</option>;
   };
 });
 
-jest.mock('@material-ui/core/MenuItem', () => {
-  return props => {
+vi.mock('@material-ui/core/MenuItem', () => {
+  return (props: any) => {
     const { children, value } = props;
     return (
       <option className="group-item" value={value}>
@@ -91,7 +92,7 @@ describe('Test CustomGroupedSelect', () => {
         ],
       },
     ];
-    const handleChange = jest.fn();
+    const handleChange = vi.fn();
 
     act(() => {
       render(

@@ -2,10 +2,11 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import AttuGrid from '../../grid/Grid';
 import { ToolBarConfig } from '../../grid/Types';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('react-i18next', () => {
+vi.mock('react-i18next', () => {
   return {
     useTranslation: () => ({
       t: () => ({
@@ -15,19 +16,19 @@ jest.mock('react-i18next', () => {
   };
 });
 
-jest.mock('../../grid/Table', () => {
+vi.mock('../../grid/Table', () => {
   return () => {
     return <div id="table">{ }</div>;
   };
 });
 
-jest.mock('../../grid/ToolBar', () => {
+vi.mock('../../grid/ToolBar', () => {
   return () => {
     return <div id="tool-bar"></div>;
   };
 });
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', () => {
   return {
     useHistory: () => {
       return {

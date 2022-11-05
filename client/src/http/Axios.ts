@@ -2,12 +2,12 @@ import axios from 'axios';
 import { MILVUS_ADDRESS } from '../consts/Localstorage';
 // import { SESSION } from '../consts/Localstorage';
 
-// console.log(process.env.NODE_ENV, 'api:', process.env.REACT_APP_BASE_URL);
+// console.log(import.meta.env.NODE_ENV, 'api:', import.meta.env.VITE_BASE_URL);
 // console.log('docker env', (window as any)._env_);
 const isElectron =
   (window as any)._env_ && (window as any)._env_.IS_ELECTRON === 'yes';
 export const url =
-  process.env.NODE_ENV === 'development' || isElectron
+  import.meta.env.MODE === 'development' || isElectron
     ? (window as any)._env_ && (window as any)._env_.HOST_URL
     : '';
 

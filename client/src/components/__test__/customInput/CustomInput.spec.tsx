@@ -7,28 +7,29 @@ import {
   IIconConfig,
   ITextfieldConfig,
 } from '../../customInput/Types';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/styles/makeStyles', () => {
+vi.mock('@material-ui/core/styles/makeStyles', () => {
   return () => () => ({});
 });
 
-jest.mock('@material-ui/core/FormControl', () => {
-  return props => {
+vi.mock('@material-ui/core/FormControl', () => {
+  return (props: any) => {
     const { children } = props;
     return <div className="form-control">{children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/InputLabel', () => {
-  return props => {
+vi.mock('@material-ui/core/InputLabel', () => {
+  return (props: any) => {
     return <div className="label">{props.children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/Input', () => {
-  return props => {
+vi.mock('@material-ui/core/Input', () => {
+  return (props: any) => {
     const { type, onBlur, endAdornment } = props;
     return (
       <>
@@ -40,8 +41,8 @@ jest.mock('@material-ui/core/Input', () => {
   };
 });
 
-jest.mock('@material-ui/core/TextField', () => {
-  return props => {
+vi.mock('@material-ui/core/TextField', () => {
+  return (props: any) => {
     const { helperText, onBlur, onChange, label, className } = props;
     return (
       <div className="text-field">
@@ -59,8 +60,8 @@ jest.mock('@material-ui/core/TextField', () => {
   };
 });
 
-jest.mock('@material-ui/core/Grid', () => {
-  return props => {
+vi.mock('@material-ui/core/Grid', () => {
+  return (props: any) => {
     const { children } = props;
     return <div className="grid">{children}</div>;
   };
@@ -79,7 +80,7 @@ describe('Test CustomInput', () => {
   });
 
   test('test text type input', () => {
-    const handleBlur = jest.fn();
+    const handleBlur = vi.fn();
 
     const mockTextConfig: ITextfieldConfig = {
       variant: 'standard',
@@ -115,7 +116,7 @@ describe('Test CustomInput', () => {
   });
 
   test('test icon type input', () => {
-    const handleChange = jest.fn();
+    const handleChange = vi.fn();
 
     const mockIconConfig: IIconConfig = {
       icon: <div className="icon"></div>,
@@ -149,7 +150,7 @@ describe('Test CustomInput', () => {
   });
 
   test('test adornmentConfig type input', () => {
-    const mockBlurFunc = jest.fn();
+    const mockBlurFunc = vi.fn();
 
     const mockAdornmentConfig: IAdornmentConfig = {
       label: 'adornment',

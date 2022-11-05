@@ -2,15 +2,16 @@ import { ReactNode } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import Status from '../../status/Status';
-import { StatusEnum } from '../../status/Types';
+import { LOADING_STATE } from '../../../consts/Milvus';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/styles/makeStyles', () => {
+vi.mock('@material-ui/core/styles/makeStyles', () => {
   return () => () => ({});
 });
 
-jest.mock('react-i18next', () => {
+vi.mock('react-i18next', () => {
   return {
     useTranslation: () => {
       return {
@@ -26,7 +27,7 @@ jest.mock('react-i18next', () => {
   };
 });
 
-jest.mock('@material-ui/core/Typography', () => {
+vi.mock('@material-ui/core/Typography', () => {
   return (props: { children: ReactNode }) => {
     return <div className="label">{props.children}</div>;
   };
@@ -46,13 +47,13 @@ describe('Test Status', () => {
 
   it('Test props status', () => {
     act(() => {
-      render(<Status status={StatusEnum.loaded} />, container);
+      render(<Status status={LOADING_STATE.LOADED} />, container);
     });
 
     expect(container.querySelector('.label').textContent).toEqual('loaded');
 
     act(() => {
-      render(<Status status={StatusEnum.unloaded} />, container);
+      render(<Status status={LOADING_STATE.UNLOADED} />, container);
     });
 
     expect(container.querySelector('.label').textContent).toEqual('unloaded');

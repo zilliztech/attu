@@ -2,6 +2,7 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import Table from '../../grid/Table';
 import { ColDefinitionsType } from '../../grid/Types';
+import { vi } from 'vitest';
 
 let container: any = null;
 
@@ -31,11 +32,11 @@ const colDefinitions: ColDefinitionsType[] = [
   },
 ];
 
-jest.mock('@material-ui/core/styles/makeStyles', () => {
+vi.mock('@material-ui/core/styles/makeStyles', () => {
   return () => () => ({});
 });
 
-jest.mock('../../grid/LoadingTable.tsx', () => {
+vi.mock('../../grid/LoadingTable.tsx', () => {
   return () => {
     return <div className="loading"></div>;
   };
@@ -54,9 +55,9 @@ describe('Test Table', () => {
         name: 'czz',
       },
     ];
-    onSelected = jest.fn();
-    isSelected = jest.fn().mockImplementation(() => true);
-    onSelectedAll = jest.fn();
+    onSelected = vi.fn();
+    isSelected = vi.fn().mockImplementation(() => true);
+    onSelectedAll = vi.fn();
 
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -72,6 +73,7 @@ describe('Test Table', () => {
     act(() => {
       render(
         <Table
+          editHeads={[]}
           selected={[]}
           onSelected={onSelected}
           isSelected={isSelected}
@@ -104,6 +106,7 @@ describe('Test Table', () => {
     act(() => {
       render(
         <Table
+          editHeads={[]}
           selected={[1]}
           onSelected={onSelected}
           isSelected={isSelected}
@@ -119,10 +122,11 @@ describe('Test Table', () => {
     expect(container.querySelectorAll('input')[1].checked).toBeTruthy();
     expect(container.querySelectorAll('input')[0].checked).toBeTruthy();
 
-    isSelected = jest.fn().mockImplementation(() => false);
+    isSelected = vi.fn().mockImplementation(() => false);
     act(() => {
       render(
         <Table
+          editHeads={[]}
           selected={[]}
           onSelected={onSelected}
           isSelected={isSelected}
@@ -145,6 +149,7 @@ describe('Test Table', () => {
     act(() => {
       render(
         <Table
+          editHeads={[]}
           selected={[]}
           onSelected={onSelected}
           isSelected={isSelected}

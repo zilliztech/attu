@@ -1,11 +1,12 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import CustomButton from '../../customButton/CustomButton';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/Button', () => {
-  return props => {
+vi.mock('@material-ui/core/Button', () => {
+  return (props: any) => {
     const { variant, children } = props;
     return (
       <>

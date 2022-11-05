@@ -2,34 +2,35 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import Toolbar from '../../grid/ToolBar';
 import { ToolBarConfig } from '../../grid/Types';
+import { vi } from 'vitest';
 
-jest.mock('@material-ui/icons/Search', () => {
+vi.mock('@material-ui/icons/Search', () => {
   return () => {
     return <div id="search">search</div>;
   };
 });
 
-jest.mock('../../customButton/CustomButton', () => {
+vi.mock('../../customButton/CustomButton', () => {
   return () => {
     return <div className="button">button</div>;
   };
 });
 
-jest.mock('../../customInput/SearchInput', () => {
-  return props => {
+vi.mock('../../customInput/SearchInput', () => {
+  return (props: any) => {
     return <div>{props.children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/TextField', () => {
-  return props => {
+vi.mock('@material-ui/core/TextField', () => {
+  return (props: any) => {
     return <input {...props} className="input" />;
   };
 });
 
 let container: any = null;
 
-const cb = jest.fn().mockImplementation(resolve => resolve('a'));
+const cb = vi.fn().mockImplementation(resolve => resolve('a'));
 
 let toolbarConfig: ToolBarConfig[] = [];
 

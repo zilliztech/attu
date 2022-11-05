@@ -3,18 +3,19 @@ import { act } from 'react-dom/test-utils';
 import Layout from '../../layout/Layout';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { theme } from '../../../styles/theme';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: any) => key,
   }),
 }));
 
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   useHistory: () => ({
-    push: jest.fn(),
+    push: vi.fn(),
   }),
   useLocation: () => ({
     hash: '',
@@ -24,7 +25,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock('../../layout/GlobalEffect', () => {
+vi.mock('../../layout/GlobalEffect', () => {
   return () => {
     return <div id="global">{}</div>;
   };

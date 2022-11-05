@@ -2,21 +2,22 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import TableHead from '../../grid/TableHead';
 import { fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/TableHead', () => {
+vi.mock('@material-ui/core/TableHead', () => {
   return (props: any) => {
     return <div id="table-head">{props.children}</div>;
   };
 });
-jest.mock('@material-ui/core/TableRow', () => {
+vi.mock('@material-ui/core/TableRow', () => {
   return (props: any) => {
     return <div id="table-row">{props.children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/TableCell', () => {
+vi.mock('@material-ui/core/TableCell', () => {
   return (props: any) => {
     return <div className="table-cell">{props.children}</div>;
   };
@@ -43,7 +44,7 @@ describe('Test Table Head', () => {
           order={'desc'}
           orderBy={'id'}
           onSelectAllClick={() => {}}
-          onRequestSort={() => {}}
+          handleSort={() => {}}
           rowCount={0}
           openCheckBox={false}
         />,
@@ -54,7 +55,7 @@ describe('Test Table Head', () => {
   });
 
   it('Test checkbox open', () => {
-    const selectAllSpy = jest.fn();
+    const selectAllSpy = vi.fn();
     act(() => {
       render(
         <TableHead
@@ -63,7 +64,7 @@ describe('Test Table Head', () => {
           order={'desc'}
           orderBy={'id'}
           onSelectAllClick={selectAllSpy}
-          onRequestSort={() => {}}
+          handleSort={() => {}}
           rowCount={10}
           openCheckBox={true}
         />,
@@ -81,7 +82,7 @@ describe('Test Table Head', () => {
   });
 
   it('Test header cells', () => {
-    const onRequestSortSpy = jest.fn();
+    const onRequestSortSpy = vi.fn();
     const colDefinitions = [
       {
         id: 'id',
@@ -104,7 +105,7 @@ describe('Test Table Head', () => {
           order={'desc'}
           orderBy={'id'}
           onSelectAllClick={() => {}}
-          onRequestSort={onRequestSortSpy}
+          handleSort={onRequestSortSpy}
           rowCount={10}
           openCheckBox={false}
         />,

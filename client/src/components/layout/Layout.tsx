@@ -10,9 +10,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { rootContext } from '../../context/Root';
 import { IconsType } from '../icons/Types';
-import loadable from '@loadable/component';
-
-const PLUGIN_DEV = process.env?.REACT_APP_PLUGIN_DEV;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,14 +77,14 @@ const Layout = (props: any) => {
       onClick: () => history.push('/'),
     },
     {
-      icon: icons.navPerson,
-      label: navTrans('user'),
-      onClick: () => history.push('/users'),
-    },
-    {
       icon: icons.navCollection,
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
+    },
+    {
+      icon: icons.navPerson,
+      label: navTrans('user'),
+      onClick: () => history.push('/users'),
     },
     // {
     //   icon: icons.navSearch,
@@ -98,10 +95,11 @@ const Layout = (props: any) => {
     // },
   ];
 
-  function importAll(r: any, outOfRoot = false) {
-    r.keys().forEach((key: any) => {
-      const content = r(key);
+  function importAll(r: any) {
+    Object.keys(r).forEach((key: any) => {
+      const content = r[key];
       const pathName = content.client?.path;
+
       if (!pathName) return;
       const result: NavMenuItem = {
         icon: icons.navOverview,
@@ -109,27 +107,22 @@ const Layout = (props: any) => {
       };
       result.onClick = () => history.push(`/${pathName}`);
       const iconName: IconsType = content.client?.iconName;
-      const iconEntry = content.client?.icon;
-      const dirName = key.split('/config.json').shift().split('/')[1];
-      // const fileEntry = content.client?.entry;
       if (iconName) {
         result.icon = icons[iconName];
-      } else if (iconEntry) {
-        const customIcon = outOfRoot
-          ? loadable(() => import(`all_plugins/${dirName}/client/${iconEntry}`))
-          : loadable(() => import(`../../plugins/${dirName}/${iconEntry}`));
-        result.icon = customIcon;
       }
       content.client?.iconActiveClass &&
         (result.iconActiveClass = content.client?.iconActiveClass);
       content.client?.iconNormalClass &&
         (result.iconNormalClass = content.client?.iconNormalClass);
+
       menuItems.push(result);
     });
   }
-  importAll(require.context('../../plugins', true, /config\.json$/));
-  PLUGIN_DEV &&
-    importAll(require.context('all_plugins/', true, /config\.json$/), true);
+  const pluginConfigs = import.meta.glob(`../../plugins/**/config.json`, {
+    eager: true,
+  });
+
+  importAll(pluginConfigs);
 
   return (
     <div className={classes.root}>

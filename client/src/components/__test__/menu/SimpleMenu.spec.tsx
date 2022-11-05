@@ -1,14 +1,15 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import SimpleMenu from '../../menu/SimpleMenu';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/styles/makeStyles', () => {
+vi.mock('@material-ui/core/styles/makeStyles', () => {
   return () => () => ({});
 });
 
-jest.mock('@material-ui/core/MenuItem', () => {
+vi.mock('@material-ui/core/MenuItem', () => {
   return () => {
     return <div className="menu-item"></div>;
   };

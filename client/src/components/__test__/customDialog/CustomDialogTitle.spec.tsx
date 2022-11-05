@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import CustomDialogTitle from '../../customDialog/CustomDialogTitle';
+import { vi } from 'vitest';
 
 describe('test custom dialog title component', () => {
   it('renders default state', () => {
@@ -10,7 +11,7 @@ describe('test custom dialog title component', () => {
   });
 
   it('checks clear event', () => {
-    const mockClearFn = jest.fn();
+    const mockClearFn = vi.fn();
     const container = render(
       <CustomDialogTitle onClose={mockClearFn}>title</CustomDialogTitle>
     );

@@ -3,36 +3,45 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { DialogType } from '../../../context/Types';
 import CustomDialog from '../../customDialog/CustomDialog';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: any) => key,
   }),
 }));
 
-jest.mock('@material-ui/core/Dialog', () => {
-  return props => {
-    return <div id="dialog-wrapper">{props.children}</div>;
+vi.mock('@material-ui/core/Dialog', () => {
+  return {
+    default: (props: any) => {
+      return <div id="dialog-wrapper">{props.children}</div>;
+    },
   };
 });
 
-jest.mock('@material-ui/core/DialogTitle', () => {
-  return props => {
-    return <div id="dialog-title">{props.children}</div>;
+vi.mock('@material-ui/core/DialogTitle', () => {
+  return {
+    default: (props: any) => {
+      return <div id="dialog-title">{props.children}</div>;
+    },
   };
 });
 
-jest.mock('@material-ui/core/DialogContent', () => {
-  return props => {
-    return <div id="dialog-content">{props.children}</div>;
+vi.mock('@material-ui/core/DialogContent', () => {
+  return {
+    default: (props: any) => {
+      return <div id="dialog-content">{props.children}</div>;
+    },
   };
 });
 
-jest.mock('@material-ui/core/DialogActions', () => {
-  return props => {
-    return <div id="dialog-actions">{props.children}</div>;
+vi.mock('@material-ui/core/DialogActions', () => {
+  return {
+    default: (props: any) => {
+      return <div id="dialog-actions">{props.children}</div>;
+    },
   };
 });
 
@@ -49,8 +58,8 @@ describe('Test Custom Dialog', () => {
   });
 
   it('Test notice dialog ', () => {
-    const handleClose = jest.fn();
-    const handleConfirm = jest.fn();
+    const handleClose = vi.fn();
+    const handleConfirm = vi.fn();
 
     const params: DialogType = {
       open: true,
@@ -76,13 +85,15 @@ describe('Test Custom Dialog', () => {
       '123'
     );
 
-    container.querySelectorAll('button').forEach(v => fireEvent.click(v));
+    container
+      .querySelectorAll('button')
+      .forEach((v: any) => fireEvent.click(v));
     expect(handleClose).toBeCalledTimes(1);
     expect(handleConfirm).toBeCalledTimes(1);
   });
 
   it('Test Custom dialog ', () => {
-    const handleClose = jest.fn();
+    const handleClose = vi.fn();
 
     const params: DialogType = {
       open: true,
