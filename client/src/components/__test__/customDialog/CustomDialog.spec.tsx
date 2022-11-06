@@ -1,11 +1,7 @@
-import { fireEvent } from '@testing-library/react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { screen, fireEvent, render } from '@testing-library/react';
 import { DialogType } from '../../../context/Types';
 import CustomDialog from '../../customDialog/CustomDialog';
 import { vi } from 'vitest';
-
-let container: any = null;
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -46,17 +42,6 @@ vi.mock('@material-ui/core/DialogActions', () => {
 });
 
 describe('Test Custom Dialog', () => {
-  beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-  });
-
-  afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-  });
-
   it('Test notice dialog ', () => {
     const handleClose = vi.fn();
     const handleConfirm = vi.fn();
@@ -70,24 +55,20 @@ describe('Test Custom Dialog', () => {
         component: <div>123</div>,
       },
     };
-    act(() => {
-      render(
-        <CustomDialog {...params} onClose={handleClose}></CustomDialog>,
-        container
-      );
-    });
 
-    expect(container.querySelector('#dialog-title').textContent).toEqual(
+    const res = render(
+      <CustomDialog {...params} onClose={handleClose}></CustomDialog>
+    );
+
+    expect(res.getByText(params.params.title!).textContent).toEqual(
       params.params.title
     );
 
-    expect(container.querySelector('#dialog-content').textContent).toEqual(
-      '123'
-    );
+    expect(res.getByText('123').textContent).toEqual('123');
 
-    container
-      .querySelectorAll('button')
-      .forEach((v: any) => fireEvent.click(v));
+    fireEvent.click(screen.getByText('cancel'));
+    fireEvent.click(screen.getByText('confirm'));
+
     expect(handleClose).toBeCalledTimes(1);
     expect(handleConfirm).toBeCalledTimes(1);
   });
@@ -102,15 +83,11 @@ describe('Test Custom Dialog', () => {
         component: <div>custom</div>,
       },
     };
-    act(() => {
-      render(
-        <CustomDialog {...params} onClose={handleClose}></CustomDialog>,
-        container
-      );
-    });
 
-    expect(container.querySelector('#dialog-wrapper').textContent).toEqual(
-      'custom'
+    const res = render(
+      <CustomDialog {...params} onClose={handleClose}></CustomDialog>
     );
+
+    expect(res.getByText('custom').textContent).toEqual('custom');
   });
 });
