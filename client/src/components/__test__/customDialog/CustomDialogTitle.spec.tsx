@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import CustomDialogTitle from '../../customDialog/CustomDialogTitle';
 import { vi } from 'vitest';
 
