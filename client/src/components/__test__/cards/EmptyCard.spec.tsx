@@ -11,7 +11,6 @@ describe('test empty card component', () => {
       )
     );
 
-    screen.debug();
     expect(screen.queryByText('icon')!.className).toEqual('icon');
     expect(screen.queryByText(emptyText)).not.toBeNull();
   });
