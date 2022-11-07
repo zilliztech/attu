@@ -86,6 +86,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 variant={c.btnVariant || 'contained'}
                 tooltip={tooltip}
                 className={classes.btn}
+                role="button"
               >
                 <Typography variant="button">{c.label}</Typography>
               </CustomButton>
@@ -97,6 +98,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 onClick={c.onClick}
                 tooltip={tooltip}
                 disabled={disabled}
+                role="button"
               >
                 {Icon}
               </CustomIconButton>
