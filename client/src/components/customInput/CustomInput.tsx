@@ -102,7 +102,6 @@ const getAdornmentInput = (
     <FormControl>
       <InputLabel htmlFor="standard-adornment-password">{label}</InputLabel>
       <Input
-        role="textbox"
         classes={{ root: `${inputClass || {}}` }}
         type={type}
         onBlur={e => {
@@ -120,7 +119,7 @@ const getAdornmentInput = (
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton onClick={onIconClick || (() => {})} edge="end">
+            <IconButton onClick={onIconClick || (() => {})} edge="end" role="icon-button">
               {isPasswordType
                 ? showPassword
                   ? Icons.visible({ classes: { root: classes.icon } })
@@ -130,6 +129,7 @@ const getAdornmentInput = (
           </InputAdornment>
         }
         inputProps={{
+          'role': 'textbox',
           'data-cy': key,
         }}
       />

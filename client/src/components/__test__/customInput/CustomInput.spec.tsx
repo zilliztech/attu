@@ -1,19 +1,12 @@
 import { fireEvent, render } from '@testing-library/react';
 import CustomInput from '../../customInput/CustomInput';
+import provideTheme from '../utils/provideTheme';
 import {
   IAdornmentConfig,
   IIconConfig,
   ITextfieldConfig,
 } from '../../customInput/Types';
 import { vi } from 'vitest';
-
-vi.mock('@material-ui/core/styles/makeStyles', () => {
-  return {
-    default: (theme: any) => {
-      return { icon: { color: '' } };
-    },
-  };
-});
 
 vi.mock('@material-ui/core/FormControl', () => {
   return (props: any) => {
@@ -142,18 +135,19 @@ describe('Test CustomInput', () => {
     };
 
     const res = render(
-      <CustomInput
-        type="adornment"
-        adornmentConfig={mockAdornmentConfig}
-        checkValid={() => true}
-      />
+      provideTheme(
+        <CustomInput
+          type="adornment"
+          adornmentConfig={mockAdornmentConfig}
+          checkValid={() => true}
+        />
+      )
     );
 
     expect(res.getByText('adornment').textContent).toBe('adornment');
-    expect(res.getByText('.type').textContent).toBe('text');
-    expect(res.getAllByText('.adornment-icon').length).toBe(1);
+    expect(res.getAllByRole('icon-button').length).toBe(1);
 
-    const input = res.getByText('.input');
+    const input = res.getByRole('textbox');
     input.focus();
     input.blur();
     expect(mockBlurFunc).toHaveBeenCalledTimes(1);
