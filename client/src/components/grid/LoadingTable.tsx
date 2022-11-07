@@ -29,7 +29,7 @@ const LoadingTable = (props: { wrapperClass?: string; count: number }) => {
   return (
     <div className={`${classes.wrapper} ${wrapperClass}`}>
       {rows.map((row, index) => (
-        <div key={index} className={classes.tr}>
+        <div key={index} className={classes.tr} role="skeleton">
           <Skeleton height={16} classes={{ root: classes.skeleton }} />
           <Skeleton height={16} classes={{ root: classes.skeleton }} />
         </div>
