@@ -34,6 +34,7 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.1.0",
     "@testing-library/react-hooks": "^7.0.1",
     "@testing-library/user-event": "^12.1.10",
