@@ -177,7 +177,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     >
       {title && (
         <Grid item xs={12} className={classes.tableTitle}>
-          <Breadcrumbs separator="›" aria-label="breadcrumb">
+          <Breadcrumbs separator="›" aria-label="breadcrumb" role="breadcrumb">
             {title.map(
               (v: any, i: number) =>
                 v && (

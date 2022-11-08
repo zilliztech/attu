@@ -1,24 +1,24 @@
-import { UserHttp } from '../../http/User';
 import React, { useContext, useEffect, useState } from 'react';
-import AttuGrid from 'insight_src/components/grid/Grid';
+import { makeStyles, Theme } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { UserHttp } from '../../http/User';
+import AttuGrid from '../../components/grid/Grid';
 import {
   ColDefinitionsType,
   ToolBarConfig,
-} from 'insight_src/components/grid/Types';
-import { makeStyles, Theme } from '@material-ui/core';
+} from '../../components/grid/Types';
 import {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
   UserData,
 } from './Types';
-import { rootContext } from 'insight_src/context/Root';
+import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import { rootContext } from '../../context/Root';
+import { useNavigationHook } from '../../hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CreateUser from './Create';
-import { useTranslation } from 'react-i18next';
-import DeleteTemplate from 'insight_src/components/customDialog/DeleteDialogTemplate';
 import UpdateUser from './Update';
-import { useNavigationHook } from 'insight_src/hooks/Navigation';
-import { ALL_ROUTER_TYPES } from 'insight_src/router/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   actionButton: {

@@ -2,7 +2,7 @@ import {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
-} from 'insight_src/pages/user/Types';
+} from '../pages/user/Types';
 import BaseModel from './BaseModel';
 
 export class UserHttp extends BaseModel {

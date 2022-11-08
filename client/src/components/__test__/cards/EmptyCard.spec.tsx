@@ -1,20 +1,17 @@
-import { render, screen, RenderResult } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import EmptyCard from '../../cards/EmptyCard';
 import provideTheme from '../utils/provideTheme';
 
-let body: RenderResult;
-
 describe('test empty card component', () => {
-  beforeEach(() => {
-    body = render(
+  it('renders default state', () => {
+    const emptyText = Math.random().toString();
+    render(
       provideTheme(
-        <EmptyCard icon={<span className="icon">icon</span>} text="empty" />
+        <EmptyCard icon={<span className="icon">icon</span>} text={emptyText} />
       )
     );
-  });
 
-  it('renders default state', () => {
-    expect(screen.getByText('icon')).toHaveClass('icon');
-    expect(screen.getByText('empty')).toBeInTheDocument();
+    expect(screen.queryByText('icon')!.className).toEqual('icon');
+    expect(screen.queryByText(emptyText)).not.toBeNull();
   });
 });

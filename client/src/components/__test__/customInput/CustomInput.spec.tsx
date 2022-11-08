@@ -1,34 +1,28 @@
-import { fireEvent } from '@testing-library/react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { fireEvent, render } from '@testing-library/react';
 import CustomInput from '../../customInput/CustomInput';
+import provideTheme from '../utils/provideTheme';
 import {
   IAdornmentConfig,
   IIconConfig,
   ITextfieldConfig,
 } from '../../customInput/Types';
+import { vi } from 'vitest';
 
-let container: any = null;
-
-jest.mock('@material-ui/core/styles/makeStyles', () => {
-  return () => () => ({});
-});
-
-jest.mock('@material-ui/core/FormControl', () => {
-  return props => {
+vi.mock('@material-ui/core/FormControl', () => {
+  return (props: any) => {
     const { children } = props;
     return <div className="form-control">{children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/InputLabel', () => {
-  return props => {
+vi.mock('@material-ui/core/InputLabel', () => {
+  return (props: any) => {
     return <div className="label">{props.children}</div>;
   };
 });
 
-jest.mock('@material-ui/core/Input', () => {
-  return props => {
+vi.mock('@material-ui/core/Input', () => {
+  return (props: any) => {
     const { type, onBlur, endAdornment } = props;
     return (
       <>
@@ -40,8 +34,8 @@ jest.mock('@material-ui/core/Input', () => {
   };
 });
 
-jest.mock('@material-ui/core/TextField', () => {
-  return props => {
+vi.mock('@material-ui/core/TextField', () => {
+  return (props: any) => {
     const { helperText, onBlur, onChange, label, className } = props;
     return (
       <div className="text-field">
@@ -59,27 +53,16 @@ jest.mock('@material-ui/core/TextField', () => {
   };
 });
 
-jest.mock('@material-ui/core/Grid', () => {
-  return props => {
+vi.mock('@material-ui/core/Grid', () => {
+  return (props: any) => {
     const { children } = props;
     return <div className="grid">{children}</div>;
   };
 });
 
 describe('Test CustomInput', () => {
-  beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-  });
-
-  afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-  });
-
   test('test text type input', () => {
-    const handleBlur = jest.fn();
+    const handleBlur = vi.fn();
 
     const mockTextConfig: ITextfieldConfig = {
       variant: 'standard',
@@ -89,36 +72,31 @@ describe('Test CustomInput', () => {
       onBlur: handleBlur,
     };
 
-    act(() => {
-      render(
-        <CustomInput
-          type="text"
-          textConfig={mockTextConfig}
-          checkValid={() => true}
-        />,
-        container
-      );
-    });
-
-    expect(container.querySelectorAll('.text-field').length).toBe(1);
-    expect(container.querySelector('.text-class').textContent).toBe(
-      'classname'
-    );
-    expect(container.querySelector('.text-label').textContent).toBe(
-      'test text'
+    const res = render(
+      <CustomInput
+        type="text"
+        textConfig={mockTextConfig}
+        checkValid={() => true}
+      />
     );
 
-    const input = container.querySelector('.text-input');
+    expect(res.getAllByText('test text').length).toBe(1);
+    expect(res.getByText('test text').textContent).toBe('test text');
+    expect(
+      res.getByText('test text').parentElement!.classList.contains('classname')
+    ).toBeTruthy();
+
+    const input = res.getByRole('textbox');
     input.focus();
     input.blur();
     expect(handleBlur).toHaveBeenCalledTimes(1);
   });
 
   test('test icon type input', () => {
-    const handleChange = jest.fn();
+    const handleChange = vi.fn();
 
     const mockIconConfig: IIconConfig = {
-      icon: <div className="icon"></div>,
+      icon: <div className="icon" role="img"></div>,
       inputType: 'icon',
       inputConfig: {
         label: 'icon text',
@@ -128,28 +106,25 @@ describe('Test CustomInput', () => {
       },
     };
 
-    render(
+    const res = render(
       <CustomInput
         type="icon"
         iconConfig={mockIconConfig}
         checkValid={() => true}
-      />,
-      container
+      />
     );
 
-    expect(container.querySelectorAll('.grid').length).toBe(3);
-    expect(container.querySelectorAll('.icon').length).toBe(1);
-    expect(container.querySelector('.text-label').textContent).toBe(
-      'icon text'
-    );
+    // expect(res.getAllByText('.grid').length).toBe(3);
+    expect(res.getAllByRole('img').length).toBe(1);
+    expect(res.getByText('icon text').textContent).toBe('icon text');
 
-    const input = container.querySelector('.text-input');
+    const input = res.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'trigger change' } });
     expect(handleChange).toHaveBeenCalledTimes(1);
   });
 
   test('test adornmentConfig type input', () => {
-    const mockBlurFunc = jest.fn();
+    const mockBlurFunc = vi.fn();
 
     const mockAdornmentConfig: IAdornmentConfig = {
       label: 'adornment',
@@ -159,20 +134,20 @@ describe('Test CustomInput', () => {
       onInputBlur: mockBlurFunc,
     };
 
-    render(
-      <CustomInput
-        type="adornment"
-        adornmentConfig={mockAdornmentConfig}
-        checkValid={() => true}
-      />,
-      container
+    const res = render(
+      provideTheme(
+        <CustomInput
+          type="adornment"
+          adornmentConfig={mockAdornmentConfig}
+          checkValid={() => true}
+        />
+      )
     );
 
-    expect(container.querySelector('.label').textContent).toBe('adornment');
-    expect(container.querySelector('.type').textContent).toBe('text');
-    expect(container.querySelectorAll('.adornment-icon').length).toBe(1);
+    expect(res.getByText('adornment').textContent).toBe('adornment');
+    expect(res.getAllByRole('icon-button').length).toBe(1);
 
-    const input = container.querySelector('.input');
+    const input = res.getByRole('textbox');
     input.focus();
     input.blur();
     expect(mockBlurFunc).toHaveBeenCalledTimes(1);
@@ -185,10 +160,8 @@ describe('Test CustomInput', () => {
       variant: 'standard',
     };
 
-    act(() => {
-      render(<CustomInput textConfig={mockTextConfig} />, container);
-    });
+    const res = render(<CustomInput textConfig={mockTextConfig} />);
 
-    expect(container.querySelector('.text-label').textContent).toBe('default');
+    expect(res.getByText('default').textContent).toBe('default');
   });
 });

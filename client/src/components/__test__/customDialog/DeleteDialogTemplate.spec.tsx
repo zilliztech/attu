@@ -3,10 +3,11 @@ import DeleteTemplate from '../../customDialog/DeleteDialogTemplate';
 import provideTheme from '../utils/provideTheme';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n';
+import { vi } from 'vitest';
 
 describe('test delete dialog template component', () => {
-  const mockDeleteFn = jest.fn();
-  const mockCancelFn = jest.fn();
+  const mockDeleteFn = vi.fn();
+  const mockCancelFn = vi.fn();
 
   beforeEach(() => {
     render(

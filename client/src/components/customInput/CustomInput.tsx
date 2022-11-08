@@ -32,10 +32,10 @@ const handleOnBlur = (param: IBlurParam) => {
   const input = event.target.value;
   const isValid = validations
     ? checkValid({
-      key,
-      value: input,
-      rules: validations,
-    })
+        key,
+        value: input,
+        rules: validations,
+      })
     : true;
 
   if (isValid) {
@@ -52,10 +52,10 @@ const handleOnChange = (param: IChangeParam) => {
   const input = event.target.value;
   const isValid = validations
     ? checkValid({
-      key,
-      value: input,
-      rules: validations,
-    })
+        key,
+        value: input,
+        rules: validations,
+      })
     : true;
 
   if (isValid) {
@@ -90,19 +90,20 @@ const getAdornmentInput = (
   const classes = getAdornmentStyles();
 
   const param = {
-    cb: onInputBlur || (() => { }),
+    cb: onInputBlur || (() => {}),
     validations: validations || [],
     checkValid,
   };
 
   const info = validInfo ? validInfo[key] : null;
+  const type = isPasswordType ? (showPassword ? 'text' : 'password') : 'text';
 
   return (
     <FormControl>
       <InputLabel htmlFor="standard-adornment-password">{label}</InputLabel>
       <Input
         classes={{ root: `${inputClass || {}}` }}
-        type={isPasswordType ? (showPassword ? 'text' : 'password') : 'text'}
+        type={type}
         onBlur={e => {
           handleOnBlur({ event: e, key, param });
         }}
@@ -112,13 +113,13 @@ const getAdornmentInput = (
             key,
             param: {
               ...param,
-              cb: onInputChange || (() => { }),
+              cb: onInputChange || (() => {}),
             },
           });
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton onClick={onIconClick || (() => { })} edge="end">
+            <IconButton onClick={onIconClick || (() => {})} edge="end" role="icon-button">
               {isPasswordType
                 ? showPassword
                   ? Icons.visible({ classes: { root: classes.icon } })
@@ -128,6 +129,7 @@ const getAdornmentInput = (
           </InputAdornment>
         }
         inputProps={{
+          'role': 'textbox',
           'data-cy': key,
         }}
       />
@@ -162,10 +164,10 @@ const getIconInput = (
         {inputType === 'icon'
           ? getTextfield(inputConfig as ITextfieldConfig, checkValid, validInfo)
           : getAdornmentInput(
-            inputConfig as IAdornmentConfig,
-            checkValid,
-            validInfo
-          )}
+              inputConfig as IAdornmentConfig,
+              checkValid,
+              validInfo
+            )}
       </Grid>
     </Grid>
   );
@@ -196,7 +198,7 @@ const getTextfield = (
   }
 
   const param = {
-    cb: onBlur || (() => { }),
+    cb: onBlur || (() => {}),
     validations: validations || [],
     checkValid,
   };
@@ -214,8 +216,8 @@ const getTextfield = (
       placeholder={placeholder || ''}
       inputProps={
         inputProps
-          ? { ...inputProps, ...defaultInputProps }
-          : { ...defaultInputProps }
+          ? { ...inputProps, ...defaultInputProps, role: 'textbox' }
+          : { ...defaultInputProps, role: 'textbox' }
       }
       error={info?.result && info.errText !== ''}
       InputProps={InputProps ? { ...InputProps } : {}}
@@ -233,7 +235,7 @@ const getTextfield = (
         handleOnChange({
           event,
           key,
-          param: { ...param, cb: onChange || (() => { }) },
+          param: { ...param, cb: onChange || (() => {}) },
         });
       }}
     />

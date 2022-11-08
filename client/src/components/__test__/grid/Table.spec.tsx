@@ -1,9 +1,7 @@
-import { render, unmountComponentAtNode } from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Table from '../../grid/Table';
 import { ColDefinitionsType } from '../../grid/Types';
-
-let container: any = null;
+import { vi } from 'vitest';
 
 const colDefinitions: ColDefinitionsType[] = [
   {
@@ -31,133 +29,57 @@ const colDefinitions: ColDefinitionsType[] = [
   },
 ];
 
-jest.mock('@material-ui/core/styles/makeStyles', () => {
-  return () => () => ({});
-});
-
-jest.mock('../../grid/LoadingTable.tsx', () => {
-  return () => {
-    return <div className="loading"></div>;
-  };
-});
-
 describe('Test Table', () => {
-  let data: any[] = [];
-  let onSelected: any;
-  let isSelected: any;
-  let onSelectedAll: any;
-
-  beforeEach(() => {
-    data = [
-      {
-        id: 1,
-        name: 'czz',
-      },
-    ];
-    onSelected = jest.fn();
-    isSelected = jest.fn().mockImplementation(() => true);
-    onSelectedAll = jest.fn();
-
-    container = document.createElement('div');
-    document.body.appendChild(container);
-  });
-
-  afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-  });
+  let data: any[] = [
+    { id: 1, name: 'foo' },
+    { id: 2, name: 'bar' },
+    { id: 3, name: 'dede' },
+  ];
+  let onSelected: any = vi.fn();
+  let isSelected: any = vi.fn();
+  let onSelectedAll: any = vi.fn();
 
   it('Test Basic Table', () => {
-    act(() => {
-      render(
-        <Table
-          selected={[]}
-          onSelected={onSelected}
-          isSelected={isSelected}
-          onSelectedAll={onSelectedAll}
-          rows={data}
-          primaryKey="id"
-          colDefinitions={colDefinitions}
-        ></Table>,
-        container
-      );
-    });
-
-    expect(container.querySelectorAll('input').length).toEqual(2); // check box
-    expect(container.querySelector('tr').children.length).toEqual(
-      colDefinitions.length + 1
+    const res = render(
+      <Table
+        editHeads={[]}
+        selected={[]}
+        onSelected={onSelected}
+        isSelected={isSelected}
+        onSelectedAll={onSelectedAll}
+        rows={data}
+        primaryKey="id"
+        colDefinitions={colDefinitions}
+      ></Table>
     );
-    expect(container.querySelectorAll('th')[1].textContent).toEqual(
-      colDefinitions[0].label
+    expect(res.getAllByRole('checkbox').length).toEqual(4); // check box
+    expect(res.getAllByRole('row').length).toEqual(colDefinitions.length + 1);
+    expect(res.getAllByRole('cell').length).toEqual(
+      (colDefinitions.length + 1) * (data.length + 1)
     );
-    expect(container.querySelectorAll('th')[2].textContent).toEqual(
+    expect(res.getAllByRole('button').length).toEqual(3);
+    expect(res.getAllByRole('cell')[2].textContent).toEqual(
       colDefinitions[1].label
-    );
-
-    expect(container.querySelectorAll('[aria-label="delete"]').length).toEqual(
-      1
     );
   });
 
   it('Test Selected function', () => {
-    act(() => {
-      render(
-        <Table
-          selected={[1]}
-          onSelected={onSelected}
-          isSelected={isSelected}
-          onSelectedAll={onSelectedAll}
-          rows={data}
-          primaryKey="id"
-          colDefinitions={colDefinitions}
-        ></Table>,
-        container
-      );
-    });
+    const res: any = render(
+      <Table
+        editHeads={[]}
+        selected={[1]}
+        onSelected={onSelected}
+        isSelected={isSelected}
+        onSelectedAll={onSelectedAll}
+        rows={data}
+        primaryKey="id"
+        colDefinitions={colDefinitions}
+      ></Table>
+    );
 
-    expect(container.querySelectorAll('input')[1].checked).toBeTruthy();
-    expect(container.querySelectorAll('input')[0].checked).toBeTruthy();
-
-    isSelected = jest.fn().mockImplementation(() => false);
-    act(() => {
-      render(
-        <Table
-          selected={[]}
-          onSelected={onSelected}
-          isSelected={isSelected}
-          onSelectedAll={onSelectedAll}
-          rows={data}
-          primaryKey="id"
-          colDefinitions={colDefinitions}
-        ></Table>,
-        container
-      );
-    });
-
-    expect(container.querySelectorAll('input')[1].checked).toBeFalsy();
-    expect(container.querySelectorAll('input')[0].checked).toBeFalsy();
-
-    expect(isSelected).toHaveBeenCalledTimes(1);
-  });
-
-  it('Test Table Loading status', () => {
-    act(() => {
-      render(
-        <Table
-          selected={[]}
-          onSelected={onSelected}
-          isSelected={isSelected}
-          onSelectedAll={onSelectedAll}
-          rows={data}
-          primaryKey="id"
-          colDefinitions={colDefinitions}
-          isLoading={true}
-        ></Table>,
-        container
-      );
-    });
-
-    expect(container.querySelectorAll('.loading').length).toBe(1);
+    const cbx = res.getAllByRole('checkbox')[1];
+    fireEvent.click(cbx);
+    expect(cbx.checked).toBeTruthy();
+    expect(onSelected).toBeCalledTimes(1);
   });
 });
