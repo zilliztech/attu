@@ -72,7 +72,7 @@ port='${port}'
     const connectPart = `
 import { MilvusClient } from "@zilliz/milvus2-sdk-node";
 const address = "${MilvusService.activeAddress}";
-const milvusClient = new MilvusClient(address);  
+const milvusClient = new MilvusClient(address);
 `;
     const importLineIndex = code.findIndex(line => !line.includes('import'));
     code.splice(importLineIndex, 0, connectPart)
