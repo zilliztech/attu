@@ -74,7 +74,7 @@ const Layout = (props: any) => {
     return navTrans('overview');
   }, [location, navTrans]);
 
-  const menuItems: NavMenuItem[] = [
+  const menuItems = [
     {
       icon: icons.navOverview,
       label: navTrans('overview'),
@@ -85,7 +85,7 @@ const Layout = (props: any) => {
       label: navTrans('collection'),
       onClick: () => history.push('/collections'),
     },
-    {
+    import.meta.env['VITE_SANDBOX'] == 1 && {
       icon: icons.code,
       label: navTrans('code'),
       onClick: () => history.push('/code'),
@@ -102,7 +102,7 @@ const Layout = (props: any) => {
     //   iconActiveClass: 'activeSearchIcon',
     //   iconNormalClass: 'normalSearchIcon',
     // },
-  ];
+  ].filter(a => a) as NavMenuItem[];
 
   function importAll(r: any) {
     Object.keys(r).forEach((key: any) => {

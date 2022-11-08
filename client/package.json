@@ -66,7 +66,9 @@
   "homepage": "./",
   "scripts": {
     "start": "vite",
+    "start_sandbox": "VITE_SANDBOX=1 vite",
     "build": "vite build",
+    "build_sandbox": "VITE_SANDBOX=1 vite build",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watchAll",

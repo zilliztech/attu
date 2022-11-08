@@ -11,7 +11,7 @@ COPY . .
 # => Building Client
 WORKDIR /app/client
 RUN yarn install
-RUN yarn build
+RUN yarn build_sandbox
 # # => Building Server
 WORKDIR /app/server
 RUN yarn install
