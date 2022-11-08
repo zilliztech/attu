@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AttuGrid from '../../components/grid/Grid';
-import { getQueryStyles } from './Styles';
+import { getQueryStyles } from '../query/Styles';
 import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { IndexHttp } from '../../http/Index';
