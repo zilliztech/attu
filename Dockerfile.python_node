@@ -1,8 +1,16 @@
-# => Building container
-FROM node:19-alpine as builder
+# init ubuntu-container with nodejs and python3(pymilvus)
+FROM python:3.10-buster as python
+RUN pip install pymilvus
+RUN apt-get update
+RUN curl -fsSL https://deb.nodesource.com/setup_19.x | bash - &&\
+apt-get install -y nodejs
+RUN npm install yarn -g
+RUN pip install pymilvus
+
+# builder container
+FROM python as builder
 WORKDIR /app
 COPY . .
-
 # => Building Client
 WORKDIR /app/client
 RUN yarn install
@@ -14,19 +22,19 @@ ENV NODE_ENV production
 ENV PORT 80
 RUN yarn build
 
-# => Copy to Final container
-FROM node:19-alpine
+FROM python
 WORKDIR /app
 COPY --from=builder /app/server/dist /app/dist
 COPY --from=builder /app/client/build /app/build
-# COPY --from=builder /app/server/node_modules /app/node_modules
 COPY --from=builder /app/server/package.json /app/package.json
 COPY --from=builder /app/server/yarn.lock /app/yarn.lock
 
 # => Reinstall production dependencies and clean cache
 RUN yarn install --production && yarn cache clean
+RUN mkdir tmp
+
 # Add bash
-RUN apk add --no-cache bash
+# RUN apk add --no-cache bash
 
 # Make our shell script executable
 RUN chmod +x /app/build/env.sh
@@ -38,4 +46,4 @@ RUN chgrp -R 0 /app && \
 EXPOSE 3000
 
 # RUN echo -e window.__version="{\"version\":\""$VERSION"\"}" > /app/build/version.js
-CMD [ "/bin/bash", "-c", "/app/build/env.sh && yarn start:prod" ]
+# CMD [ "/bin/bash", "-c", "/app/build/env.sh && yarn start:prod" ]

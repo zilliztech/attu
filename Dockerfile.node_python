@@ -1,8 +1,12 @@
+# init container with alpine-nodejs and python3(pymilvus)
+FROM node:19-alpine as alpine-node-python
+RUN apk add --no-cache python3-dev python3 py3-pip py3-pandas g++
+RUN pip install pymilvus
+
 # => Building container
-FROM node:19-alpine as builder
+FROM alpine-node-python as builder
 WORKDIR /app
 COPY . .
-
 # => Building Client
 WORKDIR /app/client
 RUN yarn install
@@ -15,7 +19,7 @@ ENV PORT 80
 RUN yarn build
 
 # => Copy to Final container
-FROM node:19-alpine
+FROM alpine-node-python
 WORKDIR /app
 COPY --from=builder /app/server/dist /app/dist
 COPY --from=builder /app/client/build /app/build
