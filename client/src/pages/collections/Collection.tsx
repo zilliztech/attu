@@ -4,7 +4,7 @@ import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomTabList from '../../components/customTabList/CustomTabList';
 import { ITab } from '../../components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
 import Schema from '../schema/Schema';
@@ -22,7 +22,7 @@ const Collection = () => {
 
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const { t: collectionTrans } = useTranslation('collection');
@@ -36,7 +36,7 @@ const Collection = () => {
 
   const handleTabChange = (activeIndex: number) => {
     const path = location.pathname;
-    history.push(`${path}?activeIndex=${activeIndex}`);
+    navigate(`${path}?activeIndex=${activeIndex}`);
   };
 
   const tabs: ITab[] = [

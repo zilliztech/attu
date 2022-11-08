@@ -1,7 +1,7 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -93,7 +93,8 @@ const SearchInput: FC<SearchType> = props => {
   const classes = useSearchStyles({ searched });
   const { t: commonTrans } = useTranslation();
 
-  const history = useHistory();
+  const navigate = useNavigate();
+  const params = useParams();
 
   const inputRef = useRef<any>(null);
 
@@ -108,16 +109,16 @@ const SearchInput: FC<SearchType> = props => {
     }
     if (searchValue !== null && !isInit) {
       timer = setTimeout(() => {
-        // save other params data and remove last time search info
-        const location = history.location;
-        const params = new URLSearchParams(location.search);
-        params.delete('search');
+        // // save other params data and remove last time search info
+        // const location = navigate.location;
+        // const params = new URLSearchParams(location.search);
+        // params.delete('search');
 
-        if (searchValue) {
-          params.append('search', searchValue);
-        }
-        // add search value in url
-        history.push({ search: params.toString() });
+        // if (searchValue) {
+        //   params.append('search', searchValue);
+        // }
+        // // add search value in url
+        // history.push({ search: params.toString() });
 
         savedSearchFn.current(searchValue);
       }, 300);

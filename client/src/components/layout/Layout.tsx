@@ -6,7 +6,7 @@ import { NavMenuItem } from '../menu/Types';
 import { useContext, useMemo } from 'react';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { rootContext } from '../../context/Root';
 import { IconsType } from '../icons/Types';
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Layout = (props: any) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { isAuth } = useContext(authContext);
   const { versionInfo } = useContext(rootContext);
 
@@ -74,22 +74,22 @@ const Layout = (props: any) => {
     {
       icon: icons.navOverview,
       label: navTrans('overview'),
-      onClick: () => history.push('/'),
+      onClick: () => navigate('/'),
     },
     {
       icon: icons.navCollection,
       label: navTrans('collection'),
-      onClick: () => history.push('/collections'),
+      onClick: () => navigate('/collections'),
     },
     {
       icon: icons.navPerson,
       label: navTrans('user'),
-      onClick: () => history.push('/users'),
+      onClick: () => navigate('/users'),
     },
     // {
     //   icon: icons.navSearch,
     //   label: navTrans('search'),
-    //   onClick: () => history.push('/search'),
+    //   onClick: () => navigate('/search'),
     //   iconActiveClass: 'activeSearchIcon',
     //   iconNormalClass: 'normalSearchIcon',
     // },
@@ -105,7 +105,7 @@ const Layout = (props: any) => {
         icon: icons.navOverview,
         label: content.client?.label || 'PLGUIN',
       };
-      result.onClick = () => history.push(`/${pathName}`);
+      result.onClick = () => navigate(`/${pathName}`);
       const iconName: IconsType = content.client?.iconName;
       if (iconName) {
         result.icon = icons[iconName];
