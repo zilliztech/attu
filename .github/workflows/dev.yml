@@ -43,7 +43,7 @@ jobs:
         run: docker push zilliz/attu:dev
 
       - name: Docker Build (attu with sandbox)
-        run: docker build -t zilliz/attu_sandbox:dev --build-arg VERSION=dev .
+        run: docker build -f Dockerfile.sandbox -t zilliz/attu_sandbox:dev --build-arg VERSION=dev .
 
       - name: Docker Push Dev
         run: docker push zilliz/attu_sandbox:dev
