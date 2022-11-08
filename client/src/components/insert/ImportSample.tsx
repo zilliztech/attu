@@ -6,35 +6,37 @@ import CustomSelector from '../customSelector/CustomSelector';
 import { rootContext } from '../../context/Root';
 import { InsertStatusEnum } from './Types';
 
-const getStyles = makeStyles((theme: Theme) => ({
-  icon: {
-    fontSize: '16px',
-  },
-
-  selectors: {
-    '& .selectorWrapper': {
-      display: 'flex',
-      flexDirection: 'column',
-      marginBottom: theme.spacing(2),
-
-      '& .selectLabel': {
-        fontSize: '14px',
-        lineHeight: '20px',
-        color: theme.palette.attuDark.main,
-      },
-
-      '& .description': {
-        color: theme.palette.attuGrey.dark,
-        marginBottom: theme.spacing(1),
-        fontSize: 12,
-      },
+const getStyles = makeStyles((theme: Theme) => {
+  return {
+    icon: {
+      fontSize: '16px',
     },
 
-    '& .selector': {
-      minWidth: '128px',
+    selectors: {
+      '& .selectorWrapper': {
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: theme.spacing(2),
+
+        '& .selectLabel': {
+          fontSize: '14px',
+          lineHeight: '20px',
+          color: theme.palette.attuDark.main,
+        },
+
+        '& .description': {
+          color: theme.palette.attuGrey.dark,
+          marginBottom: theme.spacing(1),
+          fontSize: 12,
+        },
+      },
+
+      '& .selector': {
+        minWidth: '128px',
+      },
     },
-  },
-}));
+  };
+});
 
 /**
  * this component contains processes during insert
@@ -80,10 +82,7 @@ const ImportSample: FC<{ collection: string; handleImport: Function }> =
       }
       // start loading
       setInsertStatus(InsertStatusEnum.loading);
-      const { result, msg } = await props.handleImport(
-        props.collection,
-        size
-      );
+      const { result, msg } = await props.handleImport(props.collection, size);
 
       if (!result) {
         openSnackBar(msg, 'error');
@@ -97,7 +96,9 @@ const ImportSample: FC<{ collection: string; handleImport: Function }> =
 
     return (
       <DialogTemplate
-        title={insertTrans('importSampleData', { collection: props.collection })}
+        title={insertTrans('importSampleData', {
+          collection: props.collection,
+        })}
         handleClose={handleCloseDialog}
         confirmLabel={
           insertStatus === InsertStatusEnum.init

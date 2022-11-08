@@ -45,8 +45,8 @@ describe('Test validation utils', () => {
     expect(
       getCheckResult({
         value: '12345',
-        extraParam: { lenMin: 8 },
-        rule: 'length',
+        extraParam: { min: 8 },
+        rule: 'range',
       })
     ).toBeFalsy();
   });
