@@ -60,27 +60,3 @@ We use class getter to define our client fields like \_field, because of our ser
 Like utils / consts / utils / hooks , we dont want put all functions or data in one file like index.ts because of maintainability.
 
 So when we need to create new file , treat the file like Class then name it.
-
-### Plugins Folder
-
-You can deploy any plugin developed by [template](https://github.com/zilliztech/insight-plugin-template). All client plugins should be placed at `src/plugins` folder. We have transferred `System View` and `Vector Search` to plugins. For more plugins development details please refer to [template repo](https://github.com/zilliztech/insight-plugin-template).
-
-### Alias Map
-
-As `react-app-rewire-alias` in `config-overrides.js`, we can use alias import. `insight_src/` is equal to `client/src` .
-
-### Icon
-
-We put all icons in components/icons file. Normally we use material icon.
-
-If we use custom svg, like: import { ReactComponent as CustomIcon } from xxx/xxx.svg'.
-
-It's react component because of svgr/webpack in webpack config.
-
-### Build
-
-We use react-app-rewired to change webpack config.
-
-If we want to change the webpack config, we can edit config-overrides.js file.
-
-Our build path is `./build`. And we use Attu server to host our client site.

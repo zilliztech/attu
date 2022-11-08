@@ -213,7 +213,6 @@ const EnhancedTable: FC<TableType> = props => {
                       hover={showHoverStyle}
                       key={'row' + row[primaryKey] + index}
                       onClick={event => onSelected(event, row)}
-                      role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       selected={isItemSelected && !disableSelect}
@@ -229,7 +228,10 @@ const EnhancedTable: FC<TableType> = props => {
                           <Checkbox
                             checked={isItemSelected}
                             color="primary"
-                            inputProps={{ 'aria-labelledby': labelId }}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                              role: 'checkbox',
+                            }}
                           />
                         </TableCell>
                       )}

@@ -2,7 +2,7 @@ import {
   descendingComparator,
   getComparator,
   stableSort,
-} from '../../grid/Utils';
+} from '../../../utils/Sort';
 
 describe('Test Gird Utils', () => {
   it('Test descendingComparator', () => {

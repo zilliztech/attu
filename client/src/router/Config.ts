@@ -8,8 +8,6 @@ import loadable from '@loadable/component';
 import Users from '../pages/user/User';
 import Code from '../pages/code/Code';
 
-const PLUGIN_DEV = process.env.REACT_APP_PLUGIN_DEV;
-
 const RouterConfig: RouterConfigType[] = [
   {
     path: '/',
@@ -39,18 +37,17 @@ const RouterConfig: RouterConfigType[] = [
   { path: '/users', component: Users, auth: true },
 ];
 
-function importAll(r: any, outOfRoot = false) {
-  r.keys().forEach((key: any) => {
-    const content = r(key);
+async function importAll(r: any) {
+  Object.keys(r).forEach((key: any) => {
+    const content = r[key];
     const dirName = key.split('/config.json').shift().split('/')[1];
     const pathName = content.client?.path;
     const fileEntry = content.client?.entry;
     if (!pathName || !fileEntry) return;
-    // console.log(content);
     const auth = content.client?.auth || false;
-    const OtherComponent = outOfRoot
-      ? loadable(() => import(`all_plugins/${dirName}/client/${fileEntry}`))
-      : loadable(() => import(`../plugins/${dirName}/${fileEntry}`));
+    const OtherComponent = loadable(
+      () => import(`../${dirName}/${pathName}/${fileEntry}.tsx`)
+    );
     RouterConfig.push({
       path: `/${pathName}`,
       component: OtherComponent,
@@ -58,8 +55,10 @@ function importAll(r: any, outOfRoot = false) {
     });
   });
 }
-importAll(require.context('../plugins/', true, /config\.json$/));
-PLUGIN_DEV &&
-  importAll(require.context('all_plugins/', true, /config\.json$/), true);
+
+const pluginConfigs = import.meta.glob(`../plugins/**/config.json`, {
+  eager: true,
+});
+importAll(pluginConfigs);
 
 export default RouterConfig;

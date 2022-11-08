@@ -3,10 +3,11 @@ import DialogTemplate from '../../customDialog/DialogTemplate';
 import provideTheme from '../utils/provideTheme';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n';
+import { vi } from 'vitest';
 
 describe('test dialog template component', () => {
-  const mockCancelFn = jest.fn();
-  const mockConfirmFn = jest.fn();
+  const mockCancelFn = vi.fn();
+  const mockConfirmFn = vi.fn();
 
   it('renders default state and callbacks', () => {
     render(

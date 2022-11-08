@@ -36,6 +36,7 @@ import {
 } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 import { tags } from '@lezer/highlight';
+import { autocomplete } from './completion';
 
 const basicSetup = /*@__PURE__*/ (() => [
   lineNumbers(),
@@ -52,6 +53,7 @@ const basicSetup = /*@__PURE__*/ (() => [
   closeBrackets(),
   autocompletion({
     closeOnBlur: false,
+    override: [autocomplete],
   }),
   rectangularSelection(),
   crosshairCursor(),

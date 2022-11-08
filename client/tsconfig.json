@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable"],
+    "types": [
+      "vite/client",
+      "vite-plugin-svgr/client",
+      "jest",
+      "@testing-library/jest-dom"
     ],
+
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,10 +23,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "../../src",
-    "all_plugins"
-  ],
-  "extends": "./tsconfig.paths.json"
+  "include": ["src", "../../src"]
 }

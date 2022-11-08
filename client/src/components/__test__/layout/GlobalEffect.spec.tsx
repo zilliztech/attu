@@ -1,10 +1,11 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import GlobalEffect from '../../layout/GlobalEffect';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', () => {
   return {
     useHistory: () => ({ location: { pathname: '' } }),
   };

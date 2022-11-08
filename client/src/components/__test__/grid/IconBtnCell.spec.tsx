@@ -2,6 +2,7 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import ActionBar from '../../grid/ActionBar';
 import { fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 
 let container: any = null;
 
@@ -26,8 +27,8 @@ describe('Test Table Head', () => {
   });
 
   it('Test Delete Icon Button', () => {
-    const deleteSpy = jest.fn();
-    const showDialogSpy = jest.fn();
+    const deleteSpy = vi.fn();
+    const showDialogSpy = vi.fn();
 
     act(() => {
       render(
