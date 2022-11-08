@@ -2,7 +2,7 @@ name: Attu dev release
 
 on:
   pull_request_target:
-    branches: [main]
+    branches: [code-examples]
     types: [closed]
 
 jobs:

@@ -8,7 +8,7 @@ import loadable from '@loadable/component';
 import Users from '../pages/user/User';
 import Code from '../pages/code/Code';
 
-const RouterConfig: RouterConfigType[] = [
+const RouterConfig = [
   {
     path: '/',
     component: Overview,
@@ -24,7 +24,7 @@ const RouterConfig: RouterConfigType[] = [
     component: Collections,
     auth: true,
   },
-  {
+  import.meta.env['VITE_SANDBOX'] == 1 && {
     path: '/code',
     component: Code,
     auth: true,
@@ -35,7 +35,7 @@ const RouterConfig: RouterConfigType[] = [
     auth: true,
   },
   { path: '/users', component: Users, auth: true },
-];
+].filter(a => a) as RouterConfigType[];
 
 async function importAll(r: any) {
   Object.keys(r).forEach((key: any) => {
