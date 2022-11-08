@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "client": {
     "path": "search",
-    "entry": "VectorSearch.tsx",
+    "entry": "VectorSearch",
     "label": "Vector Search",
     "iconName": "navSearch",
     "auth": true,

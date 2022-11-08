@@ -6,8 +6,9 @@ import {
 } from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import icons from '../icons/Icons';
+import { theme } from '../../styles/theme';
 
-const getStyles = makeStyles((theme: Theme) => ({
+const getStyles = makeStyles(() => ({
   root: {
     margin: 0,
     display: 'flex',
@@ -20,7 +21,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '24px',
     color: theme.palette.attuDark.main,
-
     cursor: 'pointer',
   },
 }));
