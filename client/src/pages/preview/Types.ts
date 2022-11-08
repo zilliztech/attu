@@ -3,6 +3,4 @@ export interface QueryParam {
   partitions_names?: string[];
   output_fields?: string[];
   travel_timestamp?: string;
-  limit?: number;
-  offset?: number;
 }
