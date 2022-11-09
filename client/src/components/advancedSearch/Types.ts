@@ -46,7 +46,7 @@ export interface CopyButtonProps {
   icon?: any;
   // needed for accessibility, will not show on page
   label: string;
-  value: string;
+  value: string | (() => string);
   others?: any;
 }
 
