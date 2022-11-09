@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     background: theme.palette.common.white,
-    paddingLeft: theme.spacing(2),
+    padding: `${theme.spacing(1.5)} ${theme.spacing(2)}`,
   },
   hoverActionCell: {
     transition: '0.2s all',
