@@ -61,3 +61,7 @@ export const generateHashCode = (source: string) => {
 export const generateIdByHash = (salt?: string) => {
   return generateHashCode(`${new Date().getTime().toString()}-${salt}`);
 };
+
+export const generateVector = (dim: number) => {
+  return Array.from({ length: dim }).map(() => Math.random());
+};
