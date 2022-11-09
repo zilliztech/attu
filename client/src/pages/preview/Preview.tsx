@@ -13,8 +13,7 @@ import { DataTypeStringEnum } from '../collections/Types';
 import { generateVector } from '../../utils/Common';
 
 import {
-  FLOAT_INDEX_CONFIG,
-  BINARY_INDEX_CONFIG,
+  INDEX_CONFIG,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
 } from '../../consts/Milvus';
 
@@ -96,10 +95,11 @@ const Preview: FC<{
     const vectors = [generateVector(dim)];
     // get search params
     const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
-    const indexConfig =
-      BINARY_INDEX_CONFIG[indexesInfo[0]._indexType] ||
-      FLOAT_INDEX_CONFIG[indexesInfo[0]._indexType];
-    const metric_type = indexesInfo[0]._metricType;
+    const indexType =
+      indexesInfo.length == 0 ? 'FLAT' : indexesInfo[0]._indexType;
+    const indexConfig = INDEX_CONFIG[indexType];
+    const metric_type =
+      indexesInfo.length === 0 ? 'L2' : indexesInfo[0]._metricType;
     const searchParamKey = indexConfig.search[0];
     const searchParamValue = DEFAULT_SEARCH_PARAM_VALUE_MAP[searchParamKey];
     const searchParam = { [searchParamKey]: searchParamValue };
