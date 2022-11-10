@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     padding: theme.spacing(3),
     margin: '0 auto',
-
+    flexDirection: 'column',
     '& .title': {
       margin: 0,
       color: '#323232',
@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   logo: {
     width: '42px',
     height: 'auto',
+    marginBottom: '8px',
+    display: 'block'
   },
   input: {
     margin: theme.spacing(3, 0, 0.5),

@@ -19,7 +19,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import CachedIcon from '@material-ui/icons/Cached';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import DatePicker from '@material-ui/icons/Event';
@@ -61,7 +61,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   rightArrow: (props = {}) => <ArrowForwardIosIcon {...props} />,
   remove: (props = {}) => <RemoveCircleOutlineIcon {...props} />,
   dropdown: (props = {}) => <ArrowDropDownIcon {...props} />,
-  refresh: (props = {}) => <CachedIcon {...props} />,
+  refresh: (props = {}) => <RefreshIcon {...props} />,
   filter: (props = {}) => <FilterListIcon {...props} />,
   alias: (props = {}) => <AlternateEmailIcon {...props} />,
   datePicker: (props = {}) => <DatePicker {...props} />,
@@ -113,6 +113,11 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
   copyExpression: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={CopyIcon} {...props} />
+  ),
+  source: (props = {}) => (
+    <SvgIcon viewBox="0 0 24 24" {...props}>
+      <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H6v-2h8v2zm4-4H6v-2h12v2z"></path>
+    </SvgIcon>
   ),
 };
 

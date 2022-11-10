@@ -11,7 +11,7 @@ import {
   SearchReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
-import { findKeyValue } from '../utils/Helper';
+import { findKeyValue, genRows } from '../utils/Helper';
 import { ROW_COUNT } from '../utils/Const';
 import {
   AlterAliasReq,
@@ -20,7 +20,7 @@ import {
   ShowCollectionsReq,
   ShowCollectionsType,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
-import { QueryDto } from './dto';
+import { QueryDto, ImportSampleDto } from './dto';
 import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
 
 export class CollectionsService {
@@ -257,5 +257,18 @@ export class CollectionsService {
       }
     }
     return data;
+  }
+
+  /**
+   * Load sample data into collection
+   */
+  async importSample({ collection_name, size }: ImportSampleDto) {
+    const collectionInfo = await this.describeCollection({ collection_name });
+    const fields_data = genRows(
+      collectionInfo.schema.fields,
+      parseInt(size, 10)
+    );
+
+    return await this.insert({ collection_name, fields_data });
   }
 }

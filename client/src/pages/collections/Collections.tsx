@@ -9,6 +9,7 @@ import {
   CollectionView,
   DataTypeEnum,
   InsertDataParam,
+  LoadSampleParam,
 } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
@@ -31,6 +32,7 @@ import {
 import Highlighter from 'react-highlight-words';
 import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
+import ImportSample from '../../components/insert/ImportSample';
 import { MilvusHttp } from '../../http/Milvus';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
@@ -88,6 +90,7 @@ const Collections = () => {
   const LoadIcon = icons.load;
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
+  const SourceIcon = icons.source;
 
   const searchedCollections = useMemo(
     () => collections.filter(collection => collection._name.includes(search)),
@@ -172,6 +175,28 @@ const Collections = () => {
       await MilvusHttp.flush(collectionName);
       // update collections
       fetchData();
+      return { result: true, msg: '' };
+    } catch (err: any) {
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      return { result: false, msg: message || '' };
+    }
+  };
+
+  const handleImportSample = async (
+    collectionName: string,
+    size: string
+  ): Promise<{ result: boolean; msg: string }> => {
+    const param: LoadSampleParam = {
+      collection_name: collectionName,
+      size: size,
+    };
+    try {
+      await CollectionHttp.importSample(collectionName, param);
+      await MilvusHttp.flush(collectionName);
       return { result: true, msg: '' };
     } catch (err: any) {
       const {
@@ -297,6 +322,14 @@ const Collections = () => {
     {
       type: 'iconBtn',
       onClick: () => {
+        fetchData();
+      },
+      label: collectionTrans('delete'),
+      icon: 'refresh',
+    },
+    {
+      type: 'iconBtn',
+      onClick: () => {
         setDialog({
           open: true,
           type: 'custom',
@@ -370,12 +403,6 @@ const Collections = () => {
       label: collectionTrans('status'),
     },
     {
-      id: 'consistency_level',
-      align: 'left',
-      disablePadding: false,
-      label: collectionTrans('consistencyLevel'),
-    },
-    {
       id: '_rowCount',
       align: 'left',
       disablePadding: false,
@@ -387,6 +414,12 @@ const Collections = () => {
           </CustomToolTip>
         </span>
       ),
+    },
+    {
+      id: 'consistency_level',
+      align: 'left',
+      disablePadding: false,
+      label: collectionTrans('consistencyLevel'),
     },
     {
       id: '_desc',
@@ -433,6 +466,37 @@ const Collections = () => {
             ) : (
               <ReleaseIcon />
             ),
+        },
+      ],
+    },
+    {
+      id: 'import',
+      align: 'center',
+      disablePadding: false,
+      label: '',
+      showActionCell: true,
+      isHoverAction: true,
+      actionBarConfigs: [
+        {
+          onClick: (e: React.MouseEvent, row: CollectionView) => {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: (
+                  <ImportSample
+                    collection={row._name}
+                    handleImport={handleImportSample}
+                  />
+                ),
+              },
+            });
+          },
+          icon: 'source',
+          label: 'Import',
+          showIconMethod: 'renderFn',
+          getLabel: () => 'Import sample data',
+          renderIconFn: (row: CollectionView) => <SourceIcon />,
         },
       ],
     },

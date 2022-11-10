@@ -1,18 +1,21 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import CustomToolTip from '../../customToolTip/CustomToolTip';
+import { vi } from 'vitest';
 
 let container: any = null;
 
-jest.mock('@material-ui/core/Tooltip', () => {
-  return props => {
-    return (
-      <div id="tooltip">
-        <div id="title">{props.title}</div>
-        <div id="placement">{props.placement}</div>
-        {props.children}
-      </div>
-    );
+vi.mock('@material-ui/core/Tooltip', () => {
+  return {
+    default: (props: any) => {
+      return (
+        <div id="tooltip">
+          <div id="title">{props.title}</div>
+          <div id="placement">{props.placement}</div>
+          {props.children}
+        </div>
+      );
+    },
   };
 });
 

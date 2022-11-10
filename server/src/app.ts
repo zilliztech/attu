@@ -143,6 +143,6 @@ getDirectories(SRC_PLUGIN_DIR, async (dirErr: Error, dirRes: string[]) => {
   app.use(ErrorMiddleware);
   // start server
   server.listen(PORT, () => {
-    console.log(chalk.green.bold(`Insight Server started on port ${PORT} :)`));
+    console.log(chalk.green.bold(`Attu Server started on port ${PORT} :)`));
   });
 });

@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     background: theme.palette.common.white,
-    paddingLeft: theme.spacing(2),
+    padding: `${theme.spacing(1.5)} ${theme.spacing(2)}`,
   },
   hoverActionCell: {
     transition: '0.2s all',
@@ -213,7 +213,6 @@ const EnhancedTable: FC<TableType> = props => {
                       hover={showHoverStyle}
                       key={'row' + row[primaryKey] + index}
                       onClick={event => onSelected(event, row)}
-                      role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       selected={isItemSelected && !disableSelect}
@@ -229,7 +228,10 @@ const EnhancedTable: FC<TableType> = props => {
                           <Checkbox
                             checked={isItemSelected}
                             color="primary"
-                            inputProps={{ 'aria-labelledby': labelId }}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                              role: 'checkbox',
+                            }}
                           />
                         </TableCell>
                       )}
@@ -247,7 +249,7 @@ const EnhancedTable: FC<TableType> = props => {
                                 ? classes.hoverActionCell
                                 : ''
                             }`}
-                            key="manage"
+                            key={colDef.id}
                             style={cellStyle}
                           >
                             <ActionBar

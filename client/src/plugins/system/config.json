@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "client": {
     "path": "system",
-    "entry": "SystemView.tsx",
+    "entry": "SystemView",
     "label": "System View",
     "iconName": "navSystem",
     "auth": true

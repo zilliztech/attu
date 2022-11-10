@@ -10,7 +10,7 @@ export const surveSwaggerSpecification = () => {
     definition: {
       openapi: "3.0.0",
       info: {
-        title: "Insight server",
+        title: "Attu server",
         version: "1.0.0",
       },
       servers: [{ url: "/api/v1" }],

@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
+import Preview from '../preview/Preview';
 
 enum TAB_EMUM {
   'schema',
@@ -41,16 +42,20 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
-      label: collectionTrans('queryTab'),
-      component: <Query collectionName={collectionName} />,
-    },
-    {
       label: collectionTrans('schemaTab'),
       component: <Schema collectionName={collectionName} />,
     },
     {
       label: collectionTrans('partitionTab'),
       component: <Partitions collectionName={collectionName} />,
+    },
+    {
+      label: collectionTrans('previewTab'),
+      component: <Preview collectionName={collectionName} />,
+    },
+    {
+      label: collectionTrans('queryTab'),
+      component: <Query collectionName={collectionName} />,
     },
   ];
 

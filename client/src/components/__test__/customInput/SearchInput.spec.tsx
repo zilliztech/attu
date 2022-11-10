@@ -2,11 +2,11 @@ import { fireEvent, render } from '@testing-library/react';
 import SearchInput from '../../customInput/SearchInput';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../../i18n';
-import { Router } from 'react-router-dom';
+import { vi } from 'vitest';
 
-const mockHistoryPushFn = jest.fn();
+const mockHistoryPushFn = vi.fn();
 
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   useHistory: () => ({
     push: mockHistoryPushFn,
     location: {
@@ -15,14 +15,14 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-// clear the influence of jest.useFakeTimers
+// clear the influence of vi.useFakeTimers
 afterEach(() => {
-  jest.useRealTimers();
+  vi.useRealTimers();
 });
 
 describe('test search input component', () => {
   it('renders default state', () => {
-    const mockSearchFn = jest.fn();
+    const mockSearchFn = vi.fn();
     const container = render(
       <I18nextProvider i18n={i18n}>
         <SearchInput searchText="search text" onSearch={mockSearchFn} />
@@ -35,7 +35,7 @@ describe('test search input component', () => {
   });
 
   it('checks input value change event', () => {
-    const mockSearchFn = jest.fn();
+    const mockSearchFn = vi.fn();
     const container = render(
       <I18nextProvider i18n={i18n}>
         <SearchInput onSearch={mockSearchFn} />
@@ -55,9 +55,9 @@ describe('test search input component', () => {
   });
 
   it('checks location change according to search value', () => {
-    const mockSearchFn = jest.fn();
+    const mockSearchFn = vi.fn();
     // mock setTimeout
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     const container = render(
       <I18nextProvider i18n={i18n}>
@@ -69,7 +69,7 @@ describe('test search input component', () => {
     fireEvent.change(input, { target: { value: 'route' } });
     expect(mockHistoryPushFn).not.toBeCalled();
     // fast-forward until all timers have been executed
-    jest.runAllTimers();
+    vi.runAllTimers();
     expect(mockHistoryPushFn).toBeCalled();
     expect(mockHistoryPushFn).toBeCalledWith({ search: 'search=route' });
   });

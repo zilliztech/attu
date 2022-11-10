@@ -2,7 +2,7 @@ const successTrans = {
   connect: 'Connection to milvus successful',
   create: `{{name}} has been created`,
   load: `{{name}} has been loaded`,
-  delete: `{{name}} successfully deleted`,
+  delete: `Delete {{name}} successfully`,
   release: `{{name}} has been released`,
 };
 

@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
     // borderBottom: 'none',
   },
   tableHeader: {
-    textTransform: 'capitalize',
     color: 'rgba(0, 0, 0, 0.6)',
     fontSize: '12.8px',
   },
@@ -58,13 +57,13 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
     <TableHead>
       <TableRow className={classes.tableRow}>
         {openCheckBox && (
-          <TableCell padding="checkbox">
+          <TableCell padding="checkbox" role="cell">
             <Checkbox
               color="primary"
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
-              inputProps={{ 'aria-label': 'select all desserts' }}
+              inputProps={{ 'aria-label': 'select all desserts', 'role': 'checkbox' }}
             />
           </TableCell>
         )}
@@ -78,6 +77,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
               orderBy === (headCell.sortBy || headCell.id) ? order : false
             }
             className={classes.tableCell}
+            role="cell"
           >
             {headCell.label && handleSort && !headCell.notSort ? (
               <TableSortLabel

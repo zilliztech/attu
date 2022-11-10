@@ -110,6 +110,12 @@ export interface InsertDataParam {
   fields_data: any[];
 }
 
+export interface LoadSampleParam {
+  collection_name: string;
+  // e.g. [{vector: [1,2,3], age: 10}]
+  size: string;
+}
+
 export interface DeleteEntitiesReq {
   expr: string;
   partition_name?: string;
