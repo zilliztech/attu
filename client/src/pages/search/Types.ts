@@ -3,8 +3,8 @@ import { searchKeywordsType } from '../../consts/Milvus';
 import {
   DataTypeEnum,
   DataTypeStringEnum,
-} from '../../pages/collections/Types';
-import { IndexView } from '../../pages/schema/Types';
+} from '../collections/Types';
+import { IndexView } from '../schema/Types';
 
 export interface SearchParamsProps {
   // if user created index, pass metric type choosed when creating

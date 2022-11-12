@@ -1,6 +1,5 @@
 import { ButtonProps } from '@material-ui/core/Button';
 import { ReactElement } from 'react';
-import { LoadableClassComponent } from '@loadable/component';
 
 export type SimpleMenuType = {
   label: string;
@@ -20,7 +19,7 @@ type CustomIcon = (
 ) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 
 export type NavMenuItem = {
-  icon: CustomIcon | LoadableClassComponent<any>;
+  icon: CustomIcon;
   iconActiveClass?: string;
   iconNormalClass?: string;
   label: string;

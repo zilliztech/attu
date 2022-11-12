@@ -16,7 +16,7 @@ import SimpleMenu from '../../components/menu/SimpleMenu';
 import { TOP_K_OPTIONS } from './Constants';
 import { Option } from '../../components/customSelector/Types';
 import { CollectionHttp } from '../../http/Collection';
-import { CollectionData, DataTypeEnum } from '../../pages/collections/Types';
+import { CollectionData, DataTypeEnum } from '../collections/Types';
 import { IndexHttp } from '../../http/Index';
 import { getVectorSearchStyles } from './Styles';
 import { parseValue } from '../../utils/Insert';
