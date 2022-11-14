@@ -119,6 +119,16 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
       <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H6v-2h8v2zm4-4H6v-2h12v2z"></path>
     </SvgIcon>
   ),
+  code: (props = {}) => (
+    <SvgIcon viewBox="0 0 24 24" {...props}>
+      <path d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path>
+    </SvgIcon>
+  ),
+  play: (props = {}) => (
+    <SvgIcon viewBox="0 0 24 24" {...props}>
+      <path d="M8 5v14l11-7z"></path>
+    </SvgIcon>
+  ),
 };
 
 export default icons;

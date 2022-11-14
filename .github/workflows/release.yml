@@ -31,3 +31,16 @@ jobs:
 
       - name: Docker Push lastest
         run: docker push zilliz/attu
+
+
+      - name: Docker Build (attu with sandbox)
+        run: docker build -f Dockerfile.sandbox -t zilliz/attu-sandbox:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
+
+      - name: Docker tag
+        run: docker tag zilliz/attu-sandbox:${GITHUB_REF#refs/tags/} zilliz/attu-sandbox:latest
+
+      - name: Docker Push version
+        run: docker push zilliz/attu-sandbox:${GITHUB_REF#refs/tags/}
+
+      - name: Docker Push lastest
+        run: docker push zilliz/attu-sandbox

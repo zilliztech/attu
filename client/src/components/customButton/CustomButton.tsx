@@ -49,7 +49,7 @@ const CustomButton = (props: ButtonProps & { tooltip?: string }) => {
       see https://material-ui.com/zh/components/tooltips/#disabled-elements
       */}
       {tooltip ? (
-        <Tooltip title={tooltip}>
+        <Tooltip title={tooltip} arrow>
           <span>
             <Button
               classes={{

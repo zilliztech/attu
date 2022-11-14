@@ -14,11 +14,16 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const copyTrans = commonTrans('copy');
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLElement>,
+    v: string | (() => string)
+  ) => {
     event.stopPropagation();
 
     setTooltipTitle(copyTrans.copied);
-    navigator.clipboard.writeText(v);
+
+    const value = typeof v === 'string' ? v : v();
+    navigator.clipboard.writeText(value);
     setTimeout(() => {
       setTooltipTitle(copyTrans.copy);
     }, 1000);

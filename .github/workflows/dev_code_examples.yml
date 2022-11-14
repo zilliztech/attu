@@ -1,0 +1,49 @@
+name: Attu dev release
+
+on:
+  pull_request_target:
+    branches: [code-examples]
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Run server tests
+        run: |
+          cd server
+          yarn install
+          yarn test:cov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          # public repo needn't pass token
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          # only upload server test coverage
+          flags: server
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PWD }}
+
+      - name: Docker Build
+        run: docker build -t zilliz/attu:dev --build-arg VERSION=dev .
+
+      - name: Docker Push Dev
+        run: docker push zilliz/attu:dev
+
+      - name: Docker Build (attu with sandbox)
+        run: docker build -f Dockerfile.sandbox -t zilliz/attu_sandbox:dev --build-arg VERSION=dev .
+
+      - name: Docker Push Dev
+        run: docker push zilliz/attu_sandbox:dev

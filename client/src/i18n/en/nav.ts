@@ -1,7 +1,8 @@
 const navTrans = {
   overview: 'Overview',
   collection: 'Collection',
-  console: 'Search Console',
+  console: 'Console',
+  code: 'Code Playground',
   search: 'Vector Search',
   system: 'System View',
   user: 'User',
