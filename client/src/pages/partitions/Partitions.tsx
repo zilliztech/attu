@@ -1,10 +1,7 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
-import {
-  PartitionManageParam,
-  // PartitionParam,
-  PartitionView,
-} from './Types';
+import { FC, useContext, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { PartitionManageParam, PartitionView } from './Types';
 import AttuGrid from '../../components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
@@ -14,13 +11,9 @@ import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreatePartition from './Create';
 import { PartitionHttp } from '../../http/Partition';
-import Status from '../../components/status/Status';
 import { ManageRequestMethods } from '../../types/Common';
-// import { StatusEnum } from '../../components/status/Types';
-// import { useDialogHook } from '../../hooks/Dialog';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import Highlighter from 'react-highlight-words';
-import { parseLocationSearch } from '../../utils/Format';
 import { useInsertDialogHook } from '../../hooks/Dialog';
 import InsertContainer from '../../components/insert/Container';
 import { CollectionHttp } from '../../http/Collection';
@@ -45,8 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 let timer: NodeJS.Timeout | null = null;
 // get init search value from url
-const { search = '' } = parseLocationSearch(window.location.search);
-
+// const { search = '' } = parseLocationSearch(window.location.search);
 const Partitions: FC<{
   collectionName: string;
 }> = ({ collectionName }) => {
@@ -55,6 +47,10 @@ const Partitions: FC<{
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState<string>(
+    (searchParams.get('search') as string) || ''
+  );
   const InfoIcon = icons.info;
 
   const { handleInsertDialog } = useInsertDialogHook();
@@ -81,35 +77,15 @@ const Partitions: FC<{
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
-  const fetchPartitions = useCallback(
-    async (collectionName: string) => {
-      try {
-        const res = await PartitionHttp.getPartitions(collectionName);
-
-        const partitions: PartitionView[] = res.map(p =>
-          Object.assign(p, {
-            _nameElement: (
-              <Highlighter
-                textToHighlight={p._formatName}
-                searchWords={[search]}
-                highlightClassName={classes.highlight}
-              />
-            ),
-            _statusElement: <Status status={p._status} />,
-          })
-        );
-        const filteredPartitions = partitions.filter(p =>
-          p._formatName.includes(search)
-        );
-        setLoading(false);
-        setPartitions(partitions);
-        setSearchedPartitions(filteredPartitions);
-      } catch (err) {
-        setLoading(false);
-      }
-    },
-    [classes.highlight]
-  );
+  const fetchPartitions = async (collectionName: string) => {
+    try {
+      const res = await PartitionHttp.getPartitions(collectionName);
+      setLoading(false);
+      setPartitions(res);
+    } catch (err) {
+      setLoading(false);
+    }
+  };
 
   const fetchCollectionDetail = async (name: string) => {
     const res = await CollectionHttp.getCollection(name);
@@ -118,33 +94,18 @@ const Partitions: FC<{
 
   useEffect(() => {
     fetchPartitions(collectionName);
-  }, [collectionName, fetchPartitions]);
+  }, [collectionName]);
 
-  const handleDelete = async () => {
-    for (const partition of selectedPartitions) {
-      const param: PartitionManageParam = {
-        partitionName: partition._name,
-        collectionName,
-        type: ManageRequestMethods.DELETE,
-      };
-      await PartitionHttp.managePartition(param);
-    }
-
-    openSnackBar(successTrans('delete', { name: t('partition') }));
-    fetchPartitions(collectionName);
-    handleCloseDialog();
-  };
-
-  const handleSearch = (value: string) => {
+  useEffect(() => {
     if (timer) {
       clearTimeout(timer);
     }
     // add loading manually
     setLoading(true);
     timer = setTimeout(() => {
-      const searchWords = [value];
-      const list = value
-        ? partitions.filter(p => p._formatName.includes(value))
+      const searchWords = [search];
+      const list = search
+        ? partitions.filter(p => p._formatName.includes(search))
         : partitions;
 
       const highlightList = list.map(c => {
@@ -162,6 +123,25 @@ const Partitions: FC<{
       setLoading(false);
       setSearchedPartitions(highlightList);
     }, 300);
+  }, [search, partitions]);
+
+  const handleDelete = async () => {
+    for (const partition of selectedPartitions) {
+      const param: PartitionManageParam = {
+        partitionName: partition._name,
+        collectionName,
+        type: ManageRequestMethods.DELETE,
+      };
+      await PartitionHttp.managePartition(param);
+    }
+
+    openSnackBar(successTrans('delete', { name: t('partition') }));
+    fetchPartitions(collectionName);
+    handleCloseDialog();
+  };
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
   };
 
   const handleInsert = async (
