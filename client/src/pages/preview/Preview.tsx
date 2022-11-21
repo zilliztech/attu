@@ -93,7 +93,7 @@ const Preview: FC<{
 
     const anns_field = vectorField?._fieldName!;
     const dim = Number(vectorField?._dimension);
-    const vectors = [generateVector(Number(dim))];
+    const vectors = [generateVector(dim)];
     // get search params
     const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
     const indexType =
