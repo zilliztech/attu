@@ -11,6 +11,7 @@ import { ToolBarConfig } from '../../components/grid/Types';
 import CustomToolBar from '../../components/grid/ToolBar';
 import { DataTypeStringEnum } from '../collections/Types';
 import { generateVector } from '../../utils/Common';
+import { DataTypeEnum } from '../../pages/collections/Types';
 
 import {
   INDEX_CONFIG,
@@ -92,7 +93,7 @@ const Preview: FC<{
 
     const anns_field = vectorField?._fieldName!;
     const dim = Number(vectorField?._dimension);
-    const vectors = [generateVector(dim)];
+    const vectors = [generateVector(Number(dim))];
     // get search params
     const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
     const indexType =
@@ -128,7 +129,7 @@ const Preview: FC<{
         expr: '',
         vectors,
         output_fields: [primaryKey],
-        vector_type: Number(vectorField?._fieldId),
+        vector_type: DataTypeEnum[vectorField!._fieldType],
       });
 
       // compose random id list expression
