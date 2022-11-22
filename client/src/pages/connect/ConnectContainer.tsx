@@ -4,7 +4,7 @@ import { ReactElement } from 'react';
 const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     width: '100%',
-    height: '90%',
+    height: '100vh',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
   },

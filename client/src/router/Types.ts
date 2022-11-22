@@ -18,9 +18,3 @@ export type NavInfo = {
   navTitle: string;
   backPath: string;
 };
-
-export type RouterConfigType = {
-  path: string;
-  component: any;
-  auth: boolean;
-};

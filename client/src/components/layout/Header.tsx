@@ -3,7 +3,7 @@ import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { HeaderType } from './Types';
 import { navContext } from '../../context/Navigation';
 import icons from '../icons/Icons';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { useTranslation } from 'react-i18next';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
@@ -60,14 +60,14 @@ const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
   const { address, setAddress, setIsAuth } = useContext(authContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
   const BackIcon = icons.back;
   const LogoutIcon = icons.logout;
 
   const handleBack = (path: string) => {
-    history.push(path);
+    navigate(-1);
   };
 
   const handleLogout = () => {
