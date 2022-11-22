@@ -145,8 +145,6 @@ const Collections = () => {
     return data;
   }, [search, collections]);
 
-  console.log('render collections');
-
   const {
     pageSize,
     handlePageSize,
