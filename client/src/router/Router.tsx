@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
@@ -7,7 +7,7 @@ import Index from '../pages/index';
 import Search from '../pages/search/VectorSearch';
 import System from '../pages/system/SystemView';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Index />,
