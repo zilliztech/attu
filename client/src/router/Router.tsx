@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  createBrowserRouter,
-  RouterProvider,
-} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';

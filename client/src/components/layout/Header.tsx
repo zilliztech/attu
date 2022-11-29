@@ -67,7 +67,7 @@ const Header: FC<HeaderType> = props => {
   const LogoutIcon = icons.logout;
 
   const handleBack = (path: string) => {
-    navigate(-1);
+    navigate(path);
   };
 
   const handleLogout = () => {
