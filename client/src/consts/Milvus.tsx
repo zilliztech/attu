@@ -86,7 +86,7 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
   //   search: ['nprobe'],
   // },
   FLAT: {
-    create: [''],
+    create: [],
     search: ['nprobe'],
   },
   HNSW: {
