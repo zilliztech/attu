@@ -256,6 +256,7 @@ const CreateIndex = (props: {
     // setDisabled(true);
     setIndexSetting(v => ({
       ...v,
+      index_name: '',
       metric_type: defaultMetricType,
       M: '',
       m: '4',

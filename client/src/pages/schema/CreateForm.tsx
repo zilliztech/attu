@@ -174,6 +174,7 @@ const CreateForm = (
         type="text"
         textConfig={indexNameConfig}
         checkValid={checkIsValid}
+        validInfo={validation}
       />
       <CustomSelector
         label={indexTrans('type')}
