@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { InputLabelProps } from '@material-ui/core';
 import { IValidationItem } from '../../hooks/Form';
 import { IExtraParam, ValidType } from '../../utils/Validation';
 
@@ -78,6 +79,7 @@ export interface ITextfieldConfig {
   type?: string;
   onBlur?: (event: any) => void;
   onChange?: (event: any) => void;
+  InputLabelProps?: Partial<InputLabelProps>;
 }
 
 export interface IAdornmentConfig {

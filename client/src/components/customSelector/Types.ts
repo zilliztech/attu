@@ -20,6 +20,7 @@ export type CustomSelectorType = SelectProps & {
   variant?: 'filled' | 'outlined' | 'standard';
   labelClass?: string;
   wrapperClass?: string;
+  size?: 'small' | 'medium' | undefined;
 };
 
 export interface ICustomGroupSelect {
