@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 
     '& legend': {
-      marginBottom: theme.spacing(2),
+      marginBottom: theme.spacing(1),
       color: `#82838e`,
       lineHeight: '20px',
       fontSize: '14px',
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   dialog: {
-    width: '780px',
+    minWidth: '100%',
   },
 }));
 
@@ -246,9 +246,9 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
+            hiddenLabel={true}
             value={consistencyLevel}
             variant="filled"
-            label={'Consistency'}
           />
         </fieldset>
       </form>

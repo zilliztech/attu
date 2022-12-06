@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   select: {
     width: '140px',
-    marginTop: '-24px',
+    marginTop: '-20px',
 
     '&:first-child': {
       marginLeft: 0,
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   autoIdSelect: {
     width: '120px',
-    marginTop: '-24px',
+    marginTop: '-20px',
   },
   numberBox: {
     width: '97px',
@@ -61,11 +61,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   maxLength: {
     maxWidth: '80px',
   },
-  fieldName: {
-    width: '140px',
-  },
   descInput: {
-    width: '140px',
+    width: '120px',
   },
   btnTxt: {
     textTransform: 'uppercase',
@@ -78,8 +75,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   helperText: {
     lineHeight: '20px',
-    margin: theme.spacing(0.25, 0),
-    marginLeft: '12px',
+    fontSize: '10px',
+    margin: theme.spacing(0),
+    marginLeft: '11px',
   },
 }));
 
@@ -391,6 +389,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           },
           PRIMARY_FIELDS_OPTIONS
         )}
+        {generateDesc(field)}
 
         <CustomSelector
           label={collectionTrans('autoId')}
@@ -405,9 +404,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
           disabled={isVarChar}
           size="small"
         />
-        {isVarChar && generateMaxLength(field)}
 
-        {generateDesc(field)}
+        {isVarChar && generateMaxLength(field)}
       </div>
     );
   };
@@ -427,10 +425,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
             field.data_type,
             (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
           )}
+          {generateDesc(field)}
 
           {generateDimension(field)}
 
-          {generateDesc(field)}
           <IconButton
             onClick={() => handleAddNewField(index)}
             classes={{ root: classes.iconBtn }}
@@ -454,8 +452,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
-        {isVarChar && generateMaxLength(field)}
         {generateDesc(field)}
+
+        {isVarChar && generateMaxLength(field)}
         <IconButton
           onClick={() => {
             handleAddNewField(index);
