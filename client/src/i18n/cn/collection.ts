@@ -41,7 +41,7 @@ const collectionTrans = {
   dimensionPositiveWarning: 'Dimension should be positive number',
   newBtn: 'add new field',
   nameLengthWarning: 'Name length should be less than 256',
-  nameContentWarning: 'Name can only contain numbers, letters, and underscores',
+  nameContentWarning: 'Only numbers, letters, and underscores are allowed',
   nameFirstLetterWarning:
     'Name first character must be underscore or character(a~z, A~Z)',
 
