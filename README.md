@@ -4,49 +4,52 @@
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://img.shields.io/docker/pulls/zilliz/attu)
 [![codecov](https://codecov.io/gh/zilliztech/attu/branch/main/graph/badge.svg?token=jvIEVF9IwW)](https://codecov.io/gh/zilliztech/attu)
 
-Attu provides an intuitive and efficient GUI for Milvus v2, allowing you to interact with your databases and manage your data with just few clicks.
+Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
 
 ## screenshots
 
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
-<img src="./.github/images/create_collection.png" width="800" alt="attu" />
-<img src="./.github/images/create_index.png" width="800" alt="attu" />
-<img src="./.github/images/data_preview.png" width="800" alt="attu" />
-<img src="./.github/images/query_advanced_filter.png" width="800" alt="attu" />
-<img src="./.github/images/vector_search.png" width="800" alt="attu" />
 
 ## Features
 
-Attu is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
-
+- Basic dashboard
+  - View basic collection statistics
+  - Quick search from loaded collection
+  - Quick release loaded collection
 - Manage collections/partitions
-- Manage index
-- Basic statistics overview
-- Load/release collections for search
-- Insert entities
-- Vector search with advanced filter
+  - Create collection/partion
+  - Delete collection/partions
+  - View collection schema
+  - Create/drop index with parameters
+  - Load/release collections for search
+- Data Management
+  - Insert entities
+  - Data preview
+  - Data query
+- Vector search/query with advanced filter
 - System view
-- Data query
-- View root node configuration
-- Support TLS connection and username,password
-- Vector Visualization(TBD)
-- More...
+  - View milvus nodes system info
+  - View milvus nodes configuration
+- Manage Milvus user
+- More are comming...
 
 ## Quick start
 
-### Before you start
+> If you prefer desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
 
-Ensure you have Milvus installed on [your server](https://milvus.io/docs/install_standalone-docker.md) or [cluster](https://milvus.io/docs/install_cluster-docker.md), and attu only supports Milvus 2.x.
+## Run attu from docker
 
-### ⭐️ Start a attu instance
+> Ensure you have Milvus installed on [your server](https://milvus.io/docs/install_standalone-docker.md) or [cluster](https://milvus.io/docs/install_cluster-docker.md), and attu only supports Milvus 2.x.
 
-**_ Before attu v2.1.0 , [check here](https://github.com/zilliztech/attu/tree/v2.0.5) _**
+> _ Before attu v2.1.0 , [check here](https://github.com/zilliztech/attu/tree/v2.0.5) _\*\*
+
+### ✈️ Start a attu container
 
 ```code
 docker run -p 8000:3000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:latest
 ```
 
-Once you start the docker, open the browser, type `http://{ attu ip }:8000`, you can view the attu.
+Once you start the container, open the browser, type `http://{ attu ip }:8000`, you can view the attu GUI.
 
 #### Params
 
@@ -63,6 +66,15 @@ Tip: **127.0.0.1 or localhost will not work when runs on docker**
 ```code
 docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
 ```
+
+## screenshots
+
+<img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
+<img src="./.github/images/create_collection.png" width="800" alt="attu" />
+<img src="./.github/images/create_index.png" width="800" alt="attu" />
+<img src="./.github/images/data_preview.png" width="800" alt="attu" />
+<img src="./.github/images/query_advanced_filter.png" width="800" alt="attu" />
+<img src="./.github/images/vector_search.png" width="800" alt="attu" />
 
 ## ✨ Contributing Code
 
