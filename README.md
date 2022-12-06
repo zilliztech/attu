@@ -59,9 +59,9 @@ Once you start the container, open the browser, type `http://{ attu ip }:8000`, 
 
 Tip: **127.0.0.1 or localhost will not work when runs on docker**
 
-#### Try the dev build
+## Try the dev build
 
-**_note_** We plan to release attu once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
+> We plan to release attu once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
 
 ```code
 docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
