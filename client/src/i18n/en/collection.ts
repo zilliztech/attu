@@ -3,7 +3,7 @@ const collectionTrans = {
   noData: 'No Collection',
 
   rowCount: 'Entity Count',
-  tooltip: 'data in one entity',
+  tooltip: 'Approximately entity count.',
 
   create: 'Create Collection',
   delete: 'delete',
