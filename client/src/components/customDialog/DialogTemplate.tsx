@@ -54,6 +54,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   // needed for code mode
   showCode = false,
   codeBlocksData = [],
+  dialogClass = '',
 }) => {
   const { t } = useTranslation('btn');
   const cancel = cancelLabel || t('cancel');
@@ -77,7 +78,10 @@ const DialogTemplate: FC<DialogContainerProps> = ({
 
   return (
     <section className={classes.wrapper}>
-      <div ref={dialogRef} className={`${classes.dialog} ${classes.block}`}>
+      <div
+        ref={dialogRef}
+        className={`${classes.dialog} ${classes.block} ${dialogClass}`}
+      >
         <CustomDialogTitle onClose={handleClose} showCloseIcon={showCloseIcon}>
           {title}
         </CustomDialogTitle>

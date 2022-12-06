@@ -1,7 +1,6 @@
 import { makeStyles, Theme, TextField, IconButton } from '@material-ui/core';
 import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomButton from '../../components/customButton/CustomButton';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import icons from '../../components/icons/Icons';
 import { generateId } from '../../utils/Common';
@@ -35,57 +34,50 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    // only Safari 14.1+ support flexbox gap
-    // gap: '10px',
-    width: '100%',
-
-    '& > *': {
-      marginLeft: '10px',
-    },
-
-    '& .dimension': {
-      maxWidth: '160px',
-    },
+    gap: '8px',
+    flex: '1 0 auto',
   },
   input: {
     fontSize: '14px',
   },
-  primaryInput: {
-    maxWidth: '160px',
-
-    '&:first-child': {
-      marginLeft: 0,
-    },
+  fieldInput: {
+    width: '160px',
   },
   select: {
-    width: '160px',
-    marginBottom: '22px',
+    width: '140px',
+    marginTop: '-20px',
 
     '&:first-child': {
       marginLeft: 0,
     },
   },
+  autoIdSelect: {
+    width: '120px',
+    marginTop: '-20px',
+  },
+  numberBox: {
+    width: '97px',
+  },
+  maxLength: {
+    maxWidth: '80px',
+  },
   descInput: {
-    minWidth: '100px',
-    flexGrow: 1,
+    width: '120px',
   },
   btnTxt: {
     textTransform: 'uppercase',
   },
   iconBtn: {
     marginLeft: 0,
-
     padding: 0,
-    width: '20px',
-    height: '20px',
-  },
-  mb2: {
-    marginBottom: theme.spacing(2),
+    width: '16px',
+    height: '16px',
   },
   helperText: {
     lineHeight: '20px',
-    margin: theme.spacing(0.25, 0),
-    marginLeft: '12px',
+    fontSize: '10px',
+    margin: theme.spacing(0),
+    marginLeft: '11px',
   },
 }));
 
@@ -112,7 +104,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const classes = useStyles();
 
-  const AddIcon = icons.add;
+  const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
 
   const { requiredFields, optionalFields } = useMemo(
@@ -161,6 +153,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
             ? ALL_OPTIONS
             : VECTOR_FIELDS_OPTIONS
         }
+        size="small"
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           onChange(e.target.value as DataTypeEnum);
         }}
@@ -196,6 +189,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
             input: inputClassName,
           },
         }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        size="small"
         disabled={isReadOnly}
         error={validate(value) !== ' '}
         helperText={validate(value)}
@@ -208,10 +205,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateFieldName = (field: Field) => {
+  const generateFieldName = (
+    field: Field,
+    label?: string,
+    className?: string
+  ) => {
     return getInput({
-      label: collectionTrans('fieldName'),
+      label: label || collectionTrans('fieldName'),
       value: field.name,
+      className: className || classes.fieldInput,
       handleChange: (value: string) => {
         const isValid = checkEmptyValid(value);
         setFieldsValidation(v =>
@@ -226,9 +228,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         if (value === null) return ' ';
         const isValid = checkEmptyValid(value);
 
-        return isValid
-          ? ' '
-          : warningTrans('required', { name: collectionTrans('fieldName') });
+        return isValid ? ' ' : warningTrans('requiredOnly');
       },
     });
   };
@@ -239,7 +239,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       value: field.description,
       handleChange: (value: string) =>
         changeFields(field.id!, 'description', value),
-      className: classes.descInput,
+      inputClassName: classes.descInput,
     });
   };
 
@@ -269,6 +269,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return getInput({
       label: collectionTrans('dimension'),
       value: field.dimension as number,
+      inputClassName: classes.numberBox,
       handleChange: (value: string) => {
         const { isPositive, isMutiple } = validateDimension(value);
         const isValid =
@@ -301,6 +302,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       label: 'Max Length',
       value: field.max_length!,
       type: 'number',
+      inputClassName: classes.maxLength,
       handleChange: (value: string) =>
         changeFields(field.id!, 'max_length', value),
       validate: (value: any) => {
@@ -313,9 +315,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           type: 'number',
         });
         return !isEmptyValid
-          ? warningTrans('required', {
-              name: collectionTrans('fieldName'),
-            })
+          ? warningTrans('requiredOnly')
           : !isRangeValid
           ? warningTrans('range', {
               min: 1,
@@ -339,7 +339,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     setFields(newFields);
   };
 
-  const handleAddNewField = () => {
+  const handleAddNewField = (index: number) => {
     const id = generateId();
     const newDefaultItem: Field = {
       name: null,
@@ -356,14 +356,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
       name: false,
       dimension: true,
     };
-    setFields([...fields, newDefaultItem]);
+
+    fields.splice(index + 1, 0, newDefaultItem);
+    setFields([...fields]);
     setFieldsValidation(v => [...v, newValidation]);
   };
 
-  const handleRemoveField = (field: Field) => {
-    const newFields = fields.filter(f => f.id !== field.id);
+  const handleRemoveField = (id: string) => {
+    const newFields = fields.filter(f => f.id !== id);
     setFields(newFields);
-    setFieldsValidation(v => v.filter(item => item.id !== field.id));
+    setFieldsValidation(v => v.filter(item => item.id !== id));
   };
 
   const generatePrimaryKeyRow = (
@@ -374,9 +376,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
     const autoIdOff = isVarChar ? 'false' : autoID ? 'true' : 'false';
     return (
       <div className={`${classes.rowWrapper}`}>
+        {generateFieldName(field, collectionTrans('idFieldName'))}
         {getSelector(
           'vector',
-          `Primary ${collectionTrans('fieldType')} `,
+          `${collectionTrans('idType')} `,
           field.data_type,
           (value: DataTypeEnum) => {
             changeFields(field.id!, 'data_type', value);
@@ -386,8 +389,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           },
           PRIMARY_FIELDS_OPTIONS
         )}
-
-        {generateFieldName(field)}
+        {generateDesc(field)}
 
         <CustomSelector
           label={collectionTrans('autoId')}
@@ -398,53 +400,51 @@ const CreateFields: FC<CreateFieldsProps> = ({
             setAutoID(autoId);
           }}
           variant="filled"
-          wrapperClass={classes.select}
+          wrapperClass={classes.autoIdSelect}
           disabled={isVarChar}
+          size="small"
         />
-        {isVarChar && generateMaxLength(field)}
 
-        {generateDesc(field)}
+        {isVarChar && generateMaxLength(field)}
       </div>
     );
   };
 
-  const generateDefaultVectorRow = (field: Field): ReactElement => {
+  const generateDefaultVectorRow = (
+    field: Field,
+    index: number
+  ): ReactElement => {
     return (
       <>
         <div className={`${classes.rowWrapper}`}>
+          {generateFieldName(field, collectionTrans('vectorFieldName'))}
+
           {getSelector(
             'vector',
-            collectionTrans('fieldType'),
+            `${collectionTrans('vectorType')} `,
             field.data_type,
             (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
           )}
-
-          {generateFieldName(field)}
+          {generateDesc(field)}
 
           {generateDimension(field)}
 
-          {generateDesc(field)}
+          <IconButton
+            onClick={() => handleAddNewField(index)}
+            classes={{ root: classes.iconBtn }}
+            aria-label="add"
+          >
+            <AddIcon />
+          </IconButton>
         </div>
-
-        <CustomButton onClick={handleAddNewField} className={classes.mb2}>
-          <AddIcon />
-          <span className={classes.btnTxt}>{collectionTrans('newBtn')}</span>
-        </CustomButton>
       </>
     );
   };
 
-  const generateNumberRow = (field: Field): ReactElement => {
+  const generateNumberRow = (field: Field, index: number): ReactElement => {
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
     return (
       <div className={`${classes.rowWrapper}`}>
-        <IconButton
-          onClick={() => handleRemoveField(field)}
-          classes={{ root: classes.iconBtn }}
-          aria-label="delete"
-        >
-          <RemoveIcon />
-        </IconButton>
         {generateFieldName(field)}
         {getSelector(
           'all',
@@ -452,8 +452,28 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
-        {isVarChar && generateMaxLength(field)}
         {generateDesc(field)}
+
+        {isVarChar && generateMaxLength(field)}
+        <IconButton
+          onClick={() => {
+            handleAddNewField(index);
+          }}
+          classes={{ root: classes.iconBtn }}
+          aria-label="add"
+        >
+          <AddIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => {
+            const id = field.id || '';
+            handleRemoveField(id);
+          }}
+          classes={{ root: classes.iconBtn }}
+          aria-label="delete"
+        >
+          <RemoveIcon />
+        </IconButton>
       </div>
     );
   };
@@ -478,35 +498,41 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateRequiredFieldRow = (field: Field, autoID: boolean) => {
+  const generateRequiredFieldRow = (
+    field: Field,
+    autoID: boolean,
+    index: number
+  ) => {
     // required type is primaryKey or defaultVector
     if (field.createType === 'primaryKey') {
       return generatePrimaryKeyRow(field, autoID);
     }
     // use defaultVector as default return type
-    return generateDefaultVectorRow(field);
+    return generateDefaultVectorRow(field, index);
   };
 
-  const generateOptionalFieldRow = (field: Field) => {
+  const generateOptionalFieldRow = (field: Field, index: number) => {
     // optional type is vector or number
     if (field.createType === 'vector') {
       return generateVectorRow(field);
     }
 
     // use number as default createType
-    return generateNumberRow(field);
+    return generateNumberRow(field, index);
   };
 
   return (
     <>
       {requiredFields.map((field, index) => (
-        <Fragment key={index}>
-          {generateRequiredFieldRow(field, autoID)}
+        <Fragment key={field.id}>
+          {generateRequiredFieldRow(field, autoID, index)}
         </Fragment>
       ))}
       <div className={classes.optionalWrapper}>
         {optionalFields.map((field, index) => (
-          <Fragment key={index}>{generateOptionalFieldRow(field)}</Fragment>
+          <Fragment key={field.id}>
+            {generateOptionalFieldRow(field, index + requiredFields.length)}
+          </Fragment>
         ))}
       </div>
     </>

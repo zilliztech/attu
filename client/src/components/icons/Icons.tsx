@@ -2,6 +2,7 @@ import React from 'react';
 import { IconsType } from './Types';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Visibility from '@material-ui/icons/Visibility';
@@ -44,6 +45,7 @@ import { ReactComponent as SystemIcon } from '../../assets/icons/system.svg';
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
   add: (props = {}) => <AddIcon {...props} />,
+  addOutline:  (props = {}) => <AddCircleOutlineIcon {...props} />,
   delete: (props = {}) => <DeleteIcon {...props} />,
   list: (props = {}) => <ReorderIcon {...props} />,
   copy: (props = {}) => <FileCopyIcon {...props} />,

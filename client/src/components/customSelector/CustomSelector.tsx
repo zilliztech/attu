@@ -16,12 +16,13 @@ const CustomSelector: FC<CustomSelectorType> = props => {
     variant,
     wrapperClass = '',
     labelClass = '',
+    size = 'medium',
     ...others
   } = props;
   const id = generateId('selector');
 
   return (
-    <FormControl variant={variant} className={wrapperClass}>
+    <FormControl variant={variant} className={wrapperClass} size={size}>
       {label && (
         <InputLabel classes={{ root: labelClass }} htmlFor={id}>
           {label}

@@ -1,6 +1,7 @@
 export type IconsType =
   | 'search'
   | 'add'
+  | 'addOutline'
   | 'delete'
   | 'list'
   | 'copy'

@@ -115,11 +115,7 @@ const Query: FC<{
     const primaryKey =
       schemaList.find(v => v._isPrimaryKey === true)?._fieldName || '';
     setPrimaryKey(primaryKey);
-    // Temporarily hide bool field due to incorrect return from SDK.
-    const fieldWithoutBool = nameList.filter(
-      i => i.type !== DataTypeStringEnum.Bool
-    );
-    setFields(fieldWithoutBool);
+    setFields(nameList);
   };
 
   // Get fields at first or collection name changed.

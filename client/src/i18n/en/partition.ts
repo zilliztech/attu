@@ -9,7 +9,7 @@ const partitionTrans = {
   createdTime: 'Created Time',
   status: 'Status',
   rowCount: 'Entity Count',
-  tooltip: 'data in one entity',
+  tooltip: 'Approximately entity count.',
 
   createTitle: 'Create Partition',
   nameWarning: '_default is reserved, cannot be used as name',
