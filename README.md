@@ -4,16 +4,18 @@
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://img.shields.io/docker/pulls/zilliz/attu)
 [![codecov](https://codecov.io/gh/zilliztech/attu/branch/main/graph/badge.svg?token=jvIEVF9IwW)](https://codecov.io/gh/zilliztech/attu)
 
-Attu provides an intuitive and efficient GUI for Milvus, allowing you to interact with your databases and manage your data with just few clicks.
+Attu provides an intuitive and efficient GUI for Milvus v2, allowing you to interact with your databases and manage your data with just few clicks.
 
-<img src="./.github/images/screenshot.png" alt="attu" />
+## screenshots
 
-## Attu Doc
+<img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
+<img src="./.github/images/create_collection.png" width="800" alt="attu" />
+<img src="./.github/images/create_index.png" width="800" alt="attu" />
+<img src="./.github/images/data_preview.png" width="800" alt="attu" />
+<img src="./.github/images/query_advanced_filter.png" width="800" alt="attu" />
+<img src="./.github/images/vector_search.png" width="800" alt="attu" />
 
-- [English](./doc/en.md)
-- [中文](./doc/zh-cn.md)
-
-## Features and Roadmap
+## Features
 
 Attu is under rapid development and we are adding new features weekly, here are the current plan, we will release a version once a feature is available.
 
@@ -62,7 +64,7 @@ Tip: **127.0.0.1 or localhost will not work when runs on docker**
 docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
 ```
 
-## ✨ Building and Running attu, and/or Contributing Code
+## ✨ Contributing Code
 
 You might want to build Attu locally to contribute some code, test out the latest features, or try
 out an open PR:
@@ -83,20 +85,23 @@ out an open PR:
 
 ### Milvus
 
-New to milvus? Milvus is an open-source vector database built to power AI applications and embedding similarity search.
+New to milvus? [Milvus](https://milvus.io) is an open-source vector database built to power AI applications and embedding similarity search.
 
 ### Userful links
 
-- [Milvus installation guide](https://milvus.io/docs/v2.0.0/install_standalone-docker.md)
-- [Milvus python sdk](https://milvus.io/docs/v2.0.0/explore_pymilvus.md)
-- [Milvus bootcamp](https://milvus.io/bootcamp)
+- [Milvus docs](https://milvus.io/docs)
+- [Milvus python sdk](https://github.com/milvus-io/pymilvus)
+- [Milvus java sdk](https://github.com/milvus-io/milvus-sdk-java)
+- [Milvus gp sdk](https://github.com/milvus-io/milvus-sdk-go)
+- [Milvus node sdk](https://github.com/milvus-io/milvus-sdk-node)
+- [Feder](https://github.com/zilliztech/feder)
 
 #### ❓ Questions? Problems?
 
 - If you've found a bug or want to request a feature, please create a [GitHub Issue](https://github.com/zilliztech/attu/issues/new/choose).
   Please check to make sure someone else hasn't already created an issue for the same topic.
 
-[milvus-doc]: https://milvus.io/docs/home
+[milvus-doc]: https://milvus.io/docs
 
 ## Community
 
