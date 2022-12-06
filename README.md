@@ -6,8 +6,6 @@
 
 Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
 
-## screenshots
-
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
 
 ## Features
@@ -67,7 +65,7 @@ Tip: **127.0.0.1 or localhost will not work when runs on docker**
 docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
 ```
 
-## screenshots
+## Screenshots
 
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
 <img src="./.github/images/create_collection.png" width="800" alt="attu" />
