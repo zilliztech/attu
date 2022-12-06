@@ -106,13 +106,9 @@ const Preview: FC<{
     const searchParam = { [searchParamKey]: searchParamValue };
     const params = `${JSON.stringify(searchParam)}`;
     setPrimaryKey(primaryKey);
-    // Temporarily hide bool field due to incorrect return from SDK.
-    const fieldWithoutBool = nameList.filter(
-      i => i.type !== DataTypeStringEnum.Bool
-    );
 
     // set fields
-    setFields(fieldWithoutBool);
+    setFields(nameList);
 
     // set loading
     setTableLoading(true);
@@ -140,7 +136,7 @@ const Preview: FC<{
       // query by random id
       const res = await CollectionHttp.queryData(collectionName, {
         expr: expr,
-        output_fields: fieldWithoutBool.map(i => i.name),
+        output_fields: nameList.map(i => i.name),
       });
 
       const result = res.data;
