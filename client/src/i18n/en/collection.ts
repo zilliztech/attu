@@ -27,7 +27,7 @@ const collectionTrans = {
 
   // create dialog
   createTitle: 'Create Collection',
-  general: 'General infomation',
+  general: 'General information',
   schema: 'Schema',
   consistency: 'Consistency Level',
   consistencyLevel: 'Consistency Level',
