@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   dialog: {
-    width: '800px',
+    width: '780px',
   },
 }));
 
