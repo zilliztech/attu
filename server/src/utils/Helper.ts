@@ -22,7 +22,7 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
       );
     case 'BinaryVector':
       return Array.from({ length: (type_params as any)[0].value / 8 }).map(() =>
-        Math.random()
+        Math.random() > 0.5 ? 1 : 0
       );
     case 'VarChar':
       return makeRandomId((type_params as any)[0].value);

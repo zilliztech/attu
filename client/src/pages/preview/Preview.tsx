@@ -90,10 +90,11 @@ const Preview: FC<{
     const vectorField = schemaList.find(
       v => v.data_type === 'FloatVector' || v.data_type === 'BinaryVector'
     );
-
     const anns_field = vectorField?._fieldName!;
     const dim = Number(vectorField?._dimension);
-    const vectors = [generateVector(dim)];
+    const vectors = [
+      generateVector(vectorField?.data_type === 'FloatVector' ? dim : dim / 8),
+    ];
     // get search params
     const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
     const indexType =

@@ -33,6 +33,7 @@ import Filter from '../../components/advancedSearch';
 import { Field } from '../../components/advancedSearch/Types';
 import { useLocation } from 'react-router-dom';
 import { parseLocationSearch } from '../../utils/Format';
+import { cloneObj } from '../../utils/Common';
 import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { useTimeTravelHook } from '../../hooks/TimeTravel';
 
@@ -296,8 +297,10 @@ const VectorSearch = () => {
   };
 
   const handleSearch = async (topK: number, expr = expression) => {
+    const clonedSearchParams = cloneObj(searchParam);
+    delete clonedSearchParams.round_decimal;
     const searhParamPairs = {
-      params: JSON.stringify(searchParam),
+      params: JSON.stringify(clonedSearchParams),
       anns_field: selectedField,
       topk: topK,
       metric_type: selectedMetricType,
