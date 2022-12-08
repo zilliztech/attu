@@ -107,7 +107,7 @@ export const BINARY_INDEX_CONFIG: indexConfigType = {
   // },
   BIN_FLAT: {
     create: ['nlist'],
-    search: ['nprobe'],
+    search: [],
   },
   BIN_IVF_FLAT: {
     create: ['nlist'],
