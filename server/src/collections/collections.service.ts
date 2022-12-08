@@ -93,6 +93,7 @@ export class CollectionsService {
   }
 
   async vectorSearch(data: SearchReq) {
+    console.log('search data', data);
     const res = await this.dataManager.search(data);
     throwErrorFromSDK(res.status);
     return res;
