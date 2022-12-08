@@ -176,7 +176,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 10,
           isInt: true,
           handleChange: value => {
-            handleInputChange('round_decimal', value);
+            handleInputChange('round_decimal', Number(value));
           },
           className: classes.inlineInput,
         },
@@ -188,11 +188,10 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: nlist,
           isInt: true,
           handleChange: value => {
-            handleInputChange('nprobe', value);
+            handleInputChange('nprobe', Number(value));
           },
           className: classes.inlineInput,
         },
-
         ef: {
           label: 'ef',
           key: 'ef',
@@ -201,7 +200,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 32768,
           isInt: true,
           handleChange: value => {
-            handleInputChange('ef', value);
+            handleInputChange('ef', Number(value));
           },
         },
         search_k: {
@@ -213,7 +212,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: Infinity,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_k', value);
+            handleInputChange('search_k', Number(value));
           },
         },
         search_length: {
@@ -224,7 +223,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 300,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_length', value);
+            handleInputChange('search_length', Number(value));
           },
         },
       };
