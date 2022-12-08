@@ -13,6 +13,7 @@ export interface CollectionData {
   _indexState: ChildrenStatusType;
   _fields?: FieldData[];
   _consistencyLevel?: string;
+  _aliases: string[];
 }
 
 export interface CollectionView extends CollectionData {
@@ -119,4 +120,11 @@ export interface LoadSampleParam {
 export interface DeleteEntitiesReq {
   expr: string;
   partition_name?: string;
+}
+
+export interface AliasesProps {
+  aliases: string[];
+  collectionName: string;
+  onCreate?: Function;
+  onDelete?: Function;
 }

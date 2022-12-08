@@ -8,7 +8,7 @@ const partitionTrans = {
   name: 'Name',
   createdTime: 'Created Time',
   status: 'Status',
-  rowCount: 'Entity Count',
+  rowCount: 'Approx Entity Count',
   tooltip: 'Approximately entity count.',
 
   createTitle: 'Create Partition',
@@ -16,7 +16,7 @@ const partitionTrans = {
 
   deleteWarning:
     'You are trying to delete partition. This action cannot be undone.',
-  deletePartitionError: 'default partition cannot be deleted',
+  deletePartitionError: 'default partition cannot be dropped',
 };
 
 export default partitionTrans;

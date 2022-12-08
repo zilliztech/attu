@@ -37,7 +37,7 @@ import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { checkIndexBuilding, checkLoading } from '../../utils/Validation';
-// import CreateAlias from './CreateAlias';
+import Aliases from './Aliases';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -137,6 +137,14 @@ const Collections = () => {
         ),
         indexCreatingElement: (
           <StatusIcon type={v._indexState || ChildrenStatusType.FINISH} />
+        ),
+        _aliasElement: (
+          <Aliases
+            aliases={v._aliases}
+            collectionName={v._name}
+            onCreate={fetchData}
+            onDelete={fetchData}
+          />
         ),
       });
       return v;
@@ -329,7 +337,7 @@ const Collections = () => {
           params: {
             component: (
               <DeleteTemplate
-                label={btnTrans('delete')}
+                label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', {
                   type: collectionTrans('collection'),
                 })}
@@ -346,30 +354,7 @@ const Collections = () => {
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: data => data.length === 0,
     },
-    // Todo: hide alias after we can get all alias from milvus.
-    // {
-    //   type: 'iconBtn',
-    //   onClick: () => {
-    //     setDialog({
-    //       open: true,
-    //       type: 'custom',
-    //       params: {
-    //         component: (
-    //           <CreateAlias
-    //             collectionName={selectedCollections[0]._name}
-    //             cb={() => {
-    //               setSelectedCollections([]);
-    //             }}
-    //           />
-    //         ),
-    //       },
-    //     });
-    //   },
-    //   label: collectionTrans('alias'),
-    //   icon: 'alias',
-    //   disabledTooltip: collectionTrans('aliasTooltip'),
-    //   disabled: data => data.length !== 1,
-    // },
+
     {
       label: 'Search',
       icon: 'search',
@@ -402,7 +387,20 @@ const Collections = () => {
       label: (
         <span className="flex-center">
           {collectionTrans('rowCount')}
-          <CustomToolTip title={collectionTrans('tooltip')}>
+          <CustomToolTip title={collectionTrans('entityCountInfo')}>
+            <InfoIcon classes={{ root: classes.icon }} />
+          </CustomToolTip>
+        </span>
+      ),
+    },
+    {
+      id: '_aliasElement',
+      align: 'left',
+      disablePadding: false,
+      label: (
+        <span className="flex-center">
+          {collectionTrans('alias')}
+          <CustomToolTip title={collectionTrans('aliasInfo')}>
             <InfoIcon classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
@@ -412,8 +410,16 @@ const Collections = () => {
       id: 'consistency_level',
       align: 'left',
       disablePadding: false,
-      label: collectionTrans('consistencyLevel'),
+      label: (
+        <span className="flex-center">
+          {collectionTrans('consistencyLevel')}
+          <CustomToolTip title={collectionTrans('consistencyLevelInfo')}>
+            <InfoIcon classes={{ root: classes.icon }} />
+          </CustomToolTip>
+        </span>
+      ),
     },
+
     {
       id: '_desc',
       align: 'left',
@@ -426,12 +432,12 @@ const Collections = () => {
       disablePadding: false,
       label: collectionTrans('createdTime'),
     },
-    {
-      id: 'indexCreatingElement',
-      align: 'left',
-      disablePadding: false,
-      label: '',
-    },
+    // {
+    //   id: 'indexCreatingElement',
+    //   align: 'left',
+    //   disablePadding: false,
+    //   label: '',
+    // },
     {
       id: 'action',
       align: 'center',

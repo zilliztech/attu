@@ -11,8 +11,7 @@ const searchTrans = {
   result: 'Search Results',
   topK: 'TopK {{number}}',
   filter: 'Advanced Filter',
-  vectorValueWarning:
-    'Vector value should be an array of length {{dimension}}(dimension)',
+  vectorValueWarning: 'Vector value should be an array of length {{dimension}}',
   timeTravel: 'Time Travel',
   timeTravelPrefix: 'Data before',
 };

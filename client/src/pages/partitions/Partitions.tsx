@@ -228,7 +228,7 @@ const Partitions: FC<{
           params: {
             component: (
               <DeleteTemplate
-                label={btnTrans('delete')}
+                label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', { type: t('partition') })}
                 text={t('deleteWarning')}
                 handleDelete={handleDelete}

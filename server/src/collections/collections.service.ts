@@ -176,6 +176,7 @@ export class CollectionsService {
           : loadCollection.loadedPercentage;
 
         data.push({
+          aliases: collectionInfo.aliases,
           collection_name: name,
           schema: collectionInfo.schema,
           description: collectionInfo.schema.description,

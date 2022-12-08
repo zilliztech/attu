@@ -8,7 +8,7 @@ const commonTrans = {
     ssl: 'SSL',
   },
   status: {
-    loaded: 'loaded for search',
+    loaded: 'loaded',
     unloaded: 'unloaded',
     error: 'error',
     running: 'running',
@@ -42,7 +42,6 @@ const commonTrans = {
     join: 'Join our growing social community today',
     get: 'Get insight, tips and share ideas',
   },
-
   capacity: {
     b: 'B',
     kb: 'KB',
