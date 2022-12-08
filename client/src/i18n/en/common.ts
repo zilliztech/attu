@@ -5,6 +5,7 @@ const commonTrans = {
     unAuth: 'Username or password is not correct',
     username: 'Username',
     password: 'Password',
+    optional: '(optional)',
     ssl: 'SSL',
   },
   status: {

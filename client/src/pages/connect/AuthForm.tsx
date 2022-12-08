@@ -77,7 +77,7 @@ export const AuthForm = (props: any) => {
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
-  const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
+  const { validation, checkIsValid } = useFormValidation(checkedForm);
 
   const handleInputChange = (
     key: 'address' | 'username' | 'password' | 'ssl',
@@ -105,56 +105,38 @@ export const AuthForm = (props: any) => {
         defaultValue: form.address,
       },
     ];
-    return showAuthForm
-      ? [
-          ...noAuthConfigs,
-          {
-            label: attuTrans.username,
-            key: 'username',
-            onChange: (value: string) => handleInputChange('username', value),
-            variant: 'filled',
-            className: classes.input,
-            placeholder: attuTrans.username,
-            fullWidth: true,
-            validations: [
-              {
-                rule: 'require',
-                errorText: warningTrans('required', {
-                  name: attuTrans.username,
-                }),
-              },
-            ],
-            defaultValue: form.username,
-          },
-          {
-            label: attuTrans.password,
-            key: 'password',
-            onChange: (value: string) => handleInputChange('password', value),
-            variant: 'filled',
-            className: classes.input,
-            placeholder: attuTrans.password,
-            fullWidth: true,
-            type: 'password',
-            validations: [
-              {
-                rule: 'require',
-                errorText: warningTrans('required', {
-                  name: attuTrans.password,
-                }),
-              },
-            ],
-            defaultValue: form.username,
-          },
-        ]
-      : noAuthConfigs;
-  }, [form, attuTrans, warningTrans, classes.input, showAuthForm]);
+    return [
+      ...noAuthConfigs,
+      {
+        label: `${attuTrans.username} ${attuTrans.optional}`,
+        key: 'username',
+        onChange: (value: string) => handleInputChange('username', value),
+        variant: 'filled',
+        className: classes.input,
+        placeholder: attuTrans.username,
+        fullWidth: true,
+
+        defaultValue: form.username,
+      },
+      {
+        label: `${attuTrans.password} ${attuTrans.optional}`,
+        key: 'password',
+        onChange: (value: string) => handleInputChange('password', value),
+        variant: 'filled',
+        className: classes.input,
+        placeholder: attuTrans.password,
+        fullWidth: true,
+        type: 'password',
+
+        defaultValue: form.username,
+      },
+    ];
+  }, [form, attuTrans, warningTrans, classes.input]);
 
   const handleConnect = async () => {
     const address = formatAddress(form.address);
     try {
-      const data = showAuthForm
-        ? { ...form, address }
-        : { address, ssl: form.ssl };
+      const data = { ...form, address };
       await MilvusHttp.connect(data);
       setIsAuth(true);
       setAddress(address);
@@ -172,8 +154,8 @@ export const AuthForm = (props: any) => {
   };
 
   const btnDisabled = useMemo(() => {
-    return showAuthForm ? disabled : form.address.trim().length === 0;
-  }, [showAuthForm, disabled, form.address]);
+    return form.address.trim().length === 0;
+  }, [form.address]);
 
   return (
     <section className={classes.wrapper}>
