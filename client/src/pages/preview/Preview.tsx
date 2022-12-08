@@ -11,6 +11,7 @@ import { ToolBarConfig } from '../../components/grid/Types';
 import CustomToolBar from '../../components/grid/ToolBar';
 import { DataTypeStringEnum } from '../collections/Types';
 import { generateVector } from '../../utils/Common';
+import { DataTypeEnum } from '../../pages/collections/Types';
 
 import {
   INDEX_CONFIG,
@@ -89,10 +90,11 @@ const Preview: FC<{
     const vectorField = schemaList.find(
       v => v.data_type === 'FloatVector' || v.data_type === 'BinaryVector'
     );
-
     const anns_field = vectorField?._fieldName!;
     const dim = Number(vectorField?._dimension);
-    const vectors = [generateVector(dim)];
+    const vectors = [
+      generateVector(vectorField?.data_type === 'FloatVector' ? dim : dim / 8),
+    ];
     // get search params
     const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
     const indexType =
@@ -105,13 +107,9 @@ const Preview: FC<{
     const searchParam = { [searchParamKey]: searchParamValue };
     const params = `${JSON.stringify(searchParam)}`;
     setPrimaryKey(primaryKey);
-    // Temporarily hide bool field due to incorrect return from SDK.
-    const fieldWithoutBool = nameList.filter(
-      i => i.type !== DataTypeStringEnum.Bool
-    );
 
     // set fields
-    setFields(fieldWithoutBool);
+    setFields(nameList);
 
     // set loading
     setTableLoading(true);
@@ -128,7 +126,7 @@ const Preview: FC<{
         expr: '',
         vectors,
         output_fields: [primaryKey],
-        vector_type: Number(vectorField?._fieldId),
+        vector_type: DataTypeEnum[vectorField!._fieldType],
       });
 
       // compose random id list expression
@@ -139,7 +137,7 @@ const Preview: FC<{
       // query by random id
       const res = await CollectionHttp.queryData(collectionName, {
         expr: expr,
-        output_fields: fieldWithoutBool.map(i => i.name),
+        output_fields: nameList.map(i => i.name),
       });
 
       const result = res.data;

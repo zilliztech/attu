@@ -9,6 +9,7 @@ const btnTrans = {
   connect: 'Connect',
   import: 'Import',
   delete: 'Delete',
+  drop: 'Drop',
   release: 'Release',
   load: 'Load',
   insert: 'Import Data',

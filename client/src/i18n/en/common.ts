@@ -8,7 +8,7 @@ const commonTrans = {
     ssl: 'SSL',
   },
   status: {
-    loaded: 'loaded for search',
+    loaded: 'loaded',
     unloaded: 'unloaded',
     error: 'error',
     running: 'running',

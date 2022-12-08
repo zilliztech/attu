@@ -23,31 +23,33 @@ const useStyles = makeStyles((theme: Theme) => ({
   fieldset: {
     width: '100%',
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
-
+    marginBottom: '16px',
+    gap: '8px',
     '&:nth-last-child(2)': {
       flexDirection: 'column',
       alignItems: 'flex-start',
     },
 
     '& legend': {
-      marginBottom: theme.spacing(2),
+      marginBottom: theme.spacing(1),
       color: `#82838e`,
       lineHeight: '20px',
       fontSize: '14px',
     },
   },
   input: {
-    width: '48%',
+    width: '100%',
   },
   select: {
     width: '160px',
-    marginBottom: '22px',
 
     '&:first-child': {
       marginLeft: 0,
     },
+  },
+  dialog: {
+    minWidth: '100%',
   },
 }));
 
@@ -130,9 +132,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
         // cannot be empty
         {
           rule: 'require',
-          errorText: warningTrans('required', {
-            name: collectionTrans('name'),
-          }),
+          errorText: warningTrans('requiredOnly'),
         },
         // length <= 255
         {
@@ -157,6 +157,10 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
           errorText: collectionTrans('nameFirstLetterWarning'),
         },
       ],
+      InputLabelProps: {
+        shrink: true,
+      },
+      size: 'small',
       className: classes.input,
     },
     {
@@ -166,7 +170,11 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
       onChange: (value: string) => handleInputChange('description', value),
       variant: 'filled',
       validations: [],
+      size: 'small',
       className: classes.input,
+      InputLabelProps: {
+        shrink: true,
+      },
     },
   ];
 
@@ -196,10 +204,13 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   return (
     <DialogTemplate
       title={collectionTrans('createTitle')}
-      handleClose={handleCloseDialog}
+      handleClose={() => {
+        handleCloseDialog();
+      }}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
       confirmDisabled={disabled || !allFieldsValid}
+      dialogClass={classes.dialog}
     >
       <form>
         <fieldset className={classes.fieldset}>
@@ -230,13 +241,14 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
           <legend>{collectionTrans('consistency')}</legend>
           <CustomSelector
             wrapperClass={classes.select}
+            size="small"
             options={CONSISTENCY_LEVEL_OPTIONS}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
+            hiddenLabel={true}
             value={consistencyLevel}
             variant="filled"
-            label={'Consistency'}
           />
         </fieldset>
       </form>

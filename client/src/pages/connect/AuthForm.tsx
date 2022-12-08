@@ -10,7 +10,7 @@ import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { MilvusHttp } from '../../http/Milvus';
 import { formatAddress } from '../../utils/Format';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '42px',
     height: 'auto',
     marginBottom: '8px',
-    display: 'block'
+    display: 'block',
   },
   input: {
     margin: theme.spacing(3, 0, 0.5),
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 export const AuthForm = (props: any) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useStyles();
 
   const { openSnackBar } = useContext(rootContext);
@@ -161,7 +161,7 @@ export const AuthForm = (props: any) => {
 
       openSnackBar(successTrans('connect'));
       window.localStorage.setItem(MILVUS_ADDRESS, address);
-      history.push('/');
+      navigate('/');
     } catch (error: any) {
       if (error?.response?.status === CODE_STATUS.UNAUTHORIZED) {
         showAuthForm

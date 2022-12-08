@@ -1,10 +1,8 @@
 import { FC, useContext, useMemo, useState } from 'react';
-
+import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '../../context/Root';
-
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
-
 import CustomInput from '../../components/customInput/CustomInput';
 import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
@@ -12,11 +10,19 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import { CollectionHttp } from '../../http/Collection';
 import { CreateAliasProps } from './Types';
 
+const useStyles = makeStyles((theme: Theme) => ({
+  desc: {
+    margin: '8px 0 16px 0',
+  },
+}));
+
 const CreateAlias: FC<CreateAliasProps> = props => {
   const { cb, collectionName } = props;
   const [form, setForm] = useState({
     alias: '',
   });
+
+  const classes = useStyles();
 
   const checkedForm = useMemo(() => {
     const { alias } = form;
@@ -29,6 +35,7 @@ const CreateAlias: FC<CreateAliasProps> = props => {
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
 
   const handleInputChange = (value: string) => {
     setForm({ alias: value });
@@ -41,11 +48,11 @@ const CreateAlias: FC<CreateAliasProps> = props => {
   };
 
   const aliasInputConfig: ITextfieldConfig = {
-    label: 'Collection Alias',
+    label: collectionTrans('alias'),
     key: 'alias',
     onChange: handleInputChange,
     variant: 'filled',
-    placeholder: 'alias name',
+    placeholder: collectionTrans('aliasCreatePlaceholder'),
     fullWidth: true,
     validations: [
       {
@@ -68,13 +75,19 @@ const CreateAlias: FC<CreateAliasProps> = props => {
       })}
       handleClose={handleCloseDialog}
       children={
-        <CustomInput
-          type="text"
-          textConfig={aliasInputConfig}
-          checkValid={checkIsValid}
-          validInfo={validation}
-        />
+        <>
+          <Typography variant="body1" component="p" className={classes.desc}>
+            {collectionTrans('aliasInfo')}
+          </Typography>
+          <CustomInput
+            type="text"
+            textConfig={aliasInputConfig}
+            checkValid={checkIsValid}
+            validInfo={validation}
+          />
+        </>
       }
+      confirmLabel={btnTrans('create')}
       handleConfirm={handleConfirm}
       confirmDisabled={disabled}
     />

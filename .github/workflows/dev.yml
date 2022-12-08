@@ -4,11 +4,13 @@ on:
   pull_request_target:
     branches: [main]
     types: [closed]
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
@@ -41,58 +43,3 @@ jobs:
 
       - name: Docker Push Dev
         run: docker push zilliz/attu:dev
-
-  k8s:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-
-      - name: Install OpenVPN and kubectl
-        run: |
-          sudo apt-get update
-          sudo apt-get install openvpn -y
-          sudo apt-get install -y apt-transport-https ca-certificates curl
-          sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-          echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-          sudo apt-get update
-          sudo apt-get install kubectl -y
-
-      - name: Connect VPN
-        uses: golfzaptw/action-connect-ovpn@master
-        id: connect_vpn
-        with:
-          FILE_OVPN: ".github/workflows/client.ovpn"
-        env:
-          CA_CRT: ${{ secrets.VPN_CA}}
-          USER_CRT: ${{ secrets.VPN_CRT }}
-          USER_KEY: ${{ secrets.VPN_KEY }}
-
-      - name: Deploy to cluster
-        run: |
-          echo ${{ secrets.kubeconfig }} > config64
-          base64 -d config64 > kubeconfig
-          kubectl delete pods -n ued -l app=attu --kubeconfig=kubeconfig
-          sleep 60
-
-  check:
-    runs-on: ubuntu-latest
-    needs: [build, k8s]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-
-      - name: Check insight status
-        env:
-          INSIGHT_URL: ${{ secrets.INSIGHT_URL }}
-        run: |
-          yarn add axios
-          yarn add @actions/core
-          node checkInsight.js

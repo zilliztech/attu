@@ -7,7 +7,7 @@ import CustomToolTip from '../../../components/customToolTip/CustomToolTip';
 import { CollectionCardProps } from './Types';
 import { useTranslation } from 'react-i18next';
 import CustomIconButton from '../../../components/customButton/CustomIconButton';
-import { useHistory, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LOADING_STATE } from '../../../consts/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -84,7 +84,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
     _rowCount: rowCount,
     _loadedPercentage,
   } = data;
-  const history = useHistory();
+  const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
   const InfoIcon = icons.info;
@@ -99,13 +99,14 @@ const CollectionCard: FC<CollectionCardProps> = ({
   };
 
   const onVectorSearchClick = () => {
-    history.push({ pathname: '/search', search: `?collectionName=${name}` });
+    navigate({ pathname: '/search', search: `?collectionName=${name}` });
   };
 
   return (
     <div
-      className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${data._status === LOADING_STATE.LOADING && classes.loading
-        }`}
+      className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
+        data._status === LOADING_STATE.LOADING && classes.loading
+      }`}
     >
       <div>
         <Status status={status} percentage={_loadedPercentage} />
@@ -116,7 +117,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       </Link>
       <div className={classes.content}>
         <Typography>{collectionTrans('rowCount')}</Typography>
-        <CustomToolTip title={collectionTrans('tooltip')} placement="bottom">
+        <CustomToolTip title={collectionTrans('entityCountInfo')} placement="bottom">
           <InfoIcon classes={{ root: classes.icon }} />
         </CustomToolTip>
         <Typography className={classes.rowCount}>{rowCount}</Typography>

@@ -19,6 +19,7 @@ const insertTrans = {
     'Uploaded data column count is not equal to schema count',
   uploadAutoIdFieldWarning:
     'AutoId field ({{fieldName}}) does not require data',
+
   previewTipData: 'Data Preview(Top 4 rows shown)',
   previewTipAction: '*Change header cell selector value to edit field name',
   requiredFieldName: 'Field Name*',
@@ -27,6 +28,10 @@ const insertTrans = {
   statusLoadingTip: 'Please wait patiently, thank you',
   statusSuccess: 'Import Data Successfully!',
   statusError: 'Import Data Failed!',
+
+  importSampleData: 'Import sample data into {{collection}}',
+  sampleDataSize: 'Choose sample data size',
+  importSampleDataDesc: `Import random data based on the collection's schema.`
 };
 
 export default insertTrans;

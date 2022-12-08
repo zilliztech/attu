@@ -72,7 +72,9 @@ export class VectorSearchDto {
   @IsOptional()
   output_fields?: string[];
 
-  @IsEnum(VectorTypes, { message: 'Type allow all->0 inmemory->1' })
+  @IsEnum(VectorTypes, {
+    message: ({ value }) => `Wrong vector type, ${value}`,
+  })
   vector_type: DataType.BinaryVector | DataType.FloatVector;
 }
 

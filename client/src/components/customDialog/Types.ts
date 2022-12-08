@@ -36,4 +36,6 @@ export type DialogContainerProps = {
   // code mode requirement
   showCode?: boolean;
   codeBlocksData?: CodeViewData[];
+  children: ReactElement;
+  dialogClass?: string;
 };

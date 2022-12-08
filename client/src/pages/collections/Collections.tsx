@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import AttuGrid from '../../components/grid/Grid';
@@ -30,7 +30,6 @@ import {
   useLoadAndReleaseDialogHook,
 } from '../../hooks/Dialog';
 import Highlighter from 'react-highlight-words';
-import { parseLocationSearch } from '../../utils/Format';
 import InsertContainer from '../../components/insert/Container';
 import ImportSample from '../../components/insert/ImportSample';
 import { MilvusHttp } from '../../http/Milvus';
@@ -38,7 +37,7 @@ import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { checkIndexBuilding, checkLoading } from '../../utils/Validation';
-// import CreateAlias from './CreateAlias';
+import Aliases from './Aliases';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -63,16 +62,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-let timer: NodeJS.Timeout | null = null;
-// get init search value from url
-const { urlSearch = '' } = parseLocationSearch(window.location.search);
-
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const { handleInsertDialog } = useInsertDialogHook();
-
-  const [search, setSearch] = useState<string>(urlSearch);
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState<string>(
+    (searchParams.get('search') as string) || ''
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCollections, setSelectedCollections] = useState<
     CollectionView[]
@@ -91,49 +88,6 @@ const Collections = () => {
   const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
   const SourceIcon = icons.source;
-
-  const searchedCollections = useMemo(
-    () => collections.filter(collection => collection._name.includes(search)),
-    [collections, search]
-  );
-
-  const formatCollections = useMemo(() => {
-    const data = searchedCollections.map(v => {
-      // const indexStatus = statusRes.find(item => item._name === v._name);
-      Object.assign(v, {
-        nameElement: (
-          <Link to={`/collections/${v._name}`} className={classes.link}>
-            <Highlighter
-              textToHighlight={v._name}
-              searchWords={[search]}
-              highlightClassName={classes.highlight}
-            />
-          </Link>
-        ),
-        statusElement: (
-          <Status status={v._status} percentage={v._loadedPercentage} />
-        ),
-        indexCreatingElement: (
-          <StatusIcon type={v._indexState || ChildrenStatusType.FINISH} />
-        ),
-      });
-
-      return v;
-    });
-    return data;
-  }, [classes.highlight, classes.link, search, searchedCollections]);
-
-  const {
-    pageSize,
-    handlePageSize,
-    currentPage,
-    handleCurrentPage,
-    total,
-    data: collectionList,
-    handleGridSort,
-    order,
-    orderBy,
-  } = usePaginationHook(formatCollections);
 
   const fetchData = useCallback(async () => {
     try {
@@ -160,6 +114,56 @@ const Collections = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const formatCollections = useMemo(() => {
+    const filteredCollections = search
+      ? collections.filter(collection => collection._name.includes(search))
+      : collections;
+
+    const data = filteredCollections.map(v => {
+      // const indexStatus = statusRes.find(item => item._name === v._name);
+      Object.assign(v, {
+        nameElement: (
+          <Link to={`/collections/${v._name}`} className={classes.link}>
+            <Highlighter
+              textToHighlight={v._name}
+              searchWords={[search]}
+              highlightClassName={classes.highlight}
+            />
+          </Link>
+        ),
+        statusElement: (
+          <Status status={v._status} percentage={v._loadedPercentage} />
+        ),
+        indexCreatingElement: (
+          <StatusIcon type={v._indexState || ChildrenStatusType.FINISH} />
+        ),
+        _aliasElement: (
+          <Aliases
+            aliases={v._aliases}
+            collectionName={v._name}
+            onCreate={fetchData}
+            onDelete={fetchData}
+          />
+        ),
+      });
+      return v;
+    });
+
+    return data;
+  }, [search, collections]);
+
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data: collectionList,
+    handleGridSort,
+    order,
+    orderBy,
+  } = usePaginationHook(formatCollections);
 
   const handleInsert = async (
     collectionName: string,
@@ -271,9 +275,6 @@ const Collections = () => {
   };
 
   const handleSearch = (value: string) => {
-    if (timer) {
-      clearTimeout(timer);
-    }
     setSearch(value);
   };
 
@@ -336,7 +337,7 @@ const Collections = () => {
           params: {
             component: (
               <DeleteTemplate
-                label={btnTrans('delete')}
+                label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', {
                   type: collectionTrans('collection'),
                 })}
@@ -353,30 +354,7 @@ const Collections = () => {
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: data => data.length === 0,
     },
-    // Todo: hide alias after we can get all alias from milvus.
-    // {
-    //   type: 'iconBtn',
-    //   onClick: () => {
-    //     setDialog({
-    //       open: true,
-    //       type: 'custom',
-    //       params: {
-    //         component: (
-    //           <CreateAlias
-    //             collectionName={selectedCollections[0]._name}
-    //             cb={() => {
-    //               setSelectedCollections([]);
-    //             }}
-    //           />
-    //         ),
-    //       },
-    //     });
-    //   },
-    //   label: collectionTrans('alias'),
-    //   icon: 'alias',
-    //   disabledTooltip: collectionTrans('aliasTooltip'),
-    //   disabled: data => data.length !== 1,
-    // },
+
     {
       label: 'Search',
       icon: 'search',
@@ -409,7 +387,20 @@ const Collections = () => {
       label: (
         <span className="flex-center">
           {collectionTrans('rowCount')}
-          <CustomToolTip title={collectionTrans('tooltip')}>
+          <CustomToolTip title={collectionTrans('entityCountInfo')}>
+            <InfoIcon classes={{ root: classes.icon }} />
+          </CustomToolTip>
+        </span>
+      ),
+    },
+    {
+      id: '_aliasElement',
+      align: 'left',
+      disablePadding: false,
+      label: (
+        <span className="flex-center">
+          {collectionTrans('alias')}
+          <CustomToolTip title={collectionTrans('aliasInfo')}>
             <InfoIcon classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
@@ -419,8 +410,16 @@ const Collections = () => {
       id: 'consistency_level',
       align: 'left',
       disablePadding: false,
-      label: collectionTrans('consistencyLevel'),
+      label: (
+        <span className="flex-center">
+          {collectionTrans('consistencyLevel')}
+          <CustomToolTip title={collectionTrans('consistencyLevelInfo')}>
+            <InfoIcon classes={{ root: classes.icon }} />
+          </CustomToolTip>
+        </span>
+      ),
     },
+
     {
       id: '_desc',
       align: 'left',
@@ -433,12 +432,12 @@ const Collections = () => {
       disablePadding: false,
       label: collectionTrans('createdTime'),
     },
-    {
-      id: 'indexCreatingElement',
-      align: 'left',
-      disablePadding: false,
-      label: '',
-    },
+    // {
+    //   id: 'indexCreatingElement',
+    //   align: 'left',
+    //   disablePadding: false,
+    //   label: '',
+    // },
     {
       id: 'action',
       align: 'center',
