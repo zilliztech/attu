@@ -3,7 +3,7 @@ import {
   CollectionView,
   DeleteEntitiesReq,
   InsertDataParam,
-  LoadSampleParam
+  LoadSampleParam,
 } from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
 import { VectorSearchParam } from '../types/SearchTypes';
@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 import { LOADING_STATE } from '../consts/Milvus';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
+  private aliases!: string[];
   private autoID!: string;
   private collection_name!: string;
   private description!: string;
@@ -117,6 +118,12 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
+  static dropAlias(collectionName: string, params: { alias: string }) {
+    return super.delete({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/alias/${params.alias}`,
+    });
+  }
+
   static queryData(collectionName: string, params: QueryParam) {
     return super.query({
       path: `${this.COLLECTIONS_URL}/${collectionName}/query`,
@@ -126,6 +133,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
 
   get _autoId() {
     return this.autoID;
+  }
+
+  get _aliases() {
+    return this.aliases;
   }
 
   get _desc() {

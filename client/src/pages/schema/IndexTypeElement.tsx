@@ -183,7 +183,7 @@ const IndexTypeElement: FC<{
       params: {
         component: (
           <DeleteTemplate
-            label={btnTrans('delete')}
+            label={btnTrans('drop')}
             title={dialogTrans('deleteTitle', { type: indexTrans('index') })}
             text={indexTrans('deleteWarning')}
             handleDelete={requestDeleteIndex}

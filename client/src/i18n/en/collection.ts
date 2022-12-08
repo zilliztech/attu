@@ -2,13 +2,12 @@ const collectionTrans = {
   noLoadData: 'No Loaded Collection',
   noData: 'No Collection',
 
-  rowCount: 'Entity Count',
-  tooltip: 'Approximately entity count.',
+  rowCount: 'Approx Entity Count',
 
   create: 'Create Collection',
   delete: 'delete',
   deleteTooltip: 'Please select at least one item to delete.',
-  alias: 'alias',
+  alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
   downloadTooltip: 'Download all query results',
@@ -24,6 +23,12 @@ const collectionTrans = {
   desc: 'Description',
   createdTime: 'Created Time',
   maxLength: 'Max Length',
+
+  // table tooltip
+  aliasInfo: 'Alias can be used as collection name in vector search.',
+  consistencyLevelInfo:
+    'Consistency refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time.',
+  entityCountInfo: 'Approximately entity count.',
 
   // create dialog
   createTitle: 'Create Collection',
@@ -65,6 +70,7 @@ const collectionTrans = {
   // delete dialog
   deleteWarning: `You are trying to delete a collection with data. This action cannot be undone.`,
   deleteDataWarning: `You are trying to delete entites. This action cannot be undone.`,
+  deleteAliasWarning: `You are trying to drop an alias. This action cannot be undone.`,
 
   // collection tabs
   partitionTab: 'Partitions',
@@ -73,6 +79,9 @@ const collectionTrans = {
   previewTab: 'Data Preview',
   startTip: 'Start your data query',
   exprPlaceHolder: 'Please enter your query by using advanced filter ->',
+
+  // alias dialog
+  aliasCreatePlaceholder: 'Alias name',
 };
 
 export default collectionTrans;

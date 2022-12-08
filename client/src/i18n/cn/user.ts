@@ -7,7 +7,7 @@ const userTrans = {
   newPassword: 'New Password',
   confirmPassword: 'Confirm Password',
   update: 'Update password',
-  isNotSame: 'Confirm password is not same as new password',
+  isNotSame: 'Not same as new password',
   deleteTip:
     'Please select at least one item to delete and root can not be deleted.',
 };

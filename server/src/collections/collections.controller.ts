@@ -47,6 +47,7 @@ export class CollectionController {
     );
 
     this.router.delete('/:name', this.dropCollection.bind(this));
+    this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
 
     this.router.get('/:name', this.describeCollection.bind(this));
 
@@ -289,6 +290,16 @@ export class CollectionController {
         collection_name: name,
         ...data,
       });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async dropAlias(req: Request, res: Response, next: NextFunction) {
+    const alias = req.params?.alias;
+    try {
+      const result = await this.collectionsService.dropAlias({ alias });
       res.send(result);
     } catch (error) {
       next(error);

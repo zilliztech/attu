@@ -117,7 +117,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       </Link>
       <div className={classes.content}>
         <Typography>{collectionTrans('rowCount')}</Typography>
-        <CustomToolTip title={collectionTrans('tooltip')} placement="bottom">
+        <CustomToolTip title={collectionTrans('entityCountInfo')} placement="bottom">
           <InfoIcon classes={{ root: classes.icon }} />
         </CustomToolTip>
         <Typography className={classes.rowCount}>{rowCount}</Typography>
