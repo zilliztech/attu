@@ -15,8 +15,8 @@ Attu is an all-in-one milvus administration tool. With Attu, you can dramaticall
   - Quick search from loaded collection
   - Quick release loaded collection
 - Manage collections/partitions
-  - Create collection/partion
-  - Delete collection/partions
+  - Create/Drop collection/partion
+  - Create/drop alias
   - View collection schema
   - Create/drop index with parameters
   - Load/release collections for search
