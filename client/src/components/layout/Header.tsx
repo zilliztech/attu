@@ -6,6 +6,7 @@ import icons from '../icons/Icons';
 import { useNavigate } from 'react-router-dom';
 import { authContext } from '../../context/Auth';
 import { useTranslation } from 'react-i18next';
+import { MilvusHttp } from '../../http/Milvus';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -70,10 +71,13 @@ const Header: FC<HeaderType> = props => {
     navigate(path);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setAddress('');
     setIsAuth(false);
     window.localStorage.removeItem(MILVUS_ADDRESS);
+    await MilvusHttp.closeConnection();
+
+    // window.localStorage.removeItem(MILVUS_ADDRESS);
   };
 
   return (

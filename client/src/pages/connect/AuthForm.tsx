@@ -13,7 +13,7 @@ import { formatAddress } from '../../utils/Format';
 import { useNavigate } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
-import { MILVUS_ADDRESS } from '../../consts/Localstorage';
+import { MILVUS_ADDRESS, LAST_TIME_ADDRESS } from '../../consts/Localstorage';
 import { CODE_STATUS } from '../../consts/Http';
 import { MILVUS_URL } from '../../consts/Milvus';
 import { CustomRadio } from '../../components/customRadio/CustomRadio';
@@ -69,7 +69,7 @@ export const AuthForm = (props: any) => {
 
   const [showAuthForm, setShowAuthForm] = useState(false);
   const [form, setForm] = useState({
-    address: MILVUS_URL,
+    address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
     username: '',
     password: '',
     ssl: false,
@@ -138,11 +138,14 @@ export const AuthForm = (props: any) => {
     try {
       const data = { ...form, address };
       await MilvusHttp.connect(data);
+
       setIsAuth(true);
       setAddress(address);
 
       openSnackBar(successTrans('connect'));
       window.localStorage.setItem(MILVUS_ADDRESS, address);
+      // store address for next time using
+      window.localStorage.setItem(LAST_TIME_ADDRESS, address);
       navigate('/');
     } catch (error: any) {
       if (error?.response?.status === CODE_STATUS.UNAUTHORIZED) {
@@ -158,35 +161,33 @@ export const AuthForm = (props: any) => {
   }, [form.address]);
 
   return (
-    <section className={classes.wrapper}>
-      <div className={classes.titleWrapper}>
-        <Logo classes={{ root: classes.logo }} />
-        <Typography variant="h2" className="title">
-          {attuTrans.admin}
-        </Typography>
-      </div>
-      {inputConfigs.map(v => (
-        <CustomInput
-          type="text"
-          textConfig={v}
-          checkValid={checkIsValid}
-          validInfo={validation}
-          key={v.label}
-        />
-      ))}
-      <div className={classes.sslWrapper}>
-        <CustomRadio
-          label={attuTrans.ssl}
-          handleChange={(val: boolean) => handleInputChange('ssl', val)}
-        />
-      </div>
-      <CustomButton
-        variant="contained"
-        disabled={btnDisabled}
-        onClick={handleConnect}
-      >
-        {btnTrans('connect')}
-      </CustomButton>
-    </section>
+    <form onSubmit={handleConnect}>
+      <section className={classes.wrapper}>
+        <div className={classes.titleWrapper}>
+          <Logo classes={{ root: classes.logo }} />
+          <Typography variant="h2" className="title">
+            {attuTrans.admin}
+          </Typography>
+        </div>
+        {inputConfigs.map(v => (
+          <CustomInput
+            type="text"
+            textConfig={v}
+            checkValid={checkIsValid}
+            validInfo={validation}
+            key={v.label}
+          />
+        ))}
+        <div className={classes.sslWrapper}>
+          <CustomRadio
+            label={attuTrans.ssl}
+            handleChange={(val: boolean) => handleInputChange('ssl', val)}
+          />
+        </div>
+        <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
+          {btnTrans('connect')}
+        </CustomButton>
+      </section>
+    </form>
   );
 };

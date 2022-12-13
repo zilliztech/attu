@@ -1,18 +1,18 @@
 paths:
   /milvus/connect:
     post:
-      tags: 
+      tags:
         - Milvus
-      description: Connect milvus
+      description: Connect to milvus server
       requestBody:
-        description: Milvus address 
+        description: Milvus address
         required: true
         content:
           application/json:
             schema:
               type: object
               required:
-                - "address"
+                - 'address'
               properties:
                 address:
                   type: string
@@ -22,9 +22,19 @@ paths:
           schema:
             type: object
 
+  /milvus/disconnect:
+    post:
+      tags:
+        - Milvus
+      description: Disconnect to milvus server
+      responses:
+        200:
+          schema:
+            type: object
+
   /milvus/check:
     get:
-      tags: 
+      tags:
         - Milvus
       description: Check milvus alive or not.
       parameters:
@@ -38,9 +48,9 @@ paths:
 
   /milvus/metrics:
     get:
-      tags: 
+      tags:
         - Milvus
-      description: Get milvus metrics     
+      description: Get milvus metrics
       responses:
         200:
           schema:
@@ -48,7 +58,7 @@ paths:
 
   /milvus/flush:
     post:
-      tags: 
+      tags:
         - Milvus
       description: Flush data in milvus
       requestBody:
@@ -59,7 +69,7 @@ paths:
             schema:
               type: object
               required:
-                - "collection_names"
+                - 'collection_names'
               properties:
                 collection_names:
                   type: array

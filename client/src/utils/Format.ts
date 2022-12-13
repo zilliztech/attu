@@ -1,4 +1,5 @@
 import { BYTE_UNITS } from '../consts/Util';
+import { DEFAULT_MILVUS_PORT } from '../consts/Milvus';
 import {
   CreateFieldType,
   DataTypeEnum,
@@ -141,8 +142,11 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 };
 
 // Trim the address
-export const formatAddress = (address: string): string =>
-  address.trim().replace(/(http|https):\/\//, '');
+export const formatAddress = (address: string): string => {
+  // remove http or https prefix from address
+  const ip = address.replace(/(http|https):\/\//, '');
+  return ip.includes(':') ? ip : `${address}:${DEFAULT_MILVUS_PORT}`;
+};
 
 export const formatByteSize = (
   size: number,
