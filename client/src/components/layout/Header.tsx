@@ -74,10 +74,8 @@ const Header: FC<HeaderType> = props => {
   const handleLogout = async () => {
     setAddress('');
     setIsAuth(false);
-    window.localStorage.removeItem(MILVUS_ADDRESS);
     await MilvusHttp.closeConnection();
-
-    // window.localStorage.removeItem(MILVUS_ADDRESS);
+    window.localStorage.removeItem(MILVUS_ADDRESS);
   };
 
   return (
