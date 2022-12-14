@@ -81,7 +81,7 @@ const VectorSearch = () => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResult || []);
-console.log('pageSize', pageSize);
+
   const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
     useTimeTravelHook();
 
