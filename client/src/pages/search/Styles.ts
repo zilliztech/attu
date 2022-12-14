@@ -8,9 +8,8 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     '& .field': {
       display: 'flex',
       flexDirection: 'column',
-      flexBasis: '33%',
-
-      padding: theme.spacing(2, 3, 4),
+      width: 250,
+      padding: theme.spacing(2),
       backgroundColor: '#fff',
       borderRadius: theme.spacing(0.5),
       boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
@@ -18,17 +17,16 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       '& .textarea': {
         border: `1px solid ${theme.palette.attuGrey.main}`,
         borderRadius: theme.spacing(0.5),
-        padding: theme.spacing(1),
-        paddingBottom: '18px',
-        marginTop: theme.spacing(2),
+        padding: theme.spacing(0, 1),
+        marginBottom: theme.spacing(0.5),
       },
 
       // reset default style
       '& .textfield': {
-        padding: 0,
         fontSize: '14px',
         lineHeight: '20px',
         fontWeight: 400,
+        height: '128px',
 
         '&::before': {
           borderBottom: 'none',
@@ -61,6 +59,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
 
     '& .field-second': {
       flexGrow: 1,
+      flexBasis: '50%',
       margin: theme.spacing(0, 1),
     },
 
@@ -68,16 +67,25 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     // if still set padding-bottom, the whole form space will be stretched
     '& .field-params': {
       paddingBottom: 0,
+      width: 390,
     },
 
     '& .text': {
       color: theme.palette.attuGrey.dark,
       fontWeight: 500,
+      marginBottom: theme.spacing(1),
+      height: theme.spacing(4),
+      '& button': {
+        marginLeft: '8px',
+        position: 'relative',
+        top: -5,
+        verticalAlign: 'top',
+      },
     },
   },
   selector: {
     width: '100%',
-    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   paramsWrapper: {
     display: 'flex',
@@ -123,7 +131,6 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.attuGrey.dark,
   },
   error: {
-    marginTop: theme.spacing(1),
     color: theme.palette.error.main,
   },
 }));

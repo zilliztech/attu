@@ -20,13 +20,12 @@ import { SearchParamInputConfig, SearchParamsProps } from './Types';
 const getStyles = makeStyles((theme: Theme) => ({
   selector: {
     width: '100%',
-    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   input: {
-    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   inlineInput: {
-    marginTop: theme.spacing(2),
     width: '48%',
   },
   inlineInputWrapper: {

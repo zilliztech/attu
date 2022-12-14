@@ -1,6 +1,6 @@
 const searchTrans = {
-  firstTip: '1. Enter vector value {{dimensionTip}}',
-  secondTip: '2. Choose collection and field',
+  firstTip: '2. Enter search vector {{dimensionTip}}',
+  secondTip: '1. Choose collection and field',
   thirdTip: '3. Set search parameters',
   vectorPlaceholder: 'Please input your vector value here, e.g. [1, 2, 3, 4]',
   collection: 'Choose Collection',
