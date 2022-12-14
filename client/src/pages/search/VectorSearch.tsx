@@ -1,4 +1,4 @@
-import { TextField, Typography } from '@material-ui/core';
+import { TextField, Typography, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
@@ -33,7 +33,7 @@ import Filter from '../../components/advancedSearch';
 import { Field } from '../../components/advancedSearch/Types';
 import { useLocation } from 'react-router-dom';
 import { parseLocationSearch } from '../../utils/Format';
-import { cloneObj } from '../../utils/Common';
+import { cloneObj, generateVector } from '../../utils/Common';
 import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { useTimeTravelHook } from '../../hooks/TimeTravel';
 
@@ -135,8 +135,10 @@ const VectorSearch = () => {
           }))
       : [];
   }, [searchResult, primaryKeyField]);
+
+  const [selectedMetricType, setSelectedMetricType] = useState<string>('');
+
   const {
-    metricType,
     indexType,
     indexParams,
     fieldType,
@@ -154,6 +156,8 @@ const VectorSearch = () => {
         index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
       const indexParams = index?._indexParameterPairs || [];
       const dim = selectedFieldInfo?.dimension || 0;
+      setSelectedMetricType(metric);
+
       return {
         metricType: metric,
         indexType: index?._indexType || getDefaultIndexType(embeddingType),
@@ -163,8 +167,8 @@ const VectorSearch = () => {
         selectedFieldDimension: dim,
       };
     }
+
     return {
-      metricType: '',
       indexType: '',
       indexParams: [],
       fieldType: 0,
@@ -172,8 +176,6 @@ const VectorSearch = () => {
       selectedFieldDimension: 0,
     };
   }, [selectedField, fieldOptions]);
-  const [selectedMetricType, setSelectedMetricType] =
-    useState<string>(metricType);
 
   /**
    * vector value validation
@@ -341,53 +343,17 @@ const VectorSearch = () => {
     setVectors(value);
   };
 
+  const fillWithExampleVector = (selectedFieldDimension: number) => {
+    const v = generateVector(selectedFieldDimension);
+    setVectors(`[${v}]`);
+  };
+
   return (
     <section className="page-wrapper">
       {/* form section */}
       <form className={classes.form}>
-        {/**
-         * vector value textarea
-         * use field-params class because it also has error msg if invalid
-         */}
-        <fieldset className="field field-params">
-          <Typography className="text">
-            {searchTrans('firstTip', {
-              dimensionTip:
-                selectedFieldDimension !== 0
-                  ? `(dimension: ${selectedFieldDimension})`
-                  : '',
-            })}
-          </Typography>
-          <TextField
-            className="textarea"
-            InputProps={{
-              classes: {
-                root: 'textfield',
-                multiline: 'multiline',
-              },
-            }}
-            multiline
-            rows={5}
-            placeholder={searchTrans('vectorPlaceholder')}
-            value={vectors}
-            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-              handleVectorChange(e.target.value as string);
-            }}
-          />
-          {/* validation */}
-          {!vectorValueValid && (
-            <Typography variant="caption" className={classes.error}>
-              {searchTrans('vectorValueWarning', {
-                dimension:
-                  fieldType === DataTypeEnum.BinaryVector
-                    ? selectedFieldDimension / 8
-                    : selectedFieldDimension,
-              })}
-            </Typography>
-          )}
-        </fieldset>
         {/* collection and field selectors */}
-        <fieldset className="field field-second">
+        <fieldset className="field">
           <Typography className="text">{searchTrans('secondTip')}</Typography>
           <CustomSelector
             options={collectionOptions}
@@ -421,6 +387,64 @@ const VectorSearch = () => {
             }}
           />
         </fieldset>
+        {/**
+         * vector value textarea
+         * use field-params class because it also has error msg if invalid
+         */}
+        <fieldset className="field field-params field-second">
+          <Typography className="text">
+            {searchTrans('firstTip', {
+              dimensionTip:
+                selectedFieldDimension !== 0
+                  ? `(dimension: ${selectedFieldDimension})`
+                  : '',
+            })}
+            {selectedFieldDimension !== 0 ? (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => {
+                  const dim =
+                    fieldType === DataTypeEnum.BinaryVector
+                      ? selectedFieldDimension / 8
+                      : selectedFieldDimension;
+                  fillWithExampleVector(dim);
+                }}
+              >
+                {btnTrans('example')}
+              </Button>
+            ) : null}
+          </Typography>
+
+          <TextField
+            className="textarea"
+            InputProps={{
+              classes: {
+                root: 'textfield',
+                multiline: 'multiline',
+              },
+            }}
+            multiline
+            rows={5}
+            placeholder={searchTrans('vectorPlaceholder')}
+            value={vectors}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              handleVectorChange(e.target.value as string);
+            }}
+          />
+          {/* validation */}
+          {!vectorValueValid && (
+            <Typography variant="caption" className={classes.error}>
+              {searchTrans('vectorValueWarning', {
+                dimension:
+                  fieldType === DataTypeEnum.BinaryVector
+                    ? selectedFieldDimension / 8
+                    : selectedFieldDimension,
+              })}
+            </Typography>
+          )}
+        </fieldset>
+
         {/* search params selectors */}
         <fieldset className="field field-params">
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
