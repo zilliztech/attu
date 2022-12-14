@@ -81,7 +81,7 @@ const VectorSearch = () => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResult || []);
-
+console.log('pageSize', pageSize);
   const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
     useTimeTravelHook();
 
@@ -221,7 +221,7 @@ const VectorSearch = () => {
   // fetch data
   const fetchCollections = useCallback(async () => {
     const collections = await CollectionHttp.getCollections();
-    setCollections(collections);
+    setCollections(collections.filter(c => c._loadedPercentage === '100'));
   }, []);
 
   const fetchFieldsWithIndex = useCallback(
