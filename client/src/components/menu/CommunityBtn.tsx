@@ -16,7 +16,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   root: {
     bottom: theme.spacing(2),
     position: 'absolute',
-    left: theme.spacing(2.5),
+    right: theme.spacing(1),
     width: theme.spacing(5),
     zIndex: 3,
   },
