@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
     },
     rootCollapse: {
-      width: '86px',
+      width: theme.spacing(9),
     },
     rootExpand: {
       width: (props: any) => props.width || '100%',
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     item: {
       marginBottom: theme.spacing(2),
-      paddingLeft: theme.spacing(4),
+      paddingLeft: theme.spacing(3),
       boxSizing: 'content-box',
       height: theme.spacing(3),
       width: 'initial',
@@ -77,17 +77,16 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       height: '86px',
-      marginBottom: theme.spacing(8),
+      marginBottom: theme.spacing(7),
       backgroundColor: theme.palette.primary.main,
-      paddingLeft: theme.spacing(4),
+      paddingLeft: theme.spacing(3),
 
       '& .title': {
         margin: 0,
-        fontSize: '16px',
+        paddingLeft: theme.spacing(2),
+        fontSize: '24px',
         letterSpacing: '0.15px',
         color: 'white',
-        whiteSpace: 'nowrap',
-        lineHeight: '86px',
       },
     },
     logo: {
@@ -100,6 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& path': {
         fill: 'white',
       },
+      transform: 'scale(2)',
     },
     logoCollapse: {
       backgroundColor: theme.palette.primary.main,
@@ -136,11 +136,11 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: 'rotateZ(180deg)',
     },
     collapseIcon: {
-      left: '73px',
+      left: theme.spacing(7.5),
     },
     version: {
       position: 'absolute',
-      left: '22px',
+      left: theme.spacing(2.5),
       bottom: (props: any) => (props.expanded ? '20px' : '70px'),
     },
   })
