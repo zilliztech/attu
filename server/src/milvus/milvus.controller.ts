@@ -20,21 +20,18 @@ export class MilvusController {
 
   generateRoutes() {
     this.router.get('/version', this.getInfo.bind(this));
-
     this.router.post(
       '/connect',
       dtoValidationMiddleware(ConnectMilvusDto),
       this.connectMilvus.bind(this)
     );
-
+    this.router.post('/disconnect', this.closeConnection.bind(this));
     this.router.get('/check', this.checkConnect.bind(this));
-
     this.router.put(
       '/flush',
       dtoValidationMiddleware(FlushDto),
       this.flush.bind(this)
     );
-
     this.router.get('/metrics', this.getMetrics.bind(this));
 
     return this.router;
@@ -96,5 +93,10 @@ export class MilvusController {
       attu: packageJson.version,
     };
     res.send(data);
+  }
+
+  closeConnection(req: Request, res: Response, next: NextFunction) {
+    const result = this.milvusService.closeConnection();
+    res.send({ result });
   }
 }

@@ -3,7 +3,7 @@ import BaseModel from './BaseModel';
 
 export class MilvusHttp extends BaseModel {
   static CONNECT_URL = '/milvus/connect';
-
+  static DISCONNECT_URL = '/milvus/disconnect';
   static CHECK_URL = '/milvus/check';
   static FLUSH_URL = '/milvus/flush';
   static METRICS_URL = '/milvus/metrics';
@@ -23,6 +23,10 @@ export class MilvusHttp extends BaseModel {
     ssl?: boolean;
   }) {
     return super.create({ path: this.CONNECT_URL, data });
+  }
+
+  static closeConnection() {
+    return super.create({ path: this.DISCONNECT_URL });
   }
 
   static getVersion() {

@@ -14,7 +14,9 @@ export const ReqHeaderMiddleware = (
   const insightCache = req.app.get(INSIGHT_CACHE);
   // all ape requests need set milvus address in header.
   // server will set activeaddress in milvus service.
-  const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
+  const milvusAddress = MilvusService.formatAddress(
+    (req.headers[MILVUS_ADDRESS] as string) || ''
+  );
   // console.log('------ Request headers -------', req.headers);
   //  only api request has MILVUS_ADDRESS.
   //  When client run in express, we dont need static files like: xx.js run this logic.

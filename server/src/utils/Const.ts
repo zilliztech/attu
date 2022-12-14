@@ -21,3 +21,5 @@ export enum WS_EVENTS_TYPE {
   START,
   STOP,
 }
+
+export const DEFAULT_MILVUS_PORT = 19530;

@@ -6,6 +6,9 @@ import {
 import HttpErrors from 'http-errors';
 import LruCache from 'lru-cache';
 import { HTTP_STATUS_CODE } from '../utils/Error';
+import { DEFAULT_MILVUS_PORT } from '../utils/Const';
+import { connectivityState } from '@grpc/grpc-js';
+
 export class MilvusService {
   // Share with all instances, so activeAddress is static
   static activeAddress: string;
@@ -41,7 +44,9 @@ export class MilvusService {
   }
 
   static formatAddress(address: string) {
-    return address.replace(/(http|https):\/\//, '');
+    // remove http or https prefix from address
+    const ip = address.replace(/(http|https):\/\//, '');
+    return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
   }
 
   checkMilvus() {
@@ -69,7 +74,7 @@ export class MilvusService {
     const milvusAddress = MilvusService.formatAddress(address);
     const hasAuth = username !== undefined && password !== undefined;
     try {
-      const milvusClient = hasAuth
+      const milvusClient: MilvusClient = hasAuth
         ? new MilvusClient(milvusAddress, ssl, username, password)
         : new MilvusClient(milvusAddress, ssl);
       await milvusClient.collectionManager.hasCollection({
@@ -99,6 +104,11 @@ export class MilvusService {
     const res = await MilvusService.activeMilvusClient.dataManager.getMetric({
       request: { metric_type: 'system_info' },
     });
+    return res;
+  }
+
+  closeConnection(): connectivityState {
+    const res = MilvusService.activeMilvusClient.closeConnection();
     return res;
   }
 }
