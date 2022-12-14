@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   logo: {
     width: '42px',
     height: 'auto',
-    marginBottom: '8px',
+    marginBottom: theme.spacing(1),
     display: 'block',
   },
   input: {

@@ -44,7 +44,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   head: {
     backgroundColor: theme.palette.primary.main,
-    padding: '16px 24px',
+    padding: theme.spacing(1.5, 2.5),
     color: '#fff',
     borderTopLeftRadius: theme.spacing(1),
     borderTopRightRadius: theme.spacing(1),

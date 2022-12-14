@@ -15,7 +15,7 @@ const getStyles = makeStyles(theme => ({
     borderTopRightRadius: '8px',
     borderBottomRightRadius: '8px',
     height: '100%',
-    padding: '20px 16px',
+    padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
   },
 
@@ -35,7 +35,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuGrey.dark,
     fontSize: '14px',
     lineHeight: '36px',
-    marginLeft: '8px',
+    marginLeft: theme.spacing(1),
   },
 
   rootName: {
@@ -59,7 +59,7 @@ const getStyles = makeStyles(theme => ({
   sectionRoot: {
     borderSpacing: '0 1px',
     display: 'table',
-    marginTop: '24px',
+    marginTop: theme.spacing(2.5),
     width: '100%',
   },
 
@@ -72,7 +72,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuGrey.dark,
     fontSize: '12px',
     lineHeight: '24px',
-    padding: '8px 16px',
+    padding: theme.spacing(1, 2),
     textTransform: 'uppercase',
     width: '50%',
   },
@@ -83,7 +83,7 @@ const getStyles = makeStyles(theme => ({
     display: 'table-cell',
     fontSize: '14px',
     lineHeight: '24px',
-    padding: '12px 16px',
+    padding: theme.spacing(1.5, 2),
     textTransform: 'capitalize',
     verticalAlign: 'middle',
     width: '50%',

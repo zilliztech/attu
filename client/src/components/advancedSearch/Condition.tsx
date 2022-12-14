@@ -168,7 +168,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: '466px',
       minHeight: '62px',
       background: '#FFFFFF',
-      padding: '12px 16px',
+      padding: theme.spacing(1.5, 2),
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',

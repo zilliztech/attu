@@ -184,7 +184,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     resetBtn: {},
     cancelBtn: {
-      marginRight: '32px',
+      marginRight: theme.spacing(4)
     },
     applyBtn: {
       backgroundColor: theme.palette.primary.main,
@@ -200,8 +200,8 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       minHeight: '40px',
-      margin: '8px 32px',
-      padding: '0 16px',
+      margin: theme.spacing(1, 4),
+      padding: theme.spacing(0, 2),
       fontStyle: 'normal',
       fontWeight: 'normal',
       fontSize: '16px',
@@ -212,7 +212,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '8px',
       minWidth: '480px',
       minHeight: '104px',
-      padding: '12px',
+      padding: theme.spacing(1.5),
     },
   })
 );

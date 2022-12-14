@@ -11,7 +11,7 @@ const getStyles = makeStyles(theme => ({
     boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     boxSizing: 'border-box',
     height: '150px',
-    padding: '16px',
+    padding: theme.spacing(2),
   },
   title: {
     color: theme.palette.attuGrey.dark,
@@ -29,7 +29,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuGrey.dark,
     fontSize: '14px',
     lineHeight: '36px',
-    marginLeft: '8px',
+    marginLeft: theme.spacing(1),
   },
   emptyRoot: {
     alignItems: 'center',
@@ -50,7 +50,7 @@ const getStyles = makeStyles(theme => ({
   emptyDesc: {
     fontSize: '10px',
     color: theme.palette.attuGrey.dark,
-    marginTop: '8px',
+    marginTop: theme.spacing(1),
   },
 }));
 
