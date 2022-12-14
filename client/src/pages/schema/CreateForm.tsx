@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   paramTitle: {
     margin: theme.spacing(2, 0),
-    color: '#82838e',
+    color: theme.palette.attuGrey.dark,
     lineHeight: '20px',
     fontSize: '14px',
   },

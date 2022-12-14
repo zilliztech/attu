@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   loading: {
     background: '#F0F4F9',
-    border: `1px dashed #06AFF2`,
+    border: `1px dashed ${theme.palette.primary.main}`,
   },
 
   icon: {

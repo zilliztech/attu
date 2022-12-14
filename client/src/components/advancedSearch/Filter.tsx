@@ -328,7 +328,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     wrapper: {},
     afBtn: {
-      color: '#06AFF2',
+      color: theme.palette.primary.main,
     },
   })
 );

@@ -9,7 +9,7 @@ import {
 } from '../../utils/Format';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 
-const getStyles = makeStyles(() => ({
+const getStyles = makeStyles(theme => ({
   root: {
     backgroundColor: '#F6F6F6',
     borderTopRightRadius: '8px',
@@ -25,33 +25,33 @@ const getStyles = makeStyles(() => ({
   },
 
   content: {
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     fontSize: '20px',
     fontWeight: 600,
     lineHeight: '36px',
   },
 
   desc: {
-    color: '#82838E',
+    color: theme.palette.attuGrey.dark,
     fontSize: '14px',
     lineHeight: '36px',
     marginLeft: '8px',
   },
 
   rootName: {
-    color: '#82838E',
+    color: theme.palette.attuGrey.dark,
     fontSize: '20px',
     lineHeight: '24px',
   },
 
   childName: {
-    color: '#06AFF2',
+    color: theme.palette.primary.main,
     fontSize: '20px',
     lineHeight: '24px',
   },
 
   ip: {
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     fontSize: '16px',
     lineHeight: '24px',
   },
@@ -69,7 +69,7 @@ const getStyles = makeStyles(() => ({
 
   sectionHeaderCell: {
     display: 'table-cell',
-    color: '#82838E',
+    color: theme.palette.attuGrey.dark,
     fontSize: '12px',
     lineHeight: '24px',
     padding: '8px 16px',
@@ -79,7 +79,7 @@ const getStyles = makeStyles(() => ({
 
   sectionCell: {
     backgroundColor: 'white',
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     display: 'table-cell',
     fontSize: '14px',
     lineHeight: '24px',
@@ -90,7 +90,7 @@ const getStyles = makeStyles(() => ({
   },
   progressTitle: {
     fontSize: '14px',
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     lineHeight: '24px',
     display: 'flex',
     justifyContent: 'space-between',

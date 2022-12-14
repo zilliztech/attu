@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(2, 0),
     lineHeight: '20px',
     fontSize: '14px',
-    color: '#82838e',
+    color: theme.palette.attuGrey.dark,
   },
   cardsWrapper: {
     display: 'grid',

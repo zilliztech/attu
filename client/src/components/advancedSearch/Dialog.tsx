@@ -168,7 +168,7 @@ const useStyles = makeStyles((theme: Theme) =>
     wrapper: {
       '& .disable-exp': {
         userSelect: 'none',
-        color: '#AEAEBB',
+        color: theme.palette.attuGrey.main,
       },
     },
     closeButton: {
@@ -187,7 +187,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: '32px',
     },
     applyBtn: {
-      backgroundColor: '#06AFF2',
+      backgroundColor: theme.palette.primary.main,
       color: 'white',
     },
     copyButton: {

@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     label: {
-      color: '#82838e',
+      color: theme.palette.attuGrey.dark,
       textTransform: 'capitalize',
     },
     circle: {

@@ -217,14 +217,14 @@ const useStyles = makeStyles((theme: Theme) =>
       '& button': {
         width: '42px',
         height: '32px',
-        color: '#010E29',
+        color: theme.palette.attuDark.main,
       },
       '& button.Mui-selected': {
-        backgroundColor: '#06AFF2',
+        backgroundColor: theme.palette.primary.main,
         color: '#FFFFFF',
       },
       '& button.Mui-selected:hover': {
-        backgroundColor: '#06AFF2',
+        backgroundColor: theme.palette.primary.main,
         color: '#FFFFFF',
       },
     },

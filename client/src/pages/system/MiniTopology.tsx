@@ -34,8 +34,8 @@ const getStyles = makeStyles((theme: Theme) => ({
       },
 
       '& circle': {
-        fill: '#06AFF2',
-        stroke: '#06AFF2',
+        fill: theme.palette.primary.main,
+        stroke: theme.palette.primary.main,
       },
 
       '& text': {

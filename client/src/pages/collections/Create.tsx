@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& legend': {
       marginBottom: theme.spacing(1),
-      color: `#82838e`,
+      color: theme.palette.attuGrey.dark,
       lineHeight: '20px',
       fontSize: '14px',
     },
