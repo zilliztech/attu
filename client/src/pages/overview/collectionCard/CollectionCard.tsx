@@ -17,9 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .link': {
       display: 'flex',
       alignItems: 'center',
-
       margin: theme.spacing(2, 0),
-
       color: theme.palette.attuDark.main,
       fontSize: '20px',
       lineHeight: '24px',
@@ -58,7 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   search: {
     fontSize: '16px',
     marginRight: theme.spacing(0.5),
-
     '& path': {
       fill: '#fff',
     },
@@ -66,7 +63,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   btn: {
     marginRight: theme.spacing(1),
     padding: theme.spacing(0.5, 1),
-
     lineHeight: '20px',
     fontSize: 14,
   },
@@ -117,7 +113,10 @@ const CollectionCard: FC<CollectionCardProps> = ({
       </Link>
       <div className={classes.content}>
         <Typography>{collectionTrans('rowCount')}</Typography>
-        <CustomToolTip title={collectionTrans('entityCountInfo')} placement="bottom">
+        <CustomToolTip
+          title={collectionTrans('entityCountInfo')}
+          placement="bottom"
+        >
           <InfoIcon classes={{ root: classes.icon }} />
         </CustomToolTip>
         <Typography className={classes.rowCount}>{rowCount}</Typography>

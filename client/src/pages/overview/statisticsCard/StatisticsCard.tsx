@@ -6,8 +6,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     display: `grid`,
     gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    columnGap: '20px',
-
+    columnGap: theme.spacing(2),
     padding: theme.spacing(3),
   },
   itemWrapper: {

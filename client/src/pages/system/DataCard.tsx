@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import Progress from './Progress';
 import {
   formatByteSize,
@@ -124,13 +124,14 @@ const DataSection: FC<DataSectionProps> = props => {
 
 const DataProgress: FC<DataProgressProps> = ({ percent = 0, desc = '' }) => {
   const classes = getStyles();
+  const theme = useTheme();
   return (
     <div>
       <div className={classes.progressTitle}>
         <span>{`${Number(percent * 100).toFixed(2)}%`}</span>
         <span>{desc}</span>
       </div>
-      <Progress percent={percent} color="#06AFF2" />
+      <Progress percent={percent} color={theme.palette.primary.main} />
     </div>
   );
 };

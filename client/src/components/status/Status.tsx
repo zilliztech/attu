@@ -1,7 +1,13 @@
 import { FC, useMemo } from 'react';
 import { ChildrenStatusType, StatusType } from './Types';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import { LOADING_STATE } from '../../consts/Milvus';
 import StatusIcon from './StatusIcon';
 
@@ -48,13 +54,14 @@ const useStyles = makeStyles((theme: Theme) =>
 const Status: FC<StatusType> = props => {
   const { status, percentage = 0 } = props;
   const { t: commonTrans } = useTranslation();
+  const theme = useTheme();
   const statusTrans = commonTrans('status');
   const { label, color } = useMemo(() => {
     switch (status) {
       case LOADING_STATE.UNLOADED:
         return {
           label: statusTrans.unloaded,
-          color: '#06aff2',
+          color: theme.palette.primary.main,
         };
 
       case LOADING_STATE.LOADED:

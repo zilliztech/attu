@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from 'react';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import BaseCard from './BaseCard';
 import { LineChartCardProps, LinceChartNode } from './Types';
 
@@ -34,6 +34,7 @@ const getStyles = makeStyles(theme => ({
 }));
 
 const LineChartCard: FC<LineChartCardProps> = props => {
+  const theme = useTheme();
   const FULL_HEIGHT = 60;
   const FULL_WIDTH = 300;
   const ROUND = 5;
@@ -111,7 +112,15 @@ const LineChartCard: FC<LineChartCardProps> = props => {
           if (index < displayNodes.length - 1) {
             const x2 = FULL_WIDTH - (displayNodes.length - index) * STEP;
             const y2 = displayNodes[index + 1]['percent'] * 0.5 + ROUND * 2;
-            line = <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#06AFF2" />;
+            line = (
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={theme.palette.primary.main}
+              />
+            );
           }
           return (
             <g key={`${node.value}${index}`}>
@@ -127,7 +136,7 @@ const LineChartCard: FC<LineChartCardProps> = props => {
                   cy={y1}
                   r={ROUND}
                   fill="white"
-                  stroke="#06AFF2"
+                  stroke={theme.palette.primary.main}
                 />
                 <rect
                   opacity="0"
@@ -144,7 +153,7 @@ const LineChartCard: FC<LineChartCardProps> = props => {
                   x2={x1}
                   y2={FULL_WIDTH}
                   strokeWidth="2"
-                  stroke="#06AFF2"
+                  stroke={theme.palette.primary.main}
                   strokeDasharray="2.5"
                 />
               </g>

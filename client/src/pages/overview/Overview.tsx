@@ -1,4 +1,4 @@
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmptyCard from '../../components/cards/EmptyCard';
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   cardsWrapper: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
-    gap: '10px',
+    gap: theme.spacing(2),
   },
 }));
 
@@ -36,6 +36,7 @@ const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
   const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const classes = useStyles();
+  const theme = useTheme();
   const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: successTrans } = useTranslation('success');
@@ -105,14 +106,14 @@ const Overview = () => {
         {
           label: overviewTrans('all'),
           value: formatNumber(statistics.collectionCount),
-          valueColor: '#06aff2',
+          valueColor: theme.palette.primary.main,
         },
         {
           label: overviewTrans('data'),
           value: overviewTrans('rows', {
             number: formatNumber(statistics.totalData),
           }) as string,
-          valueColor: '#0689d2',
+          valueColor: theme.palette.primary.dark,
         },
       ],
     };
