@@ -1,41 +1,40 @@
-
 import { FC, useState, useEffect, useRef } from 'react';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import BaseCard from './BaseCard';
 import { LineChartCardProps, LinceChartNode } from './Types';
 
-const getStyles = makeStyles(() => ({
+const getStyles = makeStyles(theme => ({
   root: {
     transform: 'scaleY(-1)',
     maxWidth: '90%',
   },
   ycoord: {
     cursor: 'pointer',
-    "&:hover, &:focus": {
-      "& line": {
+    '&:hover, &:focus': {
+      '& line': {
         transition: 'all .25s',
         opacity: 1,
       },
     },
 
-    "&:hover": {
-      "& circle": {
-        fill: '#06AFF2',
+    '&:hover': {
+      '& circle': {
+        fill: theme.palette.primary.main,
       },
     },
 
-    "&:focus": {
+    '&:focus': {
       outline: 'none',
 
-      "& circle": {
+      '& circle': {
         fill: '#06F3AF',
       },
     },
-  }
+  },
 }));
 
-const LineChartCard: FC<LineChartCardProps> = (props) => {
-
+const LineChartCard: FC<LineChartCardProps> = props => {
+  const theme = useTheme();
   const FULL_HEIGHT = 60;
   const FULL_WIDTH = 300;
   const ROUND = 5;
@@ -73,10 +72,10 @@ const LineChartCard: FC<LineChartCardProps> = (props) => {
       if (nodes.current) {
         const newNodes = nodes.current.slice(0);
         const newNode = {
-          percent: value / currentMax * 100,
+          percent: (value / currentMax) * 100,
           value,
           timestamp: Date.now(),
-        }
+        };
         newNodes.push(newNode);
         nodes.current = newNodes;
 
@@ -89,36 +88,82 @@ const LineChartCard: FC<LineChartCardProps> = (props) => {
     }
   }, [value]);
 
-  return (
-    nodes.current.length ? (
-      <BaseCard title={title} content={`${Math.round(currentNode.value)}ms`} desc={new Date(currentNode.timestamp).toLocaleString()}>
-        <svg className={classes.root} onMouseEnter={() => isHover.current = true} onMouseLeave={() => isHover.current = false} width={FULL_WIDTH} height={FULL_HEIGHT} viewBox={`0 5 ${FULL_WIDTH} ${FULL_HEIGHT}`} fill="white" xmlns="http://www.w3.org/2000/svg">
-          {
-            displayNodes.map((node, index) => {
-              const x1 = FULL_WIDTH - (displayNodes.length - index + 1) * STEP;
-              const y1 = node.percent * .5 + ROUND * 2;
+  return nodes.current.length ? (
+    <BaseCard
+      title={title}
+      content={`${Math.round(currentNode.value)}ms`}
+      desc={new Date(currentNode.timestamp).toLocaleString()}
+    >
+      <svg
+        className={classes.root}
+        onMouseEnter={() => (isHover.current = true)}
+        onMouseLeave={() => (isHover.current = false)}
+        width={FULL_WIDTH}
+        height={FULL_HEIGHT}
+        viewBox={`0 5 ${FULL_WIDTH} ${FULL_HEIGHT}`}
+        fill="white"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {displayNodes.map((node, index) => {
+          const x1 = FULL_WIDTH - (displayNodes.length - index + 1) * STEP;
+          const y1 = node.percent * 0.5 + ROUND * 2;
 
-              let line = null;
-              if (index < displayNodes.length - 1) {
-                const x2 = FULL_WIDTH - (displayNodes.length - index) * STEP;
-                const y2 = displayNodes[index + 1]['percent'] * .5 + ROUND * 2;
-                line = <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#06AFF2" />;
-              }
-              return (
-                <g key={`${node.value}${index}`}>
-                  {line}
-                  <g className={classes.ycoord} onMouseOver={() => { setCurrentNode(node) }}>
-                    <circle cx={x1} cy={y1} r={ROUND} fill="white" stroke="#06AFF2" />
-                    <rect opacity="0" x={x1 - ROUND} y={0} width={ROUND * 2} height={FULL_HEIGHT} fill="#E9E9ED" />
-                    <line opacity="0" x1={x1} y1={0} x2={x1} y2={FULL_WIDTH} strokeWidth="2" stroke="#06AFF2" strokeDasharray="2.5" />
-                  </g>
-                </g>
-              )
-            })
+          let line = null;
+          if (index < displayNodes.length - 1) {
+            const x2 = FULL_WIDTH - (displayNodes.length - index) * STEP;
+            const y2 = displayNodes[index + 1]['percent'] * 0.5 + ROUND * 2;
+            line = (
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={theme.palette.primary.main}
+              />
+            );
           }
-        </svg>
-      </BaseCard >
-    ) : <BaseCard title={title} />
+          return (
+            <g key={`${node.value}${index}`}>
+              {line}
+              <g
+                className={classes.ycoord}
+                onMouseOver={() => {
+                  setCurrentNode(node);
+                }}
+              >
+                <circle
+                  cx={x1}
+                  cy={y1}
+                  r={ROUND}
+                  fill="white"
+                  stroke={theme.palette.primary.main}
+                />
+                <rect
+                  opacity="0"
+                  x={x1 - ROUND}
+                  y={0}
+                  width={ROUND * 2}
+                  height={FULL_HEIGHT}
+                  fill="#E9E9ED"
+                />
+                <line
+                  opacity="0"
+                  x1={x1}
+                  y1={0}
+                  x2={x1}
+                  y2={FULL_WIDTH}
+                  strokeWidth="2"
+                  stroke={theme.palette.primary.main}
+                  strokeDasharray="2.5"
+                />
+              </g>
+            </g>
+          );
+        })}
+      </svg>
+    </BaseCard>
+  ) : (
+    <BaseCard title={title} />
   );
 };
 

@@ -44,7 +44,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   head: {
     backgroundColor: theme.palette.primary.main,
-    padding: '16px 24px',
+    padding: theme.spacing(1.5, 2.5),
     color: '#fff',
     borderTopLeftRadius: theme.spacing(1),
     borderTopRightRadius: theme.spacing(1),
@@ -85,7 +85,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   contentDesc: {
     fontSize: theme.spacing(1.5),
     lineHeight: theme.spacing(2.5),
-    color: '#82838e',
+    color: theme.palette.attuGrey.dark,
     marginBottom: theme.spacing(1),
 
   },

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import Progress from './Progress';
 import {
   formatByteSize,
@@ -9,13 +9,13 @@ import {
 } from '../../utils/Format';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 
-const getStyles = makeStyles(() => ({
+const getStyles = makeStyles(theme => ({
   root: {
     backgroundColor: '#F6F6F6',
     borderTopRightRadius: '8px',
     borderBottomRightRadius: '8px',
     height: '100%',
-    padding: '20px 16px',
+    padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
   },
 
@@ -25,33 +25,33 @@ const getStyles = makeStyles(() => ({
   },
 
   content: {
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     fontSize: '20px',
     fontWeight: 600,
     lineHeight: '36px',
   },
 
   desc: {
-    color: '#82838E',
+    color: theme.palette.attuGrey.dark,
     fontSize: '14px',
     lineHeight: '36px',
-    marginLeft: '8px',
+    marginLeft: theme.spacing(1),
   },
 
   rootName: {
-    color: '#82838E',
+    color: theme.palette.attuGrey.dark,
     fontSize: '20px',
     lineHeight: '24px',
   },
 
   childName: {
-    color: '#06AFF2',
+    color: theme.palette.primary.main,
     fontSize: '20px',
     lineHeight: '24px',
   },
 
   ip: {
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     fontSize: '16px',
     lineHeight: '24px',
   },
@@ -59,7 +59,7 @@ const getStyles = makeStyles(() => ({
   sectionRoot: {
     borderSpacing: '0 1px',
     display: 'table',
-    marginTop: '24px',
+    marginTop: theme.spacing(2.5),
     width: '100%',
   },
 
@@ -69,28 +69,28 @@ const getStyles = makeStyles(() => ({
 
   sectionHeaderCell: {
     display: 'table-cell',
-    color: '#82838E',
+    color: theme.palette.attuGrey.dark,
     fontSize: '12px',
     lineHeight: '24px',
-    padding: '8px 16px',
+    padding: theme.spacing(1, 2),
     textTransform: 'uppercase',
     width: '50%',
   },
 
   sectionCell: {
     backgroundColor: 'white',
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     display: 'table-cell',
     fontSize: '14px',
     lineHeight: '24px',
-    padding: '12px 16px',
+    padding: theme.spacing(1.5, 2),
     textTransform: 'capitalize',
     verticalAlign: 'middle',
     width: '50%',
   },
   progressTitle: {
     fontSize: '14px',
-    color: '#010E29',
+    color: theme.palette.attuDark.main,
     lineHeight: '24px',
     display: 'flex',
     justifyContent: 'space-between',
@@ -124,13 +124,14 @@ const DataSection: FC<DataSectionProps> = props => {
 
 const DataProgress: FC<DataProgressProps> = ({ percent = 0, desc = '' }) => {
   const classes = getStyles();
+  const theme = useTheme();
   return (
     <div>
       <div className={classes.progressTitle}>
         <span>{`${Number(percent * 100).toFixed(2)}%`}</span>
         <span>{desc}</span>
       </div>
-      <Progress percent={percent} color="#06AFF2" />
+      <Progress percent={percent} color={theme.palette.primary.main} />
     </div>
   );
 };

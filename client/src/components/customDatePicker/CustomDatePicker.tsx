@@ -15,12 +15,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   icon: {
     color: (props: any) =>
-      props.date ? theme.palette.primary.main : '#82838E',
+      props.date ? theme.palette.primary.main : theme.palette.attuGrey.dark,
   },
   label: {
     marginLeft: '4px',
     color: (props: any) =>
-      props.date ? theme.palette.primary.main : '#82838E',
+      props.date ? theme.palette.primary.main : theme.palette.attuGrey.dark,
     fontWeight: 'bold',
   },
   picker: {
