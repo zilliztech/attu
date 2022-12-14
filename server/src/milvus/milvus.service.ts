@@ -71,7 +71,6 @@ export class MilvusService {
     const { address, username, password, ssl = false } = data;
     // grpc only need address without http
     const milvusAddress = MilvusService.formatAddress(address);
-    console.log('milvusAddress', milvusAddress);
     const hasAuth = username !== undefined && password !== undefined;
     try {
       const milvusClient: MilvusClient = hasAuth
