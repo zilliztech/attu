@@ -145,7 +145,7 @@ export const getCreateFieldType = (config: Field): CreateFieldType => {
 export const formatAddress = (address: string): string => {
   // remove http or https prefix from address
   const ip = address.replace(/(http|https):\/\//, '');
-  return ip.includes(':') ? ip : `${address}:${DEFAULT_MILVUS_PORT}`;
+  return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
 };
 
 export const formatByteSize = (

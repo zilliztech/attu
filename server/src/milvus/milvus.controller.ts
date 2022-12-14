@@ -96,12 +96,7 @@ export class MilvusController {
   }
 
   closeConnection(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = this.milvusService.closeConnection();
-      res.send({ result });
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
+    const result = this.milvusService.closeConnection();
+    res.send({ result });
   }
 }

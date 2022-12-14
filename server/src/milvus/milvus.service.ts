@@ -7,6 +7,7 @@ import HttpErrors from 'http-errors';
 import LruCache from 'lru-cache';
 import { HTTP_STATUS_CODE } from '../utils/Error';
 import { DEFAULT_MILVUS_PORT } from '../utils/Const';
+import { connectivityState } from '@grpc/grpc-js';
 
 export class MilvusService {
   // Share with all instances, so activeAddress is static
@@ -45,7 +46,7 @@ export class MilvusService {
   static formatAddress(address: string) {
     // remove http or https prefix from address
     const ip = address.replace(/(http|https):\/\//, '');
-    return ip.includes(':') ? ip : `${address}:${DEFAULT_MILVUS_PORT}`;
+    return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
   }
 
   checkMilvus() {
@@ -106,7 +107,7 @@ export class MilvusService {
     return res;
   }
 
-  closeConnection(): import('@grpc/grpc-js').connectivityState {
+  closeConnection(): connectivityState {
     const res = MilvusService.activeMilvusClient.closeConnection();
     return res;
   }
