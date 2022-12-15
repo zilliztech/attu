@@ -54,7 +54,7 @@ export class CronsService {
         throw new Error(error);
       }
     };
-    this.schedulerRegistry.setCronJobEverySecond(name, task, address);
+    this.schedulerRegistry.setCronJobEveryFiveSecond(name, task, address);
   }
 }
 
@@ -68,9 +68,9 @@ export class SchedulerRegistry {
     return target?.entity;
   }
 
-  setCronJobEverySecond(name: string, func: () => {}, address: string) {
+  setCronJobEveryFiveSecond(name: string, func: () => {}, address: string) {
     // The cron job will run every second
-    this.setCronJob(name, '* * * * * *', func, address);
+    this.setCronJob(name, '*/5 * * * * *', func, address);
   }
 
   // ┌────────────── second (optional)

@@ -116,7 +116,7 @@ const IndexTypeElement: FC<{
           ? fetchStatus()
           : timer && clearTimeout(timer);
         setStatus(status);
-      }, 500);
+      }, 3000);
     }
   }, [collectionName, data, status]);
 
