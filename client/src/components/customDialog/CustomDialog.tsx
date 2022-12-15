@@ -67,7 +67,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
     handleClose,
   } = params; // for notice type
   const { component: CustomComponent } = params; // for custom type
-  const handleConfirm = async () => {
+  const handleConfirm = async (event: React.FormEvent<HTMLFormElement>) => {
     if (confirm) {
       const res = await confirm();
       if (!res) {
@@ -75,6 +75,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
       }
     }
     handleClose ? handleClose() : onClose();
+    event.preventDefault();
   };
 
   const handleCancel = async () => {

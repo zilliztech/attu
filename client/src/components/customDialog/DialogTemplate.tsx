@@ -76,9 +76,14 @@ const DialogTemplate: FC<DialogContainerProps> = ({
     }
   }, [children]);
 
+  const _handleConfirm = (event: React.FormEvent<HTMLFormElement>) => {
+    handleConfirm();
+    event.preventDefault();
+  }
+
   return (
     <section className={classes.wrapper}>
-      <form onSubmit={handleConfirm}>
+      <form onSubmit={_handleConfirm}>
         <div
           ref={dialogRef}
           className={`${classes.dialog} ${classes.block} ${dialogClass}`}
