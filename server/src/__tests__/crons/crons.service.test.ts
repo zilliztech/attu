@@ -93,7 +93,7 @@ describe('test crons service', () => {
     schedulerRegistry.setCronJob(mockName, mockCronFrequency, () => mockCb());
     expect(handleEndTask).toBeCalled();
 
-    schedulerRegistry.setCronJobEverySecond(mockSecName, () => mockCb());
+    schedulerRegistry.setCronJobEveryFiveSecond(mockSecName, () => mockCb());
     expect(schedule).toBeCalledWith(mockCronEveryFiveSec, expect.any(Function));
 
     schedulerRegistry.setCronJob(mockName, mockCronFrequency, () => mockCb());
