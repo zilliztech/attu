@@ -36,6 +36,7 @@ import { parseLocationSearch } from '../../utils/Format';
 import { cloneObj, generateVector } from '../../utils/Common';
 import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { useTimeTravelHook } from '../../hooks/TimeTravel';
+import { LOADING_STATE } from '../../consts/Milvus';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -221,7 +222,7 @@ const VectorSearch = () => {
   // fetch data
   const fetchCollections = useCallback(async () => {
     const collections = await CollectionHttp.getCollections();
-    setCollections(collections.filter(c => c._loadedPercentage === '100'));
+    setCollections(collections.filter(c => c._status === LOADING_STATE.LOADED));
   }, []);
 
   const fetchFieldsWithIndex = useCallback(
