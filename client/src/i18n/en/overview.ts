@@ -1,8 +1,8 @@
 const overviewTrans = {
   load: 'Loaded Collections',
   all: 'All Collections',
-  data: 'Data',
-  rows: '{{number}} Entities',
+  data: 'Entites',
+  rows: '{{number}}',
   loading: 'Loading Collections',
 };
 
