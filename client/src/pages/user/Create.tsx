@@ -88,7 +88,7 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
       handleConfirm={handleCreateUser}
       confirmDisabled={disabled}
     >
-      <form>
+      <>
         {createConfigs.map(v => (
           <CustomInput
             type="text"
@@ -98,7 +98,7 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
             key={v.label}
           />
         ))}
-      </form>
+      </>
     </DialogTemplate>
   );
 };

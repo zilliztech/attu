@@ -6,7 +6,6 @@ const commonTrans = {
     username: 'Username',
     password: 'Password',
     optional: '(optional)',
-
     ssl: 'SSL',
   },
   status: {

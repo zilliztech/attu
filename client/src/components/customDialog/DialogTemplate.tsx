@@ -78,46 +78,55 @@ const DialogTemplate: FC<DialogContainerProps> = ({
 
   return (
     <section className={classes.wrapper}>
-      <div
-        ref={dialogRef}
-        className={`${classes.dialog} ${classes.block} ${dialogClass}`}
-      >
-        <CustomDialogTitle onClose={handleClose} showCloseIcon={showCloseIcon}>
-          {title}
-        </CustomDialogTitle>
-        <DialogContent>{children}</DialogContent>
-        {showActions && (
-          <DialogActions className={classes.actions}>
-            <div>{leftActions}</div>
-            <div>
-              {showCancel && (
-                <CustomButton onClick={onCancel} color="default" name="cancel">
-                  {cancel}
+      <form onSubmit={handleConfirm}>
+        <div
+          ref={dialogRef}
+          className={`${classes.dialog} ${classes.block} ${dialogClass}`}
+        >
+          <CustomDialogTitle
+            onClose={handleClose}
+            showCloseIcon={showCloseIcon}
+          >
+            {title}
+          </CustomDialogTitle>
+          <DialogContent>{children}</DialogContent>
+          {showActions && (
+            <DialogActions className={classes.actions}>
+              <div>{leftActions}</div>
+              <div>
+                {showCancel && (
+                  <CustomButton
+                    onClick={onCancel}
+                    color="default"
+                    name="cancel"
+                  >
+                    {cancel}
+                  </CustomButton>
+                )}
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={confirmDisabled}
+                  name="confirm"
+                >
+                  {confirm}
                 </CustomButton>
-              )}
-              <CustomButton
-                variant="contained"
-                onClick={handleConfirm}
-                color="primary"
-                disabled={confirmDisabled}
-                name="confirm"
-              >
-                {confirm}
-              </CustomButton>
-            </div>
-          </DialogActions>
-        )}
-      </div>
+              </div>
+            </DialogActions>
+          )}
+        </div>
 
-      <div className={`${classes.block} ${classes.codeWrapper}`}>
-        {showCode && (
-          <CodeView
-            height={dialogHeight}
-            wrapperClass={classes.code}
-            data={codeBlocksData}
-          />
-        )}
-      </div>
+        <div className={`${classes.block} ${classes.codeWrapper}`}>
+          {showCode && (
+            <CodeView
+              height={dialogHeight}
+              wrapperClass={classes.code}
+              data={codeBlocksData}
+            />
+          )}
+        </div>
+      </form>
     </section>
   );
 };
