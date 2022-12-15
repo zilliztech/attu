@@ -312,18 +312,20 @@ const CreateIndex = (props: {
       showCode={showCode}
       codeBlocksData={codeBlockData}
     >
-      <CreateForm
-        updateForm={updateStepTwoForm}
-        metricOptions={metricOptions}
-        indexOptions={indexOptions}
-        formValue={indexSetting}
-        checkIsValid={checkIsValid}
-        validation={validation}
-        indexParams={indexCreateParams}
-        indexTypeChange={onIndexTypeChange}
-      />
+      <>
+        <CreateForm
+          updateForm={updateStepTwoForm}
+          metricOptions={metricOptions}
+          indexOptions={indexOptions}
+          formValue={indexSetting}
+          checkIsValid={checkIsValid}
+          validation={validation}
+          indexParams={indexCreateParams}
+          indexTypeChange={onIndexTypeChange}
+        />
 
-      <SizingInfo info={sizingInfo} />
+        <SizingInfo info={sizingInfo} />
+      </>
     </DialogTemplate>
   );
 };
