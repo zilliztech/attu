@@ -132,6 +132,8 @@ const EnhancedTable: FC<TableType> = props => {
     handleSort,
     order,
     orderBy,
+    tableHeaderHeight = 57,
+    rowHeight = 49,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
@@ -158,11 +160,7 @@ const EnhancedTable: FC<TableType> = props => {
       const containerHeight: number = (containerRef.current as any)!
         .offsetHeight;
 
-      // table default row height is 54
-      // if pass component as row item, its max height should be 54 too
-      const rowHeight = 54;
       // table header default height is 57
-      const tableHeaderHeight: number = 57;
       if (rowHeight > 0) {
         const pageSize = Math.floor(
           (containerHeight - tableHeaderHeight) / rowHeight
@@ -170,7 +168,7 @@ const EnhancedTable: FC<TableType> = props => {
         setPageSize(pageSize);
       }
     }
-  }, [setPageSize]);
+  }, [setPageSize, tableHeaderHeight, rowHeight]);
 
   return (
     <TableContainer

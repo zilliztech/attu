@@ -3,7 +3,7 @@ const searchTrans = {
   secondTip: '2. Choose collection and field',
   thirdTip: '3. Set search parameters',
   vectorPlaceholder: 'Please input your vector value here, e.g. [1, 2, 3, 4]',
-  collection: 'Choose Collection',
+  collection: 'Choose Loaded Collection',
   noCollection: 'No collection',
   field: 'Choose Field',
   startTip: 'Start your vector search',

@@ -88,6 +88,8 @@ export type TableType = {
   handleSort?: (e: any, orderBy: string) => void;
   order?: SortDirection;
   orderBy?: string;
+  tableHeaderHeight?: number;
+  rowHeight?: number;
 };
 
 export type ColDefinitionsType = {
@@ -140,6 +142,8 @@ export type AttuGridType = ToolBarType & {
   handleSort?: (e: any, orderBy: string) => void;
   order?: SortDirection;
   orderBy?: string;
+  tableHeaderHeight?: number;
+  rowHeight?: number;
 };
 
 export type ActionBarType = {
