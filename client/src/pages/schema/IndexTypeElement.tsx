@@ -94,6 +94,8 @@ const IndexTypeElement: FC<{
   );
 
   useEffect(() => {
+    let running = true;
+
     // define async data getter
     const fetchStatus = async (
       collectionName: string,
@@ -106,7 +108,7 @@ const IndexTypeElement: FC<{
         fieldName,
         indexName
       );
-      if (state !== IndexState.Finished) {
+      if (state !== IndexState.Finished && running) {
         // if not finished, sleep 3s
         await sleep(3000);
         // call self again
@@ -120,6 +122,10 @@ const IndexTypeElement: FC<{
     if (data._indexType !== '' && status !== IndexState.Delete) {
       fetchStatus(collectionName, data._fieldName, data._indexName);
     }
+
+    return () => {
+      running = false;
+    };
   }, [collectionName, data._indexType, data._fieldName, data._indexName]);
 
   const requestCreateIndex = async (
