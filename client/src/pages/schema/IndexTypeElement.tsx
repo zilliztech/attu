@@ -1,11 +1,4 @@
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import Chip from '@material-ui/core/Chip';
 import { IndexHttp } from '../../http/Index';
 import { IndexState } from '../../types/Milvus';
@@ -23,6 +16,7 @@ import CreateIndex from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import StatusIcon from '../../components/status/StatusIcon';
 import { ChildrenStatusType } from '../../components/status/Types';
+import { sleep } from '../../utils/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -73,8 +67,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-let timer: NodeJS.Timeout | null = null;
-
 const IndexTypeElement: FC<{
   data: FieldView;
   collectionName: string;
@@ -83,7 +75,6 @@ const IndexTypeElement: FC<{
   const classes = useStyles();
   // set empty string as default status
   const [status, setStatus] = useState<string>(IndexState.Default);
-
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
@@ -102,27 +93,34 @@ const IndexTypeElement: FC<{
     [status]
   );
 
-  const fetchStatus = useCallback(async () => {
+  useEffect(() => {
+    // define async data getter
+    const fetchStatus = async (
+      collectionName: string,
+      fieldName: string,
+      indexName: string
+    ) => {
+      // get fetch data
+      const { state } = await IndexHttp.getIndexStatus(
+        collectionName,
+        fieldName,
+        indexName
+      );
+      if (state !== IndexState.Finished) {
+        // if not finished, sleep 3s
+        await sleep(3000);
+        // call self again
+        fetchStatus(collectionName, fieldName, indexName);
+      }
+
+      // update state
+      setStatus(state);
+    };
     // prevent delete index trigger fetching index status
     if (data._indexType !== '' && status !== IndexState.Delete) {
-      timer = setTimeout(async () => {
-        const { state: status } = await IndexHttp.getIndexStatus(
-          collectionName,
-          data._fieldName,
-          data._indexName
-        );
-
-        status !== IndexState.Finished
-          ? fetchStatus()
-          : timer && clearTimeout(timer);
-        setStatus(status);
-      }, 3000);
+      fetchStatus(collectionName, data._fieldName, data._indexName);
     }
-  }, [collectionName, data, status]);
-
-  useEffect(() => {
-    fetchStatus();
-  }, [fetchStatus]);
+  }, [collectionName, data._indexType, data._fieldName, data._indexName]);
 
   const requestCreateIndex = async (
     params: IndexExtraParam,
