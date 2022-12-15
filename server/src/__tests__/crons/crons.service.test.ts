@@ -23,7 +23,7 @@ jest.mock('node-cron', () => {
 
 // mock variable
 const mockCronFrequency = '30 00 * * *';
-const mockCronEverySec = '* * * * * *';
+const mockCronEveryFiveSec = '*/5 * * * * *';
 const mockCb = jest.fn();
 const mockErrCb = jest.fn(() => {
   throw new Error('error');
@@ -94,7 +94,7 @@ describe('test crons service', () => {
     expect(handleEndTask).toBeCalled();
 
     schedulerRegistry.setCronJobEverySecond(mockSecName, () => mockCb());
-    expect(schedule).toBeCalledWith(mockCronEverySec, expect.any(Function));
+    expect(schedule).toBeCalledWith(mockCronEveryFiveSec, expect.any(Function));
 
     schedulerRegistry.setCronJob(mockName, mockCronFrequency, () => mockCb());
     expect(handleEndTask).toBeCalled();
@@ -121,7 +121,7 @@ describe('test crons service', () => {
       name: WS_EVENTS.COLLECTION,
       type: WS_EVENTS_TYPE.START,
     });
-    expect(schedule).toBeCalledWith(mockCronEverySec, expect.any(Function));
+    expect(schedule).toBeCalledWith(mockCronEveryFiveSec, expect.any(Function));
 
     schedulerRegistry.setCronJob(WS_EVENTS.COLLECTION, mockCronFrequency, () =>
       mockCb()
@@ -162,7 +162,7 @@ describe('test crons service', () => {
       WS_EVENTS.COLLECTION,
       '127.0.0.1:19530'
     );
-    expect(schedule).toBeCalledWith(mockCronEverySec, expect.any(Function));
+    expect(schedule).toBeCalledWith(mockCronEveryFiveSec, expect.any(Function));
     expect(handleEndTask).toBeCalled();
   });
 });
