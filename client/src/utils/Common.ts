@@ -69,3 +69,7 @@ export const generateVector = (dim: number) => {
 export const cloneObj = (obj: any) => {
   return JSON.parse(JSON.stringify(obj));
 };
+
+export const sleep = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
