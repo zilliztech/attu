@@ -212,7 +212,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
       confirmDisabled={disabled || !allFieldsValid}
       dialogClass={classes.dialog}
     >
-      <form>
+      <>
         <fieldset className={classes.fieldset}>
           <legend>{collectionTrans('general')}</legend>
           {generalInfoConfigs.map(config => (
@@ -251,7 +251,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
             variant="filled"
           />
         </fieldset>
-      </form>
+      </>
     </DialogTemplate>
   );
 };

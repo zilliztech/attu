@@ -100,7 +100,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
       onClose={handleCancel}
     >
       {type === 'notice' ? (
-        <>
+        <form onSubmit={handleConfirm}>
           <CustomDialogTitle
             classes={{ root: classes.title }}
             onClose={handleCancel}
@@ -121,7 +121,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
               {cancelLabel}
             </CustomButton>
             <CustomButton
-              onClick={() => handleConfirm()}
+              type="submit"
               color="primary"
               variant="contained"
               className={confirmClass}
@@ -129,7 +129,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
               {confirmLabel}
             </CustomButton>
           </DialogActions>
-        </>
+        </form>
       ) : (
         CustomComponent
       )}

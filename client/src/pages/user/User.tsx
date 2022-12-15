@@ -105,7 +105,7 @@ const Users = () => {
           params: {
             component: (
               <DeleteTemplate
-                label={btnTrans('delete')}
+                label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', { type: userTrans('user') })}
                 text={userTrans('deleteWarning')}
                 handleDelete={handleDelete}

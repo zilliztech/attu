@@ -122,7 +122,7 @@ const UpdateUser: FC<UpdateUserProps> = ({
       handleConfirm={handleUpdateUser}
       confirmDisabled={disabled}
     >
-      <form>
+      <>
         {createConfigs.map(v => (
           <CustomInput
             type="text"
@@ -132,7 +132,7 @@ const UpdateUser: FC<UpdateUserProps> = ({
             key={v.label}
           />
         ))}
-      </form>
+      </>
     </DialogTemplate>
   );
 };

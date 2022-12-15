@@ -66,55 +66,60 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
 
   return (
     <div className={classes.root}>
-      <CustomDialogTitle classes={{ root: classes.mb }} onClose={onCancelClick}>
-        {title}
-      </CustomDialogTitle>
-
-      <DialogContent>
-        <Typography variant="body1">{text}</Typography>
-        <Typography variant="body1" className={classes.mb}>
-          {dialogTrans('deleteTipAction')}
-          <strong
-            className={classes.btnLabel}
-          >{` ${label.toLowerCase()} `}</strong>
-          {dialogTrans('deleteTipPurpose')}
-        </Typography>
-        <TextField
-          value={value}
-          onChange={onChange}
-          InputLabelProps={{
-            classes: {
-              root: classes.label,
-            },
-          }}
-          InputProps={{
-            classes: {
-              input: classes.input,
-            },
-          }}
-          variant="filled"
-          fullWidth={true}
-        />
-      </DialogContent>
-
-      <DialogActions className={classes.btnWrapper}>
-        <CustomButton
-          name="cancel"
-          onClick={onCancelClick}
-          className={classes.cancelBtn}
+      <form onSubmit={onDeleteClick}>
+        <CustomDialogTitle
+          classes={{ root: classes.mb }}
+          onClose={onCancelClick}
         >
-          {btnTrans('cancel')}
-        </CustomButton>
-        <CustomButton
-          variant="contained"
-          onClick={onDeleteClick}
-          color="secondary"
-          disabled={!deleteReady}
-          name="delete"
-        >
-          {label}
-        </CustomButton>
-      </DialogActions>
+          {title}
+        </CustomDialogTitle>
+
+        <DialogContent>
+          <Typography variant="body1">{text}</Typography>
+          <Typography variant="body1" className={classes.mb}>
+            {dialogTrans('deleteTipAction')}
+            <strong
+              className={classes.btnLabel}
+            >{` ${label.toLowerCase()} `}</strong>
+            {dialogTrans('deleteTipPurpose')}
+          </Typography>
+          <TextField
+            value={value}
+            onChange={onChange}
+            InputLabelProps={{
+              classes: {
+                root: classes.label,
+              },
+            }}
+            InputProps={{
+              classes: {
+                input: classes.input,
+              },
+            }}
+            variant="filled"
+            fullWidth={true}
+          />
+        </DialogContent>
+
+        <DialogActions className={classes.btnWrapper}>
+          <CustomButton
+            name="cancel"
+            onClick={onCancelClick}
+            className={classes.cancelBtn}
+          >
+            {btnTrans('cancel')}
+          </CustomButton>
+          <CustomButton
+            type="submit"
+            variant="contained"
+            color="secondary"
+            disabled={!deleteReady}
+            name="delete"
+          >
+            {label}
+          </CustomButton>
+        </DialogActions>
+      </form>
     </div>
   );
 };

@@ -68,14 +68,12 @@ const CreatePartition: FC<PartitionCreateProps> = ({
       handleConfirm={handleCreatePartition}
       confirmDisabled={disabled}
     >
-      <form>
-        <CustomInput
-          type="text"
-          textConfig={nameInputConfig}
-          checkValid={checkIsValid}
-          validInfo={validation}
-        />
-      </form>
+      <CustomInput
+        type="text"
+        textConfig={nameInputConfig}
+        checkValid={checkIsValid}
+        validInfo={validation}
+      />
     </DialogTemplate>
   );
 };
