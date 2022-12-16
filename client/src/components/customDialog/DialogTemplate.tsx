@@ -14,6 +14,9 @@ import CodeView from '../code/CodeView';
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     display: 'flex',
+    '& form': {
+      display: 'flex',
+    },
   },
   block: {
     borderRadius: 8,
@@ -79,7 +82,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   const _handleConfirm = (event: React.FormEvent<HTMLFormElement>) => {
     handleConfirm();
     event.preventDefault();
-  }
+  };
 
   return (
     <section className={classes.wrapper}>
