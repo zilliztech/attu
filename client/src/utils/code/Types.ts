@@ -5,4 +5,6 @@ export interface CreateIndexCodeParam {
   indexName: string;
   extraParams: IndexExtraParam;
   isScalarField: boolean;
+  metricType: string;
+  indexType: string;
 }

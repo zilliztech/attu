@@ -16,9 +16,10 @@ export const getCreateIndexPYCode = (params: CreateIndexCodeParam) => {
     ...extraParams,
     params: parseValue(extraParams.params),
   };
-  const pyCode = `from pymilvus_orm import Collection
+  const pyCode = `from pymilvus import Collection
 
 collection = Collection('${collectionName}')
+
 ${
   isScalarField
     ? ''
@@ -29,7 +30,8 @@ collection.create_index(
   field_name="${fieldName}",
   ${isScalarField ? '' : `index_params=index_params,`}
   index_name="${indexName}"
-)`;
+)
+`;
 
   return pyCode;
 };
