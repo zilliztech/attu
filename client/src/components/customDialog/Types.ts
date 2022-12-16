@@ -28,7 +28,7 @@ export type DialogContainerProps = {
   showCloseIcon?: boolean;
   handleClose: () => void;
   handleCancel?: () => void;
-  handleConfirm: (param: any) => void;
+  handleConfirm: (param?: any) => void;
   confirmDisabled?: boolean;
   showActions?: boolean;
   showCancel?: boolean;

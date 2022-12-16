@@ -53,8 +53,9 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
     handleCancel && handleCancel();
   };
 
-  const onDeleteClick = () => {
+  const onDeleteClick = (event: React.FormEvent<HTMLFormElement>) => {
     handleDelete();
+    event.preventDefault();
   };
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
