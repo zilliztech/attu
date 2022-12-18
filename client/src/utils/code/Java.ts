@@ -28,7 +28,7 @@ milvusClient.createIndex(
     .withSyncMode(Boolean.FALSE)
     .build()
 );
-  `;
+`;
 
   return JavaCode;
 };

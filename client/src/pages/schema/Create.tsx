@@ -211,7 +211,6 @@ const CreateIndex = (props: {
    * create index code mode
    */
   const codeBlockData: CodeViewData[] = useMemo(() => {
-    console.log('m', indexSetting.index_name);
     const vectorTypes = [
       DataTypeStringEnum.BinaryVector,
       DataTypeStringEnum.FloatVector,

@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexBasis: 0,
     flexGrow: 1,
     marginTop: theme.spacing(2),
+    overflowY: 'auto',
   },
 }));
 

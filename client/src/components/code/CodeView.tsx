@@ -68,7 +68,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 
   block: {
-    height: `calc(100% - ${theme.spacing(4)})`,
+    height: `calc(100% - ${theme.spacing(4.5)})`,
     overflowY: 'auto',
   },
 }));
