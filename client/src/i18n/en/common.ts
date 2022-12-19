@@ -32,8 +32,9 @@ const commonTrans = {
   search: 'Search by name',
   code: 'Code View',
   view: 'View Code',
-  js: 'NODE.JS',
-  py: 'PYTHON',
+  js: 'Node.js',
+  py: 'Python',
+  java: 'Java',
   community: {
     hi: 'Hi, there!',
     growing: 'Our growing community is here!',

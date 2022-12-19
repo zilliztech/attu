@@ -7,6 +7,8 @@ export interface CodeViewProps {
 export enum CodeLanguageEnum {
   javascript = 'javascript',
   python = 'python',
+  java = 'java',
+  go = 'go',
 }
 
 export interface CodeBlockProps {

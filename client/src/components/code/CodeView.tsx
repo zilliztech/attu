@@ -14,7 +14,8 @@ const getStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(4),
     backgroundColor: theme.palette.attuDark.main,
     borderRadius: 8,
-
+    display: 'flex',
+    flexDirection: 'column',
     color: '#fff',
   },
   title: {
@@ -26,7 +27,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     minHeight: 0,
 
     '& .MuiTab-wrapper': {
-      textTransform: 'uppercase',
       fontWeight: 'bold',
       color: '#fff',
     },
@@ -68,32 +68,20 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 
   block: {
-    /**
-     * container height minus:
-     * 1. CodeView padding top and bottom (32 * 2)
-     * 2. CodeBlock padding top and bottom (24 * 2)
-     * 3. title height and margin bottom (24 + 16)
-     * 4. tab title height and margin bottom (36 + 16)
-     */
-    height: (props: { height: number }) =>
-      props.height - 32 * 2 - 24 * 2 - (24 + 16) - (36 + 16),
+    height: `calc(100% - ${theme.spacing(4.5)})`,
     overflowY: 'auto',
   },
 }));
 
-const CodeView: FC<CodeViewProps> = ({
-  wrapperClass = '',
-  data,
-  height = 0,
-}) => {
-  const classes = getStyles({ height });
+const CodeView: FC<CodeViewProps> = ({ wrapperClass = '', data }) => {
+  const classes = getStyles();
   const { t: commonTrans } = useTranslation();
 
   const tabs: ITab[] = data.map(item => ({
     label: item.label,
     component: (
       <CodeBlock
-        wrapperClass={height !== 0 ? classes.block : ''}
+        wrapperClass={classes.block}
         language={item.language}
         code={item.code}
       />

@@ -13,6 +13,7 @@ import {
 import { useFormValidation } from '../../hooks/Form';
 import { getCreateIndexJSCode } from '../../utils/code/Js';
 import { getCreateIndexPYCode } from '../../utils/code/Py';
+import { getCreateIndexJavaCode } from '../../utils/code/Java';
 import { formatForm, getMetricOptions } from '../../utils/Form';
 import { computMilvusRecommonds, formatSize } from '../../utils/SizingTool';
 import { DataTypeEnum, DataTypeStringEnum } from '../collections/Types';
@@ -215,28 +216,30 @@ const CreateIndex = (props: {
       DataTypeStringEnum.FloatVector,
     ];
     const isScalarField = !vectorTypes.includes(fieldType);
+    const getCodeParams = {
+      collectionName,
+      fieldName,
+      extraParams,
+      isScalarField,
+      indexName: indexSetting.index_name,
+      metricType: indexSetting.metric_type,
+      indexType: indexSetting.index_type,
+    };
     return [
       {
         label: commonTrans('py'),
         language: CodeLanguageEnum.python,
-        code: getCreateIndexPYCode({
-          collectionName,
-          fieldName,
-          indexName: indexSetting.index_name,
-          extraParams,
-          isScalarField,
-        }),
+        code: getCreateIndexPYCode(getCodeParams),
+      },
+      {
+        label: commonTrans('java'),
+        language: CodeLanguageEnum.java,
+        code: getCreateIndexJavaCode(getCodeParams),
       },
       {
         label: commonTrans('js'),
         language: CodeLanguageEnum.javascript,
-        code: getCreateIndexJSCode({
-          collectionName,
-          fieldName,
-          extraParams,
-          indexName: indexSetting.index_name,
-          isScalarField,
-        }),
+        code: getCreateIndexJSCode(getCodeParams),
       },
     ];
   }, [
@@ -256,7 +259,7 @@ const CreateIndex = (props: {
     // setDisabled(true);
     setIndexSetting(v => ({
       ...v,
-      index_name: '',
+      index_name: v.index_name,
       metric_type: defaultMetricType,
       M: '',
       m: '4',

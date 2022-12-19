@@ -66,18 +66,6 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   const onCancel = handleCancel || handleClose;
 
   const dialogRef = useRef(null);
-  const [dialogHeight, setDialogHeight] = useState<number>(0);
-
-  /**
-   * code mode height should not over original dialog height
-   * everytime children change, should recalculate dialog height
-   */
-  useEffect(() => {
-    if (dialogRef.current) {
-      const height = (dialogRef.current as any).offsetHeight;
-      setDialogHeight(height);
-    }
-  }, [children]);
 
   const _handleConfirm = (event: React.FormEvent<HTMLFormElement>) => {
     handleConfirm();
@@ -127,11 +115,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
 
         <div className={`${classes.block} ${classes.codeWrapper}`}>
           {showCode && (
-            <CodeView
-              height={dialogHeight}
-              wrapperClass={classes.code}
-              data={codeBlocksData}
-            />
+            <CodeView wrapperClass={classes.code} data={codeBlocksData} />
           )}
         </div>
       </form>
