@@ -128,3 +128,10 @@ export interface AliasesProps {
   onCreate?: Function;
   onDelete?: Function;
 }
+
+export enum TAB_EMUM {
+  'schema',
+  'partition',
+  'data-preview',
+  'data-query',
+}

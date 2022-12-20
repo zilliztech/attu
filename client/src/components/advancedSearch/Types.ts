@@ -48,6 +48,7 @@ export interface CopyButtonProps {
   label: string;
   value: string;
   others?: any;
+  size?: 'medium' | 'small' | undefined;
 }
 
 export interface DialogProps {

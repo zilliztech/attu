@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -22,6 +21,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     /* set flex basis to make child item height 100% work on Safari */
     flexBasis: 0,
+    background: '#fff',
 
     // change scrollbar style
     '&::-webkit-scrollbar': {
@@ -137,21 +137,19 @@ const EnhancedTable: FC<TableType> = props => {
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
-
   const { t: commonTrans } = useTranslation();
   const copyTrans = commonTrans('copy');
 
   useEffect(() => {
-    // if the type of containerRef is null, set height 57px.
-    let height: number = containerRef.current?.offsetHeight || 57;
-    // table header is 57px. If offsetHeight is smaller than 57px (this might happen when users resize the screen), the count will be negative and will cause an error.
-    if (height < 57) {
-      height = 57;
+    // if the type of containerRef is null, set default height.
+    let height: number =
+      containerRef.current?.offsetHeight || tableHeaderHeight;
+    if (height < tableHeaderHeight) {
+      height = tableHeaderHeight;
     }
-    // table header 57px, loading row 40px
-    let count = Math.floor((height - 57) / 40);
+    // calculate how many rows can be fit in the container
+    const count = Math.floor((height - tableHeaderHeight) / rowHeight);
     setLoadingRowCount(count);
   }, [containerRef]);
 
@@ -160,7 +158,6 @@ const EnhancedTable: FC<TableType> = props => {
       const containerHeight: number = (containerRef.current as any)!
         .offsetHeight;
 
-      // table header default height is 57
       if (rowHeight > 0) {
         const pageSize = Math.floor(
           (containerHeight - tableHeaderHeight) / rowHeight
@@ -272,6 +269,7 @@ const EnhancedTable: FC<TableType> = props => {
                                     color="primary"
                                     data-data={row[colDef.id]}
                                     data-index={index}
+                                    size="small"
                                     onClick={e => {
                                       colDef.onClick && colDef.onClick(e, row);
                                     }}
@@ -289,6 +287,7 @@ const EnhancedTable: FC<TableType> = props => {
                                     color="primary"
                                     data-data={row[colDef.id]}
                                     data-index={index}
+                                    size="small"
                                     onClick={e => {
                                       colDef.onClick && colDef.onClick(e, row);
                                     }}
@@ -305,6 +304,7 @@ const EnhancedTable: FC<TableType> = props => {
                               <CopyButton
                                 label={copyTrans.label}
                                 value={row[colDef.id]}
+                                size="small"
                                 className={classes.copyBtn}
                               />
                             )}

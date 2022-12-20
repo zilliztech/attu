@@ -133,6 +133,7 @@ const VectorSearch = () => {
             align: 'left',
             disablePadding: false,
             label: key,
+            needCopy: primaryKeyField === key
           }))
       : [];
   }, [searchResult, primaryKeyField]);
