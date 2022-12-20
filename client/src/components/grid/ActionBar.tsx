@@ -5,6 +5,7 @@ import {
   Theme,
   createStyles,
   Button,
+  Typography,
 } from '@material-ui/core';
 import Icons from '../icons/Icons';
 import { ActionBarType } from './Types';
@@ -37,6 +38,10 @@ const useStyles = makeStyles((theme: Theme) =>
         color: '#fff',
       },
     },
+    link: {
+      textDecoration: 'underline',
+      color: theme.palette.common.black,
+    }
   })
 );
 
@@ -73,6 +78,18 @@ const ActionBar: FC<ActionBarType> = props => {
                     ? v.renderIconFn && v.renderIconFn(row)
                     : Icons[v.icon]()}
                 </IconButton>
+              ) : v.linkButton ? (
+                <Typography
+                  component="a"
+                  href="#/users"
+                  className={classes.link}
+                  onClick={e => {
+                    e.stopPropagation();
+                    v.onClick(e, row);
+                  }}
+                >
+                  {v.text}
+                </Typography>
               ) : (
                 <Button
                   aria-label={label || ''}
@@ -80,6 +97,7 @@ const ActionBar: FC<ActionBarType> = props => {
                     e.stopPropagation();
                     v.onClick(e, row);
                   }}
+                  size="small"
                   disabled={v.disabled ? v.disabled(row) : false}
                   classes={{
                     disabled: classes.disabled,

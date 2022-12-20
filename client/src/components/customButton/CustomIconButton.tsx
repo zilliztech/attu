@@ -11,7 +11,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'inline-block',
   },
   iconBtn: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(0.5),
   },
 }));
 

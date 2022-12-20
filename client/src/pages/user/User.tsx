@@ -1,12 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserHttp } from '../../http/User';
 import AttuGrid from '../../components/grid/Grid';
-import {
-  ColDefinitionsType,
-  ToolBarConfig,
-} from '../../components/grid/Types';
+import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import {
   CreateUserParams,
   DeleteUserParams,
@@ -20,20 +16,9 @@ import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CreateUser from './Create';
 import UpdateUser from './Update';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  actionButton: {
-    position: 'relative',
-    left: ' -10px',
-    '& .MuiButton-root': {
-      color: theme.palette.primary.main,
-    },
-  },
-}));
-
 const Users = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
 
-  const classes = useStyles();
   const [users, setUsers] = useState<UserData[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserData[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
@@ -153,8 +138,8 @@ const Users = () => {
               },
             });
           },
+          linkButton: true,
           text: 'Update password',
-          className: classes.actionButton,
         },
       ],
     },

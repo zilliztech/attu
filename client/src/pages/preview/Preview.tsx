@@ -9,7 +9,6 @@ import { usePaginationHook } from '../../hooks/Pagination';
 import CopyButton from '../../components/advancedSearch/CopyButton';
 import { ToolBarConfig } from '../../components/grid/Types';
 import CustomToolBar from '../../components/grid/ToolBar';
-import { DataTypeStringEnum } from '../collections/Types';
 import { generateVector } from '../../utils/Common';
 import { DataTypeEnum } from '../../pages/collections/Types';
 

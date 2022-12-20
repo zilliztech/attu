@@ -56,5 +56,11 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  copyBtn: {},
+  copyBtn: {
+    padding: '4px',
+    width: '16px',
+    height: '16px',
+    position: 'relative',
+    top: '-3px'
+  },
 }));
