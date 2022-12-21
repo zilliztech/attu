@@ -453,6 +453,7 @@ const Collections = () => {
                 ? handleLoad
                 : handleRelease;
             handleAction(row, cb);
+            e.preventDefault();
           },
           icon: 'load',
           label: 'load',
