@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingTop: theme.spacing(3),
-      paddingLeft: theme.spacing(6),
+      paddingLeft: theme.spacing(5),
       flex: 1,
     },
     navigation: {

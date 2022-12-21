@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'flex-end',
       alignItems: 'center',
     },
+    toolbar: {
+      marginBottom: theme.spacing(2),
+    },
   })
 );
 
@@ -59,7 +62,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
 
   return (
     <>
-      <Grid container role="toolbar">
+      <Grid container role="toolbar" className={classes.toolbar}>
         <Grid item xs={8}>
           {leftConfigs.map((c, i) => {
             const isSelect = c.type === 'select' || c.type === 'groupSelect';

@@ -33,7 +33,7 @@ fieldset {
   display: flex;
   flex-direction: column;
 
-  margin: 16px 40px;
+  margin: 16px 32px 32px;
 }
 
 .page-empty-card {

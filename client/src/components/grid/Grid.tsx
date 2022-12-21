@@ -175,7 +175,6 @@ const AttuGrid: FC<AttuGridType> = props => {
     <Grid
       container
       classes={{ root: classes.wrapper, container: classes.container }}
-      spacing={3}
     >
       {title && (
         <Grid item xs={12} className={classes.tableTitle}>
