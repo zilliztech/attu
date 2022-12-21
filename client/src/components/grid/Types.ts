@@ -156,6 +156,7 @@ type ActionBarConfig = {
   onClick: (e: React.MouseEvent, row: any) => void;
   icon?: IconsType;
   text?: string;
+  linkButton? : boolean;
   showIconMethod?: 'iconType' | 'renderFn';
   renderIconFn?: (row: any) => ReactElement;
   label?: string;
