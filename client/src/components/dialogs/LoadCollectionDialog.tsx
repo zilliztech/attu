@@ -75,7 +75,8 @@ const LoadCollectionDialog = (props: any) => {
         rootCoord.infos.system_info.deploy_mode ===
         MILVUS_DEPLOY_MODE.DISTRIBUTED;
 
-      if (enableRelica) {
+      // only show replica toggle in distributed mode && query node > 1
+      if (enableRelica && queryNodes.length > 1) {
         setForm({
           replica: queryNodes.length,
         });

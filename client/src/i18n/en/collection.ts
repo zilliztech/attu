@@ -62,7 +62,7 @@ const collectionTrans = {
   loadConfirmLabel: 'Load',
   replicaNum: 'Replica number',
   replicaDes: `With in-memory replicas, Milvus can load the same segment on multiple query nodes. The replica number can not exceed query node count.`,
-  enableRepica: `Enable in-memory replicas`,
+  enableRepica: `Enable in-memory replica`,
 
   // release dialog
   releaseTitle: 'Release Collection',
