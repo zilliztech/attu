@@ -25,14 +25,19 @@ const ReleaseCollectionDialog = (props: any) => {
   const handleConfirm = async () => {
     // disable confirm button
     setDisabled(true);
-    // release collection
-    await CollectionHttp.releaseCollection(collection);
-    // enable confirm button
-    setDisabled(false);
-    // close dialog
-    handleCloseDialog();
-    // execute callback
-    onRelease && onRelease();
+    try {
+      // release collection
+      await CollectionHttp.releaseCollection(collection);
+      // execute callback
+      onRelease && onRelease();
+      // enable confirm button
+      setDisabled(false);
+      // close dialog
+      handleCloseDialog();
+    } finally {
+      // enable confirm button
+      setDisabled(false);
+    }
   };
 
   return (
