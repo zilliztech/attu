@@ -1,5 +1,5 @@
 import { makeStyles, Theme, Typography, Divider } from '@material-ui/core';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import CustomButton from '../../../components/customButton/CustomButton';
 import icons from '../../../components/icons/Icons';
 import Status from '../../../components/status/Status';
@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import CustomIconButton from '../../../components/customButton/CustomIconButton';
 import { useNavigate, Link } from 'react-router-dom';
 import { LOADING_STATE } from '../../../consts/Milvus';
+import ReleaseCollectionDialog from '../../../components/dialogs/ReleaseCollectionDialog';
+import { rootContext } from '../../../context/Root';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -36,9 +38,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '16px',
   },
   content: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: theme.spacing(2),
+    margin: 0,
+    padding: 0,
+    '& > li': {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: theme.spacing(0.5),
+    },
   },
   rowCount: {
     marginLeft: theme.spacing(1),
@@ -70,15 +76,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const CollectionCard: FC<CollectionCardProps> = ({
   data,
-  handleRelease,
+  onRelease,
   wrapperClass = '',
 }) => {
   const classes = useStyles();
+  const { setDialog } = useContext(rootContext);
+
   const {
     _name: name,
     _status: status,
     _rowCount: rowCount,
     _loadedPercentage,
+    _replicas,
   } = data;
   const navigate = useNavigate();
   // icons
@@ -91,7 +100,15 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const { t: btnTrans } = useTranslation('btn');
 
   const onReleaseClick = () => {
-    handleRelease(data);
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component: (
+          <ReleaseCollectionDialog collection={name} onRelease={onRelease} />
+        ),
+      },
+    });
   };
 
   const onVectorSearchClick = () => {
@@ -111,16 +128,18 @@ const CollectionCard: FC<CollectionCardProps> = ({
         {name}
         <RightArrowIcon classes={{ root: classes.icon }} />
       </Link>
-      <div className={classes.content}>
-        <Typography>{collectionTrans('rowCount')}</Typography>
-        <CustomToolTip
-          title={collectionTrans('entityCountInfo')}
-          placement="bottom"
-        >
-          <InfoIcon classes={{ root: classes.icon }} />
-        </CustomToolTip>
-        <Typography className={classes.rowCount}>{rowCount}</Typography>
-      </div>
+      <ul className={classes.content}>
+        <li>
+          <Typography>{collectionTrans('replicaNum')}</Typography>:
+          <Typography className={classes.rowCount}>
+            {_replicas.length}
+          </Typography>
+        </li>
+        <li>
+          <Typography>{collectionTrans('rowCount')}</Typography>:
+          <Typography className={classes.rowCount}>{rowCount}</Typography>
+        </li>
+      </ul>
       <Divider classes={{ root: classes.divider }} />
       <CustomButton
         variant="contained"

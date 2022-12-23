@@ -20,7 +20,7 @@ import {
   ShowCollectionsReq,
   ShowCollectionsType,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
-import { QueryDto, ImportSampleDto } from './dto';
+import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
 
 export class CollectionsService {
@@ -116,6 +116,11 @@ export class CollectionsService {
     return res;
   }
 
+  async getReplicas(data: GetReplicasDto) {
+    const res = await this.collectionManager.getReplicas(data);
+    return res;
+  }
+
   async query(
     data: {
       collection_name: string;
@@ -143,7 +148,7 @@ export class CollectionsService {
    * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string, consistency_level:string}
    */
   async getAllCollections() {
-    const data = [];
+    const data: any = [];
     const res = await this.getCollections();
     const loadedCollections = await this.getCollections({
       type: ShowCollectionsType.Loaded,
@@ -175,6 +180,12 @@ export class CollectionsService {
           ? '-1'
           : loadCollection.loadedPercentage;
 
+        const replicas: any = loadCollection
+          ? await this.getReplicas({
+              collectionID: collectionInfo.collectionID,
+            })
+          : [];
+
         data.push({
           aliases: collectionInfo.aliases,
           collection_name: name,
@@ -187,11 +198,12 @@ export class CollectionsService {
           createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
           index_status: indexRes.state,
           consistency_level: collectionInfo.consistency_level,
+          replicas: replicas && replicas.replicas,
         });
       }
     }
     // add default sort - Descending order
-    data.sort((a, b) => b.createdTime - a.createdTime);
+    data.sort((a: any, b: any) => b.createdTime - a.createdTime);
     return data;
   }
 

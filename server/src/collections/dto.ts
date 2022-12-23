@@ -53,6 +53,11 @@ export class ImportSampleDto {
   readonly size: string;
 }
 
+export class GetReplicasDto {
+  readonly collectionID: string;
+  readonly with_shard_nodes?: boolean;
+}
+
 export class VectorSearchDto {
   @IsOptional()
   partition_names?: string[];

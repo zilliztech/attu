@@ -217,3 +217,19 @@ export enum LOADING_STATE {
 export const DEFAULT_VECTORS = 100000;
 export const DEFAULT_SEFMENT_FILE_SIZE = 1024;
 export const DEFAULT_MILVUS_PORT = 19530;
+
+export enum MILVUS_NODE_TYPE {
+  ROOTCOORD = 'rootcoord',
+  QUERYCOORD = 'querycoord',
+  INDEXCOORD = 'indexcoord',
+  QUERYNODE = 'querynode',
+  INDEXNODE = 'indexnode',
+  DATACORD = 'datacord',
+  DATANODE = 'datanode',
+  PROXY = 'proxy',
+}
+
+export enum MILVUS_DEPLOY_MODE {
+  DISTRIBUTED = 'DISTRIBUTED',
+  STANDALONE = 'STANDALONE',
+}

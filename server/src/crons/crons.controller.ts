@@ -32,7 +32,7 @@ export class CronsController {
   async toggleCronJobByName(req: Request, res: Response, next: NextFunction) {
     const cronData = req.body;
     const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
-    console.log(cronData, milvusAddress);
+    // console.log(cronData, milvusAddress);
     try {
       const result = await this.cronsService.toggleCronJobByName({
         ...cronData,

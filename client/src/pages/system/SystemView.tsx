@@ -11,6 +11,7 @@ import NodeListView from './NodeListView';
 // import LineChartCard from './LineChartCard';
 // import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
+import { parseJson } from '../../utils/Metric';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -61,49 +62,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
 }));
-
-const parseJson = (jsonData: any) => {
-  const nodes: any[] = [];
-  const childNodes: any[] = [];
-
-  const system = {
-    // qps: Math.random() * 1000,
-    latency: Math.random() * 1000,
-    disk: 0,
-    diskUsage: 0,
-    memory: 0,
-    memoryUsage: 0,
-  };
-
-  const workingNodes = jsonData?.response?.nodes_info.filter(
-    (node: any) => node?.infos?.has_error !== true
-  );
-
-  workingNodes.forEach((node: any) => {
-    const type = node?.infos?.type;
-    if (node.connected) {
-      node.connected = node.connected.filter((v: any) =>
-        workingNodes.find(
-          (item: any) => v.connected_identifier === item.identifier
-        )
-      );
-    }
-    // coordinator node
-    if (type?.toLowerCase().includes('coord')) {
-      nodes.push(node);
-      // other nodes
-    } else {
-      childNodes.push(node);
-    }
-
-    const info = node.infos.hardware_infos;
-    system.memory += info.memory;
-    system.memoryUsage += info.memory_usage;
-    system.disk += info.disk;
-    system.diskUsage += info.disk_usage;
-  });
-  return { nodes, childNodes, system };
-};
 
 /**
  * Todo: Milvus V2.0.0 Memory data is not ready for now, open it after Milvus ready.

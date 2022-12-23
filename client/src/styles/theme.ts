@@ -126,7 +126,7 @@ export const theme = createMuiTheme({
       // style for element p
       body1: {
         fontSize: '14px',
-        lineHeight: '20px',
+        lineHeight: 1.5,
       },
       // small caption
       body2: {

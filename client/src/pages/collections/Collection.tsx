@@ -1,22 +1,40 @@
+import { useMemo } from 'react';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { makeStyles, Theme } from '@material-ui/core';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomTabList from '../../components/customTabList/CustomTabList';
 import { ITab } from '../../components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { useMemo } from 'react';
 import { parseLocationSearch } from '../../utils/Format';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Preview from '../preview/Preview';
+import { TAB_EMUM } from './Types';
 
-enum TAB_EMUM {
-  'schema',
-  'partition',
-}
+const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {
+    flexDirection: 'row',
+    gap: theme.spacing(4),
+  },
+  card: {
+    boxShadow: 'none',
+    flexBasis: theme.spacing(28),
+    width: theme.spacing(28),
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  tab: {
+    flexGrow: 1,
+    flexShrink: 1,
+    overflowX: 'auto',
+  },
+}));
 
 const Collection = () => {
+  const classes = useStyles();
+
   const { collectionName = '' } = useParams<{
     collectionName: string;
   }>();
@@ -60,9 +78,10 @@ const Collection = () => {
   ];
 
   return (
-    <section className="page-wrapper">
+    <section className={`page-wrapper ${classes.wrapper}`}>
       <CustomTabList
         tabs={tabs}
+        wrapperClass={classes.tab}
         activeIndex={activeTabIndex}
         handleTabChange={handleTabChange}
       />

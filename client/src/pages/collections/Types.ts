@@ -14,6 +14,22 @@ export interface CollectionData {
   _fields?: FieldData[];
   _consistencyLevel?: string;
   _aliases: string[];
+  _replicas: Replica[];
+}
+
+export interface Replica {
+  collectionID: string;
+  node_ids: string[];
+  partition_ids: string[];
+  replicaID: string;
+  shard_replicas: ShardReplica[];
+}
+
+export interface ShardReplica {
+  dm_channel_name: string;
+  leaderID: string;
+  leader_addr: string;
+  node_id: string[];
 }
 
 export interface CollectionView extends CollectionData {
@@ -127,6 +143,10 @@ export interface AliasesProps {
   collectionName: string;
   onCreate?: Function;
   onDelete?: Function;
+}
+
+export interface LoadRelicaReq {
+  replica_number: number;
 }
 
 export enum TAB_EMUM {
