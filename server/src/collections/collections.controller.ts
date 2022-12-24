@@ -10,6 +10,7 @@ import {
   VectorSearchDto,
   QueryDto,
 } from './dto';
+import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 export class CollectionController {
   private collectionsService: CollectionsService;
@@ -179,11 +180,14 @@ export class CollectionController {
   }
 
   async loadCollection(req: Request, res: Response, next: NextFunction) {
-    const name = req.params?.name;
+    const collection_name = req.params?.name;
+    const data = req.body;
+    const param: LoadCollectionReq = { collection_name };
+    if (data.replica_number) {
+      param.replica_number = Number(data.replica_number);
+    }
     try {
-      const result = await this.collectionsService.loadCollection({
-        collection_name: name,
-      });
+      const result = await this.collectionsService.loadCollection(param);
       res.send(result);
     } catch (error) {
       next(error);
@@ -300,6 +304,18 @@ export class CollectionController {
     const alias = req.params?.alias;
     try {
       const result = await this.collectionsService.dropAlias({ alias });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getReplicas(req: Request, res: Response, next: NextFunction) {
+    const collectionID = req.params?.collectionID;
+    try {
+      const result = await this.collectionsService.getReplicas({
+        collectionID,
+      });
       res.send(result);
     } catch (error) {
       next(error);

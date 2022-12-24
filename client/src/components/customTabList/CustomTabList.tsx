@@ -4,6 +4,10 @@ import { ITabListProps, ITabPanel } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexBasis: 0,
+    flexGrow: 1,
     '& .MuiTab-wrapper': {
       textTransform: 'capitalize',
       fontWeight: 'bold',
@@ -25,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexBasis: 0,
     flexGrow: 1,
     marginTop: theme.spacing(2),
-    overflowY: 'auto',
+    overflow: 'hidden',
   },
 }));
 
@@ -65,10 +69,9 @@ const CustomTabList: FC<ITabListProps> = props => {
   };
 
   return (
-    <>
+    <div className={`${classes.wrapper}  ${wrapperClass}`}>
       <Tabs
         classes={{
-          root: `${classes.wrapper} ${wrapperClass}`,
           indicator: classes.tab,
           flexContainer: classes.tabContainer,
         }}
@@ -99,7 +102,7 @@ const CustomTabList: FC<ITabListProps> = props => {
           {tab.component}
         </TabPanel>
       ))}
-    </>
+    </div>
   );
 };
 

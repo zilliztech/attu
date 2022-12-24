@@ -58,8 +58,11 @@ const collectionTrans = {
   // load dialog
   loadTitle: 'Load Collection',
   loadContent:
-    'You are trying to load a collection with data. Only loaded collection can be searched.',
+    'All search and query operations within Milvus are executed in memory, only loaded collection can be searched.',
   loadConfirmLabel: 'Load',
+  replicaNum: 'Replica number',
+  replicaDes: `With in-memory replicas, Milvus can load the same segment on multiple query nodes. The replica number can not exceed query node count.`,
+  enableRepica: `Enable in-memory replica`,
 
   // release dialog
   releaseTitle: 'Release Collection',

@@ -1,0 +1,48 @@
+import { MILVUS_NODE_TYPE } from '../consts/Milvus';
+
+export const parseJson = (jsonData: any) => {
+  const nodes: any[] = [];
+  const childNodes: any[] = [];
+
+  const system = {
+    // qps: Math.random() * 1000,
+    latency: Math.random() * 1000,
+    disk: 0,
+    diskUsage: 0,
+    memory: 0,
+    memoryUsage: 0,
+  };
+
+  const workingNodes = jsonData?.response?.nodes_info.filter(
+    (node: any) => node?.infos?.has_error !== true
+  );
+
+  workingNodes.forEach((node: any) => {
+    const type = node?.infos?.type;
+    if (node.connected) {
+      node.connected = node.connected.filter((v: any) =>
+        workingNodes.find(
+          (item: any) => v.connected_identifier === item.identifier
+        )
+      );
+    }
+    // coordinator node
+    if (type?.toLowerCase().includes('coord')) {
+      nodes.push(node);
+      // other nodes
+    } else {
+      childNodes.push(node);
+    }
+
+    const info = node.infos.hardware_infos;
+    system.memory += info.memory;
+    system.memoryUsage += info.memory_usage;
+    system.disk += info.disk;
+    system.diskUsage += info.disk_usage;
+  });
+  return { nodes, childNodes, system, workingNodes };
+};
+
+export const getNode = (nodes: any, type: MILVUS_NODE_TYPE) => {
+  return nodes.filter((n: any) => n.infos.type === type);
+};

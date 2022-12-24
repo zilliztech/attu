@@ -13,7 +13,7 @@ import { IndexHttp } from '../../http/Index';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
-    height: '100%',
+    height: `calc(100vh - 160px)`,
   },
   icon: {
     fontSize: '20px',

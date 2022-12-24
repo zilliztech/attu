@@ -7,7 +7,6 @@ import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '../../context/Root';
 import { webSokcetContext } from '../../context/WebSocket';
-import { useLoadAndReleaseDialogHook } from '../../hooks/Dialog';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { CollectionHttp } from '../../http/Collection';
 import { MilvusHttp } from '../../http/Milvus';
@@ -34,7 +33,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
-  const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const classes = useStyles();
   const theme = useTheme();
   const { t: overviewTrans } = useTranslation('overview');
@@ -48,9 +46,7 @@ const Overview = () => {
     totalData: 0,
   });
   const [loading, setLoading] = useState(false);
-
   const { collections, setCollections } = useContext(webSokcetContext);
-
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
@@ -81,18 +77,11 @@ const Overview = () => {
     [collections]
   );
 
-  const fetchRelease = async (data: CollectionData) => {
-    const name = data._name;
-    const res = await CollectionHttp.releaseCollection(name);
+  const onRelease = () => {
     openSnackBar(
       successTrans('release', { name: collectionTrans('collection') })
     );
     fetchData();
-    return res;
-  };
-
-  const handleRelease = (data: CollectionData) => {
-    handleAction(data, fetchRelease);
   };
 
   const statisticsData = useMemo(() => {
@@ -134,7 +123,7 @@ const Overview = () => {
             <CollectionCard
               key={collection._id}
               data={collection}
-              handleRelease={handleRelease}
+              onRelease={onRelease}
             />
           ))}
         </div>

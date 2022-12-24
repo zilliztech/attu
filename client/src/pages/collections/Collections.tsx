@@ -25,10 +25,9 @@ import { rootContext } from '../../context/Root';
 import CreateCollection from './Create';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
-import {
-  useInsertDialogHook,
-  useLoadAndReleaseDialogHook,
-} from '../../hooks/Dialog';
+import { useInsertDialogHook } from '../../hooks/Dialog';
+import LoadCollectionDialog from '../../components/dialogs/LoadCollectionDialog';
+import ReleaseCollectionDialog from '../../components/dialogs/ReleaseCollectionDialog';
 import Highlighter from 'react-highlight-words';
 import InsertContainer from '../../components/insert/Container';
 import ImportSample from '../../components/insert/ImportSample';
@@ -64,7 +63,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
-  const { handleAction } = useLoadAndReleaseDialogHook({ type: 'collection' });
   const { handleInsertDialog } = useInsertDialogHook();
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
@@ -246,20 +244,16 @@ const Collections = () => {
     fetchData();
   };
 
-  const handleRelease = async (data: CollectionView) => {
-    const res = await CollectionHttp.releaseCollection(data._name);
+  const onRelease = async () => {
     openSnackBar(
       successTrans('release', { name: collectionTrans('collection') })
     );
     fetchData();
-    return res;
   };
 
-  const handleLoad = async (data: CollectionView) => {
-    const res = await CollectionHttp.loadCollection(data._name);
+  const onLoad = () => {
     openSnackBar(successTrans('load', { name: collectionTrans('collection') }));
     fetchData();
-    return res;
   };
 
   const handleDelete = async () => {
@@ -448,11 +442,25 @@ const Collections = () => {
       actionBarConfigs: [
         {
           onClick: (e: React.MouseEvent, row: CollectionView) => {
-            const cb =
-              row._status === LOADING_STATE.UNLOADED
-                ? handleLoad
-                : handleRelease;
-            handleAction(row, cb);
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component:
+                  row._status === LOADING_STATE.UNLOADED ? (
+                    <LoadCollectionDialog
+                      collection={row._name}
+                      onLoad={onLoad}
+                    />
+                  ) : (
+                    <ReleaseCollectionDialog
+                      collection={row._name}
+                      onRelease={onRelease}
+                    />
+                  ),
+              },
+            });
+
             e.preventDefault();
           },
           icon: 'load',

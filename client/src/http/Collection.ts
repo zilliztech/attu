@@ -4,6 +4,8 @@ import {
   DeleteEntitiesReq,
   InsertDataParam,
   LoadSampleParam,
+  LoadRelicaReq,
+  Replica,
 } from '../pages/collections/Types';
 import { Field } from '../pages/schema/Types';
 import { VectorSearchParam } from '../types/SearchTypes';
@@ -29,6 +31,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private schema!: {
     fields: Field[];
   };
+  private replicas!: Replica[];
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
@@ -67,9 +70,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.delete({ path: `${this.COLLECTIONS_URL}/${collectionName}` });
   }
 
-  static loadCollection(collectionName: string) {
+  static loadCollection(collectionName: string, param?: LoadRelicaReq) {
     return super.update({
       path: `${this.COLLECTIONS_URL}/${collectionName}/load`,
+      data: param,
     });
   }
 
@@ -194,5 +198,9 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return this.createdTime && this.createdTime !== '0'
       ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
       : '';
+  }
+
+  get _replicas(): Replica[] {
+    return this.replicas;
   }
 }
