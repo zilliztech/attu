@@ -39,7 +39,7 @@ export interface CollectionView extends CollectionData {
 }
 
 export interface CollectionCreateProps {
-  handleCreate: (param: CollectionCreateParam) => void;
+  onCreate?: () => void;
 }
 
 export interface CollectionCreateParam {

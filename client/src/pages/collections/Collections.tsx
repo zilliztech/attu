@@ -22,7 +22,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
-import CreateCollection from './Create';
+import CreateCollectionDialog from '../dialogs/CreateCollectionDialog';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
 import { useInsertDialogHook } from '../../hooks/Dialog';
@@ -210,33 +210,7 @@ const Collections = () => {
     }
   };
 
-  const handleCreateCollection = async (param: CollectionCreateParam) => {
-    const data: CollectionCreateParam = JSON.parse(JSON.stringify(param));
-    const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
-
-    data.fields = data.fields.map(v =>
-      vectorType.includes(v.data_type)
-        ? {
-            ...v,
-            type_params: {
-              // if data type is vector, dimension must exist.
-              dim: v.dimension!,
-            },
-          }
-        : v.data_type === DataTypeEnum.VarChar
-        ? {
-            ...v,
-            type_params: {
-              max_length: v.max_length!,
-            },
-          }
-        : v
-    );
-
-    await CollectionHttp.createCollection({
-      ...data,
-      consistency_level: data.consistency_level,
-    });
+  const onCreate = () => {
     handleCloseDialog();
     openSnackBar(
       successTrans('create', { name: collectionTrans('collection') })
@@ -280,9 +254,7 @@ const Collections = () => {
           open: true,
           type: 'custom',
           params: {
-            component: (
-              <CreateCollection handleCreate={handleCreateCollection} />
-            ),
+            component: <CreateCollectionDialog onCreate={onCreate} />,
           },
         });
       },

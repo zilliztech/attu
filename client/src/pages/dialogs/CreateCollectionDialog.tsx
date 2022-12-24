@@ -9,15 +9,16 @@ import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { TypeEnum } from '../../utils/Validation';
-import CreateFields from './CreateFields';
+import CreateFields from '../collections/CreateFields';
+import { CollectionHttp } from '../../http/Collection';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
   DataTypeEnum,
   ConsistencyLevelEnum,
   Field,
-} from './Types';
-import { CONSISTENCY_LEVEL_OPTIONS } from './Constants';
+} from '../collections/Types';
+import { CONSISTENCY_LEVEL_OPTIONS } from '../collections/Constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
   fieldset: {
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
+const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   const classes = useStyles();
   const { handleCloseDialog } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
@@ -178,7 +179,7 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
     },
   ];
 
-  const handleCreateCollection = () => {
+  const handleCreateCollection = async () => {
     const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
     const param: CollectionCreateParam = {
       ...form,
@@ -194,11 +195,31 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
 
         v.is_primary_key && (data.autoID = form.autoID);
 
-        return data;
+        return vectorType.includes(v.data_type)
+          ? {
+              ...data,
+              type_params: {
+                // if data type is vector, dimension must exist.
+                dim: data.dimension!,
+              },
+            }
+          : v.data_type === DataTypeEnum.VarChar
+          ? {
+              ...v,
+              type_params: {
+                max_length: v.max_length!,
+              },
+            }
+          : v;
       }),
       consistency_level: consistencyLevel,
     };
-    handleCreate(param);
+
+    await CollectionHttp.createCollection({
+      ...param,
+    });
+
+    onCreate && onCreate();
   };
 
   return (
@@ -256,4 +277,4 @@ const CreateCollection: FC<CollectionCreateProps> = ({ handleCreate }) => {
   );
 };
 
-export default CreateCollection;
+export default CreateCollectionDialog;
