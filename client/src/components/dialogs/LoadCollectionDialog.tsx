@@ -51,6 +51,7 @@ const LoadCollectionDialog = (props: any) => {
   });
   const [enableRelica, setEnableRelica] = useState(false);
   const [replicaToggle, setReplicaToggle] = useState(false);
+  const [maxQueryNode, setMaxQueryNode] = useState(1);
 
   // check if it is cluster
   useEffect(() => {
@@ -80,6 +81,7 @@ const LoadCollectionDialog = (props: any) => {
         setForm({
           replica: queryNodes.length,
         });
+        setMaxQueryNode(queryNodes.length);
         setEnableRelica(enableRelica);
       }
     }
@@ -130,12 +132,23 @@ const LoadCollectionDialog = (props: any) => {
 
   // if replica is enabled, add validation
   if (enableRelica) {
-    inputConfig.validations?.push({
-      rule: 'require',
-      errorText: warningTrans('required', {
-        name: collectionTrans('replicaNum'),
-      }),
-    });
+    inputConfig.validations?.push(
+      {
+        rule: 'require',
+        errorText: warningTrans('required', {
+          name: collectionTrans('replicaNum'),
+        }),
+      },
+      {
+        rule: 'range',
+        errorText: warningTrans('range', { min: 1, max: maxQueryNode }),
+        extraParam: {
+          min: 1,
+          max: maxQueryNode,
+          type: 'number',
+        },
+      }
+    );
   }
 
   // toggle enbale replica
