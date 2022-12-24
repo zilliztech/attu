@@ -171,3 +171,46 @@ export const mockGetPartitionsInfoData = [
     rowCount: 7,
   },
 ];
+
+export const mockGetReplicasData = [
+  {
+    partition_ids: ['1'],
+    shard_replicas: [
+      {
+        node_ids: ['2'],
+        leaderID: '2',
+        leader_addr: '172.20.0.11:21123',
+        dm_channel_name: 'by-dev-rootcoord-dml_2_438207169419481300v0',
+      },
+      {
+        node_ids: ['2'],
+        leaderID: '2',
+        leader_addr: '172.20.0.11:21123',
+        dm_channel_name: 'by-dev-rootcoord-dml_3_438207169419481300v1',
+      },
+    ],
+    node_ids: ['2'],
+    replicaID: '438207185122754599',
+    collectionID: '438207169419481300',
+  },
+  {
+    partition_ids: [],
+    shard_replicas: [
+      {
+        node_ids: ['4'],
+        leaderID: '4',
+        leader_addr: '172.20.0.10:21123',
+        dm_channel_name: 'by-dev-rootcoord-dml_2_438207169419481300v0',
+      },
+      {
+        node_ids: ['4'],
+        leaderID: '4',
+        leader_addr: '172.20.0.10:21123',
+        dm_channel_name: 'by-dev-rootcoord-dml_3_438207169419481300v1',
+      },
+    ],
+    node_ids: ['4'],
+    replicaID: '438207185122754598',
+    collectionID: '438207169419481300',
+  },
+];

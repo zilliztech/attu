@@ -4,7 +4,11 @@ import { CollectionsService } from '../../collections/collections.service';
 import { CronsService, SchedulerRegistry } from '../../crons/crons.service';
 import { MilvusService } from '../../milvus/milvus.service';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../utils/Const';
-import { insightCacheForTest, mockAddress } from '../__mocks__/consts';
+import {
+  insightCacheForTest,
+  mockAddress,
+  mockGetReplicasData,
+} from '../__mocks__/consts';
 import { MilvusClient } from '@zilliz/milvus2-sdk-node/dist/milvus';
 
 // mock Milvus client
@@ -51,6 +55,11 @@ describe('test crons service', () => {
     );
 
     collectionService = new CollectionsService(milvusService);
+    collectionService.getReplicas = async () => {
+      return new Promise<any>(resolve => {
+        resolve(mockGetReplicasData);
+      });
+    };
 
     schedulerRegistry = new SchedulerRegistry([]);
     cronsService = new CronsService(collectionService, schedulerRegistry);
@@ -152,6 +161,12 @@ describe('test crons service', () => {
     // reset setup to trigger error
     const newCollectionService = new CollectionsService(milvusService);
     const newSchedulerRegistry = new SchedulerRegistry([]);
+
+    newCollectionService.getReplicas = async () => {
+      return new Promise<any>(resolve => {
+        resolve(mockGetReplicasData);
+      });
+    };
 
     const newCronsService = new CronsService(
       newCollectionService,

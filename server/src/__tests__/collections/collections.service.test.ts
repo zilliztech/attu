@@ -14,6 +14,7 @@ import {
   mockGetAllCollectionsData,
   mockLoadedCollections,
   mockLoadedCollectionsData,
+  mockGetReplicasData,
 } from '../__mocks__/consts';
 import { MilvusClient } from '@zilliz/milvus2-sdk-node/dist/milvus';
 
@@ -39,6 +40,12 @@ describe('Test collections service', () => {
       insightCacheForTest
     );
     service = new CollectionsService(milvusService);
+    // mock getReplicas
+    service.getReplicas = async () => {
+      return new Promise<any>(resolve => {
+        resolve(mockGetReplicasData);
+      });
+    };
   });
 
   afterAll(() => {
@@ -174,7 +181,7 @@ describe('Test collections service', () => {
   test('test importSample method', async () => {
     const mockParam = {
       collection_name: 'c1',
-      size: 2
+      size: 2,
     };
     const res = await service.importSample(mockParam);
     expect(res.data.fields_data.length).toEqual(2);
@@ -182,7 +189,7 @@ describe('Test collections service', () => {
     try {
       await service.importSample({
         collection_name: '',
-        size: 20
+        size: 20,
       });
     } catch (err) {
       expect(err).toBe(ERR_NO_COLLECTION);
