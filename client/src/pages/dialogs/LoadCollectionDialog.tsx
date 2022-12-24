@@ -105,6 +105,8 @@ const LoadCollectionDialog = (props: any) => {
 
     // callback
     onLoad && onLoad();
+    // close dialog
+    handleCloseDialog();
   };
 
   // validator
