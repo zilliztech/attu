@@ -1,30 +1,29 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { makeStyles, Theme } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import AttuGrid from '../../components/grid/Grid';
 import CustomToolBar from '../../components/grid/ToolBar';
-import { CollectionView, InsertDataParam, LoadSampleParam } from './Types';
+import { CollectionView, InsertDataParam } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
 import EmptyCard from '../../components/cards/EmptyCard';
 import Status from '../../components/status/Status';
-import { useTranslation } from 'react-i18next';
 import { ChildrenStatusType } from '../../components/status/Types';
-import { makeStyles, Theme } from '@material-ui/core';
 import StatusIcon from '../../components/status/StatusIcon';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
 import CreateCollectionDialog from '../dialogs/CreateCollectionDialog';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
-import { useInsertDialogHook } from '../../hooks/Dialog';
 import LoadCollectionDialog from '../dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
+import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import Highlighter from 'react-highlight-words';
-import InsertContainer from '../../components/insert/Container';
-import ImportSample from '../../components/insert/ImportSample';
+import InsertDialog from '../dialogs/insert/Dialog';
+import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { MilvusHttp } from '../../http/Milvus';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { webSokcetContext } from '../../context/WebSocket';
@@ -57,7 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
-  const { handleInsertDialog } = useInsertDialogHook();
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
@@ -67,12 +65,10 @@ const Collections = () => {
     CollectionView[]
   >([]);
 
-  const { setDialog, handleCloseDialog, openSnackBar } =
-    useContext(rootContext);
+  const { setDialog, openSnackBar } = useContext(rootContext);
   const { collections, setCollections } = useContext(webSokcetContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
   const classes = useStyles();
 
@@ -182,30 +178,7 @@ const Collections = () => {
     }
   };
 
-  const handleImportSample = async (
-    collectionName: string,
-    size: string
-  ): Promise<{ result: boolean; msg: string }> => {
-    const param: LoadSampleParam = {
-      collection_name: collectionName,
-      size: size,
-    };
-    try {
-      await CollectionHttp.importSample(collectionName, param);
-      await MilvusHttp.flush(collectionName);
-      return { result: true, msg: '' };
-    } catch (err: any) {
-      const {
-        response: {
-          data: { message },
-        },
-      } = err;
-      return { result: false, msg: message || '' };
-    }
-  };
-
   const onCreate = () => {
-    handleCloseDialog();
     openSnackBar(
       successTrans('create', { name: collectionTrans('collection') })
     );
@@ -224,15 +197,11 @@ const Collections = () => {
     fetchData();
   };
 
-  const handleDelete = async () => {
-    for (const item of selectedCollections) {
-      await CollectionHttp.deleteCollection(item._name);
-    }
+  const onDelete = () => {
     openSnackBar(
       successTrans('delete', { name: collectionTrans('collection') })
     );
     fetchData();
-    handleCloseDialog();
     setSelectedCollections([]);
   };
 
@@ -257,19 +226,25 @@ const Collections = () => {
     {
       label: btnTrans('insert'),
       onClick: () => {
-        handleInsertDialog(
-          <InsertContainer
-            collections={formatCollections}
-            defaultSelectedCollection={
-              selectedCollections.length === 1
-                ? selectedCollections[0]._name
-                : ''
-            }
-            // user can't select partition on collection page, so default value is ''
-            defaultSelectedPartition={''}
-            handleInsert={handleInsert}
-          />
-        );
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <InsertDialog
+                collections={formatCollections}
+                defaultSelectedCollection={
+                  selectedCollections.length === 1
+                    ? selectedCollections[0]._name
+                    : ''
+                }
+                // user can't select partition on collection page, so default value is ''
+                defaultSelectedPartition={''}
+                handleInsert={handleInsert}
+              />
+            ),
+          },
+        });
       },
       /**
        * insert validation:
@@ -296,13 +271,9 @@ const Collections = () => {
           type: 'custom',
           params: {
             component: (
-              <DeleteTemplate
-                label={btnTrans('drop')}
-                title={dialogTrans('deleteTitle', {
-                  type: collectionTrans('collection'),
-                })}
-                text={collectionTrans('deleteWarning')}
-                handleDelete={handleDelete}
+              <DropCollectionDialog
+                onDelete={onDelete}
+                collections={selectedCollections}
               />
             ),
           },
@@ -457,12 +428,7 @@ const Collections = () => {
               open: true,
               type: 'custom',
               params: {
-                component: (
-                  <ImportSample
-                    collection={row._name}
-                    handleImport={handleImportSample}
-                  />
-                ),
+                component: <ImportSampleDialog collection={row._name} />,
               },
             });
           },

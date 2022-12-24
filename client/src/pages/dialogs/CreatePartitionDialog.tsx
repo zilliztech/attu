@@ -1,12 +1,16 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { rootContext } from '../../context/Root';
 import DialogTemplate from '../../components/customDialog/DialogTemplate';
 import CustomInput from '../../components/customInput/CustomInput';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { PartitionCreateProps } from './Types';
+import { PartitionManageParam } from '../partitions/Types';
+import { ManageRequestMethods } from '../../types/Common';
+import { PartitionHttp } from '../../http/Partition';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -15,13 +19,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CreatePartition: FC<PartitionCreateProps> = ({
-  handleCreate,
-  handleClose,
+  onCreate,
+  collectionName,
 }) => {
+  const classes = useStyles();
+
+  const { handleCloseDialog } = useContext(rootContext);
   const { t: partitionTrans } = useTranslation('partition');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
-
   const [form, setForm] = useState<{ name: string }>({
     name: '',
   });
@@ -30,8 +36,6 @@ const CreatePartition: FC<PartitionCreateProps> = ({
     return formatForm({ name });
   }, [form]);
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
-
-  const classes = useStyles();
 
   const handleInputChange = (value: string) => {
     setForm({ name: value });
@@ -55,10 +59,19 @@ const CreatePartition: FC<PartitionCreateProps> = ({
       },
     ],
   };
+  const handleCreatePartition = async () => {
+    const param: PartitionManageParam = {
+      partitionName: form.name,
+      collectionName: collectionName,
+      type: ManageRequestMethods.CREATE,
+    };
 
-  const handleCreatePartition = () => {
-    handleCreate(form.name);
+    await PartitionHttp.managePartition(param);
+    onCreate && onCreate();
+    handleCloseDialog();
   };
+
+  const handleClose = () => {};
 
   return (
     <DialogTemplate

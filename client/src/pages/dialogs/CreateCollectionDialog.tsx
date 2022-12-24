@@ -220,6 +220,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     });
 
     onCreate && onCreate();
+    handleCloseDialog();
   };
 
   return (

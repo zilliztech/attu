@@ -102,8 +102,7 @@ const LoadCollectionDialog = (props: any) => {
 
     // load collection request
     await CollectionHttp.loadCollection(collection, params);
-    // close dialog
-    handleCloseDialog();
+
     // callback
     onLoad && onLoad();
   };

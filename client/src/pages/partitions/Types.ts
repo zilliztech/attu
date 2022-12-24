@@ -27,8 +27,3 @@ export interface PartitionParam {
   collectionName: string;
   partitionNames: string[];
 }
-
-export interface PartitionCreateProps {
-  handleCreate: (name: string) => void;
-  handleClose: () => void;
-}

@@ -1,7 +1,7 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { PartitionManageParam, PartitionView } from './Types';
+import { PartitionView } from './Types';
 import AttuGrid from '../../components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
@@ -9,18 +9,17 @@ import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
 import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { rootContext } from '../../context/Root';
-import CreatePartition from './Create';
 import { PartitionHttp } from '../../http/Partition';
-import { ManageRequestMethods } from '../../types/Common';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import Highlighter from 'react-highlight-words';
 import { useInsertDialogHook } from '../../hooks/Dialog';
-import InsertContainer from '../../components/insert/Container';
+import InsertContainer from '../dialogs/insert/Dialog';
 import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { Field } from '../schema/Types';
 import { InsertDataParam } from '../collections/Types';
 import { MilvusHttp } from '../../http/Milvus';
+import CreatePartitionDialog from '../dialogs/CreatePartitionDialog';
+import DropPartitionDialog from '../dialogs/DropPartitionDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -46,7 +45,6 @@ const Partitions: FC<{
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: dialogTrans } = useTranslation('dialog');
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
@@ -125,19 +123,9 @@ const Partitions: FC<{
     }, 300);
   }, [search, partitions]);
 
-  const handleDelete = async () => {
-    for (const partition of selectedPartitions) {
-      const param: PartitionManageParam = {
-        partitionName: partition._name,
-        collectionName,
-        type: ManageRequestMethods.DELETE,
-      };
-      await PartitionHttp.managePartition(param);
-    }
-
+  const onDelete = () => {
     openSnackBar(successTrans('delete', { name: t('partition') }));
     fetchPartitions(collectionName);
-    handleCloseDialog();
   };
 
   const handleSearch = (value: string) => {
@@ -179,9 +167,9 @@ const Partitions: FC<{
           type: 'custom',
           params: {
             component: (
-              <CreatePartition
-                handleCreate={handleCreatePartition}
-                handleClose={handleCloseDialog}
+              <CreatePartitionDialog
+                collectionName={collectionName}
+                onCreate={onCreate}
               />
             ),
           },
@@ -227,11 +215,10 @@ const Partitions: FC<{
           type: 'custom',
           params: {
             component: (
-              <DeleteTemplate
-                label={btnTrans('drop')}
-                title={dialogTrans('deleteTitle', { type: t('partition') })}
-                text={t('deleteWarning')}
-                handleDelete={handleDelete}
+              <DropPartitionDialog
+                partitions={selectedPartitions}
+                collectionName={collectionName}
+                onDelete={onDelete}
               />
             ),
           },
@@ -324,19 +311,11 @@ const Partitions: FC<{
     setSelectedPartitions([]);
   };
 
-  const handleCreatePartition = async (name: string) => {
-    const param: PartitionManageParam = {
-      partitionName: name,
-      collectionName,
-      type: ManageRequestMethods.CREATE,
-    };
-
-    await PartitionHttp.managePartition(param);
-
+  const onCreate = () => {
     openSnackBar(successTrans('create', { name: t('partition') }));
-    handleCloseDialog();
     // refresh partitions
     fetchPartitions(collectionName);
+    setSelectedPartitions([]);
   };
 
   return (
