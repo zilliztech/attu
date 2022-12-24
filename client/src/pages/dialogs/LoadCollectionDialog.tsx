@@ -12,13 +12,13 @@ import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { parseJson, getNode } from '../../utils/Metric';
-import CustomInput from '../customInput/CustomInput';
-import { ITextfieldConfig } from '../customInput/Types';
-import DialogTemplate from '../customDialog/DialogTemplate';
+import CustomInput from '../../components/customInput/CustomInput';
+import { ITextfieldConfig } from '../../components/customInput/Types';
+import DialogTemplate from '../../components/customDialog/DialogTemplate';
 import { MilvusHttp } from '../../http/Milvus';
-import CustomToolTip from '../customToolTip/CustomToolTip';
+import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '../../consts/Milvus';
-import icons from '../icons/Icons';
+import icons from '../../components/icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

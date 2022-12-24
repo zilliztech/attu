@@ -3,13 +3,12 @@ import { FC, useContext } from 'react';
 import CustomButton from '../../../components/customButton/CustomButton';
 import icons from '../../../components/icons/Icons';
 import Status from '../../../components/status/Status';
-import CustomToolTip from '../../../components/customToolTip/CustomToolTip';
 import { CollectionCardProps } from './Types';
 import { useTranslation } from 'react-i18next';
 import CustomIconButton from '../../../components/customButton/CustomIconButton';
 import { useNavigate, Link } from 'react-router-dom';
 import { LOADING_STATE } from '../../../consts/Milvus';
-import ReleaseCollectionDialog from '../../../components/dialogs/ReleaseCollectionDialog';
+import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
 import { rootContext } from '../../../context/Root';
 
 const useStyles = makeStyles((theme: Theme) => ({
