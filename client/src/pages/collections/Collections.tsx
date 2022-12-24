@@ -4,13 +4,7 @@ import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import AttuGrid from '../../components/grid/Grid';
 import CustomToolBar from '../../components/grid/ToolBar';
-import {
-  CollectionCreateParam,
-  CollectionView,
-  DataTypeEnum,
-  InsertDataParam,
-  LoadSampleParam,
-} from './Types';
+import { CollectionView, InsertDataParam, LoadSampleParam } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';

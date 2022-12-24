@@ -8,7 +8,7 @@ import { formatForm } from '../../utils/Form';
 import { useFormValidation } from '../../hooks/Form';
 import { ITextfieldConfig } from '../../components/customInput/Types';
 import { CollectionHttp } from '../../http/Collection';
-import { CreateAliasProps } from './Types';
+import { CreateAliasProps } from '../collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateAlias: FC<CreateAliasProps> = props => {
+const CreateAliasDialog: FC<CreateAliasProps> = props => {
   const { cb, collectionName } = props;
   const [form, setForm] = useState({
     alias: '',
@@ -94,4 +94,4 @@ const CreateAlias: FC<CreateAliasProps> = props => {
   );
 };
 
-export default CreateAlias;
+export default CreateAliasDialog;

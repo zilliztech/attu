@@ -5,7 +5,7 @@ import { rootContext } from '../../context/Root';
 import { AliasesProps } from './Types';
 import icons from '../../components/icons/Icons';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CreateAlias from './CreateAlias';
+import CreateAliasDialog from '../dialogs/CreateAliasDialog';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '../../http/Collection';
 
@@ -46,7 +46,7 @@ export default function Aliases(props: AliasesProps) {
       type: 'custom',
       params: {
         component: (
-          <CreateAlias
+          <CreateAliasDialog
             collectionName={collectionName}
             cb={() => {
               onCreate();
