@@ -108,19 +108,25 @@ server.listen(PORT, () => {
     pubSub.on('ws_pubsub', (msg: any) => {
       socket.emit(msg.event, msg.data);
     });
-    io.on('disconnect', () => {
-      console.info('ws disconnected');
+    socket.on('disconnect', () => {
+      console.info(
+        chalk.green(
+          `ws client disconnected ${socket.client.conn.remoteAddress}`
+        )
+      );
     });
   });
 
-  server.on('disconnect', () => {
+  server.on('disconnect', (socket: Socket) => {
     io.removeAllListeners();
   });
 
   const ips = getIp();
   ips.forEach(ip => {
     console.info(
-      chalk.cyanBright(`Attu server started: http://${ip}:${PORT}/api/v1/swagger/`)
+      chalk.cyanBright(
+        `Attu server started: http://${ip}:${PORT}/api/v1/swagger/`
+      )
     );
   });
 });

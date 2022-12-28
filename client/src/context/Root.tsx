@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import React from 'react';
 import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { SwipeableDrawer } from '@material-ui/core';
+import { authContext } from '../context/Auth';
 import {
   RootContextType,
   DialogType,
@@ -43,6 +44,8 @@ const { Provider } = rootContext;
 // notice type mean it's a notice dialog you need to set props like title, content, actions
 // custom type could have own state, you could set a complete component in dialog.
 export const RootProvider = (props: { children: React.ReactNode }) => {
+  const { isAuth } = useContext(authContext);
+
   const classes = makeStyles({
     paper: {
       minWidth: '300px',
@@ -116,6 +119,20 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     };
     fetchVersion();
   }, []);
+
+  useEffect(() => {
+    // if auth is off, hide snack bar
+    if (!isAuth) {
+      setSnackBar({
+        open: false,
+        type: 'success',
+        message: '',
+        vertical: 'top',
+        horizontal: 'right',
+        autoHideDuration: 3000,
+      });
+    }
+  }, [isAuth]);
 
   return (
     <Provider

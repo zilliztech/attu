@@ -176,13 +176,6 @@ const InsertImport: FC<InsertImportProps> = ({
           </Typography>
         </div>
 
-        <div className="sampleWrapper">
-          <Typography variant="body2" className="text title">
-            {insertTrans('sample')}
-          </Typography>
-          <pre className="sample">{INSERT_CSV_SAMPLE}</pre>
-        </div>
-
         <Typography variant="body2" className="text title">
           {insertTrans('noteTitle')}
         </Typography>

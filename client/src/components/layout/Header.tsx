@@ -77,7 +77,7 @@ const Header: FC<HeaderType> = props => {
     await MilvusHttp.closeConnection();
     window.localStorage.removeItem(MILVUS_ADDRESS);
     // make sure we clear state in all pages
-    navigate(0);
+    // navigate(0);
   };
 
   return (

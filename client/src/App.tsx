@@ -8,8 +8,8 @@ import { WebSocketProvider } from './context/WebSocket';
 
 function App() {
   return (
-    <RootProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <RootProvider>
         <WebSocketProvider>
           <NavProvider>
             <MuiPickersUtilsProvider utils={DayjsUtils}>
@@ -17,8 +17,8 @@ function App() {
             </MuiPickersUtilsProvider>
           </NavProvider>
         </WebSocketProvider>
-      </AuthProvider>
-    </RootProvider>
+      </RootProvider>
+    </AuthProvider>
   );
 }
 
