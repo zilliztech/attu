@@ -43,6 +43,11 @@ export const parseJson = (jsonData: any) => {
   return { nodes, childNodes, system, workingNodes };
 };
 
+// get nodes
 export const getNode = (nodes: any, type: MILVUS_NODE_TYPE) => {
   return nodes.filter((n: any) => n.infos.type === type);
+};
+
+export const getSystemConfigs = (workingNodes: any) => {
+  return workingNodes.map((n: any) => n.infos.system_configurations);
 };
