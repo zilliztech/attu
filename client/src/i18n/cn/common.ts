@@ -6,6 +6,10 @@ const commonTrans = {
     username: 'Username',
     password: 'Password',
     optional: '(optional)',
+    prometheus: 'Prometheus',
+    prometheusAddress: 'Prometheus Address',
+    prometheusInstance: 'Prometheus Instance',
+    prometheusNamespace: 'Prometheus Namespace',
     ssl: 'SSL',
   },
   status: {

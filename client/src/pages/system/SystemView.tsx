@@ -94,6 +94,7 @@ const SystemView: any = () => {
     async function fetchData() {
       const res = await MilvusHttp.getMetrics();
       setData(parseJson(res));
+      console.log(parseJson(res))
     }
     fetchData();
   }, []);

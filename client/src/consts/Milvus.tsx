@@ -217,6 +217,7 @@ export enum LOADING_STATE {
 export const DEFAULT_VECTORS = 100000;
 export const DEFAULT_SEFMENT_FILE_SIZE = 1024;
 export const DEFAULT_MILVUS_PORT = 19530;
+export const DEFAULT_PROMETHEUS_PORT = 9090;
 
 export enum MILVUS_NODE_TYPE {
   ROOTCOORD = 'rootcoord',

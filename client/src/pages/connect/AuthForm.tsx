@@ -9,14 +9,23 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { MilvusHttp } from '../../http/Milvus';
-import { formatAddress } from '../../utils/Format';
+import { PrometheusHttp } from '../../http/Prometheus';
+import { formatAddress, formatPrometheusAddress } from '../../utils/Format';
 import { useNavigate } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
-import { MILVUS_ADDRESS, LAST_TIME_ADDRESS } from '../../consts/Localstorage';
+import {
+  MILVUS_ADDRESS,
+  LAST_TIME_ADDRESS,
+  LAST_TIME_HAS_PROMETHEUS,
+  LAST_TIME_PROMETHEUS_ADDRESS,
+  LAST_TIME_PROMETHEUS_INSTANCE,
+  LAST_TIME_PROMETHEUS_NAMESPACE,
+} from '../../consts/Localstorage';
 import { CODE_STATUS } from '../../consts/Http';
 import { MILVUS_URL } from '../../consts/Milvus';
 import { CustomRadio } from '../../components/customRadio/CustomRadio';
+import { prometheusContext } from '../../context/Prometheus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -45,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'block',
   },
   input: {
-    margin: theme.spacing(3, 0, 0.5),
+    margin: theme.spacing(0.5, 0, 0),
   },
   sslWrapper: {
     display: 'flex',
@@ -133,6 +142,56 @@ export const AuthForm = (props: any) => {
     ];
   }, [form, attuTrans, warningTrans, classes.input]);
 
+  const {
+    hasPrometheus,
+    setHasPrometheus,
+    prometheusAddress,
+    prometheusInstance,
+    prometheusNamespace,
+    setPrometheusAddress,
+    setPrometheusInstance,
+    setPrometheusNamespace,
+  } = useContext(prometheusContext);
+
+  const prometheusConfigs: ITextfieldConfig[] = useMemo(
+    () => [
+      {
+        label: `${attuTrans.prometheusAddress}`,
+        key: 'prometheus_address',
+        onChange: setPrometheusAddress,
+        variant: 'filled',
+        className: classes.input,
+        placeholder: attuTrans.prometheusAddress,
+        fullWidth: true,
+
+        defaultValue: prometheusAddress,
+      },
+      {
+        label: `${attuTrans.prometheusInstance}`,
+        key: 'prometheus_instance',
+        onChange: setPrometheusInstance,
+        variant: 'filled',
+        className: classes.input,
+        placeholder: attuTrans.prometheusInstance,
+        fullWidth: true,
+
+        defaultValue: prometheusInstance,
+      },
+      {
+        label: `${attuTrans.prometheusNamespace} ${attuTrans.optional}`,
+        key: 'prometheus_namespace',
+        onChange: setPrometheusNamespace,
+        variant: 'filled',
+        className: classes.input,
+        placeholder: attuTrans.prometheusNamespace,
+        fullWidth: true,
+
+        defaultValue: prometheusNamespace,
+      },
+    ],
+    []
+  );
+
   const handleConnect = async () => {
     const address = formatAddress(form.address);
     try {
@@ -184,6 +243,23 @@ export const AuthForm = (props: any) => {
             handleChange={(val: boolean) => handleInputChange('ssl', val)}
           />
         </div>
+        <div className={classes.sslWrapper}>
+          <CustomRadio
+            defaultChecked={hasPrometheus}
+            label={attuTrans.prometheus}
+            handleChange={setHasPrometheus}
+          />
+        </div>
+        {hasPrometheus &&
+          prometheusConfigs.map(v => (
+            <CustomInput
+              type="text"
+              textConfig={v}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={v.label}
+            />
+          ))}
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans('connect')}
         </CustomButton>

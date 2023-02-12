@@ -10,6 +10,7 @@ import icons from '../components/icons/Icons';
 import { authContext } from '../context/Auth';
 import { rootContext } from '../context/Root';
 import Overview from '../pages/overview/Overview';
+import { prometheusContext } from '../context/Prometheus';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
 function Index() {
   const navigate = useNavigate();
   const { isAuth } = useContext(authContext);
+  const { isPrometheusReady } = useContext(prometheusContext);
   const { versionInfo } = useContext(rootContext);
   const { t: navTrans } = useTranslation('nav');
   const classes = useStyles();
@@ -91,7 +93,10 @@ function Index() {
     {
       icon: icons.navSystem,
       label: navTrans('system'),
-      onClick: () => navigate('/system'),
+      onClick: () =>
+        isPrometheusReady
+          ? navigate('/system_healthy')
+          : navigate('/system'),
       iconActiveClass: 'normal',
       iconNormalClass: 'active',
     },

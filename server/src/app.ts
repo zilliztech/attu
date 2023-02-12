@@ -13,6 +13,7 @@ import { router as partitionsRouter } from './partitions';
 import { router as schemaRouter } from './schema';
 import { router as cronsRouter } from './crons';
 import { router as userRouter } from './users';
+import { router as prometheusRouter } from './prometheus';
 import { pubSub } from './events';
 import {
   TransformResMiddlerware,
@@ -41,6 +42,7 @@ router.use('/partitions', partitionsRouter);
 router.use('/schema', schemaRouter);
 router.use('/crons', cronsRouter);
 router.use('/users', userRouter);
+router.use('/prometheus', prometheusRouter);
 router.get('/healthy', (req, res, next) => {
   res.json({ status: 200 });
   next();

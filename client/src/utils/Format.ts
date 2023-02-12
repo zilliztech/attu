@@ -1,5 +1,5 @@
 import { BYTE_UNITS } from '../consts/Util';
-import { DEFAULT_MILVUS_PORT } from '../consts/Milvus';
+import { DEFAULT_MILVUS_PORT, DEFAULT_PROMETHEUS_PORT } from '../consts/Milvus';
 import {
   CreateFieldType,
   DataTypeEnum,
@@ -146,6 +146,13 @@ export const formatAddress = (address: string): string => {
   // remove http or https prefix from address
   const ip = address.replace(/(http|https):\/\//, '');
   return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
+};
+
+// Trim the prometheus address
+export const formatPrometheusAddress = (address: string): string => {
+  // remove http or https prefix from address
+  const ip = address.replace(/(http|https):\/\//, '');
+  return ip.includes(':') ? ip : `${ip}:${DEFAULT_PROMETHEUS_PORT}`;
 };
 
 export const formatByteSize = (
