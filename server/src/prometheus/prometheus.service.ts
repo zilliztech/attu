@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { threadId } from 'worker_threads';
 
 interface IPrometheusNode {
   label: string;
+  pod: string;
   cpu: number[];
   memory: number[];
 }
@@ -12,10 +14,11 @@ interface IPrometheusAllData {
   searchFailedVectorsCount: number[];
   sqLatency: number[];
 
-  metaHealthy: number[];
-  msgHealthy: number[];
-  objectHealthy: number[];
+  meta: number[];
+  msgstream: number[];
+  objstorage: number[];
 
+  rootNodes: IPrometheusNode[];
   queryNodes: IPrometheusNode[];
   indexNodes: IPrometheusNode[];
   dataNodes: IPrometheusNode[];
@@ -24,6 +27,13 @@ interface IPrometheusAllData {
 const metaMetric = 'milvus_meta_op_count';
 const msgstreamMetric = 'milvus_msgstream_op_count';
 const objstorageMetric = 'milvus_storage_op_count';
+
+const totalVectorsCountMetric = 'milvus_proxy_insert_vectors_count';
+const searchVectorsCountMetric = 'milvus_proxy_search_vectors_count';
+const sqLatencyMetric = 'milvus_proxy_sq_latency_bucket';
+
+const cpuMetric = 'process_cpu_seconds_total';
+const memoryMetric = 'process_resident_memory_bytes';
 
 export class PrometheusService {
   static address: string = '';
@@ -91,25 +101,27 @@ export class PrometheusService {
       .get(url)
       .then(res => res.data)
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return { status: 'failed' };
       });
     return result;
   }
 
-  getSearchVectorsCount() {
-    return;
+  async getSearchVectorsCount(start: number, end: number, step: string) {
+    const expr = `${searchVectorsCountMetric}${PrometheusService.selector}`;
+    const result = await this.queryRange(expr, start, end, step);
+    return result.data.result[0].values.map((d: any) => +d[1]).slice(1);
   }
 
-  getInsertVectorsCount() {
-    return;
+  async getInsertVectorsCount(start: number, end: number, step: string) {
+    const expr = `${totalVectorsCountMetric}${PrometheusService.selector}`;
+    const result = await this.queryRange(expr, start, end, step);
+    return result.data.result[0].values.map((d: any) => +d[1]).slice(1);
   }
 
   getSQLatency() {
     return;
   }
-
-  async getMetaServiceHealthyStatus(start: number, end: number, step: string) {}
 
   async getThirdPartyServiceHealthStatus(
     metricName: string,
@@ -136,20 +148,59 @@ export class PrometheusService {
     );
   }
 
-  getMessageServiceHealthyStatus() {
-    return;
+  async getInternalNodesCPUData(start: number, end: number, step: string) {
+    const expr = `${cpuMetric}${PrometheusService.selector}`;
+    const result = await this.queryRange(expr, start, end, step);
+    return result.data.result;
   }
 
-  getObjectServiceHealthyStatus() {
-    return;
+  async getInternalNodesMemoryData(start: number, end: number, step: string) {
+    const expr = `${memoryMetric}${PrometheusService.selector}`;
+    const result = await this.queryRange(expr, start, end, step);
+    return result.data.result;
   }
 
-  getInternalNodeCPUData() {
-    return;
+  reconstructNodeData(
+    cpuNodesData: any,
+    memoryNodesData: any,
+    label: string
+  ): IPrometheusNode[] {
+    const cpuNodes = cpuNodesData.filter(
+      (d: any) => d.metric.container.indexOf(label) >= 0
+    );
+    const memoryNodes = memoryNodesData.filter(
+      (d: any) => d.metric.container.indexOf(label) >= 0
+    );
+    const nodesData = cpuNodes.map((d: any) => {
+      const label = d.metric.container.indexOf('coord') >= 0 ? 'coord' : 'node';
+      const pod = d.metric.pod;
+      const cpuProcessTotal = d.values.map((v: any) => +v[1]);
+      const step =
+        (d.values[d.values.length - 1][0] - d.values[0][0]) /
+        (d.values.length - 1);
+      const cpu = cpuProcessTotal
+        .map((v: number, i: number) => (i > 0 ? v - cpuProcessTotal[i - 1] : 0))
+        .slice(1)
+        .map((v: number) => v / step);
+
+      const memory = memoryNodes
+        .find((data: any) => data.metric.pod === pod)
+        .values.map((v: any) => +v[1])
+        .slice(1);
+      return { label, pod, cpu, memory } as IPrometheusNode;
+    });
+
+    return nodesData;
   }
 
-  getInternalNodeMemoryData() {
-    return;
+  async getInternalNodesData(start: number, end: number, step: string) {
+    const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
+    const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
+
+    const queryNodes = this.reconstructNodeData(cpuNodes, memoryNodes, 'query');
+    const indexNodes = this.reconstructNodeData(cpuNodes, memoryNodes, 'index');
+    const dataNodes = this.reconstructNodeData(cpuNodes, memoryNodes, 'data');
+    return { queryNodes, indexNodes, dataNodes };
   }
 
   async getMilvusHealthyData({
@@ -179,6 +230,50 @@ export class PrometheusService {
       end,
       step
     );
-    return { meta, msgstream, objstorage } as any;
+    const totalVectorsCount = await this.getInsertVectorsCount(
+      start,
+      end,
+      step
+    );
+    const searchVectorsCount = await this.getSearchVectorsCount(
+      start,
+      end,
+      step
+    );
+    const sqLatency: number[] = [];
+
+    const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
+    const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
+
+    const rootNodes: IPrometheusNode[] = [
+      {
+        label: 'coord',
+        pod: cpuNodes.find((node: any) => node.metric.container === 'rootcoord')
+          .metric.pod,
+        cpu: cpuNodes
+          .find((node: any) => node.metric.container === 'rootcoord')
+          .values.map((d: any) => +d[1]),
+        memory: memoryNodes
+          .find((node: any) => node.metric.container === 'rootcoord')
+          .values.map((d: any) => +d[1]),
+      },
+    ];
+    const { queryNodes, indexNodes, dataNodes } =
+      await this.getInternalNodesData(start, end, step);
+
+    return {
+      totalVectorsCount,
+      searchVectorsCount,
+      sqLatency,
+
+      meta,
+      msgstream,
+      objstorage,
+
+      rootNodes,
+      queryNodes,
+      indexNodes,
+      dataNodes,
+    };
   }
 }

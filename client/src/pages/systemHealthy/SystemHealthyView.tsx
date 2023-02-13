@@ -32,7 +32,7 @@ const SystemHealthyView = () => {
     },
   ];
   const [timeRange, setTimeRange] = useState<ITimeRangeOption>(
-    timeRangeOptions[1]
+    timeRangeOptions[0]
   );
   const [nodes, setNodes] = useState<any>();
 
