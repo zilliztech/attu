@@ -77,12 +77,17 @@ export class MilvusService {
       const milvusClient: MilvusClient = hasAuth
         ? new MilvusClient(milvusAddress, ssl, username, password)
         : new MilvusClient(milvusAddress, ssl);
-      await milvusClient.collectionManager.hasCollection({
-        collection_name: 'not_exist',
-      });
-      MilvusService.activeAddress = address;
-      cache.set(milvusAddress, milvusClient);
-      return { address };
+
+      // check healthy
+      const res = await milvusClient.checkHealth();
+
+      if (res.isHealthy) {
+        MilvusService.activeAddress = address;
+        cache.set(milvusAddress, milvusClient);
+        return { address };
+      } else {
+        throw new Error('Milvus is not ready yet.');
+      }
     } catch (error) {
       // if milvus is not working, delete connection.
       cache.del(milvusAddress);
