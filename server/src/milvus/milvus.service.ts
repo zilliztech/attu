@@ -81,7 +81,7 @@ export class MilvusService {
       // check healthy
       const res = await milvusClient.checkHealth();
 
-      if (!res.isHealthy) {
+      if (res.isHealthy) {
         MilvusService.activeAddress = address;
         cache.set(milvusAddress, milvusClient);
         return { address };
