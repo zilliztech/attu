@@ -25,7 +25,6 @@ import {
   ShowPartitionsReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { DeleteEntitiesReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Data';
-import { CreateUserReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types/User';
 import { QueryDto } from '../../../collections/dto';
 import {
   CodeEnum,
@@ -46,6 +45,9 @@ import {
 
 const mockMilvusClient = jest.fn().mockImplementation((address: string) => {
   return {
+    checkHealth: () => {
+      return Promise.resolve({ isHealthy: true });
+    },
     collectionManager: {
       hasCollection: (param: { collection_name: string }) => {
         const { collection_name } = param;
