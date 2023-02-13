@@ -49,7 +49,7 @@ docker run -p 8000:3000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:lates
 
 Once you start the container, open the browser, type `http://{ attu ip }:8000`, you can view the attu GUI.
 
-#### Params
+#### Docker CLI parameters
 
 | Parameter  | Example           | required | description                 |
 | :--------- | :---------------- | :------: | --------------------------- |
