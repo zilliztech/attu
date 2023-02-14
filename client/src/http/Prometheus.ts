@@ -31,11 +31,11 @@ export class PrometheusHttp extends BaseModel {
   }: {
     start: number;
     end: number;
-    step: string;
+    step: number;
   }) {
     return super.search({
       path: PrometheusHttp.GET_MILVUS_HEALTHY_DATA_URL,
-      params: { start, end, step },
+      params: { start: 1675997400000, end: 1675998480000, step: 180000 },
     });
   }
 }
