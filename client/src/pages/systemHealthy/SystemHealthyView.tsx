@@ -8,14 +8,17 @@ import {
   EHealthyStatus,
   ENodeService,
   ENodeType,
+  ILineChartData,
   INodeTreeStructure,
   IPrometheusAllData,
+  IPrometheusNode,
   IThreshold,
   ITimeRangeOption,
 } from './Types';
 import clsx from 'clsx';
 import Topology from './Topology';
 import * as d3 from 'd3';
+import { reconNodeTree } from './dataHandler';
 // import data from "./data.json";
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -55,13 +58,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const THIRD_PARTY_SERVICE_HEALTHY_THRESHOLD = 0.95;
-const getThirdPartyServiceHealthyStatus = (rate: number) =>
-  rate > THIRD_PARTY_SERVICE_HEALTHY_THRESHOLD
-    ? EHealthyStatus.healthy
-    : EHealthyStatus.failed;
-const rateList2healthyStatus = (rateList: number[]) =>
-  rateList.map((rate: number) => getThirdPartyServiceHealthyStatus(rate));
+
 
 const SystemHealthyView = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
@@ -83,19 +80,20 @@ const SystemHealthyView = () => {
     {
       label: '7d',
       value: 7 * 24 * 60 * 60 * 1000,
-      step: 8 * 60 * 60 * 100,
+      step: 8 * 60 * 60 * 1000,
     },
   ];
   const [timeRange, setTimeRange] = useState<ITimeRangeOption>(
-    timeRangeOptions[0]
+    timeRangeOptions[2]
   );
-  const [prometheusData, setPrometheusData] = useState<any>();
+  const [nodes, setNodes] = useState<INodeTreeStructure[]>([]);
+  const [lineChartsData, setLineChartsData] = useState<ILineChartData[]>([]);
   const [selectedNode, setSelectedNode] = useState<string>('');
-  const defaultThresholds = {
+  const defaultThreshold = {
     cpu: 1,
-    memory: 8,
+    memory: 8 * 1024 * 1024 * 1024,
   };
-  const [threshold, setThreshold] = useState<IThreshold>(defaultThresholds);
+  const [threshold, setThreshold] = useState<IThreshold>(defaultThreshold);
 
   const updateData = async () => {
     const curT = new Date().getTime();
@@ -103,9 +101,19 @@ const SystemHealthyView = () => {
       start: curT - timeRange.value,
       end: curT,
       step: timeRange.step,
-    });
+    }) as IPrometheusAllData;
     console.log(result);
-    setPrometheusData(result.data as IPrometheusAllData);
+    setNodes(reconNodeTree(result, threshold));
+    setLineChartsData([{
+      label: 'TotalCount',
+      data: result.totalVectorsCount
+    },{
+      label: 'SearchCount',
+      data: result.searchVectorsCount
+    },{
+      label: 'SearchLatency',
+      data: result.sqLatency
+    },])
   };
 
   useEffect(() => {
@@ -117,75 +125,7 @@ const SystemHealthyView = () => {
     updateData();
   }, INTERVAL);
 
-  const reconNodeTree = (
-    prometheusData: IPrometheusAllData,
-    threshold: IThreshold
-  ) => {
-    const length = prometheusData.meta.length;
-
-    // third party
-    const metaNode: INodeTreeStructure = {
-      service: ENodeService.meta,
-      type: ENodeType.overview,
-      label: 'Meta',
-      healthyStatus: rateList2healthyStatus(prometheusData.meta),
-      children: [],
-    };
-    const msgstreamNode: INodeTreeStructure = {
-      service: ENodeService.msgstream,
-      type: ENodeType.overview,
-      label: 'MsgStream',
-      healthyStatus: rateList2healthyStatus(prometheusData.msgstream),
-      children: [],
-    };
-    const objstorageNode: INodeTreeStructure = {
-      service: ENodeService.objstorage,
-      type: ENodeType.overview,
-      label: 'ObjStorage',
-      healthyStatus: rateList2healthyStatus(prometheusData.msgstream),
-      children: [],
-    };
-
-    // internal
-    const rootNode = {};
-    const indexNodes: INodeTreeStructure[] = prometheusData.indexNodes.map(
-      node => {
-        const healthyStatus = d3.range(length).map((_, i: number) => {
-          const cpu = node.cpu[i];
-          const memory = node.memory[i];
-          return cpu >= threshold.cpu || memory >= threshold.memory
-            ? EHealthyStatus.warning
-            : EHealthyStatus.healthy;
-        });
-        return {
-          service: ENodeService.index,
-          type: node.type === 'coord' ? ENodeType.coord : ENodeType.node,
-          label: node.pod,
-          healthyStatus,
-          cpu: node.cpu,
-          memory: node.memory,
-          children: [],
-        };
-      }
-    );
-    const healthyStatus = d3
-      .range(length)
-      .map((_, i: number) =>
-        indexNodes.reduce(
-          (acc, cur) => acc && cur.healthyStatus[i] === EHealthyStatus.healthy,
-          true
-        )
-          ? EHealthyStatus.healthy
-          : EHealthyStatus.warning
-      );
-    const indexNode: INodeTreeStructure = {
-      service: ENodeService.index,
-      type: ENodeType.overview,
-      label: 'Index',
-      healthyStatus,
-      children: indexNodes,
-    };
-  };
+  console.log('nodes', nodes, lineChartsData);
 
   return (
     <div className={classes.root}>

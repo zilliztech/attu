@@ -116,7 +116,7 @@ export class PrometheusService {
     const expr = `${metric}${PrometheusService.selector}`;
     const result = await this.queryRange(expr, start, end, step);
     const data = result.data.result;
-    const length = Math.floor((end - start) / step) + 1;
+    const length = Math.floor((end - start) / step);
 
     if (data.length === 0) return Array(length).fill(0);
 
@@ -128,7 +128,7 @@ export class PrometheusService {
     rightLossCount = Math.floor(
       (end - data[0].values[data[0].values.length - 1][0] * 1000) / step
     );
-    res.push(...Array(rightLossCount).fill(-1));
+    res.push(...Array(rightLossCount).fill(-2));
     return res;
   }
   getSearchVectorsCount = (start: number, end: number, step: number) =>
@@ -136,8 +136,27 @@ export class PrometheusService {
   getInsertVectorsCount = (start: number, end: number, step: number) =>
     this.getVectorsCount(totalVectorsCountMetric, start, end, step);
 
-  getSQLatency() {
-    return;
+  async getSQLatency(start: number, end: number, step: number) {
+    const expr =
+      `histogram_quantile(0.99, sum by (le, query_type, pod, node_id)` +
+      `(rate(milvus_proxy_sq_latency_bucket${PrometheusService.selector}[${
+        step / 1000
+      }s])))`;
+    const result = await this.queryRange(expr, start, end, step);
+    const data = result.data.result;
+
+    const length = Math.floor((end - start) / step);
+    if (data.length === 0) return Array(length).fill(0);
+
+    const res = data[0].values.map((d: any) => (isNaN(d[1]) ? 0 : +d[1]));
+    let leftLossCount, rightLossCount;
+    leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
+    res.unshift(...Array(leftLossCount).fill(-1));
+    rightLossCount = Math.floor(
+      (end - data[0].values[data[0].values.length - 1][0] * 1000) / step
+    );
+    res.push(...Array(rightLossCount).fill(-2));
+    return res;
   }
 
   async getThirdPartyServiceHealthStatus(
@@ -148,21 +167,25 @@ export class PrometheusService {
   ) {
     const expr = `sum by (status) (${metricName}${PrometheusService.selector})`;
     const result = await this.queryRange(expr, start, end, step);
-    const totalCount = result.data.result
+    const data = result.data.result;
+    const length = Math.floor((end - start) / step);
+    const totalCount = data
       .find((d: any) => d.metric.status === 'total')
       .values.map((d: any) => +d[1]);
     const totalSlices = totalCount
       .map((d: number, i: number) => (i > 0 ? d - totalCount[i - 1] : d))
       .slice(1);
-    const successCount = result.data.result
+    const successCount = data
       .find((d: any) => d.metric.status === 'success')
       .values.map((d: any) => +d[1]);
     const successSlices = successCount
       .map((d: number, i: number) => (i > 0 ? d - successCount[i - 1] : d))
       .slice(1);
-    return totalSlices.map((d: number, i: number) =>
+    const res = totalSlices.map((d: number, i: number) =>
       d === 0 ? 1 : successSlices[i] / d
     );
+    res.unshift(...Array(length - res.length).fill(-1));
+    return res;
   }
 
   async getInternalNodesCPUData(start: number, end: number, step: number) {
@@ -206,7 +229,7 @@ export class PrometheusService {
       rightLossCount = Math.floor(
         (end - d.values[d.values.length - 1][0] * 1000) / step
       );
-      cpu.push(...Array(rightLossCount).fill(-1));
+      cpu.push(...Array(rightLossCount).fill(-2));
 
       const node = memoryNodes.find((data: any) => data.metric.pod === pod);
       const memory = node.values.map((v: any) => +v[1]).slice(1);
@@ -216,7 +239,7 @@ export class PrometheusService {
       rightLossCount = Math.floor(
         (end - node.values[node.values.length - 1][0] * 1000) / step
       );
-      memory.push(...Array(rightLossCount).fill(-1));
+      memory.push(...Array(rightLossCount).fill(-2));
       return { type, pod, cpu, memory } as IPrometheusNode;
     });
 
@@ -227,7 +250,7 @@ export class PrometheusService {
     const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
     const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
 
-    const [queryNodes, indexNodes, dataNodes] = ['query', 'index', 'data'].map(
+    const [rootNodes, queryNodes, indexNodes, dataNodes] = ['root', 'query', 'index', 'data'].map(
       (metric: string) =>
         this.reconstructNodeData(
           cpuNodes,
@@ -238,7 +261,7 @@ export class PrometheusService {
           step
         )
     );
-    return { queryNodes, indexNodes, dataNodes };
+    return { rootNodes, queryNodes, indexNodes, dataNodes };
   }
 
   async getMilvusHealthyData({
@@ -278,25 +301,25 @@ export class PrometheusService {
       end,
       step
     );
-    const sqLatency: number[] = [];
+    const sqLatency = await this.getSQLatency(start, end, step);
 
     const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
     const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
 
-    const rootNodes: IPrometheusNode[] = [
-      {
-        type: 'coord',
-        pod: cpuNodes.find((node: any) => node.metric.container === 'rootcoord')
-          .metric.pod,
-        cpu: cpuNodes
-          .find((node: any) => node.metric.container === 'rootcoord')
-          .values.map((d: any) => +d[1]),
-        memory: memoryNodes
-          .find((node: any) => node.metric.container === 'rootcoord')
-          .values.map((d: any) => +d[1]),
-      },
-    ];
-    const { queryNodes, indexNodes, dataNodes } =
+    // const rootNodes: IPrometheusNode[] = [
+    //   {
+    //     type: 'coord',
+    //     pod: cpuNodes.find((node: any) => node.metric.container === 'rootcoord')
+    //       .metric.pod,
+    //     cpu: cpuNodes
+    //       .find((node: any) => node.metric.container === 'rootcoord')
+    //       .values.map((d: any) => +d[1]),
+    //     memory: memoryNodes
+    //       .find((node: any) => node.metric.container === 'rootcoord')
+    //       .values.map((d: any) => +d[1]),
+    //   },
+    // ];
+    const { rootNodes, queryNodes, indexNodes, dataNodes } =
       await this.getInternalNodesData(start, end, step);
 
     return {

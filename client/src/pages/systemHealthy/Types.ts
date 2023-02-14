@@ -18,7 +18,12 @@ export enum ENodeService {
   root,
   query,
   index,
-  node,
+  data,
+}
+
+export interface ILineChartData {
+  label: string;
+  data: number[];
 }
 
 export interface INodeTreeStructure {
@@ -32,7 +37,8 @@ export interface INodeTreeStructure {
 }
 
 export enum EHealthyStatus {
-  healthy = 0,
+  noData = 0,
+  healthy,
   warning,
   failed,
 }
