@@ -99,6 +99,7 @@ export interface Field {
   };
   createType?: CreateFieldType;
   max_length?: string | null;
+  autoID?: boolean;
 }
 
 export type CreateFieldType =
