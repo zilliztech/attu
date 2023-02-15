@@ -31,7 +31,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     height: 'fit-content',
     display: 'flex',
     flexDirection: 'column',
-    border: '1px solid red',
+    // border: '1px solid red',
   },
   mainView: {
     borderRadius: '8px',
@@ -40,14 +40,14 @@ const getStyles = makeStyles((theme: Theme) => ({
     gridTemplateColumns: '1fr auto',
     marginTop: '14px',
     height: '100%',
-    border: '1px solid green',
+    // border: '1px solid green',
   },
   detailView: {
     height: '100%',
     width: '100%',
     transition: 'all .25s',
     position: 'absolute',
-    border: '1px solid purple',
+    // border: '1px solid purple',
   },
   showDetailView: {
     top: 0,
@@ -106,16 +106,18 @@ const SystemHealthyView = () => {
     setNodes(reconNodeTree(result, threshold));
     setLineChartsData([
       {
-        label: 'TotalCount',
+        label: 'Total Count',
         data: result.totalVectorsCount,
       },
       {
-        label: 'SearchCount',
+        label: 'Search Count',
         data: result.searchVectorsCount,
       },
       {
-        label: 'SearchLatency',
+        label: 'Search Latency',
         data: result.sqLatency,
+        format: (d) => d.toFixed(0),
+        unit: 'ms'
       },
     ]);
   };
@@ -136,10 +138,11 @@ const SystemHealthyView = () => {
       <div className={classes.mainView}>
         <Topology
           nodes={nodes}
+          // nodes={nodes[2].children}
           selectedNode={selectedNode as INodeTreeStructure}
           setSelectedNode={setSelectedNode}
         />
-        <HealthyIndexOverview nodes={nodes} />
+        <HealthyIndexOverview nodes={nodes} lineChartsData={lineChartsData} />
       </div>
       <div
         className={clsx(

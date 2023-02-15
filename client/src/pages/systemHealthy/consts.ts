@@ -1,5 +1,10 @@
 import { EHealthyStatus } from './Types';
 
+export const TOPO_WIDTH = 800;
+export const TOPO_HEIGHT = 600;
+export const TOPO_NODE_R = [68, 45, 30];
+export const TOPO_LINK_LENGTH = [160, 270];
+
 export const MAIN_VIEW_WIDTH = 600;
 export const CHART_WIDTH = 500;
 export const HEALTHY_INDEX_ROW_HEIGHT = 20;
@@ -10,3 +15,9 @@ export const HEALTHY_STATUS_COLORS = {
   [EHealthyStatus.warning]: '#F4DD0E',
   [EHealthyStatus.failed]: '#F16415',
 };
+
+export const LINE_CHART_LARGE_HEIGHT = 80;
+export const LINE_COLOR = '#394E97';
+export const LINE_LABEL_Y_PADDING = 6;
+export const LINE_LABEL_FONT_SIZE = 14;
+export const LINE_LABEL_FONT_FAMILY = 'Helvetica Neue';

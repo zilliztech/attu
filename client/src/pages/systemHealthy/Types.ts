@@ -6,24 +6,26 @@ export interface ITimeRangeOption {
 
 export enum ENodeType {
   overview = 0,
-  coord,
-  node,
+  coord = 'coord',
+  node = 'node',
 }
 
 export enum ENodeService {
   milvus = 0,
-  meta,
-  msgstream,
-  objstorage,
-  root,
-  query,
-  index,
-  data,
+  meta = 'Meta',
+  msgstream = 'MsgStream',
+  objstorage = 'ObjStorage',
+  root="Root",
+  query="Query",
+  index="Index",
+  data="Data",
 }
 
 export interface ILineChartData {
   label: string;
   data: number[];
+  format?: (d: number) => string;
+  unit?: string;
 }
 
 export interface INodeTreeStructure {

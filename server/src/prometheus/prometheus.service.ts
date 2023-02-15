@@ -131,14 +131,35 @@ export class PrometheusService {
     res.push(...Array(rightLossCount).fill(-2));
     return res;
   }
-  getSearchVectorsCount = (start: number, end: number, step: number) =>
-    this.getVectorsCount(searchVectorsCountMetric, start, end, step);
   getInsertVectorsCount = (start: number, end: number, step: number) =>
     this.getVectorsCount(totalVectorsCountMetric, start, end, step);
 
+  async getSearchVectorsCount(start: number, end: number, step: number) {
+    const expr = `${searchVectorsCountMetric}${PrometheusService.selector}`;
+    const result = await this.queryRange(expr, start, end, step);
+    const data = result.data.result;
+    const length = Math.floor((end - start) / step);
+
+    if (data.length === 0) return Array(length).fill(0);
+
+    const totalCount = data[0].values.map((d: any) => +d[1]);
+    const res = totalCount
+      .map((d: number, i: number) => (i > 0 ? d - totalCount[i - 1] : d))
+      .slice(1);
+
+    let leftLossCount, rightLossCount;
+    leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
+    res.unshift(...Array(leftLossCount).fill(-1));
+    rightLossCount = Math.floor(
+      (end - data[0].values[data[0].values.length - 1][0] * 1000) / step
+    );
+    res.push(...Array(rightLossCount).fill(-2));
+    return res;
+  }
+
   async getSQLatency(start: number, end: number, step: number) {
     const expr =
-      `histogram_quantile(0.99, sum by (le, query_type, pod, node_id)` +
+      `histogram_quantile(0.99, sum by (le, pod, node_id)` +
       `(rate(${sqLatencyMetric}${PrometheusService.selector}[${
         step / 1000
       }s])))`;
@@ -148,7 +169,9 @@ export class PrometheusService {
     const length = Math.floor((end - start) / step);
     if (data.length === 0) return Array(length).fill(0);
 
-    const res = data[0].values.map((d: any) => (isNaN(d[1]) ? 0 : +d[1]));
+    const res = data[0].values
+      .map((d: any) => (isNaN(d[1]) ? 0 : +d[1]))
+      // .slice(1);
     let leftLossCount, rightLossCount;
     leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
     res.unshift(...Array(leftLossCount).fill(-1));
@@ -232,7 +255,7 @@ export class PrometheusService {
       cpu.push(...Array(rightLossCount).fill(-2));
 
       const node = memoryNodes.find((data: any) => data.metric.pod === pod);
-      const memory = node.values.map((v: any) => +v[1]).slice(1);
+      const memory = node.values.map((v: any) => +v[1]);
 
       leftLossCount = Math.floor((node.values[0][0] * 1000 - start) / step);
       memory.unshift(...Array(leftLossCount).fill(-1));
@@ -240,7 +263,8 @@ export class PrometheusService {
         (end - node.values[node.values.length - 1][0] * 1000) / step
       );
       memory.push(...Array(rightLossCount).fill(-2));
-      return { type, pod, cpu, memory } as IPrometheusNode;
+
+      return { type, pod, cpu, memory: memory.slice(1) } as IPrometheusNode;
     });
 
     return nodesData;
@@ -250,16 +274,13 @@ export class PrometheusService {
     const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
     const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
 
-    const [rootNodes, queryNodes, indexNodes, dataNodes] = ['root', 'query', 'index', 'data'].map(
-      (metric: string) =>
-        this.reconstructNodeData(
-          cpuNodes,
-          memoryNodes,
-          metric,
-          start,
-          end,
-          step
-        )
+    const [rootNodes, queryNodes, indexNodes, dataNodes] = [
+      'root',
+      'query',
+      'index',
+      'data',
+    ].map((metric: string) =>
+      this.reconstructNodeData(cpuNodes, memoryNodes, metric, start, end, step)
     );
     return { rootNodes, queryNodes, indexNodes, dataNodes };
   }

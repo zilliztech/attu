@@ -1,5 +1,13 @@
-import * as d3 from "d3";
-import { EHealthyStatus, ENodeService, ENodeType, INodeTreeStructure, IPrometheusAllData, IPrometheusNode, IThreshold } from "./Types";
+import * as d3 from 'd3';
+import {
+  EHealthyStatus,
+  ENodeService,
+  ENodeType,
+  INodeTreeStructure,
+  IPrometheusAllData,
+  IPrometheusNode,
+  IThreshold,
+} from './Types';
 
 export const getInternalNode = (
   prometheusNodes: IPrometheusNode[],
@@ -14,7 +22,7 @@ export const getInternalNode = (
       const memory = node.memory[i];
       if (cpu === -1) return EHealthyStatus.noData;
       if (cpu === -2) return EHealthyStatus.failed;
-      console.log()
+      console.log();
       return cpu >= threshold.cpu || memory >= threshold.memory
         ? EHealthyStatus.warning
         : EHealthyStatus.healthy;
@@ -94,7 +102,7 @@ export const reconNodeTree = (
     'Query',
     threshold
   );
-  const DataNode = getInternalNode(
+  const dataNode = getInternalNode(
     prometheusData.dataNodes,
     ENodeService.data,
     'Data',
@@ -102,13 +110,13 @@ export const reconNodeTree = (
   );
 
   return [
-    metaNode,
-    msgstreamNode,
-    objstorageNode,
     rootNode,
     indexNode,
     queryNode,
-    DataNode,
+    dataNode,
+    metaNode,
+    msgstreamNode,
+    objstorageNode,
   ] as INodeTreeStructure[];
 };
 

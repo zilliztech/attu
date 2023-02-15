@@ -1,7 +1,12 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { CHART_WIDTH, MAIN_VIEW_WIDTH } from './consts';
+import {
+  CHART_WIDTH,
+  LINE_CHART_LARGE_HEIGHT,
+  MAIN_VIEW_WIDTH,
+} from './consts';
 import HealthyIndexRow from './HealthyIndexRow';
-import { INodeTreeStructure } from './Types';
+import LineChartLarge from './LineChartLarge';
+import { ILineChartData, INodeTreeStructure } from './Types';
 
 // export const CHART_LABEL_WIDTH = 70;
 
@@ -9,6 +14,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   root: {
     width: `${MAIN_VIEW_WIDTH}px`,
     height: '100%',
+    padding: '12px 16px',
     // boxShadow: '0 0 5px #ccc',
     fontSize: '14px',
   },
@@ -22,7 +28,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     fontWeight: 500,
   },
   timeRangeTabs: {
-    fontSize: '12px'
+    fontSize: '12px',
   },
   legendContainer: {
     display: 'flex',
@@ -43,6 +49,9 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   healthyIndexLabel: {
     // width: `${CHART_LABEL_WIDTH}px`,
+
+    fontWeight: 500,
+    color: '#444',
   },
   healthyIndexRow: {
     width: `${CHART_WIDTH}px`,
@@ -50,25 +59,34 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   chartView: { width: '100%', marginTop: '30px' },
   chartItem: {
-    margin: '10px 0',
+    margin: '24px 0',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
   chartLabel: {
-    // width: `${CHART_LABEL_WIDTH}px`
+    width: `50px`,
+    fontWeight: 500,
+    color: '#444',
   },
   chart: {
-    height: '100px',
+    height: `${LINE_CHART_LARGE_HEIGHT}px`,
     width: `${CHART_WIDTH}px`,
 
-    border: '1px solid brown',
+    // border: '1px solid brown',
   },
 }));
 
-const HealthyIndexOverview = ({ nodes }: { nodes: INodeTreeStructure[] }) => {
+const HealthyIndexOverview = ({
+  nodes,
+  lineChartsData,
+}: {
+  nodes: INodeTreeStructure[];
+  lineChartsData: ILineChartData[];
+}) => {
   const classes = getStyles();
   console.log('nodes', nodes);
+  console.log('lineChartsData', lineChartsData);
   return (
     <div className={classes.root}>
       <div className={classes.headerContent}>
@@ -104,18 +122,14 @@ const HealthyIndexOverview = ({ nodes }: { nodes: INodeTreeStructure[] }) => {
       </div>
       <div className={classes.chartView}>
         <div className={classes.title}>Search Query History</div>
-        <div className={classes.chartItem}>
-          <div className={classes.chartLabel}>Search Count</div>
-          <div className={classes.chart}></div>
-        </div>
-        <div className={classes.chartItem}>
-          <div className={classes.chartLabel}>Search Count</div>
-          <div className={classes.chart}></div>
-        </div>
-        <div className={classes.chartItem}>
-          <div className={classes.chartLabel}>Search Count</div>
-          <div className={classes.chart}></div>
-        </div>
+        {lineChartsData.map(chartData => (
+          <div className={classes.chartItem}>
+            <div className={classes.chartLabel}>{chartData.label}</div>
+            <div className={classes.chart}>
+              <LineChartLarge data={chartData.data} format={chartData.format} unit={chartData.unit} />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
