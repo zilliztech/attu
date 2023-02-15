@@ -19,6 +19,8 @@ import clsx from 'clsx';
 import Topology from './Topology';
 import * as d3 from 'd3';
 import { reconNodeTree } from './dataHandler';
+import HealthyIndexOverview from './HealthyIndexOverview';
+import HealthyIndexDetailView from './HealthyIndexDetailView';
 // import data from "./data.json";
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -58,8 +60,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-
-
 const SystemHealthyView = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
 
@@ -88,7 +88,7 @@ const SystemHealthyView = () => {
   );
   const [nodes, setNodes] = useState<INodeTreeStructure[]>([]);
   const [lineChartsData, setLineChartsData] = useState<ILineChartData[]>([]);
-  const [selectedNode, setSelectedNode] = useState<string>('');
+  const [selectedNode, setSelectedNode] = useState<INodeTreeStructure>();
   const defaultThreshold = {
     cpu: 1,
     memory: 8 * 1024 * 1024 * 1024,
@@ -97,23 +97,27 @@ const SystemHealthyView = () => {
 
   const updateData = async () => {
     const curT = new Date().getTime();
-    const result = await PrometheusHttp.getHealthyData({
+    const result = (await PrometheusHttp.getHealthyData({
       start: curT - timeRange.value,
       end: curT,
       step: timeRange.step,
-    }) as IPrometheusAllData;
-    console.log(result);
+    })) as IPrometheusAllData;
+    console.log('prometheus data', result);
     setNodes(reconNodeTree(result, threshold));
-    setLineChartsData([{
-      label: 'TotalCount',
-      data: result.totalVectorsCount
-    },{
-      label: 'SearchCount',
-      data: result.searchVectorsCount
-    },{
-      label: 'SearchLatency',
-      data: result.sqLatency
-    },])
+    setLineChartsData([
+      {
+        label: 'TotalCount',
+        data: result.totalVectorsCount,
+      },
+      {
+        label: 'SearchCount',
+        data: result.searchVectorsCount,
+      },
+      {
+        label: 'SearchLatency',
+        data: result.sqLatency,
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -125,24 +129,33 @@ const SystemHealthyView = () => {
     updateData();
   }, INTERVAL);
 
-  console.log('nodes', nodes, lineChartsData);
+  const topoNodes = !!selectedNode ? selectedNode.children : nodes;
 
   return (
     <div className={classes.root}>
       <div className={classes.mainView}>
-        {/* <Topology
-          tree={tree}
-          selectedNode={selectedNode}
+        <Topology
+          nodes={nodes}
+          selectedNode={selectedNode as INodeTreeStructure}
           setSelectedNode={setSelectedNode}
-        ></Topology> */}
-        <div style={{ height: '200px', width: '300px' }}></div>
+        />
+        <HealthyIndexOverview nodes={nodes} />
       </div>
       <div
         className={clsx(
           classes.detailView,
           selectedNode ? classes.showDetailView : classes.hideDetailView
         )}
-      ></div>
+      >
+        {selectedNode && (
+          <Topology
+            nodes={selectedNode.children}
+            selectedNode={selectedNode}
+            setSelectedNode={setSelectedNode}
+          />
+        )}
+        <HealthyIndexDetailView />
+      </div>
     </div>
   );
 };

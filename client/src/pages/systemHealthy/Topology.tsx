@@ -2,15 +2,15 @@ import { Dispatch } from 'react';
 import { INodeTreeStructure } from './Types';
 
 const Topology = ({
-  tree,
+  nodes,
   selectedNode,
   setSelectedNode,
 }: {
-  tree: INodeTreeStructure;
-  selectedNode: string;
-  setSelectedNode: Dispatch<string>;
+  nodes: INodeTreeStructure[];
+  selectedNode: INodeTreeStructure;
+  setSelectedNode: Dispatch<INodeTreeStructure>;
 }) => {
-  return <div></div>;
+  return <div>Topology</div>;
 };
 
 export default Topology;

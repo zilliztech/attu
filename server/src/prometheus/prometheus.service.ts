@@ -139,7 +139,7 @@ export class PrometheusService {
   async getSQLatency(start: number, end: number, step: number) {
     const expr =
       `histogram_quantile(0.99, sum by (le, query_type, pod, node_id)` +
-      `(rate(milvus_proxy_sq_latency_bucket${PrometheusService.selector}[${
+      `(rate(${sqLatencyMetric}${PrometheusService.selector}[${
         step / 1000
       }s])))`;
     const result = await this.queryRange(expr, start, end, step);
@@ -302,23 +302,6 @@ export class PrometheusService {
       step
     );
     const sqLatency = await this.getSQLatency(start, end, step);
-
-    const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
-    const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
-
-    // const rootNodes: IPrometheusNode[] = [
-    //   {
-    //     type: 'coord',
-    //     pod: cpuNodes.find((node: any) => node.metric.container === 'rootcoord')
-    //       .metric.pod,
-    //     cpu: cpuNodes
-    //       .find((node: any) => node.metric.container === 'rootcoord')
-    //       .values.map((d: any) => +d[1]),
-    //     memory: memoryNodes
-    //       .find((node: any) => node.metric.container === 'rootcoord')
-    //       .values.map((d: any) => +d[1]),
-    //   },
-    // ];
     const { rootNodes, queryNodes, indexNodes, dataNodes } =
       await this.getInternalNodesData(start, end, step);
 
