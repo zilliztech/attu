@@ -47,6 +47,8 @@ Attu is an all-in-one milvus administration tool. With Attu, you can dramaticall
 docker run -p 8000:3000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:latest
 ```
 
+> 👀 Please make sure the attu server(container) can access the milvus ip address. 
+
 Once you start the container, open the browser, type `http://{ attu ip }:8000`, you can view the attu GUI.
 
 #### Docker CLI parameters
