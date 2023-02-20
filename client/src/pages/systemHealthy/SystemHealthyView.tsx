@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { useInterval } from '../../hooks/SystemView';
 import { PrometheusHttp } from '../../http/Prometheus';
@@ -21,6 +21,7 @@ import * as d3 from 'd3';
 import { reconNodeTree } from './dataHandler';
 import HealthyIndexOverview from './HealthyIndexOverview';
 import HealthyIndexDetailView from './HealthyIndexDetailView';
+import { KeyboardArrowDown } from '@material-ui/icons';
 // import data from "./data.json";
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -51,12 +52,27 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   showDetailView: {
     top: 0,
-    minHeight: '100%',
+    minHeight: '100vh',
     height: 'fit-content',
   },
   hideDetailView: {
     top: '2000px',
     maxHeight: 0,
+  },
+  detailViewContainer: {
+    borderRadius: '8px',
+    boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
+    display: 'grid',
+    gridTemplateColumns: '1fr auto',
+    // marginTop: '14px',
+    height: '100%',
+  },
+  childCloseBtn: {
+    border: 0,
+    backgroundColor: 'white',
+    gridArea: 'a',
+    cursor: 'pointer',
+    width: '100%',
   },
 }));
 
@@ -91,7 +107,7 @@ const SystemHealthyView = () => {
   const [selectedNode, setSelectedNode] = useState<INodeTreeStructure>();
   const defaultThreshold = {
     cpu: 1,
-    memory: 8 * 1024 * 1024 * 1024,
+    memory: 1 * 1024 * 1024 * 1024,
   };
   const [threshold, setThreshold] = useState<IThreshold>(defaultThreshold);
 
@@ -116,8 +132,8 @@ const SystemHealthyView = () => {
       {
         label: 'Search Latency',
         data: result.sqLatency,
-        format: (d) => d.toFixed(0),
-        unit: 'ms'
+        format: d => d.toFixed(0),
+        unit: 'ms',
       },
     ]);
   };
@@ -131,18 +147,34 @@ const SystemHealthyView = () => {
     updateData();
   }, INTERVAL);
 
-  const topoNodes = !!selectedNode ? selectedNode.children : nodes;
+  const hasDetailServices = [
+    ENodeService.index,
+    ENodeService.query,
+    ENodeService.data,
+  ];
+
+  const exploreDetailHandler = (service: ENodeService) => {
+    console.log('service', service);
+    if (hasDetailServices.indexOf(service) >= 0) {
+      const node = nodes.find(node => node.service === service);
+      node !== selectedNode && setSelectedNode(node);
+    }
+  };
 
   return (
     <div className={classes.root}>
       <div className={classes.mainView}>
         <Topology
           nodes={nodes}
-          // nodes={nodes[2].children}
-          selectedNode={selectedNode as INodeTreeStructure}
-          setSelectedNode={setSelectedNode}
+          // selectedNode={selectedNode as INodeTreeStructure}
+          onClick={exploreDetailHandler}
         />
-        <HealthyIndexOverview nodes={nodes} lineChartsData={lineChartsData} />
+        <HealthyIndexOverview
+          nodes={nodes}
+          lineChartsData={lineChartsData}
+          threshold={threshold}
+          setThreshold={setThreshold}
+        />
       </div>
       <div
         className={clsx(
@@ -150,14 +182,22 @@ const SystemHealthyView = () => {
           selectedNode ? classes.showDetailView : classes.hideDetailView
         )}
       >
-        {selectedNode && (
-          <Topology
-            nodes={selectedNode.children}
-            selectedNode={selectedNode}
-            setSelectedNode={setSelectedNode}
-          />
-        )}
-        <HealthyIndexDetailView />
+        <button
+          className={classes.childCloseBtn}
+          onClick={() => setSelectedNode(undefined)}
+        >
+          <KeyboardArrowDown />
+        </button>
+        <div className={classes.detailViewContainer}>
+          {selectedNode && (
+            <Topology
+              nodes={selectedNode.children}
+              // selectedNode={selectedNode}
+              onClick={exploreDetailHandler}
+            />
+          )}
+          <HealthyIndexDetailView />
+        </div>
       </div>
     </div>
   );

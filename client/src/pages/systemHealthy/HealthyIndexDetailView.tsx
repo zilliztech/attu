@@ -1,5 +1,5 @@
-const ThresholdPanel = () => {
+const HealthyIndexDetailView = () => {
   return <div></div>;
 };
 
-export default ThresholdPanel;
+export default HealthyIndexDetailView;

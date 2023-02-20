@@ -15,10 +15,10 @@ export enum ENodeService {
   meta = 'Meta',
   msgstream = 'MsgStream',
   objstorage = 'ObjStorage',
-  root="Root",
-  query="Query",
-  index="Index",
-  data="Data",
+  root = 'Root',
+  query = 'Query',
+  index = 'Index',
+  data = 'Data',
 }
 
 export interface ILineChartData {

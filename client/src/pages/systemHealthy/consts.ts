@@ -16,8 +16,7 @@ export const HEALTHY_STATUS_COLORS = {
   [EHealthyStatus.failed]: '#F16415',
 };
 
-export const LINE_CHART_LARGE_HEIGHT = 80;
+export const LINE_CHART_LARGE_HEIGHT = 60;
 export const LINE_COLOR = '#394E97';
 export const LINE_LABEL_Y_PADDING = 6;
 export const LINE_LABEL_FONT_SIZE = 14;
-export const LINE_LABEL_FONT_FAMILY = 'Helvetica Neue';

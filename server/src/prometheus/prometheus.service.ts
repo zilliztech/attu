@@ -122,7 +122,8 @@ export class PrometheusService {
 
     const res = result.data.result[0].values.map((d: any) => +d[1]).slice(1);
 
-    let leftLossCount, rightLossCount;
+    let leftLossCount;
+    let rightLossCount;
     leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
     res.unshift(...Array(leftLossCount).fill(-1));
     rightLossCount = Math.floor(
@@ -147,7 +148,8 @@ export class PrometheusService {
       .map((d: number, i: number) => (i > 0 ? d - totalCount[i - 1] : d))
       .slice(1);
 
-    let leftLossCount, rightLossCount;
+    let leftLossCount;
+    let rightLossCount;
     leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
     res.unshift(...Array(leftLossCount).fill(-1));
     rightLossCount = Math.floor(
@@ -169,10 +171,10 @@ export class PrometheusService {
     const length = Math.floor((end - start) / step);
     if (data.length === 0) return Array(length).fill(0);
 
-    const res = data[0].values
-      .map((d: any) => (isNaN(d[1]) ? 0 : +d[1]))
-      // .slice(1);
-    let leftLossCount, rightLossCount;
+    const res = data[0].values.map((d: any) => (isNaN(d[1]) ? 0 : +d[1]));
+    // .slice(1);
+    let leftLossCount;
+    let rightLossCount;
     leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
     res.unshift(...Array(leftLossCount).fill(-1));
     rightLossCount = Math.floor(
@@ -238,7 +240,8 @@ export class PrometheusService {
       (d: any) => d.metric.container.indexOf(type) >= 0
     );
     const nodesData = cpuNodes.map((d: any) => {
-      const type = d.metric.container.indexOf('coord') >= 0 ? 'coord' : 'node';
+      const nodeType =
+        d.metric.container.indexOf('coord') >= 0 ? 'coord' : 'node';
       const pod = d.metric.pod;
       const cpuProcessTotal = d.values.map((v: any) => +v[1]);
       const cpu = cpuProcessTotal
@@ -246,7 +249,8 @@ export class PrometheusService {
         .slice(1)
         .map((v: number) => v / (step / 1000));
 
-      let leftLossCount, rightLossCount;
+      let leftLossCount;
+      let rightLossCount;
       leftLossCount = Math.floor((d.values[0][0] * 1000 - start) / step);
       cpu.unshift(...Array(leftLossCount).fill(-1));
       rightLossCount = Math.floor(
@@ -264,7 +268,12 @@ export class PrometheusService {
       );
       memory.push(...Array(rightLossCount).fill(-2));
 
-      return { type, pod, cpu, memory: memory.slice(1) } as IPrometheusNode;
+      return {
+        type: nodeType,
+        pod,
+        cpu,
+        memory: memory.slice(1),
+      } as IPrometheusNode;
     });
 
     return nodesData;

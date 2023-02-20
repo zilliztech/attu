@@ -16,6 +16,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     overflow: 'auto',
     backgroundColor: 'white',
     // overflow: 'visible',
+    minHeight: '90%',
   },
   node: {
     transition: 'all .25s',
@@ -49,7 +50,7 @@ const nodesLayout = (
     (nodes.find(node => node.type === ENodeType.coord) as INodeTreeStructure);
   const childrenNodes = nodes.filter(node => node !== rootNode);
 
-  const rootPos = [300, height / 2];
+  const rootPos = [300, height * 0.45];
   const angleStep = (2 * Math.PI) / Math.max(childrenNodes.length, 3);
   const randomBias = angleStep * 0.4;
   const childrenPos = childrenNodes.map((node, i) => [
@@ -68,12 +69,10 @@ const nodesLayout = (
 
 const Topology = ({
   nodes,
-  selectedNode,
-  setSelectedNode,
+  onClick,
 }: {
   nodes: INodeTreeStructure[];
-  selectedNode: INodeTreeStructure;
-  setSelectedNode: Dispatch<INodeTreeStructure>;
+  onClick: (service: ENodeService) => void;
 }) => {
   const width = TOPO_WIDTH;
   const height = TOPO_HEIGHT;
@@ -93,7 +92,7 @@ const Topology = ({
           return (
             <>
               {node.children.length > 0 && (
-                <g className={classes.node}>
+                <g className={classes.node} onClick={() => onClick(node.service)}>
                   <line
                     x1={childPos[0]}
                     y1={childPos[1]}
@@ -125,7 +124,7 @@ const Topology = ({
                   >{`${node.children.length - 1} Node(s)`}</text>
                 </g>
               )}
-              <g className={classes.node}>
+              <g className={classes.node} onClick={() => onClick(node.service)}>
                 <line
                   x1={rootPos[0]}
                   y1={rootPos[1]}

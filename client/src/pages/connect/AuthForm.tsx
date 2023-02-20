@@ -178,7 +178,7 @@ export const AuthForm = (props: any) => {
         defaultValue: prometheusInstance,
       },
       {
-        label: `${attuTrans.prometheusNamespace} ${attuTrans.optional}`,
+        label: `${attuTrans.prometheusNamespace}`,
         key: 'prometheus_namespace',
         onChange: setPrometheusNamespace,
         variant: 'filled',

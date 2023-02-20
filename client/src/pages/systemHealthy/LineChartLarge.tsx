@@ -1,10 +1,8 @@
 import * as d3 from 'd3';
-import { useEffect } from 'react';
 import {
   CHART_WIDTH,
   LINE_CHART_LARGE_HEIGHT,
   LINE_COLOR,
-  LINE_LABEL_FONT_FAMILY,
   LINE_LABEL_FONT_SIZE,
   LINE_LABEL_Y_PADDING,
 } from './consts';
@@ -22,7 +20,6 @@ const LineChartLarge = ({
   const width = CHART_WIDTH;
   const height = LINE_CHART_LARGE_HEIGHT - 3;
   const fontSize = LINE_LABEL_FONT_SIZE;
-  const fontFamily = LINE_LABEL_FONT_FAMILY;
 
   const xDomain = [0, length];
   const xRange = [0, CHART_WIDTH];

@@ -1,12 +1,17 @@
 import { makeStyles, Theme } from '@material-ui/core';
+import { Dispatch, SetStateAction } from 'react';
 import {
   CHART_WIDTH,
   LINE_CHART_LARGE_HEIGHT,
   MAIN_VIEW_WIDTH,
 } from './consts';
+import HealthyIndexLegend from './HealthyIndexLegend';
 import HealthyIndexRow from './HealthyIndexRow';
 import LineChartLarge from './LineChartLarge';
-import { ILineChartData, INodeTreeStructure } from './Types';
+import ThresholdPanel from './ThresholdPanel';
+import ThresholdSetting from './ThresholdSetting';
+import { ILineChartData, INodeTreeStructure, IThreshold } from './Types';
+// import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 
 // export const CHART_LABEL_WIDTH = 70;
 
@@ -34,9 +39,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  legendItem: { display: 'flex', marginLeft: '12px' },
-  legendIcon: {},
-  legendText: { marginLeft: '8px' },
   settingIcon: { marginLeft: '16px' },
   mainView: {
     width: '100%',
@@ -80,9 +82,13 @@ const getStyles = makeStyles((theme: Theme) => ({
 const HealthyIndexOverview = ({
   nodes,
   lineChartsData,
+  threshold,
+  setThreshold,
 }: {
   nodes: INodeTreeStructure[];
   lineChartsData: ILineChartData[];
+  threshold: IThreshold;
+  setThreshold: Dispatch<SetStateAction<IThreshold>>;
 }) => {
   const classes = getStyles();
   console.log('nodes', nodes);
@@ -92,22 +98,24 @@ const HealthyIndexOverview = ({
       <div className={classes.headerContent}>
         <div className={classes.titleContainer}>
           <div className={classes.title}>Healthy Status</div>
-          <div className={classes.timeRangeTabs}>7day / 24h / 1h</div>
+          <div className={classes.timeRangeTabs}>
+            <span>
+              <b>7day</b>
+            </span>
+            <span> / </span>
+            <span>24h</span>
+            <span> / </span>
+            <span>1h</span>
+          </div>
         </div>
         <div className={classes.legendContainer}>
-          <div className={classes.legendItem}>
-            <div className={classes.legendIcon}>icon</div>
-            <div className={classes.legendText}>healthy</div>
+          <HealthyIndexLegend />
+          <div className={classes.settingIcon}>
+            <ThresholdSetting
+              threshold={threshold}
+              setThreshold={setThreshold}
+            />
           </div>
-          <div className={classes.legendItem}>
-            <div className={classes.legendIcon}>icon</div>
-            <div className={classes.legendText}>healthy</div>
-          </div>
-          <div className={classes.legendItem}>
-            <div className={classes.legendIcon}>icon</div>
-            <div className={classes.legendText}>healthy</div>
-          </div>
-          <div className={classes.settingIcon}>setting</div>
         </div>
       </div>
       <div className={classes.mainView}>
@@ -126,7 +134,11 @@ const HealthyIndexOverview = ({
           <div className={classes.chartItem}>
             <div className={classes.chartLabel}>{chartData.label}</div>
             <div className={classes.chart}>
-              <LineChartLarge data={chartData.data} format={chartData.format} unit={chartData.unit} />
+              <LineChartLarge
+                data={chartData.data}
+                format={chartData.format}
+                unit={chartData.unit}
+              />
             </div>
           </div>
         ))}
