@@ -39,7 +39,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  settingIcon: { marginLeft: '16px' },
+  settingIcon: { marginLeft: '16px', display: 'flex', alignItems: 'flex-end' },
   mainView: {
     width: '100%',
     marginTop: '12px',

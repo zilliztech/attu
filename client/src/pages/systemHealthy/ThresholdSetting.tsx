@@ -16,7 +16,9 @@ import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';
-
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
+import SettingsSharpIcon from '@mui/icons-material/SettingsSharp';
+import CustomButton from '../../components/customButton/CustomButton';
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
@@ -25,7 +27,10 @@ export interface SimpleDialogProps {
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: '12px 16px',
+    padding: '24px 32px',
+    width: '360px',
+    display: 'flex',
+    flexDirection: 'column',
   },
   note: {
     fontWeight: 500,
@@ -35,6 +40,9 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   input: {
     margin: theme.spacing(0.5, 0, 0),
+  },
+  button: {
+    alignSelf: 'flex-end',
   },
 }));
 
@@ -51,14 +59,14 @@ function ThresholdSettingDialog({
 }) {
   const classes = getStyles();
   const handleClose = () => {
-    console.log('form', form)
-    setThreshold(form);
+    console.log('form', form);
+    setThreshold({ ...form, memory: form.memory * 1024 * 1024 * 1024 });
     onClose();
   };
 
   const [form, setForm] = useState<IThreshold>({
     cpu: threshold.cpu,
-    memory: threshold.memory,
+    memory: threshold.memory / 1024 / 1024 / 1024,
   });
 
   const handleFormChange = (key: 'cpu' | 'memory', value: number) => {
@@ -94,7 +102,7 @@ function ThresholdSettingDialog({
         defaultValue: form.memory,
       },
     ],
-    []
+    [form]
   );
 
   return (
@@ -122,6 +130,11 @@ function ThresholdSettingDialog({
             validInfo={validation}
           />
         ))}
+        <div className={classes.button}>
+          <CustomButton variant="contained" onClick={handleClose}>
+            Confirm
+          </CustomButton>
+        </div>
       </div>
     </Dialog>
   );
@@ -145,17 +158,21 @@ const ThresholdSetting = ({
   };
 
   return (
-    <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        icon
-      </Button>
+    <>
+      <SettingsApplicationsIcon
+        onClick={handleClickOpen}
+        sx={{
+          cursor: 'pointer',
+          transform: `translate(0, 2px)`
+        }}
+      />
       <ThresholdSettingDialog
         threshold={threshold}
         setThreshold={setThreshold}
         open={open}
         onClose={handleClose}
       />
-    </div>
+    </>
   );
 };
 

@@ -102,14 +102,39 @@ const SystemHealthyView = () => {
   const [timeRange, setTimeRange] = useState<ITimeRangeOption>(
     timeRangeOptions[2]
   );
-  const [nodes, setNodes] = useState<INodeTreeStructure[]>([]);
-  const [lineChartsData, setLineChartsData] = useState<ILineChartData[]>([]);
-  const [selectedNode, setSelectedNode] = useState<INodeTreeStructure>();
   const defaultThreshold = {
     cpu: 1,
     memory: 1 * 1024 * 1024 * 1024,
   };
   const [threshold, setThreshold] = useState<IThreshold>(defaultThreshold);
+  const [prometheusData, setPrometheusData] = useState<IPrometheusAllData>();
+  const nodes = useMemo<INodeTreeStructure[]>(
+    () => (prometheusData ? reconNodeTree(prometheusData, threshold) : []),
+    [prometheusData, threshold]
+  );
+  const lineChartsData = useMemo<ILineChartData[]>(
+    () =>
+      prometheusData
+        ? [
+            {
+              label: 'Total Count',
+              data: prometheusData.totalVectorsCount,
+            },
+            {
+              label: 'Search Count',
+              data: prometheusData.searchVectorsCount,
+            },
+            {
+              label: 'Search Latency',
+              data: prometheusData.sqLatency,
+              format: d => d.toFixed(0),
+              unit: 'ms',
+            },
+          ]
+        : [],
+    [prometheusData]
+  );
+  const [selectedNode, setSelectedNode] = useState<INodeTreeStructure>();
 
   const updateData = async () => {
     const curT = new Date().getTime();
@@ -118,24 +143,8 @@ const SystemHealthyView = () => {
       end: curT,
       step: timeRange.step,
     })) as IPrometheusAllData;
+    setPrometheusData(result);
     console.log('prometheus data', result);
-    setNodes(reconNodeTree(result, threshold));
-    setLineChartsData([
-      {
-        label: 'Total Count',
-        data: result.totalVectorsCount,
-      },
-      {
-        label: 'Search Count',
-        data: result.searchVectorsCount,
-      },
-      {
-        label: 'Search Latency',
-        data: result.sqLatency,
-        format: d => d.toFixed(0),
-        unit: 'ms',
-      },
-    ]);
   };
 
   useEffect(() => {
