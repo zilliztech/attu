@@ -79,7 +79,7 @@ function ThresholdSettingDialog({
   const inputConfigs: ITextfieldConfig[] = useMemo(
     () => [
       {
-        label: `CPU (Cores)`,
+        label: `CPU (Core)`,
         key: 'prometheus_address',
         onChange: (v: string) => handleFormChange('cpu', +v),
         variant: 'filled',

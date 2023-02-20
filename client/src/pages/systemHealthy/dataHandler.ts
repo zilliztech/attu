@@ -109,15 +109,21 @@ export const reconNodeTree = (
     threshold
   );
 
-  return [
-    rootNode,
-    indexNode,
-    queryNode,
-    dataNode,
-    metaNode,
-    msgstreamNode,
-    objstorageNode,
-  ] as INodeTreeStructure[];
+  return {
+    service: ENodeService.milvus,
+    type: ENodeType.overview,
+    label: 'Overview',
+    healthyStatus: [],
+    children: [
+      rootNode,
+      indexNode,
+      queryNode,
+      dataNode,
+      metaNode,
+      msgstreamNode,
+      objstorageNode,
+    ],
+  } as INodeTreeStructure;
 };
 
 export const THIRD_PARTY_SERVICE_HEALTHY_THRESHOLD = 0.95;

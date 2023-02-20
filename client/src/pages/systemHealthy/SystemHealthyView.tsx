@@ -92,8 +92,13 @@ const SystemHealthyView = () => {
   };
   const [threshold, setThreshold] = useState<IThreshold>(defaultThreshold);
   const [prometheusData, setPrometheusData] = useState<IPrometheusAllData>();
-  const nodes = useMemo<INodeTreeStructure[]>(
-    () => (prometheusData ? reconNodeTree(prometheusData, threshold) : []),
+  const nodeTree = useMemo<INodeTreeStructure>(
+    () =>
+      prometheusData
+        ? reconNodeTree(prometheusData, threshold)
+        : ({
+            children: [] as INodeTreeStructure[],
+          } as INodeTreeStructure),
     [prometheusData, threshold]
   );
   const lineChartsData = useMemo<ILineChartData[]>(
@@ -118,7 +123,6 @@ const SystemHealthyView = () => {
         : [],
     [prometheusData]
   );
-  const [selectedNode, setSelectedNode] = useState<INodeTreeStructure>();
 
   const updateData = async () => {
     const curT = new Date().getTime();
@@ -146,53 +150,34 @@ const SystemHealthyView = () => {
     ENodeService.data,
   ];
 
-  const exploreDetailHandler = (service: ENodeService) => {
-    console.log('service', service);
-    if (hasDetailServices.indexOf(service) >= 0) {
-      const node = nodes.find(node => node.service === service);
-      node !== selectedNode && setSelectedNode(node);
-    }
-  };
+  const [selectedService, setSelectedService] = useState<ENodeService>(
+    ENodeService.root
+  );
+
+  const selectedNode = useMemo<INodeTreeStructure>(() => {
+    if (hasDetailServices.indexOf(selectedService) >= 0) {
+      return nodeTree.children.find(
+        node => node.service === selectedService
+      ) as INodeTreeStructure;
+    } else return nodeTree;
+  }, [selectedService, nodeTree]);
 
   return (
     <div className={classes.root}>
       <div className={classes.mainView}>
         <Topology
-          nodes={nodes}
-          // selectedNode={selectedNode as INodeTreeStructure}
-          onClick={exploreDetailHandler}
+          nodeTree={nodeTree}
+          selectedService={selectedService}
+          onClick={setSelectedService}
         />
         <HealthyIndexOverview
-          nodes={nodes}
+          selectedNode={selectedNode}
           lineChartsData={lineChartsData}
           threshold={threshold}
           setThreshold={setThreshold}
           timeRange={timeRange}
           setTimeRange={setTimeRange}
         />
-      </div>
-      <div
-        className={clsx(
-          classes.detailView,
-          selectedNode ? classes.showDetailView : classes.hideDetailView
-        )}
-      >
-        <button
-          className={classes.childCloseBtn}
-          onClick={() => setSelectedNode(undefined)}
-        >
-          <KeyboardArrowDown />
-        </button>
-        <div className={classes.detailViewContainer}>
-          {selectedNode && (
-            <Topology
-              nodes={selectedNode.children}
-              // selectedNode={selectedNode}
-              onClick={exploreDetailHandler}
-            />
-          )}
-          <HealthyIndexDetailView />
-        </div>
       </div>
     </div>
   );

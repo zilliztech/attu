@@ -8,24 +8,23 @@ const getStyles = makeStyles((theme: Theme) => ({
   root: {
     fontSize: '14px',
     display: 'flex',
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
     color: '#999',
     fontWeight: 500,
   },
   divider: {
-    margin: "0 4px"
+    margin: '0 4px',
   },
   label: {
-    cursor: "pointer",
+    cursor: 'pointer',
     '&:hover': {
-
-    fontSize: "16px",
-    }
+      fontSize: '16px',
+    },
   },
   active: {
     fontWeight: 600,
-    fontSize: "16px",
-    color: "#222"
+    fontSize: '16px',
+    color: '#222',
   },
 }));
 
@@ -43,6 +42,7 @@ const TimeRangeTabs = ({
         <>
           {i > 0 && <div className={classes.divider}> / </div>}
           <div
+            key={timeRangeOption.label}
             className={clsx(
               classes.label,
               timeRangeOption.value === timeRange.value && classes.active

@@ -4,13 +4,21 @@ import {
   CHART_WIDTH,
   LINE_CHART_LARGE_HEIGHT,
   MAIN_VIEW_WIDTH,
+  TOPO_HEIGHT,
 } from './consts';
+import HealthyIndexDetailView from './HealthyIndexDetailView';
 import HealthyIndexLegend from './HealthyIndexLegend';
 import HealthyIndexRow from './HealthyIndexRow';
 import LineChartLarge from './LineChartLarge';
 import ThresholdSetting from './ThresholdSetting';
 import TimeRangeTabs from './TimeRangeTabs';
-import { ILineChartData, INodeTreeStructure, IThreshold, ITimeRangeOption } from './Types';
+import {
+  ENodeService,
+  ILineChartData,
+  INodeTreeStructure,
+  IThreshold,
+  ITimeRangeOption,
+} from './Types';
 // import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 
 // export const CHART_LABEL_WIDTH = 70;
@@ -18,8 +26,9 @@ import { ILineChartData, INodeTreeStructure, IThreshold, ITimeRangeOption } from
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
     width: `${MAIN_VIEW_WIDTH}px`,
-    height: '100%',
-    padding: '16px 24px',
+    height: `${TOPO_HEIGHT}px`,
+    overflow: 'auto',
+    padding: '16px 56px 16px 24px',
     // boxShadow: '0 0 5px #ccc',
     fontSize: '14px',
   },
@@ -29,9 +38,11 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   titleContainer: {},
   title: {
-    fontSize: '18px',
-    fontWeight: 500,
+    display: 'flex',
+    alignItems: 'flex-end',
   },
+  titleMain: { fontSize: '18px', fontWeight: 500 },
+  titleExt: { fontSize: '18px', fontWeight: 500, marginLeft: '8px' },
   timeRangeTabs: {
     fontSize: '12px',
   },
@@ -40,25 +51,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     alignItems: 'flex-end',
   },
   settingIcon: { marginLeft: '16px', display: 'flex', alignItems: 'flex-end' },
-  mainView: {
-    width: '100%',
-    marginTop: '16px',
-  },
-  healthyIndexItem: {
-    display: 'flex',
-    marginTop: '8px',
-    justifyContent: 'space-between',
-  },
-  healthyIndexLabel: {
-    // width: `${CHART_LABEL_WIDTH}px`,
 
-    fontWeight: 500,
-    color: '#444',
-  },
-  healthyIndexRow: {
-    width: `${CHART_WIDTH}px`,
-    // border: '1px solid brown',
-  },
   chartView: { width: '100%', marginTop: '30px' },
   chartItem: {
     margin: '24px 0',
@@ -80,14 +73,14 @@ const getStyles = makeStyles((theme: Theme) => ({
 }));
 
 const HealthyIndexOverview = ({
-  nodes,
+  selectedNode,
   lineChartsData,
   threshold,
   setThreshold,
   timeRange,
   setTimeRange,
 }: {
-  nodes: INodeTreeStructure[];
+  selectedNode: INodeTreeStructure;
   lineChartsData: ILineChartData[];
   threshold: IThreshold;
   setThreshold: Dispatch<SetStateAction<IThreshold>>;
@@ -99,8 +92,15 @@ const HealthyIndexOverview = ({
     <div className={classes.root}>
       <div className={classes.headerContent}>
         <div className={classes.titleContainer}>
-          <div className={classes.title}>Healthy Status</div>
-          <div className={classes.timeRangeTabs}> 
+          <div className={classes.title}>
+            <div className={classes.titleMain}>Healthy Status</div>
+            {selectedNode.service !== ENodeService.milvus && (
+              <div className={classes.titleExt}>
+                {`> ${selectedNode.service}`}
+              </div>
+            )}
+          </div>
+          <div className={classes.timeRangeTabs}>
             <TimeRangeTabs timeRange={timeRange} setTimeRange={setTimeRange} />
           </div>
         </div>
@@ -114,31 +114,24 @@ const HealthyIndexOverview = ({
           </div>
         </div>
       </div>
-      <div className={classes.mainView}>
-        {nodes.map(node => (
-          <div className={classes.healthyIndexItem}>
-            <div className={classes.healthyIndexLabel}>{node.label}</div>
-            <div className={classes.healthyIndexRow}>
-              <HealthyIndexRow statusList={node.healthyStatus} />
+      <HealthyIndexDetailView nodeTree={selectedNode} />
+      {selectedNode.service === ENodeService.milvus && (
+        <div className={classes.chartView}>
+          <div className={classes.title}>Search Query History</div>
+          {lineChartsData.map(chartData => (
+            <div className={classes.chartItem}>
+              <div className={classes.chartLabel}>{chartData.label}</div>
+              <div className={classes.chart}>
+                <LineChartLarge
+                  data={chartData.data}
+                  format={chartData.format}
+                  unit={chartData.unit}
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className={classes.chartView}>
-        <div className={classes.title}>Search Query History</div>
-        {lineChartsData.map(chartData => (
-          <div className={classes.chartItem}>
-            <div className={classes.chartLabel}>{chartData.label}</div>
-            <div className={classes.chart}>
-              <LineChartLarge
-                data={chartData.data}
-                format={chartData.format}
-                unit={chartData.unit}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

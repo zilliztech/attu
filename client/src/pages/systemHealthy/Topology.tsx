@@ -8,6 +8,7 @@ import {
 } from './consts';
 import { getIcon } from './getIcon';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
+import clsx from 'clsx';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -36,6 +37,20 @@ const getStyles = makeStyles((theme: Theme) => ({
       transform: 'scale(1.1)',
       filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
       outline: 'none',
+    },
+  },
+  selected: {
+    '& svg path': {
+      fill: 'white',
+    },
+
+    '& circle': {
+      fill: theme.palette.primary.main,
+      stroke: theme.palette.primary.main,
+    },
+
+    '& text': {
+      fill: 'white',
     },
   },
 }));
@@ -68,11 +83,13 @@ const nodesLayout = (
 };
 
 const Topology = ({
-  nodes,
+  nodeTree,
   onClick,
+  selectedService,
 }: {
-  nodes: INodeTreeStructure[];
+  nodeTree: INodeTreeStructure;
   onClick: (service: ENodeService) => void;
+  selectedService: ENodeService;
 }) => {
   const width = TOPO_WIDTH;
   const height = TOPO_HEIGHT;
@@ -81,9 +98,7 @@ const Topology = ({
   const theme = useTheme();
 
   const { rootNode, childrenNodes, rootPos, childrenPos, subChildrenPos } =
-    nodesLayout(nodes, width, height);
-
-  console.log('!!');
+    nodesLayout(nodeTree.children, width, height);
 
   return (
     <div className={classes.root}>
@@ -91,6 +106,7 @@ const Topology = ({
         {childrenNodes.map((node, i) => {
           const childPos = childrenPos[i];
           const subChildPos = subChildrenPos[i];
+
           return (
             <>
               {node.children.length > 0 && (
@@ -129,7 +145,13 @@ const Topology = ({
                   >{`${node.children.length - 1} Node(s)`}</text>
                 </g>
               )}
-              <g className={classes.node} onClick={() => onClick(node.service)}>
+              <g
+                className={clsx(
+                  classes.node,
+                  node.service === selectedService && classes.selected
+                )}
+                onClick={() => onClick(node.service)}
+              >
                 <line
                   x1={rootPos[0]}
                   y1={rootPos[1]}
@@ -163,7 +185,13 @@ const Topology = ({
                 </text>
               </g>
 
-              <g className={classes.node}>
+              <g
+                onClick={() => onClick(rootNode.service)}
+                className={clsx(
+                  classes.node,
+                  rootNode.service === selectedService && classes.selected
+                )}
+              >
                 <circle
                   cx={rootPos[0]}
                   cy={rootPos[1]}
