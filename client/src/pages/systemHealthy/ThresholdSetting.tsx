@@ -16,8 +16,7 @@ import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';
-import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import SettingsSharpIcon from '@mui/icons-material/SettingsSharp';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import CustomButton from '../../components/customButton/CustomButton';
 export interface SimpleDialogProps {
   open: boolean;
@@ -159,11 +158,11 @@ const ThresholdSetting = ({
 
   return (
     <>
-      <SettingsApplicationsIcon
+      <SettingsOutlinedIcon
         onClick={handleClickOpen}
         sx={{
           cursor: 'pointer',
-          transform: `translate(0, 2px)`
+          opacity: 0.8
         }}
       />
       <ThresholdSettingDialog

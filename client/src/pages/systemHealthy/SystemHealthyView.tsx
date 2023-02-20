@@ -22,6 +22,7 @@ import { reconNodeTree } from './dataHandler';
 import HealthyIndexOverview from './HealthyIndexOverview';
 import HealthyIndexDetailView from './HealthyIndexDetailView';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import { timeRangeOptions } from './consts';
 // import data from "./data.json";
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -82,29 +83,12 @@ const SystemHealthyView = () => {
   const classes = getStyles();
 
   const INTERVAL = 60000;
-  const timeRangeOptions: ITimeRangeOption[] = [
-    {
-      label: '1h',
-      value: 60 * 60 * 1000,
-      step: 3 * 60 * 1000,
-    },
-    {
-      label: '24h',
-      value: 24 * 60 * 60 * 1000,
-      step: 60 * 60 * 1000,
-    },
-    {
-      label: '7d',
-      value: 7 * 24 * 60 * 60 * 1000,
-      step: 8 * 60 * 60 * 1000,
-    },
-  ];
   const [timeRange, setTimeRange] = useState<ITimeRangeOption>(
     timeRangeOptions[2]
   );
   const defaultThreshold = {
     cpu: 1,
-    memory: 1 * 1024 * 1024 * 1024,
+    memory: 8 * 1024 * 1024 * 1024,
   };
   const [threshold, setThreshold] = useState<IThreshold>(defaultThreshold);
   const [prometheusData, setPrometheusData] = useState<IPrometheusAllData>();
@@ -149,7 +133,7 @@ const SystemHealthyView = () => {
 
   useEffect(() => {
     updateData();
-  }, []);
+  }, [timeRange]);
 
   useInterval(() => {
     console.log('interval');
@@ -183,6 +167,8 @@ const SystemHealthyView = () => {
           lineChartsData={lineChartsData}
           threshold={threshold}
           setThreshold={setThreshold}
+          timeRange={timeRange}
+          setTimeRange={setTimeRange}
         />
       </div>
       <div

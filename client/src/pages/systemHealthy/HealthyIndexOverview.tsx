@@ -8,9 +8,9 @@ import {
 import HealthyIndexLegend from './HealthyIndexLegend';
 import HealthyIndexRow from './HealthyIndexRow';
 import LineChartLarge from './LineChartLarge';
-import ThresholdPanel from './ThresholdPanel';
 import ThresholdSetting from './ThresholdSetting';
-import { ILineChartData, INodeTreeStructure, IThreshold } from './Types';
+import TimeRangeTabs from './TimeRangeTabs';
+import { ILineChartData, INodeTreeStructure, IThreshold, ITimeRangeOption } from './Types';
 // import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 
 // export const CHART_LABEL_WIDTH = 70;
@@ -19,7 +19,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   root: {
     width: `${MAIN_VIEW_WIDTH}px`,
     height: '100%',
-    padding: '12px 16px',
+    padding: '16px 24px',
     // boxShadow: '0 0 5px #ccc',
     fontSize: '14px',
   },
@@ -42,11 +42,11 @@ const getStyles = makeStyles((theme: Theme) => ({
   settingIcon: { marginLeft: '16px', display: 'flex', alignItems: 'flex-end' },
   mainView: {
     width: '100%',
-    marginTop: '12px',
+    marginTop: '16px',
   },
   healthyIndexItem: {
     display: 'flex',
-    marginTop: '6px',
+    marginTop: '8px',
     justifyContent: 'space-between',
   },
   healthyIndexLabel: {
@@ -84,28 +84,24 @@ const HealthyIndexOverview = ({
   lineChartsData,
   threshold,
   setThreshold,
+  timeRange,
+  setTimeRange,
 }: {
   nodes: INodeTreeStructure[];
   lineChartsData: ILineChartData[];
   threshold: IThreshold;
   setThreshold: Dispatch<SetStateAction<IThreshold>>;
+  timeRange: ITimeRangeOption;
+  setTimeRange: Dispatch<SetStateAction<ITimeRangeOption>>;
 }) => {
   const classes = getStyles();
-  console.log('nodes', nodes);
-  console.log('lineChartsData', lineChartsData);
   return (
     <div className={classes.root}>
       <div className={classes.headerContent}>
         <div className={classes.titleContainer}>
           <div className={classes.title}>Healthy Status</div>
-          <div className={classes.timeRangeTabs}>
-            <span>
-              <b>7day</b>
-            </span>
-            <span> / </span>
-            <span>24h</span>
-            <span> / </span>
-            <span>1h</span>
+          <div className={classes.timeRangeTabs}> 
+            <TimeRangeTabs timeRange={timeRange} setTimeRange={setTimeRange} />
           </div>
         </div>
         <div className={classes.legendContainer}>

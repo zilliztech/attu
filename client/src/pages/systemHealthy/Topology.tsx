@@ -1,5 +1,5 @@
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
-import { Dispatch } from 'react';
+import { Dispatch, memo } from 'react';
 import {
   TOPO_HEIGHT,
   TOPO_LINK_LENGTH,
@@ -83,6 +83,8 @@ const Topology = ({
   const { rootNode, childrenNodes, rootPos, childrenPos, subChildrenPos } =
     nodesLayout(nodes, width, height);
 
+  console.log('!!');
+
   return (
     <div className={classes.root}>
       <svg width={width} height={height} style={{ overflow: 'visible' }}>
@@ -92,7 +94,10 @@ const Topology = ({
           return (
             <>
               {node.children.length > 0 && (
-                <g className={classes.node} onClick={() => onClick(node.service)}>
+                <g
+                  className={classes.node}
+                  onClick={() => onClick(node.service)}
+                >
                   <line
                     x1={childPos[0]}
                     y1={childPos[1]}

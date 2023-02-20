@@ -1,4 +1,4 @@
-import { EHealthyStatus } from './Types';
+import { EHealthyStatus, ITimeRangeOption } from './Types';
 
 export const TOPO_WIDTH = 800;
 export const TOPO_HEIGHT = 600;
@@ -20,3 +20,20 @@ export const LINE_CHART_LARGE_HEIGHT = 60;
 export const LINE_COLOR = '#394E97';
 export const LINE_LABEL_Y_PADDING = 6;
 export const LINE_LABEL_FONT_SIZE = 14;
+export const timeRangeOptions: ITimeRangeOption[] = [
+    {
+      label: '1h',
+      value: 60 * 60 * 1000,
+      step: 3 * 60 * 1000,
+    },
+    {
+      label: '24h',
+      value: 24 * 60 * 60 * 1000,
+      step: 60 * 60 * 1000,
+    },
+    {
+      label: '7d',
+      value: 7 * 24 * 60 * 60 * 1000,
+      step: 8 * 60 * 60 * 1000,
+    },
+  ];
