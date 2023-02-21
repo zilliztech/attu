@@ -50,6 +50,7 @@ const LineChartSmall = ({
       height={height}
       style={{ overflow: 'visible' }}
       fontSize={fontSize}
+      fontWeight={500}
     >
       <g className="x-axis">
         <line x1={0} y1={height} x2={width} y2={height} stroke="#666" />
@@ -63,13 +64,19 @@ const LineChartSmall = ({
         />
       </g>
       <g className="y-axis">
-        <text x={width + LINE_LABEL_Y_PADDING} y={height} textAnchor="start">
+        <text
+          x={width + LINE_LABEL_Y_PADDING}
+          y={height}
+          textAnchor="start"
+          fill="#555"
+        >
           {0}
         </text>
         <text
           x={width + LINE_LABEL_Y_PADDING}
           y={yScale(maxData) + 3}
           textAnchor="start"
+          fill="#555"
         >
           {format(maxData)}
         </text>
@@ -78,8 +85,8 @@ const LineChartSmall = ({
             x={width + LINE_LABEL_Y_PADDING}
             y={yScale(maxData) + 3 + fontSize}
             textAnchor="start"
-            fill={'#333'}
             fontSize={fontSize - 2}
+            fill="#555"
           >
             ({unit})
           </text>

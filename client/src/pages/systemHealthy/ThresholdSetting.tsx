@@ -58,7 +58,6 @@ function ThresholdSettingDialog({
 }) {
   const classes = getStyles();
   const handleClose = () => {
-    console.log('form', form);
     setThreshold({ ...form, memory: form.memory * 1024 * 1024 * 1024 });
     onClose();
   };

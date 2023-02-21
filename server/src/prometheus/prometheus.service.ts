@@ -82,7 +82,7 @@ export class PrometheusService {
       .get(`http://${prometheusAddress}/-/ready`)
       .then(res => res?.status === 200)
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return false;
       });
     return result;
@@ -96,12 +96,11 @@ export class PrometheusService {
       `&start=${new Date(+start).toISOString()}` +
       `&end=${new Date(+end).toISOString()}` +
       `&step=${step / 1000}s`;
-    console.log(url);
     const result = await axios
       .get(url)
       .then(res => res.data)
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return { status: 'failed' };
       });
     return result;

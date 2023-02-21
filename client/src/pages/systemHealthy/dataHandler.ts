@@ -22,7 +22,6 @@ export const getInternalNode = (
       const memory = node.memory[i];
       if (cpu === -1) return EHealthyStatus.noData;
       if (cpu === -2) return EHealthyStatus.failed;
-      console.log();
       return cpu >= threshold.cpu || memory >= threshold.memory
         ? EHealthyStatus.warning
         : EHealthyStatus.healthy;

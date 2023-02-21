@@ -62,8 +62,8 @@ export type AuthContextType = {
 };
 
 export type PrometheusContextType = {
-  hasPrometheus: boolean;
-  setHasPrometheus: Dispatch<SetStateAction<boolean>>;
+  withPrometheus: boolean;
+  setWithPrometheus: Dispatch<SetStateAction<boolean>>;
   isPrometheusReady: boolean;
   prometheusAddress: string;
   prometheusInstance: string;

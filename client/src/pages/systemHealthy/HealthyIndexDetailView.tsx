@@ -5,7 +5,7 @@ import LineChartSmall from './LineChartSmall';
 import { ENodeService, INodeTreeStructure } from './Types';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 const getStyles = makeStyles((theme: Theme) => ({
   mainView: {
@@ -14,12 +14,10 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   healthyIndexItem: {
     display: 'flex',
-    marginTop: '8px',
+    marginTop: '6px',
     justifyContent: 'space-between',
   },
   healthyIndexLabel: {
-    // width: `${CHART_LABEL_WIDTH}px`,
-
     fontWeight: 500,
     fontSize: '12px',
     color: '#444',
@@ -30,13 +28,12 @@ const getStyles = makeStyles((theme: Theme) => ({
   healthyIndexLabelText: {},
   healthyIndexRow: {
     width: `${CHART_WIDTH}px`,
-    // border: '1px solid brown',
   },
   chartItem: {
     margin: '8px 0',
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   chartLabel: {
     width: `50px`,
@@ -48,8 +45,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   chart: {
     height: `${LINE_CHART_SMALL_HEIGHT}px`,
     width: `${CHART_WIDTH}px`,
-
-    // border: '1px solid brown',
   },
 }));
 
@@ -109,15 +104,22 @@ const HealthyIndexTreeItem = ({ node }: { node: INodeTreeStructure }) => {
 
 const HealthyIndexWithTree = ({
   nodeTree,
+  setSelectedService,
 }: {
   nodeTree: INodeTreeStructure;
+  setSelectedService: Dispatch<SetStateAction<ENodeService>>;
 }) => {
   const classes = getStyles();
   return (
     <div className={classes.mainView}>
       {!!nodeTree && (
         <div className={classes.healthyIndexItem}>
-          <div className={classes.healthyIndexLabel}>{nodeTree.label}</div>
+          <div
+            className={classes.healthyIndexLabel}
+            onClick={() => setSelectedService(ENodeService.root)}
+          >
+            {nodeTree.label}
+          </div>
           <div className={classes.healthyIndexRow}>
             <HealthyIndexRow statusList={nodeTree?.healthyStatus || []} />
           </div>
@@ -132,8 +134,10 @@ const HealthyIndexWithTree = ({
 
 const HealthyIndexWithoutTree = ({
   nodeTree,
+  setSelectedService,
 }: {
   nodeTree: INodeTreeStructure;
+  setSelectedService: Dispatch<SetStateAction<ENodeService>>;
 }) => {
   const classes = getStyles();
   return (
@@ -143,7 +147,12 @@ const HealthyIndexWithoutTree = ({
           key={`${node.service}-${node.type}`}
           className={classes.healthyIndexItem}
         >
-          <div className={classes.healthyIndexLabel}>{node.label}</div>
+          <div
+            className={classes.healthyIndexLabel}
+            onClick={() => setSelectedService(node.service)}
+          >
+            {node.label}
+          </div>
           <div className={classes.healthyIndexRow}>
             <HealthyIndexRow statusList={node.healthyStatus} />
           </div>
@@ -155,13 +164,21 @@ const HealthyIndexWithoutTree = ({
 
 const HealthyIndexDetailView = ({
   nodeTree,
+  setSelectedService,
 }: {
   nodeTree: INodeTreeStructure;
+  setSelectedService: Dispatch<SetStateAction<ENodeService>>;
 }) => {
   return nodeTree.service === ENodeService.milvus ? (
-    <HealthyIndexWithoutTree nodeTree={nodeTree} />
+    <HealthyIndexWithoutTree
+      nodeTree={nodeTree}
+      setSelectedService={setSelectedService}
+    />
   ) : (
-    <HealthyIndexWithTree nodeTree={nodeTree} />
+    <HealthyIndexWithTree
+      nodeTree={nodeTree}
+      setSelectedService={setSelectedService}
+    />
   );
 };
 

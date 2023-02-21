@@ -132,7 +132,6 @@ const SystemHealthyView = () => {
       step: timeRange.step,
     })) as IPrometheusAllData;
     setPrometheusData(result);
-    console.log('prometheus data', result);
   };
 
   useEffect(() => {
@@ -140,7 +139,6 @@ const SystemHealthyView = () => {
   }, [timeRange]);
 
   useInterval(() => {
-    console.log('interval');
     updateData();
   }, INTERVAL);
 
@@ -177,6 +175,7 @@ const SystemHealthyView = () => {
           setThreshold={setThreshold}
           timeRange={timeRange}
           setTimeRange={setTimeRange}
+          setSelectedService={setSelectedService}
         />
       </div>
     </div>

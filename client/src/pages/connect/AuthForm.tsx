@@ -9,19 +9,11 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { MilvusHttp } from '../../http/Milvus';
-import { PrometheusHttp } from '../../http/Prometheus';
-import { formatAddress, formatPrometheusAddress } from '../../utils/Format';
+import { formatAddress } from '../../utils/Format';
 import { useNavigate } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
-import {
-  MILVUS_ADDRESS,
-  LAST_TIME_ADDRESS,
-  LAST_TIME_HAS_PROMETHEUS,
-  LAST_TIME_PROMETHEUS_ADDRESS,
-  LAST_TIME_PROMETHEUS_INSTANCE,
-  LAST_TIME_PROMETHEUS_NAMESPACE,
-} from '../../consts/Localstorage';
+import { MILVUS_ADDRESS, LAST_TIME_ADDRESS } from '../../consts/Localstorage';
 import { CODE_STATUS } from '../../consts/Http';
 import { MILVUS_URL } from '../../consts/Milvus';
 import { CustomRadio } from '../../components/customRadio/CustomRadio';
@@ -143,8 +135,8 @@ export const AuthForm = (props: any) => {
   }, [form, attuTrans, warningTrans, classes.input]);
 
   const {
-    hasPrometheus,
-    setHasPrometheus,
+    withPrometheus,
+    setWithPrometheus,
     prometheusAddress,
     prometheusInstance,
     prometheusNamespace,
@@ -245,12 +237,12 @@ export const AuthForm = (props: any) => {
         </div>
         <div className={classes.sslWrapper}>
           <CustomRadio
-            defaultChecked={hasPrometheus}
+            defaultChecked={withPrometheus}
             label={attuTrans.prometheus}
-            handleChange={setHasPrometheus}
+            handleChange={setWithPrometheus}
           />
         </div>
-        {hasPrometheus &&
+        {withPrometheus &&
           prometheusConfigs.map(v => (
             <CustomInput
               type="text"

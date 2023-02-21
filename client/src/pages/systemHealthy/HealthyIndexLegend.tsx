@@ -24,7 +24,7 @@ const legendData = [
 const getStyles = makeStyles((theme: Theme) => ({
   legendItem: {
     display: 'flex',
-    marginLeft: '16px',
+    marginLeft: '12px',
     fontSize: '10px',
     alignItems: 'flex-end',
   },

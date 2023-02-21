@@ -55,6 +55,8 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const randomList = Array(10).fill(0).map(_ => Math.random());
+
 const nodesLayout = (
   nodes: INodeTreeStructure[],
   width: number,
@@ -65,15 +67,15 @@ const nodesLayout = (
     (nodes.find(node => node.type === ENodeType.coord) as INodeTreeStructure);
   const childrenNodes = nodes.filter(node => node !== rootNode);
 
-  const rootPos = [300, height * 0.45];
+  const rootPos = [248, height * 0.45];
   const angleStep = (2 * Math.PI) / Math.max(childrenNodes.length, 3);
-  const randomBias = angleStep * 0.4;
+  const angleBias = angleStep * 0.4;
   const childrenPos = childrenNodes.map((node, i) => [
     rootPos[0] + Math.cos(angleStep * i) * TOPO_LINK_LENGTH[0],
     rootPos[1] + Math.sin(angleStep * i) * TOPO_LINK_LENGTH[0],
   ]);
   const subChildrenPos = childrenNodes.map((node, i) => {
-    const angle = angleStep * i + (Math.random() - 0.5) * randomBias;
+    const angle = angleStep * i + (randomList[i] - 0.5) * angleBias;
     return [
       rootPos[0] + Math.cos(angle) * TOPO_LINK_LENGTH[1],
       rootPos[1] + Math.sin(angle) * TOPO_LINK_LENGTH[1],

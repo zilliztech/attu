@@ -28,7 +28,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: `${MAIN_VIEW_WIDTH}px`,
     height: `${TOPO_HEIGHT}px`,
     overflow: 'auto',
-    padding: '16px 56px 16px 24px',
+    padding: '12px 56px 0px 24px',
     // boxShadow: '0 0 5px #ccc',
     fontSize: '14px',
   },
@@ -50,11 +50,11 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  settingIcon: { marginLeft: '16px', display: 'flex', alignItems: 'flex-end' },
+  settingIcon: { marginLeft: '12px', display: 'flex', alignItems: 'flex-end' },
 
-  chartView: { width: '100%', marginTop: '30px' },
+  chartView: { width: '100%', marginTop: '24px' },
   chartItem: {
-    margin: '24px 0',
+    margin: '16px 0',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
@@ -79,6 +79,7 @@ const HealthyIndexOverview = ({
   setThreshold,
   timeRange,
   setTimeRange,
+  setSelectedService
 }: {
   selectedNode: INodeTreeStructure;
   lineChartsData: ILineChartData[];
@@ -86,6 +87,7 @@ const HealthyIndexOverview = ({
   setThreshold: Dispatch<SetStateAction<IThreshold>>;
   timeRange: ITimeRangeOption;
   setTimeRange: Dispatch<SetStateAction<ITimeRangeOption>>;
+  setSelectedService: Dispatch<SetStateAction<ENodeService>>;
 }) => {
   const classes = getStyles();
   return (
@@ -114,10 +116,10 @@ const HealthyIndexOverview = ({
           </div>
         </div>
       </div>
-      <HealthyIndexDetailView nodeTree={selectedNode} />
+      <HealthyIndexDetailView nodeTree={selectedNode} setSelectedService={setSelectedService} />
       {selectedNode.service === ENodeService.milvus && (
         <div className={classes.chartView}>
-          <div className={classes.title}>Search Query History</div>
+          <div className={classes.titleMain}>Search Query History</div>
           {lineChartsData.map(chartData => (
             <div className={classes.chartItem}>
               <div className={classes.chartLabel}>{chartData.label}</div>

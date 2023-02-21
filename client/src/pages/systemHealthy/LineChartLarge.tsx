@@ -48,16 +48,22 @@ const LineChartLarge = ({
       height={height}
       style={{ overflow: 'visible' }}
       fontSize={fontSize}
+      fontWeight={500}
     >
       <g className="x-axis">
         <line x1={0} y1={height} x2={width} y2={height} stroke="#666" />
       </g>
       <g className="y-axis">
         <line x1={0} y1={0} x2={0} y2={height} stroke="#666" />
-        <text x={-LINE_LABEL_Y_PADDING} y={height} textAnchor="end">
+        <text x={-LINE_LABEL_Y_PADDING} y={height} textAnchor="end" fill="#555">
           {0}
         </text>
-        <text x={-LINE_LABEL_Y_PADDING} y={fontSize} textAnchor="end">
+        <text
+          x={-LINE_LABEL_Y_PADDING}
+          y={fontSize}
+          textAnchor="end"
+          fill="#555"
+        >
           {format(maxData)}
         </text>
         {unit && (
@@ -65,7 +71,7 @@ const LineChartLarge = ({
             x={-LINE_LABEL_Y_PADDING}
             y={fontSize * 2}
             textAnchor="end"
-            fill={'#333'}
+            fill={'#666'}
             fontSize={fontSize - 2}
           >
             ({unit})
