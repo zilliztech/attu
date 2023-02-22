@@ -44,9 +44,6 @@ export class PrometheusService {
   static namespace: string = '';
   static isReady: boolean = false;
 
-  static get url() {
-    return `http://${PrometheusService.address}`;
-  }
   static get selector() {
     return (
       '{' +
@@ -91,7 +88,7 @@ export class PrometheusService {
     prometheusNamespace: string
   ) {
     const addressValid = await http
-      .get(`http://${prometheusAddress}/-/ready`)
+      .get(`${prometheusAddress}/-/ready`)
       .then(res => res?.status === 200)
       .catch(err => {
         console.log(err);
@@ -99,7 +96,7 @@ export class PrometheusService {
       });
     if (addressValid) {
       const url =
-        `http://${prometheusAddress}/api/v1/query` +
+        `${prometheusAddress}/api/v1/query` +
         `?query=milvus_num_node{` +
         `app_kubernetes_io_instance="${prometheusInstance}",` +
         `namespace="${prometheusNamespace}"}`;
@@ -117,7 +114,7 @@ export class PrometheusService {
 
   async queryRange(expr: string, start: number, end: number, step: number) {
     const url =
-      PrometheusService.url +
+      PrometheusService.address +
       '/api/v1/query_range?query=' +
       expr +
       `&start=${new Date(+start).toISOString()}` +

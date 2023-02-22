@@ -3,8 +3,8 @@ import { CHART_WIDTH, LINE_CHART_SMALL_HEIGHT } from './consts';
 import HealthyIndexRow from './HealthyIndexRow';
 import LineChartSmall from './LineChartSmall';
 import { ENodeService, INodeTreeStructure, IThreshold } from './Types';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 const getStyles = makeStyles((theme: Theme) => ({

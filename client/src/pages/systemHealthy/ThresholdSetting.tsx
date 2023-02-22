@@ -16,7 +16,7 @@ import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import CustomButton from '../../components/customButton/CustomButton';
 export interface SimpleDialogProps {
   open: boolean;
@@ -159,7 +159,7 @@ const ThresholdSetting = ({
     <>
       <SettingsOutlinedIcon
         onClick={handleClickOpen}
-        sx={{
+        style={{
           cursor: 'pointer',
           opacity: 0.8,
         }}

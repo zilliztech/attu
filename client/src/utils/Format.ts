@@ -148,11 +148,16 @@ export const formatAddress = (address: string): string => {
   return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
 };
 
-// Trim the prometheus address
+// format the prometheus address
 export const formatPrometheusAddress = (address: string): string => {
-  // remove http or https prefix from address
-  const ip = address.replace(/(http|https):\/\//, '');
-  return ip.includes(':') ? ip : `${ip}:${DEFAULT_PROMETHEUS_PORT}`;
+  let formatAddress = address;
+  // add protocal (default http)
+  const withProtocol = address.includes('http');
+  if (!withProtocol) formatAddress = 'http://' + formatAddress;
+  // add port (default 9090)
+  const withPort = address.includes(':');
+  if (!withPort) formatAddress = formatAddress + ':' + DEFAULT_PROMETHEUS_PORT;
+  return formatAddress;
 };
 
 export const formatByteSize = (
