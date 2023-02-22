@@ -38,4 +38,9 @@ export const timeRangeOptions: ITimeRangeOption[] = [
       value: 7 * 24 * 60 * 60 * 1000,
       step: 8 * 60 * 60 * 1000,
     },
+    {
+      label: '30d',
+      value: 30 * 24 * 60 * 60 * 1000,
+      step: 24 * 60 * 60 * 1000,
+    },
   ];

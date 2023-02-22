@@ -187,22 +187,24 @@ const SystemHealthyView = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.mainView}>
-        <Topology
-          nodeTree={nodeTree}
-          selectedService={selectedService}
-          onClick={setSelectedService}
-        />
-        <HealthyIndexOverview
-          selectedNode={selectedNode}
-          lineChartsData={lineChartsData}
-          threshold={threshold}
-          setThreshold={changeThreshold}
-          timeRange={timeRange}
-          setTimeRange={setTimeRange}
-          setSelectedService={setSelectedService}
-        />
-      </div>
+      {!!prometheusData && (
+        <div className={classes.mainView}>
+          <Topology
+            nodeTree={nodeTree}
+            selectedService={selectedService}
+            onClick={setSelectedService}
+          />
+          <HealthyIndexOverview
+            selectedNode={selectedNode}
+            lineChartsData={lineChartsData}
+            threshold={threshold}
+            setThreshold={changeThreshold}
+            timeRange={timeRange}
+            setTimeRange={setTimeRange}
+            setSelectedService={setSelectedService}
+          />
+        </div>
+      )}
     </div>
   );
 };

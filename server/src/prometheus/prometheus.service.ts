@@ -91,7 +91,6 @@ export class PrometheusService {
       .get(`${prometheusAddress}/-/ready`)
       .then(res => res?.status === 200)
       .catch(err => {
-        console.log(err);
         return false;
       });
     if (addressValid) {
@@ -104,7 +103,6 @@ export class PrometheusService {
         .get(url)
         .then(res => res?.data?.data?.result?.length > 0)
         .catch(err => {
-          console.log(err);
           return false;
         });
       if (instanceValid) return true;
@@ -120,14 +118,7 @@ export class PrometheusService {
       `&start=${new Date(+start).toISOString()}` +
       `&end=${new Date(+end).toISOString()}` +
       `&step=${step / 1000}s`;
-    const result = await http
-      .get(url)
-      .then(res => res.data)
-      .catch(err => {
-        console.log(err);
-        return { status: 'failed' };
-      });
-    return result;
+    return await http.get(url).then(res => res.data);
   }
 
   async getVectorsCount(
@@ -159,17 +150,16 @@ export class PrometheusService {
     this.getVectorsCount(totalVectorsCountMetric, start, end, step);
 
   async getSearchVectorsCount(start: number, end: number, step: number) {
-    const expr = `${searchVectorsCountMetric}${PrometheusService.selector}`;
+    const expr = `rate(${searchVectorsCountMetric}${
+      PrometheusService.selector
+    }[${step / 1000}s])`;
     const result = await this.queryRange(expr, start, end, step);
     const data = result.data.result;
     const length = Math.floor((end - start) / step);
 
     if (data.length === 0) return Array(length).fill(0);
 
-    const totalCount = data[0].values.map((d: any) => +d[1]);
-    const res = totalCount
-      .map((d: number, i: number) => (i > 0 ? d - totalCount[i - 1] : d))
-      .slice(1);
+    const res = data[0].values.map((d: any) => +d[1]);
 
     let leftLossCount;
     let rightLossCount;
@@ -237,7 +227,9 @@ export class PrometheusService {
   }
 
   async getInternalNodesCPUData(start: number, end: number, step: number) {
-    const expr = `${cpuMetric}${PrometheusService.selector}`;
+    const expr = `rate(${cpuMetric}${PrometheusService.selector}[${
+      step / 1000
+    }s])`;
     const result = await this.queryRange(expr, start, end, step);
     return result.data.result;
   }
@@ -266,11 +258,7 @@ export class PrometheusService {
       const nodeType =
         d.metric.container.indexOf('coord') >= 0 ? 'coord' : 'node';
       const pod = d.metric.pod;
-      const cpuProcessTotal = d.values.map((v: any) => +v[1]);
-      const cpu = cpuProcessTotal
-        .map((v: number, i: number) => (i > 0 ? v - cpuProcessTotal[i - 1] : 0))
-        .slice(1)
-        .map((v: number) => v / (step / 1000));
+      const cpu = d.values.map((v: any) => +v[1]);
 
       let leftLossCount;
       let rightLossCount;
@@ -294,7 +282,7 @@ export class PrometheusService {
       return {
         type: nodeType,
         pod,
-        cpu,
+        cpu: cpu.slice(1),
         memory: memory.slice(1),
       } as IPrometheusNode;
     });
@@ -326,6 +314,11 @@ export class PrometheusService {
     end: number;
     step: number;
   }) {
+    if (!PrometheusService.isReady) {
+      return {
+
+      }
+    }
     const meta = await this.getThirdPartyServiceHealthStatus(
       metaMetric,
       start,

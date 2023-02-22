@@ -3,6 +3,7 @@ import {
   EHealthyStatus,
   ENodeService,
   ENodeType,
+  EPrometheusDataStatus,
   INodeTreeStructure,
   IPrometheusAllData,
   IPrometheusNode,
@@ -21,8 +22,8 @@ export const getInternalNode = (
       const healthyStatus = d3.range(length).map((_, i: number) => {
         const cpu = node.cpu[i];
         const memory = node.memory[i];
-        if (cpu === -1) return EHealthyStatus.noData;
-        if (cpu === -2) return EHealthyStatus.failed;
+        if (cpu === EPrometheusDataStatus.noData) return EHealthyStatus.noData;
+        if (cpu === EPrometheusDataStatus.failed) return EHealthyStatus.failed;
         return cpu >= threshold.cpu || memory >= threshold.memory
           ? EHealthyStatus.warning
           : EHealthyStatus.healthy;

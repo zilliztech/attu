@@ -38,6 +38,11 @@ export interface INodeTreeStructure {
   children: INodeTreeStructure[];
 }
 
+export enum EPrometheusDataStatus {
+  noData = -1,
+  failed = -2,
+}
+
 export enum EHealthyStatus {
   noData = 0,
   healthy,
