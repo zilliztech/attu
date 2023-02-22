@@ -16,26 +16,43 @@ export const getInternalNode = (
   threshold: IThreshold
 ) => {
   const length = prometheusNodes[0].cpu.length;
-  const nodes = prometheusNodes.map(node => {
-    const healthyStatus = d3.range(length).map((_, i: number) => {
-      const cpu = node.cpu[i];
-      const memory = node.memory[i];
-      if (cpu === -1) return EHealthyStatus.noData;
-      if (cpu === -2) return EHealthyStatus.failed;
-      return cpu >= threshold.cpu || memory >= threshold.memory
-        ? EHealthyStatus.warning
-        : EHealthyStatus.healthy;
+  const nodes = prometheusNodes
+    .map(node => {
+      const healthyStatus = d3.range(length).map((_, i: number) => {
+        const cpu = node.cpu[i];
+        const memory = node.memory[i];
+        if (cpu === -1) return EHealthyStatus.noData;
+        if (cpu === -2) return EHealthyStatus.failed;
+        return cpu >= threshold.cpu || memory >= threshold.memory
+          ? EHealthyStatus.warning
+          : EHealthyStatus.healthy;
+      });
+      return {
+        service: service,
+        type: node.type === 'coord' ? ENodeType.coord : ENodeType.node,
+        label: node.pod,
+        healthyStatus,
+        cpu: node.cpu,
+        memory: node.memory,
+        children: [],
+      };
+    })
+    .sort((a, b) => {
+      const failedCountA = a.healthyStatus.filter(
+        s => s === EHealthyStatus.failed
+      ).length;
+      const failedCountB = b.healthyStatus.filter(
+        s => s === EHealthyStatus.failed
+      ).length;
+      if (failedCountA !== failedCountB) return failedCountB - failedCountA;
+      const warningCountA = a.healthyStatus.filter(
+        s => s === EHealthyStatus.warning
+      ).length;
+      const warningCountB = b.healthyStatus.filter(
+        s => s === EHealthyStatus.warning
+      ).length;
+      return warningCountB - warningCountA;
     });
-    return {
-      service: service,
-      type: node.type === 'coord' ? ENodeType.coord : ENodeType.node,
-      label: node.pod,
-      healthyStatus,
-      cpu: node.cpu,
-      memory: node.memory,
-      children: [],
-    };
-  });
   const overviewHealthyStatus = d3.range(length).map((_, i: number) => {
     if (nodes.find(node => node.healthyStatus[i] === EHealthyStatus.failed))
       return EHealthyStatus.failed;

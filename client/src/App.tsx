@@ -10,8 +10,8 @@ import { PrometheusProvider } from './context/Prometheus';
 function App() {
   return (
     <AuthProvider>
-      <PrometheusProvider>
-        <RootProvider>
+      <RootProvider>
+        <PrometheusProvider>
           <WebSocketProvider>
             <NavProvider>
               <MuiPickersUtilsProvider utils={DayjsUtils}>
@@ -19,8 +19,8 @@ function App() {
               </MuiPickersUtilsProvider>
             </NavProvider>
           </WebSocketProvider>
-        </RootProvider>
-      </PrometheusProvider>
+        </PrometheusProvider>
+      </RootProvider>
     </AuthProvider>
   );
 }

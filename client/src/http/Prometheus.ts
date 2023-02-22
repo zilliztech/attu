@@ -21,6 +21,7 @@ export class PrometheusHttp extends BaseModel {
     return super.search({
       path: PrometheusHttp.SET_PROMETHEUS_URL,
       params: { prometheusAddress, prometheusInstance, prometheusNamespace },
+      timeout: 1000,
     });
   }
 

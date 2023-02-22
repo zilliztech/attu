@@ -79,12 +79,12 @@ const HealthyIndexOverview = ({
   setThreshold,
   timeRange,
   setTimeRange,
-  setSelectedService
+  setSelectedService,
 }: {
   selectedNode: INodeTreeStructure;
   lineChartsData: ILineChartData[];
   threshold: IThreshold;
-  setThreshold: Dispatch<SetStateAction<IThreshold>>;
+  setThreshold: (threshold: IThreshold) => void;
   timeRange: ITimeRangeOption;
   setTimeRange: Dispatch<SetStateAction<ITimeRangeOption>>;
   setSelectedService: Dispatch<SetStateAction<ENodeService>>;
@@ -116,12 +116,16 @@ const HealthyIndexOverview = ({
           </div>
         </div>
       </div>
-      <HealthyIndexDetailView nodeTree={selectedNode} setSelectedService={setSelectedService} />
+      <HealthyIndexDetailView
+        nodeTree={selectedNode}
+        setSelectedService={setSelectedService}
+        threshold={threshold}
+      />
       {selectedNode.service === ENodeService.milvus && (
         <div className={classes.chartView}>
           <div className={classes.titleMain}>Search Query History</div>
           {lineChartsData.map(chartData => (
-            <div className={classes.chartItem}>
+            <div key={chartData.label} className={classes.chartItem}>
               <div className={classes.chartLabel}>{chartData.label}</div>
               <div className={classes.chart}>
                 <LineChartLarge

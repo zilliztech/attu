@@ -15,6 +15,8 @@ import {
   PROMETHEUS_NAMESPACE,
   WITH_PROMETHEUS,
 } from '../consts/Prometheus';
+import { rootContext } from './Root';
+import { useTranslation } from 'react-i18next';
 
 export const prometheusContext = createContext<PrometheusContextType>({
   withPrometheus: false,
@@ -52,6 +54,9 @@ export const PrometheusProvider = (props: { children: React.ReactNode }) => {
 
   const [isPrometheusReady, setIsPrometheusReady] = useState(false);
 
+  const { openSnackBar } = useContext(rootContext);
+  const { t: prometheusTrans } = useTranslation('prometheus');
+
   useEffect(() => {
     if (!isAuth) return;
     if (withPrometheus) {
@@ -61,25 +66,30 @@ export const PrometheusProvider = (props: { children: React.ReactNode }) => {
         prometheusAddress: prometheusAddressformat,
         prometheusInstance,
         prometheusNamespace,
-      }).then(({ isReady }: { isReady: boolean }) => {
-        console.log('prometheus is ready?', isReady);
-        if (isReady) {
-          window.localStorage.setItem(LAST_TIME_WITH_PROMETHEUS, 'true');
-          window.localStorage.setItem(
-            LAST_TIME_PROMETHEUS_ADDRESS,
-            prometheusAddress
-          );
-          window.localStorage.setItem(
-            LAST_TIME_PROMETHEUS_INSTANCE,
-            prometheusInstance
-          );
-          window.localStorage.setItem(
-            LAST_TIME_PROMETHEUS_NAMESPACE,
-            prometheusNamespace
-          );
-        }
-        setIsPrometheusReady(isReady);
-      });
+      })
+        .then(({ isReady }: { isReady: boolean }) => {
+          if (isReady) {
+            window.localStorage.setItem(LAST_TIME_WITH_PROMETHEUS, 'true');
+            window.localStorage.setItem(
+              LAST_TIME_PROMETHEUS_ADDRESS,
+              prometheusAddress
+            );
+            window.localStorage.setItem(
+              LAST_TIME_PROMETHEUS_INSTANCE,
+              prometheusInstance
+            );
+            window.localStorage.setItem(
+              LAST_TIME_PROMETHEUS_NAMESPACE,
+              prometheusNamespace
+            );
+            // openSnackBar(prometheusTrans('ready'));
+          } else openSnackBar(prometheusTrans('invalid'), 'error');
+          setIsPrometheusReady(isReady);
+        })
+        .catch(err => {
+          openSnackBar(prometheusTrans('invalid'), 'error');
+          setIsPrometheusReady(false);
+        });
     } else {
       setIsPrometheusReady(false);
     }

@@ -15,6 +15,7 @@ const HealthyIndexRow = ({ statusList }: { statusList: EHealthyStatus[] }) => {
     <svg width={CHART_WIDTH} height={HEALTHY_INDEX_ROW_HEIGHT}>
       {statusList.map((status, i) => (
         <rect
+          key={`status-${i}`}
           x={i * stautsItemWidth + statusBlockGap / 2}
           y={0}
           rx={1}

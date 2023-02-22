@@ -40,7 +40,7 @@ const HealthyIndexLegend = () => {
   return (
     <>
       {legendData.map(legend => (
-        <div className={classes.legendItem}>
+        <div key={legend.label} className={classes.legendItem}>
           <div
             className={classes.legendIcon}
             style={{

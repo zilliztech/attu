@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, Fragment, SetStateAction } from 'react';
 import { timeRangeOptions } from './consts';
 import { ITimeRangeOption } from './Types';
 import clsx from 'clsx';
@@ -39,10 +39,9 @@ const TimeRangeTabs = ({
   return (
     <div className={classes.root}>
       {timeRangeOptions.map((timeRangeOption, i: number) => (
-        <>
-          {i > 0 && <div className={classes.divider}> / </div>}
+        <Fragment key={timeRangeOption.label}>
+          {i > 0 && <div className={classes.divider}>{'/'}</div>}
           <div
-            key={timeRangeOption.label}
             className={clsx(
               classes.label,
               timeRangeOption.value === timeRange.value && classes.active
@@ -51,7 +50,7 @@ const TimeRangeTabs = ({
           >
             {timeRangeOption.label}
           </div>
-        </>
+        </Fragment>
       ))}
     </div>
   );

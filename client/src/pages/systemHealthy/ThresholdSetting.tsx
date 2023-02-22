@@ -54,7 +54,7 @@ function ThresholdSettingDialog({
   open: boolean;
   onClose: () => void;
   threshold: IThreshold;
-  setThreshold: Dispatch<SetStateAction<IThreshold>>;
+  setThreshold: (threshold: IThreshold) => void;
 }) {
   const classes = getStyles();
   const handleClose = () => {
@@ -143,7 +143,7 @@ const ThresholdSetting = ({
   setThreshold,
 }: {
   threshold: IThreshold;
-  setThreshold: Dispatch<SetStateAction<IThreshold>>;
+  setThreshold: (threshold: IThreshold) => void;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -161,7 +161,7 @@ const ThresholdSetting = ({
         onClick={handleClickOpen}
         sx={{
           cursor: 'pointer',
-          opacity: 0.8
+          opacity: 0.8,
         }}
       />
       <ThresholdSettingDialog

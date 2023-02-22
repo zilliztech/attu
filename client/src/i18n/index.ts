@@ -29,6 +29,8 @@ import systemViewTransEn from './en/systemView';
 import systemViewTransCn from './cn/systemView';
 import userTransEn from './en/user';
 import userTransCn from './cn/user';
+import prometheusTransEn from './en/prometheus';
+import prometheusTransCn from './cn/prometheus';
 
 export const resources = {
   cn: {
@@ -46,6 +48,7 @@ export const resources = {
     search: searchCn,
     systemView: systemViewTransCn,
     user: userTransCn,
+    prometheus: prometheusTransCn,
   },
   en: {
     translation: commonEn,
@@ -62,6 +65,7 @@ export const resources = {
     search: searchEn,
     systemView: systemViewTransEn,
     user: userTransEn,
+    prometheus: prometheusTransEn,
   },
 };
 

@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import {
   CHART_WIDTH,
+  HEALTHY_STATUS_COLORS,
   LINE_CHART_LARGE_HEIGHT,
   LINE_CHART_SMALL_HEIGHT,
   LINE_COLOR,
@@ -8,15 +9,18 @@ import {
   LINE_LABEL_Y_PADDING,
   LINE_SMALL_LABEL_FONT_SIZE,
 } from './consts';
+import { EHealthyStatus } from './Types';
 
 const LineChartSmall = ({
   data,
   format = d => d,
   unit = '',
+  threshold,
 }: {
   data: number[];
   format?: (d: any) => string;
   unit?: string;
+  threshold: number;
 }) => {
   const length = data.length;
   const width = CHART_WIDTH;
@@ -93,10 +97,22 @@ const LineChartSmall = ({
         )}
       </g>
       <g className="line">
+        {maxData >= threshold && (
+          <line
+            x1={xScale(0.5)}
+            y1={yScale(threshold)}
+            x2={xScale(data.length - 0.5)}
+            y2={yScale(threshold)}
+            stroke={HEALTHY_STATUS_COLORS[EHealthyStatus.warning]}
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeDasharray={"6 8"}
+          />
+        )}
         <path
           d={line(nodes) as any}
           fill="none"
-          stroke={`${LINE_COLOR}`}
+          stroke={LINE_COLOR}
           strokeWidth={3}
           opacity={0.8}
           strokeLinecap="round"

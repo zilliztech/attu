@@ -34,6 +34,10 @@ const sqLatencyMetric = 'milvus_proxy_sq_latency_bucket';
 const cpuMetric = 'process_cpu_seconds_total';
 const memoryMetric = 'process_resident_memory_bytes';
 
+const http = axios.create({
+  timeout: 1000,
+});
+
 export class PrometheusService {
   static address: string = '';
   static instance: string = '';
@@ -65,7 +69,11 @@ export class PrometheusService {
     prometheusInstance: string;
     prometheusNamespace: string;
   }) {
-    PrometheusService.isReady = await this.checkPrometheus(prometheusAddress);
+    PrometheusService.isReady = await this.checkPrometheus(
+      prometheusAddress,
+      prometheusInstance,
+      prometheusNamespace
+    );
     if (PrometheusService.isReady) {
       PrometheusService.address = prometheusAddress;
       PrometheusService.instance = prometheusInstance;
@@ -77,15 +85,34 @@ export class PrometheusService {
     };
   }
 
-  async checkPrometheus(prometheusAddress: string) {
-    const result = await axios
+  async checkPrometheus(
+    prometheusAddress: string,
+    prometheusInstance: string,
+    prometheusNamespace: string
+  ) {
+    const addressValid = await http
       .get(`http://${prometheusAddress}/-/ready`)
       .then(res => res?.status === 200)
       .catch(err => {
         console.log(err);
         return false;
       });
-    return result;
+    if (addressValid) {
+      const url =
+        `http://${prometheusAddress}/api/v1/query` +
+        `?query=milvus_num_node{` +
+        `app_kubernetes_io_instance="${prometheusInstance}",` +
+        `namespace="${prometheusNamespace}"}`;
+      const instanceValid = await http
+        .get(url)
+        .then(res => res?.data?.data?.result?.length > 0)
+        .catch(err => {
+          console.log(err);
+          return false;
+        });
+      if (instanceValid) return true;
+    }
+    return false;
   }
 
   async queryRange(expr: string, start: number, end: number, step: number) {
@@ -96,7 +123,7 @@ export class PrometheusService {
       `&start=${new Date(+start).toISOString()}` +
       `&end=${new Date(+end).toISOString()}` +
       `&step=${step / 1000}s`;
-    const result = await axios
+    const result = await http
       .get(url)
       .then(res => res.data)
       .catch(err => {

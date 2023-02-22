@@ -23,6 +23,14 @@ import HealthyIndexOverview from './HealthyIndexOverview';
 import HealthyIndexDetailView from './HealthyIndexDetailView';
 import { KeyboardArrowDown } from '@material-ui/icons';
 import { timeRangeOptions } from './consts';
+import {
+  LAST_TIME_HEALTHY_THRESHOLD_CPU,
+  LAST_TIME_HEALTHY_THRESHOLD_MEMORY,
+} from '../../consts/Localstorage';
+import {
+  DEFAULT_HEALTHY_THRESHOLD_CPU,
+  DEFAULT_HEALTHY_THRESHOLD_MEMORY,
+} from '../../consts/Prometheus';
 // import data from "./data.json";
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -86,11 +94,28 @@ const SystemHealthyView = () => {
   const [timeRange, setTimeRange] = useState<ITimeRangeOption>(
     timeRangeOptions[2]
   );
-  const defaultThreshold = {
-    cpu: 1,
-    memory: 8 * 1024 * 1024 * 1024,
+
+  const [threshold, setThreshold] = useState<IThreshold>({
+    cpu: +(
+      window.localStorage.getItem(LAST_TIME_HEALTHY_THRESHOLD_CPU) ||
+      DEFAULT_HEALTHY_THRESHOLD_CPU
+    ),
+    memory: +(
+      window.localStorage.getItem(LAST_TIME_HEALTHY_THRESHOLD_MEMORY) ||
+      DEFAULT_HEALTHY_THRESHOLD_MEMORY
+    ),
+  });
+  const changeThreshold = (threshold: IThreshold) => {
+    window.localStorage.setItem(
+      LAST_TIME_HEALTHY_THRESHOLD_CPU,
+      `${threshold.cpu}`
+    );
+    window.localStorage.setItem(
+      LAST_TIME_HEALTHY_THRESHOLD_MEMORY,
+      `${threshold.memory}`
+    );
+    setThreshold(threshold);
   };
-  const [threshold, setThreshold] = useState<IThreshold>(defaultThreshold);
   const [prometheusData, setPrometheusData] = useState<IPrometheusAllData>();
   const nodeTree = useMemo<INodeTreeStructure>(
     () =>
@@ -172,7 +197,7 @@ const SystemHealthyView = () => {
           selectedNode={selectedNode}
           lineChartsData={lineChartsData}
           threshold={threshold}
-          setThreshold={setThreshold}
+          setThreshold={changeThreshold}
           timeRange={timeRange}
           setTimeRange={setTimeRange}
           setSelectedService={setSelectedService}

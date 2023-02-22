@@ -110,7 +110,7 @@ const Topology = ({
           const subChildPos = subChildrenPos[i];
 
           return (
-            <>
+            <g key={node.label}>
               {node.children.length > 0 && (
                 <g
                   className={classes.node}
@@ -216,7 +216,7 @@ const Topology = ({
                     : `${rootNode.service}`}
                 </text>
               </g>
-            </>
+            </g>
           );
         })}
       </svg>

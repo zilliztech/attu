@@ -2,7 +2,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 import { CHART_WIDTH, LINE_CHART_SMALL_HEIGHT } from './consts';
 import HealthyIndexRow from './HealthyIndexRow';
 import LineChartSmall from './LineChartSmall';
-import { ENodeService, INodeTreeStructure } from './Types';
+import { ENodeService, INodeTreeStructure, IThreshold } from './Types';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -48,7 +48,13 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const HealthyIndexTreeItem = ({ node }: { node: INodeTreeStructure }) => {
+const HealthyIndexTreeItem = ({
+  node,
+  threshold,
+}: {
+  node: INodeTreeStructure;
+  threshold: IThreshold;
+}) => {
   const classes = getStyles();
   const [open, setOpen] = useState(false);
   return (
@@ -83,6 +89,7 @@ const HealthyIndexTreeItem = ({ node }: { node: INodeTreeStructure }) => {
                 data={node.cpu || []}
                 format={(v: number) => v.toFixed(3)}
                 unit={'Core'}
+                threshold={threshold.cpu}
               />
             </div>
           </div>
@@ -93,6 +100,7 @@ const HealthyIndexTreeItem = ({ node }: { node: INodeTreeStructure }) => {
                 data={node.memory || []}
                 format={(v: number) => (v / 1024 / 1024 / 1024).toFixed(1)}
                 unit={'GB'}
+                threshold={threshold.memory}
               />
             </div>
           </div>
@@ -105,9 +113,11 @@ const HealthyIndexTreeItem = ({ node }: { node: INodeTreeStructure }) => {
 const HealthyIndexWithTree = ({
   nodeTree,
   setSelectedService,
+  threshold,
 }: {
   nodeTree: INodeTreeStructure;
   setSelectedService: Dispatch<SetStateAction<ENodeService>>;
+  threshold: IThreshold;
 }) => {
   const classes = getStyles();
   return (
@@ -125,9 +135,14 @@ const HealthyIndexWithTree = ({
           </div>
         </div>
       )}
-      {nodeTree.children.map(node => (
-        <HealthyIndexTreeItem key={node.label} node={node} />
-      ))}
+      {!!nodeTree &&
+        nodeTree.children.map(node => (
+          <HealthyIndexTreeItem
+            key={node.label}
+            node={node}
+            threshold={threshold}
+          />
+        ))}
     </div>
   );
 };
@@ -165,9 +180,11 @@ const HealthyIndexWithoutTree = ({
 const HealthyIndexDetailView = ({
   nodeTree,
   setSelectedService,
+  threshold,
 }: {
   nodeTree: INodeTreeStructure;
   setSelectedService: Dispatch<SetStateAction<ENodeService>>;
+  threshold: IThreshold;
 }) => {
   return nodeTree.service === ENodeService.milvus ? (
     <HealthyIndexWithoutTree
@@ -178,6 +195,7 @@ const HealthyIndexDetailView = ({
     <HealthyIndexWithTree
       nodeTree={nodeTree}
       setSelectedService={setSelectedService}
+      threshold={threshold}
     />
   );
 };
