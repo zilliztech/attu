@@ -8,6 +8,7 @@ import {
   LINE_LABEL_FONT_SIZE,
   LINE_LABEL_Y_PADDING,
   LINE_SMALL_LABEL_FONT_SIZE,
+  LINE_WIDTH,
 } from './consts';
 import { EHealthyStatus } from './Types';
 
@@ -113,7 +114,7 @@ const LineChartSmall = ({
           d={line(nodes) as any}
           fill="none"
           stroke={LINE_COLOR}
-          strokeWidth={3}
+          strokeWidth={LINE_WIDTH}
           opacity={0.8}
           strokeLinecap="round"
         />
