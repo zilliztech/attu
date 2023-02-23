@@ -1,4 +1,5 @@
 import axios from 'axios';
+import fillRangeData from './fillRangeData';
 
 interface IPrometheusNode {
   type: string;
@@ -118,58 +119,26 @@ export class PrometheusService {
       `&start=${new Date(+start).toISOString()}` +
       `&end=${new Date(+end).toISOString()}` +
       `&step=${step / 1000}s`;
-    return await http.get(url).then(res => res.data);
-  }
-
-  async getVectorsCount(
-    metric: string,
-    start: number,
-    end: number,
-    step: number
-  ) {
-    const expr = `${metric}${PrometheusService.selector}`;
-    const result = await this.queryRange(expr, start, end, step);
+    const result = await http.get(url).then(res => res.data);
     const data = result.data.result;
-    const length = Math.floor((end - start) / step);
-
-    if (data.length === 0) return Array(length).fill(0);
-
-    const res = result.data.result[0].values.map((d: any) => +d[1]).slice(1);
-
-    let leftLossCount;
-    let rightLossCount;
-    leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
-    res.unshift(...Array(leftLossCount).fill(-1));
-    rightLossCount = Math.floor(
-      (end - data[0].values[data[0].values.length - 1][0] * 1000) / step
-    );
-    res.push(...Array(rightLossCount).fill(-2));
-    return res;
+    fillRangeData(data, start, end, step);
+    return data;
   }
-  getInsertVectorsCount = (start: number, end: number, step: number) =>
-    this.getVectorsCount(totalVectorsCountMetric, start, end, step);
+
+  async getInsertVectorsCount(start: number, end: number, step: number) {
+    const expr = `${totalVectorsCountMetric}${PrometheusService.selector}`;
+    const data = await this.queryRange(expr, start, end, step);
+    return data.length > 0 ? data[0].values : [];
+  }
 
   async getSearchVectorsCount(start: number, end: number, step: number) {
-    const expr = `rate(${searchVectorsCountMetric}${
+    const expr = `delta(${searchVectorsCountMetric}${
       PrometheusService.selector
     }[${step / 1000}s])`;
-    const result = await this.queryRange(expr, start, end, step);
-    const data = result.data.result;
-    const length = Math.floor((end - start) / step);
-
-    if (data.length === 0) return Array(length).fill(0);
-
-    const res = data[0].values.map((d: any) => +d[1]);
-
-    let leftLossCount;
-    let rightLossCount;
-    leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
-    res.unshift(...Array(leftLossCount).fill(-1));
-    rightLossCount = Math.floor(
-      (end - data[0].values[data[0].values.length - 1][0] * 1000) / step
-    );
-    res.push(...Array(rightLossCount).fill(-2));
-    return res;
+    const data = await this.queryRange(expr, start, end, step);
+    return data.length > 0
+      ? data[0].values.map((d: number) => Math.round(d))
+      : [];
   }
 
   async getSQLatency(start: number, end: number, step: number) {
@@ -178,23 +147,8 @@ export class PrometheusService {
       `(rate(${sqLatencyMetric}${PrometheusService.selector}[${
         step / 1000
       }s])))`;
-    const result = await this.queryRange(expr, start, end, step);
-    const data = result.data.result;
-
-    const length = Math.floor((end - start) / step);
-    if (data.length === 0) return Array(length).fill(0);
-
-    const res = data[0].values.map((d: any) => (isNaN(d[1]) ? 0 : +d[1]));
-    // .slice(1);
-    let leftLossCount;
-    let rightLossCount;
-    leftLossCount = Math.floor((data[0].values[0][0] * 1000 - start) / step);
-    res.unshift(...Array(leftLossCount).fill(-1));
-    rightLossCount = Math.floor(
-      (end - data[0].values[data[0].values.length - 1][0] * 1000) / step
-    );
-    res.push(...Array(rightLossCount).fill(-2));
-    return res;
+    const data = await this.queryRange(expr, start, end, step);
+    return data.length > 0 ? data[0].values : [];
   }
 
   async getThirdPartyServiceHealthStatus(
@@ -203,50 +157,36 @@ export class PrometheusService {
     end: number,
     step: number
   ) {
-    const expr = `sum by (status) (${metricName}${PrometheusService.selector})`;
-    const result = await this.queryRange(expr, start, end, step);
-    const data = result.data.result;
-    const length = Math.floor((end - start) / step);
-    const totalCount = data
-      .find((d: any) => d.metric.status === 'total')
-      .values.map((d: any) => +d[1]);
-    const totalSlices = totalCount
-      .map((d: number, i: number) => (i > 0 ? d - totalCount[i - 1] : d))
-      .slice(1);
-    const successCount = data
-      .find((d: any) => d.metric.status === 'success')
-      .values.map((d: any) => +d[1]);
-    const successSlices = successCount
-      .map((d: number, i: number) => (i > 0 ? d - successCount[i - 1] : d))
-      .slice(1);
-    const res = totalSlices.map((d: number, i: number) =>
-      d === 0 ? 1 : successSlices[i] / d
+    const expr = `sum by (status) (delta(${metricName}${
+      PrometheusService.selector
+    }[${step / 1000}s]))`;
+    const data = await this.queryRange(expr, start, end, step);
+
+    const totalData =
+      data.find((d: any) => d.metric.status === 'total')?.values || [];
+    const successData =
+      data.find((d: any) => d.metric.status === 'success')?.values || [];
+    return totalData.map((d: number, i: number) =>
+      d < 0 ? d : d === 0 ? 1 : successData[i] / d
     );
-    res.unshift(...Array(length - res.length).fill(-1));
-    return res;
   }
 
   async getInternalNodesCPUData(start: number, end: number, step: number) {
     const expr = `rate(${cpuMetric}${PrometheusService.selector}[${
       step / 1000
     }s])`;
-    const result = await this.queryRange(expr, start, end, step);
-    return result.data.result;
+    return await this.queryRange(expr, start, end, step);
   }
 
   async getInternalNodesMemoryData(start: number, end: number, step: number) {
     const expr = `${memoryMetric}${PrometheusService.selector}`;
-    const result = await this.queryRange(expr, start, end, step);
-    return result.data.result;
+    return await this.queryRange(expr, start, end, step);
   }
 
   reconstructNodeData(
     cpuNodesData: any,
     memoryNodesData: any,
-    type: string,
-    start: number,
-    end: number,
-    step: number
+    type: string
   ): IPrometheusNode[] {
     const cpuNodes = cpuNodesData.filter(
       (d: any) => d.metric.container.indexOf(type) >= 0
@@ -258,32 +198,16 @@ export class PrometheusService {
       const nodeType =
         d.metric.container.indexOf('coord') >= 0 ? 'coord' : 'node';
       const pod = d.metric.pod;
-      const cpu = d.values.map((v: any) => +v[1]);
-
-      let leftLossCount;
-      let rightLossCount;
-      leftLossCount = Math.floor((d.values[0][0] * 1000 - start) / step);
-      cpu.unshift(...Array(leftLossCount).fill(-1));
-      rightLossCount = Math.floor(
-        (end - d.values[d.values.length - 1][0] * 1000) / step
-      );
-      cpu.push(...Array(rightLossCount).fill(-2));
+      const cpu = d?.values || [];
 
       const node = memoryNodes.find((data: any) => data.metric.pod === pod);
-      const memory = node.values.map((v: any) => +v[1]);
-
-      leftLossCount = Math.floor((node.values[0][0] * 1000 - start) / step);
-      memory.unshift(...Array(leftLossCount).fill(-1));
-      rightLossCount = Math.floor(
-        (end - node.values[node.values.length - 1][0] * 1000) / step
-      );
-      memory.push(...Array(rightLossCount).fill(-2));
+      const memory = node ? node?.values || [] : [];
 
       return {
         type: nodeType,
         pod,
-        cpu: cpu.slice(1),
-        memory: memory.slice(1),
+        cpu,
+        memory,
       } as IPrometheusNode;
     });
 
@@ -291,8 +215,10 @@ export class PrometheusService {
   }
 
   async getInternalNodesData(start: number, end: number, step: number) {
-    const cpuNodes = await this.getInternalNodesCPUData(start, end, step);
-    const memoryNodes = await this.getInternalNodesMemoryData(start, end, step);
+    const [cpuNodes, memoryNodes] = await Promise.all([
+      this.getInternalNodesCPUData(start, end, step),
+      this.getInternalNodesMemoryData(start, end, step),
+    ]);
 
     const [rootNodes, queryNodes, indexNodes, dataNodes] = [
       'root',
@@ -300,7 +226,7 @@ export class PrometheusService {
       'index',
       'data',
     ].map((metric: string) =>
-      this.reconstructNodeData(cpuNodes, memoryNodes, metric, start, end, step)
+      this.reconstructNodeData(cpuNodes, memoryNodes, metric)
     );
     return { rootNodes, queryNodes, indexNodes, dataNodes };
   }
@@ -315,41 +241,26 @@ export class PrometheusService {
     step: number;
   }) {
     if (!PrometheusService.isReady) {
-      return {
-
-      }
+      return {};
     }
-    const meta = await this.getThirdPartyServiceHealthStatus(
-      metaMetric,
-      start,
-      end,
-      step
-    );
-    const msgstream = await this.getThirdPartyServiceHealthStatus(
-      msgstreamMetric,
-      start,
-      end,
-      step
-    );
-    const objstorage = await this.getThirdPartyServiceHealthStatus(
-      objstorageMetric,
-      start,
-      end,
-      step
-    );
-    const totalVectorsCount = await this.getInsertVectorsCount(
-      start,
-      end,
-      step
-    );
-    const searchVectorsCount = await this.getSearchVectorsCount(
-      start,
-      end,
-      step
-    );
-    const sqLatency = await this.getSQLatency(start, end, step);
-    const { rootNodes, queryNodes, indexNodes, dataNodes } =
-      await this.getInternalNodesData(start, end, step);
+
+    const [
+      meta,
+      msgstream,
+      objstorage,
+      totalVectorsCount,
+      searchVectorsCount,
+      sqLatency,
+      { rootNodes, queryNodes, indexNodes, dataNodes },
+    ] = await Promise.all([
+      this.getThirdPartyServiceHealthStatus(metaMetric, start, end, step),
+      this.getThirdPartyServiceHealthStatus(msgstreamMetric, start, end, step),
+      this.getThirdPartyServiceHealthStatus(objstorageMetric, start, end, step),
+      this.getInsertVectorsCount(start, end, step),
+      this.getSearchVectorsCount(start, end, step),
+      this.getSQLatency(start, end, step),
+      this.getInternalNodesData(start, end, step),
+    ]);
 
     return {
       totalVectorsCount,

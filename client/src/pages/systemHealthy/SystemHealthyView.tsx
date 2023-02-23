@@ -5,23 +5,16 @@ import { useInterval } from '../../hooks/SystemView';
 import { PrometheusHttp } from '../../http/Prometheus';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import {
-  EHealthyStatus,
   ENodeService,
-  ENodeType,
   ILineChartData,
   INodeTreeStructure,
   IPrometheusAllData,
-  IPrometheusNode,
   IThreshold,
   ITimeRangeOption,
 } from './Types';
-import clsx from 'clsx';
 import Topology from './Topology';
-import * as d3 from 'd3';
 import { reconNodeTree } from './dataHandler';
 import HealthyIndexOverview from './HealthyIndexOverview';
-import HealthyIndexDetailView from './HealthyIndexDetailView';
-import { KeyboardArrowDown } from '@material-ui/icons';
 import { timeRangeOptions } from './consts';
 import {
   LAST_TIME_HEALTHY_THRESHOLD_CPU,
@@ -31,57 +24,24 @@ import {
   DEFAULT_HEALTHY_THRESHOLD_CPU,
   DEFAULT_HEALTHY_THRESHOLD_MEMORY,
 } from '../../consts/Prometheus';
-// import data from "./data.json";
+import { useTranslation } from 'react-i18next';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
     fontFamily: 'Roboto',
-    margin: '14px 40px',
+    margin: '8px 40px',
     position: 'relative',
     height: 'fit-content',
     display: 'flex',
     flexDirection: 'column',
-    // border: '1px solid red',
   },
   mainView: {
     borderRadius: '8px',
     boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     display: 'grid',
     gridTemplateColumns: '1fr auto',
-    marginTop: '14px',
+    marginTop: '8px',
     height: '100%',
-    // border: '1px solid green',
-  },
-  detailView: {
-    height: '100%',
-    width: '100%',
-    transition: 'all .25s',
-    position: 'absolute',
-    // border: '1px solid purple',
-  },
-  showDetailView: {
-    top: 0,
-    minHeight: '100vh',
-    height: 'fit-content',
-  },
-  hideDetailView: {
-    top: '2000px',
-    maxHeight: 0,
-  },
-  detailViewContainer: {
-    borderRadius: '8px',
-    boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
-    display: 'grid',
-    gridTemplateColumns: '1fr auto',
-    // marginTop: '14px',
-    height: '100%',
-  },
-  childCloseBtn: {
-    border: 0,
-    backgroundColor: 'white',
-    gridArea: 'a',
-    cursor: 'pointer',
-    width: '100%',
   },
 }));
 
@@ -126,20 +86,22 @@ const SystemHealthyView = () => {
           } as INodeTreeStructure),
     [prometheusData, threshold]
   );
+
+  const { t: prometheusTrans } = useTranslation('prometheus');
   const lineChartsData = useMemo<ILineChartData[]>(
     () =>
       prometheusData
         ? [
             {
-              label: 'Total Count',
+              label: prometheusTrans('totalCount'),
               data: prometheusData.totalVectorsCount,
             },
             {
-              label: 'Search Count',
+              label: prometheusTrans('searchCount'),
               data: prometheusData.searchVectorsCount,
             },
             {
-              label: 'Search Latency',
+              label: prometheusTrans('searchLatency'),
               data: prometheusData.sqLatency,
               format: d => d.toFixed(0),
               unit: 'ms',
@@ -194,6 +156,7 @@ const SystemHealthyView = () => {
             selectedService={selectedService}
             onClick={setSelectedService}
           />
+
           <HealthyIndexOverview
             selectedNode={selectedNode}
             lineChartsData={lineChartsData}

@@ -28,8 +28,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: `${MAIN_VIEW_WIDTH}px`,
     height: `${TOPO_HEIGHT}px`,
     overflow: 'auto',
-    padding: '12px 56px 0px 24px',
-    // boxShadow: '0 0 5px #ccc',
+    padding: '8px 56px 0px 24px',
     fontSize: '14px',
   },
   headerContent: {

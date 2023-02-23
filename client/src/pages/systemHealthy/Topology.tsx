@@ -1,5 +1,5 @@
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
-import { Dispatch, memo } from 'react';
+import { Dispatch, memo, useContext } from 'react';
 import {
   TOPO_HEIGHT,
   TOPO_LINK_LENGTH,
@@ -9,6 +9,8 @@ import {
 import { getIcon } from './getIcon';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 import clsx from 'clsx';
+import { formatPrometheusAddress } from '../../utils/Format';
+import { prometheusContext } from '../../context/Prometheus';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -16,8 +18,26 @@ const getStyles = makeStyles((theme: Theme) => ({
     borderBottomLeftRadius: '8px',
     overflow: 'auto',
     backgroundColor: 'white',
-    // overflow: 'visible',
-    minHeight: '90%',
+  },
+  prometheusInfoContainer: {
+    position: 'absolute',
+    display: 'flex',
+    fontSize: '12px',
+    padding: '4px 8px',
+    flexWrap: 'wrap',
+  },
+  prometheusInfoItem: {
+    marginRight: '20px',
+    display: 'flex',
+  },
+  prometheusInfoItemLabel: {
+    marginRight: '8px',
+    fontWeight: 600,
+    color: '#333',
+  },
+  prometheusInfoItemText: {
+    fontWeight: 500,
+    color: '#666',
   },
   node: {
     transition: 'all .25s',
@@ -55,7 +75,9 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const randomList = Array(10).fill(0).map(_ => Math.random());
+const randomList = Array(10)
+  .fill(0)
+  .map(_ => Math.random());
 
 const nodesLayout = (
   nodes: INodeTreeStructure[],
@@ -102,8 +124,40 @@ const Topology = ({
   const { rootNode, childrenNodes, rootPos, childrenPos, subChildrenPos } =
     nodesLayout(nodeTree.children, width, height);
 
+  const { prometheusAddress, prometheusInstance, prometheusNamespace } =
+    useContext(prometheusContext);
+  const prometheusInfos = [
+    {
+      label: 'Prometheus Address',
+      value: formatPrometheusAddress(prometheusAddress),
+    },
+    {
+      label: 'Namespace',
+      value: prometheusNamespace,
+    },
+    {
+      label: 'Instance',
+      value: prometheusInstance,
+    },
+  ];
+
   return (
     <div className={classes.root}>
+      <div className={classes.prometheusInfoContainer}>
+        {prometheusInfos.map(prometheusInfo => (
+          <div
+            key={prometheusInfo.value}
+            className={classes.prometheusInfoItem}
+          >
+            <div className={classes.prometheusInfoItemLabel}>
+              {prometheusInfo.label}:
+            </div>
+            <div className={classes.prometheusInfoItemText}>
+              {prometheusInfo.value}
+            </div>
+          </div>
+        ))}
+      </div>
       <svg width={width} height={height} style={{ overflow: 'visible' }}>
         {childrenNodes.map((node, i) => {
           const childPos = childrenPos[i];

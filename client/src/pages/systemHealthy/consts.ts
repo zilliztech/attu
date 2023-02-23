@@ -1,7 +1,7 @@
 import { EHealthyStatus, ITimeRangeOption } from './Types';
 
 export const TOPO_WIDTH = 600;
-export const TOPO_HEIGHT = 560;
+export const TOPO_HEIGHT = 580;
 export const TOPO_NODE_R = [68, 45, 30];
 export const TOPO_LINK_LENGTH = [160, 270];
 
@@ -16,8 +16,8 @@ export const HEALTHY_STATUS_COLORS = {
   [EHealthyStatus.failed]: '#F16415',
 };
 
-export const LINE_CHART_LARGE_HEIGHT = 56;
-export const LINE_CHART_SMALL_HEIGHT = 42;
+export const LINE_CHART_LARGE_HEIGHT = 60;
+export const LINE_CHART_SMALL_HEIGHT = 48;
 export const LINE_COLOR = '#394E97';
 export const LINE_LABEL_Y_PADDING = 6;
 export const LINE_LABEL_FONT_SIZE = 14;

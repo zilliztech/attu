@@ -82,8 +82,9 @@ export const PrometheusProvider = (props: { children: React.ReactNode }) => {
               LAST_TIME_PROMETHEUS_NAMESPACE,
               prometheusNamespace
             );
-            // openSnackBar(prometheusTrans('ready'));
-          } else openSnackBar(prometheusTrans('invalid'), 'error');
+          } else {
+            openSnackBar(prometheusTrans('invalid'), 'error');
+          }
           setIsPrometheusReady(isReady);
         })
         .catch(err => {

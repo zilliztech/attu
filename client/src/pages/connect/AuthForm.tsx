@@ -159,17 +159,6 @@ export const AuthForm = (props: any) => {
         defaultValue: prometheusAddress,
       },
       {
-        label: `${attuTrans.prometheusInstance}`,
-        key: 'prometheus_instance',
-        onChange: setPrometheusInstance,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusInstance,
-        fullWidth: true,
-
-        defaultValue: prometheusInstance,
-      },
-      {
         label: `${attuTrans.prometheusNamespace}`,
         key: 'prometheus_namespace',
         onChange: setPrometheusNamespace,
@@ -179,6 +168,17 @@ export const AuthForm = (props: any) => {
         fullWidth: true,
 
         defaultValue: prometheusNamespace,
+      },
+      {
+        label: `${attuTrans.prometheusInstance}`,
+        key: 'prometheus_instance',
+        onChange: setPrometheusInstance,
+        variant: 'filled',
+        className: classes.input,
+        placeholder: attuTrans.prometheusInstance,
+        fullWidth: true,
+
+        defaultValue: prometheusInstance,
       },
     ],
     []
