@@ -4,11 +4,9 @@ import {
   CHART_WIDTH,
   LINE_CHART_LARGE_HEIGHT,
   MAIN_VIEW_WIDTH,
-  TOPO_HEIGHT,
 } from './consts';
 import HealthyIndexDetailView from './HealthyIndexDetailView';
 import HealthyIndexLegend from './HealthyIndexLegend';
-import HealthyIndexRow from './HealthyIndexRow';
 import LineChartLarge from './LineChartLarge';
 import ThresholdSetting from './ThresholdSetting';
 import TimeRangeTabs from './TimeRangeTabs';
@@ -19,16 +17,12 @@ import {
   IThreshold,
   ITimeRangeOption,
 } from './Types';
-// import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-
-// export const CHART_LABEL_WIDTH = 70;
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
     width: `${MAIN_VIEW_WIDTH}px`,
-    height: `${TOPO_HEIGHT}px`,
     overflow: 'auto',
-    padding: '8px 56px 0px 24px',
+    padding: '8px 56px 60px 24px',
     fontSize: '14px',
   },
   headerContent: {
@@ -40,7 +34,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  titleMain: { fontSize: '18px', fontWeight: 500 },
+  titleMain: { fontSize: '18px', fontWeight: 500, cursor: 'pointer' },
   titleExt: { fontSize: '18px', fontWeight: 500, marginLeft: '8px' },
   timeRangeTabs: {
     fontSize: '12px',
@@ -66,8 +60,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   chart: {
     height: `${LINE_CHART_LARGE_HEIGHT}px`,
     width: `${CHART_WIDTH}px`,
-
-    // border: '1px solid brown',
   },
 }));
 
@@ -94,7 +86,12 @@ const HealthyIndexOverview = ({
       <div className={classes.headerContent}>
         <div className={classes.titleContainer}>
           <div className={classes.title}>
-            <div className={classes.titleMain}>Healthy Status</div>
+            <div
+              className={classes.titleMain}
+              onClick={() => setSelectedService(ENodeService.root)}
+            >
+              Healthy Status
+            </div>
             {selectedNode.service !== ENodeService.milvus && (
               <div className={classes.titleExt}>
                 {`> ${selectedNode.service}`}

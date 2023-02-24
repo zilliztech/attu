@@ -18,6 +18,16 @@ const getStyles = makeStyles((theme: Theme) => ({
     borderBottomLeftRadius: '8px',
     overflow: 'auto',
     backgroundColor: 'white',
+    position: 'relative',
+  },
+  svg: {
+    overflow: 'visible',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 0,
+    margin: 'auto',
   },
   prometheusInfoContainer: {
     position: 'absolute',
@@ -158,7 +168,12 @@ const Topology = ({
           </div>
         ))}
       </div>
-      <svg width={width} height={height} style={{ overflow: 'visible' }}>
+      <svg
+        className={classes.svg}
+        width={width}
+        height={height}
+        style={{ overflow: 'visible' }}
+      >
         {childrenNodes.map((node, i) => {
           const childPos = childrenPos[i];
           const subChildPos = subChildrenPos[i];

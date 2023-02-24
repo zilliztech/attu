@@ -29,9 +29,9 @@ import { useTranslation } from 'react-i18next';
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
     fontFamily: 'Roboto',
-    margin: '8px 40px',
+    margin: '16px 40px',
     position: 'relative',
-    height: 'fit-content',
+    height: '88%',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -40,7 +40,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     display: 'grid',
     gridTemplateColumns: '1fr auto',
-    marginTop: '8px',
     height: '100%',
   },
 }));

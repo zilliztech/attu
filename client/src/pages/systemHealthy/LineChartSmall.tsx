@@ -105,7 +105,7 @@ const LineChartSmall = ({
             x2={xScale(data.length - 0.5)}
             y2={yScale(threshold)}
             stroke={HEALTHY_STATUS_COLORS[EHealthyStatus.warning]}
-            strokeWidth={3}
+            strokeWidth={LINE_WIDTH + 1}
             strokeLinecap="round"
             strokeDasharray={"6 8"}
           />

@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 const getStyles = makeStyles((theme: Theme) => ({
   mainView: {
     width: '100%',
-    marginTop: '20px',
+    marginTop: '16px',
   },
   healthyIndexItem: {
     display: 'flex',
