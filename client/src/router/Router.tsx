@@ -6,6 +6,7 @@ import Users from '../pages/user/User';
 import Index from '../pages/index';
 import Search from '../pages/search/VectorSearch';
 import System from '../pages/system/SystemView';
+import SystemHealthy from '../pages/systemHealthy/SystemHealthyView';
 
 const router = createHashRouter([
   {
@@ -31,6 +32,10 @@ const router = createHashRouter([
       {
         path: '/system',
         element: <System />,
+      },
+      {
+        path: '/system_healthy',
+        element: <SystemHealthy />,
       },
     ],
   },

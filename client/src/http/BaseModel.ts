@@ -5,6 +5,7 @@ type findParamsType = {
   method?: Method;
   path: string;
   params: { [x: string]: any };
+  timeout?: number;
 };
 
 type updateParamsType = {
@@ -41,12 +42,14 @@ export default class BaseModel {
   }
 
   static async search(data: findParamsType) {
-    const { method = 'get', params = {}, path = '' } = data;
-    const res = await http({
+    const { method = 'get', params = {}, path = '', timeout } = data;
+    const httpConfig = {
       method,
       url: path,
       params,
-    });
+    } as any;
+    if (timeout) httpConfig.timeout = timeout;
+    const res = await http(httpConfig);
     return res.data.data;
   }
 
