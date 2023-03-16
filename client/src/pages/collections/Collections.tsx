@@ -21,6 +21,7 @@ import { CollectionHttp } from '../../http/Collection';
 import LoadCollectionDialog from '../dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
+import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import Highlighter from 'react-highlight-words';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
@@ -205,6 +206,14 @@ const Collections = () => {
     setSelectedCollections([]);
   };
 
+  const onRename = () => {
+    openSnackBar(
+      successTrans('rename', { name: collectionTrans('collection') })
+    );
+    fetchData();
+    setSelectedCollections([]);
+  };
+
   const handleSearch = (value: string) => {
     setSearch(value);
   };
@@ -224,6 +233,8 @@ const Collections = () => {
       icon: 'add',
     },
     {
+      icon: 'uploadFile',
+      type: 'iconBtn',
       label: btnTrans('insert'),
       onClick: () => {
         setDialog({
@@ -253,15 +264,28 @@ const Collections = () => {
        */
       disabled: () =>
         collectionList.length === 0 || selectedCollections.length > 1,
-      btnVariant: 'outlined',
     },
     {
+      icon: 'edit',
       type: 'iconBtn',
       onClick: () => {
-        fetchData();
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <RenameCollectionDialog
+                cb={onRename}
+                collectionName={selectedCollections[0]._name}
+              />
+            ),
+          },
+        });
       },
-      label: collectionTrans('delete'),
-      icon: 'refresh',
+      label: collectionTrans('rename'),
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('renameTooltip'),
+      disabled: data => data.length !== 1,
     },
     {
       type: 'iconBtn',
@@ -284,6 +308,15 @@ const Collections = () => {
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: data => data.length === 0,
+    },
+
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        fetchData();
+      },
+      label: collectionTrans('delete'),
+      icon: 'refresh',
     },
 
     {

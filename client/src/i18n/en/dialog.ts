@@ -2,6 +2,7 @@ const dialogTrans = {
   deleteTipAction: 'Type',
   deleteTipPurpose: 'to confirm.',
   deleteTitle: `Drop {{type}}`,
+  renameTitle: `Rename {{type}}`,
   releaseTitle: `Release {{type}}`,
   createAlias: `Create alias for {{type}}`,
   loadTitle: `Load {{type}}`,

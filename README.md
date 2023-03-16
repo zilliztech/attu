@@ -53,7 +53,7 @@ Once you start the container, open the browser, type `http://{ attu ip }:8000`, 
 
 #### Docker CLI parameters
 
-| Parameter  | Example           | required | description                 |
+| Parameter  | Example           |   description                 |
 | :--------- | :---------------- | :------: | --------------------------- |
 | MILVUS_URL | 192.168.0.1:19530 |  false   | Optional, Milvus server URL |
 

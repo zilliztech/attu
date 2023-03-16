@@ -9,6 +9,7 @@ import {
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
   SearchReq,
+  RenameCollectionReq,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue, genRows } from '../utils/Helper';
@@ -53,6 +54,12 @@ export class CollectionsService {
   async describeCollection(data: DescribeCollectionReq) {
     const res = await this.collectionManager.describeCollection(data);
     throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async renameCollection(data: RenameCollectionReq) {
+    const res = await this.collectionManager.renameCollection(data);
+    throwErrorFromSDK(res);
     return res;
   }
 

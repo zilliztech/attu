@@ -83,6 +83,16 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
+  static renameCollection(
+    collectionName: string,
+    params: { new_collection_name: string }
+  ) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}`,
+      data: params,
+    });
+  }
+
   static getStatistics() {
     return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
   }

@@ -1,5 +1,7 @@
-import { KeyValuePair } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
-import { FieldSchema } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Response';
+import {
+  KeyValuePair,
+  FieldSchema,
+} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 export const findKeyValue = (obj: KeyValuePair[], key: string) =>
   obj.find(v => v.key === key)?.value;

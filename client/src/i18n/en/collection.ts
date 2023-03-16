@@ -7,6 +7,9 @@ const collectionTrans = {
   create: 'Create Collection',
   delete: 'delete',
   deleteTooltip: 'Please select at least one item to delete.',
+  rename: 'rename',
+  renameTooltip: 'Please select one item to rename.',
+  newColName: 'New Collection Name',
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
@@ -85,6 +88,11 @@ const collectionTrans = {
 
   // alias dialog
   aliasCreatePlaceholder: 'Alias name',
+
+  // rename dialog
+  newColNamePlaceholder: 'New Collection Name',
+  newNameInfo:
+    'Only numbers, letters, and underscores are allowed.',
 };
 
 export default collectionTrans;
