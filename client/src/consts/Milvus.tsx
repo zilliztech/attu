@@ -97,10 +97,10 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: ['n_trees'],
     search: ['search_k'],
   },
-  AUTOINDEX: {
-    create: [],
-    search: [],
-  },
+  // AUTOINDEX: {
+  //   create: [],
+  //   search: [],
+  // },
   // RNSG: {
   //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
   //   search: ['search_length'],
