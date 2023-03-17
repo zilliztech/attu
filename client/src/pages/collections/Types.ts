@@ -117,10 +117,6 @@ export interface CreateFieldsProps {
   autoID: boolean;
   setAutoID: (value: boolean) => void;
 }
-export interface CreateAliasProps {
-  collectionName: string;
-  cb?: () => void;
-}
 
 export interface InsertDataParam {
   partition_names: string[];
@@ -149,4 +145,10 @@ export enum TAB_EMUM {
   'partition',
   'data-preview',
   'data-query',
+}
+
+export interface LoadSampleParam {
+  collection_name: string;
+  // e.g. [{vector: [1,2,3], age: 10}]
+  size: string;
 }

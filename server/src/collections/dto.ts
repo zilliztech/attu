@@ -13,7 +13,7 @@ import {
   FieldType,
   ShowCollectionsType,
 } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
-import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/types/Common';
+import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/const/Milvus';
 import { SearchParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
 enum VectorTypes {
@@ -99,4 +99,10 @@ export class QueryDto {
   @IsArray()
   @IsOptional()
   readonly output_fields: string[];
+}
+
+export class RenameCollectionDto {
+  @IsString()
+  @IsNotEmpty({ message: 'new_collection_name is empty.' })
+  new_collection_name: string;
 }

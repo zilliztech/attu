@@ -8,6 +8,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import ClearIcon from '@material-ui/icons/Clear';
+import EditIcon from '@material-ui/icons/Edit';
 import ReorderIcon from '@material-ui/icons/Reorder';
 import AppsIcon from '@material-ui/icons/Apps';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -45,7 +46,7 @@ import { ReactComponent as SystemIcon } from '../../assets/icons/system.svg';
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
   add: (props = {}) => <AddIcon {...props} />,
-  addOutline:  (props = {}) => <AddCircleOutlineIcon {...props} />,
+  addOutline: (props = {}) => <AddCircleOutlineIcon {...props} />,
   delete: (props = {}) => <DeleteIcon {...props} />,
   list: (props = {}) => <ReorderIcon {...props} />,
   copy: (props = {}) => <FileCopyIcon {...props} />,
@@ -68,6 +69,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   alias: (props = {}) => <AlternateEmailIcon {...props} />,
   datePicker: (props = {}) => <DatePicker {...props} />,
   download: (props = {}) => <GetAppIcon {...props} />,
+  edit: (props = {}) => <EditIcon {...props} />,
 
   zilliz: (props = {}) => (
     <SvgIcon viewBox="0 0 36 36" component={ZillizIcon} {...props} />
@@ -108,7 +110,12 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
     <SvgIcon viewBox="0 0 16 16" component={KeyIcon} {...props} />
   ),
   upload: (props = {}) => (
-    <SvgIcon viewBox="0 0 16 16" component={UploadIcon} {...props} />
+    <SvgIcon
+      viewBox="0 0 16 16"
+      component={UploadIcon}
+      {...props}
+      fill="#000"
+    />
   ),
   vectorSearch: (props = {}) => (
     <SvgIcon viewBox="0 0 48 48" component={SearchEmptyIcon} {...props} />
@@ -119,6 +126,11 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   source: (props = {}) => (
     <SvgIcon viewBox="0 0 24 24" {...props}>
       <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H6v-2h8v2zm4-4H6v-2h12v2z"></path>
+    </SvgIcon>
+  ),
+  uploadFile: (props = {}) => (
+    <SvgIcon viewBox="0 0 24 24" {...props}>
+      <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15.01l1.41 1.41L11 14.84V19h2v-4.16l1.59 1.59L16 15.01 12.01 11z"></path>
     </SvgIcon>
   ),
 };

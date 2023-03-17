@@ -23,6 +23,7 @@ const btnTrans = {
   loading: 'Loading...',
   importing: 'Importing...',
   example: 'Example',
+  rename: 'Rename',
 };
 
 export default btnTrans;

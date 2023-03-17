@@ -9,6 +9,7 @@ import {
   ImportSampleDto,
   VectorSearchDto,
   QueryDto,
+  RenameCollectionDto,
 } from './dto';
 import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
 
@@ -28,61 +29,52 @@ export class CollectionController {
 
   generateRoutes() {
     this.router.get('/', this.showCollections.bind(this));
-
     this.router.post(
       '/',
       dtoValidationMiddleware(CreateCollectionDto),
       this.createCollection.bind(this)
     );
-
     this.router.get('/statistics', this.getStatistics.bind(this));
-
     this.router.get(
       '/:name/statistics',
       this.getCollectionStatistics.bind(this)
     );
-
     this.router.get(
       '/indexes/status',
       this.getCollectionsIndexStatus.bind(this)
     );
-
     this.router.delete('/:name', this.dropCollection.bind(this));
+    this.router.post(
+      '/:name',
+      dtoValidationMiddleware(RenameCollectionDto),
+      this.renameCollection.bind(this)
+    );
     this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
-
     this.router.get('/:name', this.describeCollection.bind(this));
-
     this.router.put('/:name/load', this.loadCollection.bind(this));
-
     this.router.put('/:name/release', this.releaseCollection.bind(this));
-
     this.router.post(
       '/:name/insert',
       dtoValidationMiddleware(InsertDataDto),
       this.insert.bind(this)
     );
-
     this.router.post(
       '/:name/importSample',
       dtoValidationMiddleware(ImportSampleDto),
       this.importSample.bind(this)
     );
-
     // we need use req.body, so we can't use delete here
     this.router.put('/:name/entities', this.deleteEntities.bind(this));
-
     this.router.post(
       '/:name/search',
       dtoValidationMiddleware(VectorSearchDto),
       this.vectorSearch.bind(this)
     );
-
     this.router.post(
       '/:name/query',
       dtoValidationMiddleware(QueryDto),
       this.query.bind(this)
     );
-
     this.router.post(
       '/:name/alias',
       dtoValidationMiddleware(CreateAliasDto),
@@ -120,6 +112,20 @@ export class CollectionController {
       const result = await this.collectionsService.createCollection(
         createCollectionData
       );
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async renameCollection(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    const data = req.body;
+    try {
+      const result = await this.collectionsService.renameCollection({
+        collection_name: name,
+        ...data,
+      });
       res.send(result);
     } catch (error) {
       next(error);
