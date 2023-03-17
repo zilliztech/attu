@@ -10,62 +10,37 @@ Attu is an all-in-one milvus administration tool. With Attu, you can dramaticall
 
 ## Features
 
-- Basic dashboard
-  - View basic collection statistics
-  - Quick search from loaded collection
-  - Quick release loaded collection
-- Manage collections/partitions
-  - Create/Drop collection/partion
-  - Create/drop alias
-  - View collection schema
-  - Create/drop index with parameters
-  - Load/release collections for search
-- Data Management
-  - Insert entities
-  - Data preview
-  - Data query
-- Vector search/query with advanced filter
-- System view
-  - View milvus nodes system info
-  - View milvus nodes configuration
-- Manage Milvus user
-- More are comming...
+- Basic Dashboard: Get an overview of your collection statistics, perform quick searches, and release collections quickly.
+- Collection Management: Create, drop, and manage collections using our intuitive interface. You can also create aliases, view collection schemas, and configure indexes with custom parameters.
+- Data Management: Insert entities, preview your data, and run queries to analyze your results.
+- Vector Search/Query: Use our advanced filtering system to search and query vectors with precision.
+- System View: View system information and Milvus node configurations easily.
+- Milvus User Management: Manage users and their permissions with ease.
+- More Features Coming Soon: Stay tuned for additional features that will make Milvus even more powerful and user-friendly.
 
-## Quick start
+## Quick start guide for Attu
 
-> If you prefer desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
+If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
 
-## Run attu from docker
+### Running Attu from Docker
 
-> Ensure you have Milvus installed on [your server](https://milvus.io/docs/install_standalone-docker.md) or [cluster](https://milvus.io/docs/install_cluster-docker.md), and attu only supports Milvus 2.x.
+Before you begin, make sure that you have Milvus installed on either [your server](https://milvus.io/docs/install_cluster-docker.md) or [Zilliz Cloud](https://zilliz.com/cloud). Note that Attu only supports Milvus 2.x and some of the features are not supported yet for Zilliz Cloud.
 
-> _ Before attu v2.1.0 , [check here](https://github.com/zilliztech/attu/tree/v2.0.5) _\*\*
-
-### ✈️ Start a attu container
+Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server ip}:19530 zilliz/attu:latest
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:latest
 ```
 
-> 👀 Please make sure the attu server(container) can access the milvus ip address. 
+Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
 
-Once you start the container, open the browser, type `http://{ attu ip }:8000`, you can view the attu GUI.
+#### Parameters for Docker CLI
 
-#### Docker CLI parameters
-
-| Parameter  | Example           |   description                 |
+| Parameter  | Example           | Required | Description                 |
 | :--------- | :---------------- | :------: | --------------------------- |
 | MILVUS_URL | 192.168.0.1:19530 |  false   | Optional, Milvus server URL |
 
-Tip: **127.0.0.1 or localhost will not work when runs on docker**
-
-## Try the dev build
-
-> We plan to release attu once a feature is done. Also, if you want to try the nightly build, please pull the docker image with the `dev` tag.
-
-```code
-docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
-```
+Note that "127.0.0.1" or "localhost" will not work when running Attu on Docker.
 
 ## Screenshots
 
@@ -78,47 +53,60 @@ docker run -p 8000:3000 -e MILVUS_URL={ your machine IP }:19530 zilliz/attu:dev
 
 ## ✨ Contributing Code
 
-You might want to build Attu locally to contribute some code, test out the latest features, or try
-out an open PR:
+Thank you for your interest in contributing to Attu! Here's how you can build Attu locally to contribute code, test out the latest features, or try out an open PR:
 
-### Build server
+### Build the Server
 
-1. Fork and clone the repo
-2. `cd server` go to the server directory
-3. `yarn install` to install dependencies
-4. Create a branch for your PR
+1. Fork and clone the Attu repository.
+2. Navigate to the server directory by running `cd server` in the terminal.
+3. Install dependencies by running `yarn install`.
+4. To start the server in development mode, run `yarn start`.
+5. Create a new branch for your PR by running `git checkout -b my-branch`.
 
-### Build client
+### Build the Client
 
-1. Fork and clone the repo
-2. `cd client` go to the client directory
-3. `yarn install` to install dependencies
-4. Create a branch for your PR
+1. Fork and clone the Attu repository.
+2. Navigate to the client directory by running `cd client` in the terminal.
+3. Install dependencies by running `yarn install`.
+4. To start the server in development mode, run `yarn start`.
+5. Create a new branch for your PR by running `git checkout -b my-branch`.
 
-### Milvus
+### Submitting a Pull Request
 
-New to milvus? [Milvus](https://milvus.io) is an open-source vector database built to power AI applications and embedding similarity search.
+1. Make changes and ensure that tests pass.
+2. Commit changes and push to your fork.
+3. Create a Pull Request targeting the main branch of Attu.
 
-### Userful links
+We appreciate your contributions to Attu, regardless of size. Thanks for supporting the project!
 
-- [Milvus docs](https://milvus.io/docs)
-- [Milvus python sdk](https://github.com/milvus-io/pymilvus)
-- [Milvus java sdk](https://github.com/milvus-io/milvus-sdk-java)
-- [Milvus gp sdk](https://github.com/milvus-io/milvus-sdk-go)
-- [Milvus node sdk](https://github.com/milvus-io/milvus-sdk-node)
-- [Feder](https://github.com/zilliztech/feder)
+#### ❓ Do you have any questions or problems?
 
-#### ❓ Questions? Problems?
+If you encounter any bugs or want to request a new feature, please create a [GitHub issue](https://github.com/zilliztech/attu/issues/new/choose). It's important to check if someone else has already created an issue for the same problem before submitting a new one.
 
-- If you've found a bug or want to request a feature, please create a [GitHub Issue](https://github.com/zilliztech/attu/issues/new/choose).
-  Please check to make sure someone else hasn't already created an issue for the same topic.
+### Milvus: A cloud-native vector database with high-performance and high scalability.
 
-[milvus-doc]: https://milvus.io/docs
+If you're new to Milvus, it is an open-source vector database that has been designed to power AI applications and embedding similarity search. It is a powerful tool that allows you to handle vast amounts of data with ease.
+
+Here are some helpful resources to get you started with Milvus:
+
+- [Milvus documentation](https://milvus.io/docs): Here, you can find detailed information on how to use Milvus, including installation instructions, tutorials, and API documentation.
+
+- [Milvus python SDK](https://github.com/milvus-io/pymilvus): The Python SDK allows you to interact with Milvus using Python. It provides a simple and intuitive interface for creating and querying vectors.
+
+- [Milvus Java SDK](https://github.com/milvus-io/milvus-sdk-java): The Java SDK is similar to the Python SDK but designed for Java developers. It also provides a simple and intuitive interface for creating and querying vectors.
+
+- [Milvus Go SDK](https://github.com/milvus-io/milvus-sdk-go): The Go SDK provides a Go API for Milvus. If you're a Go developer, this is the SDK for you.
+
+- [Milvus Node SDK](https://github.com/milvus-io/milvus-sdk-node): The Node SDK provides a Node.js API for Milvus. If you're a Node.js developer, this is the SDK for you.
+
+- [Feder](https://github.com/zilliztech/feder): Feder is a distributed search engine that is built on top of Milvus. It provides a high-level API for distributed search and is designed to work seamlessly with Milvus.
 
 ## Community
 
-💬 Community isn’t just about writing code together. Come join the conversation, share your knowledge and get your questions answered on [Milvus Slack Channel](https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ)!
+💬 Join our vibrant community on the Milvus Slack Channel where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
 
-<a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">
+<a href="https://slack.milvus.io/">
     <img src="https://assets.zilliz.com/readme_slack_4a07c4c92f.png" alt="Miluvs Slack Channel"  height="150" width="500">
 </a>
+
+Also, don't forget to check out our documentation and GitHub repositories for more resources and information. We look forward to seeing you on the channel!
