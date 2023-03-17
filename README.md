@@ -99,7 +99,7 @@ Here are some helpful resources to get you started with Milvus:
 
 - [Milvus Node SDK](https://github.com/milvus-io/milvus-sdk-node): The Node SDK provides a Node.js API for Milvus. If you're a Node.js developer, this is the SDK for you.
 
-- [Feder](https://github.com/zilliztech/feder): Feder is a distributed search engine that is built on top of Milvus. It provides a high-level API for distributed search and is designed to work seamlessly with Milvus.
+- [Feder](https://github.com/zilliztech/feder): Feder is a JavaScript tool designed to aid in the comprehension of embedding vectors.
 
 ## Community
 
