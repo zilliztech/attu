@@ -7,6 +7,9 @@ const collectionTrans = {
   create: 'Create Collection',
   delete: 'delete',
   deleteTooltip: 'Please select at least one item to delete.',
+  rename: 'rename',
+  renameTooltip: 'Please select one item to rename.',
+  newColName: 'New Collection Name',
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
@@ -58,8 +61,11 @@ const collectionTrans = {
   // load dialog
   loadTitle: 'Load Collection',
   loadContent:
-    'You are trying to load a collection with data. Only loaded collection can be searched.',
+    'All search and query operations within Milvus are executed in memory, only loaded collection can be searched.',
   loadConfirmLabel: 'Load',
+  replicaNum: 'Replica number',
+  replicaDes: `With in-memory replicas, Milvus can load the same segment on multiple query nodes. The replica number can not exceed query node count.`,
+  enableRepica: `Enable in-memory replica`,
 
   // release dialog
   releaseTitle: 'Release Collection',
@@ -82,6 +88,11 @@ const collectionTrans = {
 
   // alias dialog
   aliasCreatePlaceholder: 'Alias name',
+
+  // rename dialog
+  newColNamePlaceholder: 'New Collection Name',
+  newNameInfo:
+    'Only numbers, letters, and underscores are allowed.',
 };
 
 export default collectionTrans;

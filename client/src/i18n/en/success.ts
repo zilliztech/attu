@@ -5,7 +5,7 @@ const successTrans = {
   delete: `{{name}} successfully dropped.`,
   release: `{{name}} has been released.`,
   update: `{{name}} has been updated.`,
-  rename: `{{name}} has been updated.`,
+  rename: `{{name}} has been renamed.`,
 };
 
 export default successTrans;
