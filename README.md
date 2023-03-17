@@ -83,22 +83,14 @@ We appreciate your contributions to Attu, regardless of size. Thanks for support
 
 If you encounter any bugs or want to request a new feature, please create a [GitHub issue](https://github.com/zilliztech/attu/issues/new/choose). It's important to check if someone else has already created an issue for the same problem before submitting a new one.
 
-### Milvus: A cloud-native vector database with high-performance and high scalability.
-
-If you're new to Milvus, it is an open-source vector database that has been designed to power AI applications and embedding similarity search. It is a powerful tool that allows you to handle vast amounts of data with ease.
-
+### Userful links
 Here are some helpful resources to get you started with Milvus:
 
 - [Milvus documentation](https://milvus.io/docs): Here, you can find detailed information on how to use Milvus, including installation instructions, tutorials, and API documentation.
-
 - [Milvus python SDK](https://github.com/milvus-io/pymilvus): The Python SDK allows you to interact with Milvus using Python. It provides a simple and intuitive interface for creating and querying vectors.
-
 - [Milvus Java SDK](https://github.com/milvus-io/milvus-sdk-java): The Java SDK is similar to the Python SDK but designed for Java developers. It also provides a simple and intuitive interface for creating and querying vectors.
-
 - [Milvus Go SDK](https://github.com/milvus-io/milvus-sdk-go): The Go SDK provides a Go API for Milvus. If you're a Go developer, this is the SDK for you.
-
 - [Milvus Node SDK](https://github.com/milvus-io/milvus-sdk-node): The Node SDK provides a Node.js API for Milvus. If you're a Node.js developer, this is the SDK for you.
-
 - [Feder](https://github.com/zilliztech/feder): Feder is a JavaScript tool designed to aid in the comprehension of embedding vectors.
 
 ## Community
