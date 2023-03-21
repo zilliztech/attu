@@ -20,6 +20,8 @@ Attu is an all-in-one milvus administration tool. With Attu, you can dramaticall
 
 ## Quick start guide for Attu
 
+> ❗ attu version 2.2.3 or higher is incompatible with Milvus versions < v2.2.
+
 If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
 
 ### Running Attu from Docker
@@ -29,7 +31,7 @@ Before you begin, make sure that you have Milvus installed on either [your serve
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:latest
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.2.3
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
