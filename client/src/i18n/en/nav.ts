@@ -4,7 +4,7 @@ const navTrans = {
   console: 'Search Console',
   search: 'Vector Search',
   system: 'System View',
-  user: 'User',
+  user: 'Milvus Users',
 };
 
 export default navTrans;
