@@ -63,7 +63,7 @@ const Users = () => {
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      label: 'Create user',
+      label: userTrans('createTitle'),
       onClick: () => {
         setDialog({
           open: true,
