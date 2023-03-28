@@ -129,7 +129,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
           : insertStatus
       }
       handleConfirm={handleNext}
-      confirmDisabled={false}
+      confirmDisabled={insertStatus === InsertStatusEnum.loading}
       showActions={true}
       showCancel={false}
       // don't show close icon when insert not finish

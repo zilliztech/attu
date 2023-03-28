@@ -26,3 +26,8 @@ export interface RenameCollectionProps {
   collectionName: string;
   cb?: () => void;
 }
+export interface LoadSampleParam {
+  collection_name: string;
+  // e.g. [{vector: [1,2,3], age: 10}]
+  size: string;
+}

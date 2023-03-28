@@ -47,7 +47,7 @@ const LoadCollectionDialog = (props: any) => {
   const { t: warningTrans } = useTranslation('warning');
   const { handleCloseDialog } = useContext(rootContext);
   const [form, setForm] = useState({
-    replica: 0,
+    replica: 1,
   });
   const [enableRelica, setEnableRelica] = useState(false);
   const [replicaToggle, setReplicaToggle] = useState(false);
@@ -78,9 +78,6 @@ const LoadCollectionDialog = (props: any) => {
 
       // only show replica toggle in distributed mode && query node > 1
       if (enableRelica && queryNodes.length > 1) {
-        setForm({
-          replica: queryNodes.length,
-        });
         setMaxQueryNode(queryNodes.length);
         setEnableRelica(enableRelica);
       }
@@ -156,7 +153,7 @@ const LoadCollectionDialog = (props: any) => {
   const handleChange = () => {
     setReplicaToggle(!replicaToggle);
     if (!replicaToggle === false) {
-      setForm({ replica: 0 });
+      setForm({ replica: 1 });
     }
   };
 
