@@ -155,6 +155,9 @@ const LoadCollectionDialog = (props: any) => {
   // toggle enbale replica
   const handleChange = () => {
     setReplicaToggle(!replicaToggle);
+    if (!replicaToggle === false) {
+      setForm({ replica: 0 });
+    }
   };
 
   const InfoIcon = icons.info;
