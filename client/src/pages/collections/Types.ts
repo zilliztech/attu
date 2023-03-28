@@ -146,9 +146,3 @@ export enum TAB_EMUM {
   'data-preview',
   'data-query',
 }
-
-export interface LoadSampleParam {
-  collection_name: string;
-  // e.g. [{vector: [1,2,3], age: 10}]
-  size: string;
-}
