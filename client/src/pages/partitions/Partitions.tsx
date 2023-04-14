@@ -138,7 +138,7 @@ const Partitions: FC<{
     fieldData: any[]
   ): Promise<{ result: boolean; msg: string }> => {
     const param: InsertDataParam = {
-      partition_names: [partitionName],
+      partition_name: partitionName,
       fields_data: fieldData,
     };
     try {

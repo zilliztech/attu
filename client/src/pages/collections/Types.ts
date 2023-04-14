@@ -119,7 +119,7 @@ export interface CreateFieldsProps {
 }
 
 export interface InsertDataParam {
-  partition_names: string[];
+  partition_name: string;
   // e.g. [{vector: [1,2,3], age: 10}]
   fields_data: any[];
 }
