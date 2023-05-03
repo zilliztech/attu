@@ -128,7 +128,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <RightArrowIcon classes={{ root: classes.icon }} />
       </Link>
       <ul className={classes.content}>
-        {_replicas.length > 1 ? (
+        {_replicas && _replicas.length > 1 ? (
           <li>
             <Typography>{collectionTrans('replicaNum')}</Typography>:
             <Typography className={classes.rowCount}>

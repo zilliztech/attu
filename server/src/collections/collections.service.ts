@@ -173,11 +173,14 @@ export class CollectionsService {
           ? '-1'
           : loadCollection.loadedPercentage;
 
-        const replicas: any = loadCollection
-          ? await this.getReplicas({
-              collectionID: collectionInfo.collectionID,
-            })
-          : [];
+        let replicas;
+        try {
+          replicas = loadCollection
+            ? await this.getReplicas({
+                collectionID: collectionInfo.collectionID,
+              })
+            : replicas;
+        } catch (e) {}
 
         data.push({
           aliases: collectionInfo.aliases,

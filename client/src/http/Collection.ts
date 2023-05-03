@@ -3,10 +3,10 @@ import {
   CollectionView,
   DeleteEntitiesReq,
   InsertDataParam,
-  LoadSampleParam,
-  LoadRelicaReq,
+  LoadReplicaReq,
   Replica,
 } from '../pages/collections/Types';
+import { LoadSampleParam } from '../pages/dialogs/Types';
 import { Field } from '../pages/schema/Types';
 import { VectorSearchParam } from '../types/SearchTypes';
 import { QueryParam } from '../pages/query/Types';
@@ -70,7 +70,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.delete({ path: `${this.COLLECTIONS_URL}/${collectionName}` });
   }
 
-  static loadCollection(collectionName: string, param?: LoadRelicaReq) {
+  static loadCollection(collectionName: string, param?: LoadReplicaReq) {
     return super.update({
       path: `${this.COLLECTIONS_URL}/${collectionName}/load`,
       data: param,
