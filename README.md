@@ -2,7 +2,6 @@
 
 [![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://img.shields.io/docker/pulls/zilliz/attu)
-[![codecov](https://codecov.io/gh/zilliztech/attu/branch/main/graph/badge.svg?token=jvIEVF9IwW)](https://codecov.io/gh/zilliztech/attu)
 
 Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
 

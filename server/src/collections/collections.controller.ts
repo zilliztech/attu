@@ -11,7 +11,7 @@ import {
   QueryDto,
   RenameCollectionDto,
 } from './dto';
-import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node';
 
 export class CollectionController {
   private collectionsService: CollectionsService;
@@ -268,11 +268,11 @@ export class CollectionController {
   async query(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     const data = req.body;
-    const resultiLmit: any = req.query?.limit;
+    const resultLimit: any = req.query?.limit;
     const resultPage: any = req.query?.page;
 
     try {
-      const limit = isNaN(resultiLmit) ? 100 : parseInt(resultiLmit, 10);
+      const limit = isNaN(resultLimit) ? 100 : parseInt(resultLimit, 10);
       const page = isNaN(resultPage) ? 0 : parseInt(resultPage, 10);
       // TODO: add page and limit to node SDK
       // Here may raise "Error: 8 RESOURCE_EXHAUSTED: Received message larger than max"

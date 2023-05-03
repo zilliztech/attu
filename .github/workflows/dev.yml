@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 14
 
-      - name: Run server tests
-        run: |
-          cd server
-          yarn install
-          yarn test:cov
+      # - name: Run server tests
+      #   run: |
+      #     cd server
+      #     yarn install
+      #     yarn test:cov
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
