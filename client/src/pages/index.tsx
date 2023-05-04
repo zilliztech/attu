@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function Index() {
   const navigate = useNavigate();
-  const { isAuth } = useContext(authContext);
+  const { isAuth, isManaged } = useContext(authContext);
   const { isPrometheusReady } = useContext(prometheusContext);
   const { versionInfo } = useContext(rootContext);
   const { t: navTrans } = useTranslation('nav');
@@ -90,22 +90,25 @@ function Index() {
       iconActiveClass: 'normal',
       iconNormalClass: 'active',
     },
-    {
-      icon: icons.navSystem,
-      label: navTrans('system'),
-      onClick: () =>
-        isPrometheusReady
-          ? navigate('/system_healthy')
-          : navigate('/system'),
-      iconActiveClass: 'normal',
-      iconNormalClass: 'active',
-    },
-    {
-      icon: icons.navPerson,
-      label: navTrans('user'),
-      onClick: () => navigate('/users'),
-    },
   ];
+
+  if (!isManaged) {
+    menuItems.push(
+      {
+        icon: icons.navSystem,
+        label: navTrans('system'),
+        onClick: () =>
+          isPrometheusReady ? navigate('/system_healthy') : navigate('/system'),
+        iconActiveClass: 'normal',
+        iconNormalClass: 'active',
+      },
+      {
+        icon: icons.navPerson,
+        label: navTrans('user'),
+        onClick: () => navigate('/users'),
+      }
+    );
+  }
 
   // check if is connected
   if (!isAuth) {

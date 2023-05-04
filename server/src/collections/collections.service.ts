@@ -180,7 +180,9 @@ export class CollectionsService {
                 collectionID: collectionInfo.collectionID,
               })
             : replicas;
-        } catch (e) {}
+        } catch (e) {
+          console.log('ignore getReplica');
+        }
 
         data.push({
           aliases: collectionInfo.aliases,

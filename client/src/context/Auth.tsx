@@ -6,6 +6,7 @@ import { AuthContextType } from './Types';
 export const authContext = createContext<AuthContextType>({
   isAuth: false,
   address: '',
+  isManaged: false,
   setAddress: () => {},
   setIsAuth: () => {},
 });
@@ -46,7 +47,15 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   }, [address]);
 
   return (
-    <Provider value={{ isAuth, address, setAddress, setIsAuth }}>
+    <Provider
+      value={{
+        isAuth,
+        address,
+        setAddress,
+        setIsAuth,
+        isManaged: address.includes('vectordb.zillizcloud.com'),
+      }}
+    >
       {props.children}
     </Provider>
   );

@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useContext } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
+import { authContext } from '../../context/Auth';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import CustomTabList from '../../components/customTabList/CustomTabList';
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collection = () => {
   const classes = useStyles();
+  const { isManaged } = useContext(authContext);
 
   const { collectionName = '' } = useParams<{
     collectionName: string;
@@ -76,6 +78,11 @@ const Collection = () => {
       component: <Query collectionName={collectionName} />,
     },
   ];
+
+  // exclude parititon on cloud
+  if (isManaged) {
+    tabs.splice(1, 1);
+  }
 
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
