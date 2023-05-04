@@ -6,17 +6,13 @@ import {
   LoadPartitionsReq,
   ReleasePartitionsReq,
   ShowPartitionsReq,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+} from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils/Const';
 
 export class PartitionsService {
   constructor(private milvusService: MilvusService) {}
-
-  get partitionManager() {
-    return this.milvusService.partitionManager;
-  }
 
   async getPartitionsInfo(data: ShowPartitionsReq) {
     const result = [];
@@ -39,37 +35,37 @@ export class PartitionsService {
   }
 
   async getPartitions(data: ShowPartitionsReq) {
-    const res = await this.partitionManager.showPartitions(data);
+    const res = await this.milvusService.client.showPartitions(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async createPartition(data: CreatePartitionReq) {
-    const res = await this.partitionManager.createPartition(data);
+    const res = await this.milvusService.client.createPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async deletePartition(data: DropPartitionReq) {
-    const res = await this.partitionManager.dropPartition(data);
+    const res = await this.milvusService.client.dropPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getPartitionStatistics(data: GetPartitionStatisticsReq) {
-    const res = await this.partitionManager.getPartitionStatistics(data);
+    const res = await this.milvusService.client.getPartitionStatistics(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async loadPartitions(data: LoadPartitionsReq) {
-    const res = await this.partitionManager.loadPartitions(data);
+    const res = await this.milvusService.client.loadPartitions(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async releasePartitions(data: ReleasePartitionsReq) {
-    const res = await this.partitionManager.releasePartitions(data);
+    const res = await this.milvusService.client.releasePartitions(data);
     throwErrorFromSDK(res);
     return res;
   }

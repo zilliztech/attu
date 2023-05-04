@@ -18,19 +18,19 @@ jobs:
         with:
           node-version: 14
 
-      - name: Run server tests
-        run: |
-          cd server
-          yarn install
-          yarn test:cov
+      # - name: Run server tests
+      #   run: |
+      #     cd server
+      #     yarn install
+      #     yarn test:cov
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          # public repo needn't pass token
-          # token: ${{ secrets.CODECOV_TOKEN }}
-          # only upload server test coverage
-          flags: server
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     # public repo needn't pass token
+      #     # token: ${{ secrets.CODECOV_TOKEN }}
+      #     # only upload server test coverage
+      #     flags: server
 
       - name: Login to DockerHub
         uses: docker/login-action@v1

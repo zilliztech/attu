@@ -202,6 +202,17 @@ const SearchParams: FC<SearchParamsProps> = ({
             handleInputChange('ef', Number(value));
           },
         },
+        level: {
+          label: 'level',
+          key: 'level',
+          value: searchParamsForm['level'] || '',
+          min: 1,
+          max: 3,
+          isInt: true,
+          handleChange: value => {
+            handleInputChange('level', Number(value));
+          },
+        },
         search_k: {
           label: 'search_k',
           key: 'search_k',

@@ -1,8 +1,8 @@
-import { MilvusClient } from '@zilliz/milvus2-sdk-node';
 import {
+  MilvusClient,
   FlushReq,
   GetMetricsResponse,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+} from '@zilliz/milvus2-sdk-node';
 import HttpErrors from 'http-errors';
 import LruCache from 'lru-cache';
 import { HTTP_STATUS_CODE } from '../utils/Error';
@@ -18,29 +18,8 @@ export class MilvusService {
     return MilvusClient.sdkInfo;
   }
 
-  get collectionManager() {
-    this.checkMilvus();
-    return MilvusService.activeMilvusClient.collectionManager;
-  }
-
-  get partitionManager() {
-    this.checkMilvus();
-    return MilvusService.activeMilvusClient.partitionManager;
-  }
-
-  get indexManager() {
-    this.checkMilvus();
-    return MilvusService.activeMilvusClient.indexManager;
-  }
-
-  get dataManager() {
-    this.checkMilvus();
-    return MilvusService.activeMilvusClient.dataManager;
-  }
-
-  get userManager() {
-    this.checkMilvus();
-    return MilvusService.activeMilvusClient.userManager;
+  get client() {
+    return MilvusService.activeMilvusClient;
   }
 
   static formatAddress(address: string) {
@@ -73,24 +52,30 @@ export class MilvusService {
     // grpc only need address without http
     const milvusAddress = MilvusService.formatAddress(address);
     const hasAuth = username !== undefined && password !== undefined;
+
     try {
       const milvusClient: MilvusClient = hasAuth
-        ? new MilvusClient(milvusAddress, ssl, username, password)
-        : new MilvusClient(milvusAddress, ssl);
+        ? new MilvusClient({
+            address: milvusAddress,
+            ssl,
+            username,
+            password,
+          })
+        : new MilvusClient({ address, ssl });
 
       // check healthy
       const res = await milvusClient.checkHealth();
 
       if (res.isHealthy) {
         MilvusService.activeAddress = address;
-        cache.set(milvusAddress, milvusClient);
+        cache.set(address, milvusClient);
         return { address };
       } else {
         throw new Error('Milvus is not ready yet.');
       }
     } catch (error) {
       // if milvus is not working, delete connection.
-      cache.del(milvusAddress);
+      cache.del(address);
       throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, error);
     }
   }
@@ -101,12 +86,12 @@ export class MilvusService {
   }
 
   async flush(data: FlushReq) {
-    const res = await MilvusService.activeMilvusClient.dataManager.flush(data);
+    const res = await MilvusService.activeMilvusClient.flush(data);
     return res;
   }
 
   async getMetrics(): Promise<GetMetricsResponse> {
-    const res = await MilvusService.activeMilvusClient.dataManager.getMetric({
+    const res = await MilvusService.activeMilvusClient.getMetric({
       request: { metric_type: 'system_info' },
     });
     return res;

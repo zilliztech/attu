@@ -58,7 +58,8 @@ export type searchKeywordsType =
   | 'ef'
   | 'search_k'
   | 'search_length'
-  | 'round_decimal';
+  | 'round_decimal'
+  | 'level';
 
 export type indexConfigType = {
   [x: string]: {
@@ -97,10 +98,10 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: ['n_trees'],
     search: ['search_k'],
   },
-  // AUTOINDEX: {
-  //   create: [],
-  //   search: [],
-  // },
+  AUTOINDEX: {
+    create: [],
+    search: ['level'],
+  },
   // RNSG: {
   //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
   //   search: ['search_length'],
@@ -208,6 +209,7 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   // range: [10, 300]
   search_length: 10,
   round_decimal: -1,
+  level: 1,
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;

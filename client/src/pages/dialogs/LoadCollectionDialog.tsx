@@ -7,6 +7,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { authContext } from '../../context/Auth';
 import { CollectionHttp } from '../../http/Collection';
 import { rootContext } from '../../context/Root';
 import { useFormValidation } from '../../hooks/Form';
@@ -49,6 +50,8 @@ const LoadCollectionDialog = (props: any) => {
   const [form, setForm] = useState({
     replica: 1,
   });
+  const { isManaged } = useContext(authContext);
+
   const [enableRelica, setEnableRelica] = useState(false);
   const [replicaToggle, setReplicaToggle] = useState(false);
   const [maxQueryNode, setMaxQueryNode] = useState(1);
@@ -77,7 +80,7 @@ const LoadCollectionDialog = (props: any) => {
         MILVUS_DEPLOY_MODE.DISTRIBUTED;
 
       // only show replica toggle in distributed mode && query node > 1
-      if (enableRelica && queryNodes.length > 1) {
+      if (enableRelica && queryNodes.length > 1 && !isManaged) {
         setMaxQueryNode(queryNodes.length);
         setEnableRelica(enableRelica);
       }

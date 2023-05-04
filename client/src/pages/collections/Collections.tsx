@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { authContext } from '../../context/Auth';
 import { useNavigationHook } from '../../hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '../../router/Types';
 import AttuGrid from '../../components/grid/Grid';
@@ -57,6 +58,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
+  const { isManaged } = useContext(authContext);
+
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
@@ -160,7 +163,7 @@ const Collections = () => {
     fieldData: any[]
   ): Promise<{ result: boolean; msg: string }> => {
     const param: InsertDataParam = {
-      partition_names: [partitionName],
+      partition_name: partitionName,
       fields_data: fieldData,
     };
     try {
@@ -357,19 +360,7 @@ const Collections = () => {
         </span>
       ),
     },
-    {
-      id: '_aliasElement',
-      align: 'left',
-      disablePadding: false,
-      label: (
-        <span className="flex-center">
-          {collectionTrans('alias')}
-          <CustomToolTip title={collectionTrans('aliasInfo')}>
-            <InfoIcon classes={{ root: classes.icon }} />
-          </CustomToolTip>
-        </span>
-      ),
-    },
+
     {
       id: 'consistency_level',
       align: 'left',
@@ -474,6 +465,22 @@ const Collections = () => {
       ],
     },
   ];
+
+  if (!isManaged) {
+    colDefinitions.splice(3, 0, {
+      id: '_aliasElement',
+      align: 'left',
+      disablePadding: false,
+      label: (
+        <span className="flex-center">
+          {collectionTrans('alias')}
+          <CustomToolTip title={collectionTrans('aliasInfo')}>
+            <InfoIcon classes={{ root: classes.icon }} />
+          </CustomToolTip>
+        </span>
+      ),
+    });
+  }
 
   const handleSelectChange = (value: any) => {
     setSelectedCollections(value);

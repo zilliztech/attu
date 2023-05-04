@@ -3,6 +3,7 @@ import { MetricType } from '../../consts/Milvus';
 import { DataTypeStringEnum } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {
+  AUTO_INDEX = 'AUTO_INDEX',
   IVF_FLAT = 'IVF_FLAT',
   IVF_PQ = 'IVF_PQ',
   IVF_SQ8 = 'IVF_SQ8',
@@ -68,7 +69,8 @@ export type IndexType =
   | INDEX_TYPES_ENUM.BIN_IVF_FLAT
   | INDEX_TYPES_ENUM.BIN_FLAT
   | INDEX_TYPES_ENUM.MARISA_TRIE
-  | INDEX_TYPES_ENUM.SORT;
+  | INDEX_TYPES_ENUM.SORT
+  | INDEX_TYPES_ENUM.AUTO_INDEX;
 
 export interface IndexManageParam {
   collection_name: string;

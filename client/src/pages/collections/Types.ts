@@ -136,7 +136,7 @@ export interface AliasesProps {
   onDelete?: Function;
 }
 
-export interface LoadRelicaReq {
+export interface LoadReplicaReq {
   replica_number: number;
 }
 
