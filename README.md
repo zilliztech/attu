@@ -43,6 +43,62 @@ Make sure that the Attu container can access the Milvus IP address. After starti
 
 Note that "127.0.0.1" or "localhost" will not work when running Attu on Docker.
 
+## TLS Configuration Guide
+
+The Attu Docker container can be configured to be compatible with one-way and two-way TLS. 
+
+### Enabling TLS 
+
+You can enable TLS by running the Docker container with the `ENABLE_TLS` environment variable set to `true`:
+
+```
+docker run -e ENABLE_TLS=true zilliz/attu:v2.2.3
+```
+
+### Certificate and Key Mapping
+
+For the TLS configuration to function correctly, you must map your desired certificates and keys to the Docker container using volume bindings:
+
+```
+docker run -e ENABLE_TLS=true
+-p 8000:3000
+-v /path/to/ca.pem:/app/ca.pem
+-v /path/to/client.pem:/app/client.pem
+-v /path/to/client.key:/app/client.key
+zilliz/attu:v2.2.3
+```
+
+### Arguments
+
+You can provide the following arguments when running the Docker container:
+
+1. **Certificate Authority / Server Certificates (CA pem or Server Pem)**: This argument defaults to `ca.pem`. The presence of this file is required. You can provide this file by binding it to `/app/ca.pem` in the Docker container.
+   
+2. **Client Certificates (Client Pem, and Client Key)**: These arguments default to `null`. The presence of both of these files is optional for one-way TLS (tlsMode 1) and required for two-way TLS (tlsMode 2). You can provide these files by binding them to `/app/client.pem` and `/app/client.key` in the Docker container.
+   
+3. **Common Name**: This argument defaults to `localhost`. You can override this by setting the `COMMON_NAME` environment variable when running the Docker container:
+
+TLSMode 2
+```
+docker run -e ENABLE_TLS=true
+-e COMMON_NAME=your_common_name
+-p 8000:3000
+-v /path/to/ca.pem:/app/ca.pem
+-v /path/to/client.pem:/app/client.pem
+-v /path/to/client.key:/app/client.key
+zilliz/attu:v2.2.3
+```
+
+TLSMode 1
+```
+docker run -e ENABLE_TLS=true \
+  -e COMMON_NAME=your_common_name
+  -v /path/to/ca.pem:/app/ca.pem \
+  zilliz/attu:v2.2.3
+```
+
+Please replace `your_common_name`, `/path/to/ca.pem`, `/path/to/client.pem`, and `/path/to/client.key` with the actual values according to your setup.
+
 ## Screenshots
 
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
