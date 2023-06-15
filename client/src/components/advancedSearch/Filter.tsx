@@ -77,14 +77,28 @@ const Filter = forwardRef((props: FilterProps, ref) => {
     const expression = conditions.reduce((prev, item) => {
       const { type, data } = item;
       if (type === 'break') return `${prev} || `;
+
       const {
         field: { name },
         op,
+        jsonKey,
         value,
       } = data;
+
+      let n = name;
+
+      // if type is json, format json expression
+      switch (data.field.type) {
+        case 'JSON':
+          n = `${name}["${jsonKey}"]`;
+          break;
+        default:
+          break;
+      }
+
       return `${prev}${
         prev && !prev.endsWith('|| ') ? ' && ' : ''
-      }${name} ${op} ${value}`;
+      }${n} ${op} ${value}`;
     }, '');
     func(expression);
   };

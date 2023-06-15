@@ -34,4 +34,12 @@ export const LOGICAL_OPERATORS = [
     value: 'in',
     label: 'in',
   },
+  {
+    value: 'not in',
+    label: 'not in',
+  },
+  {
+    value: 'like',
+    label: 'like',
+  },
 ];
