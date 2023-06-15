@@ -543,6 +543,7 @@ const VectorSearch = () => {
           orderBy={orderBy}
           order={order}
           handleSort={handleGridSort}
+          tableCellMaxWidth="100%"
         />
       ) : (
         <EmptyCard
