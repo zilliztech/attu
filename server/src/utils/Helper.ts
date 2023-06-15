@@ -28,6 +28,8 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
       );
     case 'VarChar':
       return makeRandomId((type_params as any)[0].value);
+    case 'JSON':
+      return makeRandomJSON();
   }
 };
 
@@ -58,4 +60,16 @@ export const makeRandomId = (length: number): string => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+export const makeRandomJSON = () => {
+  const obj: any = {};
+  const numKeys = Math.floor(Math.random() * 10) + 1; // generate a random number of keys between 1 and 10
+  for (let i = 0; i < numKeys; i++) {
+    const key = `key${i}`;
+    const value =
+      Math.random() < 0.5 ? Math.floor(Math.random() * 100) : `value${i}`; // randomly choose between a number or a string value
+    obj[key] = value;
+  }
+  return obj;
 };

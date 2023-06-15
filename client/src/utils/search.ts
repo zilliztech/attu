@@ -30,7 +30,14 @@ export const transferSearchResult = (
     // When value is boolean ,table will not render bool value.
     // So we need to use toString() here.
     Object.keys(others).forEach(v => {
-      data[v] = others[v].toString();
+      switch (v) {
+        case 'json':
+          data[v] = JSON.stringify(others[v]);
+          break;
+        default:
+          data[v] = others[v].toString();
+          break;
+      }
     });
     return data;
   });

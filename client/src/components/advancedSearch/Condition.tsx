@@ -11,6 +11,7 @@ import { ConditionProps, Field } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS } from '../../consts/Util';
 import { DataTypeStringEnum } from '../../pages/collections/Types';
+import { formatValue, checkValue } from './utils';
 
 const Condition: FC<ConditionProps> = props => {
   const {
@@ -28,65 +29,52 @@ const Condition: FC<ConditionProps> = props => {
   const [conditionField, setConditionField] = useState<Field>(
     initData?.field || fields[0] || {}
   );
-  const [conditionValue, setConditionValue] = useState(initData?.value || '');
+  const [jsonKeyValue, setJsonKeyValue] = useState(initData?.jsonKey || '');
+  const [conditionValue, setConditionValue] = useState(
+    initData?.originValue || ''
+  );
   const [isValuelegal, setIsValueLegal] = useState(
     initData?.isCorrect || false
   );
+
+  const [isKeyLegal, setIsKeyLegal] = useState(initData?.isCorrect || false);
 
   /**
    * Check condition's value by field's and operator's type.
    * Trigger condition change event.
    */
   useEffect(() => {
-    const regInt = /^\d+$/;
-    const regFloat = /^\d+\.\d+$/;
-    const regIntInterval = /^\[\d+(,\d+)*\]$/;
-    const regFloatInterval = /^\[\d+\.\d+(,\d+\.\d+)*\]$/;
-
     const type = conditionField?.type;
-    const isIn = operator === 'in';
-    let isLegal = false;
     const conditionValueWithNoSpace = conditionValue.replaceAll(' ', '');
+    let isKeyLegal = false;
+    let isLegal = checkValue({
+      value: conditionValueWithNoSpace,
+      type,
+      operator,
+    });
 
-    switch (type) {
-      case DataTypeStringEnum.Int8:
-      case DataTypeStringEnum.Int16:
-      case DataTypeStringEnum.Int32:
-      case DataTypeStringEnum.Int64:
-        // case DataTypeStringEnum:
-        isLegal = isIn
-          ? regIntInterval.test(conditionValueWithNoSpace)
-          : regInt.test(conditionValueWithNoSpace);
-        break;
-      case DataTypeStringEnum.Float:
-      case DataTypeStringEnum.Double:
-      case DataTypeStringEnum.FloatVector:
-        isLegal = isIn
-          ? regFloatInterval.test(conditionValueWithNoSpace)
-          : regFloat.test(conditionValueWithNoSpace);
-        break;
-      case DataTypeStringEnum.Bool:
-        const legalValues = ['false', 'true'];
-        isLegal = legalValues.includes(conditionValueWithNoSpace);
-        break;
-      case DataTypeStringEnum.VarChar:
-        isLegal = conditionValueWithNoSpace !== '';
-        break;
-      default:
-        isLegal = false;
-        break;
+    // if type is json, check the json key is valid
+    if (type === DataTypeStringEnum.JSON) {
+      isKeyLegal = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(jsonKeyValue.trim());
     }
+
+    setIsKeyLegal(isKeyLegal);
     setIsValueLegal(isLegal);
     triggerChange(id, {
       field: conditionField,
       op: operator,
-      value: conditionValue,
-      isCorrect: isLegal,
+      jsonKey: jsonKeyValue,
+      value: formatValue(conditionValue, type, operator),
+      originValue: conditionValue,
+      isCorrect:
+        isLegal &&
+        ((type === DataTypeStringEnum.JSON && isKeyLegal) ||
+          type !== DataTypeStringEnum.JSON),
       id,
     });
     // No need for 'id' and 'triggerChange'.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conditionField, operator, conditionValue]);
+  }, [conditionField, operator, conditionValue, jsonKeyValue]);
 
   const classes = useStyles();
 
@@ -115,22 +103,36 @@ const Condition: FC<ConditionProps> = props => {
   // Value input change.
   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    const type = conditionField?.type;
-    setConditionValue(
-      type === DataTypeStringEnum.VarChar ? `"${value}"` : value
-    );
+    setConditionValue(value);
+  };
+
+  // Value JSON change.
+  const handleJSONKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setJsonKeyValue(value);
   };
 
   return (
     <div className={`${classes.wrapper} ${className}`} {...others}>
       <CustomSelector
-        label="Field Name"
+        label={conditionField.type}
         value={conditionField?.name}
         onChange={handleFieldNameChange}
         options={fields.map(i => ({ value: i.name, label: i.name }))}
         variant="filled"
         wrapperClass={classes.fieldName}
       />
+      {conditionField?.type === DataTypeStringEnum.JSON ? (
+        <TextField
+          className={classes.key}
+          label="key"
+          variant="filled"
+          value={jsonKeyValue}
+          // size="small"
+          onChange={handleJSONKeyChange}
+          error={!isKeyLegal}
+        />
+      ) : null}
       <CustomSelector
         label="Logic"
         value={operator}
@@ -143,7 +145,7 @@ const Condition: FC<ConditionProps> = props => {
         className={classes.value}
         label="Value"
         variant="filled"
-        // size="small"
+        value={conditionValue}
         onChange={handleValueChange}
         error={!isValuelegal}
       />
@@ -178,7 +180,8 @@ const useStyles = makeStyles((theme: Theme) =>
       minHeight: '38px',
       minWidth: '130px',
     },
-    logic: { minHeight: '38px', minWidth: '70px', margin: '0 24px' },
+    logic: { minHeight: '38px', minWidth: '100px', margin: '0 24px' },
+    key: { minHeight: '38px', width: '100px', margin: '0 0' },
     value: { minHeight: '38px', minWidth: '130px' },
   })
 );

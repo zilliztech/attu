@@ -68,6 +68,7 @@ export enum DataTypeEnum {
   Double = 11,
   String = 20,
   VarChar = 21,
+  JSON = 23,
   BinaryVector = 100,
   FloatVector = 101,
 }
@@ -81,6 +82,7 @@ export enum DataTypeStringEnum {
   Double = 'Double',
   String = 'String',
   VarChar = 'VarChar',
+  JSON = 'JSON',
   BinaryVector = 'BinaryVector',
   FloatVector = 'FloatVector',
 }

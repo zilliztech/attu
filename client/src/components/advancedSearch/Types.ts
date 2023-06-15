@@ -19,8 +19,10 @@ export interface TriggerChangeData {
   field: Field;
   op: string;
   value: string;
+  originValue: string;
   isCorrect: boolean;
   id: string;
+  jsonKey: string;
 }
 
 export interface ConditionGroupProps {

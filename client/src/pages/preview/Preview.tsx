@@ -37,21 +37,27 @@ const Preview: FC<{
         // Iterate resultItem keys, then format vector(array) items.
         const tmp = Object.keys(resultItem).reduce(
           (prev: { [key: string]: any }, item: string) => {
-            if (Array.isArray(resultItem[item])) {
-              const list2Str = JSON.stringify(resultItem[item]);
-              prev[item] = (
-                <div className={classes.vectorTableCell}>
-                  <div>{list2Str}</div>
-                  <CopyButton
-                    label={copyTrans.label}
-                    value={list2Str}
-                    className={classes.copyBtn}
-                  />
-                </div>
-              );
-            } else {
-              prev[item] = `${resultItem[item]}`;
+            switch (item) {
+              case 'json':
+                prev[item] = <div>{JSON.stringify(resultItem[item])}</div>;
+                break;
+              case 'vector':
+                const list2Str = JSON.stringify(resultItem[item]);
+                prev[item] = (
+                  <div className={classes.vectorTableCell}>
+                    <div>{list2Str}</div>
+                    <CopyButton
+                      label={copyTrans.label}
+                      value={list2Str}
+                      className={classes.copyBtn}
+                    />
+                  </div>
+                );
+                break;
+              default:
+                prev[item] = `${resultItem[item]}`;
             }
+
             return prev;
           },
           {}
