@@ -68,7 +68,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   });
 
   const [consistencyLevel, setConsistencyLevel] =
-    useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Bounded); // Session is the default value of consistency level
+    useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Bounded); // Bounded is the default value of consistency level
 
   const [fields, setFields] = useState<Field[]>([
     {
