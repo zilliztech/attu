@@ -1,14 +1,7 @@
-import {
-  FC,
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useContext,
-  useCallback,
-} from 'react';
+import { FC, useEffect, useState, useRef, useMemo, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Parser } from '@json2csv/plainjs';
 import { rootContext } from '../../context/Root';
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
@@ -53,9 +46,6 @@ const Query: FC<{
 
   const classes = getQueryStyles();
 
-  // const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
-  //   useTimeTravelHook();
-
   // Format result list
   const queryResultMemo = useMemo(
     () =>
@@ -92,14 +82,6 @@ const Query: FC<{
       }),
     [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
   );
-
-  const csvDataMemo = useMemo(() => {
-    const headers: string[] = fields?.map(i => i.name);
-    if (headers?.length && queryResult?.length) {
-      return generateCsvData(headers, queryResult);
-    }
-    return '';
-  }, [fields, queryResult]);
 
   const {
     pageSize,
@@ -216,10 +198,17 @@ const Query: FC<{
     {
       type: 'iconBtn',
       onClick: () => {
-        const csvData = new Blob([csvDataMemo.toString()], {
-          type: 'text/csv;charset=utf-8',
-        });
-        saveAs(csvData, 'milvus_query_result.csv');
+        try {
+          const opts = {};
+          const parser = new Parser(opts);
+          const csv = parser.parse(queryResult);
+          const csvData = new Blob([csv], {
+            type: 'text/csv;charset=utf-8',
+          });
+          saveAs(csvData, 'milvus_query_result.csv');
+        } catch (err) {
+          console.error(err);
+        }
       },
       label: '',
       icon: 'download',
