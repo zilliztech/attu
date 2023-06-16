@@ -13,7 +13,8 @@ const collectionTrans = {
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
-  downloadTooltip: 'Download all query results',
+  downloadTooltip: 'Export all query results to CSV file',
+  downloadDisabledTooltip: 'Please query data before exporting',
 
   collection: 'Collection',
   entites: 'entites',
@@ -91,8 +92,7 @@ const collectionTrans = {
 
   // rename dialog
   newColNamePlaceholder: 'New Collection Name',
-  newNameInfo:
-    'Only numbers, letters, and underscores are allowed.',
+  newNameInfo: 'Only numbers, letters, and underscores are allowed.',
 };
 
 export default collectionTrans;

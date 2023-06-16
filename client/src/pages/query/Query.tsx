@@ -219,12 +219,12 @@ const Query: FC<{
         const csvData = new Blob([csvDataMemo.toString()], {
           type: 'text/csv;charset=utf-8',
         });
-        saveAs(csvData, 'query_result.csv');
+        saveAs(csvData, 'milvus_query_result.csv');
       },
-      label: collectionTrans('delete'),
+      label: '',
       icon: 'download',
-      tooltip: collectionTrans('download'),
-      disabledTooltip: collectionTrans('downloadTooltip'),
+      tooltip: collectionTrans('downloadTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
       disabled: () => !queryResult?.length,
     },
   ];
