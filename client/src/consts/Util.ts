@@ -7,14 +7,6 @@ export const BYTE_UNITS: { [x: string]: number } = {
 
 export const LOGICAL_OPERATORS = [
   {
-    value: '<',
-    label: '<',
-  },
-  {
-    value: '<=',
-    label: '<=',
-  },
-  {
     value: '>',
     label: '>',
   },
@@ -29,6 +21,14 @@ export const LOGICAL_OPERATORS = [
   {
     value: '!=',
     label: '!=',
+  },
+  {
+    value: '<',
+    label: '<',
+  },
+  {
+    value: '<=',
+    label: '<=',
   },
   {
     value: 'in',

@@ -84,7 +84,7 @@ const collectionTrans = {
   queryTab: 'Data Query',
   previewTab: 'Data Preview',
   startTip: 'Start your data query',
-  exprPlaceHolder: 'Please enter your query by using advanced filter ->',
+  exprPlaceHolder: 'Please enter your data query, for example id > 0',
 
   // alias dialog
   aliasCreatePlaceholder: 'Alias name',
