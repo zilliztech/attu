@@ -19,7 +19,6 @@ import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '../../components/grid/ToolBar';
 // import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { saveAs } from 'file-saver';
-import { generateCsvData } from '../../utils/Format';
 import { DataTypeStringEnum } from '../collections/Types';
 
 const Query: FC<{
