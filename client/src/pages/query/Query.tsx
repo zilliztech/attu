@@ -1,8 +1,8 @@
 import { FC, useEffect, useState, useRef, useMemo, useContext } from 'react';
+import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-
+import { Parser } from '@json2csv/plainjs';
 import { rootContext } from '../../context/Root';
-
 import EmptyCard from '../../components/cards/EmptyCard';
 import icons from '../../components/icons/Icons';
 import CustomButton from '../../components/customButton/CustomButton';
@@ -14,13 +14,11 @@ import { CollectionHttp } from '../../http/Collection';
 import { FieldHttp } from '../../http/Field';
 import { usePaginationHook } from '../../hooks/Pagination';
 // import { useTimeTravelHook } from '../../hooks/TimeTravel';
-
 import CopyButton from '../../components/advancedSearch/CopyButton';
 import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '../../components/grid/ToolBar';
 // import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { saveAs } from 'file-saver';
-import { generateCsvData } from '../../utils/Format';
 import { DataTypeStringEnum } from '../collections/Types';
 
 const Query: FC<{
@@ -32,7 +30,6 @@ const Query: FC<{
   const [queryResult, setQueryResult] = useState<any>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const [primaryKey, setPrimaryKey] = useState<string>('');
-
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const VectorSearchIcon = icons.vectorSearch;
@@ -47,9 +44,6 @@ const Query: FC<{
   const copyTrans = commonTrans('copy');
 
   const classes = getQueryStyles();
-
-  // const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
-  //   useTimeTravelHook();
 
   // Format result list
   const queryResultMemo = useMemo(
@@ -87,14 +81,6 @@ const Query: FC<{
       }),
     [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
   );
-
-  const csvDataMemo = useMemo(() => {
-    const headers: string[] = fields?.map(i => i.name);
-    if (headers?.length && queryResult?.length) {
-      return generateCsvData(headers, queryResult);
-    }
-    return '';
-  }, [fields, queryResult]);
 
   const {
     pageSize,
@@ -142,14 +128,18 @@ const Query: FC<{
 
   const handleFilterSubmit = (expression: string) => {
     setExpression(expression);
-    setQueryResult(null);
+    handleQuery(expression);
   };
 
-  const handleQuery = async () => {
+  const handleQuery = async (expr: string = '') => {
     setTableLoading(true);
+    if (expr === '') {
+      handleFilterReset();
+      return;
+    }
     try {
       const res = await CollectionHttp.queryData(collectionName, {
-        expr: expression,
+        expr: expr,
         output_fields: fields.map(i => i.name),
         // travel_timestamp: timeTravelInfo.timestamp,
       });
@@ -207,15 +197,22 @@ const Query: FC<{
     {
       type: 'iconBtn',
       onClick: () => {
-        const csvData = new Blob([csvDataMemo.toString()], {
-          type: 'text/csv;charset=utf-8',
-        });
-        saveAs(csvData, 'query_result.csv');
+        try {
+          const opts = {};
+          const parser = new Parser(opts);
+          const csv = parser.parse(queryResult);
+          const csvData = new Blob([csv], {
+            type: 'text/csv;charset=utf-8',
+          });
+          saveAs(csvData, 'milvus_query_result.csv');
+        } catch (err) {
+          console.error(err);
+        }
       },
-      label: collectionTrans('delete'),
+      label: '',
       icon: 'download',
-      tooltip: collectionTrans('download'),
-      disabledTooltip: collectionTrans('downloadTooltip'),
+      tooltip: collectionTrans('downloadTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
       disabled: () => !queryResult?.length,
     },
   ];
@@ -225,8 +222,27 @@ const Query: FC<{
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
       <div className={classes.toolbar}>
         <div className="left">
-          {/* <div className="expression"> */}
-          <div>{`${expression || collectionTrans('exprPlaceHolder')}`}</div>
+          <TextField
+            className="textarea"
+            InputProps={{
+              classes: {
+                root: 'textfield',
+                multiline: 'multiline',
+              },
+            }}
+            placeholder={collectionTrans('exprPlaceHolder')}
+            value={expression}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+              setExpression(e.target.value as string);
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                // Do code here
+                handleQuery(expression);
+                e.preventDefault();
+              }
+            }}
+          />
           <Filter
             ref={filterRef}
             title="Advanced Filter"
@@ -250,14 +266,18 @@ const Query: FC<{
           /> */}
         </div>
         <div className="right">
-          <CustomButton className="btn" onClick={handleFilterReset}>
+          <CustomButton
+            className="btn"
+            onClick={handleFilterReset}
+            disabled={!expression}
+          >
             <ResetIcon classes={{ root: 'icon' }} />
             {btnTrans('reset')}
           </CustomButton>
           <CustomButton
             variant="contained"
             disabled={!expression}
-            onClick={() => handleQuery()}
+            onClick={() => handleQuery(expression)}
           >
             {btnTrans('query')}
           </CustomButton>

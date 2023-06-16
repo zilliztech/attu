@@ -37,6 +37,16 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(0, 1.5),
         backgroundColor: '#F9F9F9',
       },
+      '& .textarea': {
+        width: '100%',
+        '& .MuiInput-underline:before': {
+          borderWidth: 1,
+          borderColor: '#F9F9F9',
+        },
+        '& .MuiInput-underline:after': {
+          borderWidth: 1,
+        },
+      },
     },
 
     '& .right': {
@@ -61,6 +71,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     width: '16px',
     height: '16px',
     position: 'relative',
-    top: '-3px'
+    top: '-3px',
   },
 }));

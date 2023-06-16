@@ -13,7 +13,8 @@ const collectionTrans = {
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
-  downloadTooltip: 'Download all query results',
+  downloadTooltip: 'Export all query results to CSV file',
+  downloadDisabledTooltip: 'Please query data before exporting',
 
   collection: 'Collection',
   entites: 'entites',
@@ -84,15 +85,14 @@ const collectionTrans = {
   queryTab: 'Data Query',
   previewTab: 'Data Preview',
   startTip: 'Start your data query',
-  exprPlaceHolder: 'Please enter your query by using advanced filter ->',
+  exprPlaceHolder: 'Please enter your data query, for example id > 0',
 
   // alias dialog
   aliasCreatePlaceholder: 'Alias name',
 
   // rename dialog
   newColNamePlaceholder: 'New Collection Name',
-  newNameInfo:
-    'Only numbers, letters, and underscores are allowed.',
+  newNameInfo: 'Only numbers, letters, and underscores are allowed.',
 };
 
 export default collectionTrans;
