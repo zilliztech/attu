@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
     width: '100%',
     paddingRight: theme.spacing(1),
-    maxHeight: '240px',
     overflowY: 'auto',
   },
   rowWrapper: {

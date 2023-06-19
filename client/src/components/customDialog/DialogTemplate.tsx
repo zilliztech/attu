@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& form': {
       display: 'flex',
     },
+    '& .MuiDialogContent-root': {
+      maxHeight: '60vh',
+    },
   },
   block: {
     borderRadius: 8,
