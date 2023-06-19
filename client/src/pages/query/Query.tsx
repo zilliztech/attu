@@ -143,6 +143,8 @@ const Query: FC<{
       const res = await CollectionHttp.queryData(collectionName, {
         expr: expr,
         output_fields: fields.map(i => i.name),
+        offset: 0,
+        limit: 16384,
         // travel_timestamp: timeTravelInfo.timestamp,
       });
       const result = res.data;
@@ -322,6 +324,7 @@ const Query: FC<{
               ? searchTrans('empty')
               : collectionTrans('startTip')
           }
+          subText={collectionTrans('dataQuerylimits')}
         />
       )}
     </div>

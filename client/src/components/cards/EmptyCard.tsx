@@ -10,12 +10,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
   },
   text: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
     fontSize: '36px',
     lineHeight: '42px',
     color: theme.palette.attuGrey.dark,
     fontWeight: 'bold',
     letterSpacing: '-0.02em',
+  },
+  subText: {
+    fontSize: '18px',
+    marginTop: theme.spacing(1),
+    color: theme.palette.attuGrey.dark,
   },
 }));
 
@@ -23,6 +28,7 @@ const EmptyCard: FC<EmptyCardProps> = ({
   icon,
   text,
   wrapperClass = '',
+  subText = '',
   loading = false,
 }) => {
   const classes = useStyles();
@@ -34,6 +40,7 @@ const EmptyCard: FC<EmptyCardProps> = ({
       {loading && <StatusIcon type={ChildrenStatusType.CREATING} size={40} />}
       {icon}
       <Typography className={classes.text}>{text}</Typography>
+      <Typography className={classes.subText}>{subText}</Typography>
     </section>
   );
 };
