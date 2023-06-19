@@ -184,10 +184,11 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
-        const data: any = {
+        const data: Field = {
           name: v.name,
           description: v.description,
           is_primary_key: v.is_primary_key,
+          is_partition_key: v.is_partition_key,
           data_type: v.data_type,
           dimension: vectorType.includes(v.data_type) ? v.dimension : undefined,
           max_length: v.max_length,
@@ -236,7 +237,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     >
       <>
         <fieldset className={classes.fieldset}>
-          <legend>{collectionTrans('general')}</legend>
           {generalInfoConfigs.map(config => (
             <CustomInput
               key={config.key}

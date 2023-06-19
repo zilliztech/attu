@@ -1,8 +1,16 @@
-import { makeStyles, Theme, TextField, IconButton } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  TextField,
+  IconButton,
+  Switch,
+  FormControlLabel,
+} from '@material-ui/core';
 import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import icons from '../../components/icons/Icons';
+import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { generateId } from '../../utils/Common';
 import { getCreateFieldType } from '../../utils/Format';
 import {
@@ -12,7 +20,6 @@ import {
 } from '../../utils/Validation';
 import {
   ALL_OPTIONS,
-  AUTO_ID_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
@@ -41,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
   },
   fieldInput: {
-    width: '160px',
+    width: '170px',
   },
   select: {
     width: '140px',
@@ -79,6 +86,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0),
     marginLeft: '11px',
   },
+  toggle: {
+    marginBottom: theme.spacing(2),
+    marginLeft: theme.spacing(0.5),
+  },
+  icon: {
+    fontSize: '20px',
+    marginLeft: theme.spacing(0.5),
+  },
 }));
 
 type inputType = {
@@ -106,6 +121,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
+  const InfoIcon = icons.info;
 
   const { requiredFields, optionalFields } = useMemo(
     () =>
@@ -391,21 +407,32 @@ const CreateFields: FC<CreateFieldsProps> = ({
         )}
         {generateDesc(field)}
 
-        <CustomSelector
-          label={collectionTrans('autoId')}
-          options={AUTO_ID_OPTIONS}
-          value={autoIdOff}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            const autoId = e.target.value === 'true';
-            setAutoID(autoId);
-          }}
-          variant="filled"
-          wrapperClass={classes.autoIdSelect}
-          disabled={isVarChar}
-          size="small"
-        />
-
         {isVarChar && generateMaxLength(field)}
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={autoID}
+              disabled={isVarChar}
+              size="small"
+              onChange={() => {
+                setAutoID(!autoID);
+              }}
+            />
+          }
+          label={
+            <CustomToolTip
+              title={collectionTrans('autoIdToggleTip')}
+              placement="top"
+            >
+              <>
+                {collectionTrans('autoId')}
+                <InfoIcon classes={{ root: classes.icon }} />
+              </>
+            </CustomToolTip>
+          }
+          className={classes.toggle}
+        />
       </div>
     );
   };

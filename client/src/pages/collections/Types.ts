@@ -91,6 +91,7 @@ export interface Field {
   name: string | null;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
+  is_partition_key?: boolean;
   description: string;
   dimension?: number | string;
   isDefault?: boolean;
@@ -102,6 +103,7 @@ export interface Field {
   createType?: CreateFieldType;
   max_length?: string | null;
   autoID?: boolean;
+  
 }
 
 export type CreateFieldType =
