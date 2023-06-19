@@ -29,7 +29,9 @@ const Query: FC<{
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
-  const [primaryKey, setPrimaryKey] = useState<string>('');
+  const [primaryKey, setPrimaryKey] = useState<{ value: string; type: string }>(
+    { value: '', type: DataTypeStringEnum.Int64 }
+  );
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const VectorSearchIcon = icons.vectorSearch;
@@ -104,9 +106,9 @@ const Query: FC<{
       name: v.name,
       type: v.data_type,
     }));
-    const primaryKey =
-      schemaList.find(v => v._isPrimaryKey === true)?._fieldName || '';
-    setPrimaryKey(primaryKey);
+    const primaryKey = schemaList.find(v => v._isPrimaryKey === true)!;
+    setPrimaryKey({ value: primaryKey['name'], type: primaryKey['data_type'] });
+
     setFields(nameList);
   };
 
@@ -158,13 +160,17 @@ const Query: FC<{
 
   const handleDelete = async () => {
     await CollectionHttp.deleteEntities(collectionName, {
-      expr: `${primaryKey} in [${selectedData
-        .map(v => v[primaryKey])
+      expr: `${primaryKey.value} in [${selectedData
+        .map(v =>
+          primaryKey.type === DataTypeStringEnum.VarChar
+            ? `"${v[primaryKey.value]}"`
+            : v[primaryKey.value]
+        )
         .join(',')}]`,
     });
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: collectionTrans('entites') }));
-    handleQuery();
+    handleQuery(expression);
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -292,7 +298,7 @@ const Query: FC<{
             disablePadding: false,
             label: i.name,
           }))}
-          primaryKey={primaryKey}
+          primaryKey={primaryKey.value}
           openCheckBox={true}
           isLoading={!!tableLoading}
           rows={result}
