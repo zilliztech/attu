@@ -60,6 +60,9 @@ const collectionTrans = {
   nameContentWarning: 'Only numbers, letters, and underscores are allowed.',
   nameFirstLetterWarning:
     'Name first character must be underscore or character(a~z, A~Z)',
+  partitionKey: 'Partition Key',
+  partitionKeyTooltip:
+    ' Milvus will store entities in a partition according to the values in the partition key field. Only one Int64 or VarChar field is suppported.',
 
   // load dialog
   loadTitle: 'Load Collection',
