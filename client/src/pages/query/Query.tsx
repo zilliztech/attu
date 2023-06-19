@@ -109,7 +109,6 @@ const Query: FC<{
     const primaryKey = schemaList.find(v => v._isPrimaryKey === true)!;
     setPrimaryKey({ value: primaryKey['name'], type: primaryKey['data_type'] });
 
-    console.log(schemaList.find(v => v._isPrimaryKey === true));
     setFields(nameList);
   };
 
