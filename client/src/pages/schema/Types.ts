@@ -30,6 +30,7 @@ export interface Field {
 export interface FieldData {
   _fieldId: string;
   _isPrimaryKey: boolean;
+  is_partition_key: boolean;
   _isAutoId: boolean;
   _fieldName: string;
   _fieldNameElement?: ReactElement;

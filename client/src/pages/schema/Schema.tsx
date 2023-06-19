@@ -19,6 +19,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
   },
+  iconTitle: {
+    fontSize: '8px',
+    position: 'relative',
+    top: '3px',
+    color: 'grey',
+  },
   nameWrapper: {
     display: 'flex',
     alignItems: 'center',
@@ -98,6 +104,7 @@ const Schema: FC<{
   const fetchFields = useCallback(
     async (collectionName: string) => {
       const KeyIcon = icons.key;
+      const PartitionIcon = icons.filter;
 
       try {
         const list = await fetchSchemaListWithIndex(collectionName);
@@ -106,7 +113,22 @@ const Schema: FC<{
             _fieldNameElement: (
               <div className={classes.nameWrapper}>
                 {f._fieldName}
-                {f._isPrimaryKey && <KeyIcon classes={{ root: 'key' }} />}
+                {f._isPrimaryKey && (
+                  <div
+                    className={classes.iconTitle}
+                    title={collectionTrans('idFieldName')}
+                  >
+                    <KeyIcon classes={{ root: 'key' }} />
+                  </div>
+                )}
+                {f.is_partition_key && (
+                  <div
+                    className={classes.iconTitle}
+                    title={collectionTrans('partitionKey')}
+                  >
+                    <PartitionIcon classes={{ root: 'key' }} />
+                  </div>
+                )}
               </div>
             ),
             _indexParamElement: (

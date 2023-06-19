@@ -7,6 +7,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   fieldID!: string;
   type_params!: { key: string; value: string }[];
   is_primary_key!: true;
+  is_partition_key!: false;
   name!: string;
   description!: string;
   autoID!: boolean;
@@ -33,6 +34,10 @@ export class FieldHttp extends BaseModel implements FieldData {
 
   get _isPrimaryKey() {
     return this.is_primary_key;
+  }
+
+  get _isPartitionKey() {
+    return this.is_partition_key;
   }
 
   get _isAutoId() {
