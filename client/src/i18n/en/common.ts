@@ -10,7 +10,6 @@ const commonTrans = {
     prometheusAddress: 'Prometheus Address',
     prometheusInstance: 'Prometheus Instance',
     prometheusNamespace: 'Prometheus Namespace',
-    ssl: 'SSL',
   },
   status: {
     loaded: 'loaded',
