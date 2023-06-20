@@ -57,12 +57,12 @@ export class FieldHttp extends BaseModel implements FieldData {
   }
 
   get _dimension() {
-    return this.type_params.find(item => item.key === 'dim')?.value || '--';
+    return this.type_params.find(item => item.key === 'dim')?.value || '';
   }
 
   get _maxLength() {
     return (
-      this.type_params.find(item => item.key === 'max_length')?.value || '--'
+      this.type_params.find(item => item.key === 'max_length')?.value || ''
     );
   }
 }
