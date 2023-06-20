@@ -20,7 +20,6 @@ export class MilvusHttp extends BaseModel {
     address: string;
     username?: string;
     password?: string;
-    ssl?: boolean;
   }) {
     return super.create({ path: this.CONNECT_URL, data });
   }

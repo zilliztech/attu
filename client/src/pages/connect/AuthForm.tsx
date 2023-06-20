@@ -81,7 +81,7 @@ export const AuthForm = (props: any) => {
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
   const handleInputChange = (
-    key: 'address' | 'username' | 'password' | 'ssl',
+    key: 'address' | 'username' | 'password',
     value: string | boolean
   ) => {
     setForm(v => ({ ...v, [key]: value }));
@@ -229,12 +229,6 @@ export const AuthForm = (props: any) => {
             key={v.label}
           />
         ))}
-        <div className={classes.sslWrapper}>
-          <CustomRadio
-            label={attuTrans.ssl}
-            handleChange={(val: boolean) => handleInputChange('ssl', val)}
-          />
-        </div>
         <div className={classes.sslWrapper}>
           <CustomRadio
             defaultChecked={withPrometheus}

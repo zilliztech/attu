@@ -44,11 +44,10 @@ export class MilvusService {
       address: string;
       username?: string;
       password?: string;
-      ssl?: boolean;
     },
     cache: LruCache<any, any>
   ) {
-    const { address, username, password, ssl = false } = data;
+    const { address, username, password } = data;
     // grpc only need address without http
     const milvusAddress = MilvusService.formatAddress(address);
     const hasAuth = username !== undefined && password !== undefined;
@@ -57,11 +56,15 @@ export class MilvusService {
       const milvusClient: MilvusClient = hasAuth
         ? new MilvusClient({
             address: milvusAddress,
-            ssl,
             username,
             password,
           })
-        : new MilvusClient({ address, ssl });
+        : new MilvusClient({ address });
+
+      // don't break attu
+      await milvusClient.connectPromise.catch(error => {
+        throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, error);
+      });
 
       // check healthy
       const res = await milvusClient.checkHealth();
