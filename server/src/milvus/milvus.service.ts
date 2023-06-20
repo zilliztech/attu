@@ -61,6 +61,11 @@ export class MilvusService {
           })
         : new MilvusClient({ address });
 
+      // don't break attu
+      await milvusClient.connectPromise.catch(error => {
+        throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, error);
+      });
+
       // check healthy
       const res = await milvusClient.checkHealth();
 
