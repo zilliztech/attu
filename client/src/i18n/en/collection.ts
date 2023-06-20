@@ -89,7 +89,7 @@ const collectionTrans = {
   schemaTab: 'Schema',
   queryTab: 'Data Query',
   previewTab: 'Data Preview',
-  startTip: 'Start your data query.',
+  startTip: 'Start your data query',
   dataQuerylimits:
     ' Please note that the maximum number of results for your data query is 16384.',
   exprPlaceHolder: 'Please enter your data query, for example id > 0',
