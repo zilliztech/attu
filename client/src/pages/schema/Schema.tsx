@@ -1,15 +1,15 @@
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
 import AttuGrid from '../../components/grid/Grid';
 import { ColDefinitionsType } from '../../components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '../../hooks/Pagination';
 import icons from '../../components/icons/Icons';
-import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { FieldHttp } from '../../http/Field';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
 import { IndexHttp } from '../../http/Index';
+import { DataTypeStringEnum } from '../collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -18,6 +18,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
+  },
+  iconTitle: {
+    fontSize: '8px',
+    position: 'relative',
+    top: '3px',
+    color: 'grey',
+  },
+  chip: {
+    marginLeft: theme.spacing(0.5),
+    marginRight: theme.spacing(0.5),
   },
   nameWrapper: {
     display: 'flex',
@@ -56,7 +66,6 @@ const Schema: FC<{
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
-  const InfoIcon = icons.info;
 
   const [fields, setFields] = useState<FieldView[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -106,7 +115,51 @@ const Schema: FC<{
             _fieldNameElement: (
               <div className={classes.nameWrapper}>
                 {f._fieldName}
-                {f._isPrimaryKey && <KeyIcon classes={{ root: 'key' }} />}
+                {f._isPrimaryKey ? (
+                  <div
+                    className={classes.iconTitle}
+                    title={collectionTrans('idFieldName')}
+                  >
+                    <KeyIcon classes={{ root: 'key' }} />
+                  </div>
+                ) : null}
+                {f.is_partition_key ? (
+                  <Chip
+                    className={classes.chip}
+                    size="small"
+                    label="Partition key"
+                    variant="outlined"
+                  />
+                ) : null}
+                {f._isAutoId ? (
+                  <Chip
+                    className={classes.chip}
+                    size="small"
+                    label="auto id"
+                    variant="outlined"
+                  />
+                ) : null}
+              </div>
+            ),
+            _fieldTypeElement: (
+              <div className={classes.nameWrapper}>
+                {f._fieldType}
+                {f._dimension ? (
+                  <Chip
+                    className={classes.chip}
+                    size="small"
+                    label={`dim: ${f._dimension}`}
+                    variant="outlined"
+                  />
+                ) : null}
+                {f._maxLength && f._maxLength !== 'null' ? (
+                  <Chip
+                    className={classes.chip}
+                    size="small"
+                    label={`max: ${f._maxLength}`}
+                    variant="outlined"
+                  />
+                ) : null}
               </div>
             ),
             _indexParamElement: (
@@ -128,11 +181,15 @@ const Schema: FC<{
               </div>
             ),
             _indexTypeElement: (
-              <IndexTypeElement
-                data={f}
-                collectionName={collectionName}
-                cb={fetchFields}
-              />
+              <>
+                {f._fieldType !== DataTypeStringEnum.JSON ? (
+                  <IndexTypeElement
+                    data={f}
+                    collectionName={collectionName}
+                    cb={fetchFields}
+                  />
+                ) : null}
+              </>
             ),
           })
         );
@@ -160,30 +217,30 @@ const Schema: FC<{
       sortBy: '_fieldName',
     },
     {
-      id: '_fieldType',
+      id: '_fieldTypeElement',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('fieldType'),
     },
-    {
-      id: '_dimension',
-      align: 'left',
-      disablePadding: false,
-      label: (
-        <span className="flex-center">
-          {collectionTrans('dimension')}
-          <CustomToolTip title={collectionTrans('dimensionTooltip')}>
-            <InfoIcon classes={{ root: classes.icon }} />
-          </CustomToolTip>
-        </span>
-      ),
-    },
-    {
-      id: '_maxLength',
-      align: 'left',
-      disablePadding: true,
-      label: collectionTrans('maxLength'),
-    },
+    // {
+    //   id: '_dimension',
+    //   align: 'left',
+    //   disablePadding: false,
+    //   label: (
+    //     <span className="flex-center">
+    //       {collectionTrans('dimension')}
+    //       <CustomToolTip title={collectionTrans('dimensionTooltip')}>
+    //         <InfoIcon classes={{ root: classes.icon }} />
+    //       </CustomToolTip>
+    //     </span>
+    //   ),
+    // },
+    // {
+    //   id: '_maxLength',
+    //   align: 'left',
+    //   disablePadding: true,
+    //   label: collectionTrans('maxLength'),
+    // },
     {
       id: '_indexName',
       align: 'left',

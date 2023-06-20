@@ -7,6 +7,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   fieldID!: string;
   type_params!: { key: string; value: string }[];
   is_primary_key!: true;
+  is_partition_key!: false;
   name!: string;
   description!: string;
   autoID!: boolean;
@@ -35,6 +36,10 @@ export class FieldHttp extends BaseModel implements FieldData {
     return this.is_primary_key;
   }
 
+  get _isPartitionKey() {
+    return this.is_partition_key;
+  }
+
   get _isAutoId() {
     return this.autoID;
   }
@@ -52,12 +57,12 @@ export class FieldHttp extends BaseModel implements FieldData {
   }
 
   get _dimension() {
-    return this.type_params.find(item => item.key === 'dim')?.value || '--';
+    return this.type_params.find(item => item.key === 'dim')?.value || '';
   }
 
   get _maxLength() {
     return (
-      this.type_params.find(item => item.key === 'max_length')?.value || '--'
+      this.type_params.find(item => item.key === 'max_length')?.value || ''
     );
   }
 }

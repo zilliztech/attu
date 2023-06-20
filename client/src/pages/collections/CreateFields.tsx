@@ -1,8 +1,16 @@
-import { makeStyles, Theme, TextField, IconButton } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  TextField,
+  IconButton,
+  Switch,
+  FormControlLabel,
+} from '@material-ui/core';
 import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '../../components/customSelector/CustomSelector';
 import icons from '../../components/icons/Icons';
+import CustomToolTip from '../../components/customToolTip/CustomToolTip';
 import { generateId } from '../../utils/Common';
 import { getCreateFieldType } from '../../utils/Format';
 import {
@@ -12,7 +20,6 @@ import {
 } from '../../utils/Validation';
 import {
   ALL_OPTIONS,
-  AUTO_ID_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
@@ -27,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
     width: '100%',
     paddingRight: theme.spacing(1),
-    maxHeight: '240px',
     overflowY: 'auto',
   },
   rowWrapper: {
@@ -41,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
   },
   fieldInput: {
-    width: '160px',
+    width: '170px',
   },
   select: {
     width: '140px',
@@ -72,12 +78,23 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: 0,
     width: '16px',
     height: '16px',
+    position: 'relative',
+    top: '-8px',
   },
   helperText: {
     lineHeight: '20px',
     fontSize: '10px',
     margin: theme.spacing(0),
     marginLeft: '11px',
+  },
+  toggle: {
+    marginBottom: theme.spacing(2),
+    marginLeft: theme.spacing(0.5),
+    marginRight: theme.spacing(0.5),
+  },
+  icon: {
+    fontSize: '20px',
+    marginLeft: theme.spacing(0.5),
   },
 }));
 
@@ -106,6 +123,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
+  const InfoIcon = icons.info;
 
   const { requiredFields, optionalFields } = useMemo(
     () =>
@@ -326,6 +344,41 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
+  const generateParitionKeyToggle = (field: Field, fields: Field[]) => {
+    return (
+      <FormControlLabel
+        control={
+          <Switch
+            checked={!!field.is_partition_key}
+            disabled={
+              fields.some(f => f.is_partition_key) && !field.is_partition_key
+            }
+            size="small"
+            onChange={() => {
+              changeFields(
+                field.id!,
+                'is_partition_key',
+                !field.is_partition_key
+              );
+            }}
+          />
+        }
+        label={
+          <CustomToolTip
+            title={collectionTrans('partitionKeyTooltip')}
+            placement="top"
+          >
+            <>
+              {collectionTrans('partitionKey')}
+              {/* <InfoIcon classes={{ root: classes.icon }} /> */}
+            </>
+          </CustomToolTip>
+        }
+        className={classes.toggle}
+      />
+    );
+  };
+
   const changeFields = (id: string, key: string, value: any) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
@@ -373,7 +426,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     autoID: boolean
   ): ReactElement => {
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
-    const autoIdOff = isVarChar ? 'false' : autoID ? 'true' : 'false';
     return (
       <div className={`${classes.rowWrapper}`}>
         {generateFieldName(field, collectionTrans('idFieldName'))}
@@ -391,21 +443,29 @@ const CreateFields: FC<CreateFieldsProps> = ({
         )}
         {generateDesc(field)}
 
-        <CustomSelector
-          label={collectionTrans('autoId')}
-          options={AUTO_ID_OPTIONS}
-          value={autoIdOff}
-          onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-            const autoId = e.target.value === 'true';
-            setAutoID(autoId);
-          }}
-          variant="filled"
-          wrapperClass={classes.autoIdSelect}
-          disabled={isVarChar}
-          size="small"
-        />
-
         {isVarChar && generateMaxLength(field)}
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={autoID}
+              disabled={isVarChar}
+              size="small"
+              onChange={() => {
+                setAutoID(!autoID);
+              }}
+            />
+          }
+          label={
+            <CustomToolTip
+              title={collectionTrans('autoIdToggleTip')}
+              placement="top"
+            >
+              <>{collectionTrans('autoId')}</>
+            </CustomToolTip>
+          }
+          className={classes.toggle}
+        />
       </div>
     );
   };
@@ -441,8 +501,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateNumberRow = (field: Field, index: number): ReactElement => {
+  const generateNumberRow = (
+    field: Field,
+    index: number,
+    fields: Field[]
+  ): ReactElement => {
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
+    const isInt64 = field.data_type === DataTypeEnum.Int64;
     return (
       <div className={`${classes.rowWrapper}`}>
         {generateFieldName(field)}
@@ -455,6 +520,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {generateDesc(field)}
 
         {isVarChar && generateMaxLength(field)}
+        {(isVarChar || isInt64) && generateParitionKeyToggle(field, fields)}
         <IconButton
           onClick={() => {
             handleAddNewField(index);
@@ -511,14 +577,18 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return generateDefaultVectorRow(field, index);
   };
 
-  const generateOptionalFieldRow = (field: Field, index: number) => {
+  const generateOptionalFieldRow = (
+    field: Field,
+    index: number,
+    fields: Field[]
+  ) => {
     // optional type is vector or number
     if (field.createType === 'vector') {
       return generateVectorRow(field);
     }
 
     // use number as default createType
-    return generateNumberRow(field, index);
+    return generateNumberRow(field, index, fields);
   };
 
   return (
@@ -531,7 +601,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
       <div className={classes.optionalWrapper}>
         {optionalFields.map((field, index) => (
           <Fragment key={field.id}>
-            {generateOptionalFieldRow(field, index + requiredFields.length)}
+            {generateOptionalFieldRow(
+              field,
+              index + requiredFields.length,
+              optionalFields
+            )}
           </Fragment>
         ))}
       </div>
