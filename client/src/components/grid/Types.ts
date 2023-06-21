@@ -1,6 +1,7 @@
+import React, { ReactElement } from 'react';
+import { LabelDisplayedRowsArgs } from '@material-ui/core';
 import { IconsType } from '../icons/Types';
 import { SearchType } from '../customInput/Types';
-import React, { ReactElement } from 'react';
 
 export type IconConfigType = {
   [x: string]: JSX.Element;
@@ -124,7 +125,7 @@ export type AttuGridType = ToolBarType & {
   setRowsPerPage?: (size: number) => void;
   primaryKey: string;
   onChangePage?: (e: any, nextPageNum: number) => void;
-  labelDisplayedRows?: (obj: any) => string;
+  labelDisplayedRows?: (obj: LabelDisplayedRowsArgs) => React.ReactNode;
   page?: number;
   showToolbar?: boolean;
   rows: any[];
@@ -156,7 +157,7 @@ type ActionBarConfig = {
   onClick: (e: React.MouseEvent, row: any) => void;
   icon?: IconsType;
   text?: string;
-  linkButton? : boolean;
+  linkButton?: boolean;
   showIconMethod?: 'iconType' | 'renderFn';
   renderIconFn?: (row: any) => ReactElement;
   label?: string;
