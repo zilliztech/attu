@@ -86,8 +86,12 @@ export class CollectionsService {
   }
 
   async vectorSearch(data: SearchReq) {
+    const now = Date.now();
     const res = await this.milvusService.client.search(data);
+    const after = Date.now();
+
     throwErrorFromSDK(res.status);
+    Object.assign(res, { latency: after - now });
     return res;
   }
 
@@ -119,8 +123,12 @@ export class CollectionsService {
       collection_name: string;
     } & QueryDto
   ) {
+    const now = Date.now();
     const res = await this.milvusService.client.query(data);
+    const after = Date.now();
+
     throwErrorFromSDK(res.status);
+    Object.assign(res, { latency: after - now });
     return res;
   }
 

@@ -20,6 +20,7 @@ import CustomToolBar from '../../components/grid/ToolBar';
 // import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { saveAs } from 'file-saver';
 import { DataTypeStringEnum } from '../collections/Types';
+import { getLabelDisplayedRows } from '../search/Utils';
 
 const Query: FC<{
   collectionName: string;
@@ -32,6 +33,10 @@ const Query: FC<{
   const [primaryKey, setPrimaryKey] = useState<{ value: string; type: string }>(
     { value: '', type: DataTypeStringEnum.Int64 }
   );
+
+  // latency
+  const [latency, setLatency] = useState<number>(0);
+
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const VectorSearchIcon = icons.vectorSearch;
@@ -149,6 +154,7 @@ const Query: FC<{
       });
       const result = res.data;
       setQueryResult(result);
+      setLatency(res.latency);
     } catch (err) {
       setQueryResult([]);
     } finally {
@@ -314,6 +320,7 @@ const Query: FC<{
           orderBy={orderBy}
           order={order}
           handleSort={handleGridSort}
+          labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
         />
       ) : (
         <EmptyCard

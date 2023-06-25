@@ -37,6 +37,7 @@ import { cloneObj, generateVector } from '../../utils/Common';
 import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
 import { useTimeTravelHook } from '../../hooks/TimeTravel';
 import { LOADING_STATE } from '../../consts/Milvus';
+import { getLabelDisplayedRows } from './Utils';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -45,6 +46,7 @@ const VectorSearch = () => {
   // i18n
   const { t: searchTrans } = useTranslation('search');
   const { t: btnTrans } = useTranslation('btn');
+
   const classes = getVectorSearchStyles();
 
   // data stored inside the component
@@ -70,6 +72,9 @@ const VectorSearch = () => {
   const [topK, setTopK] = useState<number>(100);
   const [expression, setExpression] = useState<string>('');
   const [vectors, setVectors] = useState<string>('');
+
+  // latency
+  const [latency, setLatency] = useState<number>(0);
 
   const {
     pageSize,
@@ -133,7 +138,7 @@ const VectorSearch = () => {
             align: 'left',
             disablePadding: false,
             label: key,
-            needCopy: primaryKeyField === key
+            needCopy: primaryKeyField === key,
           }))
       : [];
   }, [searchResult, primaryKeyField]);
@@ -330,6 +335,7 @@ const VectorSearch = () => {
 
       const result = transferSearchResult(res.results);
       setSearchResult(result);
+      setLatency(res.latency);
     } catch (err) {
       setTableLoading(false);
     }
@@ -542,6 +548,7 @@ const VectorSearch = () => {
           isLoading={tableLoading}
           orderBy={orderBy}
           order={order}
+          labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
           handleSort={handleGridSort}
           tableCellMaxWidth="100%"
         />
