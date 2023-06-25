@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import ConnectContainer from './ConnectContainer';
 import { AuthForm } from './AuthForm';
 import { authContext } from '../../context/Auth';
+import GlobalEffect from '../../components/layout/GlobalEffect';
 
 const Connect = () => {
   const { isAuth } = useContext(authContext);
@@ -10,9 +11,11 @@ const Connect = () => {
   return (
     <>
       {isAuth && <Navigate to="/" replace={true} />}
-      <ConnectContainer>
-        <AuthForm />
-      </ConnectContainer>
+      <GlobalEffect>
+        <ConnectContainer>
+          <AuthForm />
+        </ConnectContainer>
+      </GlobalEffect>
     </>
   );
 };

@@ -27,15 +27,10 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       if (!milvusAddress) {
         return;
       }
-      try {
-        const res = await MilvusHttp.check(milvusAddress);
-        setAddress(res.connected ? milvusAddress : '');
-        res.connected && setIsAuth(true);
-        if (!res.connected) {
-          window.localStorage.removeItem(MILVUS_ADDRESS);
-        }
-      } catch (error) {
-        setAddress('');
+      const res = await MilvusHttp.check(milvusAddress);
+      setAddress(res.connected ? milvusAddress : '');
+      res.connected && setIsAuth(true);
+      if (!res.connected) {
         window.localStorage.removeItem(MILVUS_ADDRESS);
       }
     };

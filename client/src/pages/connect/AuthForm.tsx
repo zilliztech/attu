@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
 import { MILVUS_ADDRESS, LAST_TIME_ADDRESS } from '../../consts/Localstorage';
-import { CODE_STATUS } from '../../consts/Http';
 import { MILVUS_URL } from '../../consts/Milvus';
 import { CustomRadio } from '../../components/customRadio/CustomRadio';
 import { prometheusContext } from '../../context/Prometheus';
@@ -67,8 +66,6 @@ export const AuthForm = (props: any) => {
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
-
-  const [showAuthForm, setShowAuthForm] = useState(false);
   const [form, setForm] = useState({
     address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
     username: '',
@@ -186,25 +183,17 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async () => {
     const address = formatAddress(form.address);
-    try {
-      const data = { ...form, address };
-      await MilvusHttp.connect(data);
+    const data = { ...form, address };
+    await MilvusHttp.connect(data);
 
-      setIsAuth(true);
-      setAddress(address);
+    setIsAuth(true);
+    setAddress(address);
 
-      openSnackBar(successTrans('connect'));
-      window.localStorage.setItem(MILVUS_ADDRESS, address);
-      // store address for next time using
-      window.localStorage.setItem(LAST_TIME_ADDRESS, address);
-      navigate('/');
-    } catch (error: any) {
-      if (error?.response?.status === CODE_STATUS.UNAUTHORIZED) {
-        showAuthForm
-          ? openSnackBar(attuTrans.unAuth, 'error')
-          : setShowAuthForm(true);
-      }
-    }
+    openSnackBar(successTrans('connect'));
+    window.localStorage.setItem(MILVUS_ADDRESS, address);
+    // store address for next time using
+    window.localStorage.setItem(LAST_TIME_ADDRESS, address);
+    navigate('/');
   };
 
   const btnDisabled = useMemo(() => {
