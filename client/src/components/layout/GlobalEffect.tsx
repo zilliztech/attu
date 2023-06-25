@@ -49,7 +49,10 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
           // We need check status 401 in login page
           // So server will return 500 when change the user password.
           errMsg && openSnackBar(errMsg, 'error');
-          if (errMsg.includes('unauthenticated')) {
+          if (
+            errMsg.includes('unauthenticated') ||
+            errMsg.includes('No connection established')
+          ) {
             reset();
           }
           return Promise.reject(error);
