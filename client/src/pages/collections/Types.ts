@@ -98,12 +98,11 @@ export interface Field {
   id?: string;
   type_params?: {
     dim?: string | number;
-    max_length?: string;
+    max_length?: string | number;
   };
   createType?: CreateFieldType;
-  max_length?: string | null;
+  max_length?: string | number | null;
   autoID?: boolean;
-  
 }
 
 export type CreateFieldType =

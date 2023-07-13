@@ -184,15 +184,21 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
-        const data: Field = {
+        let data: Field = {
           name: v.name,
           description: v.description,
           is_primary_key: v.is_primary_key,
           is_partition_key: v.is_partition_key,
           data_type: v.data_type,
-          dimension: vectorType.includes(v.data_type) ? v.dimension : undefined,
-          max_length: v.max_length,
+          dimension: vectorType.includes(v.data_type)
+            ? Number(v.dimension)
+            : undefined,
         };
+
+        // if we need
+        if (typeof v.max_length === 'number') {
+          data.max_length = Number(v.max_length);
+        }
 
         v.is_primary_key && (v.autoID = form.autoID);
 
@@ -201,17 +207,17 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
               ...data,
               type_params: {
                 // if data type is vector, dimension must exist.
-                dim: data.dimension!,
+                dim: Number(data.dimension!),
               },
             }
           : v.data_type === DataTypeEnum.VarChar
           ? {
               ...v,
               type_params: {
-                max_length: v.max_length!,
+                max_length: Number(v.max_length!),
               },
             }
-          : v;
+          : { ...data };
       }),
       consistency_level: consistencyLevel,
     };
