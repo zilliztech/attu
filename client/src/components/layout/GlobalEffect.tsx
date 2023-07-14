@@ -16,8 +16,6 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
   if (axiosResInterceptor === null) {
     axiosResInterceptor = axiosInstance.interceptors.response.use(
       function (res: any) {
-        debugger;
-
         if (res.statusCode && res.statusCode !== HTTP_STATUS_CODE.OK) {
           openSnackBar(res.data.message, 'warning');
           return Promise.reject(res.data);
