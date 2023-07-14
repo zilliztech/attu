@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import axiosInstance from '../../http/Axios';
 import { rootContext } from '../../context/Root';
-import { CODE_STATUS } from '../../consts/Http';
+import { HTTP_STATUS_CODE } from '../../consts/Http';
 import { authContext } from '../../context/Auth';
 import { MILVUS_ADDRESS } from '../../consts/Localstorage';
 
@@ -16,7 +16,7 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
   if (axiosResInterceptor === null) {
     axiosResInterceptor = axiosInstance.interceptors.response.use(
       function (res: any) {
-        if (res.statusCode && res.statusCode !== CODE_STATUS.SUCCESS) {
+        if (res.statusCode && res.statusCode !== HTTP_STATUS_CODE.OK) {
           openSnackBar(res.data.message, 'warning');
           return Promise.reject(res.data);
         }
@@ -31,30 +31,18 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
           window.localStorage.removeItem(MILVUS_ADDRESS);
         };
         switch (response.status) {
-          case CODE_STATUS.UNAUTHORIZED:
-            return Promise.reject(error);
-          case CODE_STATUS.FORBIDDEN:
-            reset();
+          case HTTP_STATUS_CODE.UNAUTHORIZED:
+          case HTTP_STATUS_CODE.FORBIDDEN:
+            setTimeout(reset, 2000);
             break;
           default:
             break;
         }
         if (response.data) {
           const { message: errMsg } = response.data;
-          // After create index ,we will try to get index progress
-          // if index created success before setTimeout , will throw this error, should ignore it.
-          if (errMsg.includes('no index is created')) {
-            return Promise.reject(error);
-          }
           // We need check status 401 in login page
           // So server will return 500 when change the user password.
           errMsg && openSnackBar(errMsg, 'error');
-          if (
-            errMsg.includes('unauthenticated') ||
-            errMsg.includes('No connection established')
-          ) {
-            reset();
-          }
           return Promise.reject(error);
         }
         if (error.message) {
