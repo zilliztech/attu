@@ -113,12 +113,14 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     };
 
   useEffect(() => {
-    const fetchVersion = async () => {
-      const res = await MilvusHttp.getVersion();
-      setVersionInfo(res);
-    };
-    fetchVersion();
-  }, []);
+    if (isAuth) {
+      const fetchVersion = async () => {
+        const res = await MilvusHttp.getVersion();
+        setVersionInfo(res);
+      };
+      fetchVersion();
+    }
+  }, [isAuth]);
 
   useEffect(() => {
     // if auth is off, hide snack bar

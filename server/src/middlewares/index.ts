@@ -5,6 +5,7 @@ import { MilvusService } from '../milvus/milvus.service';
 import { INSIGHT_CACHE, MILVUS_ADDRESS } from '../utils/Const';
 import { HttpError } from 'http-errors';
 import { HTTP_STATUS_CODE } from '../utils/Error';
+import HttpErrors from 'http-errors';
 
 export const ReqHeaderMiddleware = (
   req: Request,
@@ -26,6 +27,15 @@ export const ReqHeaderMiddleware = (
     // insight cache will update expire time when use insightCache.get
     MilvusService.activeMilvusClient = insightCache.get(
       MilvusService.formatAddress(milvusAddress)
+    );
+  }
+
+  const CONNECT_URL = `/api/v1/milvus/connect`;
+
+  if (req.url !== CONNECT_URL && !MilvusService.activeMilvusClient) {
+    throw HttpErrors(
+      HTTP_STATUS_CODE.FORBIDDEN,
+      'Can not find your connection, please connect Milvus again'
     );
   }
 

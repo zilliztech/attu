@@ -181,7 +181,8 @@ export const AuthForm = (props: any) => {
     []
   );
 
-  const handleConnect = async () => {
+  const handleConnect = async (event: React.FormEvent) => {
+    event.preventDefault();
     const address = formatAddress(form.address);
     const data = { ...form, address };
     await MilvusHttp.connect(data);
