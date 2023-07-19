@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
-import swaggerUi from 'swagger-ui-express';
 import LruCache from 'lru-cache';
 import * as path from 'path';
 import chalk from 'chalk';
@@ -21,7 +20,6 @@ import {
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middlewares';
-import { surveSwaggerSpecification } from './swagger';
 import { EXPIRED_TIME, INSIGHT_CACHE } from './utils/Const';
 import { getIp } from './utils/Network';
 // initialize express app
@@ -52,9 +50,6 @@ router.get('/healthy', (req, res, next) => {
 const server = http.createServer(app);
 // default port 3000
 const PORT = 3000;
-// swagger
-const swaggerSpecs = surveSwaggerSpecification();
-
 // setup middlewares
 // use cache
 app.set(INSIGHT_CACHE, insightCache);
@@ -78,8 +73,6 @@ app.use(ReqHeaderMiddleware);
 app.use('/api/v1', router);
 // Return client build files
 app.use(express.static('build'));
-// use swagger
-app.use('/api/v1/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // handle every other route with index.html, which will contain
 // a script tag to your application's JavaScript file(s).
@@ -125,10 +118,6 @@ server.listen(PORT, () => {
 
   const ips = getIp();
   ips.forEach(ip => {
-    console.info(
-      chalk.cyanBright(
-        `Attu server started: http://${ip}:${PORT}/api/v1/swagger/`
-      )
-    );
+    console.info(chalk.cyanBright(`Attu server started: http://${ip}:${PORT}`));
   });
 });
