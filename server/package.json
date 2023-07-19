@@ -28,7 +28,7 @@
     "lru-cache": "^6.0.0",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.2",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.1",
     "socket.io": "^4.7.1"
   },
   "jest": {
