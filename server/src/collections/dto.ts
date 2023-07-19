@@ -49,12 +49,16 @@ export class InsertDataDto {
 }
 
 export class ImportSampleDto {
+  @IsOptional()
   readonly collection_name?: string;
+  @IsString()
   readonly size: string;
 }
 
 export class GetReplicasDto {
+  @IsString()
   readonly collectionID: string;
+  @IsOptional()
   readonly with_shard_nodes?: boolean;
 }
 
