@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middlewares/validation';
 import { milvusService } from '../milvus';
 import { DatabasesService } from './databases.service';
-import { CreateDatabaseDto, DropDatabaseDto } from './dto';
+import { CreateDatabaseDto } from './dto';
 
 export class DatabasesController {
   private databasesService: DatabasesService;
@@ -25,11 +25,9 @@ export class DatabasesController {
       dtoValidationMiddleware(CreateDatabaseDto),
       this.createDatabase.bind(this)
     );
-    this.router.delete(
-      '/',
-      dtoValidationMiddleware(DropDatabaseDto),
-      this.createDatabase.bind(this)
-    );
+
+    this.router.delete('/:name', this.dropDatabase.bind(this));
+
     return this.router;
   }
 
@@ -55,9 +53,9 @@ export class DatabasesController {
   }
 
   async dropDatabase(req: Request, res: Response, next: NextFunction) {
-    const dropDatabaseData = req.body;
+    const db_name = req.params?.name;
     try {
-      const result = await this.databasesService.dropDatabase(dropDatabaseData);
+      const result = await this.databasesService.dropDatabase({ db_name });
       res.send(result);
     } catch (error) {
       next(error);

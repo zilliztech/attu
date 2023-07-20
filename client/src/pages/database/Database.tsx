@@ -39,14 +39,14 @@ const Database = () => {
   };
 
   const handleDelete = async () => {
-    for (const user of selectedDatabase) {
+    for (const db of selectedDatabase) {
       const param: DropDatabaseParams = {
-        db_name: user.name,
+        db_name: db.name,
       };
       await DatabaseHttp.dropDatabase(param);
     }
 
-    openSnackBar(successTrans('delete', { name: dbTrans('user') }));
+    openSnackBar(successTrans('delete', { name: dbTrans('database') }));
     fetchDatabases();
     handleCloseDialog();
   };
@@ -81,7 +81,9 @@ const Database = () => {
             component: (
               <DeleteTemplate
                 label={btnTrans('drop')}
-                title={dialogTrans('deleteTitle', { type: dbTrans('database') })}
+                title={dialogTrans('deleteTitle', {
+                  type: dbTrans('database'),
+                })}
                 text={dbTrans('deleteWarning')}
                 handleDelete={handleDelete}
               />

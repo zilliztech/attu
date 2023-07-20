@@ -9,7 +9,7 @@ import { throwErrorFromSDK } from '../utils/Error';
 export class DatabasesService {
   constructor(private milvusService: MilvusService) {}
 
-  async createDatabase(data?: CreateDatabaseRequest) {
+  async createDatabase(data: CreateDatabaseRequest) {
     const res = await this.milvusService.client.createDatabase(data);
     throwErrorFromSDK(res);
     return res;
@@ -21,9 +21,9 @@ export class DatabasesService {
     return res;
   }
 
-  async dropDatabase(data?: DropDatabasesRequest) {
-    const res = await this.milvusService.client.listDatabases(data);
-    throwErrorFromSDK(res.status);
+  async dropDatabase(data: DropDatabasesRequest) {
+    const res = await this.milvusService.client.dropDatabase(data);
+    throwErrorFromSDK(res);
     return res;
   }
 
