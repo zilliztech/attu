@@ -29,6 +29,8 @@ import systemViewTransEn from './en/systemView';
 import systemViewTransCn from './cn/systemView';
 import userTransEn from './en/user';
 import userTransCn from './cn/user';
+import databaseTransEn from './en/database';
+import databaseTransCn from './cn/database';
 import prometheusTransEn from './en/prometheus';
 import prometheusTransCn from './cn/prometheus';
 
@@ -48,6 +50,7 @@ export const resources = {
     search: searchCn,
     systemView: systemViewTransCn,
     user: userTransCn,
+    database: databaseTransCn,
     prometheus: prometheusTransCn,
   },
   en: {
@@ -65,6 +68,7 @@ export const resources = {
     search: searchEn,
     systemView: systemViewTransEn,
     user: userTransEn,
+    database: databaseTransEn,
     prometheus: prometheusTransEn,
   },
 };

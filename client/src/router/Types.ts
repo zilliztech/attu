@@ -12,6 +12,7 @@ export enum ALL_ROUTER_TYPES {
   // plugins
   PLUGIN = 'plugin',
   USER = 'user',
+  DATABASES = 'databases',
 }
 
 export type NavInfo = {

@@ -1,10 +1,11 @@
 const navTrans = {
   overview: 'Overview',
-  collection: 'Collection',
+  collection: 'Collections',
   console: 'Search Console',
   search: 'Vector Search',
   system: 'System View',
-  user: 'Milvus Users',
+  user: 'Users',
+  database: 'Databases',
 };
 
 export default navTrans;
