@@ -9,7 +9,6 @@ import { ITextfieldConfig } from '../../components/customInput/Types';
 import { useFormValidation } from '../../hooks/Form';
 import { formatForm } from '../../utils/Form';
 import { MilvusHttp } from '../../http/Milvus';
-import { formatAddress } from '../../utils/Format';
 import { useNavigate } from 'react-router-dom';
 import { rootContext } from '../../context/Root';
 import { authContext } from '../../context/Auth';
@@ -183,7 +182,7 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
-    const address = formatAddress(form.address);
+    const address = form.address;
     const data = { ...form, address };
     await MilvusHttp.connect(data);
 
