@@ -32,7 +32,7 @@ export class MilvusService {
     if (!MilvusService.activeMilvusClient) {
       throw HttpErrors(
         HTTP_STATUS_CODE.FORBIDDEN,
-        'Can not find your connection, please check your settings.'
+        'Can not find your connection, please check your connection settings.'
       );
 
       // throw new Error('Please connect milvus first');
