@@ -26,6 +26,14 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
+      case ALL_ROUTER_TYPES.DATABASES: {
+        const navInfo: NavInfo = {
+          navTitle: navTrans('database'),
+          backPath: '',
+        };
+        setNavInfo(navInfo);
+        break;
+      }
       case ALL_ROUTER_TYPES.COLLECTIONS: {
         const navInfo: NavInfo = {
           navTitle: navTrans('collection'),

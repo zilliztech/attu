@@ -4,7 +4,7 @@ const collectionTrans = {
 
   rowCount: 'Approx Entity Count',
 
-  create: 'Create Collection',
+  create: 'Collection',
   delete: 'delete',
   deleteTooltip: 'Please select at least one item to delete.',
   rename: 'rename',

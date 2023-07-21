@@ -8,6 +8,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 import { router as connectRouter } from './milvus';
 import { router as collectionsRouter } from './collections';
+import { router as databasesRouter } from './database';
 import { router as partitionsRouter } from './partitions';
 import { router as schemaRouter } from './schema';
 import { router as cronsRouter } from './crons';
@@ -35,6 +36,7 @@ const insightCache = new LruCache({
 const router = express.Router();
 // define routers
 router.use('/milvus', connectRouter);
+router.use('/databases', databasesRouter);
 router.use('/collections', collectionsRouter);
 router.use('/partitions', partitionsRouter);
 router.use('/schema', schemaRouter);

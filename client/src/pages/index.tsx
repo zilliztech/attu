@@ -69,6 +69,10 @@ function Index() {
       return navTrans('user');
     }
 
+    if (location.pathname.includes('databases')) {
+      return navTrans('database');
+    }
+
     return navTrans('overview');
   }, [location, navTrans]);
 
@@ -89,6 +93,11 @@ function Index() {
       onClick: () => navigate('/search'),
       iconActiveClass: 'normal',
       iconNormalClass: 'active',
+    },
+    {
+      icon: icons.database,
+      label: navTrans('database'),
+      onClick: () => navigate('/databases'),
     },
   ];
 

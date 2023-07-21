@@ -40,4 +40,5 @@ export type IconsType =
   | 'download'
   | 'source'
   | 'edit'
+  | 'database'
   | 'uploadFile';

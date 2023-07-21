@@ -5,6 +5,7 @@ import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
 import Users from '../pages/user/User';
+import Database from '../pages/database/Database';
 import Index from '../pages/index';
 import Search from '../pages/search/VectorSearch';
 import System from '../pages/system/SystemView';
@@ -16,6 +17,10 @@ const routeObj = [
     element: <Index />,
     children: [
       {
+        path: '/databases',
+        element: <Database />,
+      },
+      {
         path: '/collections',
         element: <Collections />,
       },
@@ -23,12 +28,10 @@ const routeObj = [
         path: '/collections/:collectionName',
         element: <Collection />,
       },
-
       {
         path: '/search',
         element: <Search />,
       },
-
       {
         path: '/system_healthy',
         element: <SystemHealthy />,
