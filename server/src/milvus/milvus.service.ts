@@ -60,18 +60,14 @@ export class MilvusService {
 
       // don't break attu
       await milvusClient.connectPromise.catch(error => {
-        cache.dump();
         throw HttpErrors(HTTP_STATUS_CODE.FORBIDDEN, error);
       });
 
       // check healthy
       const res = await milvusClient.checkHealth();
 
-      console.log('res', milvusAddress, res);
-
       if (res.isHealthy) {
         MilvusService.activeAddress = address;
-        cache.dump();
         cache.set(address, milvusClient);
         return { address };
       } else {
