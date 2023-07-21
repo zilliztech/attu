@@ -23,8 +23,8 @@ export class MilvusService {
   }
 
   static formatAddress(address: string) {
-    // remove http or https prefix from address
-    const ip = address.replace(/(http|https):\/\//, '');
+    // remove http prefix from address
+    const ip = address.replace(/(http):\/\//, '');
     return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
   }
 
@@ -32,7 +32,7 @@ export class MilvusService {
     if (!MilvusService.activeMilvusClient) {
       throw HttpErrors(
         HTTP_STATUS_CODE.FORBIDDEN,
-        'Can not find your connection, please connect Milvus again'
+        'Can not find your connection, please check your connection settings.'
       );
 
       // throw new Error('Please connect milvus first');
@@ -50,20 +50,17 @@ export class MilvusService {
     const { address, username, password } = data;
     // grpc only need address without http
     const milvusAddress = MilvusService.formatAddress(address);
-    const hasAuth = username !== undefined && password !== undefined;
 
     try {
-      const milvusClient: MilvusClient = hasAuth
-        ? new MilvusClient({
-            address: milvusAddress,
-            username,
-            password,
-          })
-        : new MilvusClient({ address });
+      const milvusClient: MilvusClient = new MilvusClient({
+        address: milvusAddress,
+        username,
+        password,
+      });
 
       // don't break attu
       await milvusClient.connectPromise.catch(error => {
-        throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, error);
+        throw HttpErrors(HTTP_STATUS_CODE.FORBIDDEN, error);
       });
 
       // check healthy
@@ -78,8 +75,8 @@ export class MilvusService {
       }
     } catch (error) {
       // if milvus is not working, delete connection.
-      cache.del(address);
-      throw HttpErrors(HTTP_STATUS_CODE.BAD_REQUEST, error);
+      cache.dump();
+      throw HttpErrors(HTTP_STATUS_CODE.FORBIDDEN, error);
     }
   }
 
