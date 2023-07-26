@@ -1,12 +1,12 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import CustomInput from '../../components/customInput/CustomInput';
-import CustomSelector from '../../components/customSelector/CustomSelector';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import CustomInput from '@/components/customInput/CustomInput';
+import CustomSelector from '@/components/customSelector/CustomSelector';
 import { m_OPTIONS } from '../../consts/Milvus';
 import { FormHelperType } from '../../types/Common';
-import { Option } from '../../components/customSelector/Types';
+import { Option } from '@/components/customSelector/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

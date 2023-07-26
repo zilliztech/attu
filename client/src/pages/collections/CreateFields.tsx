@@ -8,16 +8,16 @@ import {
 } from '@material-ui/core';
 import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomSelector from '../../components/customSelector/CustomSelector';
-import icons from '../../components/icons/Icons';
-import CustomToolTip from '../../components/customToolTip/CustomToolTip';
-import { generateId } from '../../utils/Common';
-import { getCreateFieldType } from '../../utils/Format';
+import CustomSelector from '@/components/customSelector/CustomSelector';
+import icons from '@/components/icons/Icons';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import { generateId } from '@/utils/Common';
+import { getCreateFieldType } from '@/utils/Format';
 import {
   checkEmptyValid,
   checkRange,
   getCheckResult,
-} from '../../utils/Validation';
+} from '@/utils/Validation';
 import {
   ALL_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,

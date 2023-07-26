@@ -9,8 +9,8 @@ import {
 import { getIcon } from './getIcon';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 import clsx from 'clsx';
-import { formatPrometheusAddress } from '../../utils/Format';
-import { prometheusContext } from '../../context/Prometheus';
+import { formatPrometheusAddress } from '@/utils/Format';
+import { prometheusContext } from '@/context/Prometheus';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

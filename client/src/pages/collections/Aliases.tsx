@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 import { Chip, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '../../context/Root';
+import { rootContext } from '@/context/Root';
 import { AliasesProps } from './Types';
-import icons from '../../components/icons/Icons';
+import icons from '@/components/icons/Icons';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateAliasDialog from '../dialogs/CreateAliasDialog';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-import { CollectionHttp } from '../../http/Collection';
+import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import { CollectionHttp } from '@/http/Collection';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

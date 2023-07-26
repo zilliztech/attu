@@ -6,7 +6,7 @@ import {
   formatByteSize,
   formatSystemTime,
   getByteString,
-} from '../../utils/Format';
+} from '@/utils/Format';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 
 const getStyles = makeStyles(theme => ({

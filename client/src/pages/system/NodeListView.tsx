@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import { DataGrid } from '@mui/x-data-grid';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '@/router/Types';
 import MiniTopo from './MiniTopology';
-import { getByteString, formatByteSize } from '../../utils/Format';
+import { getByteString, formatByteSize } from '@/utils/Format';
 import DataCard from './DataCard';
 import { NodeListViewProps, Node } from './Types';
 

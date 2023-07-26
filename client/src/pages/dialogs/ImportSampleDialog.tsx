@@ -1,12 +1,12 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { FC, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import CustomSelector from '../../components/customSelector/CustomSelector';
-import { rootContext } from '../../context/Root';
+import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import CustomSelector from '@/components/customSelector/CustomSelector';
+import { rootContext } from '@/context/Root';
 import { InsertStatusEnum } from './insert/Types';
-import { CollectionHttp } from '../../http/Collection';
-import { MilvusHttp } from '../../http/Milvus';
+import { CollectionHttp } from '@/http/Collection';
+import { MilvusHttp } from '@/http/Milvus';
 import { LoadSampleParam } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => {

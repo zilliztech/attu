@@ -7,19 +7,19 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { authContext } from '../../context/Auth';
-import { CollectionHttp } from '../../http/Collection';
-import { rootContext } from '../../context/Root';
-import { useFormValidation } from '../../hooks/Form';
-import { formatForm } from '../../utils/Form';
-import { parseJson, getNode } from '../../utils/Metric';
-import CustomInput from '../../components/customInput/CustomInput';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import { MilvusHttp } from '../../http/Milvus';
-import CustomToolTip from '../../components/customToolTip/CustomToolTip';
+import { authContext } from '@/context/Auth';
+import { CollectionHttp } from '@/http/Collection';
+import { rootContext } from '@/context/Root';
+import { useFormValidation } from '@/hooks/Form';
+import { formatForm } from '@/utils/Form';
+import { parseJson, getNode } from '@/utils/Metric';
+import CustomInput from '@/components/customInput/CustomInput';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import { MilvusHttp } from '@/http/Milvus';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '../../consts/Milvus';
-import icons from '../../components/icons/Icons';
+import icons from '@/components/icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

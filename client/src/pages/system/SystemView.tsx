@@ -2,16 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
-import { MilvusHttp } from '../../http/Milvus';
-import { useInterval } from '../../hooks/SystemView';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { MilvusHttp } from '@/http/Milvus';
+import { useInterval } from '@/hooks/SystemView';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
 // import LineChartCard from './LineChartCard';
 // import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
-import { parseJson } from '../../utils/Metric';
+import { parseJson } from '@/utils/Metric';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

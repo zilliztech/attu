@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import Chip from '@material-ui/core/Chip';
-import { IndexHttp } from '../../http/Index';
+import { IndexHttp } from '@/http/Index';
 import { IndexState } from '../../types/Milvus';
 import {
   FieldView,
@@ -10,13 +10,13 @@ import {
 } from './Types';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
-import icons from '../../components/icons/Icons';
-import { rootContext } from '../../context/Root';
+import icons from '@/components/icons/Icons';
+import { rootContext } from '@/context/Root';
 import CreateIndex from './Create';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-import StatusIcon from '../../components/status/StatusIcon';
-import { ChildrenStatusType } from '../../components/status/Types';
-import { sleep } from '../../utils/Common';
+import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import StatusIcon from '@/components/status/StatusIcon';
+import { ChildrenStatusType } from '@/components/status/Types';
+import { sleep } from '@/utils/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

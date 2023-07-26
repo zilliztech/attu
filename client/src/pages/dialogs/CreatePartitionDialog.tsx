@@ -1,16 +1,16 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '../../context/Root';
-import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import CustomInput from '../../components/customInput/CustomInput';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import { useFormValidation } from '../../hooks/Form';
-import { formatForm } from '../../utils/Form';
+import { rootContext } from '@/context/Root';
+import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import CustomInput from '@/components/customInput/CustomInput';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import { useFormValidation } from '@/hooks/Form';
+import { formatForm } from '@/utils/Form';
 import { PartitionCreateProps } from './Types';
 import { PartitionManageParam } from '../partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
-import { PartitionHttp } from '../../http/Partition';
+import { PartitionHttp } from '@/http/Partition';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

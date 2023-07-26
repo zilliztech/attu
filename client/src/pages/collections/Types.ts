@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { ChildrenStatusType } from '../../components/status/Types';
+import { ChildrenStatusType } from '@/components/status/Types';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { FieldData } from '../schema/Types';
 

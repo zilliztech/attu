@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DatabaseHttp } from '../../http/Database';
-import AttuGrid from '../../components/grid/Grid';
-import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
+import { DatabaseHttp } from '@/http/Database';
+import AttuGrid from '@/components/grid/Grid';
+import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
   CreateDatabaseParams,
   DropDatabaseParams,
   DatabaseData,
 } from './Types';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-import { rootContext } from '../../context/Root';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
+import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import { rootContext } from '@/context/Root';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './Create';
 
 const Database = () => {

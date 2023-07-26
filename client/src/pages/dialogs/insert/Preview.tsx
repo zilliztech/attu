@@ -2,13 +2,13 @@ import { FC, useCallback, useMemo } from 'react';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
-import { Option } from '../../../components/customSelector/Types';
-import CustomSelector from '../../../components/customSelector/CustomSelector';
-import AttuGrid from '../../../components/grid/Grid';
-import { transferCsvArrayToTableData } from '../../../utils/Insert';
-import { ColDefinitionsType } from '../../../components/grid/Types';
-import SimpleMenu from '../../../components/menu/SimpleMenu';
-import icons from '../../../components/icons/Icons';
+import { Option } from '@/components/customSelector/Types';
+import CustomSelector from '@/components/customSelector/CustomSelector';
+import AttuGrid from '@/components/grid/Grid';
+import { transferCsvArrayToTableData } from '@/utils/Insert';
+import { ColDefinitionsType } from '@/components/grid/Types';
+import SimpleMenu from '@/components/menu/SimpleMenu';
+import icons from '@/components/icons/Icons';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

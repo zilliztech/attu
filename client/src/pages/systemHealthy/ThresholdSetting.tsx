@@ -10,14 +10,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import CustomInput from '../../components/customInput/CustomInput';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import { useFormValidation } from '../../hooks/Form';
-import { formatForm } from '../../utils/Form';
+import CustomInput from '@/components/customInput/CustomInput';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import { useFormValidation } from '@/hooks/Form';
+import { formatForm } from '@/utils/Form';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import CustomButton from '../../components/customButton/CustomButton';
+import CustomButton from '@/components/customButton/CustomButton';
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;

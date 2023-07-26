@@ -1,7 +1,7 @@
 import { CollectionData } from '../../collections/Types';
 import { PartitionView } from '../../partitions/Types';
 import { FieldData } from '../../schema/Types';
-import { Option } from '../../../components/customSelector/Types';
+import { Option } from '@/components/customSelector/Types';
 
 export interface InsertContentProps {
   // optional on partition page since its collection is fixed

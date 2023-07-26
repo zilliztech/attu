@@ -1,14 +1,14 @@
 import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
 import { FC, useCallback, useEffect, useState } from 'react';
-import AttuGrid from '../../components/grid/Grid';
-import { ColDefinitionsType } from '../../components/grid/Types';
+import AttuGrid from '@/components/grid/Grid';
+import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
-import { usePaginationHook } from '../../hooks/Pagination';
-import icons from '../../components/icons/Icons';
-import { FieldHttp } from '../../http/Field';
+import { usePaginationHook } from '@/hooks/Pagination';
+import icons from '@/components/icons/Icons';
+import { FieldHttp } from '@/http/Field';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
-import { IndexHttp } from '../../http/Index';
+import { IndexHttp } from '@/http/Index';
 import { DataTypeStringEnum } from '../collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
