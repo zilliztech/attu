@@ -5,7 +5,7 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import { InsertImportProps } from './Types';
 import Uploader from '@/components/uploader/Uploader';
 import { INSERT_CSV_SAMPLE, INSERT_MAX_SIZE } from '../../../consts/Insert';
-import { parseByte } from '../@/utils/Format';
+import { parseByte } from '@/utils/Format';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
