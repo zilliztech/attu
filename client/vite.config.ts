@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import * as path from 'path';
 import reactRefresh from '@vitejs/plugin-react';
 const svgrPlugin = require('vite-plugin-svgr');
 
@@ -22,4 +23,10 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    // extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json"],
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
 });

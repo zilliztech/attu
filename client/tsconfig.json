@@ -8,7 +8,10 @@
       "jest",
       "@testing-library/jest-dom"
     ],
-
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

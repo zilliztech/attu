@@ -1,15 +1,15 @@
 import { makeStyles, Theme, Typography, Divider } from '@material-ui/core';
 import { FC, useContext } from 'react';
-import CustomButton from '../../../components/customButton/CustomButton';
-import icons from '../../../components/icons/Icons';
-import Status from '../../../components/status/Status';
+import CustomButton from '@/components/customButton/CustomButton';
+import icons from '@/components/icons/Icons';
+import Status from '@/components/status/Status';
 import { CollectionCardProps } from './Types';
 import { useTranslation } from 'react-i18next';
-import CustomIconButton from '../../../components/customButton/CustomIconButton';
+import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useNavigate, Link } from 'react-router-dom';
-import { LOADING_STATE } from '../../../consts/Milvus';
+import { LOADING_STATE } from '@/consts/Milvus';
 import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
-import { rootContext } from '../../../context/Root';
+import { rootContext } from '@/context/Root';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

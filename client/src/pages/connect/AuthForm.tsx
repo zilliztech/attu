@@ -1,21 +1,21 @@
 import React, { useContext, useMemo, useState } from 'react';
 
 import { makeStyles, Theme, Typography } from '@material-ui/core';
-import CustomButton from '../../components/customButton/CustomButton';
-import CustomInput from '../../components/customInput/CustomInput';
-import icons from '../../components/icons/Icons';
+import CustomButton from '@/components/customButton/CustomButton';
+import CustomInput from '@/components/customInput/CustomInput';
+import icons from '@/components/icons/Icons';
 import { useTranslation } from 'react-i18next';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import { useFormValidation } from '../../hooks/Form';
-import { formatForm } from '../../utils/Form';
-import { MilvusHttp } from '../../http/Milvus';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import { useFormValidation } from '@/hooks/Form';
+import { formatForm } from '@/utils/Form';
+import { MilvusHttp } from '@/http/Milvus';
 import { useNavigate } from 'react-router-dom';
-import { rootContext } from '../../context/Root';
-import { authContext } from '../../context/Auth';
+import { rootContext } from '@/context/Root';
+import { authContext } from '@/context/Auth';
 import { MILVUS_ADDRESS, LAST_TIME_ADDRESS } from '../../consts/Localstorage';
 import { MILVUS_URL } from '../../consts/Milvus';
-import { CustomRadio } from '../../components/customRadio/CustomRadio';
-import { prometheusContext } from '../../context/Prometheus';
+import { CustomRadio } from '@/components/customRadio/CustomRadio';
+import { prometheusContext } from '@/context/Prometheus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

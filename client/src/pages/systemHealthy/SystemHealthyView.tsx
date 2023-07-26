@@ -1,9 +1,9 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { useInterval } from '../../hooks/SystemView';
-import { PrometheusHttp } from '../../http/Prometheus';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { useInterval } from '@/hooks/SystemView';
+import { PrometheusHttp } from '@/http/Prometheus';
+import { ALL_ROUTER_TYPES } from '@/router/Types';
 import {
   ENodeService,
   ILineChartData,

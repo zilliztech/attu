@@ -1,25 +1,25 @@
 import { TextField, Typography, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
-import CustomSelector from '../../components/customSelector/CustomSelector';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '@/router/Types';
+import CustomSelector from '@/components/customSelector/CustomSelector';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import SearchParams from './SearchParams';
 import { DEFAULT_METRIC_VALUE_MAP } from '../../consts/Milvus';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
-import AttuGrid from '../../components/grid/Grid';
-import EmptyCard from '../../components/cards/EmptyCard';
-import icons from '../../components/icons/Icons';
-import { usePaginationHook } from '../../hooks/Pagination';
-import CustomButton from '../../components/customButton/CustomButton';
-import SimpleMenu from '../../components/menu/SimpleMenu';
+import AttuGrid from '@/components/grid/Grid';
+import EmptyCard from '@/components/cards/EmptyCard';
+import icons from '@/components/icons/Icons';
+import { usePaginationHook } from '@/hooks/Pagination';
+import CustomButton from '@/components/customButton/CustomButton';
+import SimpleMenu from '@/components/menu/SimpleMenu';
 import { TOP_K_OPTIONS } from './Constants';
-import { Option } from '../../components/customSelector/Types';
-import { CollectionHttp } from '../../http/Collection';
+import { Option } from '@/components/customSelector/Types';
+import { CollectionHttp } from '@/http/Collection';
 import { CollectionData, DataTypeEnum } from '../collections/Types';
-import { IndexHttp } from '../../http/Index';
+import { IndexHttp } from '@/http/Index';
 import { getVectorSearchStyles } from './Styles';
-import { parseValue } from '../../utils/Insert';
+import { parseValue } from '@/utils/Insert';
 import {
   classifyFields,
   getDefaultIndexType,
@@ -27,15 +27,15 @@ import {
   getNonVectorFieldsForFilter,
   getVectorFieldOptions,
   transferSearchResult,
-} from '../../utils/search';
-import { ColDefinitionsType } from '../../components/grid/Types';
-import Filter from '../../components/advancedSearch';
-import { Field } from '../../components/advancedSearch/Types';
+} from '@/utils/search';
+import { ColDefinitionsType } from '@/components/grid/Types';
+import Filter from '@/components/advancedSearch';
+import { Field } from '@/components/advancedSearch/Types';
 import { useLocation } from 'react-router-dom';
-import { parseLocationSearch } from '../../utils/Format';
-import { cloneObj, generateVector } from '../../utils/Common';
-import { CustomDatePicker } from '../../components/customDatePicker/CustomDatePicker';
-import { useTimeTravelHook } from '../../hooks/TimeTravel';
+import { parseLocationSearch } from '@/utils/Format';
+import { cloneObj, generateVector } from '@/utils/Common';
+import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
+import { useTimeTravelHook } from '@/hooks/TimeTravel';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { getLabelDisplayedRows } from './Utils';
 

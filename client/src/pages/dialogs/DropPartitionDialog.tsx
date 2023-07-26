@@ -1,9 +1,9 @@
 import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '../../context/Root';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
+import { rootContext } from '@/context/Root';
+import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { DropPartitionProps } from './Types';
-import { PartitionHttp } from '../../http/Partition';
+import { PartitionHttp } from '@/http/Partition';
 import { PartitionManageParam } from '../partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
 

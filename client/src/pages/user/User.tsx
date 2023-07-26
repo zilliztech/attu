@@ -1,18 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserHttp } from '../../http/User';
-import AttuGrid from '../../components/grid/Grid';
-import { ColDefinitionsType, ToolBarConfig } from '../../components/grid/Types';
+import { UserHttp } from '@/http/User';
+import AttuGrid from '@/components/grid/Grid';
+import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
   UserData,
 } from './Types';
-import DeleteTemplate from '../../components/customDialog/DeleteDialogTemplate';
-import { rootContext } from '../../context/Root';
-import { useNavigationHook } from '../../hooks/Navigation';
-import { ALL_ROUTER_TYPES } from '../../router/Types';
+import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import { rootContext } from '@/context/Root';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './Create';
 import UpdateUser from './Update';
 

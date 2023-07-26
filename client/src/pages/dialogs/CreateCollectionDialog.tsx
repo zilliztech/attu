@@ -1,16 +1,16 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import CustomInput from '../../components/customInput/CustomInput';
-import CustomSelector from '../../components/customSelector/CustomSelector';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import { rootContext } from '../../context/Root';
-import { useFormValidation } from '../../hooks/Form';
-import { formatForm } from '../../utils/Form';
-import { TypeEnum } from '../../utils/Validation';
+import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import CustomInput from '@/components/customInput/CustomInput';
+import CustomSelector from '@/components/customSelector/CustomSelector';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import { rootContext } from '@/context/Root';
+import { useFormValidation } from '@/hooks/Form';
+import { formatForm } from '@/utils/Form';
+import { TypeEnum } from '@/utils/Validation';
 import CreateFields from '../collections/CreateFields';
-import { CollectionHttp } from '../../http/Collection';
+import { CollectionHttp } from '@/http/Collection';
 import {
   CollectionCreateParam,
   CollectionCreateProps,

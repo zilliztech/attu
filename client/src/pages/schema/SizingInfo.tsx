@@ -1,8 +1,8 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomToolTip from '../../components/customToolTip/CustomToolTip';
-import icons from '../../components/icons/Icons';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import icons from '@/components/icons/Icons';
 import { SizingInfoParam } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

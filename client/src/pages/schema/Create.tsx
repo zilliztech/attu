@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CodeLanguageEnum, CodeViewData } from '../../components/code/Types';
-import DialogTemplate from '../../components/customDialog/DialogTemplate';
-import CustomSwitch from '../../components/customSwitch/CustomSwitch';
+import { CodeLanguageEnum, CodeViewData } from '@/components/code/Types';
+import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import CustomSwitch from '@/components/customSwitch/CustomSwitch';
 import {
   DEFAULT_SEFMENT_FILE_SIZE,
   DEFAULT_VECTORS,
@@ -10,12 +10,12 @@ import {
   INDEX_OPTIONS_MAP,
   METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
-import { useFormValidation } from '../../hooks/Form';
-import { getCreateIndexJSCode } from '../../utils/code/Js';
-import { getCreateIndexPYCode } from '../../utils/code/Py';
-import { getCreateIndexJavaCode } from '../../utils/code/Java';
-import { formatForm, getMetricOptions } from '../../utils/Form';
-import { computMilvusRecommonds, formatSize } from '../../utils/SizingTool';
+import { useFormValidation } from '@/hooks/Form';
+import { getCreateIndexJSCode } from '@/utils/code/Js';
+import { getCreateIndexPYCode } from '@/utils/code/Py';
+import { getCreateIndexJavaCode } from '@/utils/code/Java';
+import { formatForm, getMetricOptions } from '@/utils/Form';
+import { computMilvusRecommonds, formatSize } from '@/utils/SizingTool';
 import { DataTypeEnum, DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
 import SizingInfo from './SizingInfo';

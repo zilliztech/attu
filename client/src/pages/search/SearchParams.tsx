@@ -1,10 +1,10 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomInput from '../../components/customInput/CustomInput';
-import { ITextfieldConfig } from '../../components/customInput/Types';
-import CustomSelector from '../../components/customSelector/CustomSelector';
-import { Option } from '../../components/customSelector/Types';
+import CustomInput from '@/components/customInput/CustomInput';
+import { ITextfieldConfig } from '@/components/customInput/Types';
+import CustomSelector from '@/components/customSelector/CustomSelector';
+import { Option } from '@/components/customSelector/Types';
 import {
   DEFAULT_NLIST_VALUE,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
@@ -12,9 +12,9 @@ import {
   METRIC_OPTIONS_MAP,
   searchKeywordsType,
 } from '../../consts/Milvus';
-import { rootContext } from '../../context/Root';
-import { useFormValidation } from '../../hooks/Form';
-import { formatForm } from '../../utils/Form';
+import { rootContext } from '@/context/Root';
+import { useFormValidation } from '@/hooks/Form';
+import { formatForm } from '@/utils/Form';
 import { SearchParamInputConfig, SearchParamsProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
