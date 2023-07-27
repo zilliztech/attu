@@ -4,7 +4,7 @@ import { authContext } from '../context/Auth';
 import Collection from '../pages/collections/Collection';
 import Collections from '../pages/collections/Collections';
 import Connect from '../pages/connect/Connect';
-import Users from '../pages/user/User';
+import Users from '../pages/user/Users';
 import Database from '../pages/database/Database';
 import Index from '../pages/index';
 import Search from '../pages/search/VectorSearch';
