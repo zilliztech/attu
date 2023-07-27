@@ -38,9 +38,6 @@ const Users = () => {
 
   const fetchUsers = async () => {
     const res = await UserHttp.getUsers();
-    const roles = await UserHttp.getRoles();
-
-    console.log('roles', roles);
 
     setUsers(res.usernames.map((v: string) => ({ name: v })));
   };
