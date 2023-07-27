@@ -5,6 +5,9 @@ import {
   DeleteUserReq,
   CreateRoleReq,
   DropRoleReq,
+  AddUserToRoleReq,
+  RemoveUserFromRoleReq,
+  HasRoleReq
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 
@@ -57,6 +60,24 @@ export class UserService {
   async deleteRole(data: DropRoleReq) {
     const res = await this.milvusService.client.dropRole(data);
     throwErrorFromSDK(res);
+    return res;
+  }
+
+  async assignUserRole(data: AddUserToRoleReq) {
+    const res = await this.milvusService.client.addUserToRole(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  async unassignUserRole(data: RemoveUserFromRoleReq) {
+    const res = await this.milvusService.client.addUserToRole(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  async hasRole(data: HasRoleReq) {
+    const res = await this.milvusService.client.hasRole(data);
+    throwErrorFromSDK(res.status);
     return res;
   }
 }

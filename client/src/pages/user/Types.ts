@@ -1,15 +1,20 @@
+import { Option } from '@/components/customSelector/Types';
+
 export interface UserData {
   name: string;
+  roleName?: string;
 }
 
 export interface CreateUserParams {
   username: string;
   password: string;
+  roles: string[];
 }
 
 export interface CreateUserProps {
   handleCreate: (data: CreateUserParams) => void;
   handleClose: () => void;
+  roles: Option[]
 }
 
 export interface UpdateUserProps {
@@ -40,6 +45,13 @@ export interface CreateRoleProps {
 export interface DeleteRoleParams {
   roleName: string;
 }
+
+export interface AssignRoleParams {
+  username: string;
+  roleName: string;
+}
+
+export interface UnassignRoleParams extends AssignRoleParams {}
 
 export interface RoleData {
   name: string;

@@ -38,12 +38,36 @@ const Users = () => {
 
   const fetchUsers = async () => {
     const res = await UserHttp.getUsers();
-
-    setUsers(res.usernames.map((v: string) => ({ name: v })));
+    const roles = await UserHttp.getRoles();
+    setUsers(
+      res.usernames.map((v: string) => {
+        const name = v;
+        const rolesByName = roles.results.filter((r: any) =>
+          r.users.map((u: any) => u.name).includes(name)
+        );
+        return {
+          name: v,
+          role:
+            v === 'root'
+              ? 'root'
+              : rolesByName.map((r: any) => r.role.name).join(','),
+        };
+      })
+    );
   };
 
   const handleCreate = async (data: CreateUserParams) => {
     await UserHttp.createUser(data);
+    console.log(data, data.roles);
+    // assign user role if
+    if (data.roles.length > 0) {
+      console.log('assign roles');
+      // await UserHttp.assignUserRole({
+      //   username: data.username,
+      //   roleName: data.roleName,
+      // });
+    }
+
     fetchUsers();
     openSnackBar(successTrans('create', { name: userTrans('user') }));
     handleCloseDialog();
@@ -72,7 +96,8 @@ const Users = () => {
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: userTrans('user'),
-      onClick: () => {
+      onClick: async () => {
+        const roles = await UserHttp.getRoles();
         setDialog({
           open: true,
           type: 'custom',
@@ -81,6 +106,9 @@ const Users = () => {
               <CreateUser
                 handleCreate={handleCreate}
                 handleClose={handleCloseDialog}
+                roles={roles.results.map((r: any) => {
+                  return { label: r.role.name, value: r.role.name };
+                })}
               />
             ),
           },
@@ -125,10 +153,17 @@ const Users = () => {
       label: userTrans('user'),
     },
     {
+      id: 'role',
+      align: 'left',
+      disablePadding: false,
+      label: userTrans('role'),
+    },
+    {
       id: 'action',
       disablePadding: false,
       label: 'Action',
       showActionCell: true,
+      sortBy: 'action',
       actionBarConfigs: [
         {
           onClick: (e: React.MouseEvent, row: UserData) => {

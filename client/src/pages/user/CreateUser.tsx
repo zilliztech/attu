@@ -1,4 +1,10 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+} from '@material-ui/core';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -12,9 +18,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   input: {
     margin: theme.spacing(3, 0, 0.5),
   },
+  dialogWrapper: {
+    maxWidth: theme.spacing(70),
+    '& .MuiFormControlLabel-root': {
+      width: theme.spacing(20),
+    },
+  },
 }));
 
-const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
+const CreateUser: FC<CreateUserProps> = ({
+  handleCreate,
+  handleClose,
+  roles,
+}) => {
   const { t: commonTrans } = useTranslation();
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
@@ -24,10 +40,14 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
   const [form, setForm] = useState<CreateUserParams>({
     username: '',
     password: '',
+    roles: [],
   });
+
+  // selected Role
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
+
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
   const classes = useStyles();
@@ -87,6 +107,7 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateUser}
       confirmDisabled={disabled}
+      dialogClass={classes.dialogWrapper}
     >
       <>
         {createConfigs.map(v => (
@@ -98,6 +119,30 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
             key={v.label}
           />
         ))}
+
+        <FormGroup row>
+          {roles.map((r: any, index: number) => (
+            <FormControlLabel
+              control={<Checkbox />}
+              key={index}
+              label={r.label}
+              value={r.value}
+              onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
+                let newRoles = [...form.roles];
+
+                if (!checked) {
+                  newRoles = newRoles.filter(
+                    (n: string | number) => n === r.vlaue
+                  );
+                } else {
+                  newRoles.push(r.value);
+                }
+
+                setForm(v => ({ ...v, roles: [...newRoles] }));
+              }}
+            />
+          ))}
+        </FormGroup>
       </>
     </DialogTemplate>
   );

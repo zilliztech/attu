@@ -2,8 +2,13 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middlewares/validation';
 import { UserService } from './users.service';
 import { milvusService } from '../milvus';
-
-import { CreateUserDto, UpdateUserDto, CreateRoleDto } from './dto';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  CreateRoleDto,
+  AssignUserRoleDto,
+  UnassignUserRoleDto,
+} from './dto';
 
 export class UserController {
   private router: Router;
@@ -41,12 +46,25 @@ export class UserController {
 
     this.router.delete('/roles/:roleName', this.deleteRole.bind(this));
 
+    this.router.put(
+      '/:username/role/assign',
+      dtoValidationMiddleware(AssignUserRoleDto),
+      this.assignUserRole.bind(this)
+    );
+
+    this.router.put(
+      '/:username/role/unassign',
+      dtoValidationMiddleware(UnassignUserRoleDto),
+      this.unassignUserRole.bind(this)
+    );
+
     return this.router;
   }
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.userService.getUsers();
+
       res.send(result);
     } catch (error) {
       next(error);
@@ -110,6 +128,36 @@ export class UserController {
     const { roleName } = req.params;
     try {
       const result = await this.userService.deleteRole({ roleName });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async assignUserRole(req: Request, res: Response, next: NextFunction) {
+    const { roleName } = req.body;
+    const { username } = req.params;
+
+    try {
+      const result = await this.userService.assignUserRole({
+        username,
+        roleName,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async unassignUserRole(req: Request, res: Response, next: NextFunction) {
+    const { roleName } = req.body;
+    const { username } = req.params;
+
+    try {
+      const result = await this.userService.assignUserRole({
+        username,
+        roleName,
+      });
       res.send(result);
     } catch (error) {
       next(error);
