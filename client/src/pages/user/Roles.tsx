@@ -4,18 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { UserHttp } from '@/http/User';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import {
-  CreateUserParams,
-  DeleteUserParams,
-  UpdateUserParams,
-  UserData,
-} from './Types';
+import { CreateRoleParams, DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context/Root';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import CreateUser from './CreateUser';
-import UpdateUser from './Update';
+import CreateRole from './CreateRole';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -23,12 +17,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Users = () => {
+const Roles = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
   const classes = useStyles();
 
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [selectedUser, setSelectedUser] = useState<UserData[]>([]);
+  const [roles, setRoles] = useState<RoleData[]>([]);
+  const [selectedRole, setSelectedRole] = useState<RoleData[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const { t: successTrans } = useTranslation('success');
@@ -36,49 +30,42 @@ const Users = () => {
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
 
-  const fetchUsers = async () => {
-    const res = await UserHttp.getUsers();
+  const fetchRoles = async () => {
+    const roles = await UserHttp.getRoles();
 
-    setUsers(res.usernames.map((v: string) => ({ name: v })));
+    setRoles(roles.results.map((v: any) => ({ name: v.role.name })));
   };
 
-  const handleCreate = async (data: CreateUserParams) => {
-    await UserHttp.createUser(data);
-    fetchUsers();
-    openSnackBar(successTrans('create', { name: userTrans('user') }));
-    handleCloseDialog();
-  };
-
-  const handleUpdate = async (data: UpdateUserParams) => {
-    await UserHttp.updateUser(data);
-    fetchUsers();
-    openSnackBar(successTrans('update', { name: userTrans('user') }));
+  const handleCreate = async (data: CreateRoleParams) => {
+    await UserHttp.createRole(data);
+    fetchRoles();
+    openSnackBar(successTrans('create', { name: userTrans('role') }));
     handleCloseDialog();
   };
 
   const handleDelete = async () => {
-    for (const user of selectedUser) {
-      const param: DeleteUserParams = {
-        username: user.name,
+    for (const role of selectedRole) {
+      const param: DeleteRoleParams = {
+        roleName: role.name,
       };
-      await UserHttp.deleteUser(param);
+      await UserHttp.deleteRole(param);
     }
 
-    openSnackBar(successTrans('delete', { name: userTrans('user') }));
-    fetchUsers();
+    openSnackBar(successTrans('delete', { name: userTrans('role') }));
+    fetchRoles();
     handleCloseDialog();
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      label: userTrans('user'),
+      label: userTrans('role'),
       onClick: () => {
         setDialog({
           open: true,
           type: 'custom',
           params: {
             component: (
-              <CreateUser
+              <CreateRole
                 handleCreate={handleCreate}
                 handleClose={handleCloseDialog}
               />
@@ -99,7 +86,7 @@ const Users = () => {
             component: (
               <DeleteTemplate
                 label={btnTrans('drop')}
-                title={dialogTrans('deleteTitle', { type: userTrans('user') })}
+                title={dialogTrans('deleteTitle', { type: userTrans('role') })}
                 text={userTrans('deleteWarning')}
                 handleDelete={handleDelete}
               />
@@ -109,8 +96,8 @@ const Users = () => {
       },
       label: '',
       disabled: () =>
-        selectedUser.length === 0 ||
-        selectedUser.findIndex(v => v.name === 'root') > -1,
+        selectedRole.length === 0 ||
+        selectedRole.findIndex(v => v.name === 'root') > -1,
       disabledTooltip: userTrans('deleteTip'),
 
       icon: 'delete',
@@ -122,43 +109,16 @@ const Users = () => {
       id: 'name',
       align: 'left',
       disablePadding: false,
-      label: userTrans('user'),
-    },
-    {
-      id: 'action',
-      disablePadding: false,
-      label: 'Action',
-      showActionCell: true,
-      actionBarConfigs: [
-        {
-          onClick: (e: React.MouseEvent, row: UserData) => {
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component: (
-                  <UpdateUser
-                    username={row.name}
-                    handleUpdate={handleUpdate}
-                    handleClose={handleCloseDialog}
-                  />
-                ),
-              },
-            });
-          },
-          linkButton: true,
-          text: 'Update password',
-        },
-      ],
+      label: userTrans('role'),
     },
   ];
 
-  const handleSelectChange = (value: UserData[]) => {
-    setSelectedUser(value);
+  const handleSelectChange = (value: RoleData[]) => {
+    setSelectedRole(value);
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchRoles();
   }, []);
 
   return (
@@ -166,11 +126,11 @@ const Users = () => {
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={users}
-        rowCount={users.length}
+        rows={roles}
+        rowCount={roles.length}
         primaryKey="name"
         showPagination={false}
-        selected={selectedUser}
+        selected={selectedRole}
         setSelected={handleSelectChange}
         // page={currentPage}
         // onChangePage={handlePageChange}
@@ -185,4 +145,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Roles;

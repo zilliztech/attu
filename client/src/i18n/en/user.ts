@@ -2,6 +2,7 @@ const userTrans = {
   createTitle: 'Create User',
   updateTitle: 'Update Milvus User',
   user: 'User',
+  users: 'Users',
   deleteWarning: 'You are trying to drop user. This action cannot be undone.',
   oldPassword: 'Current Password',
   newPassword: 'New Password',
@@ -10,6 +11,10 @@ const userTrans = {
   isNotSame: 'Not same as new password',
   deleteTip:
     'Please select at least one item to drop and root can not be dropped.',
+
+  role: 'Role',
+  roles: 'Roles',
+  createRoleTitle: 'Create Role',
 };
 
 export default userTrans;

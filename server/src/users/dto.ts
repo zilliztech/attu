@@ -8,6 +8,11 @@ export class CreateUserDto {
   readonly password: string;
 }
 
+export class CreateRoleDto {
+  @IsString()
+  readonly roleName: string;
+}
+
 export class UpdateUserDto {
   @IsString()
   readonly username: string;

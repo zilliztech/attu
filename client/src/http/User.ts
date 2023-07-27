@@ -2,6 +2,8 @@ import {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
+  CreateRoleParams,
+  DeleteRoleParams,
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
 
@@ -29,6 +31,18 @@ export class UserHttp extends BaseModel {
 
   static deleteUser(data: DeleteUserParams) {
     return super.delete({ path: `${this.USER_URL}/${data.username}` });
+  }
+
+  static createRole(data: CreateRoleParams) {
+    return super.create({ path: `${this.USER_URL}/roles`, data });
+  }
+
+  static getRoles() {
+    return super.search({ path: `${this.USER_URL}/roles`, params: {} });
+  }
+
+  static deleteRole(data: DeleteRoleParams) {
+    return super.delete({ path: `${this.USER_URL}/roles/${data.roleName}` });
   }
 
   get _names() {

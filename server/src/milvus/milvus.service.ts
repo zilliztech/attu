@@ -56,6 +56,7 @@ export class MilvusService {
         address: milvusAddress,
         username,
         password,
+        logLevel: "debug"
       });
 
       // don't break attu

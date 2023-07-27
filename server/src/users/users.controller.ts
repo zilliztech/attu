@@ -3,7 +3,7 @@ import { dtoValidationMiddleware } from '../middlewares/validation';
 import { UserService } from './users.service';
 import { milvusService } from '../milvus';
 
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, CreateRoleDto } from './dto';
 
 export class UserController {
   private router: Router;
@@ -30,6 +30,16 @@ export class UserController {
     );
 
     this.router.delete('/:username', this.deleteUser.bind(this));
+
+    this.router.get('/roles', this.getRoles.bind(this));
+
+    this.router.post(
+      '/roles',
+      dtoValidationMiddleware(CreateRoleDto),
+      this.createRole.bind(this)
+    );
+
+    this.router.delete('/roles/:roleName', this.deleteRole.bind(this));
 
     return this.router;
   }
@@ -71,6 +81,35 @@ export class UserController {
     const { username } = req.params;
     try {
       const result = await this.userService.deleteUser({ username });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getRoles(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.userService.getRoles();
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createRole(req: Request, res: Response, next: NextFunction) {
+    const { roleName } = req.body;
+    try {
+      const result = await this.userService.createRole({ roleName });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteRole(req: Request, res: Response, next: NextFunction) {
+    const { roleName } = req.params;
+    try {
+      const result = await this.userService.deleteRole({ roleName });
       res.send(result);
     } catch (error) {
       next(error);
