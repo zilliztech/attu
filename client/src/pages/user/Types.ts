@@ -11,10 +11,20 @@ export interface CreateUserParams {
   roles: string[];
 }
 
+export interface UpdateUserRoleParams {
+  roles: string[];
+}
+
+export interface UpdateUserRoleProps {
+  handleUpdate: (data: UpdateUserRoleParams) => void;
+  handleClose: () => void;
+  roles: string[];
+}
+
 export interface CreateUserProps {
   handleCreate: (data: CreateUserParams) => void;
   handleClose: () => void;
-  roles: Option[]
+  roles: Option[];
 }
 
 export interface UpdateUserProps {

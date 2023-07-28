@@ -9,12 +9,14 @@ import {
   DeleteUserParams,
   UpdateUserParams,
   UserData,
+  UpdateUserRoleParams,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context/Root';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './CreateUser';
+import UpdateUserRole from './UpdateUserRole';
 import UpdateUser from './Update';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -68,6 +70,19 @@ const Users = () => {
     fetchUsers();
     openSnackBar(successTrans('create', { name: userTrans('user') }));
     handleCloseDialog();
+  };
+
+  const handleUpdateUserRole = async (data: UpdateUserRoleParams) => {
+    // await UserHttp.createUser(data);
+    // console.log(data, data.roles);
+    // // assign user role if
+    // await UserHttp.updateUserRole({
+    //   username: data.username,
+    //   roles: data.roles,
+    // });
+    // fetchUsers();
+    // openSnackBar(successTrans('create', { name: userTrans('user') }));
+    // handleCloseDialog();
   };
 
   const handleUpdate = async (data: UpdateUserParams) => {
@@ -124,11 +139,11 @@ const Users = () => {
           type: 'custom',
           params: {
             component: (
-              <CreateUser
-                handleCreate={handleCreate}
+              <UpdateUserRole
+                handleUpdate={handleUpdateUserRole}
                 handleClose={handleCloseDialog}
                 roles={roles.results.map((r: any) => {
-                  return { label: r.role.name, value: r.role.name };
+                  return r.role.name;
                 })}
               />
             ),
