@@ -47,9 +47,9 @@ export class UserHttp extends BaseModel {
     return super.delete({ path: `${this.USER_URL}/roles/${data.roleName}` });
   }
 
-  static assignUserRole(data: AssignRoleParams) {
+  static updateUserRole(data: AssignRoleParams) {
     return super.update({
-      path: `${this.USER_URL}/${data.username}/role/assign`,
+      path: `${this.USER_URL}/${data.username}/role/update`,
       data,
     });
   }

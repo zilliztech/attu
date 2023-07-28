@@ -50,7 +50,7 @@ const Users = () => {
           role:
             v === 'root'
               ? 'root'
-              : rolesByName.map((r: any) => r.role.name).join(','),
+              : rolesByName.map((r: any) => r.role.name).join(' , '),
         };
       })
     );
@@ -60,13 +60,10 @@ const Users = () => {
     await UserHttp.createUser(data);
     console.log(data, data.roles);
     // assign user role if
-    if (data.roles.length > 0) {
-      console.log('assign roles');
-      // await UserHttp.assignUserRole({
-      //   username: data.username,
-      //   roleName: data.roleName,
-      // });
-    }
+    await UserHttp.updateUserRole({
+      username: data.username,
+      roles: data.roles,
+    });
 
     fetchUsers();
     openSnackBar(successTrans('create', { name: userTrans('user') }));
@@ -119,6 +116,30 @@ const Users = () => {
 
     {
       type: 'iconBtn',
+      label: userTrans('editRole'),
+      onClick: async () => {
+        const roles = await UserHttp.getRoles();
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <CreateUser
+                handleCreate={handleCreate}
+                handleClose={handleCloseDialog}
+                roles={roles.results.map((r: any) => {
+                  return { label: r.role.name, value: r.role.name };
+                })}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'edit',
+    },
+
+    {
+      type: 'iconBtn',
       onClick: () => {
         setDialog({
           open: true,
@@ -140,7 +161,6 @@ const Users = () => {
         selectedUser.length === 0 ||
         selectedUser.findIndex(v => v.name === 'root') > -1,
       disabledTooltip: userTrans('deleteTip'),
-
       icon: 'delete',
     },
   ];

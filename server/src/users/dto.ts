@@ -28,8 +28,8 @@ export class AssignUserRoleDto {
   @IsString()
   readonly username: string;
 
-  @IsString()
-  readonly roleName: string;
+  @IsString({ each: true })
+  readonly roles: string;
 }
 
 export class UnassignUserRoleDto {

@@ -47,9 +47,9 @@ export class UserController {
     this.router.delete('/roles/:roleName', this.deleteRole.bind(this));
 
     this.router.put(
-      '/:username/role/assign',
+      '/:username/role/update',
       dtoValidationMiddleware(AssignUserRoleDto),
-      this.assignUserRole.bind(this)
+      this.updateUserRole.bind(this)
     );
 
     this.router.put(
@@ -134,16 +134,40 @@ export class UserController {
     }
   }
 
-  async assignUserRole(req: Request, res: Response, next: NextFunction) {
-    const { roleName } = req.body;
+  async updateUserRole(req: Request, res: Response, next: NextFunction) {
+    const { roles } = req.body;
     const { username } = req.params;
 
+    const results = [];
+
     try {
-      const result = await this.userService.assignUserRole({
+      // get user existing roles
+      const selectUser = await this.userService.selectUser({
         username,
-        roleName,
+        includeRoleInfo: false,
       });
-      res.send(result);
+
+      const existingRoles = selectUser.results[0].roles;
+      // remove user existing roles
+      for (let i = 0; i < existingRoles.length; i++) {
+        if (existingRoles[i].name.length > 0) {
+          await this.userService.unassignUserRole({
+            username,
+            roleName: existingRoles[i].name,
+          });
+        }
+      }
+
+      // assign new user roles
+      for (let i = 0; i < roles.length; i++) {
+        const result = await this.userService.assignUserRole({
+          username,
+          roleName: roles[i],
+        });
+        results.push(result);
+      }
+
+      res.send(results);
     } catch (error) {
       next(error);
     }
@@ -154,7 +178,7 @@ export class UserController {
     const { username } = req.params;
 
     try {
-      const result = await this.userService.assignUserRole({
+      const result = await this.userService.unassignUserRole({
         username,
         roleName,
       });

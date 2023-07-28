@@ -4,6 +4,7 @@ import {
   Checkbox,
   FormGroup,
   FormControlLabel,
+  Typography,
 } from '@material-ui/core';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,7 @@ import { CreateUserProps, CreateUserParams } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
-    margin: theme.spacing(3, 0, 0.5),
+    margin: theme.spacing(2, 0, 0.5),
   },
   dialogWrapper: {
     maxWidth: theme.spacing(70),
@@ -119,6 +120,10 @@ const CreateUser: FC<CreateUserProps> = ({
             key={v.label}
           />
         ))}
+
+        <Typography variant="h5" component="span">
+          {userTrans('roles')}
+        </Typography>
 
         <FormGroup row>
           {roles.map((r: any, index: number) => (

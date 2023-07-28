@@ -48,7 +48,7 @@ export interface DeleteRoleParams {
 
 export interface AssignRoleParams {
   username: string;
-  roleName: string;
+  roles: string[];
 }
 
 export interface UnassignRoleParams extends AssignRoleParams {}
