@@ -1,15 +1,33 @@
+import { Option as RoleOption } from '@/components/customSelector/Types';
+
 export interface UserData {
   name: string;
+  roleName?: string;
+  roles: string[];
 }
 
 export interface CreateUserParams {
   username: string;
   password: string;
+  roles: string[];
+}
+
+export interface UpdateUserRoleParams {
+  username: string;
+  roles: string[];
+}
+
+export interface UpdateUserRoleProps {
+  onUpdate: (data: UpdateUserRoleParams) => void;
+  handleClose: () => void;
+  username: string;
+  roles: string[];
 }
 
 export interface CreateUserProps {
   handleCreate: (data: CreateUserParams) => void;
   handleClose: () => void;
+  roleOptions: RoleOption[];
 }
 
 export interface UpdateUserProps {
@@ -40,6 +58,13 @@ export interface CreateRoleProps {
 export interface DeleteRoleParams {
   roleName: string;
 }
+
+export interface AssignRoleParams {
+  username: string;
+  roles: string[];
+}
+
+export interface UnassignRoleParams extends AssignRoleParams {}
 
 export interface RoleData {
   name: string;

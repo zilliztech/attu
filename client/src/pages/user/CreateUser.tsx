@@ -1,4 +1,11 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Typography,
+} from '@material-ui/core';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -7,14 +14,25 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks/Form';
 import { formatForm } from '@/utils/Form';
 import { CreateUserProps, CreateUserParams } from './Types';
+import { Option as RoleOption } from '@/components/customSelector/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
-    margin: theme.spacing(3, 0, 0.5),
+    margin: theme.spacing(2, 0, 0.5),
+  },
+  dialogWrapper: {
+    maxWidth: theme.spacing(70),
+    '& .MuiFormControlLabel-root': {
+      width: theme.spacing(20),
+    },
   },
 }));
 
-const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
+const CreateUser: FC<CreateUserProps> = ({
+  handleCreate,
+  handleClose,
+  roleOptions,
+}) => {
   const { t: commonTrans } = useTranslation();
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
@@ -24,10 +42,14 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
   const [form, setForm] = useState<CreateUserParams>({
     username: '',
     password: '',
+    roles: [],
   });
+
+  // selected Role
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
+
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
   const classes = useStyles();
@@ -87,6 +109,7 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateUser}
       confirmDisabled={disabled}
+      dialogClass={classes.dialogWrapper}
     >
       <>
         {createConfigs.map(v => (
@@ -98,6 +121,38 @@ const CreateUser: FC<CreateUserProps> = ({ handleCreate, handleClose }) => {
             key={v.label}
           />
         ))}
+
+        <Typography variant="h5" component="span">
+          {userTrans('roles')}
+        </Typography>
+
+        <FormGroup row>
+          {roleOptions.map((r: RoleOption, index: number) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    checked: boolean
+                  ) => {
+                    let newRoles = [...form.roles];
+
+                    if (!checked) {
+                      newRoles = newRoles.filter((n: string) => n === r.value);
+                    } else {
+                      newRoles.push(String(r.value));
+                    }
+
+                    setForm(v => ({ ...v, roles: [...newRoles] }));
+                  }}
+                />
+              }
+              key={index}
+              label={r.label}
+              value={r.value}
+            />
+          ))}
+        </FormGroup>
       </>
     </DialogTemplate>
   );

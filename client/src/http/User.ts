@@ -4,6 +4,8 @@ import {
   UpdateUserParams,
   CreateRoleParams,
   DeleteRoleParams,
+  AssignRoleParams,
+  UnassignRoleParams,
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
 
@@ -43,6 +45,20 @@ export class UserHttp extends BaseModel {
 
   static deleteRole(data: DeleteRoleParams) {
     return super.delete({ path: `${this.USER_URL}/roles/${data.roleName}` });
+  }
+
+  static updateUserRole(data: AssignRoleParams) {
+    return super.update({
+      path: `${this.USER_URL}/${data.username}/role/update`,
+      data,
+    });
+  }
+
+  static unassignUserRole(data: UnassignRoleParams) {
+    return super.update({
+      path: `${this.USER_URL}/${data.username}/role/unassign`,
+      data,
+    });
   }
 
   get _names() {

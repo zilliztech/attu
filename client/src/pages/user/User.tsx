@@ -9,12 +9,14 @@ import {
   DeleteUserParams,
   UpdateUserParams,
   UserData,
+  UpdateUserRoleParams,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context/Root';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './CreateUser';
+import UpdateUserRole from './UpdateUserRole';
 import UpdateUser from './Update';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -38,14 +40,42 @@ const Users = () => {
 
   const fetchUsers = async () => {
     const res = await UserHttp.getUsers();
-
-    setUsers(res.usernames.map((v: string) => ({ name: v })));
+    const roles = await UserHttp.getRoles();
+    setUsers(
+      res.usernames.map((v: string) => {
+        const name = v;
+        const rolesByName = roles.results.filter((r: any) =>
+          r.users.map((u: any) => u.name).includes(name)
+        );
+        const originRoles =
+          v === 'root' ? ['root'] : rolesByName.map((r: any) => r.role.name);
+        return {
+          name: v,
+          role: originRoles.join(' , '),
+          roles: originRoles,
+        };
+      })
+    );
   };
 
   const handleCreate = async (data: CreateUserParams) => {
     await UserHttp.createUser(data);
+    // assign user role if
+    await UserHttp.updateUserRole({
+      username: data.username,
+      roles: data.roles,
+    });
+
     fetchUsers();
     openSnackBar(successTrans('create', { name: userTrans('user') }));
+    handleCloseDialog();
+  };
+
+  const onUpdate = async (data: UpdateUserRoleParams) => {
+    fetchUsers();
+    openSnackBar(
+      successTrans('update', { name: userTrans('updateRoleSuccess') })
+    );
     handleCloseDialog();
   };
 
@@ -72,7 +102,8 @@ const Users = () => {
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: userTrans('user'),
-      onClick: () => {
+      onClick: async () => {
+        const roles = await UserHttp.getRoles();
         setDialog({
           open: true,
           type: 'custom',
@@ -81,12 +112,44 @@ const Users = () => {
               <CreateUser
                 handleCreate={handleCreate}
                 handleClose={handleCloseDialog}
+                roleOptions={roles.results.map((r: any) => {
+                  return { label: r.role.name, value: r.role.name };
+                })}
               />
             ),
           },
         });
       },
       icon: 'add',
+    },
+
+    {
+      type: 'iconBtn',
+      label: userTrans('editRole'),
+      onClick: async () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <UpdateUserRole
+                username={selectedUser[0]!.name}
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+                roles={
+                  users.filter(u => u.name === selectedUser[0].name)[0].roles
+                }
+              />
+            ),
+          },
+        });
+      },
+      icon: 'edit',
+      disabled: () =>
+        selectedUser.length === 0 ||
+        selectedUser.length > 1 ||
+        selectedUser.findIndex(v => v.name === 'root') > -1,
+      disabledTooltip: userTrans('deleteEditRoleTip'),
     },
 
     {
@@ -112,7 +175,6 @@ const Users = () => {
         selectedUser.length === 0 ||
         selectedUser.findIndex(v => v.name === 'root') > -1,
       disabledTooltip: userTrans('deleteTip'),
-
       icon: 'delete',
     },
   ];
@@ -125,10 +187,17 @@ const Users = () => {
       label: userTrans('user'),
     },
     {
+      id: 'role',
+      align: 'left',
+      disablePadding: false,
+      label: userTrans('role'),
+    },
+    {
       id: 'action',
       disablePadding: false,
       label: 'Action',
       showActionCell: true,
+      sortBy: 'action',
       actionBarConfigs: [
         {
           onClick: (e: React.MouseEvent, row: UserData) => {
