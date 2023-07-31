@@ -10,6 +10,13 @@ import {
   HasRoleReq,
   listRoleReq,
   SelectUserReq,
+  Privileges,
+  GlobalPrivileges,
+  CollectionPrivileges,
+  UserPrivileges,
+  RbacObjects,
+  ListGrantsReq,
+  OperateRolePrivilegeReq,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 
@@ -85,6 +92,28 @@ export class UserService {
   async hasRole(data: HasRoleReq) {
     const res = await this.milvusService.client.hasRole(data);
     throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async getRBAC() {
+    return {
+      Privileges,
+      GlobalPrivileges,
+      CollectionPrivileges,
+      UserPrivileges,
+      RbacObjects,
+    };
+  }
+
+  async listGrants(data: ListGrantsReq) {
+    const res = await this.milvusService.client.listGrants(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async grantRolePrivilege(data: OperateRolePrivilegeReq) {
+    const res = await this.milvusService.client.grantRolePrivilege(data);
+    throwErrorFromSDK(res);
     return res;
   }
 }

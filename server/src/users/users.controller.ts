@@ -20,42 +20,43 @@ export class UserController {
   }
 
   generateRoutes() {
+    // user
     this.router.get('/', this.getUsers.bind(this));
-
     this.router.post(
       '/',
       dtoValidationMiddleware(CreateUserDto),
       this.createUsers.bind(this)
     );
-
     this.router.put(
       '/',
       dtoValidationMiddleware(UpdateUserDto),
       this.updateUsers.bind(this)
     );
-
     this.router.delete('/:username', this.deleteUser.bind(this));
-
-    this.router.get('/roles', this.getRoles.bind(this));
-
-    this.router.post(
-      '/roles',
-      dtoValidationMiddleware(CreateRoleDto),
-      this.createRole.bind(this)
-    );
-
-    this.router.delete('/roles/:roleName', this.deleteRole.bind(this));
-
     this.router.put(
       '/:username/role/update',
       dtoValidationMiddleware(AssignUserRoleDto),
       this.updateUserRole.bind(this)
     );
-
     this.router.put(
       '/:username/role/unassign',
       dtoValidationMiddleware(UnassignUserRoleDto),
       this.unassignUserRole.bind(this)
+    );
+
+    // role
+    this.router.get('/rbac', this.rbac.bind(this));
+    this.router.get('/roles', this.getRoles.bind(this));
+    this.router.post(
+      '/roles',
+      dtoValidationMiddleware(CreateRoleDto),
+      this.createRole.bind(this)
+    );
+    this.router.get('/roles/:roleName', this.listGrant.bind(this));
+    this.router.delete('/roles/:roleName', this.deleteRole.bind(this));
+    this.router.put(
+      '/roles/:roleName/updatePrivileges',
+      this.updateRolePrivileges.bind(this)
     );
 
     return this.router;
@@ -107,7 +108,15 @@ export class UserController {
 
   async getRoles(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getRoles();
+      const result = (await this.userService.getRoles()) as any;
+
+      for (let i = 0; i < result.results.length; i++) {
+        const { entities } = await this.userService.listGrants({
+          roleName: result.results[i].role.name,
+        });
+        result.results[i].entities = entities;
+      }
+
       res.send(result);
     } catch (error) {
       next(error);
@@ -183,6 +192,64 @@ export class UserController {
         roleName,
       });
       res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async rbac(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.userService.getRBAC();
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async listGrant(req: Request, res: Response, next: NextFunction) {
+    const { roleName } = req.params;
+    try {
+      const result = await this.userService.listGrants({
+        roleName: roleName,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateRolePrivileges(req: Request, res: Response, next: NextFunction) {
+    const { privileges } = req.body;
+    const { roleName } = req.params;
+
+    const results = [];
+
+    try {
+      // get existing privileges
+      const existingPrivileges = await this.userService.listGrants({
+        roleName,
+      });
+
+      console.log('existing privileges', existingPrivileges);
+
+      // const existingPrivileges = privileges.results[0].roles;
+      // // remove user existing roles
+      // for (let i = 0; i < existingRoles.length; i++) {
+      //   if (existingRoles[i].name.length > 0) {
+      //     await this.userService.unassignUserRole({
+      //       username,
+      //       roleName: existingRoles[i].name,
+      //     });
+      //   }
+      // }
+
+      // assign new user roles
+      for (let i = 0; i < privileges.length; i++) {
+        const result = await this.userService.grantRolePrivilege(privileges[i]);
+        results.push(result);
+      }
+
+      res.send(results);
     } catch (error) {
       next(error);
     }

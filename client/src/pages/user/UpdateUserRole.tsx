@@ -13,7 +13,7 @@ import { UserHttp } from '@/http/User';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
-    margin: theme.spacing(2, 0, 0.5),
+    margin: theme.spacing(1, 0, 0.5),
   },
   dialogWrapper: {
     maxWidth: theme.spacing(70),

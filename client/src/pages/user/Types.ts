@@ -46,12 +46,20 @@ export interface DeleteUserParams {
   username: string;
 }
 
+export interface Privilege {
+  roleName: string;
+  object: string;
+  objectName: string;
+  privilegeName: string;
+}
+
 export interface CreateRoleParams {
   roleName: string;
+  privileges: Privilege[];
 }
 
 export interface CreateRoleProps {
-  handleCreate: (data: CreateRoleParams) => void;
+  onCreate: (data: CreateRoleParams) => void;
   handleClose: () => void;
 }
 

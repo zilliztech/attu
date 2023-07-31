@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserHttp } from '@/http/User';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import { CreateRoleParams, DeleteRoleParams, RoleData } from './Types';
+import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context/Root';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import CreateRole from './CreateRole';
+import CreateRole from './CreateRoleDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -36,8 +36,7 @@ const Roles = () => {
     setRoles(roles.results.map((v: any) => ({ name: v.role.name })));
   };
 
-  const handleCreate = async (data: CreateRoleParams) => {
-    await UserHttp.createRole(data);
+  const onCreate = async () => {
     fetchRoles();
     openSnackBar(successTrans('create', { name: userTrans('role') }));
     handleCloseDialog();
@@ -65,10 +64,7 @@ const Roles = () => {
           type: 'custom',
           params: {
             component: (
-              <CreateRole
-                handleCreate={handleCreate}
-                handleClose={handleCloseDialog}
-              />
+              <CreateRole onCreate={onCreate} handleClose={handleCloseDialog} />
             ),
           },
         });
