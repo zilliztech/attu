@@ -14,6 +14,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks/Form';
 import { formatForm } from '@/utils/Form';
 import { CreateUserProps, CreateUserParams } from './Types';
+import { Option as RoleOption } from '@/components/customSelector/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -126,19 +127,20 @@ const CreateUser: FC<CreateUserProps> = ({
         </Typography>
 
         <FormGroup row>
-          {roles.map((r: any, index: number) => (
+          {roles.map((r: RoleOption, index: number) => (
             <FormControlLabel
               control={
                 <Checkbox
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+                  onChange={(
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    checked: boolean
+                  ) => {
                     let newRoles = [...form.roles];
 
                     if (!checked) {
-                      newRoles = newRoles.filter(
-                        (n: string | number) => n === r.vlaue
-                      );
+                      newRoles = newRoles.filter((n: string) => n === r.value);
                     } else {
-                      newRoles.push(r.value);
+                      newRoles.push(String(r.value));
                     }
 
                     setForm(v => ({ ...v, roles: [...newRoles] }));

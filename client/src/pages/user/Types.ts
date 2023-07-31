@@ -1,4 +1,4 @@
-import { Option } from '@/components/customSelector/Types';
+import { Option as RoleOption } from '@/components/customSelector/Types';
 
 export interface UserData {
   name: string;
@@ -26,7 +26,7 @@ export interface UpdateUserRoleProps {
 export interface CreateUserProps {
   handleCreate: (data: CreateUserParams) => void;
   handleClose: () => void;
-  roles: Option[];
+  roles: RoleOption[];
 }
 
 export interface UpdateUserProps {
