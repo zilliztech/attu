@@ -73,7 +73,9 @@ const Users = () => {
 
   const onUpdate = async (data: UpdateUserRoleParams) => {
     fetchUsers();
-    openSnackBar(successTrans('update', { name: userTrans('updateRoleSuccess') }));
+    openSnackBar(
+      successTrans('update', { name: userTrans('updateRoleSuccess') })
+    );
     handleCloseDialog();
   };
 
@@ -125,8 +127,6 @@ const Users = () => {
       type: 'iconBtn',
       label: userTrans('editRole'),
       onClick: async () => {
-        const roles = await UserHttp.getRoles();
-
         setDialog({
           open: true,
           type: 'custom',
@@ -139,7 +139,6 @@ const Users = () => {
                 roles={
                   users.filter(u => u.name === selectedUser[0].name)[0].roles
                 }
-                allRoles={roles.results.map((r: any) => r.role.name)}
               />
             ),
           },

@@ -5,7 +5,7 @@ import {
   FormGroup,
   FormControlLabel,
 } from '@material-ui/core';
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
@@ -27,11 +27,11 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
   onUpdate,
   handleClose,
   roles,
-  allRoles,
   username,
 }) => {
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
+  const [allRoles, setAllRoles] = useState([]);
 
   const [form, setForm] = useState<UpdateUserRoleParams>({
     roles: roles,
@@ -46,6 +46,16 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
     });
     onUpdate(form);
   };
+
+  const fetchAllRoles = async () => {
+    const roles = await UserHttp.getRoles();
+
+    setAllRoles(roles.results.map((r: any) => r.role.name));
+  };
+
+  useEffect(() => {
+    fetchAllRoles();
+  }, []);
 
   return (
     <DialogTemplate

@@ -21,7 +21,6 @@ export interface UpdateUserRoleProps {
   handleClose: () => void;
   username: string;
   roles: string[];
-  allRoles: string[];
 }
 
 export interface CreateUserProps {
