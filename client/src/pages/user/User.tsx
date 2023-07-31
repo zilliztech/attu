@@ -60,7 +60,6 @@ const Users = () => {
 
   const handleCreate = async (data: CreateUserParams) => {
     await UserHttp.createUser(data);
-    console.log(data, data.roles);
     // assign user role if
     await UserHttp.updateUserRole({
       username: data.username,
@@ -73,7 +72,6 @@ const Users = () => {
   };
 
   const onUpdate = async (data: UpdateUserRoleParams) => {
-    console.log(data, data.roles);
     fetchUsers();
     openSnackBar(successTrans('create', { name: userTrans('user') }));
     handleCloseDialog();
