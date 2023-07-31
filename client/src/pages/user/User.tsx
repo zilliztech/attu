@@ -73,7 +73,7 @@ const Users = () => {
 
   const onUpdate = async (data: UpdateUserRoleParams) => {
     fetchUsers();
-    openSnackBar(successTrans('create', { name: userTrans('user') }));
+    openSnackBar(successTrans('update', { name: userTrans('updateRoleSuccess') }));
     handleCloseDialog();
   };
 

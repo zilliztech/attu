@@ -17,6 +17,7 @@ const userTrans = {
   editRole: 'Edit Role',
   roles: 'Roles',
   createRoleTitle: 'Create Role',
+  updateRoleSuccess: 'User Role',
 };
 
 export default userTrans;
