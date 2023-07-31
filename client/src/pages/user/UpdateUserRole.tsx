@@ -31,26 +31,24 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
 }) => {
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
-  const [allRoles, setAllRoles] = useState([]);
+  const [roleOptions, setRoleOptions] = useState([]);
 
   const [form, setForm] = useState<UpdateUserRoleParams>({
+    username: username,
     roles: roles,
   });
 
   const classes = useStyles();
 
   const handleUpdate = async () => {
-    await UserHttp.updateUserRole({
-      username: username,
-      roles: form.roles,
-    });
+    await UserHttp.updateUserRole(form);
     onUpdate(form);
   };
 
   const fetchAllRoles = async () => {
     const roles = await UserHttp.getRoles();
 
-    setAllRoles(roles.results.map((r: any) => r.role.name));
+    setRoleOptions(roles.results.map((r: any) => r.role.name));
   };
 
   useEffect(() => {
@@ -68,7 +66,7 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
     >
       <>
         <FormGroup row>
-          {allRoles.map((r: any, index: number) => (
+          {roleOptions.map((roleOption: string, index: number) => (
             <FormControlLabel
               control={
                 <Checkbox
@@ -80,10 +78,10 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
 
                     if (!checked) {
                       newRoles = newRoles.filter(
-                        (n: string | number) => n !== r
+                        (n: string | number) => n !== roleOption
                       );
                     } else {
-                      newRoles.push(r);
+                      newRoles.push(roleOption);
                     }
 
                     setForm(v => ({ ...v, roles: [...newRoles] }));
@@ -91,9 +89,9 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
                 />
               }
               key={index}
-              label={r}
-              value={r}
-              checked={form.roles.indexOf(r) !== -1}
+              label={roleOption}
+              value={roleOption}
+              checked={form.roles.indexOf(roleOption) !== -1}
             />
           ))}
         </FormGroup>

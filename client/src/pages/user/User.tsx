@@ -112,7 +112,7 @@ const Users = () => {
               <CreateUser
                 handleCreate={handleCreate}
                 handleClose={handleCloseDialog}
-                roles={roles.results.map((r: any) => {
+                roleOptions={roles.results.map((r: any) => {
                   return { label: r.role.name, value: r.role.name };
                 })}
               />

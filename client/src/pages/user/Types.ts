@@ -13,6 +13,7 @@ export interface CreateUserParams {
 }
 
 export interface UpdateUserRoleParams {
+  username: string;
   roles: string[];
 }
 
@@ -26,7 +27,7 @@ export interface UpdateUserRoleProps {
 export interface CreateUserProps {
   handleCreate: (data: CreateUserParams) => void;
   handleClose: () => void;
-  roles: RoleOption[];
+  roleOptions: RoleOption[];
 }
 
 export interface UpdateUserProps {

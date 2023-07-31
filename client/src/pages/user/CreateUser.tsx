@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CreateUser: FC<CreateUserProps> = ({
   handleCreate,
   handleClose,
-  roles,
+  roleOptions,
 }) => {
   const { t: commonTrans } = useTranslation();
   const { t: userTrans } = useTranslation('user');
@@ -127,7 +127,7 @@ const CreateUser: FC<CreateUserProps> = ({
         </Typography>
 
         <FormGroup row>
-          {roles.map((r: RoleOption, index: number) => (
+          {roleOptions.map((r: RoleOption, index: number) => (
             <FormControlLabel
               control={
                 <Checkbox
