@@ -3,6 +3,7 @@ import { Option } from '@/components/customSelector/Types';
 export interface UserData {
   name: string;
   roleName?: string;
+  roles: string[];
 }
 
 export interface CreateUserParams {
@@ -16,9 +17,11 @@ export interface UpdateUserRoleParams {
 }
 
 export interface UpdateUserRoleProps {
-  handleUpdate: (data: UpdateUserRoleParams) => void;
+  onUpdate: (data: UpdateUserRoleParams) => void;
   handleClose: () => void;
+  username: string;
   roles: string[];
+  allRoles: string[];
 }
 
 export interface CreateUserProps {

@@ -77,7 +77,7 @@ export class UserService {
   }
 
   async unassignUserRole(data: RemoveUserFromRoleReq) {
-    const res = await this.milvusService.client.addUserToRole(data);
+    const res = await this.milvusService.client.removeUserFromRole(data);
     throwErrorFromSDK(res);
     return res;
   }

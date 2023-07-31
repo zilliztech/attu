@@ -47,12 +47,12 @@ const Users = () => {
         const rolesByName = roles.results.filter((r: any) =>
           r.users.map((u: any) => u.name).includes(name)
         );
+        const originRoles =
+          v === 'root' ? ['root'] : rolesByName.map((r: any) => r.role.name);
         return {
           name: v,
-          role:
-            v === 'root'
-              ? 'root'
-              : rolesByName.map((r: any) => r.role.name).join(' , '),
+          role: originRoles.join(' , '),
+          roles: originRoles,
         };
       })
     );
@@ -72,17 +72,11 @@ const Users = () => {
     handleCloseDialog();
   };
 
-  const handleUpdateUserRole = async (data: UpdateUserRoleParams) => {
-    // await UserHttp.createUser(data);
-    // console.log(data, data.roles);
-    // // assign user role if
-    // await UserHttp.updateUserRole({
-    //   username: data.username,
-    //   roles: data.roles,
-    // });
-    // fetchUsers();
-    // openSnackBar(successTrans('create', { name: userTrans('user') }));
-    // handleCloseDialog();
+  const onUpdate = async (data: UpdateUserRoleParams) => {
+    console.log(data, data.roles);
+    fetchUsers();
+    openSnackBar(successTrans('create', { name: userTrans('user') }));
+    handleCloseDialog();
   };
 
   const handleUpdate = async (data: UpdateUserParams) => {
@@ -134,23 +128,31 @@ const Users = () => {
       label: userTrans('editRole'),
       onClick: async () => {
         const roles = await UserHttp.getRoles();
+
         setDialog({
           open: true,
           type: 'custom',
           params: {
             component: (
               <UpdateUserRole
-                handleUpdate={handleUpdateUserRole}
+                username={selectedUser[0]!.name}
+                onUpdate={onUpdate}
                 handleClose={handleCloseDialog}
-                roles={roles.results.map((r: any) => {
-                  return r.role.name;
-                })}
+                roles={
+                  users.filter(u => u.name === selectedUser[0].name)[0].roles
+                }
+                allRoles={roles.results.map((r: any) => r.role.name)}
               />
             ),
           },
         });
       },
       icon: 'edit',
+      disabled: () =>
+        selectedUser.length === 0 ||
+        selectedUser.length > 1 ||
+        selectedUser.findIndex(v => v.name === 'root') > -1,
+      disabledTooltip: userTrans('deleteEditRoleTip'),
     },
 
     {

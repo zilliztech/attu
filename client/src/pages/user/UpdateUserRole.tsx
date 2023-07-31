@@ -5,12 +5,11 @@ import {
   FormGroup,
   FormControlLabel,
 } from '@material-ui/core';
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { useFormValidation } from '@/hooks/Form';
-import { formatForm } from '@/utils/Form';
 import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
+import { UserHttp } from '@/http/User';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -25,66 +24,66 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const UpdateUserRole: FC<UpdateUserRoleProps> = ({
-  handleUpdate,
+  onUpdate,
   handleClose,
   roles,
+  allRoles,
+  username,
 }) => {
-  const { t: commonTrans } = useTranslation();
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: warningTrans } = useTranslation('warning');
 
   const [form, setForm] = useState<UpdateUserRoleParams>({
-    roles: [],
+    roles: roles,
   });
-
-  // selected Role
-  const checkedForm = useMemo(() => {
-    return formatForm(form);
-  }, [form]);
-
-  const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
   const classes = useStyles();
 
-  const handleInputChange = (key: 'username' | 'password', value: string) => {
-    setForm(v => ({ ...v, [key]: value }));
-  };
-
-  const handleCreateUser = () => {
-    handleUpdate(form);
+  const handleUpdate = async () => {
+    await UserHttp.updateUserRole({
+      username: username,
+      roles: form.roles,
+    });
+    onUpdate(form);
   };
 
   return (
     <DialogTemplate
-      title={userTrans('createTitle')}
+      title={userTrans('updateRoleTitle')}
       handleClose={handleClose}
-      confirmLabel={btnTrans('create')}
-      handleConfirm={handleCreateUser}
-      confirmDisabled={disabled}
+      confirmLabel={btnTrans('update')}
+      handleConfirm={handleUpdate}
+      confirmDisabled={false}
       dialogClass={classes.dialogWrapper}
     >
       <>
         <FormGroup row>
-          {roles.map((r: any, index: number) => (
+          {allRoles.map((r: any, index: number) => (
             <FormControlLabel
-              control={<Checkbox />}
+              control={
+                <Checkbox
+                  onChange={(
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    checked: boolean
+                  ) => {
+                    let newRoles = [...form.roles];
+
+                    if (!checked) {
+                      newRoles = newRoles.filter(
+                        (n: string | number) => n !== r
+                      );
+                    } else {
+                      newRoles.push(r);
+                    }
+
+                    setForm(v => ({ ...v, roles: [...newRoles] }));
+                  }}
+                />
+              }
               key={index}
-              label={r.label}
-              value={r.value}
-              onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
-                let newRoles = [...form.roles];
-
-                if (!checked) {
-                  newRoles = newRoles.filter(
-                    (n: string | number) => n === r.vlaue
-                  );
-                } else {
-                  newRoles.push(r.value);
-                }
-
-                setForm(v => ({ ...v, roles: [...newRoles] }));
-              }}
+              label={r}
+              value={r}
+              checked={form.roles.indexOf(r) !== -1}
             />
           ))}
         </FormGroup>

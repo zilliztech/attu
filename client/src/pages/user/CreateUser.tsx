@@ -128,23 +128,26 @@ const CreateUser: FC<CreateUserProps> = ({
         <FormGroup row>
           {roles.map((r: any, index: number) => (
             <FormControlLabel
-              control={<Checkbox />}
+              control={
+                <Checkbox
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+                    let newRoles = [...form.roles];
+
+                    if (!checked) {
+                      newRoles = newRoles.filter(
+                        (n: string | number) => n === r.vlaue
+                      );
+                    } else {
+                      newRoles.push(r.value);
+                    }
+
+                    setForm(v => ({ ...v, roles: [...newRoles] }));
+                  }}
+                />
+              }
               key={index}
               label={r.label}
               value={r.value}
-              onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
-                let newRoles = [...form.roles];
-
-                if (!checked) {
-                  newRoles = newRoles.filter(
-                    (n: string | number) => n === r.vlaue
-                  );
-                } else {
-                  newRoles.push(r.value);
-                }
-
-                setForm(v => ({ ...v, roles: [...newRoles] }));
-              }}
             />
           ))}
         </FormGroup>
