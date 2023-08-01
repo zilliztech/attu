@@ -9,7 +9,7 @@ import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context/Root';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import CreateRole from './CreateRoleDialog';
+import UpdateRoleDialog from './UpdateRoleDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -32,11 +32,22 @@ const Roles = () => {
 
   const fetchRoles = async () => {
     const roles = await UserHttp.getRoles();
+    setSelectedRole([]);
 
-    setRoles(roles.results.map((v: any) => ({ name: v.role.name })));
+    setRoles(
+      roles.results.map((v: any) => ({
+        name: v.role.name,
+        privileges: v.entities.map((e: any) => ({
+          roleName: v.role.name,
+          object: e.object.name,
+          objectName: e.object_name,
+          privilegeName: e.grantor.privilege.name,
+        })),
+      }))
+    );
   };
 
-  const onCreate = async () => {
+  const onUpdate = async () => {
     fetchRoles();
     openSnackBar(successTrans('create', { name: userTrans('role') }));
     handleCloseDialog();
@@ -64,7 +75,10 @@ const Roles = () => {
           type: 'custom',
           params: {
             component: (
-              <CreateRole onCreate={onCreate} handleClose={handleCloseDialog} />
+              <UpdateRoleDialog
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+              />
             ),
           },
         });
@@ -81,7 +95,11 @@ const Roles = () => {
           type: 'custom',
           params: {
             component: (
-              <CreateRole onCreate={onCreate} handleClose={handleCloseDialog} />
+              <UpdateRoleDialog
+                role={selectedRole[0]}
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+              />
             ),
           },
         });
@@ -92,7 +110,7 @@ const Roles = () => {
         selectedRole.length > 1 ||
         selectedRole.findIndex(v => v.name === 'admin') > -1 ||
         selectedRole.findIndex(v => v.name === 'public') > -1,
-      disabledTooltip: userTrans('disabbleEditRolePriviledgeTip'),
+      disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
     },
 
     {

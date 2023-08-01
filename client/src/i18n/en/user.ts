@@ -15,12 +15,13 @@ const userTrans = {
 
   // role
   deleteEditRoleTip: 'root role is not editable.',
-  disabbleEditRolePriviledgeTip: 'admin and public role are not editable.',
+  disableEditRolePrivilegeTip: 'admin and public role are not editable.',
 
   role: 'Role',
   editRole: 'Edit Role',
   roles: 'Roles',
   createRoleTitle: 'Create Role',
+  updateRolePrivilegeTitle: 'Update Role',
   updateRoleSuccess: 'User Role',
   type: 'Type',
 

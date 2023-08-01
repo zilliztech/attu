@@ -67,6 +67,7 @@ const PrivilegeOptions: FC<PrivilegeOptionsProps> = ({
             key={r}
             label={r}
             value={r}
+            checked={selection.filter((s: Privilege) => s.privilegeName === r).length > 0}
             className={classes.checkBox}
           />
         ))}

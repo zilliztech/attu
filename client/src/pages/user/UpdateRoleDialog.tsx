@@ -32,7 +32,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
+const UpdateRoleDialog: FC<CreateRoleProps> = ({
+  onUpdate,
+  handleClose,
+  role = { name: '', privileges: [] },
+}) => {
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
@@ -46,21 +50,21 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
 
   const fetchRBAC = async () => {
     const rbacOptions = await UserHttp.getRBAC();
-    const roles = await UserHttp.getRoles();
-
-    console.log(rbacOptions, roles);
 
     setRbacOptions(rbacOptions);
   };
+
+  const isEditing = role.name !== '';
 
   useEffect(() => {
     fetchRBAC();
   }, []);
 
   const [form, setForm] = useState<CreateRoleParams>({
-    roleName: '',
-    privileges: [],
+    roleName: role.name,
+    privileges: JSON.parse(JSON.stringify(role.privileges)),
   });
+
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
@@ -97,14 +101,19 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
         },
       ],
       defaultValue: form.roleName,
+      disabled: isEditing,
     },
   ];
 
   const handleCreateRole = async () => {
-    await UserHttp.createRole(form);
+    if (!isEditing) {
+      await UserHttp.createRole(form);
+    }
+
+    console.log('form', form);
     await UserHttp.updateRolePrivileges(form);
 
-    onCreate(form);
+    onUpdate(form);
   };
 
   const onChange = (newSelection: any) => {
@@ -142,9 +151,11 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
 
   return (
     <DialogTemplate
-      title={userTrans('createRoleTitle')}
+      title={userTrans(
+        isEditing ? 'updateRolePrivilegeTitle' : 'createRoleTitle'
+      )}
       handleClose={handleClose}
-      confirmLabel={btnTrans('create')}
+      confirmLabel={btnTrans(isEditing ? 'update' : 'create')}
       handleConfirm={handleCreateRole}
       confirmDisabled={disabled}
       dialogClass={classes.dialogWrapper}
@@ -165,6 +176,7 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
 
         {optionGroups.map(o => (
           <PrivilegeOptions
+            key={o.object}
             title={o.title}
             object={o.object}
             options={o.options}
@@ -178,4 +190,4 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
   );
 };
 
-export default CreateRoleDialog;
+export default UpdateRoleDialog;

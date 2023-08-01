@@ -230,18 +230,17 @@ export class UserController {
         roleName,
       });
 
-      console.log('existing privileges', existingPrivileges);
-
-      // const existingPrivileges = privileges.results[0].roles;
-      // // remove user existing roles
-      // for (let i = 0; i < existingRoles.length; i++) {
-      //   if (existingRoles[i].name.length > 0) {
-      //     await this.userService.unassignUserRole({
-      //       username,
-      //       roleName: existingRoles[i].name,
-      //     });
-      //   }
-      // }
+      // revoke all
+      for (let i = 0; i < existingPrivileges.entities.length; i++) {
+        const res = existingPrivileges.entities[i];
+        const result = await this.userService.revokeRolePrivilege({
+          object: res.object.name,
+          objectName: res.object_name,
+          privilegeName: res.grantor.privilege.name,
+          roleName: res.role.name,
+        });
+        results.push(result);
+      }
 
       // assign new user roles
       for (let i = 0; i < privileges.length; i++) {

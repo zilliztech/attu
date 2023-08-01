@@ -58,9 +58,15 @@ export interface CreateRoleParams {
   privileges: Privilege[];
 }
 
+export interface RoleData {
+  name: string;
+  privileges: Privilege[];
+}
+
 export interface CreateRoleProps {
-  onCreate: (data: CreateRoleParams) => void;
+  onUpdate: (data: CreateRoleParams) => void;
   handleClose: () => void;
+  role?: RoleData;
 }
 
 export interface DeleteRoleParams {
@@ -74,9 +80,7 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export interface RoleData {
-  name: string;
-}
+
 
 export enum TAB_EMUM {
   'schema',

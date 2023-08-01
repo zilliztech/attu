@@ -116,4 +116,10 @@ export class UserService {
     throwErrorFromSDK(res);
     return res;
   }
+
+  async revokeRolePrivilege(data: OperateRolePrivilegeReq) {
+    const res = await this.milvusService.client.revokeRolePrivilege(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
 }
