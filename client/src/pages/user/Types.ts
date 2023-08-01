@@ -84,3 +84,13 @@ export enum TAB_EMUM {
   'data-preview',
   'data-query',
 }
+
+export interface PrivilegeOptionsProps {
+  options: string[];
+  selection: Privilege[];
+  onChange: (selection: Privilege[]) => void;
+  roleName: string;
+  object: 'Global' | 'Collection' | 'User';
+  objectName?: string;
+  title: string;
+}

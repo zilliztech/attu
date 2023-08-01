@@ -1,11 +1,4 @@
-import {
-  makeStyles,
-  Theme,
-  Typography,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-} from '@material-ui/core';
+import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { FC, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -14,7 +7,8 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks/Form';
 import { formatForm } from '@/utils/Form';
 import { UserHttp } from '@/http/User';
-import { CreateRoleProps, CreateRoleParams, Privilege } from './Types';
+import { CreateRoleProps, CreateRoleParams } from './Types';
+import PrivilegeOptions from './PriviledgeOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -35,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
-  const { t: commonTrans } = useTranslation();
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
@@ -111,11 +104,15 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
   };
 
   // prepare data
-  const globalPriviledgeOptions = Object.values(rbacOptions.GlobalPrivileges);
+  const globalPriviledgeOptions = Object.values(
+    rbacOptions.GlobalPrivileges
+  ) as string[];
   const collectionPrivilegeOptions = Object.values(
     rbacOptions.CollectionPrivileges
-  );
-  const userPrivilegeOptions = Object.values(rbacOptions.UserPrivileges);
+  ) as string[];
+  const userPrivilegeOptions = Object.values(
+    rbacOptions.UserPrivileges
+  ) as string[];
 
   return (
     <DialogTemplate
@@ -140,129 +137,38 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
           {userTrans('privileges')}
         </Typography>
 
-        <Typography variant="h6" component="h6" className={classes.subTitle}>
-          {userTrans('objectGlobal')}
-        </Typography>
+        <PrivilegeOptions
+          title={userTrans('objectGlobal')}
+          object="Global"
+          options={globalPriviledgeOptions}
+          selection={form.privileges}
+          roleName={form.roleName}
+          onChange={(newSelection: any) => {
+            setForm(v => ({ ...v, privileges: [...newSelection] }));
+          }}
+        />
 
-        <FormGroup row className={classes.formGrp}>
-          {globalPriviledgeOptions.map((r: any, index: number) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>,
-                    checked: boolean
-                  ) => {
-                    let newPivilegs = [...form.privileges];
+        <PrivilegeOptions
+          title={userTrans('objectCollection')}
+          object="Collection"
+          options={collectionPrivilegeOptions}
+          selection={form.privileges}
+          roleName={form.roleName}
+          onChange={(newSelection: any) => {
+            setForm(v => ({ ...v, privileges: [...newSelection] }));
+          }}
+        />
 
-                    if (!checked) {
-                      newPivilegs = newPivilegs.filter(
-                        (n: Privilege) => n.privilegeName !== r
-                      );
-                    } else {
-                      newPivilegs.push({
-                        privilegeName: r,
-                        object: 'Global',
-                        objectName: '*',
-                        roleName: form.roleName,
-                      });
-                    }
-                    console.log(newPivilegs);
-
-                    setForm(v => ({ ...v, privileges: [...newPivilegs] }));
-                  }}
-                />
-              }
-              key={r}
-              label={r}
-              value={r}
-              className={classes.checkBox}
-            />
-          ))}
-        </FormGroup>
-
-        <Typography variant="h6" component="h6" className={classes.subTitle}>
-          {userTrans('objectCollection')}
-        </Typography>
-
-        <FormGroup row className={classes.formGrp}>
-          {collectionPrivilegeOptions.map((r: any, index: number) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>,
-                    checked: boolean
-                  ) => {
-                    let newPivilegs = [...form.privileges];
-
-                    if (!checked) {
-                      newPivilegs = newPivilegs.filter(
-                        (n: Privilege) => n.privilegeName !== r
-                      );
-                    } else {
-                      newPivilegs.push({
-                        privilegeName: r,
-                        object: 'Collection',
-                        objectName: '*',
-                        roleName: form.roleName,
-                      });
-                    }
-                    console.log(newPivilegs);
-
-                    setForm(v => ({ ...v, privileges: [...newPivilegs] }));
-                  }}
-                />
-              }
-              key={r}
-              label={r}
-              value={r}
-              className={classes.checkBox}
-            />
-          ))}
-        </FormGroup>
-
-        <Typography variant="h6" component="h6" className={classes.subTitle}>
-          {userTrans('objectUser')}
-        </Typography>
-
-        <FormGroup row className={classes.formGrp}>
-          {userPrivilegeOptions.map((r: any, index: number) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>,
-                    checked: boolean
-                  ) => {
-                    let newPivilegs = [...form.privileges];
-
-                    if (!checked) {
-                      newPivilegs = newPivilegs.filter(
-                        (n: Privilege) => n.privilegeName !== r
-                      );
-                    } else {
-                      newPivilegs.push({
-                        privilegeName: r,
-                        object: 'User',
-                        objectName: '*',
-                        roleName: form.roleName,
-                      });
-                    }
-
-                    console.log(newPivilegs);
-
-                    setForm(v => ({ ...v, privileges: [...newPivilegs] }));
-                  }}
-                />
-              }
-              key={r}
-              label={r}
-              value={r}
-              className={classes.checkBox}
-            />
-          ))}
-        </FormGroup>
+        <PrivilegeOptions
+          title={userTrans('objectUser')}
+          object="User"
+          options={userPrivilegeOptions}
+          selection={form.privileges}
+          roleName={form.roleName}
+          onChange={(newSelection: any) => {
+            setForm(v => ({ ...v, privileges: [...newSelection] }));
+          }}
+        />
       </>
     </DialogTemplate>
   );
