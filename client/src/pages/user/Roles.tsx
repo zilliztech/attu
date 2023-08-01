@@ -74,6 +74,29 @@ const Roles = () => {
 
     {
       type: 'iconBtn',
+      label: userTrans('editRole'),
+      onClick: async () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <CreateRole onCreate={onCreate} handleClose={handleCloseDialog} />
+            ),
+          },
+        });
+      },
+      icon: 'edit',
+      disabled: () =>
+        selectedRole.length === 0 ||
+        selectedRole.length > 1 ||
+        selectedRole.findIndex(v => v.name === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.name === 'public') > -1,
+      disabledTooltip: userTrans('disabbleEditRolePriviledgeTip'),
+    },
+
+    {
+      type: 'iconBtn',
       onClick: () => {
         setDialog({
           open: true,
