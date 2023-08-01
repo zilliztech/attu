@@ -12,7 +12,7 @@ import {
   CreateRoleParams,
   PrivilegeOptionsProps,
 } from './Types';
-import PrivilegeOptions from './PriviledgeOptions';
+import PrivilegeOptions from './PrivilegeOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
