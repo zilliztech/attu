@@ -85,12 +85,14 @@ export enum TAB_EMUM {
   'data-query',
 }
 
+export type RBACObject = 'Global' | 'Collection' | 'User';
+
 export interface PrivilegeOptionsProps {
   options: string[];
   selection: Privilege[];
   onChange: (selection: Privilege[]) => void;
   roleName: string;
-  object: 'Global' | 'Collection' | 'User';
+  object: RBACObject;
   objectName?: string;
   title: string;
 }

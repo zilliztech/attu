@@ -7,7 +7,11 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks/Form';
 import { formatForm } from '@/utils/Form';
 import { UserHttp } from '@/http/User';
-import { CreateRoleProps, CreateRoleParams } from './Types';
+import {
+  CreateRoleProps,
+  CreateRoleParams,
+  PrivilegeOptionsProps,
+} from './Types';
 import PrivilegeOptions from './PriviledgeOptions';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -103,16 +107,38 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
     onCreate(form);
   };
 
-  // prepare data
-  const globalPriviledgeOptions = Object.values(
-    rbacOptions.GlobalPrivileges
-  ) as string[];
-  const collectionPrivilegeOptions = Object.values(
-    rbacOptions.CollectionPrivileges
-  ) as string[];
-  const userPrivilegeOptions = Object.values(
-    rbacOptions.UserPrivileges
-  ) as string[];
+  const onChange = (newSelection: any) => {
+    setForm(v => ({ ...v, privileges: [...newSelection] }));
+  };
+
+  const optionGroups: PrivilegeOptionsProps[] = [
+    {
+      options: Object.values(rbacOptions.GlobalPrivileges) as string[],
+      object: 'Global',
+      title: userTrans('objectGlobal'),
+      selection: form.privileges,
+      roleName: form.roleName,
+      onChange: onChange,
+    },
+
+    {
+      options: Object.values(rbacOptions.CollectionPrivileges) as string[],
+      title: userTrans('objectCollection'),
+      object: 'Collection',
+      selection: form.privileges,
+      roleName: form.roleName,
+      onChange: onChange,
+    },
+
+    {
+      options: Object.values(rbacOptions.UserPrivileges) as string[],
+      title: userTrans('objectUser'),
+      object: 'User',
+      selection: form.privileges,
+      roleName: form.roleName,
+      onChange: onChange,
+    },
+  ];
 
   return (
     <DialogTemplate
@@ -137,38 +163,16 @@ const CreateRoleDialog: FC<CreateRoleProps> = ({ onCreate, handleClose }) => {
           {userTrans('privileges')}
         </Typography>
 
-        <PrivilegeOptions
-          title={userTrans('objectGlobal')}
-          object="Global"
-          options={globalPriviledgeOptions}
-          selection={form.privileges}
-          roleName={form.roleName}
-          onChange={(newSelection: any) => {
-            setForm(v => ({ ...v, privileges: [...newSelection] }));
-          }}
-        />
-
-        <PrivilegeOptions
-          title={userTrans('objectCollection')}
-          object="Collection"
-          options={collectionPrivilegeOptions}
-          selection={form.privileges}
-          roleName={form.roleName}
-          onChange={(newSelection: any) => {
-            setForm(v => ({ ...v, privileges: [...newSelection] }));
-          }}
-        />
-
-        <PrivilegeOptions
-          title={userTrans('objectUser')}
-          object="User"
-          options={userPrivilegeOptions}
-          selection={form.privileges}
-          roleName={form.roleName}
-          onChange={(newSelection: any) => {
-            setForm(v => ({ ...v, privileges: [...newSelection] }));
-          }}
-        />
+        {optionGroups.map(o => (
+          <PrivilegeOptions
+            title={o.title}
+            object={o.object}
+            options={o.options}
+            selection={o.selection}
+            roleName={o.roleName}
+            onChange={o.onChange}
+          />
+        ))}
       </>
     </DialogTemplate>
   );
