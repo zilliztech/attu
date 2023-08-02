@@ -10,6 +10,13 @@ import {
   HasRoleReq,
   listRoleReq,
   SelectUserReq,
+  Privileges,
+  GlobalPrivileges,
+  CollectionPrivileges,
+  UserPrivileges,
+  RbacObjects,
+  ListGrantsReq,
+  OperateRolePrivilegeReq,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 
@@ -86,5 +93,51 @@ export class UserService {
     const res = await this.milvusService.client.hasRole(data);
     throwErrorFromSDK(res.status);
     return res;
+  }
+
+  async getRBAC() {
+    return {
+      Privileges,
+      GlobalPrivileges,
+      CollectionPrivileges,
+      UserPrivileges,
+      RbacObjects,
+    };
+  }
+
+  async listGrants(data: ListGrantsReq) {
+    const res = await this.milvusService.client.listGrants(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async grantRolePrivilege(data: OperateRolePrivilegeReq) {
+    const res = await this.milvusService.client.grantRolePrivilege(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  async revokeRolePrivilege(data: OperateRolePrivilegeReq) {
+    const res = await this.milvusService.client.revokeRolePrivilege(data);
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  async revokeAllRolePrivileges(data: { roleName: string }) {
+    // get existing privileges
+    const existingPrivileges = await this.listGrants({
+      roleName: data.roleName,
+    });
+
+    // revoke all
+    for (let i = 0; i < existingPrivileges.entities.length; i++) {
+      const res = existingPrivileges.entities[i];
+      await this.revokeRolePrivilege({
+        object: res.object.name,
+        objectName: res.object_name,
+        privilegeName: res.grantor.privilege.name,
+        roleName: res.role.name,
+      });
+    }
   }
 }

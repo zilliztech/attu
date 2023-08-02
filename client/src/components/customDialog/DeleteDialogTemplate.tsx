@@ -5,6 +5,8 @@ import {
   TextField,
   Theme,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import { ChangeEvent, FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,16 +38,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   cancelBtn: {
     color: theme.palette.attuGrey.dark,
   },
+  checkBox: {},
 }));
 
 const DeleteTemplate: FC<DeleteDialogContentType> = props => {
-  const { title, text, label, handleDelete, handleCancel } = props;
+  const { title, text, label, handleDelete, handleCancel, forceDelLabel } =
+    props;
   const { handleCloseDialog } = useContext(rootContext);
   const classes = useStyles();
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
 
   const [value, setValue] = useState<string>('');
+  const [force, setForce] = useState<boolean>(false);
   const [deleteReady, setDeleteReady] = useState<boolean>(false);
 
   const onCancelClick = () => {
@@ -54,7 +59,7 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
   };
 
   const onDeleteClick = (event: React.FormEvent<HTMLFormElement>) => {
-    handleDelete();
+    handleDelete(force);
     event.preventDefault();
   };
 
@@ -100,6 +105,25 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
             variant="filled"
             fullWidth={true}
           />
+          {forceDelLabel ? (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    checked: boolean
+                  ) => {
+                    setForce(checked);
+                  }}
+                />
+              }
+              key={'force'}
+              label={forceDelLabel}
+              value={true}
+              checked={force}
+              className={classes.checkBox}
+            />
+          ) : null}
         </DialogContent>
 
         <DialogActions className={classes.btnWrapper}>

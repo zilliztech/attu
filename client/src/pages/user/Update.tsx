@@ -10,7 +10,7 @@ import { UpdateUserParams, UpdateUserProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
-    margin: theme.spacing(3, 0, 0.5),
+    margin: theme.spacing(1, 0, 0.5),
   },
 }));
 

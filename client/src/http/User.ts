@@ -17,48 +17,71 @@ export class UserHttp extends BaseModel {
     Object.assign(this, props);
   }
 
-  static USER_URL = `/users`;
+  static USERS_URL = `/users`;
+  static ROLES_URL = `/users/roles`;
 
+  // get user data
   static getUsers() {
-    return super.search({ path: this.USER_URL, params: {} });
+    return super.search({ path: this.USERS_URL, params: {} });
   }
 
+  // create user
   static createUser(data: CreateUserParams) {
-    return super.create({ path: this.USER_URL, data });
+    return super.create({ path: this.USERS_URL, data });
   }
 
+  // update user (pass)
   static updateUser(data: UpdateUserParams) {
-    return super.update({ path: this.USER_URL, data });
+    return super.update({ path: this.USERS_URL, data });
   }
 
+  // delete user
   static deleteUser(data: DeleteUserParams) {
-    return super.delete({ path: `${this.USER_URL}/${data.username}` });
+    return super.delete({ path: `${this.USERS_URL}/${data.username}` });
   }
 
-  static createRole(data: CreateRoleParams) {
-    return super.create({ path: `${this.USER_URL}/roles`, data });
-  }
-
-  static getRoles() {
-    return super.search({ path: `${this.USER_URL}/roles`, params: {} });
-  }
-
-  static deleteRole(data: DeleteRoleParams) {
-    return super.delete({ path: `${this.USER_URL}/roles/${data.roleName}` });
-  }
-
+  // update user role
   static updateUserRole(data: AssignRoleParams) {
     return super.update({
-      path: `${this.USER_URL}/${data.username}/role/update`,
+      path: `${this.USERS_URL}/${data.username}/role/update`,
       data,
     });
   }
 
+  // unassign user role
   static unassignUserRole(data: UnassignRoleParams) {
     return super.update({
-      path: `${this.USER_URL}/${data.username}/role/unassign`,
+      path: `${this.USERS_URL}/${data.username}/role/unassign`,
       data,
     });
+  }
+
+  // create a role
+  static createRole(data: CreateRoleParams) {
+    return super.create({ path: `${this.ROLES_URL}`, data });
+  }
+
+  // delete a role
+  static deleteRole(data: DeleteRoleParams) {
+    return super.delete({ path: `${this.ROLES_URL}/${data.roleName}`, data });
+  }
+
+  // get all roles
+  static getRoles() {
+    return super.search({ path: `${this.ROLES_URL}`, params: {} });
+  }
+
+  // update role privileges
+  static updateRolePrivileges(data: CreateRoleParams) {
+    return super.update({
+      path: `${this.ROLES_URL}/${data.roleName}/updatePrivileges`,
+      data,
+    });
+  }
+
+  // get RBAC info
+  static getRBAC() {
+    return super.search({ path: `${this.USERS_URL}/rbac`, params: {} });
   }
 
   get _names() {

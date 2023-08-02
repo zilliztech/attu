@@ -46,17 +46,32 @@ export interface DeleteUserParams {
   username: string;
 }
 
+export interface Privilege {
+  roleName: string;
+  object: string;
+  objectName: string;
+  privilegeName: string;
+}
+
 export interface CreateRoleParams {
   roleName: string;
+  privileges: Privilege[];
+}
+
+export interface RoleData {
+  name: string;
+  privileges: Privilege[];
 }
 
 export interface CreateRoleProps {
-  handleCreate: (data: CreateRoleParams) => void;
+  onUpdate: (data: { data: CreateRoleParams; isEditing: boolean }) => void;
   handleClose: () => void;
+  role?: RoleData;
 }
 
 export interface DeleteRoleParams {
   roleName: string;
+  force?: boolean;
 }
 
 export interface AssignRoleParams {
@@ -66,13 +81,21 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export interface RoleData {
-  name: string;
-}
-
 export enum TAB_EMUM {
   'schema',
   'partition',
   'data-preview',
   'data-query',
+}
+
+export type RBACObject = 'Global' | 'Collection' | 'User';
+
+export interface PrivilegeOptionsProps {
+  options: string[];
+  selection: Privilege[];
+  onChange: (selection: Privilege[]) => void;
+  roleName: string;
+  object: RBACObject;
+  objectName?: string;
+  title: string;
 }
