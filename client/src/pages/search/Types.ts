@@ -28,7 +28,7 @@ export interface SearchParamsProps {
 
 export interface SearchResultView {
   // dynamic field names
-  [key: string]: string | number;
+  [key: string]: any;
   rank: number;
   distance: number;
 }

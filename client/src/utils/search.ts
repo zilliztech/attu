@@ -6,44 +6,7 @@ import {
   IndexView,
   INDEX_TYPES_ENUM,
 } from '../pages/schema/Types';
-import {
-  FieldOption,
-  SearchResult,
-  SearchResultView,
-} from '../types/SearchTypes';
-
-/**
- * Do not change  vector search result default sort  by ourself.
- * Different index may has different sort in milvus.
- * @param result
- * @returns
- */
-export const transferSearchResult = (
-  result: SearchResult[]
-): SearchResultView[] => {
-  const resultView = result.map((r, index) => {
-    const { rank, distance, ...others } = r;
-    const data: any = {
-      rank: index + 1,
-      distance: r.score,
-    };
-    // When value is boolean ,table will not render bool value.
-    // So we need to use toString() here.
-    Object.keys(others).forEach(v => {
-      switch (v) {
-        case 'json':
-          data[v] = JSON.stringify(others[v]);
-          break;
-        default:
-          data[v] = others[v].toString();
-          break;
-      }
-    });
-    return data;
-  });
-
-  return resultView;
-};
+import { FieldOption } from '../types/SearchTypes';
 
 /**
  * function to get EmbeddingType

@@ -73,3 +73,13 @@ export const cloneObj = (obj: any) => {
 export const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
+
+export const detectItemType = (item: unknown) => {
+  if (Array.isArray(item)) {
+    return 'array';
+  } else if (typeof item === 'object' && item !== null) {
+    return 'json';
+  } else {
+    return 'unknown';
+  }
+};
