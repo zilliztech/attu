@@ -110,7 +110,6 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
       await UserHttp.createRole(form);
     }
 
-    console.log('form', form);
     await UserHttp.updateRolePrivileges(form);
 
     onUpdate({ data: form, isEditing: isEditing });

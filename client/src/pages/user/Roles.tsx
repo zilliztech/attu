@@ -71,7 +71,6 @@ const Roles = () => {
   };
 
   const handleDelete = async (force?: boolean) => {
-    console.log('for', force);
     for (const role of selectedRole) {
       const param: DeleteRoleParams = {
         roleName: role.name,
