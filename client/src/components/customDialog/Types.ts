@@ -18,7 +18,8 @@ export type DeleteDialogContentType = {
   text: string;
   label: string;
   handleCancel?: () => void;
-  handleDelete: () => void;
+  handleDelete: (force?: boolean) => void;
+  forceDelLabel?: string;
 };
 
 export type DialogContainerProps = {

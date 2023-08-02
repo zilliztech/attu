@@ -64,13 +64,14 @@ export interface RoleData {
 }
 
 export interface CreateRoleProps {
-  onUpdate: (data: CreateRoleParams) => void;
+  onUpdate: (data: { data: CreateRoleParams; isEditing: boolean }) => void;
   handleClose: () => void;
   role?: RoleData;
 }
 
 export interface DeleteRoleParams {
   roleName: string;
+  force?: boolean;
 }
 
 export interface AssignRoleParams {
@@ -79,8 +80,6 @@ export interface AssignRoleParams {
 }
 
 export interface UnassignRoleParams extends AssignRoleParams {}
-
-
 
 export enum TAB_EMUM {
   'schema',

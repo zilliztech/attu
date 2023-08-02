@@ -122,4 +122,22 @@ export class UserService {
     throwErrorFromSDK(res);
     return res;
   }
+
+  async revokeAllRolePrivileges(data: { roleName: string }) {
+    // get existing privileges
+    const existingPrivileges = await this.listGrants({
+      roleName: data.roleName,
+    });
+
+    // revoke all
+    for (let i = 0; i < existingPrivileges.entities.length; i++) {
+      const res = existingPrivileges.entities[i];
+      await this.revokeRolePrivilege({
+        object: res.object.name,
+        objectName: res.object_name,
+        privilegeName: res.grantor.privilege.name,
+        roleName: res.role.name,
+      });
+    }
+  }
 }

@@ -135,7 +135,12 @@ export class UserController {
 
   async deleteRole(req: Request, res: Response, next: NextFunction) {
     const { roleName } = req.params;
+    const { force } = req.body;
+
     try {
+      if (force) {
+        await this.userService.revokeAllRolePrivileges({ roleName });
+      }
       const result = await this.userService.deleteRole({ roleName });
       res.send(result);
     } catch (error) {
@@ -225,22 +230,8 @@ export class UserController {
     const results = [];
 
     try {
-      // get existing privileges
-      const existingPrivileges = await this.userService.listGrants({
-        roleName,
-      });
-
       // revoke all
-      for (let i = 0; i < existingPrivileges.entities.length; i++) {
-        const res = existingPrivileges.entities[i];
-        const result = await this.userService.revokeRolePrivilege({
-          object: res.object.name,
-          objectName: res.object_name,
-          privilegeName: res.grantor.privilege.name,
-          roleName: res.role.name,
-        });
-        results.push(result);
-      }
+      this.userService.revokeAllRolePrivileges({ roleName });
 
       // assign new user roles
       for (let i = 0; i < privileges.length; i++) {

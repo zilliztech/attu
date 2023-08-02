@@ -30,6 +30,8 @@ const userTrans = {
   objectCollection: 'Collection',
   objectGlobal: 'Global',
   objectUser: 'User',
+
+  forceDelLabel: 'Force delete, revoke all privileges.',
 };
 
 export default userTrans;

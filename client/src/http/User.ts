@@ -63,7 +63,7 @@ export class UserHttp extends BaseModel {
 
   // delete a role
   static deleteRole(data: DeleteRoleParams) {
-    return super.delete({ path: `${this.ROLES_URL}/${data.roleName}` });
+    return super.delete({ path: `${this.ROLES_URL}/${data.roleName}`, data });
   }
 
   // get all roles

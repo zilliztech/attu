@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme, Chip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserHttp } from '@/http/User';
 import AttuGrid from '@/components/grid/Grid';
@@ -14,6 +14,9 @@ import UpdateRoleDialog from './UpdateRoleDialog';
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     height: `calc(100vh - 160px)`,
+  },
+  chip: {
+    marginRight: theme.spacing(0.5),
   },
 }));
 
@@ -37,6 +40,20 @@ const Roles = () => {
     setRoles(
       roles.results.map((v: any) => ({
         name: v.role.name,
+        privilegeContent: (
+          <>
+            {v.entities.map((e: any) => {
+              return (
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={e.grantor.privilege.name}
+                  variant="outlined"
+                />
+              );
+            })}
+          </>
+        ),
         privileges: v.entities.map((e: any) => ({
           roleName: v.role.name,
           object: e.object.name,
@@ -47,16 +64,18 @@ const Roles = () => {
     );
   };
 
-  const onUpdate = async () => {
+  const onUpdate = async (data: { isEditing: boolean }) => {
     fetchRoles();
     openSnackBar(successTrans('create', { name: userTrans('role') }));
     handleCloseDialog();
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (force?: boolean) => {
+    console.log('for', force);
     for (const role of selectedRole) {
       const param: DeleteRoleParams = {
         roleName: role.name,
+        force,
       };
       await UserHttp.deleteRole(param);
     }
@@ -126,6 +145,7 @@ const Roles = () => {
                 title={dialogTrans('deleteTitle', { type: userTrans('role') })}
                 text={userTrans('deleteWarning')}
                 handleDelete={handleDelete}
+                forceDelLabel={userTrans('forceDelLabel')}
               />
             ),
           },
@@ -134,9 +154,9 @@ const Roles = () => {
       label: '',
       disabled: () =>
         selectedRole.length === 0 ||
-        selectedRole.findIndex(v => v.name === 'root') > -1,
+        selectedRole.findIndex(v => v.name === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.name === 'public') > -1,
       disabledTooltip: userTrans('deleteTip'),
-
       icon: 'delete',
     },
   ];
@@ -147,6 +167,13 @@ const Roles = () => {
       align: 'left',
       disablePadding: false,
       label: userTrans('role'),
+    },
+
+    {
+      id: 'privilegeContent',
+      align: 'left',
+      disablePadding: false,
+      label: userTrans('privileges'),
     },
   ];
 

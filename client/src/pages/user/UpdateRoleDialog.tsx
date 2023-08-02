@@ -113,7 +113,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
     console.log('form', form);
     await UserHttp.updateRolePrivileges(form);
 
-    onUpdate(form);
+    onUpdate({ data: form, isEditing: isEditing });
   };
 
   const onChange = (newSelection: any) => {

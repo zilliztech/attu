@@ -70,8 +70,11 @@ export default class BaseModel {
   }
 
   static async delete(options: updateParamsType) {
-    const { path } = options;
-    const res = await http.delete(path);
+    const { path, data } = options;
+
+    console.log('xxx', data);
+
+    const res = await http.delete(path, { data: data });
 
     return res.data;
   }
