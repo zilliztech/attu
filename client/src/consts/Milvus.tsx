@@ -59,7 +59,8 @@ export type searchKeywordsType =
   | 'search_k'
   | 'search_length'
   | 'round_decimal'
-  | 'level';
+  | 'level'
+  | 'search_list';
 
 export type indexConfigType = {
   [x: string]: {
@@ -82,10 +83,6 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: ['nlist'],
     search: ['nprobe'],
   },
-  // IVF_SQ8_HYBRID: {
-  //   create: ['nlist'],
-  //   search: ['nprobe'],
-  // },
   FLAT: {
     create: [],
     search: ['nprobe'],
@@ -102,10 +99,10 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: [],
     search: ['level'],
   },
-  // RNSG: {
-  //   create: ['out_degree', 'candidate_pool_size', 'search_length', 'knng'],
-  //   search: ['search_length'],
-  // },}
+  DISKANN: {
+    create: [],
+    search: ['search_list'],
+  },
 };
 
 export const BINARY_INDEX_CONFIG: indexConfigType = {
@@ -210,6 +207,7 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   search_length: 10,
   round_decimal: -1,
   level: 1,
+  search_list: 20,
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;

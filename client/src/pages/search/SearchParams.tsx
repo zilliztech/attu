@@ -236,6 +236,17 @@ const SearchParams: FC<SearchParamsProps> = ({
             handleInputChange('search_length', Number(value));
           },
         },
+        search_list: {
+          label: 'search_list',
+          key: 'search_list',
+          value: searchParamsForm['search_list'] || '',
+          min: 20,
+          max: 65535,
+          isInt: true,
+          handleChange: value => {
+            handleInputChange('search_list', Number(value));
+          },
+        },
       };
 
       const param = configParamMap[paramKey];
