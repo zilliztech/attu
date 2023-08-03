@@ -121,7 +121,7 @@ const VectorSearch = () => {
     return fields.find(f => f._isPrimaryKey)?._fieldName;
   }, [selectedCollection, collections]);
 
-  const orderArray = ['id', 'distance', ...outputFields];
+  const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     /**
@@ -138,8 +138,7 @@ const VectorSearch = () => {
           })
           .filter(item => {
             // if primary key field name is id, don't filter it
-            const invalidItems =
-              primaryKeyField === 'id' ? ['score'] : ['id', 'score'];
+            const invalidItems = primaryKeyField === 'id' ? [] : ['id'];
             return !invalidItems.includes(item);
           })
           .map(key => ({
