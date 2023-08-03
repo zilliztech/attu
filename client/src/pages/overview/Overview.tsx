@@ -6,7 +6,7 @@ import icons from '@/components/icons/Icons';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { LOADING_STATE } from '../../consts/Milvus';
 import { rootContext } from '@/context/Root';
-import { webSokcetContext } from '@/context/WebSocket';
+import { webSocketContext } from '@/context/WebSocket';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';
@@ -46,7 +46,7 @@ const Overview = () => {
     totalData: 0,
   });
   const [loading, setLoading] = useState(false);
-  const { collections, setCollections } = useContext(webSokcetContext);
+  const { collections, setCollections } = useContext(webSocketContext);
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
