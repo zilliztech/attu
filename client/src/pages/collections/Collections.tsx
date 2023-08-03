@@ -28,7 +28,7 @@ import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { MilvusHttp } from '@/http/Milvus';
 import { LOADING_STATE } from '../../consts/Milvus';
-import { webSokcetContext } from '@/context/WebSocket';
+import { webSocketContext } from '@/context/WebSocket';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
 import { checkIndexBuilding, checkLoading } from '@/utils/Validation';
 import Aliases from './Aliases';
@@ -70,7 +70,7 @@ const Collections = () => {
   >([]);
 
   const { setDialog, openSnackBar } = useContext(rootContext);
-  const { collections, setCollections } = useContext(webSokcetContext);
+  const { collections, setCollections } = useContext(webSocketContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
