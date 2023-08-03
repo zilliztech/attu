@@ -132,7 +132,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     expandIcon: {
-      left: '187px',
+      left: '160px',
       transform: 'rotateZ(180deg)',
     },
     collapseIcon: {

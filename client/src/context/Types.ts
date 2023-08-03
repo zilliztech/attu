@@ -62,6 +62,12 @@ export type AuthContextType = {
   setIsAuth: Dispatch<SetStateAction<boolean>>;
 };
 
+export type DatabaseContextType = {
+  database: string;
+  databases: string[];
+  setDatabase: Dispatch<SetStateAction<string>>;
+};
+
 export type PrometheusContextType = {
   withPrometheus: boolean;
   setWithPrometheus: Dispatch<SetStateAction<boolean>>;

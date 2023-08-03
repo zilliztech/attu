@@ -18,4 +18,5 @@ export enum ALL_ROUTER_TYPES {
 export type NavInfo = {
   navTitle: string;
   backPath: string;
+  showDatabaseSelector: boolean;
 };

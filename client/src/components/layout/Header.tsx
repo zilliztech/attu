@@ -1,13 +1,15 @@
 import { FC, useContext } from 'react';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
-import { HeaderType } from './Types';
-import { navContext } from '../../context/Navigation';
-import icons from '../icons/Icons';
 import { useNavigate } from 'react-router-dom';
-import { authContext } from '../../context/Auth';
+import { navContext } from '@/context/Navigation';
+import { databaseContext } from '@/context/Database';
+import { authContext } from '@/context/Auth';
 import { useTranslation } from 'react-i18next';
-import { MilvusHttp } from '../../http/Milvus';
-import { MILVUS_ADDRESS } from '../../consts/Localstorage';
+import { MilvusHttp } from '@/http/Milvus';
+import { MILVUS_ADDRESS } from '@/consts/Localstorage';
+import CustomSelector from '@/components/customSelector/CustomSelector';
+import icons from '../icons/Icons';
+import { HeaderType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingTop: theme.spacing(3),
-      paddingLeft: theme.spacing(5),
+      paddingLeft: theme.spacing(4),
       flex: 1,
     },
     navigation: {
@@ -32,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     icon: {
       color: theme.palette.primary.main,
       cursor: 'pointer',
+      marginRight: theme.spacing(1),
     },
     addressWrapper: {
       display: 'flex',
@@ -54,17 +57,24 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    database: {
+      width: theme.spacing(16),
+      marginRight: theme.spacing(2),
+    },
   })
 );
 
 const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
+  const { database, databases, setDatabase } = useContext(databaseContext);
   const { address, setAddress, setIsAuth } = useContext(authContext);
   const navigate = useNavigate();
+
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
   const BackIcon = icons.back;
+  const ForwardIcon = icons.rightArrow;
   const LogoutIcon = icons.logout;
 
   const handleBack = (path: string) => {
@@ -80,6 +90,8 @@ const Header: FC<HeaderType> = props => {
     // navigate(0);
   };
 
+  const dbOptions = databases.map(d => ({ value: d, label: d }));
+
   return (
     <header className={classes.header}>
       <div className={classes.contentWrapper}>
@@ -90,6 +102,20 @@ const Header: FC<HeaderType> = props => {
               onClick={() => handleBack(navInfo.backPath)}
             />
           )}
+          {navInfo.showDatabaseSelector ? (
+            <CustomSelector
+              label="Database"
+              value={database}
+              onChange={(e: { target: { value: unknown } }) => {
+                const database = e.target.value as string;
+                setDatabase(database);
+              }}
+              options={dbOptions}
+              variant="filled"
+              wrapperClass={classes.database}
+            />
+          ) : null}
+          {/* <ForwardIcon classes={{ root: classes.icon }} /> */}
 
           <Typography variant="h4" color="textPrimary">
             {navInfo.navTitle}
