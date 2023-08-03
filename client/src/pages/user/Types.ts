@@ -81,7 +81,7 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export enum TAB_EMUM {
+export enum TAB_ENUM {
   'schema',
   'partition',
   'data-preview',

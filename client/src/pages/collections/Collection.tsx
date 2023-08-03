@@ -12,7 +12,7 @@ import { parseLocationSearch } from '@/utils/Format';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Preview from '../preview/Preview';
-import { TAB_EMUM } from './Types';
+import { TAB_ENUM } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -51,7 +51,7 @@ const Collection = () => {
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
       ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_EMUM.schema };
+      : { activeIndex: TAB_ENUM.schema };
     return Number(activeIndex);
   }, [location]);
 

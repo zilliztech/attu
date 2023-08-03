@@ -9,7 +9,7 @@ import { ITab } from '@/components/customTabList/Types';
 import { parseLocationSearch } from '@/utils/Format';
 import User from './User';
 import Roles from './Roles';
-import { TAB_EMUM } from './Types';
+import { TAB_ENUM } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -42,7 +42,7 @@ const Users = () => {
   const activeTabIndex = useMemo(() => {
     const { activeIndex } = location.search
       ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_EMUM.schema };
+      : { activeIndex: TAB_ENUM.schema };
     return Number(activeIndex);
   }, [location]);
 
