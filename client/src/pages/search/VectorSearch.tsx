@@ -26,7 +26,6 @@ import {
   getEmbeddingType,
   getNonVectorFieldsForFilter,
   getVectorFieldOptions,
-  transferSearchResult,
 } from '@/utils/search';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import Filter from '@/components/advancedSearch';
@@ -36,8 +35,9 @@ import { parseLocationSearch } from '@/utils/Format';
 import { cloneObj, generateVector } from '@/utils/Common';
 import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { useTimeTravelHook } from '@/hooks/TimeTravel';
-import { LOADING_STATE } from '../../consts/Milvus';
+import { LOADING_STATE } from '@/consts/Milvus';
 import { getLabelDisplayedRows } from './Utils';
+import { useSearchResult } from '@/hooks/Result';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -76,6 +76,8 @@ const VectorSearch = () => {
   // latency
   const [latency, setLatency] = useState<number>(0);
 
+  const searchResultMemo = useSearchResult(searchResult as any, classes);
+
   const {
     pageSize,
     handlePageSize,
@@ -86,7 +88,7 @@ const VectorSearch = () => {
     order,
     orderBy,
     handleGridSort,
-  } = usePaginationHook(searchResult || []);
+  } = usePaginationHook(searchResultMemo || []);
 
   const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
     useTimeTravelHook();
@@ -119,6 +121,8 @@ const VectorSearch = () => {
     return fields.find(f => f._isPrimaryKey)?._fieldName;
   }, [selectedCollection, collections]);
 
+  const orderArray = ['id', 'distance', ...outputFields];
+
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     /**
      * id represents primary key, score represents distance
@@ -127,6 +131,11 @@ const VectorSearch = () => {
      */
     return searchResult && searchResult.length > 0
       ? Object.keys(searchResult[0])
+          .sort((a, b) => {
+            const indexA = orderArray.indexOf(a);
+            const indexB = orderArray.indexOf(b);
+            return indexA - indexB;
+          })
           .filter(item => {
             // if primary key field name is id, don't filter it
             const invalidItems =
@@ -141,7 +150,7 @@ const VectorSearch = () => {
             needCopy: primaryKeyField === key,
           }))
       : [];
-  }, [searchResult, primaryKeyField]);
+  }, [searchResult, primaryKeyField, orderArray]);
 
   const [selectedMetricType, setSelectedMetricType] = useState<string>('');
 
@@ -308,7 +317,7 @@ const VectorSearch = () => {
   const handleSearch = async (topK: number, expr = expression) => {
     const clonedSearchParams = cloneObj(searchParam);
     delete clonedSearchParams.round_decimal;
-    const searhParamPairs = {
+    const searchParamPairs = {
       params: JSON.stringify(clonedSearchParams),
       anns_field: selectedField,
       topk: topK,
@@ -319,7 +328,7 @@ const VectorSearch = () => {
     const params: VectorSearchParam = {
       output_fields: outputFields,
       expr,
-      search_params: searhParamPairs,
+      search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
       travel_timestamp: timeTravelInfo.timestamp,
@@ -332,9 +341,7 @@ const VectorSearch = () => {
         params
       );
       setTableLoading(false);
-
-      const result = transferSearchResult(res.results);
-      setSearchResult(result);
+      setSearchResult(res.results);
       setLatency(res.latency);
     } catch (err) {
       setTableLoading(false);

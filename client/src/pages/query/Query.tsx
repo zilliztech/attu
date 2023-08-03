@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useRef, useMemo, useContext } from 'react';
+import { FC, useEffect, useState, useRef, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Parser } from '@json2csv/plainjs';
@@ -14,13 +14,13 @@ import { CollectionHttp } from '@/http/Collection';
 import { FieldHttp } from '@/http/Field';
 import { usePaginationHook } from '@/hooks/Pagination';
 // import { useTimeTravelHook } from '@/hooks/TimeTravel';
-import CopyButton from '@/components/advancedSearch/CopyButton';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
 // import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { saveAs } from 'file-saver';
 import { DataTypeStringEnum } from '../collections/Types';
 import { getLabelDisplayedRows } from '../search/Utils';
+import { useSearchResult } from '@/hooks/Result';
 
 const Query: FC<{
   collectionName: string;
@@ -47,47 +47,11 @@ const Query: FC<{
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy');
 
   const classes = getQueryStyles();
 
   // Format result list
-  const queryResultMemo = useMemo(
-    () =>
-      queryResult?.map((resultItem: { [key: string]: any }) => {
-        // Iterate resultItem keys, then format vector(array) items.
-        const tmp = Object.keys(resultItem).reduce(
-          (prev: { [key: string]: any }, item: string) => {
-            switch (item) {
-              case 'json':
-                prev[item] = <div>{JSON.stringify(resultItem[item])}</div>;
-                break;
-              case 'vector':
-                const list2Str = JSON.stringify(resultItem[item]);
-                prev[item] = (
-                  <div className={classes.vectorTableCell}>
-                    <div>{list2Str}</div>
-                    <CopyButton
-                      label={copyTrans.label}
-                      value={list2Str}
-                      className={classes.copyBtn}
-                    />
-                  </div>
-                );
-                break;
-              default:
-                prev[item] = `${resultItem[item]}`;
-            }
-
-            return prev;
-          },
-          {}
-        );
-        return tmp;
-      }),
-    [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
-  );
+  const queryResultMemo = useSearchResult(queryResult, classes);
 
   const {
     pageSize,

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useMemo } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AttuGrid from '@/components/grid/Grid';
 import { getQueryStyles } from '../query/Styles';
@@ -6,12 +6,11 @@ import { CollectionHttp } from '@/http/Collection';
 import { FieldHttp } from '@/http/Field';
 import { IndexHttp } from '@/http/Index';
 import { usePaginationHook } from '@/hooks/Pagination';
-import CopyButton from '@/components/advancedSearch/CopyButton';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { generateVector } from '@/utils/Common';
 import { DataTypeEnum } from '../../pages/collections/Types';
-
+import { useSearchResult } from '@/hooks/Result';
 import {
   INDEX_CONFIG,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
@@ -24,48 +23,12 @@ const Preview: FC<{
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
   const [primaryKey, setPrimaryKey] = useState<string>('');
-  const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');
 
-  const copyTrans = commonTrans('copy');
-
   const classes = getQueryStyles();
-  // Format result list
-  const queryResultMemo = useMemo(
-    () =>
-      queryResult?.map((resultItem: { [key: string]: any }) => {
-        // Iterate resultItem keys, then format vector(array) items.
-        const tmp = Object.keys(resultItem).reduce(
-          (prev: { [key: string]: any }, item: string) => {
-            switch (item) {
-              case 'json':
-                prev[item] = <div>{JSON.stringify(resultItem[item])}</div>;
-                break;
-              case 'vector':
-                const list2Str = JSON.stringify(resultItem[item]);
-                prev[item] = (
-                  <div className={classes.vectorTableCell}>
-                    <div>{list2Str}</div>
-                    <CopyButton
-                      label={copyTrans.label}
-                      value={list2Str}
-                      className={classes.copyBtn}
-                    />
-                  </div>
-                );
-                break;
-              default:
-                prev[item] = `${resultItem[item]}`;
-            }
 
-            return prev;
-          },
-          {}
-        );
-        return tmp;
-      }),
-    [queryResult, classes.vectorTableCell, classes.copyBtn, copyTrans.label]
-  );
+  // Format result list
+  const queryResultMemo = useSearchResult(queryResult, classes);
 
   const {
     pageSize,
