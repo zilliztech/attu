@@ -17,7 +17,6 @@ export const DatabaseProvider = (props: { children: React.ReactNode }) => {
   const fetchDatabases = async () => {
     const res = await DatabaseHttp.getDatabases();
     setDatabases(res.db_names);
-    console.log(databases);
   };
 
   useEffect(() => {
