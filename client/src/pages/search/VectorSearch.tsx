@@ -1,24 +1,26 @@
+import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
 import { TextField, Typography, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { useNavigationHook } from '@/hooks/Navigation';
+import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { useNavigationHook } from '@/hooks/Navigation';
+import { useSearchResult } from '@/hooks/Result';
+import { usePaginationHook } from '@/hooks/Pagination';
+import { useTimeTravelHook } from '@/hooks/TimeTravel';
+import { databaseContext } from '@/context/Database';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import SearchParams from './SearchParams';
-import { DEFAULT_METRIC_VALUE_MAP } from '../../consts/Milvus';
-import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
+import { ColDefinitionsType } from '@/components/grid/Types';
 import AttuGrid from '@/components/grid/Grid';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
-import { usePaginationHook } from '@/hooks/Pagination';
 import CustomButton from '@/components/customButton/CustomButton';
 import SimpleMenu from '@/components/menu/SimpleMenu';
-import { TOP_K_OPTIONS } from './Constants';
 import { Option } from '@/components/customSelector/Types';
+import Filter from '@/components/advancedSearch';
+import { Field } from '@/components/advancedSearch/Types';
+import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { CollectionHttp } from '@/http/Collection';
-import { CollectionData, DataTypeEnum } from '../collections/Types';
 import { IndexHttp } from '@/http/Index';
-import { getVectorSearchStyles } from './Styles';
 import { parseValue } from '@/utils/Insert';
 import {
   classifyFields,
@@ -27,21 +29,21 @@ import {
   getNonVectorFieldsForFilter,
   getVectorFieldOptions,
 } from '@/utils/search';
-import { ColDefinitionsType } from '@/components/grid/Types';
-import Filter from '@/components/advancedSearch';
-import { Field } from '@/components/advancedSearch/Types';
-import { useLocation } from 'react-router-dom';
 import { parseLocationSearch } from '@/utils/Format';
 import { cloneObj, generateVector } from '@/utils/Common';
-import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
-import { useTimeTravelHook } from '@/hooks/TimeTravel';
 import { LOADING_STATE } from '@/consts/Milvus';
+import { DEFAULT_METRIC_VALUE_MAP } from '@/consts/Milvus';
 import { getLabelDisplayedRows } from './Utils';
-import { useSearchResult } from '@/hooks/Result';
+import SearchParams from './SearchParams';
+import { getVectorSearchStyles } from './Styles';
+import { CollectionData, DataTypeEnum } from '../collections/Types';
+import { TOP_K_OPTIONS } from './Constants';
+import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
   const location = useLocation();
+  const { database } = useContext(databaseContext);
 
   // i18n
   const { t: searchTrans } = useTranslation('search');
@@ -237,7 +239,7 @@ const VectorSearch = () => {
   const fetchCollections = useCallback(async () => {
     const collections = await CollectionHttp.getCollections();
     setCollections(collections.filter(c => c._status === LOADING_STATE.LOADED));
-  }, []);
+  }, [database]);
 
   const fetchFieldsWithIndex = useCallback(
     async (collectionName: string, collections: CollectionData[]) => {
@@ -260,12 +262,17 @@ const VectorSearch = () => {
       const filterFields = getNonVectorFieldsForFilter(nonVectorFields);
       setFilterFields(filterFields);
     },
-    []
+    [collections]
   );
 
   useEffect(() => {
     fetchCollections();
   }, [fetchCollections]);
+
+  // clear selection if database is changed
+  useEffect(() => {
+    setSelectedCollection('');
+  }, [database]);
 
   // get field options with index when selected collection changed
   useEffect(() => {

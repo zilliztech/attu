@@ -101,4 +101,11 @@ export class MilvusService {
     const res = MilvusService.activeMilvusClient.closeConnection();
     return res;
   }
+
+  async useDatabase(db: string) {
+    const res = await MilvusService.activeMilvusClient.use({
+      db_name: db,
+    });
+    return res;
+  }
 }

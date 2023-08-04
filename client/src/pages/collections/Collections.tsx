@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { authContext } from '@/context/Auth';
+import { databaseContext } from '@/context/Database';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -27,9 +28,9 @@ import Highlighter from 'react-highlight-words';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { MilvusHttp } from '@/http/Milvus';
-import { LOADING_STATE } from '../../consts/Milvus';
+import { LOADING_STATE } from '@/consts/Milvus';
 import { webSocketContext } from '@/context/WebSocket';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
 import { checkIndexBuilding, checkLoading } from '@/utils/Validation';
 import Aliases from './Aliases';
 
@@ -59,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
+  const { database } = useContext(databaseContext);
 
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
@@ -105,7 +107,7 @@ const Collections = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, database]);
 
   const formatCollections = useMemo(() => {
     const filteredCollections = search

@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { navContext } from '@/context/Navigation';
@@ -90,6 +90,10 @@ const Header: FC<HeaderType> = props => {
     // navigate(0);
   };
 
+  const useDatabase = async (database: string) => {
+    await MilvusHttp.useDatabase({ database });
+  };
+
   const dbOptions = databases.map(d => ({ value: d, label: d }));
 
   return (
@@ -106,8 +110,9 @@ const Header: FC<HeaderType> = props => {
             <CustomSelector
               label="Database"
               value={database}
-              onChange={(e: { target: { value: unknown } }) => {
+              onChange={async (e: { target: { value: unknown } }) => {
                 const database = e.target.value as string;
+                await useDatabase(database);
                 setDatabase(database);
               }}
               options={dbOptions}
