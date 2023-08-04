@@ -74,7 +74,6 @@ const Header: FC<HeaderType> = props => {
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
   const BackIcon = icons.back;
-  const ForwardIcon = icons.rightArrow;
   const LogoutIcon = icons.logout;
 
   const handleBack = (path: string) => {
@@ -120,7 +119,6 @@ const Header: FC<HeaderType> = props => {
               wrapperClass={classes.database}
             />
           ) : null}
-          {/* <ForwardIcon classes={{ root: classes.icon }} /> */}
 
           <Typography variant="h4" color="textPrimary">
             {navInfo.navTitle}
