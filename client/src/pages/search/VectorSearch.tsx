@@ -3,10 +3,12 @@ import { TextField, Typography, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import { useNavigationHook } from '@/hooks/Navigation';
-import { useSearchResult } from '@/hooks/Result';
-import { usePaginationHook } from '@/hooks/Pagination';
-import { useTimeTravelHook } from '@/hooks/TimeTravel';
+import {
+  useNavigationHook,
+  useSearchResult,
+  usePaginationHook,
+  useTimeTravelHook,
+} from '@/hooks';
 import { databaseContext } from '@/context';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ColDefinitionsType } from '@/components/grid/Types';

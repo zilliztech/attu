@@ -3,7 +3,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
-import { usePaginationHook } from '@/hooks/Pagination';
+import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { FieldHttp } from '@/http/Field';
 import { FieldView } from './Types';

@@ -11,9 +11,9 @@ import {
   INDEX_CONFIG,
   METRIC_OPTIONS_MAP,
   searchKeywordsType,
-} from '../../consts/Milvus';
+} from '@/consts/Milvus';
 import { rootContext } from '@/context';
-import { useFormValidation } from '@/hooks/Form';
+import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils/Form';
 import { SearchParamInputConfig, SearchParamsProps } from './Types';
 

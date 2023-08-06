@@ -1,17 +1,15 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { PartitionView } from './Types';
+import Highlighter from 'react-highlight-words';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
-import { usePaginationHook } from '@/hooks/Pagination';
+import { usePaginationHook, useInsertDialogHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
 import { PartitionHttp } from '@/http/Partition';
-import Highlighter from 'react-highlight-words';
-import { useInsertDialogHook } from '@/hooks/Dialog';
 import InsertContainer from '../dialogs/insert/Dialog';
 import { CollectionHttp } from '@/http/Collection';
 import { FieldHttp } from '@/http/Field';
@@ -20,6 +18,7 @@ import { InsertDataParam } from '../collections/Types';
 import { MilvusHttp } from '@/http/Milvus';
 import CreatePartitionDialog from '../dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '../dialogs/DropPartitionDialog';
+import { PartitionView } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

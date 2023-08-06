@@ -7,7 +7,7 @@ import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context';
-import { useNavigationHook } from '@/hooks/Navigation';
+import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import UpdateRoleDialog from './UpdateRoleDialog';
 

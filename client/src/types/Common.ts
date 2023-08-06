@@ -1,4 +1,4 @@
-import { IValidationItem } from '../hooks/Form';
+import { IValidationItem } from '@/hooks';
 
 export interface KeyValuePair {
   label: string;

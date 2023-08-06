@@ -5,7 +5,7 @@ import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils/Form';
-import { useFormValidation } from '@/hooks/Form';
+import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { CollectionHttp } from '@/http/Collection';
 import { RenameCollectionProps } from './Types';

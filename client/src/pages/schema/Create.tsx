@@ -10,7 +10,7 @@ import {
   INDEX_OPTIONS_MAP,
   METRIC_TYPES_VALUES,
 } from '../../consts/Milvus';
-import { useFormValidation } from '@/hooks/Form';
+import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
 import { getCreateIndexPYCode } from '@/utils/code/Py';
 import { getCreateIndexJavaCode } from '@/utils/code/Java';

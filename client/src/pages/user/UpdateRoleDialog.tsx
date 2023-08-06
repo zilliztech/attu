@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { useFormValidation } from '@/hooks/Form';
+import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils/Form';
 import { UserHttp } from '@/http/User';
 import {

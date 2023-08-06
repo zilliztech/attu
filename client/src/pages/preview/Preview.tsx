@@ -5,16 +5,12 @@ import { getQueryStyles } from '../query/Styles';
 import { CollectionHttp } from '@/http/Collection';
 import { FieldHttp } from '@/http/Field';
 import { IndexHttp } from '@/http/Index';
-import { usePaginationHook } from '@/hooks/Pagination';
+import { usePaginationHook, useSearchResult } from '@/hooks';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { generateVector } from '@/utils/Common';
-import { DataTypeEnum } from '../../pages/collections/Types';
-import { useSearchResult } from '@/hooks/Result';
-import {
-  INDEX_CONFIG,
-  DEFAULT_SEARCH_PARAM_VALUE_MAP,
-} from '../../consts/Milvus';
+import { DataTypeEnum } from '@/pages/collections/Types';
+import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts/Milvus';
 
 const Preview: FC<{
   collectionName: string;

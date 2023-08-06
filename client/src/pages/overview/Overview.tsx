@@ -6,7 +6,7 @@ import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
 import { LOADING_STATE } from '@/consts/Milvus';
-import { useNavigationHook } from '@/hooks/Navigation';
+import { useNavigationHook } from '@/hooks';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';

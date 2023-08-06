@@ -12,7 +12,7 @@ import {
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { useFormValidation } from '@/hooks/Form';
+import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils/Form';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';

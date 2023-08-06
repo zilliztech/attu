@@ -1,7 +1,7 @@
-import { makeStyles, Theme } from '@material-ui/core';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigationHook } from '@/hooks/Navigation';
-import { useInterval } from '@/hooks/SystemView';
+import { makeStyles, Theme } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { useNavigationHook, useInterval } from '@/hooks';
 import { PrometheusHttp } from '@/http/Prometheus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import {
@@ -19,12 +19,11 @@ import { timeRangeOptions } from './consts';
 import {
   LAST_TIME_HEALTHY_THRESHOLD_CPU,
   LAST_TIME_HEALTHY_THRESHOLD_MEMORY,
-} from '../../consts/Localstorage';
+} from '@/consts/Localstorage';
 import {
   DEFAULT_HEALTHY_THRESHOLD_CPU,
   DEFAULT_HEALTHY_THRESHOLD_MEMORY,
-} from '../../consts/Prometheus';
-import { useTranslation } from 'react-i18next';
+} from '@/consts/Prometheus';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

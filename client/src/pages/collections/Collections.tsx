@@ -9,13 +9,12 @@ import {
   databaseContext,
   webSocketContext,
 } from '@/context';
-import { useNavigationHook } from '@/hooks/Navigation';
+import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { CollectionView, InsertDataParam } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import { usePaginationHook } from '@/hooks/Pagination';
 import icons from '@/components/icons/Icons';
 import EmptyCard from '@/components/cards/EmptyCard';
 import Status from '@/components/status/Status';

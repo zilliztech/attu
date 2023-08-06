@@ -8,19 +8,18 @@ import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import AttuGrid from '@/components/grid/Grid';
 import { ToolBarConfig } from '@/components/grid/Types';
+import { saveAs } from 'file-saver';
 import { getQueryStyles } from './Styles';
 import Filter from '@/components/advancedSearch';
 import { CollectionHttp } from '@/http/Collection';
 import { FieldHttp } from '@/http/Field';
-import { usePaginationHook } from '@/hooks/Pagination';
-// import { useTimeTravelHook } from '@/hooks/TimeTravel';
+import { usePaginationHook, useSearchResult } from '@/hooks';
+// import { useTimeTravelHook } from '@/hooks';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
 // import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
-import { saveAs } from 'file-saver';
 import { DataTypeStringEnum } from '../collections/Types';
 import { getLabelDisplayedRows } from '../search/Utils';
-import { useSearchResult } from '@/hooks/Result';
 
 const Query: FC<{
   collectionName: string;

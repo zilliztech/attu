@@ -1,8 +1,8 @@
-import { Option } from '../components/customSelector/Types';
-import { METRIC_TYPES_VALUES } from '../consts/Milvus';
-import { IForm } from '../hooks/Form';
-import { DataTypeStringEnum } from '../pages/collections/Types';
-import { IndexType } from '../pages/schema/Types';
+import { Option } from '@/components/customSelector/Types';
+import { METRIC_TYPES_VALUES } from '@/consts/Milvus';
+import { IForm } from '@/hooks';
+import { DataTypeStringEnum } from '@/pages/collections/Types';
+import { IndexType } from '@/pages/schema/Types';
 
 interface IInfo {
   [key: string]: any;

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
-import { useNavigationHook } from '@/hooks/Navigation';
+import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CustomTabList from '@/components/customTabList/CustomTabList';
 import { ITab } from '@/components/customTabList/Types';

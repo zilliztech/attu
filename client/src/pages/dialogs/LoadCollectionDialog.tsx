@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { authContext, rootContext } from '@/context';
 import { CollectionHttp } from '@/http/Collection';
-import { useFormValidation } from '@/hooks/Form';
+import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils/Form';
 import { parseJson, getNode } from '@/utils/Metric';
 import CustomInput from '@/components/customInput/CustomInput';
