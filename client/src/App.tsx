@@ -6,20 +6,23 @@ import { NavProvider } from './context/Navigation';
 import { AuthProvider } from './context/Auth';
 import { WebSocketProvider } from './context/WebSocket';
 import { PrometheusProvider } from './context/Prometheus';
+import { DatabaseProvider } from './context/Database';
 
 function App() {
   return (
     <AuthProvider>
       <RootProvider>
-        <PrometheusProvider>
-          <WebSocketProvider>
-            <NavProvider>
-              <MuiPickersUtilsProvider utils={DayjsUtils}>
-                <Router></Router>
-              </MuiPickersUtilsProvider>
-            </NavProvider>
-          </WebSocketProvider>
-        </PrometheusProvider>
+        <DatabaseProvider>
+          <PrometheusProvider>
+            <WebSocketProvider>
+              <NavProvider>
+                <MuiPickersUtilsProvider utils={DayjsUtils}>
+                  <Router></Router>
+                </MuiPickersUtilsProvider>
+              </NavProvider>
+            </WebSocketProvider>
+          </PrometheusProvider>
+        </DatabaseProvider>
       </RootProvider>
     </AuthProvider>
   );

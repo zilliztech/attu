@@ -10,6 +10,11 @@ export class CheckMilvusDto {
   readonly address: string;
 }
 
+export class UseDatabaseDto {
+  @IsString()
+  readonly database: string;
+}
+
 export class FlushDto {
   @IsArray()
   @ArrayMinSize(1, { message: "At least need one collection name." })

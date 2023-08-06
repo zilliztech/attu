@@ -1,19 +1,19 @@
 import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { databaseContext } from '@/context/Database';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '../../consts/Http';
-import { LOADING_STATE } from '../../consts/Milvus';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
+import { LOADING_STATE } from '@/consts/Milvus';
 import { rootContext } from '@/context/Root';
-import { webSokcetContext } from '@/context/WebSocket';
+import { webSocketContext } from '@/context/WebSocket';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { formatNumber } from '@/utils/Common';
 import { checkLoading, checkIndexBuilding } from '@/utils/Validation';
-import { CollectionData } from '../collections/Types';
 import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
 
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
+  const { database } = useContext(databaseContext);
   const classes = useStyles();
   const theme = useTheme();
   const { t: overviewTrans } = useTranslation('overview');
@@ -46,7 +47,7 @@ const Overview = () => {
     totalData: 0,
   });
   const [loading, setLoading] = useState(false);
-  const { collections, setCollections } = useContext(webSokcetContext);
+  const { collections, setCollections } = useContext(webSocketContext);
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
@@ -66,7 +67,7 @@ const Overview = () => {
     setStatistics(res);
     setCollections(collections);
     setLoading(false);
-  }, [setCollections]);
+  }, [setCollections, database]);
 
   useEffect(() => {
     fetchData();

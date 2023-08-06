@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middlewares/validation';
 import { MilvusService } from './milvus.service';
-import { ConnectMilvusDto, FlushDto } from './dto';
+import { ConnectMilvusDto, FlushDto, UseDatabaseDto } from './dto';
 import { INSIGHT_CACHE } from '../utils/Const';
 import packageJson from '../../package.json';
 
@@ -24,6 +24,11 @@ export class MilvusController {
       '/connect',
       dtoValidationMiddleware(ConnectMilvusDto),
       this.connectMilvus.bind(this)
+    );
+    this.router.post(
+      '/usedb',
+      dtoValidationMiddleware(UseDatabaseDto),
+      this.useDatabase.bind(this)
     );
     this.router.post('/disconnect', this.closeConnection.bind(this));
     this.router.get('/check', this.checkConnect.bind(this));
@@ -93,6 +98,17 @@ export class MilvusController {
       attu: packageJson.version,
     };
     res.send(data);
+  }
+
+  async useDatabase(req: Request, res: Response, next: NextFunction) {
+    const { database } = req.body;
+
+    try {
+      const result = await this.milvusService.useDatabase(database);
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
   }
 
   closeConnection(req: Request, res: Response, next: NextFunction) {

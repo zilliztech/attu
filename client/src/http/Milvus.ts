@@ -8,7 +8,7 @@ export class MilvusHttp extends BaseModel {
   static FLUSH_URL = '/milvus/flush';
   static METRICS_URL = '/milvus/metrics';
   static VERSION_URL = '/milvus/version';
-
+  static USE_DB_URL = '/milvus/usedb';
   static TIGGER_CRON_URL = '/crons';
 
   constructor(props: {}) {
@@ -57,5 +57,9 @@ export class MilvusHttp extends BaseModel {
       path: this.TIGGER_CRON_URL,
       data,
     });
+  }
+
+  static useDatabase(data: { database: string }) {
+    return super.create({ path: this.USE_DB_URL, data });
   }
 }

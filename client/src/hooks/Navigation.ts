@@ -22,6 +22,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('overview'),
           backPath: '',
+          showDatabaseSelector: true,
         };
         setNavInfo(navInfo);
         break;
@@ -30,6 +31,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('database'),
           backPath: '',
+          showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;
@@ -38,6 +40,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('collection'),
           backPath: '',
+          showDatabaseSelector: true,
         };
         setNavInfo(navInfo);
         break;
@@ -46,6 +49,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: collectionName,
           backPath: '/collections',
+          showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;
@@ -54,6 +58,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('search'),
           backPath: '',
+          showDatabaseSelector: true,
         };
         setNavInfo(navInfo);
         break;
@@ -62,6 +67,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('system'),
           backPath: '',
+          showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;
@@ -70,14 +76,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('user'),
           backPath: '',
-        };
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.PLUGIN: {
-        const navInfo: NavInfo = {
-          navTitle: title,
-          backPath: '',
+          showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;

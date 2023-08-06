@@ -130,7 +130,7 @@ function Index() {
         <GlobalEffect>
           <div className={classes.content}>
             <NavMenu
-              width="200px"
+              width="172px"
               data={menuItems}
               defaultActive={defaultActive}
               // used for nested child menu

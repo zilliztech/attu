@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useNavigationHook } from '@/hooks/Navigation';

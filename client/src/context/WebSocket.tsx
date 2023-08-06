@@ -9,12 +9,12 @@ import { CollectionView } from '../pages/collections/Types';
 import { checkIndexBuilding, checkLoading } from '../utils/Validation';
 import { WebSocketType } from './Types';
 
-export const webSokcetContext = createContext<WebSocketType>({
+export const webSocketContext = createContext<WebSocketType>({
   collections: [],
   setCollections: data => {},
 });
 
-const { Provider } = webSokcetContext;
+const { Provider } = webSocketContext;
 
 export const WebSocketProvider = (props: { children: React.ReactNode }) => {
   const [collections, setCollections] = useState<CollectionView[]>([]);
