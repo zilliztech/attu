@@ -10,7 +10,6 @@ export const databaseContext = createContext<DatabaseContextType>({
 
 const { Provider } = databaseContext;
 export const DatabaseProvider = (props: { children: React.ReactNode }) => {
-  // get milvus address from local storage
   const [database, setDatabase] = useState<string>('default');
   const [databases, setDatabases] = useState<string[]>(['default']);
 
