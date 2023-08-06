@@ -12,7 +12,7 @@ import {
   UpdateUserRoleParams,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './CreateUser';

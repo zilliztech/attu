@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DatabaseHttp } from '@/http/Database';
 import AttuGrid from '@/components/grid/Grid';
@@ -9,7 +9,7 @@ import {
   DatabaseData,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './Create';

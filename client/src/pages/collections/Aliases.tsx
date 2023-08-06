@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Chip, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import { AliasesProps } from './Types';
 import icons from '@/components/icons/Icons';
 import DeleteIcon from '@material-ui/icons/Delete';

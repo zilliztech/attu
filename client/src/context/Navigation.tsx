@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavInfo } from '../router/Types';
+import { NavInfo } from '@/router/Types';
 import { NavContextType } from './Types';
 
 export const navContext = createContext<NavContextType>({

@@ -1,2 +1,2 @@
-import { SnackBarType } from '../../context/Types';
+import { SnackBarType } from '@/context';
 export type CustomSnackBarType = SnackBarType & { onClose: () => void };

@@ -12,7 +12,7 @@ import {
   METRIC_OPTIONS_MAP,
   searchKeywordsType,
 } from '../../consts/Milvus';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks/Form';
 import { formatForm } from '@/utils/Form';
 import { SearchParamInputConfig, SearchParamsProps } from './Types';

@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
-import { MILVUS_ADDRESS } from '../consts/Localstorage';
-import { MilvusHttp } from '../http/Milvus';
+import { MILVUS_ADDRESS } from '@/consts/Localstorage';
+import { MilvusHttp } from '@/http/Milvus';
 import { AuthContextType } from './Types';
 
 export const authContext = createContext<AuthContextType>({

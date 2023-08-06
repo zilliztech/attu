@@ -1,14 +1,14 @@
 import { FC, useContext, useMemo, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils/Form';
 import { useFormValidation } from '@/hooks/Form';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { CollectionHttp } from '@/http/Collection';
-import { CreateAliasProps } from '../collections/Types';
+import { CreateAliasProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

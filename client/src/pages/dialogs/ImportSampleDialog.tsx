@@ -3,7 +3,7 @@ import { FC, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import { InsertStatusEnum } from './insert/Types';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';

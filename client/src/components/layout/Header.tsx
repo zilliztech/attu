@@ -1,10 +1,8 @@
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
-import { navContext } from '@/context/Navigation';
-import { databaseContext } from '@/context/Database';
-import { authContext } from '@/context/Auth';
-import { useTranslation } from 'react-i18next';
+import { navContext, databaseContext, authContext } from '@/context';
 import { MilvusHttp } from '@/http/Milvus';
 import { MILVUS_ADDRESS } from '@/consts/Localstorage';
 import CustomSelector from '@/components/customSelector/CustomSelector';

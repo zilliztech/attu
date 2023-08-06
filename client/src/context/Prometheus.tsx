@@ -1,22 +1,21 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { authContext, rootContext } from '@/context';
 import { PrometheusContextType } from './Types';
-import { authContext } from '../context/Auth';
 import {
   LAST_TIME_WITH_PROMETHEUS,
   LAST_TIME_PROMETHEUS_ADDRESS,
   LAST_TIME_PROMETHEUS_INSTANCE,
   LAST_TIME_PROMETHEUS_NAMESPACE,
-} from '../consts/Localstorage';
-import { formatPrometheusAddress } from '../utils/Format';
-import { PrometheusHttp } from '../http/Prometheus';
+} from '@/consts/Localstorage';
+import { formatPrometheusAddress } from '@/utils/Format';
+import { PrometheusHttp } from '@/http/Prometheus';
 import {
   PROMETHEUS_ADDRESS,
   PROMETHEUS_INSTANCE_NAME,
   PROMETHEUS_NAMESPACE,
   WITH_PROMETHEUS,
-} from '../consts/Prometheus';
-import { rootContext } from './Root';
-import { useTranslation } from 'react-i18next';
+} from '@/consts/Prometheus';
 
 export const prometheusContext = createContext<PrometheusContextType>({
   withPrometheus: false,

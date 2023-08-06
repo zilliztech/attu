@@ -2,7 +2,7 @@ import { useMemo, useContext } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
-import { authContext } from '@/context/Auth';
+import { authContext } from '@/context';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CustomTabList from '@/components/customTabList/CustomTabList';

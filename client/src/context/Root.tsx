@@ -2,17 +2,17 @@ import { useState, useCallback, useEffect, useContext } from 'react';
 import React from 'react';
 import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { SwipeableDrawer } from '@material-ui/core';
-import { authContext } from '../context/Auth';
+import { authContext } from '@/context';
 import {
   RootContextType,
   DialogType,
   SnackBarType,
   OpenSnackBarType,
 } from './Types';
-import CustomSnackBar from '../components/customSnackBar/CustomSnackBar';
-import CustomDialog from '../components/customDialog/CustomDialog';
+import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
+import CustomDialog from '@/components/customDialog/CustomDialog';
+import { MilvusHttp } from '@/http/Milvus';
 import { theme } from '../styles/theme';
-import { MilvusHttp } from '../http/Milvus';
 
 const DefaultDialogConfigs: DialogType = {
   open: false,

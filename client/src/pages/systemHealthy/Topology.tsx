@@ -1,5 +1,5 @@
 import { makeStyles, Theme, useTheme } from '@material-ui/core';
-import { Dispatch, memo, useContext } from 'react';
+import { useContext } from 'react';
 import {
   TOPO_HEIGHT,
   TOPO_LINK_LENGTH,
@@ -10,7 +10,7 @@ import { getIcon } from './getIcon';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 import clsx from 'clsx';
 import { formatPrometheusAddress } from '@/utils/Format';
-import { prometheusContext } from '@/context/Prometheus';
+import { prometheusContext } from '@/context';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -1,5 +1,5 @@
 import { ReactElement, useContext } from 'react';
-import { rootContext } from '../context/Root';
+import { rootContext } from '@/context';
 
 export const useInsertDialogHook = () => {
   const { setDialog } = useContext(rootContext);

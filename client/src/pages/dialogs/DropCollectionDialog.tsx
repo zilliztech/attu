@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { CollectionHttp } from '@/http/Collection';
 import { DropCollectionProps } from './Types';

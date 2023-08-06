@@ -1,5 +1,5 @@
 import { screen, fireEvent, render } from '@testing-library/react';
-import { DialogType } from '../../../context/Types';
+import { DialogType } from '@/context';
 import CustomDialog from '../../customDialog/CustomDialog';
 import { vi } from 'vitest';
 

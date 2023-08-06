@@ -9,7 +9,7 @@ import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useNavigate, Link } from 'react-router-dom';
 import { LOADING_STATE } from '@/consts/Milvus';
 import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

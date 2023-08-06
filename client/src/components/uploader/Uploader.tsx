@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { FC, useContext, useRef } from 'react';
-import { rootContext } from '../../context/Root';
+import { rootContext } from '@/context';
 import CustomButton from '../customButton/CustomButton';
 import { UploaderProps } from './Types';
 

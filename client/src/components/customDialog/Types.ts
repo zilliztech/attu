@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { DialogType } from '../../context/Types';
+import { DialogType } from '@/context';
 import { CodeViewData } from '../code/Types';
 export type CustomDialogType = DialogType & {
   onClose: () => void;

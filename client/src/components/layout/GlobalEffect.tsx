@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
-import axiosInstance from '../../http/Axios';
-import { rootContext } from '../../context/Root';
-import { HTTP_STATUS_CODE } from '../../consts/Http';
-import { authContext } from '../../context/Auth';
-import { MILVUS_ADDRESS } from '../../consts/Localstorage';
+import axiosInstance from '@/http/Axios';
+import { rootContext, authContext } from '@/context';
+import { HTTP_STATUS_CODE } from '@/consts/Http';
+import { MILVUS_ADDRESS } from '@/consts/Localstorage';
 
 let axiosResInterceptor: number | null = null;
 // let timer: Record<string, ReturnType<typeof setTimeout> | number>[] = [];

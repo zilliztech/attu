@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import icons from '@/components/icons/Icons';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import CreateIndex from './Create';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon from '@/components/status/StatusIcon';

@@ -10,10 +10,10 @@ import {
 } from '@material-ui/core';
 import { ChangeEvent, FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomButton from '../../components/customButton/CustomButton';
-import CustomDialogTitle from '../../components/customDialog/CustomDialogTitle';
-import { DeleteDialogContentType } from '../../components/customDialog/Types';
-import { rootContext } from '../../context/Root';
+import CustomButton from '@/components/customButton/CustomButton';
+import CustomDialogTitle from '@/components/customDialog/CustomDialogTitle';
+import { DeleteDialogContentType } from '@/components/customDialog/Types';
+import { rootContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

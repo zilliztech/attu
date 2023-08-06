@@ -1,6 +1,6 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { CollectionView } from '../pages/collections/Types';
-import { NavInfo } from '../router/Types';
+import { CollectionView } from '@/pages/collections/Types';
+import { NavInfo } from '@/router/Types';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;

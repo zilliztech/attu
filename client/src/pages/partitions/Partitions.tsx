@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks/Pagination';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import { PartitionHttp } from '@/http/Partition';
 import Highlighter from 'react-highlight-words';
 import { useInsertDialogHook } from '@/hooks/Dialog';

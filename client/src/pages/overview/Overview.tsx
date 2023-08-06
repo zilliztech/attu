@@ -1,13 +1,11 @@
 import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { databaseContext } from '@/context/Database';
+import { rootContext, webSocketContext, databaseContext } from '@/context';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
 import { LOADING_STATE } from '@/consts/Milvus';
-import { rootContext } from '@/context/Root';
-import { webSocketContext } from '@/context/WebSocket';
 import { useNavigationHook } from '@/hooks/Navigation';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';

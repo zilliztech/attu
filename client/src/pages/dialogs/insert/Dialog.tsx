@@ -8,10 +8,14 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { parse } from 'papaparse';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import icons from '@/components/icons/Icons';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
+import { Option } from '@/components/customSelector/Types';
+import { PartitionHttp } from '@/http/Partition';
+import { combineHeadsAndData } from '@/utils/Insert';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
 import InsertStatus from './Status';
@@ -20,10 +24,6 @@ import {
   InsertStatusEnum,
   InsertStepperEnum,
 } from './Types';
-import { Option } from '@/components/customSelector/Types';
-import { parse } from 'papaparse';
-import { PartitionHttp } from '@/http/Partition';
-import { combineHeadsAndData } from '@/utils/Insert';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {

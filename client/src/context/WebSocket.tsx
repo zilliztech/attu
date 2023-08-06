@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '../consts/Http';
-import { authContext } from '../context/Auth';
-import { url } from '../http/Axios';
-import { CollectionHttp } from '../http/Collection';
-import { MilvusHttp } from '../http/Milvus';
-import { CollectionView } from '../pages/collections/Types';
-import { checkIndexBuilding, checkLoading } from '../utils/Validation';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
+import { authContext } from '@/context';
+import { url } from '@/http/Axios';
+import { CollectionHttp } from '@/http/Collection';
+import { MilvusHttp } from '@/http/Milvus';
+import { CollectionView } from '@/pages/collections/Types';
+import { checkIndexBuilding, checkLoading } from '@/utils/Validation';
 import { WebSocketType } from './Types';
 
 export const webSocketContext = createContext<WebSocketType>({

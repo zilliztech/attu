@@ -7,9 +7,8 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { authContext } from '@/context/Auth';
+import { authContext, rootContext } from '@/context';
 import { CollectionHttp } from '@/http/Collection';
-import { rootContext } from '@/context/Root';
 import { useFormValidation } from '@/hooks/Form';
 import { formatForm } from '@/utils/Form';
 import { parseJson, getNode } from '@/utils/Metric';
@@ -18,7 +17,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { MilvusHttp } from '@/http/Milvus';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '../../consts/Milvus';
+import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts/Milvus';
 import icons from '@/components/icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) => ({

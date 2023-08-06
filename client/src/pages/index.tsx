@@ -2,15 +2,13 @@ import { useMemo, useContext } from 'react';
 import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles } from '@material-ui/core';
-import GlobalEffect from '../components/layout/GlobalEffect';
-import Header from '../components/layout/Header';
-import NavMenu from '../components/menu/NavMenu';
-import { NavMenuItem } from '../components/menu/Types';
-import icons from '../components/icons/Icons';
-import { authContext } from '../context/Auth';
-import { rootContext } from '../context/Root';
-import Overview from '../pages/overview/Overview';
-import { prometheusContext } from '../context/Prometheus';
+import GlobalEffect from '@/components/layout/GlobalEffect';
+import Header from '@/components/layout/Header';
+import NavMenu from '@/components/menu/NavMenu';
+import { NavMenuItem } from '@/components/menu/Types';
+import icons from '@/components/icons/Icons';
+import { authContext, rootContext, prometheusContext } from '@/context';
+import Overview from '@/pages/overview/Overview';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

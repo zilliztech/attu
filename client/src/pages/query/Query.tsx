@@ -2,7 +2,7 @@ import { FC, useEffect, useState, useRef, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Parser } from '@json2csv/plainjs';
-import { rootContext } from '@/context/Root';
+import { rootContext } from '@/context';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';

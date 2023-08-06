@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { SnackBarType } from '../../../context/Types';
+import { SnackBarType } from '@/context';
 import CustomSnackBar from '../../customSnackBar/CustomSnackBar';
 import { vi } from 'vitest';
 

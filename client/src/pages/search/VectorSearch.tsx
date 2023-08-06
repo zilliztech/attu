@@ -7,7 +7,7 @@ import { useNavigationHook } from '@/hooks/Navigation';
 import { useSearchResult } from '@/hooks/Result';
 import { usePaginationHook } from '@/hooks/Pagination';
 import { useTimeTravelHook } from '@/hooks/TimeTravel';
-import { databaseContext } from '@/context/Database';
+import { databaseContext } from '@/context';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import AttuGrid from '@/components/grid/Grid';
