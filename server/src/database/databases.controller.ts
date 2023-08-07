@@ -46,6 +46,15 @@ export class DatabasesController {
   async listDatabases(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.databasesService.listDatabase();
+      result.db_names = result.db_names.sort((a: string, b: string) => {
+        if (a === 'default') {
+          return -1; // 'default' comes before other strings
+        } else if (b === 'default') {
+          return 1; // 'default' comes after other strings
+        } else {
+          return a.localeCompare(b); // sort other strings alphabetically
+        }
+      })
       res.send(result);
     } catch (error) {
       next(error);
