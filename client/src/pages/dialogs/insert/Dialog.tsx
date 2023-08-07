@@ -15,7 +15,7 @@ import icons from '@/components/icons/Icons';
 import { rootContext } from '@/context';
 import { Option } from '@/components/customSelector/Types';
 import { PartitionHttp } from '@/http/Partition';
-import { combineHeadsAndData } from '@/utils/Insert';
+import { combineHeadsAndData } from '@/utils';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
 import InsertStatus from './Status';

@@ -23,16 +23,17 @@ import { Field } from '@/components/advancedSearch/Types';
 import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { CollectionHttp } from '@/http/Collection';
 import { IndexHttp } from '@/http/Index';
-import { parseValue } from '@/utils/Insert';
 import {
+  parseValue,
+  parseLocationSearch,
   classifyFields,
   getDefaultIndexType,
   getEmbeddingType,
   getNonVectorFieldsForFilter,
   getVectorFieldOptions,
-} from '@/utils/search';
-import { parseLocationSearch } from '@/utils/Format';
-import { cloneObj, generateVector } from '@/utils/Common';
+  cloneObj,
+  generateVector,
+} from '@/utils';
 import { LOADING_STATE } from '@/consts/Milvus';
 import { DEFAULT_METRIC_VALUE_MAP } from '@/consts/Milvus';
 import { getLabelDisplayedRows } from './Utils';

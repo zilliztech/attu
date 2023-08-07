@@ -32,7 +32,7 @@ import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { MilvusHttp } from '@/http/Milvus';
 import { LOADING_STATE } from '@/consts/Milvus';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
-import { checkIndexBuilding, checkLoading } from '@/utils/Validation';
+import { checkIndexBuilding, checkLoading } from '@/utils';
 import Aliases from './Aliases';
 
 const useStyles = makeStyles((theme: Theme) => ({

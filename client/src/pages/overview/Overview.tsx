@@ -10,8 +10,7 @@ import { useNavigationHook } from '@/hooks';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import { formatNumber } from '@/utils/Common';
-import { checkLoading, checkIndexBuilding } from '@/utils/Validation';
+import { checkLoading, checkIndexBuilding, formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
 

@@ -6,7 +6,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import icons from '@/components/icons/Icons';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
-import { formatForm } from '@/utils/Form';
+import { formatForm } from '@/utils';
 import { MilvusHttp } from '@/http/Milvus';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, prometheusContext } from '@/context';

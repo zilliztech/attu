@@ -8,7 +8,7 @@ import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CustomTabList from '@/components/customTabList/CustomTabList';
 import { ITab } from '@/components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
-import { parseLocationSearch } from '@/utils/Format';
+import { parseLocationSearch } from '@/utils';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Preview from '../preview/Preview';

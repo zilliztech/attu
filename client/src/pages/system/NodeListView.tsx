@@ -6,7 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import MiniTopo from './MiniTopology';
-import { getByteString, formatByteSize } from '@/utils/Format';
+import { getByteString, formatByteSize } from '@/utils';
 import DataCard from './DataCard';
 import { NodeListViewProps, Node } from './Types';
 

@@ -9,7 +9,7 @@ import {
 import { getIcon } from './getIcon';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 import clsx from 'clsx';
-import { formatPrometheusAddress } from '@/utils/Format';
+import { formatPrometheusAddress } from '@/utils';
 import { prometheusContext } from '@/context';
 
 const getStyles = makeStyles((theme: Theme) => ({

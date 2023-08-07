@@ -16,7 +16,7 @@ import CreateIndex from './Create';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
-import { sleep } from '@/utils/Common';
+import { sleep } from '@/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

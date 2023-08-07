@@ -6,7 +6,7 @@ import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CustomTabList from '@/components/customTabList/CustomTabList';
 import { ITab } from '@/components/customTabList/Types';
-import { parseLocationSearch } from '@/utils/Format';
+import { parseLocationSearch } from '@/utils';
 import User from './User';
 import Roles from './Roles';
 import { TAB_ENUM } from './Types';

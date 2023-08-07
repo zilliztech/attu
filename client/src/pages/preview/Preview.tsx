@@ -8,7 +8,7 @@ import { IndexHttp } from '@/http/Index';
 import { usePaginationHook, useSearchResult } from '@/hooks';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { generateVector } from '@/utils/Common';
+import { generateVector } from '@/utils';
 import { DataTypeEnum } from '@/pages/collections/Types';
 import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts/Milvus';
 

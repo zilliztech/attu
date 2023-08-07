@@ -5,7 +5,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
-import { formatForm } from '@/utils/Form';
+import { formatForm } from '@/utils';
 import { UpdateUserParams, UpdateUserProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

@@ -9,13 +9,17 @@ import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   METRIC_TYPES_VALUES,
-} from '../../consts/Milvus';
+} from '@/consts/Milvus';
 import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
 import { getCreateIndexPYCode } from '@/utils/code/Py';
 import { getCreateIndexJavaCode } from '@/utils/code/Java';
-import { formatForm, getMetricOptions } from '@/utils/Form';
-import { computMilvusRecommonds, formatSize } from '@/utils/SizingTool';
+import {
+  formatForm,
+  getMetricOptions,
+  computMilvusRecommonds,
+  formatSize,
+} from '@/utils';
 import { DataTypeEnum, DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
 import SizingInfo from './SizingInfo';

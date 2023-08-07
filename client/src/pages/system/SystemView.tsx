@@ -10,7 +10,7 @@ import NodeListView from './NodeListView';
 // import LineChartCard from './LineChartCard';
 // import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
-import { parseJson } from '@/utils/Metric';
+import { parseJson } from '@/utils';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

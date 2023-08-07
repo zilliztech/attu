@@ -5,7 +5,7 @@ import { InsertPreviewProps } from './Types';
 import { Option } from '@/components/customSelector/Types';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import AttuGrid from '@/components/grid/Grid';
-import { transferCsvArrayToTableData } from '@/utils/Insert';
+import { transferCsvArrayToTableData } from '@/utils';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import SimpleMenu from '@/components/menu/SimpleMenu';
 import icons from '@/components/icons/Icons';

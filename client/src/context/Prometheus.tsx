@@ -8,7 +8,7 @@ import {
   LAST_TIME_PROMETHEUS_INSTANCE,
   LAST_TIME_PROMETHEUS_NAMESPACE,
 } from '@/consts/Localstorage';
-import { formatPrometheusAddress } from '@/utils/Format';
+import { formatPrometheusAddress } from '@/utils';
 import { PrometheusHttp } from '@/http/Prometheus';
 import {
   PROMETHEUS_ADDRESS,

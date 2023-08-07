@@ -7,8 +7,7 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
-import { formatForm } from '@/utils/Form';
-import { TypeEnum } from '@/utils/Validation';
+import { formatForm, TypeEnum } from '@/utils';
 import CreateFields from '../collections/CreateFields';
 import { CollectionHttp } from '@/http/Collection';
 import {

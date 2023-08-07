@@ -6,7 +6,7 @@ import { url } from '@/http/Axios';
 import { CollectionHttp } from '@/http/Collection';
 import { MilvusHttp } from '@/http/Milvus';
 import { CollectionView } from '@/pages/collections/Types';
-import { checkIndexBuilding, checkLoading } from '@/utils/Validation';
+import { checkIndexBuilding, checkLoading } from '@/utils';
 import { WebSocketType } from './Types';
 
 export const webSocketContext = createContext<WebSocketType>({

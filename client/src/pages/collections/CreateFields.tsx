@@ -11,13 +11,13 @@ import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { generateId } from '@/utils/Common';
-import { getCreateFieldType } from '@/utils/Format';
 import {
+  generateId,
+  getCreateFieldType,
   checkEmptyValid,
   checkRange,
   getCheckResult,
-} from '@/utils/Validation';
+} from '@/utils';
 import {
   ALL_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,

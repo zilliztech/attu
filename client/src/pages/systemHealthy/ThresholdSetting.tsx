@@ -1,19 +1,9 @@
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  Input,
-  List,
-  ListItem,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { Dialog, makeStyles, Theme } from '@material-ui/core';
+import { useMemo, useState } from 'react';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
-import { formatForm } from '@/utils/Form';
+import { formatForm } from '@/utils';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';

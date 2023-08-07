@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { InputLabelProps } from '@material-ui/core';
 import { IValidationItem } from '@/hooks';
-import { IExtraParam, ValidType } from '@/utils/Validation';
+import { IExtraParam, ValidType } from '@/utils';
 
 export type InputType = 'icon' | 'adornment' | 'text' | undefined;
 export type VariantType = 'filled' | 'outlined' | 'standard';

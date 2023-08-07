@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ClassNameMap } from '@material-ui/styles/withStyles';
-import { detectItemType } from '@/utils/Common';
+import { detectItemType } from '@/utils';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 
 export const useSearchResult = (searchResult: any[], classes: ClassNameMap) => {

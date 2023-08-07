@@ -14,7 +14,7 @@ import {
 } from '@/consts/Milvus';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
-import { formatForm } from '@/utils/Form';
+import { formatForm } from '@/utils';
 import { SearchParamInputConfig, SearchParamsProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
