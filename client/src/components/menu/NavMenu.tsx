@@ -20,7 +20,7 @@ const duration = `${timeout}ms`;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderRight: '1px solid #eee',
+      borderRight: '1px solid #efefef',
       background: '#fff',
       paddingTop: 0,
       paddingBottom: theme.spacing(4),
@@ -41,12 +41,15 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(4),
     },
     item: {
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(0.5),
       paddingLeft: theme.spacing(3),
       boxSizing: 'content-box',
       height: theme.spacing(3),
       width: 'initial',
       color: theme.palette.attuGrey.dark,
+      '&:hover': {
+        backgroundColor: '#efefef',
+      },
     },
     itemIcon: {
       minWidth: '20px',
@@ -57,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
         '& path': {
           stroke: theme.palette.attuGrey.dark,
+          strokeWidth: 2,
         },
       },
     },
@@ -65,6 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     active: {
       color: '#000',
+      backgroundColor: '#efefef',
 
       '& .icon': {
         stroke: theme.palette.primary.main,
@@ -72,6 +77,9 @@ const useStyles = makeStyles((theme: Theme) =>
         '& path': {
           stroke: theme.palette.primary.main,
         },
+      },
+      '& span': {
+        fontWeight: 'bold',
       },
     },
 
@@ -105,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'fixed',
       borderRadius: '50%',
       backgroundColor: 'white',
-      top: '74px',
+      top: '64px',
       transition: theme.transitions.create('all', {
         duration,
       }),
@@ -129,11 +137,11 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: 'rotateZ(180deg)',
     },
     collapseIcon: {
-      left: theme.spacing(7.5),
+      left: 58,
     },
     version: {
       position: 'absolute',
-      left: theme.spacing(2.5),
+      left: 16,
       bottom: (props: any) => (props.expanded ? '20px' : '70px'),
     },
   })
