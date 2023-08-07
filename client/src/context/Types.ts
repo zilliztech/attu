@@ -66,6 +66,7 @@ export type DatabaseContextType = {
   database: string;
   databases: string[];
   setDatabase: Dispatch<SetStateAction<string>>;
+  setDatabaseList: Dispatch<SetStateAction<string[]>>;
 };
 
 export type PrometheusContextType = {

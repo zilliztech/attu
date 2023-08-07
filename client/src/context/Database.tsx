@@ -6,6 +6,7 @@ export const databaseContext = createContext<DatabaseContextType>({
   database: 'default',
   databases: ['default'],
   setDatabase: () => {},
+  setDatabaseList: () => {},
 });
 
 const { Provider } = databaseContext;
@@ -28,6 +29,7 @@ export const DatabaseProvider = (props: { children: React.ReactNode }) => {
         database,
         databases,
         setDatabase,
+        setDatabaseList: setDatabases,
       }}
     >
       {props.children}
