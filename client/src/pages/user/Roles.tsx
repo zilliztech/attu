@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme, Chip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { UserHttp } from '@/http/User';
+import { UserHttp } from '@/http';
+import { rootContext } from '@/context';
+import { useNavigationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { rootContext } from '@/context';
-import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import UpdateRoleDialog from './UpdateRoleDialog';
 

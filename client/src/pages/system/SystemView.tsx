@@ -4,13 +4,13 @@ import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { useNavigationHook, useInterval } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import { MilvusHttp } from '@/http/Milvus';
+import { MilvusHttp } from '@/http';
+import { parseJson } from '@/utils';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
 // import LineChartCard from './LineChartCard';
 // import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
-import { parseJson } from '@/utils';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

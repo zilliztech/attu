@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { CollectionHttp } from '@/http/Collection';
-import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import { CollectionHttp } from '@/http';
+import { rootContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

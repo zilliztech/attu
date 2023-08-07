@@ -9,7 +9,7 @@ import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
-import { UserHttp } from '@/http/User';
+import { UserHttp } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

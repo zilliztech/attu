@@ -1,16 +1,14 @@
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AttuGrid from '@/components/grid/Grid';
-import { getQueryStyles } from '../query/Styles';
-import { CollectionHttp } from '@/http/Collection';
-import { FieldHttp } from '@/http/Field';
-import { IndexHttp } from '@/http/Index';
+import { CollectionHttp, FieldHttp, IndexHttp } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
+import { generateVector } from '@/utils';
+import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { generateVector } from '@/utils';
 import { DataTypeEnum } from '@/pages/collections/Types';
-import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts';
+import { getQueryStyles } from '../query/Styles';
 
 const Preview: FC<{
   collectionName: string;

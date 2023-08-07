@@ -8,15 +8,14 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { authContext, rootContext } from '@/context';
-import { CollectionHttp } from '@/http/Collection';
+import { CollectionHttp, MilvusHttp } from '@/http';
 import { useFormValidation } from '@/hooks';
 import { formatForm, parseJson, getNode } from '@/utils';
+import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { MilvusHttp } from '@/http/Milvus';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
 import icons from '@/components/icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) => ({

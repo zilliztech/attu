@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { navContext, databaseContext, authContext } from '@/context';
-import { MilvusHttp } from '@/http/Milvus';
+import { MilvusHttp } from '@/http';
 import { MILVUS_ADDRESS } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '../icons/Icons';

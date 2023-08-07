@@ -9,7 +9,7 @@ import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
 import CreateFields from '../collections/CreateFields';
-import { CollectionHttp } from '@/http/Collection';
+import { CollectionHttp } from '@/http';
 import {
   CollectionCreateParam,
   CollectionCreateProps,

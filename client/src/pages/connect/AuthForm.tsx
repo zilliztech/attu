@@ -7,7 +7,7 @@ import icons from '@/components/icons/Icons';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { MilvusHttp } from '@/http/Milvus';
+import { MilvusHttp } from '@/http';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, prometheusContext } from '@/context';
 import { MILVUS_ADDRESS, LAST_TIME_ADDRESS, MILVUS_URL } from '@/consts';

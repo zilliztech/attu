@@ -11,7 +11,7 @@ import {
 } from './Types';
 import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
 import CustomDialog from '@/components/customDialog/CustomDialog';
-import { MilvusHttp } from '@/http/Milvus';
+import { MilvusHttp } from '@/http';
 import { theme } from '../styles/theme';
 
 const DefaultDialogConfigs: DialogType = {

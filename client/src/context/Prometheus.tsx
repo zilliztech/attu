@@ -13,7 +13,7 @@ import {
   WITH_PROMETHEUS,
 } from '@/consts';
 import { formatPrometheusAddress } from '@/utils';
-import { PrometheusHttp } from '@/http/Prometheus';
+import { PrometheusHttp } from '@/http';
 
 export const prometheusContext = createContext<PrometheusContextType>({
   withPrometheus: false,

@@ -6,7 +6,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { UserHttp } from '@/http/User';
+import { UserHttp } from '@/http';
 import {
   CreateRoleProps,
   CreateRoleParams,

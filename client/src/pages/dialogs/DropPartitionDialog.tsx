@@ -2,10 +2,10 @@ import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { DropPartitionProps } from './Types';
-import { PartitionHttp } from '@/http/Partition';
+import { PartitionHttp } from '@/http';
 import { PartitionManageParam } from '../partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
+import { DropPartitionProps } from './Types';
 
 const DropPartitionDialog: FC<DropPartitionProps> = props => {
   const { partitions, onDelete, collectionName } = props;

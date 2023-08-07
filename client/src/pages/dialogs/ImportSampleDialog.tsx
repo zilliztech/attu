@@ -5,8 +5,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { rootContext } from '@/context';
 import { InsertStatusEnum } from './insert/Types';
-import { CollectionHttp } from '@/http/Collection';
-import { MilvusHttp } from '@/http/Milvus';
+import { CollectionHttp, MilvusHttp } from '@/http';
 import { LoadSampleParam } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => {

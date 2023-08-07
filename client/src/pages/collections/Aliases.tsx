@@ -7,7 +7,7 @@ import icons from '@/components/icons/Icons';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateAliasDialog from '../dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionHttp } from '@/http/Collection';
+import { CollectionHttp } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

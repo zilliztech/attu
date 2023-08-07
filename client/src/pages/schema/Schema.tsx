@@ -5,10 +5,9 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
-import { FieldHttp } from '@/http/Field';
+import { FieldHttp, IndexHttp } from '@/http';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
-import { IndexHttp } from '@/http/Index';
 import { DataTypeStringEnum } from '../collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

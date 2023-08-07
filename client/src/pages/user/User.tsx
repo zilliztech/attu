@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { UserHttp } from '@/http/User';
+import { UserHttp } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {

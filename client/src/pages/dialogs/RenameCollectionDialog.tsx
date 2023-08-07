@@ -2,12 +2,12 @@ import { FC, useContext, useMemo, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
-import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
+import { CollectionHttp } from '@/http';
+import DialogTemplate from '@/components/customDialog/DialogTemplate';
+import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CollectionHttp } from '@/http/Collection';
 import { RenameCollectionProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

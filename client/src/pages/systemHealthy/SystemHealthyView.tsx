@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook, useInterval } from '@/hooks';
-import { PrometheusHttp } from '@/http/Prometheus';
+import { PrometheusHttp } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import {
   LAST_TIME_HEALTHY_THRESHOLD_CPU,

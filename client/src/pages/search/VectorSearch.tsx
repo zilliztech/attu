@@ -21,8 +21,7 @@ import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { Field } from '@/components/advancedSearch/Types';
 import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
-import { CollectionHttp } from '@/http/Collection';
-import { IndexHttp } from '@/http/Index';
+import { CollectionHttp, IndexHttp } from '@/http';
 import {
   parseValue,
   parseLocationSearch,

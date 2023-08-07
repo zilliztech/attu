@@ -7,7 +7,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CollectionHttp } from '@/http/Collection';
+import { CollectionHttp } from '@/http';
 import { CreateAliasProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

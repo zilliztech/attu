@@ -1,22 +1,22 @@
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
-import { IndexHttp } from '@/http/Index';
-import { IndexState } from '../../types/Milvus';
+import { makeStyles, Theme } from '@material-ui/core';
 import {
   FieldView,
   IndexCreateParam,
   IndexExtraParam,
   IndexManageParam,
 } from './Types';
-import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme } from '@material-ui/core';
-import icons from '@/components/icons/Icons';
+import { IndexHttp } from '@/http';
 import { rootContext } from '@/context';
-import CreateIndex from './Create';
+import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
 import { sleep } from '@/utils';
+import CreateIndex from './Create';
+import { IndexState } from '../../types/Milvus';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

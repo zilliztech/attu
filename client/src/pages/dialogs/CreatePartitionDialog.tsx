@@ -7,10 +7,10 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
+import { PartitionHttp } from '@/http';
 import { PartitionCreateProps } from './Types';
 import { PartitionManageParam } from '../partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
-import { PartitionHttp } from '@/http/Partition';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

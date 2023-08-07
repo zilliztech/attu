@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { DatabaseHttp } from '@/http/Database';
+import { DatabaseHttp } from '@/http';
 import { DatabaseContextType } from './Types';
 
 export const databaseContext = createContext<DatabaseContextType>({
