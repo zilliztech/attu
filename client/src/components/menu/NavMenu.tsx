@@ -20,9 +20,10 @@ const duration = `${timeout}ms`;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      background: theme.palette.common.white,
+      borderRight: '1px solid #eee',
+      background: '#fff',
       paddingTop: 0,
-      paddingBottom: theme.spacing(5),
+      paddingBottom: theme.spacing(4),
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(4),
     },
     item: {
-      marginBottom: theme.spacing(2),
+      marginBottom: theme.spacing(1),
       paddingLeft: theme.spacing(3),
       boxSizing: 'content-box',
       height: theme.spacing(3),
@@ -63,10 +64,11 @@ const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: 'nowrap',
     },
     active: {
-      color: theme.palette.primary.main,
-      borderRight: `2px solid ${theme.palette.primary.main}`,
+      color: '#000',
 
       '& .icon': {
+        stroke: theme.palette.primary.main,
+
         '& path': {
           stroke: theme.palette.primary.main,
         },
@@ -77,8 +79,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       height: '86px',
-      marginBottom: theme.spacing(7),
-      backgroundColor: theme.palette.primary.main,
+      marginBottom: theme.spacing(2),
       paddingLeft: theme.spacing(3),
 
       '& .title': {
@@ -86,7 +87,6 @@ const useStyles = makeStyles((theme: Theme) =>
         paddingLeft: theme.spacing(2),
         fontSize: '24px',
         letterSpacing: '0.15px',
-        color: 'white',
       },
     },
     logo: {
@@ -96,16 +96,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logoExpand: {
       marginRight: theme.spacing(1),
-      '& path': {
-        fill: 'white',
-      },
       transform: 'scale(2)',
     },
     logoCollapse: {
-      backgroundColor: theme.palette.primary.main,
-      '& path': {
-        fill: 'white',
-      },
       transform: 'scale(1.5)',
     },
     actionIcon: {
@@ -223,7 +216,7 @@ const NavMenu: FC<NavMenuType> = props => {
             })}
           />
           <Fade in={expanded} timeout={timeout}>
-            <Typography variant="h3" className="title">
+            <Typography variant="h1" className="title">
               {attuTrans.admin}
             </Typography>
           </Fade>

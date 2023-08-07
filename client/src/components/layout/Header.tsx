@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingTop: theme.spacing(3),
-      paddingLeft: theme.spacing(4),
+      paddingLeft: theme.spacing(3),
       flex: 1,
     },
     navigation: {
@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme: Theme) =>
           fontSize: '12px',
           lineHeight: '16px',
           color: '#1ba954',
-          textTransform: 'capitalize',
         },
       },
     },

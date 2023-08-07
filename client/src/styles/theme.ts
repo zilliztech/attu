@@ -41,9 +41,9 @@ const commonThemes = {
   },
   palette: {
     primary: {
-      main: '#06aff2',
+      main: '#0ACE82',
       light: '#bfdeff',
-      dark: '#0689D2',
+      dark: '#08a568',
     },
     secondary: {
       light: '#82d3ba',
@@ -56,7 +56,7 @@ const commonThemes = {
       dark: '#cd3804',
     },
     attuBlue: {
-      main: '#f8f8fc',
+      main: '#18D4E0',
       dark: '#dcdce3',
     },
     attuGrey: {
