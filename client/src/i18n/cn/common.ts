@@ -22,6 +22,7 @@ const commonTrans = {
     action: 'action',
     noData: 'No Data',
     rows: 'Rows',
+    results: 'results',
     of: 'of',
     nextLabel: 'next page',
     prevLabel: 'prev page',

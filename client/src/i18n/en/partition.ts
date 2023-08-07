@@ -1,5 +1,5 @@
 const partitionTrans = {
-  create: 'Create Partition',
+  create: 'Partition',
   delete: 'Delete partition',
 
   partition: 'Partition',
