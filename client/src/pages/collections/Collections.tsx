@@ -6,7 +6,7 @@ import Highlighter from 'react-highlight-words';
 import {
   rootContext,
   authContext,
-  databaseContext,
+  dataContext,
   webSocketContext,
 } from '@/context';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
-  const { database } = useContext(databaseContext);
+  const { database } = useContext(dataContext);
 
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(

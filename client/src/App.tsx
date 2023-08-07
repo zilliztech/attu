@@ -7,14 +7,14 @@ import {
   AuthProvider,
   WebSocketProvider,
   PrometheusProvider,
-  DatabaseProvider,
+  DataProvider,
 } from './context';
 
 function App() {
   return (
     <AuthProvider>
       <RootProvider>
-        <DatabaseProvider>
+        <DataProvider>
           <PrometheusProvider>
             <WebSocketProvider>
               <NavProvider>
@@ -24,7 +24,7 @@ function App() {
               </NavProvider>
             </WebSocketProvider>
           </PrometheusProvider>
-        </DatabaseProvider>
+        </DataProvider>
       </RootProvider>
     </AuthProvider>
   );

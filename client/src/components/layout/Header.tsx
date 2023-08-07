@@ -2,7 +2,7 @@ import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
-import { navContext, databaseContext, authContext } from '@/context';
+import { navContext, dataContext, authContext } from '@/context';
 import { MilvusHttp } from '@/http';
 import { MILVUS_ADDRESS } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
-  const { database, databases, setDatabase } = useContext(databaseContext);
+  const { database, databases, setDatabase } = useContext(dataContext);
   const { address, setAddress, setIsAuth } = useContext(authContext);
   const navigate = useNavigate();
 

@@ -9,7 +9,7 @@ import {
   usePaginationHook,
   useTimeTravelHook,
 } from '@/hooks';
-import { databaseContext } from '@/context';
+import { dataContext } from '@/context';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -44,7 +44,7 @@ import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
   const location = useLocation();
-  const { database } = useContext(databaseContext);
+  const { database } = useContext(dataContext);
 
   // i18n
   const { t: searchTrans } = useTranslation('search');

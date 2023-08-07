@@ -9,14 +9,14 @@ import {
   DatabaseData,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { rootContext, databaseContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './Create';
 
 const Database = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES);
-  const { setDatabaseList } = useContext(databaseContext);
+  const { setDatabaseList } = useContext(dataContext);
 
   const [databases, setDatabases] = useState<DatabaseData[]>([]);
   const [selectedDatabase, setSelectedDatabase] = useState<DatabaseData[]>([]);

@@ -1,7 +1,7 @@
 import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { rootContext, webSocketContext, databaseContext } from '@/context';
+import { rootContext, webSocketContext, dataContext } from '@/context';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@/consts';
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
-  const { database } = useContext(databaseContext);
+  const { database } = useContext(dataContext);
   const classes = useStyles();
   const theme = useTheme();
   const { t: overviewTrans } = useTranslation('overview');

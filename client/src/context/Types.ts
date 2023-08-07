@@ -62,7 +62,7 @@ export type AuthContextType = {
   setIsAuth: Dispatch<SetStateAction<boolean>>;
 };
 
-export type DatabaseContextType = {
+export type DataContextType = {
   database: string;
   databases: string[];
   setDatabase: Dispatch<SetStateAction<string>>;
