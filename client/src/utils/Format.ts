@@ -1,10 +1,13 @@
-import { BYTE_UNITS } from '../consts/Util';
-import { DEFAULT_MILVUS_PORT, DEFAULT_PROMETHEUS_PORT } from '../consts/Milvus';
+import {
+  BYTE_UNITS,
+  DEFAULT_MILVUS_PORT,
+  DEFAULT_PROMETHEUS_PORT,
+} from '@/consts';
 import {
   CreateFieldType,
   DataTypeEnum,
   Field,
-} from '../pages/collections/Types';
+} from '@/pages/collections/Types';
 
 /**
  * transform large capacity to capacity in b.

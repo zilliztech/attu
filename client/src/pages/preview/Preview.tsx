@@ -10,7 +10,7 @@ import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { generateVector } from '@/utils';
 import { DataTypeEnum } from '@/pages/collections/Types';
-import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts/Milvus';
+import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts';
 
 const Preview: FC<{
   collectionName: string;

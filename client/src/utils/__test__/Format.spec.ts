@@ -1,5 +1,5 @@
 import { parseByte } from '../Format';
-import { BYTE_UNITS } from '../../consts/Util';
+import { BYTE_UNITS } from '@/consts';
 describe('Test Fromat utils', () => {
   it('Test parse byte', () => {
     expect(parseByte('10m')).toEqual(10 * BYTE_UNITS.m);

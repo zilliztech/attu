@@ -8,7 +8,7 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-import { LOADING_STATE } from '../../consts/Milvus';
+import { LOADING_STATE } from '@/consts';
 import StatusIcon from './StatusIcon';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -1,4 +1,4 @@
-import { MILVUS_NODE_TYPE } from '../consts/Milvus';
+import { MILVUS_NODE_TYPE } from '@/consts';
 
 export const parseJson = (jsonData: any) => {
   const nodes: any[] = [];

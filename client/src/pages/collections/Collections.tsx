@@ -30,8 +30,7 @@ import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { MilvusHttp } from '@/http/Milvus';
-import { LOADING_STATE } from '@/consts/Milvus';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
+import { LOADING_STATE, WS_EVENTS, WS_EVENTS_TYPE } from '@/consts';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import Aliases from './Aliases';
 

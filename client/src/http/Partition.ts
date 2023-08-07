@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
-import { LOADING_STATE } from '../consts/Milvus';
+import { LOADING_STATE } from '@/consts';
 import {
   PartitionManageParam,
   PartitionParam,
   PartitionData,
-} from '../pages/partitions/Types';
-import { formatNumber } from '../utils/Common';
+} from '@/pages/partitions/Types';
+import { formatNumber } from '@/utils';
 import BaseModel from './BaseModel';
 
 export class PartitionHttp extends BaseModel implements PartitionData {
@@ -82,7 +82,7 @@ export class PartitionHttp extends BaseModel implements PartitionData {
 
   get _status() {
     // @TODO replace mock data
-    return LOADING_STATE.UNLOADED
+    return LOADING_STATE.UNLOADED;
   }
 
   // Befor milvus-2.0-rc3  will return '0'.

@@ -4,7 +4,7 @@ import { makeStyles, Theme, Divider, Typography } from '@material-ui/core';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { InsertImportProps } from './Types';
 import Uploader from '@/components/uploader/Uploader';
-import { INSERT_CSV_SAMPLE, INSERT_MAX_SIZE } from '../../../consts/Insert';
+import { INSERT_MAX_SIZE } from '@/consts';
 import { parseByte } from '@/utils';
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -180,7 +180,7 @@ const InsertImport: FC<InsertImportProps> = ({
           {insertTrans('noteTitle')}
         </Typography>
         <ul className="noteList">
-          {insertTrans('notes').map(note => (
+          {insertTrans('notes').map((note: string) => (
             <li key={note} className="text noteItem">
               <Typography>{note}</Typography>
             </li>

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { LOADING_STATE } from '../../consts/Milvus';
+import { LOADING_STATE } from '@/consts';
 import { ManageRequestMethods } from '../../types/Common';
 
 export interface PartitionData {

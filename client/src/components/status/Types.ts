@@ -1,4 +1,4 @@
-import { LOADING_STATE } from '../../consts/Milvus';
+import { LOADING_STATE } from '@/consts';
 
 // export enum StatusEnum {
 //   'unloaded',

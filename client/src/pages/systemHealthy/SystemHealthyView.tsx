@@ -5,6 +5,12 @@ import { useNavigationHook, useInterval } from '@/hooks';
 import { PrometheusHttp } from '@/http/Prometheus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import {
+  LAST_TIME_HEALTHY_THRESHOLD_CPU,
+  LAST_TIME_HEALTHY_THRESHOLD_MEMORY,
+  DEFAULT_HEALTHY_THRESHOLD_CPU,
+  DEFAULT_HEALTHY_THRESHOLD_MEMORY,
+} from '@/consts';
+import {
   ENodeService,
   ILineChartData,
   INodeTreeStructure,
@@ -16,14 +22,7 @@ import Topology from './Topology';
 import { reconNodeTree } from './dataHandler';
 import HealthyIndexOverview from './HealthyIndexOverview';
 import { timeRangeOptions } from './consts';
-import {
-  LAST_TIME_HEALTHY_THRESHOLD_CPU,
-  LAST_TIME_HEALTHY_THRESHOLD_MEMORY,
-} from '@/consts/Localstorage';
-import {
-  DEFAULT_HEALTHY_THRESHOLD_CPU,
-  DEFAULT_HEALTHY_THRESHOLD_MEMORY,
-} from '@/consts/Prometheus';
+
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

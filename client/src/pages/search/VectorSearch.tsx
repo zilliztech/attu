@@ -34,8 +34,7 @@ import {
   cloneObj,
   generateVector,
 } from '@/utils';
-import { LOADING_STATE } from '@/consts/Milvus';
-import { DEFAULT_METRIC_VALUE_MAP } from '@/consts/Milvus';
+import { LOADING_STATE, DEFAULT_METRIC_VALUE_MAP } from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';

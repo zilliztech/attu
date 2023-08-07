@@ -7,15 +7,15 @@ import {
   Replica,
 } from '../pages/collections/Types';
 import { LoadSampleParam } from '../pages/dialogs/Types';
-import { Field } from '../pages/schema/Types';
+import { Field } from '@/pages/schema/Types';
 import { VectorSearchParam } from '../types/SearchTypes';
-import { QueryParam } from '../pages/query/Types';
+import { QueryParam } from '@/pages/query/Types';
 import { IndexState, ShowCollectionsType } from '../types/Milvus';
 import { formatNumber } from '../utils/Common';
 import BaseModel from './BaseModel';
 import { FieldHttp } from './Field';
 import dayjs from 'dayjs';
-import { LOADING_STATE } from '../consts/Milvus';
+import { LOADING_STATE } from '@/consts';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private aliases!: string[];

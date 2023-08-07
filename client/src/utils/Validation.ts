@@ -1,5 +1,5 @@
-import { ChildrenStatusType } from '../components/status/Types';
-import { MetricType, METRIC_TYPES_VALUES } from '../consts/Milvus';
+import { ChildrenStatusType } from '@/components/status/Types';
+import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
 
 export type ValidType =
   | 'email'

@@ -16,7 +16,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { MilvusHttp } from '@/http/Milvus';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts/Milvus';
+import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
 import icons from '@/components/icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) => ({

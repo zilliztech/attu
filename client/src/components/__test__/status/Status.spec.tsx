@@ -1,5 +1,5 @@
 import Status from '../../status/Status';
-import { LOADING_STATE } from '../../../consts/Milvus';
+import { LOADING_STATE } from '@/consts';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 

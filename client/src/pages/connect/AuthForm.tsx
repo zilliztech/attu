@@ -10,9 +10,7 @@ import { formatForm } from '@/utils';
 import { MilvusHttp } from '@/http/Milvus';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, prometheusContext } from '@/context';
-import {} from '@/context/Auth';
-import { MILVUS_ADDRESS, LAST_TIME_ADDRESS } from '@/consts/Localstorage';
-import { MILVUS_URL } from '@/consts/Milvus';
+import { MILVUS_ADDRESS, LAST_TIME_ADDRESS, MILVUS_URL } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({

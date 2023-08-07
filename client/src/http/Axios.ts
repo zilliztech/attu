@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { MILVUS_ADDRESS } from '../consts/Localstorage';
-// import { SESSION } from '../consts/Localstorage';
+import { MILVUS_ADDRESS } from '@/consts';
 
 // console.log(import.meta.env.NODE_ENV, 'api:', import.meta.env.VITE_BASE_URL);
 // console.log('docker env', (window as any)._env_);

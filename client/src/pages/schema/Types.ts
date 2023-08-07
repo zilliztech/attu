@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { MetricType } from '../../consts/Milvus';
+import { MetricType } from '@/consts';
 import { DataTypeStringEnum } from '../collections/Types';
 
 export enum INDEX_TYPES_ENUM {

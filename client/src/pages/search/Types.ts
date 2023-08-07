@@ -1,5 +1,5 @@
 import { Option } from '@/components/customSelector/Types';
-import { searchKeywordsType } from '../../consts/Milvus';
+import { searchKeywordsType } from '@/consts';
 import {
   DataTypeEnum,
   DataTypeStringEnum,

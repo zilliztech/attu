@@ -1,4 +1,4 @@
-import { DataTypeEnum } from '../pages/collections/Types';
+import { DataTypeEnum } from '@/pages/collections/Types';
 
 export const MILVUS_URL =
   ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';

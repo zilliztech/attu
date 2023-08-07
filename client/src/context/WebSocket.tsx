@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts/Http';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts';
 import { authContext } from '@/context';
 import { url } from '@/http/Axios';
 import { CollectionHttp } from '@/http/Collection';
