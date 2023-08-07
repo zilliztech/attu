@@ -1,11 +1,10 @@
 const navTrans = {
   overview: 'Overview',
-  collection: 'Collections',
+  collection: 'Collection',
   console: 'Search Console',
   search: 'Vector Search',
   system: 'System View',
-  user: 'Users',
-  database: 'Databases',
+  user: 'User',
 };
 
 export default navTrans;

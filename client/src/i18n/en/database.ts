@@ -1,7 +1,6 @@
 const databaseTrans = {
-  createTitle: 'Create Database',
+  createTitle: 'Create database',
   databases: 'Databases',
-  database: 'Database',
   deleteWarning:
     'You are trying to drop a database. This action cannot be undone.',
   databaseName: 'Database Name',
