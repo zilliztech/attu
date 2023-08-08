@@ -71,7 +71,9 @@ const CreatePartition: FC<PartitionCreateProps> = ({
     handleCloseDialog();
   };
 
-  const handleClose = () => {};
+  const handleClose = () => {
+    handleCloseDialog();
+  };
 
   return (
     <DialogTemplate
