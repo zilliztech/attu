@@ -17,43 +17,10 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       '& .textarea': {
         border: `1px solid ${theme.palette.attuGrey.main}`,
         borderRadius: theme.spacing(0.5),
-        padding: theme.spacing(0, 1),
-        marginBottom: theme.spacing(0.5),
-      },
-
-      // reset default style
-      '& .textfield': {
-        fontSize: '14px',
-        lineHeight: '20px',
-        fontWeight: 400,
-        height: '128px',
-
-        '&::before': {
-          borderBottom: 'none',
-        },
-
-        '&::after': {
-          borderBottom: 'none',
-        },
-      },
-
-      '& .multiline': {
-        '& textarea': {
-          overflow: 'auto',
-          // change scrollbar style
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: '#f9f9f9',
-          },
-
-          '&::-webkit-scrollbar-thumb': {
-            borderRadius: '8px',
-            backgroundColor: '#eee',
-          },
-        },
+        padding: theme.spacing(0.5, 1),
+        marginBottom: theme.spacing(1),
+        overflow: 'scroll',
+        height: '120px',
       },
     },
 

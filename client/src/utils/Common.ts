@@ -63,7 +63,7 @@ export const generateIdByHash = (salt?: string) => {
 };
 
 export const generateVector = (dim: number) => {
-  return Array.from({ length: dim }).map(() => (Math.random() > 0.5 ? 1 : 0));
+  return Array.from({ length: dim }).map(() => (Math.random()));
 };
 
 export const cloneObj = (obj: any) => {

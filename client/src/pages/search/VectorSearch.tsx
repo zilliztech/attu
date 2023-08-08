@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
-import { TextField, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -438,16 +438,8 @@ const VectorSearch = () => {
             ) : null}
           </Typography>
 
-          <TextField
+          <textarea
             className="textarea"
-            InputProps={{
-              classes: {
-                root: 'textfield',
-                multiline: 'multiline',
-              },
-            }}
-            multiline
-            minRows={5}
             placeholder={searchTrans('vectorPlaceholder')}
             value={vectors}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
