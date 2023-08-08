@@ -72,7 +72,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
           <TableCell
             key={headCell.id}
             align={headCell.align || 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={
               orderBy === (headCell.sortBy || headCell.id) ? order : false
             }

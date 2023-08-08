@@ -447,7 +447,7 @@ const VectorSearch = () => {
               },
             }}
             multiline
-            rows={5}
+            minRows={5}
             placeholder={searchTrans('vectorPlaceholder')}
             value={vectors}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
