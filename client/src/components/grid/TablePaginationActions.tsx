@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TablePaginationActions = (props: TablePaginationActionsProps) => {
   const classes = useStyles();
-  const { count, page, rowsPerPage, onChangePage } = props;
+  const { count, page, rowsPerPage, onPageChange } = props;
 
   // i18n
   const { t: commonTrans } = useTranslation();
@@ -48,13 +48,13 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
   const handleBackButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    onChangePage(event, page - 1);
+    onPageChange(event, page - 1);
   };
 
   const handleNextButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    onChangePage(event, page + 1);
+    onPageChange(event, page + 1);
   };
 
   return (

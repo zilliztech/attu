@@ -276,7 +276,7 @@ const Query: FC<{
           selected={selectedData}
           setSelected={handleSelectChange}
           page={currentPage}
-          onChangePage={handlePageChange}
+          onPageChange={handlePageChange}
           rowsPerPage={pageSize}
           setRowsPerPage={handlePageSize}
           orderBy={orderBy}

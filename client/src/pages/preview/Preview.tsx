@@ -145,7 +145,7 @@ const Preview: FC<{
         rows={result}
         rowCount={total}
         page={currentPage}
-        onChangePage={handlePageChange}
+        onPageChange={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
       />

@@ -196,7 +196,7 @@ const Roles = () => {
         selected={selectedRole}
         setSelected={handleSelectChange}
         // page={currentPage}
-        // onChangePage={handlePageChange}
+        // onPageChange={handlePageChange}
         // rowsPerPage={pageSize}
         // setRowsPerPage={handlePageSize}
         // isLoading={loading}

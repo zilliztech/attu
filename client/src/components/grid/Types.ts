@@ -124,7 +124,7 @@ export type AttuGridType = ToolBarType & {
   // used to dynamic set page size by table container and row height
   setRowsPerPage?: (size: number) => void;
   primaryKey: string;
-  onChangePage?: (e: any, nextPageNum: number) => void;
+  onPageChange?: (e: any, nextPageNum: number) => void;
   labelDisplayedRows?: (obj: LabelDisplayedRowsArgs) => React.ReactNode;
   page?: number;
   showToolbar?: boolean;
@@ -170,7 +170,7 @@ export type TablePaginationActionsProps = {
   count: number;
   page: number;
   rowsPerPage: number;
-  onChangePage: (
+  onPageChange: (
     event: React.MouseEvent<HTMLButtonElement>,
     newPage: number
   ) => void;

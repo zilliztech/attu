@@ -555,7 +555,7 @@ const VectorSearch = () => {
           rowCount={total}
           primaryKey="rank"
           page={currentPage}
-          onChangePage={handlePageChange}
+          onPageChange={handlePageChange}
           rowsPerPage={pageSize}
           setRowsPerPage={handlePageSize}
           openCheckBox={false}

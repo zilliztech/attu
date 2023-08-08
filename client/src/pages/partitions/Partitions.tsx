@@ -325,7 +325,7 @@ const Partitions: FC<{
         selected={selectedPartitions}
         setSelected={handleSelectChange}
         page={currentPage}
-        onChangePage={handlePageChange}
+        onPageChange={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
         isLoading={loading}

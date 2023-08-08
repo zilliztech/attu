@@ -132,7 +132,7 @@ const Database = () => {
         selected={selectedDatabase}
         setSelected={handleSelectChange}
         // page={currentPage}
-        // onChangePage={handlePageChange}
+        // onPageChange={handlePageChange}
         // rowsPerPage={pageSize}
         // setRowsPerPage={handlePageSize}
         // isLoading={loading}

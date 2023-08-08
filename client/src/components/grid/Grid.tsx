@@ -71,7 +71,7 @@ const userStyle = makeStyles(theme => ({
  * @param rowCount required. totoal data count for pagination
  * @param rowsPerPage per page for pagination, default is 10
  * @param primaryKey required. The unique column for your data. use for checkbox and render key.
- * @param onChangePage handle page change
+ * @param onPageChange handle page change
  * @param labelDisplayedRows Custom pagination label function, return string;
  * @param page current page for pagination
  * @param showToolbar control toolbar display. default is false
@@ -106,7 +106,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     primaryKey = 'id',
     showToolbar = false,
     toolbarConfigs = [],
-    onChangePage = (
+    onPageChange = (
       e: MouseEvent<HTMLButtonElement> | null,
       nextPageNum: number
     ) => {
@@ -238,7 +238,7 @@ const AttuGrid: FC<AttuGridType> = props => {
             labelDisplayedRows={labelDisplayedRows || defaultLabelRows}
             rowsPerPage={rowsPerPage}
             rowsPerPageOptions={[]}
-            onChangePage={onChangePage}
+            onPageChange={onPageChange}
             className={classes.pagenation}
             ActionsComponent={TablePaginationActions}
           />

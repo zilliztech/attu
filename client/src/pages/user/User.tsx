@@ -242,7 +242,7 @@ const Users = () => {
         selected={selectedUser}
         setSelected={handleSelectChange}
         // page={currentPage}
-        // onChangePage={handlePageChange}
+        // onPageChange={handlePageChange}
         // rowsPerPage={pageSize}
         // setRowsPerPage={handlePageSize}
         // isLoading={loading}
