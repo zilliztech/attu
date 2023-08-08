@@ -96,7 +96,7 @@ const Database = () => {
       label: '',
       disabled: () =>
         selectedDatabase.length === 0 ||
-        selectedDatabase.findIndex(v => v.name === 'root') > -1,
+        selectedDatabase.findIndex(v => v.name === 'default') > -1,
       disabledTooltip: dbTrans('deleteTip'),
 
       icon: 'delete',
