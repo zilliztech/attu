@@ -15,8 +15,12 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const [databases, setDatabases] = useState<string[]>(['default']);
 
   const fetchDatabases = async () => {
-    const res = await DatabaseHttp.getDatabases();
-    setDatabases(res.db_names);
+    try {
+      const res = await DatabaseHttp.getDatabases();
+      setDatabases(res.db_names);
+    } catch (error) {
+      // do nothing
+    }
   };
 
   useEffect(() => {

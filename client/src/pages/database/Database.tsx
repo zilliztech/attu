@@ -18,7 +18,9 @@ const Database = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES);
   const { setDatabaseList } = useContext(dataContext);
 
-  const [databases, setDatabases] = useState<DatabaseData[]>([]);
+  const [databases, setDatabases] = useState<DatabaseData[]>([
+    { name: 'default' },
+  ]);
   const [selectedDatabase, setSelectedDatabase] = useState<DatabaseData[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -28,9 +30,13 @@ const Database = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchDatabases = async () => {
-    const res = await DatabaseHttp.getDatabases();
-    setDatabases(res.db_names.map((v: string) => ({ name: v })));
-    setDatabaseList(res.db_names);
+    try {
+      const res = await DatabaseHttp.getDatabases();
+      setDatabases(res.db_names.map((v: string) => ({ name: v })));
+      setDatabaseList(res.db_names);
+    } catch (error) {
+      // do nothing
+    }
   };
 
   const handleCreate = async (data: CreateDatabaseParams) => {
