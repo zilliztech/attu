@@ -384,7 +384,6 @@ const Topo = (props: any) => {
                     </svg>
                   )}
                   <text
-                    fontFamily="Roboto"
                     textAnchor="middle"
                     fill={theme.palette.primary.main}
                     fontWeight="700"
@@ -512,7 +511,6 @@ const Topo = (props: any) => {
                       />
                     </svg>
                     <text
-                      fontFamily="Roboto"
                       textAnchor="middle"
                       fill={theme.palette.attuGrey.dark}
                       fontSize="12"
@@ -543,7 +541,6 @@ const Topo = (props: any) => {
             stroke={theme.palette.primary.main}
           />
           <text
-            fontFamily="Roboto"
             textAnchor="middle"
             alignmentBaseline="middle"
             fill={theme.palette.primary.main}

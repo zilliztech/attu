@@ -1,10 +1,13 @@
 import { createContext, useEffect, useState } from 'react';
-import { DatabaseHttp } from '@/http';
+import { DatabaseHttp, UserHttp, MilvusHttp } from '@/http';
+import { parseJson, getNode, getSystemConfigs } from '@/utils';
+import { MILVUS_NODE_TYPE } from '@/consts';
 import { DataContextType } from './Types';
 
 export const dataContext = createContext<DataContextType>({
   database: 'default',
   databases: ['default'],
+  data: {},
   setDatabase: () => {},
   setDatabaseList: () => {},
 });
@@ -13,23 +16,84 @@ const { Provider } = dataContext;
 export const DataProvider = (props: { children: React.ReactNode }) => {
   const [database, setDatabase] = useState<string>('default');
   const [databases, setDatabases] = useState<string[]>(['default']);
+  const [data, setData] = useState<any>({});
 
-  const fetchDatabases = async () => {
+  const fetchData = async () => {
     try {
-      const res = await DatabaseHttp.getDatabases();
-      setDatabases(res.db_names);
+      // fetch all data
+      const [databases, metrics, users, roles] = await Promise.all([
+        DatabaseHttp.getDatabases(),
+        MilvusHttp.getMetrics(),
+        UserHttp.getUsers(),
+        UserHttp.getRoles(),
+      ]);
+
+      // parse data
+      const parsedJson = parseJson(metrics);
+
+      // get query nodes
+      const queryNodes = getNode(
+        parsedJson.allNodes,
+        MILVUS_NODE_TYPE.QUERYNODE
+      );
+
+      // get data nodes
+      const dataNodes = getNode(
+        parsedJson.allNodes,
+        MILVUS_NODE_TYPE.DATANODE
+      );
+
+      // get data nodes
+      const indexNodes = getNode(
+        parsedJson.allNodes,
+        MILVUS_NODE_TYPE.INDEXNODE
+      );
+
+      // get root coord
+      const rootCoord = getNode(
+        parsedJson.allNodes,
+        MILVUS_NODE_TYPE.ROOTCOORD
+      )[0];
+
+
+      // get system config
+      const systemConfig = getSystemConfigs(parsedJson.workingNodes);
+      const deployMode = rootCoord.infos.system_info.deploy_mode;
+      const systemInfo = rootCoord.infos.system_info;
+
+      const data = {
+        users: users.usernames,
+        roles: roles.results,
+        queryNodes,
+        dataNodes,
+        indexNodes,
+        rootCoord,
+        deployMode,
+        parsedJson,
+        systemConfig,
+        systemInfo,
+      };
+
+      console.log(data);
+
+      // store databases
+      setDatabases(databases.db_names);
+      // store other datas
+      setData(data);
     } catch (error) {
       // do nothing
+      console.log('fetch data error', error);
     }
   };
 
   useEffect(() => {
-    fetchDatabases();
+    fetchData();
   }, []);
 
   return (
     <Provider
       value={{
+        data,
         database,
         databases,
         setDatabase,

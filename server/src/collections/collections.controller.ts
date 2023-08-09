@@ -89,7 +89,7 @@ export class CollectionController {
     try {
       const result =
         type === 1
-          ? await this.collectionsService.getLoadedColletions()
+          ? await this.collectionsService.getLoadedCollections()
           : await this.collectionsService.getAllCollections();
       res.send(result);
     } catch (error) {

@@ -12,7 +12,6 @@ import { NodeListViewProps, Node } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    fontFamily: 'Roboto',
     margin: '14px 40px',
     display: 'grid',
     gridTemplateColumns: 'auto 400px',
