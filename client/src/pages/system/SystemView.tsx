@@ -14,7 +14,6 @@ import DataCard from './DataCard';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    fontFamily: 'Roboto',
     margin: '12px 24px',
     position: 'relative',
     height: 'fit-content',

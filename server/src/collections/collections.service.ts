@@ -213,7 +213,7 @@ export class CollectionsService {
     return data;
   }
 
-  async getLoadedColletions() {
+  async getLoadedCollections() {
     const data = [];
     const res = await this.getCollections({
       type: ShowCollectionsType.Loaded,

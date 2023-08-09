@@ -1,4 +1,11 @@
-import { makeStyles, Theme, Typography, Divider } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  Typography,
+  Divider,
+  Card,
+  CardContent,
+} from '@material-ui/core';
 import { FC, useContext } from 'react';
 import CustomButton from '@/components/customButton/CustomButton';
 import icons from '@/components/icons/Icons';
@@ -13,7 +20,6 @@ import { CollectionCardProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
-    padding: theme.spacing(2),
     textAlign: 'end',
     '& .link': {
       display: 'flex',
@@ -115,45 +121,50 @@ const CollectionCard: FC<CollectionCardProps> = ({
   };
 
   return (
-    <div
+    <Card
       className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
         data._status === LOADING_STATE.LOADING && classes.loading
       }`}
     >
-      <div>
-        <Status status={status} percentage={_loadedPercentage} />
-      </div>
-      <Link className="link" to={`/collections/${name}`}>
-        {name}
-        <RightArrowIcon classes={{ root: classes.icon }} />
-      </Link>
-      <ul className={classes.content}>
-        {_replicas && _replicas.length > 1 ? (
+      <CardContent>
+        <div>
+          <Status status={status} percentage={_loadedPercentage} />
+        </div>
+        <Link className="link" to={`/collections/${name}`}>
+          {name}
+          <RightArrowIcon classes={{ root: classes.icon }} />
+        </Link>
+        <ul className={classes.content}>
+          {_replicas && _replicas.length > 1 ? (
+            <li>
+              <Typography>{collectionTrans('replicaNum')}</Typography>:
+              <Typography className={classes.rowCount}>
+                {_replicas.length}
+              </Typography>
+            </li>
+          ) : null}
           <li>
-            <Typography>{collectionTrans('replicaNum')}</Typography>:
-            <Typography className={classes.rowCount}>
-              {_replicas.length}
-            </Typography>
+            <Typography>{collectionTrans('rowCount')}</Typography>:
+            <Typography className={classes.rowCount}>{rowCount}</Typography>
           </li>
-        ) : null}
-        <li>
-          <Typography>{collectionTrans('rowCount')}</Typography>:
-          <Typography className={classes.rowCount}>{rowCount}</Typography>
-        </li>
-      </ul>
-      <Divider classes={{ root: classes.divider }} />
-      <CustomButton
-        variant="contained"
-        className={classes.btn}
-        onClick={onVectorSearchClick}
-      >
-        <VectorSearchIcon classes={{ root: classes.search }} />
-        {btnTrans('vectorSearch')}
-      </CustomButton>
-      <CustomIconButton onClick={onReleaseClick} tooltip={btnTrans('release')}>
-        <ReleaseIcon classes={{ root: classes.release }} />
-      </CustomIconButton>
-    </div>
+        </ul>
+        <Divider classes={{ root: classes.divider }} />
+        <CustomButton
+          variant="contained"
+          className={classes.btn}
+          onClick={onVectorSearchClick}
+        >
+          <VectorSearchIcon classes={{ root: classes.search }} />
+          {btnTrans('vectorSearch')}
+        </CustomButton>
+        <CustomIconButton
+          onClick={onReleaseClick}
+          tooltip={btnTrans('release')}
+        >
+          <ReleaseIcon classes={{ root: classes.release }} />
+        </CustomIconButton>
+      </CardContent>
+    </Card>
   );
 };
 

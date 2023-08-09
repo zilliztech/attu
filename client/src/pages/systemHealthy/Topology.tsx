@@ -207,7 +207,6 @@ const Topology = ({
                   )}
 
                   <text
-                    fontFamily="Roboto"
                     textAnchor="middle"
                     fill={theme.palette.attuGrey.dark}
                     fontSize="12"
@@ -242,7 +241,6 @@ const Topology = ({
                   getIcon(node, theme, childPos[0] - 12, childPos[1] - 20)}
 
                 <text
-                  fontFamily="Roboto"
                   textAnchor="middle"
                   fill={theme.palette.primary.main}
                   fontWeight="700"
@@ -271,7 +269,6 @@ const Topology = ({
                   stroke={theme.palette.primary.main}
                 />
                 <text
-                  fontFamily="Roboto"
                   textAnchor="middle"
                   alignmentBaseline="middle"
                   fill={theme.palette.primary.main}

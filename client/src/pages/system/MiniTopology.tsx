@@ -96,7 +96,6 @@ const MiniTopo: FC<MiniTopoProps> = props => {
           stroke={theme.palette.primary.main}
         />
         <text
-          fontFamily="Roboto"
           alignmentBaseline="middle"
           textAnchor="middle"
           fill={theme.palette.primary.main}
@@ -133,7 +132,6 @@ const MiniTopo: FC<MiniTopoProps> = props => {
           />
         </svg>
         <text
-          fontFamily="Roboto"
           textAnchor="middle"
           fill={theme.palette.attuGrey.dark}
           fontSize="12"

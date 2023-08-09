@@ -40,7 +40,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     width: '360px',
     overflow: 'hidden',
-    fontFamily: 'Roboto',
   },
   head: {
     backgroundColor: theme.palette.primary.main,
@@ -54,7 +53,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     fontSize: theme.spacing(2),
     lineHeight: theme.spacing(3),
     letterSpacing: '-0.01em',
-    fontFamily: 'Roboto'
   },
   titleDesc: {
     color: '#f0f4f9',

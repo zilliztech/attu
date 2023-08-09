@@ -26,7 +26,6 @@ import { timeRangeOptions } from './consts';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    fontFamily: 'Roboto',
     margin: '16px 40px',
     position: 'relative',
     height: '88%',

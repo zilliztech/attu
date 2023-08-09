@@ -17,6 +17,8 @@ export const parseJson = (jsonData: any) => {
     (node: any) => node?.infos?.has_error !== true
   );
 
+  const allNodes = jsonData?.response?.nodes_info;
+
   workingNodes.forEach((node: any) => {
     const type = node?.infos?.type;
     if (node.connected) {
@@ -40,7 +42,7 @@ export const parseJson = (jsonData: any) => {
     system.disk += info.disk;
     system.diskUsage += info.disk_usage;
   });
-  return { nodes, childNodes, system, workingNodes };
+  return { nodes, childNodes, system, workingNodes, allNodes };
 };
 
 // get nodes

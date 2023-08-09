@@ -27,7 +27,7 @@ declare module '@material-ui/core/styles/createPalette' {
 const commonThemes = {
   typography: {
     fontFamily: [
-      'Roboto',
+      'Inter',
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
