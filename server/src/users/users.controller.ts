@@ -215,7 +215,7 @@ export class UserController {
     const { roleName } = req.params;
     try {
       const result = await this.userService.listGrants({
-        roleName: roleName,
+        roleName,
       });
       res.send(result);
     } catch (error) {
