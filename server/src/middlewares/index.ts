@@ -29,13 +29,16 @@ export const ReqHeaderMiddleware = (
 
   const CONNECT_URL = `/api/v1/milvus/connect`;
 
-  if (req.url !== CONNECT_URL && !MilvusService.activeMilvusClient) {
+  if (
+    req.url !== CONNECT_URL &&
+    milvusAddress &&
+    !MilvusService.activeMilvusClient
+  ) {
     throw HttpErrors(
       HTTP_STATUS_CODE.FORBIDDEN,
       'Can not find your connection, please check your connection settings.'
     );
   }
-
   next();
 };
 
