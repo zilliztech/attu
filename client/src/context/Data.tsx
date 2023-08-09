@@ -1,7 +1,8 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState, useContext } from 'react';
 import { DatabaseHttp, UserHttp, MilvusHttp } from '@/http';
 import { parseJson, getNode, getSystemConfigs } from '@/utils';
 import { MILVUS_NODE_TYPE } from '@/consts';
+import { authContext } from '@/context';
 import { DataContextType } from './Types';
 
 export const dataContext = createContext<DataContextType>({
@@ -14,6 +15,7 @@ export const dataContext = createContext<DataContextType>({
 
 const { Provider } = dataContext;
 export const DataProvider = (props: { children: React.ReactNode }) => {
+  const { isAuth } = useContext(authContext);
   const [database, setDatabase] = useState<string>('default');
   const [databases, setDatabases] = useState<string[]>(['default']);
   const [data, setData] = useState<any>({});
@@ -38,10 +40,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       );
 
       // get data nodes
-      const dataNodes = getNode(
-        parsedJson.allNodes,
-        MILVUS_NODE_TYPE.DATANODE
-      );
+      const dataNodes = getNode(parsedJson.allNodes, MILVUS_NODE_TYPE.DATANODE);
 
       // get data nodes
       const indexNodes = getNode(
@@ -54,7 +53,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         parsedJson.allNodes,
         MILVUS_NODE_TYPE.ROOTCOORD
       )[0];
-
 
       // get system config
       const systemConfig = getSystemConfigs(parsedJson.workingNodes);
@@ -74,8 +72,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         systemInfo,
       };
 
-      console.log(data);
-
       // store databases
       setDatabases(databases.db_names);
       // store other datas
@@ -87,8 +83,12 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isAuth) {
+      fetchData();
+    } else {
+      setData({});
+    }
+  }, [isAuth]);
 
   return (
     <Provider
