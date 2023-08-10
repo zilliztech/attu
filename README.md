@@ -46,6 +46,7 @@ Note that "127.0.0.1" or "localhost" will not work when running Attu on Docker.
 ## Screenshots
 
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
+<img src="./.github/images/collections.png" alt="attu" width="800" alt="attu" />
 <img src="./.github/images/create_collection.png" width="800" alt="attu" />
 <img src="./.github/images/create_index.png" width="800" alt="attu" />
 <img src="./.github/images/data_preview.png" width="800" alt="attu" />
