@@ -139,7 +139,7 @@ const Query: FC<{
         .join(',')}]`,
     });
     handleCloseDialog();
-    openSnackBar(successTrans('delete', { name: collectionTrans('entites') }));
+    openSnackBar(successTrans('delete', { name: collectionTrans('entities') }));
     handleQuery(expression);
   };
 
@@ -155,7 +155,7 @@ const Query: FC<{
               <DeleteTemplate
                 label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', {
-                  type: collectionTrans('entites'),
+                  type: collectionTrans('entities'),
                 })}
                 text={collectionTrans('deleteDataWarning')}
                 handleDelete={handleDelete}

@@ -17,7 +17,7 @@ const collectionTrans = {
   downloadDisabledTooltip: 'Please query data before exporting',
 
   collection: 'Collection',
-  entites: 'entites',
+  entities: 'entities',
 
   // table
   id: 'ID',
@@ -81,7 +81,7 @@ const collectionTrans = {
 
   // delete dialog
   deleteWarning: `You are trying to delete a collection with data. This action cannot be undone.`,
-  deleteDataWarning: `You are trying to delete entites. This action cannot be undone.`,
+  deleteDataWarning: `You are trying to delete entities. This action cannot be undone.`,
   deleteAliasWarning: `You are trying to drop an alias. This action cannot be undone.`,
 
   // collection tabs
