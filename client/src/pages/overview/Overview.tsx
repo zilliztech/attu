@@ -13,7 +13,12 @@ import dayjs from 'dayjs';
 import { rootContext, webSocketContext, dataContext } from '@/context';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
-import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@/consts';
+import {
+  WS_EVENTS,
+  WS_EVENTS_TYPE,
+  LOADING_STATE,
+  MILVUS_DEPLOY_MODE,
+} from '@/consts';
 import { useNavigationHook } from '@/hooks';
 import { CollectionHttp, MilvusHttp } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -189,7 +194,8 @@ const Overview = () => {
   const duration = useMemo(() => {
     let rootCoordCreatedTime = data.rootCoord?.infos?.created_time;
 
-    let duration = '0';
+    let duration = 0;
+    let unit = '';
     if (rootCoordCreatedTime) {
       rootCoordCreatedTime = rootCoordCreatedTime.substring(
         0,
@@ -199,10 +205,20 @@ const Overview = () => {
       const rootCoordCreatedTimeObj = dayjs(rootCoordCreatedTime);
 
       const now = dayjs();
-      duration = now.diff(rootCoordCreatedTimeObj, 'day', true).toFixed(2);
+      const minDiff = now.diff(rootCoordCreatedTimeObj, 'minute', true);
+      const dayDiff = now.diff(rootCoordCreatedTimeObj, 'day', true);
+      const hourDiff = now.diff(rootCoordCreatedTimeObj, 'hour', true);
+      const withinOneHour = minDiff < 60;
+      const withinOneDay = hourDiff < 24;
+      duration = withinOneHour ? minDiff : withinOneDay ? hourDiff : dayDiff;
+      unit = withinOneHour
+        ? overviewTrans('minutes')
+        : withinOneDay
+        ? overviewTrans('hours')
+        : overviewTrans('day');
     }
 
-    return `${duration} ${overviewTrans('days')}`;
+    return `${duration.toFixed(2)} ${unit}`;
   }, [data.rootCoord]);
 
   return (
@@ -249,11 +265,12 @@ const Overview = () => {
               title={'Milvus Version'}
               count={data?.systemInfo?.build_version}
             />
-            <SysCard title={overviewTrans('upTime')} count={duration} />
             <SysCard
               title={overviewTrans('deployMode')}
               count={data?.deployMode}
             />
+            <SysCard title={overviewTrans('upTime')} count={duration} />
+
             <SysCard
               title={overviewTrans('databases')}
               count={databases?.length}
@@ -269,6 +286,28 @@ const Overview = () => {
               count={data?.roles?.length}
               link="users?activeIndex=1"
             />
+
+            {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED ? (
+              <>
+                <SysCard
+                  title={overviewTrans('dataNodes')}
+                  count={data?.dataNodes?.length}
+                  link="system"
+                />
+
+                <SysCard
+                  title={overviewTrans('queryNodes')}
+                  count={data?.queryNodes?.length}
+                  link="system"
+                />
+
+                <SysCard
+                  title={overviewTrans('indexNodes')}
+                  count={data?.indexNodes?.length}
+                  link="system"
+                />
+              </>
+            ) : null}
           </div>
         </section>
       ) : null}
