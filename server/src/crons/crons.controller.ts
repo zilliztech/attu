@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { dtoValidationMiddleware } from '../middlewares/validation';
+import { dtoValidationMiddleware } from '../middleware/validation';
 import { CronsService, SchedulerRegistry } from './crons.service';
 import { collectionsService } from '../collections';
 import { ToggleCronJobByNameDto } from './dto';

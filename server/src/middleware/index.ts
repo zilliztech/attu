@@ -14,7 +14,7 @@ export const ReqHeaderMiddleware = (
 ) => {
   const insightCache = req.app.get(INSIGHT_CACHE);
   // all ape requests need set milvus address in header.
-  // server will set activeaddress in milvus service.
+  // server will set active address in milvus service.
   const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
 
   // console.log('------ Request headers -------', req.headers);
@@ -42,7 +42,7 @@ export const ReqHeaderMiddleware = (
   next();
 };
 
-export const TransformResMiddlerware = (
+export const TransformResMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction

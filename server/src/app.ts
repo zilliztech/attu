@@ -16,11 +16,11 @@ import { router as userRouter } from './users';
 import { router as prometheusRouter } from './prometheus';
 import { pubSub } from './events';
 import {
-  TransformResMiddlerware,
+  TransformResMiddleware,
   LoggingMiddleware,
   ErrorMiddleware,
   ReqHeaderMiddleware,
-} from './middlewares';
+} from './middleware';
 import { EXPIRED_TIME, INSIGHT_CACHE } from './utils/Const';
 import { getIp } from './utils/Network';
 // initialize express app
@@ -66,7 +66,7 @@ app.use(
 // limit json file size
 app.use(express.json({ limit: '150MB' }));
 // TransformResInterceptor
-app.use(TransformResMiddlerware);
+app.use(TransformResMiddleware);
 // LoggingInterceptor
 app.use(LoggingMiddleware);
 // All headers operations

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { dtoValidationMiddleware } from '../middlewares/validation';
+import { dtoValidationMiddleware } from '../middleware/validation';
 import { MilvusService } from './milvus.service';
 import { ConnectMilvusDto, FlushDto, UseDatabaseDto } from './dto';
 import { INSIGHT_CACHE } from '../utils/Const';

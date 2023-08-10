@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { dtoValidationMiddleware } from '../middlewares/validation';
+import { dtoValidationMiddleware } from '../middleware/validation';
 import { SchemaService } from './schema.service';
 import { milvusService } from '../milvus';
 
