@@ -22,7 +22,7 @@ const btnTrans = {
   importSampleData: 'Import Sample data',
   loading: 'Loading...',
   importing: 'Importing...',
-  example: 'Example',
+  example: 'Generate random vector',
   rename: 'Rename',
 };
 

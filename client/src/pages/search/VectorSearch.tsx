@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
-import { Typography, Button } from '@material-ui/core';
+import {
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardActionArea,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -371,11 +377,9 @@ const VectorSearch = () => {
   };
 
   return (
-    <section className="page-wrapper">
-      {/* form section */}
-      <form className={classes.form}>
-        {/* collection and field selectors */}
-        <fieldset className="field">
+    <section className={`page-wrapper ${classes.pageContainer}`}>
+      <Card className={classes.form}>
+        <CardContent className={classes.s1}>
           <Typography className="text">{searchTrans('secondTip')}</Typography>
           <CustomSelector
             options={collectionOptions}
@@ -408,12 +412,9 @@ const VectorSearch = () => {
               setSelectedField(field as string);
             }}
           />
-        </fieldset>
-        {/**
-         * vector value textarea
-         * use field-params class because it also has error msg if invalid
-         */}
-        <fieldset className="field field-params field-second">
+        </CardContent>
+
+        <CardContent className={classes.s2}>
           <Typography className="text">
             {searchTrans('firstTip', {
               dimensionTip:
@@ -423,6 +424,7 @@ const VectorSearch = () => {
             })}
             {selectedFieldDimension !== 0 ? (
               <Button
+                className={classes.exampleBtn}
                 variant="outlined"
                 size="small"
                 onClick={() => {
@@ -457,10 +459,9 @@ const VectorSearch = () => {
               })}
             </Typography>
           )}
-        </fieldset>
+        </CardContent>
 
-        {/* search params selectors */}
-        <fieldset className="field field-params">
+        <CardContent className={classes.s3}>
           <Typography className="text">{searchTrans('thirdTip')}</Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
@@ -478,97 +479,95 @@ const VectorSearch = () => {
             topK={topK}
             setParamsDisabled={setParamDisabled}
           />
-        </fieldset>
-      </form>
+        </CardContent>
+      </Card>
 
-      {/**
-       * search toolbar section
-       * including topK selector, advanced filter, search and reset btn
-       */}
-      <section className={classes.toolbar}>
-        <div className="left">
-          <Typography variant="h5" className="text">
-            {`${searchTrans('result')}: `}
-          </Typography>
-          {/* topK selector */}
-          <SimpleMenu
-            label={searchTrans('topK', { number: topK })}
-            menuItems={TOP_K_OPTIONS.map(item => ({
-              label: item.toString(),
-              callback: () => {
-                setTopK(item);
-                if (!searchDisabled) {
-                  handleSearch(item);
-                }
-              },
-              wrapperClass: classes.menuItem,
-            }))}
-            buttonProps={{
-              className: classes.menuLabel,
-              endIcon: <ArrowIcon />,
-            }}
-            menuItemWidth="108px"
-          />
+      <section className={classes.resultsWrapper}>
+        <section className={classes.toolbar}>
+          <div className="left">
+            <Typography variant="h5" className="text">
+              {`${searchTrans('result')}: `}
+            </Typography>
+            {/* topK selector */}
+            <SimpleMenu
+              label={searchTrans('topK', { number: topK })}
+              menuItems={TOP_K_OPTIONS.map(item => ({
+                label: item.toString(),
+                callback: () => {
+                  setTopK(item);
+                  if (!searchDisabled) {
+                    handleSearch(item);
+                  }
+                },
+                wrapperClass: classes.menuItem,
+              }))}
+              buttonProps={{
+                className: classes.menuLabel,
+                endIcon: <ArrowIcon />,
+              }}
+              menuItemWidth="108px"
+            />
 
-          <Filter
-            title="Advanced Filter"
-            fields={filterFields}
-            filterDisabled={selectedField === '' || selectedCollection === ''}
-            onSubmit={handleAdvancedFilterChange}
+            <Filter
+              title="Advanced Filter"
+              fields={filterFields}
+              filterDisabled={selectedField === '' || selectedCollection === ''}
+              onSubmit={handleAdvancedFilterChange}
+            />
+            <CustomDatePicker
+              label={timeTravelInfo.label}
+              onChange={handleDateTimeChange}
+              date={timeTravel}
+              setDate={setTimeTravel}
+            />
+          </div>
+          <div className="right">
+            <CustomButton className="btn" onClick={handleReset}>
+              <ResetIcon classes={{ root: 'icon' }} />
+              {btnTrans('reset')}
+            </CustomButton>
+            <CustomButton
+              variant="contained"
+              disabled={searchDisabled}
+              onClick={() => handleSearch(topK)}
+            >
+              {btnTrans('search')}
+            </CustomButton>
+          </div>
+        </section>
+
+        {/* search result table section */}
+        {(searchResult && searchResult.length > 0) || tableLoading ? (
+          <AttuGrid
+            toolbarConfigs={[]}
+            colDefinitions={colDefinitions}
+            rows={result}
+            rowCount={total}
+            primaryKey="rank"
+            page={currentPage}
+            onPageChange={handlePageChange}
+            rowsPerPage={pageSize}
+            setRowsPerPage={handlePageSize}
+            openCheckBox={false}
+            isLoading={tableLoading}
+            orderBy={orderBy}
+            order={order}
+            labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
+            handleSort={handleGridSort}
+            tableCellMaxWidth="100%"
           />
-          <CustomDatePicker
-            label={timeTravelInfo.label}
-            onChange={handleDateTimeChange}
-            date={timeTravel}
-            setDate={setTimeTravel}
+        ) : (
+          <EmptyCard
+            wrapperClass={`page-empty-card`}
+            icon={<VectorSearchIcon />}
+            text={
+              searchResult !== null
+                ? searchTrans('empty')
+                : searchTrans('startTip')
+            }
           />
-        </div>
-        <div className="right">
-          <CustomButton className="btn" onClick={handleReset}>
-            <ResetIcon classes={{ root: 'icon' }} />
-            {btnTrans('reset')}
-          </CustomButton>
-          <CustomButton
-            variant="contained"
-            disabled={searchDisabled}
-            onClick={() => handleSearch(topK)}
-          >
-            {btnTrans('search')}
-          </CustomButton>
-        </div>
+        )}
       </section>
-
-      {/* search result table section */}
-      {(searchResult && searchResult.length > 0) || tableLoading ? (
-        <AttuGrid
-          toolbarConfigs={[]}
-          colDefinitions={colDefinitions}
-          rows={result}
-          rowCount={total}
-          primaryKey="rank"
-          page={currentPage}
-          onPageChange={handlePageChange}
-          rowsPerPage={pageSize}
-          setRowsPerPage={handlePageSize}
-          openCheckBox={false}
-          isLoading={tableLoading}
-          orderBy={orderBy}
-          order={order}
-          labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
-          handleSort={handleGridSort}
-          tableCellMaxWidth="100%"
-        />
-      ) : (
-        <EmptyCard
-          wrapperClass={`page-empty-card`}
-          icon={<VectorSearchIcon />}
-          text={
-            searchResult !== null
-              ? searchTrans('empty')
-              : searchTrans('startTip')
-          }
-        />
-      )}
     </section>
   );
 };

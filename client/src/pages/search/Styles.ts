@@ -1,62 +1,63 @@
 import { makeStyles, Theme } from '@material-ui/core';
 
 export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
+  pageContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   form: {
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'row',
+    gap: theme.spacing(0),
 
-    '& .field': {
-      display: 'flex',
-      flexDirection: 'column',
-      width: 250,
-      padding: theme.spacing(2),
-      backgroundColor: '#fff',
+    '& textarea': {
+      border: `1px solid ${theme.palette.attuGrey.main}`,
       borderRadius: theme.spacing(0.5),
-      boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
-
-      '& .textarea': {
-        border: `1px solid ${theme.palette.attuGrey.main}`,
-        borderRadius: theme.spacing(0.5),
-        padding: theme.spacing(0.5, 1),
-        marginBottom: theme.spacing(1),
-        overflow: 'scroll',
-        height: '120px',
-      },
+      padding: theme.spacing(0.5, 1),
+      marginTop: theme.spacing(0),
+      overflow: 'scroll',
+      height: '130px',
+      maxWidth: '100%',
+      width: '100%',
+      display: 'block',
+      boxSizing: 'border-box',
     },
-
-    '& .field-second': {
-      flexGrow: 1,
-      flexBasis: '50%',
-      margin: theme.spacing(0, 1),
-    },
-
-    // Textfield component has more bottom space to show error msg when validation
-    // if still set padding-bottom, the whole form space will be stretched
-    '& .field-params': {
-      paddingBottom: 0,
-      width: 390,
-    },
-
     '& .text': {
-      color: theme.palette.attuGrey.dark,
-      fontWeight: 500,
-      marginBottom: theme.spacing(1),
-      height: theme.spacing(4),
-      '& button': {
-        marginLeft: '8px',
-        position: 'relative',
-        top: -5,
-        verticalAlign: 'top',
-      },
+      marginBottom: theme.spacing(2),
+    },
+    height: '210px',
+    overflow: 'hidden',
+  },
+  s1: {
+    '& .MuiSelect-root': {
+      minWidth: '240px',
     },
   },
+  s2: {
+    minWidth: '600px',
+    position: 'relative',
+  },
+  s3: {
+    minWidth: '260px',
+  },
   selector: {
-    width: '100%',
+    display: 'block',
     marginBottom: theme.spacing(2),
+  },
+  exampleBtn: {
+    right: theme.spacing(2),
+    top: theme.spacing(1.5),
+    position: 'absolute',
   },
   paramsWrapper: {
     display: 'flex',
     flexDirection: 'column',
+  },
+
+  resultsWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
   },
   toolbar: {
     display: 'flex',
