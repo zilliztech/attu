@@ -6,6 +6,7 @@ export const MILVUS_URL =
 export enum METRIC_TYPES_VALUES {
   L2 = 'L2',
   IP = 'IP',
+  COSINE = 'COSINE',
   HAMMING = 'HAMMING',
   JACCARD = 'JACCARD',
   TANIMOTO = 'TANIMOTO',
@@ -21,6 +22,10 @@ export const METRIC_TYPES = [
   {
     value: METRIC_TYPES_VALUES.IP,
     label: 'IP',
+  },
+  {
+    value: METRIC_TYPES_VALUES.COSINE,
+    label: 'COSINE',
   },
   {
     value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
@@ -47,6 +52,7 @@ export const METRIC_TYPES = [
 export type MetricType =
   | 'L2'
   | 'IP'
+  | 'COSINE'
   | 'HAMMING'
   | 'SUBSTRUCTURE'
   | 'SUPERSTRUCTURE'
@@ -71,6 +77,10 @@ export type indexConfigType = {
 
 // index
 export const FLOAT_INDEX_CONFIG: indexConfigType = {
+  SCANN: {
+    create: ['nlist'],
+    search: ['nprobe'],
+  },
   IVF_FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -158,6 +168,10 @@ export const METRIC_OPTIONS_MAP = {
     {
       value: METRIC_TYPES_VALUES.IP,
       label: METRIC_TYPES_VALUES.IP,
+    },
+    {
+      value: METRIC_TYPES_VALUES.COSINE,
+      label: METRIC_TYPES_VALUES.COSINE,
     },
   ],
   [DataTypeEnum.BinaryVector]: [

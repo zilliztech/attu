@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
-import {
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardActionArea,
-} from '@material-ui/core';
+import { Typography, Button, Card, CardContent } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -26,7 +20,6 @@ import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { Field } from '@/components/advancedSearch/Types';
-import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { CollectionHttp, IndexHttp } from '@/http';
 import {
   parseValue,
@@ -513,12 +506,6 @@ const VectorSearch = () => {
               fields={filterFields}
               filterDisabled={selectedField === '' || selectedCollection === ''}
               onSubmit={handleAdvancedFilterChange}
-            />
-            <CustomDatePicker
-              label={timeTravelInfo.label}
-              onChange={handleDateTimeChange}
-              date={timeTravel}
-              setDate={setTimeTravel}
             />
           </div>
           <div className="right">

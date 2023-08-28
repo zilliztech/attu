@@ -20,6 +20,7 @@ import { SearchParamInputConfig, SearchParamsProps } from './Types';
 const getStyles = makeStyles((theme: Theme) => ({
   selector: {
     width: '100%',
+    display: 'none',
     marginBottom: theme.spacing(2),
   },
   input: {
@@ -294,6 +295,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         label={indexTrans('metric')}
         wrapperClass={classes.selector}
         variant="filled"
+        disabled={true}
         onChange={(e: { target: { value: unknown } }) => {
           const metricType = e.target.value as string;
           handleMetricTypeChange(metricType);

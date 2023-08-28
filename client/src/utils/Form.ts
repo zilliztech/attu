@@ -33,6 +33,10 @@ export const getMetricOptions = (
       value: METRIC_TYPES_VALUES.IP,
       label: 'IP',
     },
+    {
+      value: METRIC_TYPES_VALUES.COSINE,
+      label: 'COSINE',
+    },
   ];
 
   const baseBinaryOptions = [
