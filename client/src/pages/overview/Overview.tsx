@@ -197,10 +197,12 @@ const Overview = () => {
     let duration = 0;
     let unit = '';
     if (rootCoordCreatedTime) {
-      rootCoordCreatedTime = rootCoordCreatedTime.substring(
-        0,
-        rootCoordCreatedTime.lastIndexOf('m=')
-      );
+      if (rootCoordCreatedTime.lastIndexOf('m=')! == -1) {
+        rootCoordCreatedTime = rootCoordCreatedTime.substring(
+          0,
+          rootCoordCreatedTime.lastIndexOf('m=')
+        );
+      }
 
       const rootCoordCreatedTimeObj = dayjs(rootCoordCreatedTime);
 
