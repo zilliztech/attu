@@ -197,7 +197,7 @@ const Overview = () => {
     let duration = 0;
     let unit = '';
     if (rootCoordCreatedTime) {
-      if (rootCoordCreatedTime.lastIndexOf('m=')! == -1) {
+      if (rootCoordCreatedTime.lastIndexOf('m=') !== -1) {
         rootCoordCreatedTime = rootCoordCreatedTime.substring(
           0,
           rootCoordCreatedTime.lastIndexOf('m=')
