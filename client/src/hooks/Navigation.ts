@@ -76,7 +76,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('user'),
           backPath: '',
-          showDatabaseSelector: false,
+          showDatabaseSelector: true,
         };
         setNavInfo(navInfo);
         break;

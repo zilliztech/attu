@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme, Chip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserHttp } from '@/http';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Roles = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
   const classes = useStyles();
+  const { database } = useContext(dataContext);
 
   const [roles, setRoles] = useState<RoleData[]>([]);
   const [selectedRole, setSelectedRole] = useState<RoleData[]>([]);
@@ -186,7 +187,7 @@ const Roles = () => {
 
   useEffect(() => {
     fetchRoles();
-  }, []);
+  }, [database]);
 
   return (
     <div className={classes.wrapper}>
