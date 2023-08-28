@@ -66,9 +66,15 @@ const SearchParams: FC<SearchParamsProps> = ({
           'warning'
         );
     }
+
+    const commonParams: searchKeywordsType[] = [
+      'range',
+      'range_filter',
+      'round_decimal',
+    ];
     return indexType !== '' && isSupportedType
-      ? [...INDEX_CONFIG[indexType].search, 'round_decimal']
-      : ['round_decimal'];
+      ? [...INDEX_CONFIG[indexType].search, ...commonParams]
+      : commonParams;
   }, [indexType, openSnackBar, warningTrans]);
 
   const handleInputChange = useCallback(
@@ -168,7 +174,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         [key in searchKeywordsType]: SearchParamInputConfig;
       } = {
         round_decimal: {
-          label: 'Round Decimals',
+          label: 'Round',
           key: 'round_decimal',
           value: searchParamsForm['round_decimal'] || '',
           min: -1,
@@ -188,6 +194,30 @@ const SearchParams: FC<SearchParamsProps> = ({
           isInt: true,
           handleChange: value => {
             handleInputChange('nprobe', Number(value));
+          },
+          className: classes.inlineInput,
+        },
+        range: {
+          label: 'range',
+          key: 'range',
+          value: searchParamsForm['range'] || '',
+          min: 1,
+          max: 500,
+          isInt: false,
+          handleChange: value => {
+            handleInputChange('range', Number(value));
+          },
+          className: classes.inlineInput,
+        },
+        range_filter: {
+          label: 'range_filter',
+          key: 'range_filter',
+          value: searchParamsForm['range_filter'] || '',
+          min: 1,
+          max: 500,
+          isInt: false,
+          handleChange: value => {
+            handleInputChange('range_filter', Number(value));
           },
           className: classes.inlineInput,
         },

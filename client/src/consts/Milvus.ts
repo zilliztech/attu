@@ -66,7 +66,9 @@ export type searchKeywordsType =
   | 'search_length'
   | 'round_decimal'
   | 'level'
-  | 'search_list';
+  | 'search_list'
+  | 'range'
+  | 'range_filter';
 
 export type indexConfigType = {
   [x: string]: {
@@ -222,6 +224,8 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   round_decimal: -1,
   level: 1,
   search_list: 20,
+  range: 20,
+  range_filter: 10
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;
