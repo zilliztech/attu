@@ -116,7 +116,9 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   };
 
   const onChange = (newSelection: any) => {
-    setForm(v => ({ ...v, privileges: [...newSelection] }));
+    setForm(v => {
+      return { ...v, privileges: [...newSelection] };
+    });
   };
 
   const optionGroups: PrivilegeOptionsProps[] = [

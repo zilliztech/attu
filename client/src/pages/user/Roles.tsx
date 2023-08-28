@@ -66,7 +66,11 @@ const Roles = () => {
 
   const onUpdate = async (data: { isEditing: boolean }) => {
     fetchRoles();
-    openSnackBar(successTrans('create', { name: userTrans('role') }));
+    openSnackBar(
+      successTrans(data.isEditing ? 'update' : 'create', {
+        name: userTrans('role'),
+      })
+    );
     handleCloseDialog();
   };
 

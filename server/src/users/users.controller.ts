@@ -231,7 +231,7 @@ export class UserController {
 
     try {
       // revoke all
-      this.userService.revokeAllRolePrivileges({ roleName });
+      await this.userService.revokeAllRolePrivileges({ roleName });
 
       // assign new user roles
       for (let i = 0; i < privileges.length; i++) {
