@@ -68,7 +68,7 @@ const SearchParams: FC<SearchParamsProps> = ({
     }
 
     const commonParams: searchKeywordsType[] = [
-      'range',
+      'radius',
       'range_filter',
       'round_decimal',
     ];
@@ -78,8 +78,14 @@ const SearchParams: FC<SearchParamsProps> = ({
   }, [indexType, openSnackBar, warningTrans]);
 
   const handleInputChange = useCallback(
-    (key: string, value: number) => {
-      const form = { ...searchParamsForm, [key]: value };
+    (key: string, value: number | string) => {
+      let form = { ...searchParamsForm };
+      if (value === '') {
+        delete form[key];
+      } else {
+        form = { ...searchParamsForm, [key]: Number(value) };
+      }
+
       handleFormChange(form);
     },
     [handleFormChange, searchParamsForm]
@@ -98,6 +104,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         value,
         handleChange,
         isInt = true,
+        required = true,
       } = params;
 
       // search_k range is special compared to others，need to be handled separately
@@ -114,22 +121,13 @@ const SearchParams: FC<SearchParamsProps> = ({
         variant: 'filled',
         type: 'number',
         value,
-        validations: [
-          {
-            rule: 'require',
-            errorText: warningTrans('required', { name: label }),
-          },
-        ],
+        validations: [],
       };
-      if (!isSearchK && min && max) {
+
+      if (required) {
         config.validations?.push({
-          rule: 'range',
-          errorText: warningTrans('range', { min, max }),
-          extraParam: {
-            min,
-            max,
-            type: 'number',
-          },
+          rule: 'require',
+          errorText: warningTrans('required', { name: label }),
         });
       }
 
@@ -174,14 +172,15 @@ const SearchParams: FC<SearchParamsProps> = ({
         [key in searchKeywordsType]: SearchParamInputConfig;
       } = {
         round_decimal: {
-          label: 'Round',
+          label: 'round',
           key: 'round_decimal',
           value: searchParamsForm['round_decimal'] || '',
           min: -1,
           max: 10,
           isInt: true,
+          required: false,
           handleChange: value => {
-            handleInputChange('round_decimal', Number(value));
+            handleInputChange('round_decimal', value);
           },
           className: classes.inlineInput,
         },
@@ -193,31 +192,33 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: nlist,
           isInt: true,
           handleChange: value => {
-            handleInputChange('nprobe', Number(value));
+            handleInputChange('nprobe', value);
           },
           className: classes.inlineInput,
         },
-        range: {
-          label: 'range',
-          key: 'range',
-          value: searchParamsForm['range'] || '',
+        radius: {
+          label: 'radius',
+          key: 'radius',
+          value: searchParamsForm['radius'] || '',
           min: 1,
-          max: 500,
+          max: 1024,
           isInt: false,
+          required: false,
           handleChange: value => {
-            handleInputChange('range', Number(value));
+            handleInputChange('radius', value);
           },
           className: classes.inlineInput,
         },
         range_filter: {
-          label: 'range_filter',
+          label: 'range filter',
           key: 'range_filter',
           value: searchParamsForm['range_filter'] || '',
           min: 1,
-          max: 500,
+          max: 1024,
           isInt: false,
+          required: false,
           handleChange: value => {
-            handleInputChange('range_filter', Number(value));
+            handleInputChange('range_filter', value);
           },
           className: classes.inlineInput,
         },
@@ -229,7 +230,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 32768,
           isInt: true,
           handleChange: value => {
-            handleInputChange('ef', Number(value));
+            handleInputChange('ef', value);
           },
         },
         level: {
@@ -240,7 +241,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 3,
           isInt: true,
           handleChange: value => {
-            handleInputChange('level', Number(value));
+            handleInputChange('level', value);
           },
         },
         search_k: {
@@ -252,7 +253,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: Infinity,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_k', Number(value));
+            handleInputChange('search_k', value);
           },
         },
         search_length: {
@@ -263,7 +264,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 300,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_length', Number(value));
+            handleInputChange('search_length', value);
           },
         },
         search_list: {
@@ -274,7 +275,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 65535,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_list', Number(value));
+            handleInputChange('search_list', value);
           },
         },
       };

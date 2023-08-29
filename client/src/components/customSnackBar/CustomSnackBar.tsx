@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       borderRadius: '4px',
-      maxWidth: '300px',
+      maxWidth: '50vh',
+      wordBreak: 'break-all'
     },
     topRight: {
       [theme.breakpoints.up('md')]: {
@@ -37,7 +38,7 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
     vertical,
     horizontal,
     open,
-    autoHideDuration = 2000,
+    autoHideDuration = 2500,
     type,
     message,
     onClose,

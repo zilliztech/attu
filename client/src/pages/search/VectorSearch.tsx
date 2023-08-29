@@ -3,12 +3,7 @@ import { Typography, Button, Card, CardContent } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import {
-  useNavigationHook,
-  useSearchResult,
-  usePaginationHook,
-  useTimeTravelHook,
-} from '@/hooks';
+import { useNavigationHook, useSearchResult, usePaginationHook } from '@/hooks';
 import { dataContext } from '@/context';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ColDefinitionsType } from '@/components/grid/Types';
@@ -91,9 +86,6 @@ const VectorSearch = () => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResultMemo || []);
-
-  const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
-    useTimeTravelHook();
 
   const collectionOptions: Option[] = useMemo(
     () =>
@@ -317,7 +309,6 @@ const VectorSearch = () => {
     setSearchResult(null);
     setFilterFields([]);
     setExpression('');
-    setTimeTravel(null);
   };
 
   const handleSearch = async (topK: number, expr = expression) => {
@@ -337,7 +328,6 @@ const VectorSearch = () => {
       search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
-      travel_timestamp: timeTravelInfo.timestamp,
     };
 
     setTableLoading(true);

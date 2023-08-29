@@ -67,7 +67,7 @@ export type searchKeywordsType =
   | 'round_decimal'
   | 'level'
   | 'search_list'
-  | 'range'
+  | 'radius'
   | 'range_filter';
 
 export type indexConfigType = {
@@ -211,7 +211,7 @@ export const DEFAULT_METRIC_VALUE_MAP = {
 
 // search params default value map
 export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
-  [key in searchKeywordsType]: number;
+  [key in searchKeywordsType]?: number;
 } = {
   // range: [top_k, 32768]
   ef: 250,
@@ -221,11 +221,8 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   search_k: 250,
   // range: [10, 300]
   search_length: 10,
-  round_decimal: -1,
   level: 1,
   search_list: 20,
-  range: 20,
-  range_filter: 10
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;

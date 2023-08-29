@@ -61,7 +61,7 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     message: '',
     vertical: 'top',
     horizontal: 'right',
-    autoHideDuration: 3000,
+    autoHideDuration: 1000,
   });
   const [dialog, setDialog] = useState<DialogType>(DefaultDialogConfigs);
   const [drawer, setDrawer]: any = useState({
