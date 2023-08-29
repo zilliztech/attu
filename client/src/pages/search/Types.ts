@@ -52,6 +52,7 @@ export interface SearchParamInputConfig {
   value: number | string;
   handleChange: (value: number) => void;
   className?: string;
+  required?: boolean;
 }
 
 export interface VectorSearchParam {

@@ -1,20 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
-import {
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardActionArea,
-} from '@material-ui/core';
+import { Typography, Button, Card, CardContent } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import {
-  useNavigationHook,
-  useSearchResult,
-  usePaginationHook,
-  useTimeTravelHook,
-} from '@/hooks';
+import { useNavigationHook, useSearchResult, usePaginationHook } from '@/hooks';
 import { dataContext } from '@/context';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ColDefinitionsType } from '@/components/grid/Types';
@@ -26,7 +15,6 @@ import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { Field } from '@/components/advancedSearch/Types';
-import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { CollectionHttp, IndexHttp } from '@/http';
 import {
   parseValue,
@@ -98,9 +86,6 @@ const VectorSearch = () => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResultMemo || []);
-
-  const { timeTravel, setTimeTravel, timeTravelInfo, handleDateTimeChange } =
-    useTimeTravelHook();
 
   const collectionOptions: Option[] = useMemo(
     () =>
@@ -324,7 +309,6 @@ const VectorSearch = () => {
     setSearchResult(null);
     setFilterFields([]);
     setExpression('');
-    setTimeTravel(null);
   };
 
   const handleSearch = async (topK: number, expr = expression) => {
@@ -344,7 +328,6 @@ const VectorSearch = () => {
       search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
-      travel_timestamp: timeTravelInfo.timestamp,
     };
 
     setTableLoading(true);
@@ -513,12 +496,6 @@ const VectorSearch = () => {
               fields={filterFields}
               filterDisabled={selectedField === '' || selectedCollection === ''}
               onSubmit={handleAdvancedFilterChange}
-            />
-            <CustomDatePicker
-              label={timeTravelInfo.label}
-              onChange={handleDateTimeChange}
-              date={timeTravel}
-              setDate={setTimeTravel}
             />
           </div>
           <div className="right">

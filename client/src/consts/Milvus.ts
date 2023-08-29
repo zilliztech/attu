@@ -6,6 +6,7 @@ export const MILVUS_URL =
 export enum METRIC_TYPES_VALUES {
   L2 = 'L2',
   IP = 'IP',
+  COSINE = 'COSINE',
   HAMMING = 'HAMMING',
   JACCARD = 'JACCARD',
   TANIMOTO = 'TANIMOTO',
@@ -21,6 +22,10 @@ export const METRIC_TYPES = [
   {
     value: METRIC_TYPES_VALUES.IP,
     label: 'IP',
+  },
+  {
+    value: METRIC_TYPES_VALUES.COSINE,
+    label: 'COSINE',
   },
   {
     value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
@@ -47,6 +52,7 @@ export const METRIC_TYPES = [
 export type MetricType =
   | 'L2'
   | 'IP'
+  | 'COSINE'
   | 'HAMMING'
   | 'SUBSTRUCTURE'
   | 'SUPERSTRUCTURE'
@@ -60,7 +66,9 @@ export type searchKeywordsType =
   | 'search_length'
   | 'round_decimal'
   | 'level'
-  | 'search_list';
+  | 'search_list'
+  | 'radius'
+  | 'range_filter';
 
 export type indexConfigType = {
   [x: string]: {
@@ -71,6 +79,10 @@ export type indexConfigType = {
 
 // index
 export const FLOAT_INDEX_CONFIG: indexConfigType = {
+  SCANN: {
+    create: ['nlist'],
+    search: ['nprobe'],
+  },
   IVF_FLAT: {
     create: ['nlist'],
     search: ['nprobe'],
@@ -159,6 +171,10 @@ export const METRIC_OPTIONS_MAP = {
       value: METRIC_TYPES_VALUES.IP,
       label: METRIC_TYPES_VALUES.IP,
     },
+    {
+      value: METRIC_TYPES_VALUES.COSINE,
+      label: METRIC_TYPES_VALUES.COSINE,
+    },
   ],
   [DataTypeEnum.BinaryVector]: [
     {
@@ -195,7 +211,7 @@ export const DEFAULT_METRIC_VALUE_MAP = {
 
 // search params default value map
 export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
-  [key in searchKeywordsType]: number;
+  [key in searchKeywordsType]?: number;
 } = {
   // range: [top_k, 32768]
   ef: 250,
@@ -205,7 +221,6 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   search_k: 250,
   // range: [10, 300]
   search_length: 10,
-  round_decimal: -1,
   level: 1,
   search_list: 20,
 };
