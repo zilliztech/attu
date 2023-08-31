@@ -51,6 +51,8 @@ export class CollectionController {
     );
     this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
     this.router.get('/:name', this.describeCollection.bind(this));
+
+    // load / release
     this.router.put('/:name/load', this.loadCollection.bind(this));
     this.router.put('/:name/release', this.releaseCollection.bind(this));
     this.router.post(
@@ -80,6 +82,10 @@ export class CollectionController {
       dtoValidationMiddleware(CreateAliasDto),
       this.createAlias.bind(this)
     );
+
+    // segements
+    this.router.get('/:name/psegments', this.getPSegement.bind(this));
+    this.router.get('/:name/qsegments', this.getQSegement.bind(this));
 
     return this.router;
   }
@@ -321,6 +327,30 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.getReplicas({
         collectionID,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPSegement(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    try {
+      const result = await this.collectionsService.getPersistentSegmentInfo({
+        collectionName: name,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getQSegement(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    try {
+      const result = await this.collectionsService.getQuerySegmentInfo({
+        collectionName: name,
       });
       res.send(result);
     } catch (error) {

@@ -89,6 +89,7 @@ const collectionTrans = {
   schemaTab: 'Schema',
   queryTab: 'Data Query',
   previewTab: 'Data Preview',
+  segmentsTab: 'Segments',
   startTip: 'Start your data query',
   dataQuerylimits:
     ' Please note that the maximum number of results for your data query is 16384.',
@@ -100,6 +101,18 @@ const collectionTrans = {
   // rename dialog
   newColNamePlaceholder: 'New Collection Name',
   newNameInfo: 'Only numbers, letters, and underscores are allowed.',
+
+  // segement
+  segements: 'Segments',
+  segPState: 'Persistent Segment State',
+  partitionID: 'Partition ID',
+  segmentID: 'Segment ID',
+  num_rows: 'Row Count',
+  q_nodeIds: 'Query Node IDs',
+  q_index_name: 'Index Name',
+  q_indexID: 'Index ID',
+  q_state: 'Query Segment State',
+  q_mem_size: 'Memory Size',
 };
 
 export default collectionTrans;
