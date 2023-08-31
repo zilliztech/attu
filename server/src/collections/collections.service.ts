@@ -16,6 +16,9 @@ import {
   ShowCollectionsReq,
   ShowCollectionsType,
   DeleteEntitiesReq,
+  GetCompactionStateReq,
+  GetQuerySegmentInfoReq,
+  GePersistentSegmentInfoReq,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue, genRows } from '../utils/Helper';
@@ -289,5 +292,23 @@ export class CollectionsService {
     );
 
     return await this.insert({ collection_name, fields_data });
+  }
+
+  async getCompactionState(data: GetCompactionStateReq) {
+    const res = await this.milvusService.client.getCompactionState(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async getQuerySegmentInfo(data: GetQuerySegmentInfoReq) {
+    const res = await this.milvusService.client.getQuerySegmentInfo(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async getPersistentSegmentInfo(data: GePersistentSegmentInfoReq) {
+    const res = await this.milvusService.client.getPersistentSegmentInfo(data);
+    throwErrorFromSDK(res.status);
+    return res;
   }
 }

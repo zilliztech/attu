@@ -12,6 +12,8 @@ import { parseLocationSearch } from '@/utils';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Preview from '../preview/Preview';
+import Segments from '../segments/Segments';
+
 import { TAB_ENUM } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -76,6 +78,10 @@ const Collection = () => {
     {
       label: collectionTrans('queryTab'),
       component: <Query collectionName={collectionName} />,
+    },
+    {
+      label: collectionTrans('segmentsTab'),
+      component: <Segments collectionName={collectionName} />,
     },
   ];
 

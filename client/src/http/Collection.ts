@@ -97,6 +97,20 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
   }
 
+  static getPSegments(collectionName: string) {
+    return super.search({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/psegments`,
+      params: {},
+    });
+  }
+
+  static getQSegments(collectionName: string) {
+    return super.search({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/qsegments`,
+      params: {},
+    });
+  }
+
   static insertData(collectionName: string, param: InsertDataParam) {
     return super.create({
       path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
