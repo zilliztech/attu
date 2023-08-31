@@ -7,12 +7,13 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { getQueryStyles } from '../query/Styles';
+import { Segment } from './Types';
 
 const Segments: FC<{
   collectionName: string;
 }> = ({ collectionName }) => {
   const classes = getQueryStyles();
-  const [segments, setSegements] = useState<any[]>([]);
+  const [segments, setSegements] = useState<Segment[]>([]);
   const { t: collectionTrans } = useTranslation('collection');
   const [loading, setLoading] = useState<boolean>(true);
 
