@@ -42,4 +42,8 @@ export const LOGICAL_OPERATORS = [
     value: 'like',
     label: 'like',
   },
+  {
+    value: 'JSON_CONTAINS',
+    label: 'JSON_CONTAINS',
+  },
 ];

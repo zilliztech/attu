@@ -7,9 +7,9 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
 import { FilterProps, ConditionData } from './Types';
-import { generateIdByHash } from '../../utils/Common';
 import CustomButton from '../customButton/CustomButton';
 
 const Filter = forwardRef((props: FilterProps, ref) => {
@@ -88,17 +88,18 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       let n = name;
 
       // if type is json, format json expression
-      switch (data.field.type) {
-        case 'JSON':
-          n = `${name}["${jsonKey}"]`;
-          break;
-        default:
-          break;
+      if (data.field.type === 'JSON') {
+        n = `${name}["${jsonKey}"]`;
       }
 
-      return `${prev}${
-        prev && !prev.endsWith('|| ') ? ' && ' : ''
-      }${n} ${op} ${value}`;
+      let newExpr = `${n} ${op} ${value}`;
+
+      // rewrite expression if the op is JSON_CONTAINS
+      if (op === 'JSON_CONTAINS') {
+        newExpr = `${op}(${n}, ${value})`;
+      }
+
+      return `${prev}${prev && !prev.endsWith('|| ') ? ' && ' : ''}${newExpr}`;
     }, '');
     func(expression);
   };
@@ -122,8 +123,8 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       ]);
       return;
     }
-    const formerConditons = [...flatConditions];
-    const newConditions = formerConditons.reduce((prev, item) => {
+    const formerConditions = [...flatConditions];
+    const newConditions = formerConditions.reduce((prev, item) => {
       if (item.id === targetId) {
         return [
           ...prev,
@@ -149,7 +150,7 @@ const Filter = forwardRef((props: FilterProps, ref) => {
    * @param beforeTarget Will be inserted before the target item.
    */
   const addCondition = (targetId?: string, beforeTarget?: boolean) => {
-    const formerConditons = [...flatConditions];
+    const formerConditions = [...flatConditions];
     const newItem = {
       id: generateIdByHash('condition'),
       type: 'condition',
@@ -158,11 +159,11 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       value: '',
     };
     if (!targetId) {
-      formerConditons.push(newItem);
-      setFilteredFlatConditions(formerConditons);
+      formerConditions.push(newItem);
+      setFilteredFlatConditions(formerConditions);
       return;
     }
-    const newConditions = formerConditons.reduce((prev, item) => {
+    const newConditions = formerConditions.reduce((prev, item) => {
       if (item.id === targetId) {
         const newItems = [
           item,

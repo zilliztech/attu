@@ -33,7 +33,7 @@ const Condition: FC<ConditionProps> = props => {
   const [conditionValue, setConditionValue] = useState(
     initData?.originValue || ''
   );
-  const [isValuelegal, setIsValueLegal] = useState(
+  const [isValueLegal, setIsValueLegal] = useState(
     initData?.isCorrect || false
   );
 
@@ -147,7 +147,7 @@ const Condition: FC<ConditionProps> = props => {
         variant="filled"
         value={conditionValue}
         onChange={handleValueChange}
-        error={!isValuelegal}
+        error={!isValueLegal}
       />
       <IconButton
         aria-label="close"

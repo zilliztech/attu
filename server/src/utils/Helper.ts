@@ -71,5 +71,13 @@ export const makeRandomJSON = () => {
       Math.random() < 0.5 ? Math.floor(Math.random() * 100) : `value${i}`; // randomly choose between a number or a string value
     obj[key] = value;
   }
+
+  const arrayKey = 'containsKey';
+  const arrayLength = Math.floor(Math.random() * 10) + 1; // generate a random length for the array between 1 and 10
+  const randomArray = Array.from({ length: arrayLength }, () =>
+    Math.floor(Math.random() * 100)
+  );
+  obj[arrayKey] = randomArray;
+
   return obj;
 };
