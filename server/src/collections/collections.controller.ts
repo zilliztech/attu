@@ -83,10 +83,11 @@ export class CollectionController {
       this.createAlias.bind(this)
     );
 
-    // segements
+    // segments
     this.router.get('/:name/psegments', this.getPSegement.bind(this));
     this.router.get('/:name/qsegments', this.getQSegement.bind(this));
 
+    this.router.put('/:name/compact', this.compact.bind(this));
     return this.router;
   }
 
@@ -351,6 +352,18 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.getQuerySegmentInfo({
         collectionName: name,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async compact(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    try {
+      const result = await this.collectionsService.compact({
+        collection_name: name,
       });
       res.send(result);
     } catch (error) {

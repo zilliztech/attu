@@ -19,6 +19,7 @@ import {
   GetCompactionStateReq,
   GetQuerySegmentInfoReq,
   GePersistentSegmentInfoReq,
+  CompactReq,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue, genRows } from '../utils/Helper';
@@ -308,6 +309,12 @@ export class CollectionsService {
 
   async getPersistentSegmentInfo(data: GePersistentSegmentInfoReq) {
     const res = await this.milvusService.client.getPersistentSegmentInfo(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async compact(data: CompactReq) {
+    const res = await this.milvusService.client.compact(data);
     throwErrorFromSDK(res.status);
     return res;
   }
