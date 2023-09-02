@@ -181,7 +181,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: '130px',
     },
     logic: { minHeight: '38px', minWidth: '100px', margin: '0 24px' },
-    key: { minHeight: '38px', width: '100px', margin: '0 0' },
+    key: { minHeight: '38px', width: '150px', margin: '0 0' },
     value: { minHeight: '38px', minWidth: '130px' },
   })
 );
