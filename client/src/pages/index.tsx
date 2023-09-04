@@ -92,15 +92,15 @@ function Index() {
       iconActiveClass: 'normal',
       iconNormalClass: 'active',
     },
-    {
-      icon: icons.database,
-      label: navTrans('database'),
-      onClick: () => navigate('/databases'),
-    },
   ];
 
   if (!isManaged) {
     menuItems.push(
+      {
+        icon: icons.navPerson,
+        label: navTrans('user'),
+        onClick: () => navigate('/users'),
+      },
       {
         icon: icons.navSystem,
         label: navTrans('system'),
@@ -110,9 +110,9 @@ function Index() {
         iconNormalClass: 'active',
       },
       {
-        icon: icons.navPerson,
-        label: navTrans('user'),
-        onClick: () => navigate('/users'),
+        icon: icons.database,
+        label: navTrans('database'),
+        onClick: () => navigate('/databases'),
       }
     );
   }
