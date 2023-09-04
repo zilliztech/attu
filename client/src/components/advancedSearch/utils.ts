@@ -19,6 +19,9 @@ export const formatValue = (value: string, type: string, operator: string) => {
         case 'not in':
           conditionValue = `[${value}]`;
           break;
+        case 'JSON_CONTAINS':
+          conditionValue = `${value}`;
+          break;
         default:
           conditionValue = `"${value}"`;
           break;
