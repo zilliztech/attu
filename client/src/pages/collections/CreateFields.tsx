@@ -452,6 +452,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
               disabled={isVarChar}
               size="small"
               onChange={() => {
+                changeFields(field.id!, 'autoID', !autoID);
                 setAutoID(!autoID);
               }}
             />

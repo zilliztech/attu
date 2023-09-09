@@ -199,7 +199,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           data.max_length = Number(v.max_length);
         }
 
-        v.is_primary_key && (v.autoID = form.autoID);
+        v.is_primary_key && (data.autoID = form.autoID);
 
         return vectorType.includes(v.data_type)
           ? {
