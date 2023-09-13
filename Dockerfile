@@ -25,9 +25,6 @@ COPY --from=builder /app/server/yarn.lock /app/yarn.lock
 
 # => Reinstall production dependencies and clean cache
 RUN yarn install --production && yarn cache clean
-# Add bash
-RUN apk add --no-cache bash
-
 # Make our shell script executable
 RUN chmod +x /app/build/env.sh
 
