@@ -26,8 +26,7 @@ const CompactDialog: FC<CompactDialogProps> = props => {
   const { t: btnTrans } = useTranslation('btn');
 
   const handleConfirm = async () => {
-    const res = await CollectionHttp.compact(collectionName);
-    console.log('compact', res);
+    await CollectionHttp.compact(collectionName);
 
     handleCloseDialog();
     cb && cb();
