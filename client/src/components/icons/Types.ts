@@ -41,4 +41,5 @@ export type IconsType =
   | 'source'
   | 'edit'
   | 'database'
-  | 'uploadFile';
+  | 'uploadFile'
+  | 'compact';

@@ -1,11 +1,13 @@
-import { useEffect, useState, FC } from 'react';
+import { useEffect, useState, FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollectionHttp } from '@/http';
 import { usePaginationHook } from '@/hooks';
+import { rootContext } from '@/context';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
+import CompactDialog from '@/pages/dialogs/CompactDialog';
 import { getQueryStyles } from '../query/Styles';
 import { Segment } from './Types';
 
@@ -13,7 +15,9 @@ const Segments: FC<{
   collectionName: string;
 }> = ({ collectionName }) => {
   const classes = getQueryStyles();
-  const [segments, setSegements] = useState<Segment[]>([]);
+  const { setDialog } = useContext(rootContext);
+
+  const [segments, setSegments] = useState<Segment[]>([]);
   const { t: collectionTrans } = useTranslation('collection');
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -35,8 +39,12 @@ const Segments: FC<{
       };
     });
 
-    setSegements(combinedArray);
+    setSegments(combinedArray);
     setLoading(false);
+  };
+
+  const onCompactExecuted = async () => {
+    await fetchSegments();
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -47,6 +55,25 @@ const Segments: FC<{
       },
       label: collectionTrans('refresh'),
       icon: 'refresh',
+    },
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <CompactDialog
+                collectionName={collectionName}
+                cb={onCompactExecuted}
+              />
+            ),
+          },
+        });
+      },
+      label: collectionTrans('compact'),
+      icon: 'compact',
     },
   ];
 

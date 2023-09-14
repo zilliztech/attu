@@ -159,6 +159,12 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
+  static compact(collectionName: string) {
+    return super.update({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/compact`,
+    });
+  }
+
   get _autoId() {
     return this.autoID;
   }
@@ -227,4 +233,5 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   get _replicas(): Replica[] {
     return this.replicas;
   }
+  
 }
