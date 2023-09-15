@@ -84,8 +84,8 @@ export class CollectionController {
     );
 
     // segments
-    this.router.get('/:name/psegments', this.getPSegement.bind(this));
-    this.router.get('/:name/qsegments', this.getQSegement.bind(this));
+    this.router.get('/:name/psegments', this.getPSegment.bind(this));
+    this.router.get('/:name/qsegments', this.getQSegment.bind(this));
 
     this.router.put('/:name/compact', this.compact.bind(this));
     return this.router;
@@ -335,7 +335,7 @@ export class CollectionController {
     }
   }
 
-  async getPSegement(req: Request, res: Response, next: NextFunction) {
+  async getPSegment(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
       const result = await this.collectionsService.getPersistentSegmentInfo({
@@ -347,7 +347,7 @@ export class CollectionController {
     }
   }
 
-  async getQSegement(req: Request, res: Response, next: NextFunction) {
+  async getQSegment(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
       const result = await this.collectionsService.getQuerySegmentInfo({
