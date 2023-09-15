@@ -26,6 +26,8 @@ const useStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
       margin: theme.spacing(2, 0),
       color: theme.palette.attuDark.main,
+      wordBreak: 'break-all',
+      textAlign: 'left',
       fontSize: '20px',
       lineHeight: '24px',
       fontWeight: 'bold',

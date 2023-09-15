@@ -49,6 +49,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   link: {
     color: theme.palette.common.black,
+    display: 'inline-block',
+    wordBreak: 'break-all',
+    whiteSpace: 'nowrap',
+    width: '150px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    height: '20px',
   },
   highlight: {
     color: theme.palette.primary.main,
@@ -117,7 +124,11 @@ const Collections = () => {
       // const indexStatus = statusRes.find(item => item._name === v._name);
       Object.assign(v, {
         nameElement: (
-          <Link to={`/collections/${v._name}`} className={classes.link}>
+          <Link
+            to={`/collections/${v._name}`}
+            className={classes.link}
+            title={v._name}
+          >
             <Highlighter
               textToHighlight={v._name}
               searchWords={[search]}
