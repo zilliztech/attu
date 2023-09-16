@@ -1,3 +1,4 @@
+// note, this module will be shared between server and client, so please don't import server only module here
 export const ROW_COUNT = 'row_count';
 
 // use in req header
