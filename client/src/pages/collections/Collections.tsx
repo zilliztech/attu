@@ -29,7 +29,8 @@ import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
-import { LOADING_STATE, WS_EVENTS, WS_EVENTS_TYPE } from '@/consts';
+import { LOADING_STATE } from '@/consts';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import Aliases from './Aliases';
 

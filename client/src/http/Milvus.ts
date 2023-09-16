@@ -1,4 +1,4 @@
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import BaseModel from './BaseModel';
 
 export class MilvusHttp extends BaseModel {
