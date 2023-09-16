@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import axiosInstance from '@/http/Axios';
 import { rootContext, authContext } from '@/context';
-import { HTTP_STATUS_CODE, MILVUS_ADDRESS } from '@/consts';
+import { MILVUS_ADDRESS } from '@/consts';
+import { HTTP_STATUS_CODE } from '@server/utils/Const';
 
 let axiosResInterceptor: number | null = null;
 // let timer: Record<string, ReturnType<typeof setTimeout> | number>[] = [];
