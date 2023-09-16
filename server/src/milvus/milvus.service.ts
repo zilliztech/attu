@@ -6,7 +6,7 @@ import {
 import HttpErrors from 'http-errors';
 import LruCache from 'lru-cache';
 import { HTTP_STATUS_CODE } from '../utils/Error';
-import { DEFAULT_MILVUS_PORT } from '../utils/Const';
+import { DEFAULT_MILVUS_PORT } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 
 export class MilvusService {

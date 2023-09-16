@@ -10,7 +10,8 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@server/*": ["../server/src/*"]
     },
     "allowJs": true,
     "skipLibCheck": true,

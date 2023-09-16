@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@/consts';
 import { authContext } from '@/context';
 import { url, CollectionHttp, MilvusHttp } from '@/http';
 import { CollectionView } from '@/pages/collections/Types';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import { WebSocketType } from './Types';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 
 export const webSocketContext = createContext<WebSocketType>({
   collections: [],

@@ -9,7 +9,7 @@ import {
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
-import { ROW_COUNT } from '../utils/Const';
+import { ROW_COUNT } from '../utils';
 
 export class PartitionsService {
   constructor(private milvusService: MilvusService) {}

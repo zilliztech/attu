@@ -3,7 +3,7 @@ import { dtoValidationMiddleware } from '../middleware/validation';
 import { CronsService, SchedulerRegistry } from './crons.service';
 import { collectionsService } from '../collections';
 import { ToggleCronJobByNameDto } from './dto';
-import { MILVUS_ADDRESS } from '../utils/Const';
+import { MILVUS_ADDRESS } from '../utils';
 
 export class CronsController {
   private router: Router;
