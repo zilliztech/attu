@@ -5,8 +5,8 @@ import {
 } from '@zilliz/milvus2-sdk-node';
 import HttpErrors from 'http-errors';
 import LruCache from 'lru-cache';
-import { HTTP_STATUS_CODE } from '../utils/Error';
-import { DEFAULT_MILVUS_PORT } from '../utils/Const';
+import { HTTP_STATUS_CODE } from '../utils/Const';
+import { DEFAULT_MILVUS_PORT } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 
 export class MilvusService {

@@ -1,5 +1,5 @@
 import { IsEnum, IsString } from "class-validator";
-import { WS_EVENTS_TYPE } from "../utils/Const";
+import { WS_EVENTS_TYPE } from "../utils";
 
 export class ToggleCronJobByNameDto {
   @IsString()

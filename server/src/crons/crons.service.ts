@@ -1,6 +1,6 @@
-import { CollectionsService } from '../collections/collections.service';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '../utils/Const';
 import { schedule, ScheduledTask } from 'node-cron';
+import { CollectionsService } from '../collections/collections.service';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '../utils';
 import { pubSub } from '../events';
 
 export class CronsService {

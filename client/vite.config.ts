@@ -27,6 +27,8 @@ export default defineConfig({
     // extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json"],
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // be careful to include server modules in the client
+      '@server': path.resolve(__dirname, './../server/src'),
     },
   },
 });

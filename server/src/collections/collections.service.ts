@@ -21,13 +21,11 @@ import {
   GePersistentSegmentInfoReq,
   CompactReq,
 } from '@zilliz/milvus2-sdk-node';
-import { throwErrorFromSDK } from '../utils/Error';
-import { findKeyValue, genRows } from '../utils/Helper';
-import { ROW_COUNT } from '../utils/Const';
+import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 
 export class CollectionsService {
-  constructor(private milvusService: MilvusService) {}
+  constructor(private milvusService: MilvusService) { }
 
   async getCollections(data?: ShowCollectionsReq) {
     const res = await this.milvusService.client.showCollections(data);
@@ -189,8 +187,8 @@ export class CollectionsService {
         try {
           replicas = loadCollection
             ? await this.getReplicas({
-                collectionID: collectionInfo.collectionID,
-              })
+              collectionID: collectionInfo.collectionID,
+            })
             : replicas;
         } catch (e) {
           console.log('ignore getReplica');

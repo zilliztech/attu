@@ -21,13 +21,13 @@ import {
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middleware';
-import { EXPIRED_TIME, INSIGHT_CACHE } from './utils/Const';
+import { EXPIRED_TIME, CACHE_KEY } from './utils';
 import { getIp } from './utils/Network';
 // initialize express app
 export const app = express();
 
 // initialize cache store
-const insightCache = new LruCache({
+const cache = new LruCache({
   maxAge: EXPIRED_TIME,
   updateAgeOnGet: true,
 });
@@ -54,7 +54,7 @@ const server = http.createServer(app);
 const PORT = 3000;
 // setup middlewares
 // use cache
-app.set(INSIGHT_CACHE, insightCache);
+app.set(CACHE_KEY, cache);
 // use cors https://expressjs.com/en/resources/middleware/cors.html
 app.use(cors());
 // use helmet https://github.com/helmetjs/helmet

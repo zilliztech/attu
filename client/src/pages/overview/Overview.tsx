@@ -13,12 +13,8 @@ import dayjs from 'dayjs';
 import { rootContext, webSocketContext, dataContext } from '@/context';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
-import {
-  WS_EVENTS,
-  WS_EVENTS_TYPE,
-  LOADING_STATE,
-  MILVUS_DEPLOY_MODE,
-} from '@/consts';
+import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { useNavigationHook } from '@/hooks';
 import { CollectionHttp, MilvusHttp } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
