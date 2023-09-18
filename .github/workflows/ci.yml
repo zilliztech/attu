@@ -17,4 +17,4 @@ jobs:
           node-version: 18
 
       - name: Docker Build
-        run: docker build -t zilliz/attu:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
+        run: docker build -t zilliz/attu:dev --build-arg VERSION=dev .
