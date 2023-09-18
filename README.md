@@ -7,16 +7,6 @@ Attu is an all-in-one milvus administration tool. With Attu, you can dramaticall
 
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
 
-## Features
-
-- Basic Dashboard: Get an overview of your collection statistics, perform quick searches, and release collections quickly.
-- Collection Management: Create, drop, and manage collections using our intuitive interface. You can also create aliases, view collection schemas, and configure indexes with custom parameters.
-- Data Management: Insert entities, preview your data, and run queries to analyze your results.
-- Vector Search/Query: Use our advanced filtering system to search and query vectors with precision.
-- System View: View system information and Milvus node configurations easily.
-- Milvus User Management: Manage users and their permissions with ease.
-- More Features Coming Soon: Stay tuned for additional features that will make Milvus even more powerful and user-friendly.
-
 ## Quick start guide for Attu
 
 > ❗ attu version 2.2.3 or higher is incompatible with Milvus versions < v2.2.
@@ -30,7 +20,7 @@ Before you begin, make sure that you have Milvus installed on either [your serve
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.2.6
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.1
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
@@ -42,6 +32,22 @@ Make sure that the Attu container can access the Milvus IP address. After starti
 | MILVUS_URL | 192.168.0.1:19530 |  false   | Optional, Milvus server URL |
 
 Note that "127.0.0.1" or "localhost" will not work when running Attu on Docker.
+
+## Common connection problem using Attu
+
+- I can't log into the system
+  > Make sure that the IP address of the Milvus server can be accessed from the Attu container. [#161](https://github.com/zilliztech/attu/issues/161)
+
+## Features
+
+- Basic Dashboard
+- Collection Management: Create, drop, and manage collections using our intuitive interface. You can also create aliases, view collection schemas, and configure indexes with custom parameters.
+- Data Management: Insert entities, preview your data, and run queries to analyze your results.
+- Vector Search/Query: Use our advanced filtering system to search and query vectors with precision.
+- System View: View system information and Milvus node configurations easily.
+- Milvus User Management: Manage users and roles and their permissions with ease.
+- Database Management: Manage databases in Milvus.
+- More Features Coming Soon: Stay tuned for additional features that will make Milvus even more powerful and user-friendly.
 
 ## Screenshots
 
@@ -86,6 +92,7 @@ We appreciate your contributions to Attu, regardless of size. Thanks for support
 If you encounter any bugs or want to request a new feature, please create a [GitHub issue](https://github.com/zilliztech/attu/issues/new/choose). It's important to check if someone else has already created an issue for the same problem before submitting a new one.
 
 ### Userful links
+
 Here are some helpful resources to get you started with Milvus:
 
 - [Milvus documentation](https://milvus.io/docs): Here, you can find detailed information on how to use Milvus, including installation instructions, tutorials, and API documentation.
