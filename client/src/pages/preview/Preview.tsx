@@ -1,13 +1,17 @@
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AttuGrid from '@/components/grid/Grid';
-import { CollectionHttp, FieldHttp, IndexHttp } from '@/http';
+import { CollectionHttp, IndexHttp } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
 import { generateVector } from '@/utils';
-import { INDEX_CONFIG, DEFAULT_SEARCH_PARAM_VALUE_MAP } from '@/consts';
+import {
+  INDEX_CONFIG,
+  DEFAULT_SEARCH_PARAM_VALUE_MAP,
+  DYNAMIC_FIELD,
+} from '@/consts';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { DataTypeEnum } from '@/pages/collections/Types';
+import { DataTypeEnum, DataTypeStringEnum } from '@/pages/collections/Types';
 import { getQueryStyles } from '../query/Styles';
 
 const Preview: FC<{
@@ -18,6 +22,7 @@ const Preview: FC<{
   const [queryResult, setQueryResult] = useState<any>();
   const [primaryKey, setPrimaryKey] = useState<string>('');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: searchTrans } = useTranslation('search');
 
   const classes = getQueryStyles();
 
@@ -39,11 +44,23 @@ const Preview: FC<{
 
   const loadData = async (collectionName: string) => {
     // get schema list
-    const schemaList = await FieldHttp.getFields(collectionName);
-    const nameList = schemaList.map(v => ({
+    const collection = new CollectionHttp(
+      await CollectionHttp.getCollection(collectionName)
+    );
+
+    const schemaList = collection._fields;
+    let nameList = schemaList.map(v => ({
       name: v.name,
       type: v.data_type,
     }));
+
+    // if the dynamic field is enabled, we add $meta column in the grid
+    if (collection._enableDynamicField) {
+      nameList.push({
+        name: DYNAMIC_FIELD,
+        type: DataTypeStringEnum.JSON,
+      });
+    }
 
     const id = schemaList.find(v => v._isPrimaryKey === true);
     const primaryKey = id?._fieldName || '';
@@ -99,7 +116,7 @@ const Preview: FC<{
       // query by random id
       const res = await CollectionHttp.queryData(collectionName, {
         expr: expr,
-        output_fields: nameList.map(i => i.name),
+        output_fields: [...nameList.map(i => i.name)],
       });
 
       const result = res.data;
@@ -137,7 +154,8 @@ const Preview: FC<{
           id: i.name,
           align: 'left',
           disablePadding: false,
-          label: i.name,
+          label:
+            i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
         }))}
         primaryKey={primaryKey}
         openCheckBox={false}

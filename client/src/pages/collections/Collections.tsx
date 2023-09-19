@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import {
@@ -61,6 +61,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   highlight: {
     color: theme.palette.primary.main,
     backgroundColor: 'transparent',
+  },
+  chip: {
+    color: theme.palette.text.primary,
+    marginRight: theme.spacing(0.5),
   },
 }));
 
@@ -136,6 +140,43 @@ const Collections = () => {
               highlightClassName={classes.highlight}
             />
           </Link>
+        ),
+        features: (
+          <>
+            {v._autoId ? (
+              <Tooltip title={collectionTrans('autoIDTooltip')} placement="top" arrow>
+                <Chip
+                  className={classes.chip}
+                  label={collectionTrans('autoID')}
+                  size="small"
+                />
+              </Tooltip>
+            ) : null}
+            {v._enableDynamicField ? (
+              <Tooltip
+                title={collectionTrans('dynamicSchemaTooltip')}
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={classes.chip}
+                  label={collectionTrans('dynmaicSchema')}
+                  size="small"
+                />
+              </Tooltip>
+            ) : null}
+            <Tooltip
+              title={collectionTrans('consistencyLevelTooltip')}
+              placement="top"
+              arrow
+            >
+              <Chip
+                className={classes.chip}
+                label={v._consistencyLevel}
+                size="small"
+              />
+            </Tooltip>
+          </>
         ),
         statusElement: (
           <Status status={v._status} percentage={v._loadedPercentage} />
@@ -361,6 +402,13 @@ const Collections = () => {
       label: collectionTrans('status'),
     },
     {
+      id: 'features',
+      align: 'left',
+      disablePadding: true,
+      sortBy: '_enableDynamicField',
+      label: collectionTrans('features'),
+    },
+    {
       id: '_rowCount',
       align: 'left',
       disablePadding: false,
@@ -374,19 +422,19 @@ const Collections = () => {
       ),
     },
 
-    {
-      id: 'consistency_level',
-      align: 'left',
-      disablePadding: false,
-      label: (
-        <span className="flex-center">
-          {collectionTrans('consistencyLevel')}
-          <CustomToolTip title={collectionTrans('consistencyLevelInfo')}>
-            <InfoIcon classes={{ root: classes.icon }} />
-          </CustomToolTip>
-        </span>
-      ),
-    },
+    // {
+    //   id: 'consistency_level',
+    //   align: 'left',
+    //   disablePadding: true,
+    //   label: (
+    //     <span className="flex-center">
+    //       {collectionTrans('consistency')}
+    //       <CustomToolTip title={collectionTrans('consistencyLevelInfo')}>
+    //         <InfoIcon classes={{ root: classes.icon }} />
+    //       </CustomToolTip>
+    //     </span>
+    //   ),
+    // },
 
     {
       id: '_desc',
@@ -480,7 +528,7 @@ const Collections = () => {
   ];
 
   if (!isManaged) {
-    colDefinitions.splice(3, 0, {
+    colDefinitions.splice(4, 0, {
       id: '_aliasElement',
       align: 'left',
       disablePadding: false,

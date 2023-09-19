@@ -25,7 +25,7 @@ import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 
 export class CollectionsService {
-  constructor(private milvusService: MilvusService) { }
+  constructor(private milvusService: MilvusService) {}
 
   async getCollections(data?: ShowCollectionsReq) {
     const res = await this.milvusService.client.showCollections(data);
@@ -187,8 +187,8 @@ export class CollectionsService {
         try {
           replicas = loadCollection
             ? await this.getReplicas({
-              collectionID: collectionInfo.collectionID,
-            })
+                collectionID: collectionInfo.collectionID,
+              })
             : replicas;
         } catch (e) {
           console.log('ignore getReplica');
@@ -287,7 +287,8 @@ export class CollectionsService {
     const collectionInfo = await this.describeCollection({ collection_name });
     const fields_data = genRows(
       collectionInfo.schema.fields,
-      parseInt(size, 10)
+      parseInt(size, 10),
+      collectionInfo.schema.enable_dynamic_field
     );
 
     return await this.insert({ collection_name, fields_data });

@@ -6,12 +6,15 @@ import {
 export const findKeyValue = (obj: KeyValuePair[], key: string) =>
   obj.find(v => v.key === key)?.value;
 
+export const makeDynamicBool = () => Math.random() > 0.5;
+export const makeRandomInt = () => Math.floor(Math.random() * 127);
+
 export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
   switch (data_type) {
     case 'Bool':
-      return Math.random() > 0.5;
+      return makeDynamicBool();
     case 'Int8':
-      return Math.floor(Math.random() * 127);
+      return makeRandomInt();
     case 'Int16':
       return Math.floor(Math.random() * 32767);
     case 'Int32':
@@ -23,8 +26,8 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
         Math.random()
       );
     case 'BinaryVector':
-      return Array.from({ length: (type_params as any)[0].value / 8 }).map(() =>
-        Math.random() > 0.5 ? 1 : 0
+      return Array.from({ length: (type_params as any)[0].value / 8 }).map(
+        () => (Math.random() > 0.5 ? 1 : 0)
       );
     case 'VarChar':
       return makeRandomId((type_params as any)[0].value);
@@ -33,20 +36,33 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
   }
 };
 
-export const genRow = (fields: FieldSchema[]) => {
+export const genRow = (
+  fields: FieldSchema[],
+  enableDynamicField: boolean = false
+) => {
   const result: any = {};
   fields.forEach(field => {
     if (!field.autoID) {
       result[field.name] = genDataByType(field);
     }
   });
+
+  if (enableDynamicField) {
+    result.dynamicBool = makeDynamicBool();
+    result.dynamicInt = makeRandomInt();
+    result.dynamicJSON = makeRandomJSON();
+  }
   return result;
 };
 
-export const genRows = (fields: FieldSchema[], size: number) => {
+export const genRows = (
+  fields: FieldSchema[],
+  size: number,
+  enableDynamicField: boolean = false
+) => {
   const result = [];
   for (let i = 0; i < size; i++) {
-    result[i] = genRow(fields);
+    result[i] = genRow(fields, enableDynamicField);
   }
   return result;
 };

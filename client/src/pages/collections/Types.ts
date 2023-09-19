@@ -15,6 +15,8 @@ export interface CollectionData {
   _consistencyLevel?: string;
   _aliases: string[];
   _replicas: Replica[];
+  _enableDynamicField: boolean;
+  _autoId: boolean;
 }
 
 export interface Replica {

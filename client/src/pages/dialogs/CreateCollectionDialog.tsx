@@ -1,5 +1,10 @@
-import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useContext, useMemo, useState } from 'react';
+import {
+  makeStyles,
+  Theme,
+  Checkbox,
+  FormControlLabel,
+} from '@material-ui/core';
+import { FC, useContext, useMemo, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -26,9 +31,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     marginBottom: '16px',
     gap: '8px',
-    '&:nth-last-child(2)': {
+    '&:nth-last-child(3)': {
       flexDirection: 'column',
       alignItems: 'flex-start',
+      marginBottom: '0',
     },
 
     '& legend': {
@@ -64,6 +70,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     collection_name: '',
     description: '',
     autoID: true,
+    enableDynamicField: false,
   });
 
   const [consistencyLevel, setConsistencyLevel] =
@@ -114,6 +121,16 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     setForm({
       ...form,
       autoID: value,
+    });
+  };
+
+  const changeEnableDynamicField = (
+    event: ChangeEvent<any>,
+    value: boolean
+  ) => {
+    setForm({
+      ...form,
+      enableDynamicField: value,
     });
   };
 
@@ -261,6 +278,14 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             setFieldsValidation={setFieldsValidation}
             autoID={form.autoID}
             setAutoID={changeIsAutoID}
+          />
+        </fieldset>
+        <fieldset className={classes.fieldset}>
+          <FormControlLabel
+            checked={form.enableDynamicField}
+            control={<Checkbox />}
+            onChange={changeEnableDynamicField}
+            label="Enable Dynamic Fields"
           />
         </fieldset>
 

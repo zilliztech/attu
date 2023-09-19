@@ -27,7 +27,11 @@ import {
   cloneObj,
   generateVector,
 } from '@/utils';
-import { LOADING_STATE, DEFAULT_METRIC_VALUE_MAP } from '@/consts';
+import {
+  LOADING_STATE,
+  DEFAULT_METRIC_VALUE_MAP,
+  DYNAMIC_FIELD,
+} from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
@@ -97,14 +101,25 @@ const VectorSearch = () => {
   );
 
   const outputFields: string[] = useMemo(() => {
-    const fields =
-      collections.find(c => c._name === selectedCollection)?._fields || [];
+    const s = collections.find(c => c._name === selectedCollection);
+
+    if (!s) {
+      return [];
+    }
+
+    const fields = s._fields || [];
+
     // vector field can't be output fields
     const invalidTypes = ['BinaryVector', 'FloatVector'];
     const nonVectorFields = fields.filter(
       field => !invalidTypes.includes(field._fieldType)
     );
-    return nonVectorFields.map(f => f._fieldName);
+
+    const _outputFields = nonVectorFields.map(f => f._fieldName);
+    if (s._enableDynamicField) {
+      _outputFields.push(DYNAMIC_FIELD);
+    }
+    return _outputFields;
   }, [selectedCollection, collections]);
 
   const primaryKeyField = useMemo(() => {
@@ -139,7 +154,7 @@ const VectorSearch = () => {
             id: key,
             align: 'left',
             disablePadding: false,
-            label: key,
+            label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
             needCopy: primaryKeyField === key,
           }))
       : [];

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
 import { rootContext } from '@/context';
-import { CollectionHttp, FieldHttp } from '@/http';
+import { CollectionHttp } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
@@ -19,6 +19,7 @@ import CustomToolBar from '@/components/grid/ToolBar';
 import { DataTypeStringEnum } from '../collections/Types';
 import { getLabelDisplayedRows } from '../search/Utils';
 import { getQueryStyles } from './Styles';
+import { DYNAMIC_FIELD } from '@/consts';
 
 const Query: FC<{
   collectionName: string;
@@ -68,11 +69,24 @@ const Query: FC<{
   };
 
   const getFields = async (collectionName: string) => {
-    const schemaList = await FieldHttp.getFields(collectionName);
+    const collection = new CollectionHttp(
+      await CollectionHttp.getCollection(collectionName)
+    );
+    const schemaList = collection._fields;
+
     const nameList = schemaList.map(v => ({
       name: v.name,
       type: v.data_type,
     }));
+
+    // if the dynamic field is enabled, we add $meta column in the grid
+    if (collection._enableDynamicField) {
+      nameList.push({
+        name: DYNAMIC_FIELD,
+        type: DataTypeStringEnum.JSON,
+      });
+    }
+
     const primaryKey = schemaList.find(v => v._isPrimaryKey === true)!;
     setPrimaryKey({ value: primaryKey['name'], type: primaryKey['data_type'] });
 
@@ -266,7 +280,8 @@ const Query: FC<{
             id: i.name,
             align: 'left',
             disablePadding: false,
-            label: i.name,
+            label:
+              i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
           }))}
           primaryKey={primaryKey.value}
           openCheckBox={true}
