@@ -5,6 +5,22 @@ export const MILVUS_URL =
 
 export const DYNAMIC_FIELD = `$meta`;
 
+export enum INDEX_TYPES_ENUM {
+  AUTO_INDEX = 'AUTO_INDEX',
+  IVF_FLAT = 'IVF_FLAT',
+  IVF_PQ = 'IVF_PQ',
+  IVF_SQ8 = 'IVF_SQ8',
+  IVF_SQ8_HYBRID = 'IVF_SQ8_HYBRID',
+  FLAT = 'FLAT',
+  HNSW = 'HNSW',
+  ANNOY = 'ANNOY',
+  RNSG = 'RNSG',
+  BIN_IVF_FLAT = 'BIN_IVF_FLAT',
+  BIN_FLAT = 'BIN_FLAT',
+  SORT = 'STL_SORT',
+  MARISA_TRIE = 'Trie',
+}
+
 export enum METRIC_TYPES_VALUES {
   L2 = 'L2',
   IP = 'IP',
@@ -158,7 +174,7 @@ export const INDEX_OPTIONS_MAP = {
   [DataTypeEnum.VarChar]: [
     {
       label: 'marisa-trie',
-      value: 'marisa-trie',
+      value: INDEX_TYPES_ENUM.MARISA_TRIE
     },
   ],
 };
