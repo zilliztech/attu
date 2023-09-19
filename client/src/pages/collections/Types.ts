@@ -12,7 +12,7 @@ export interface CollectionData {
   _desc: string;
   _indexState: ChildrenStatusType;
   _fields?: FieldData[];
-  _consistencyLevel?: string;
+  _consistencyLevel: string;
   _aliases: string[];
   _replicas: Replica[];
   _enableDynamicField: boolean;

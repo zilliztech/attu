@@ -94,6 +94,13 @@ const Collections = () => {
   const InfoIcon = icons.info;
   const SourceIcon = icons.source;
 
+  const consistencyTooltipsMap: Record<string, string> = {
+    Strong: collectionTrans('consistencyStrongTooltip'),
+    Bounded: collectionTrans('consistencyBoundedTooltip'),
+    Session: collectionTrans('consistencySessionTooltip'),
+    Eventually: collectionTrans('consistencyEventuallyTooltip'),
+  };
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -144,7 +151,11 @@ const Collections = () => {
         features: (
           <>
             {v._autoId ? (
-              <Tooltip title={collectionTrans('autoIDTooltip')} placement="top" arrow>
+              <Tooltip
+                title={collectionTrans('autoIDTooltip')}
+                placement="top"
+                arrow
+              >
                 <Chip
                   className={classes.chip}
                   label={collectionTrans('autoID')}
@@ -166,7 +177,7 @@ const Collections = () => {
               </Tooltip>
             ) : null}
             <Tooltip
-              title={collectionTrans('consistencyLevelTooltip')}
+              title={consistencyTooltipsMap[v._consistencyLevel]}
               placement="top"
               arrow
             >
