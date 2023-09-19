@@ -55,7 +55,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({
       path: `${this.COLLECTIONS_URL}/${name}`,
       params: {},
-    });
+    }) as Promise<CollectionHttp>;
   }
 
   static createCollection(data: any) {

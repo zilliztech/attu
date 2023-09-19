@@ -284,7 +284,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             checked={form.enableDynamicField}
             control={<Checkbox />}
             onChange={changeEnableDynamicField}
-            label="Enable Dynamic Fields"
+            label={collectionTrans('enableDynamicSchema')}
           />
         </fieldset>
 
