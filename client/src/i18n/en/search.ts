@@ -14,6 +14,7 @@ const searchTrans = {
   vectorValueWarning: 'Vector value should be an array of length {{dimension}}',
   timeTravel: 'Time Travel',
   timeTravelPrefix: 'Data before',
+  dynamicFields: 'Dynamic Fields',
 };
 
 export default searchTrans;

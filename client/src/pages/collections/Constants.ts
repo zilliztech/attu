@@ -18,10 +18,6 @@ export const CONSISTENCY_LEVEL_OPTIONS: KeyValuePair[] = [
     label: 'Eventually',
     value: ConsistencyLevelEnum.Eventually,
   },
-  {
-    label: 'Customized',
-    value: ConsistencyLevelEnum.Customized,
-  },
 ];
 
 export const VECTOR_FIELDS_OPTIONS: KeyValuePair[] = [

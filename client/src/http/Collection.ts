@@ -19,7 +19,7 @@ import { LOADING_STATE } from '@/consts';
 
 export class CollectionHttp extends BaseModel implements CollectionView {
   private aliases!: string[];
-  private autoID!: string;
+  private autoID!: boolean;
   private collection_name!: string;
   private description!: string;
   private consistency_level!: string;
@@ -30,6 +30,9 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private createdTime!: string;
   private schema!: {
     fields: Field[];
+    autoID: boolean;
+    description: string;
+    enable_dynamic_field: boolean;
   };
   private replicas!: Replica[];
 
@@ -52,7 +55,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({
       path: `${this.COLLECTIONS_URL}/${name}`,
       params: {},
-    });
+    }) as Promise<CollectionHttp>;
   }
 
   static createCollection(data: any) {
@@ -233,5 +236,12 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   get _replicas(): Replica[] {
     return this.replicas;
   }
-  
+
+  get _enableDynamicField(): boolean {
+    return this.schema.enable_dynamic_field;
+  }
+
+  get _schema() {
+    return this.schema;
+  }
 }

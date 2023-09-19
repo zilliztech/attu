@@ -29,6 +29,10 @@ export class CreateCollectionDto {
   @IsOptional()
   readonly autoID: boolean;
 
+  @IsBoolean()
+  @IsOptional()
+  readonly enableDynamicField: boolean;
+
   @IsArray()
   @ArrayNotEmpty()
   readonly fields: FieldType[];

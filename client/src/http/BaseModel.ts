@@ -50,7 +50,7 @@ export default class BaseModel {
     } as any;
     if (timeout) httpConfig.timeout = timeout;
     const res = await http(httpConfig);
-    return res.data.data;
+    return new this(res.data.data || {});
   }
 
   /**
