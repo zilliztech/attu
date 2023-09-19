@@ -30,7 +30,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     marginBottom: '16px',
-    gap: '8px',
     '&:nth-last-child(3)': {
       flexDirection: 'column',
       alignItems: 'flex-start',
