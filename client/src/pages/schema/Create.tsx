@@ -9,6 +9,7 @@ import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   METRIC_TYPES_VALUES,
+  INDEX_TYPES_ENUM,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
@@ -23,7 +24,7 @@ import {
 import { DataTypeEnum, DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
 import SizingInfo from './SizingInfo';
-import { IndexType, IndexExtraParam, INDEX_TYPES_ENUM } from './Types';
+import { IndexType, IndexExtraParam } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
@@ -140,7 +141,7 @@ const CreateIndex = (props: {
         return INDEX_OPTIONS_MAP[DataTypeEnum.VarChar];
 
       default:
-        return [{ label: 'Ascending', value: 'sort' }];
+        return [{ label: 'STL sort', value: INDEX_TYPES_ENUM.SORT }];
     }
   }, [fieldType]);
 

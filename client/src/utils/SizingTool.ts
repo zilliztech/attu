@@ -1,4 +1,5 @@
-import { INDEX_TYPES_ENUM, SIZE_STATUS } from '../pages/schema/Types';
+import { SIZE_STATUS } from '../pages/schema/Types';
+import { INDEX_TYPES_ENUM } from '@/consts';
 
 const commonValueCalculator = (
   vector: number,

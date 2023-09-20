@@ -1,22 +1,6 @@
 import { ReactElement } from 'react';
-import { MetricType } from '@/consts';
+import { MetricType, INDEX_TYPES_ENUM } from '@/consts';
 import { DataTypeStringEnum } from '../collections/Types';
-
-export enum INDEX_TYPES_ENUM {
-  AUTO_INDEX = 'AUTO_INDEX',
-  IVF_FLAT = 'IVF_FLAT',
-  IVF_PQ = 'IVF_PQ',
-  IVF_SQ8 = 'IVF_SQ8',
-  IVF_SQ8_HYBRID = 'IVF_SQ8_HYBRID',
-  FLAT = 'FLAT',
-  HNSW = 'HNSW',
-  ANNOY = 'ANNOY',
-  RNSG = 'RNSG',
-  BIN_IVF_FLAT = 'BIN_IVF_FLAT',
-  BIN_FLAT = 'BIN_FLAT',
-  SORT = 'sort',
-  MARISA_TRIE = 'marisa-trie',
-}
 
 export interface Field {
   data_type: DataTypeStringEnum;
