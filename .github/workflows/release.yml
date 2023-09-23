@@ -20,14 +20,26 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PWD }}
 
+      - name: Docker Pull
+        shell: bash
+        run: |
+          docker run --rm --privileged tonistiigi/binfmt -- install arm64
+          docker buildx ls
+          docker buildx create --use --name=attu --driver docker-container
       - name: Docker Build
-        run: docker build -t zilliz/attu:${GITHUB_REF#refs/tags/} --build-arg VERSION=${GITHUB_REF#refs/tags/} .
+        shell: bash
+        run: |
+          docker buildx ls
+          docker buildx build \
+            --platform=linux/amd64,linux/arm64 \
+            -t nivla1/attu:${GITHUB_REF#refs/tags/} \
+            --build-arg VERSION=${GITHUB_REF#refs/tags/} .
 
       - name: Docker tag
-        run: docker tag zilliz/attu:${GITHUB_REF#refs/tags/} zilliz/attu:latest
+        run: docker tag nivla1/attu:${GITHUB_REF#refs/tags/} nivla1/attu:latest
 
       - name: Docker Push version
-        run: docker push zilliz/attu:${GITHUB_REF#refs/tags/}
+        run: docker push nivla1/attu:${GITHUB_REF#refs/tags/}
 
       - name: Docker Push lastest
-        run: docker push zilliz/attu
+        run: docker push nivla1/attu
