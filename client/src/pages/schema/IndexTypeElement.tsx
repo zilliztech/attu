@@ -103,12 +103,17 @@ const IndexTypeElement: FC<{
       indexName: string
     ) => {
       // get fetch data
-      const { state } = await IndexHttp.getIndexStatus(
-        collectionName,
-        fieldName,
-        indexName
+      const index_descriptions = await IndexHttp.getIndexInfo(collectionName);
+
+      const indexDescription = index_descriptions.find(
+        i => i.field_name === fieldName
       );
-      if (state !== IndexState.Finished && running) {
+
+      if (
+        indexDescription &&
+        indexDescription.state !== IndexState.Finished &&
+        running
+      ) {
         // if not finished, sleep 3s
         await sleep(3000);
         // call self again
@@ -116,7 +121,9 @@ const IndexTypeElement: FC<{
       }
 
       // update state
-      setStatus(state);
+      if (indexDescription) {
+        setStatus(indexDescription.state);
+      }
     };
     // prevent delete index trigger fetching index status
     if (data._indexType !== '' && status !== IndexState.Delete) {

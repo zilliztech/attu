@@ -141,8 +141,8 @@ export class CollectionsService {
    * @param data
    * @returns
    */
-  async getIndexStatus(data: GetIndexStateReq) {
-    const res = await this.milvusService.client.getIndexState(data);
+  async getIndexInfo(data: GetIndexStateReq) {
+    const res = await this.milvusService.client.describeIndex(data);
     return res;
   }
 
@@ -167,7 +167,7 @@ export class CollectionsService {
           collection_name: name,
         });
 
-        const indexRes = await this.getIndexStatus({
+        const indexRes = await this.getIndexInfo({
           collection_name: item.name,
         });
 
@@ -204,7 +204,7 @@ export class CollectionsService {
           id: collectionInfo.collectionID,
           loadedPercentage,
           createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
-          index_status: indexRes.state,
+          index_descriptions: indexRes,
           consistency_level: collectionInfo.consistency_level,
           replicas: replicas && replicas.replicas,
         });
@@ -261,19 +261,19 @@ export class CollectionsService {
 
   /**
    * Get all collection index status
-   * @returns {collection_name:string, index_status: IndexState}[]
+   * @returns {collection_name:string, index_descriptions: index_descriptions}[]
    */
   async getCollectionsIndexStatus() {
     const data = [];
     const res = await this.getCollections();
     if (res.data.length > 0) {
       for (const item of res.data) {
-        const indexRes = await this.getIndexStatus({
+        const indexRes = await this.getIndexInfo({
           collection_name: item.name,
         });
         data.push({
           collection_name: item.name,
-          index_status: indexRes.state,
+          index_descriptions: indexRes,
         });
       }
     }

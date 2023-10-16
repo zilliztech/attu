@@ -4,7 +4,7 @@ import {
   IndexView,
 } from '../pages/schema/Types';
 import { ManageRequestMethods } from '../types/Common';
-import { IndexState } from '../types/Milvus';
+import { IndexDescription, IndexState } from '../types/Milvus';
 import { findKeyValue } from '../utils/Common';
 import { getKeyValueListFromJsonString } from '../utils/Format';
 import BaseModel from './BaseModel';
@@ -13,6 +13,8 @@ export class IndexHttp extends BaseModel implements IndexView {
   params!: { key: string; value: string }[];
   field_name!: string;
   index_name!: string;
+  indexed_rows!: string | number;
+  state: IndexState = IndexState.Default;
 
   constructor(props: {}) {
     super(props);
@@ -21,22 +23,6 @@ export class IndexHttp extends BaseModel implements IndexView {
 
   static BASE_URL = `/schema/index`;
 
-  static async getIndexStatus(
-    collectionName: string,
-    fieldName: string,
-    indexName: string
-  ): Promise<{ state: IndexState }> {
-    const path = `${this.BASE_URL}/state`;
-    return super.search({
-      path,
-      params: {
-        collection_name: collectionName,
-        field_name: fieldName,
-        index_name: indexName,
-      },
-    });
-  }
-
   static async getIndexInfo(collectionName: string): Promise<IndexHttp[]> {
     const path = this.BASE_URL;
 
@@ -44,7 +30,9 @@ export class IndexHttp extends BaseModel implements IndexView {
       path,
       params: { collection_name: collectionName },
     });
-    return res.index_descriptions.map((index: any) => new this(index));
+    return res.index_descriptions.map(
+      (index: IndexDescription) => new this(index)
+    );
   }
 
   static async createIndex(param: IndexCreateParam) {
@@ -62,22 +50,6 @@ export class IndexHttp extends BaseModel implements IndexView {
     const type: ManageRequestMethods = ManageRequestMethods.DELETE;
 
     return super.batchDelete({ path, data: { ...param, type } });
-  }
-
-  static async getIndexBuildProgress(
-    collectionName: string,
-    fieldName: string,
-    indexName: string
-  ) {
-    const path = `${this.BASE_URL}/progress`;
-    return super.search({
-      path,
-      params: {
-        collection_name: collectionName,
-        field_name: fieldName,
-        index_name: indexName,
-      },
-    });
   }
 
   get _indexType() {
