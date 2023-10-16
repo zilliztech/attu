@@ -31,16 +31,4 @@ export class SchemaService {
     throwErrorFromSDK(res);
     return res;
   }
-
-  async getIndexState(data: GetIndexStateReq) {
-    const res = await this.milvusService.client.getIndexState(data);
-    throwErrorFromSDK(res.status);
-    return res;
-  }
-
-  async getIndexBuildProgress(data: GetIndexBuildProgressReq) {
-    const res = await this.milvusService.client.getIndexBuildProgress(data);
-    throwErrorFromSDK(res.status);
-    return res;
-  }
 }

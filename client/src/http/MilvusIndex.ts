@@ -52,22 +52,6 @@ export class IndexHttp extends BaseModel implements IndexView {
     return super.batchDelete({ path, data: { ...param, type } });
   }
 
-  static async getIndexBuildProgress(
-    collectionName: string,
-    fieldName: string,
-    indexName: string
-  ) {
-    const path = `${this.BASE_URL}/progress`;
-    return super.search({
-      path,
-      params: {
-        collection_name: collectionName,
-        field_name: fieldName,
-        index_name: indexName,
-      },
-    });
-  }
-
   get _indexType() {
     return this.params.find(p => p.key === 'index_type')?.value || '';
   }
