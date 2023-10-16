@@ -74,11 +74,12 @@ const Preview: FC<{
     ];
     // get search params
     const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
-    const indexType =
-      indexesInfo.length == 0 ? 'FLAT' : indexesInfo[0]._indexType;
+    const vectorIndex = indexesInfo.filter(i => i._fieldName === anns_field)[0];
+
+    const indexType = indexesInfo.length == 0 ? 'FLAT' : vectorIndex._indexType;
     const indexConfig = INDEX_CONFIG[indexType];
     const metric_type =
-      indexesInfo.length === 0 ? 'L2' : indexesInfo[0]._metricType;
+      indexesInfo.length === 0 ? 'L2' : vectorIndex._metricType;
     const searchParamKey = indexConfig.search[0];
     const searchParamValue = DEFAULT_SEARCH_PARAM_VALUE_MAP[searchParamKey];
     const searchParam = { [searchParamKey]: searchParamValue };
