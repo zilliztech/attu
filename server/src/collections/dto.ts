@@ -12,9 +12,9 @@ import {
 import {
   FieldType,
   ShowCollectionsType,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types/Collection';
-import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus/const/Milvus';
-import { SearchParam } from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+  DataType,
+  SearchParam,
+} from '@zilliz/milvus2-sdk-node/dist/milvus';
 
 enum VectorTypes {
   Binary = DataType.BinaryVector,

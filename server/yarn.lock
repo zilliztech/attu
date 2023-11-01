@@ -1208,13 +1208,14 @@
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.9.tgz#b6ef7457e826be8049667ae673eda7876eb049be"
   integrity sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA==
 
-"@zilliz/milvus2-sdk-node@2.3.2":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.3.2.tgz#1ea6a7b4ffedeb3d4ae6002fd3ebf74ef7daa316"
-  integrity sha512-2V9wvJl76oAwCZZzRZl03nCSOc392/u4Obk1jRmmgBUiQ8E5lfncvQgQfd+Meg++fgpEb3m4sRhyFUVSTZRK5g==
+"@zilliz/milvus2-sdk-node@2.3.3":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.3.3.tgz#79ed286652b396c95693c4703bd67363ff855f0e"
+  integrity sha512-fUu1/5aENWem7XqoZ5LBOMoi0B7KPOoVD9Ga0gqHzbtoq8No0BRJDLkdv4xMubNnL3xPjBoNrYE5A615MG0tEw==
   dependencies:
     "@grpc/grpc-js" "1.8.17"
     "@grpc/proto-loader" "0.7.7"
+    axios "^1.5.1"
     dayjs "^1.11.7"
     lru-cache "^9.1.2"
     protobufjs "7.2.4"
@@ -1414,6 +1415,15 @@ axios@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.4.0.tgz#38a7bf1224cd308de271146038b551d725f0be1f"
   integrity sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.5.1:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
+  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"

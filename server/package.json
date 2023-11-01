@@ -12,7 +12,7 @@
     "url": "https://github.com/zilliztech/attu"
   },
   "dependencies": {
-    "@zilliz/milvus2-sdk-node": "2.3.2",
+    "@zilliz/milvus2-sdk-node": "2.3.3",
     "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "class-sanitizer": "^1.0.1",
