@@ -17,6 +17,7 @@ import { ChildrenStatusType } from '@/components/status/Types';
 import { sleep } from '@/utils';
 import CreateIndex from './Create';
 import { IndexState } from '../../types/Milvus';
+import { NONE_INDEXABLE_DATA_TYPES } from '@/consts';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -206,7 +207,10 @@ const IndexTypeElement: FC<{
 
   const generateElement = () => {
     // only vector type field is able to create index
-    if (data._isPrimaryKey) {
+    if (
+      data._isPrimaryKey ||
+      NONE_INDEXABLE_DATA_TYPES.indexOf(data._fieldType) !== -1
+    ) {
       return <div className={classes.item}>--</div>;
     }
     // _indexType example: FLAT
