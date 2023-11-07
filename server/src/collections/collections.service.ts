@@ -20,6 +20,7 @@ import {
   GetQuerySegmentInfoReq,
   GePersistentSegmentInfoReq,
   CompactReq,
+  CountReq,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
@@ -71,6 +72,12 @@ export class CollectionsService {
 
   async getCollectionStatistics(data: GetCollectionStatisticsReq) {
     const res = await this.milvusService.client.getCollectionStatistics(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async count(data: CountReq) {
+    const res = await this.milvusService.client.count(data);
     throwErrorFromSDK(res.status);
     return res;
   }
@@ -223,13 +230,26 @@ export class CollectionsService {
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { id, name } = item;
-        const collectionStatistics = await this.getCollectionStatistics({
-          collection_name: name,
-        });
+
+        let count: number | string;
+
+        try {
+          const res = await this.count({
+            collection_name: name,
+          });
+          count = res.data;
+        } catch (error) {
+          const res = await this.getCollectionStatistics({
+            collection_name: name,
+          });
+          count = res.data.row_count;
+        }
+
         data.push({
           id,
           collection_name: name,
-          rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
+          rowCount: count,
+          ...item,
         });
       }
     }

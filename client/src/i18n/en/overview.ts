@@ -1,7 +1,7 @@
 const overviewTrans = {
   load: 'Loaded Collections',
   all: 'All Collections',
-  data: 'Entities',
+  data: 'Approx Entities',
   rows: '{{number}}',
   loading: 'Loading Collections',
   sysInfo: 'System Info',

@@ -17,6 +17,7 @@ import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { useNavigationHook } from '@/hooks';
 import { CollectionHttp, MilvusHttp } from '@/http';
+import { ShowCollectionsType } from '@/types/Milvus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { checkLoading, checkIndexBuilding, formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
@@ -106,6 +107,11 @@ const SysCard = (data: {
   );
 };
 
+type statisticsType = {
+  collectionCount: number;
+  totalData: number;
+};
+
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
   const { database, databases, data } = useContext(dataContext);
@@ -114,10 +120,7 @@ const Overview = () => {
   const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: successTrans } = useTranslation('success');
-  const [statistics, setStatistics] = useState<{
-    collectionCount: number;
-    totalData: number;
-  }>({
+  const [statistics, setStatistics] = useState<statisticsType>({
     collectionCount: 0,
     totalData: 0,
   });
@@ -127,8 +130,10 @@ const Overview = () => {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const res = await CollectionHttp.getStatistics();
-    const collections = await CollectionHttp.getCollections();
+    const res = (await CollectionHttp.getStatistics()) as statisticsType;
+    const collections = await CollectionHttp.getCollections({
+      type: ShowCollectionsType.InMemory,
+    });
     const hasLoadingOrBuildingCollection = collections.some(
       v => checkLoading(v) || checkIndexBuilding(v)
     );
