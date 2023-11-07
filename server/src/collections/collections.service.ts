@@ -234,15 +234,15 @@ export class CollectionsService {
         let count: number | string;
 
         try {
-          const res = await this.count({
+          const countRes = await this.count({
             collection_name: name,
           });
-          count = res.data;
+          count = countRes.data;
         } catch (error) {
-          const res = await this.getCollectionStatistics({
+          const collectionStatisticsRes = await this.getCollectionStatistics({
             collection_name: name,
           });
-          count = res.data.row_count;
+          count = collectionStatisticsRes.data.row_count;
         }
 
         data.push({
