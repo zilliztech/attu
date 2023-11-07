@@ -40,4 +40,4 @@ spec:
           protocol: TCP
         env:
         - name: MILVUS_URL
-          value: 127.0.0.1:19530
+          value: "my-release-milvus:19530"
