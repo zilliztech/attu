@@ -8,7 +8,6 @@ import icons from '@/components/icons/Icons';
 import { FieldHttp, IndexHttp } from '@/http';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
-import { DataTypeStringEnum } from '../collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -164,31 +163,33 @@ const Schema: FC<{
             _indexParamElement: (
               <div className={classes.paramWrapper}>
                 {f._indexParameterPairs?.length > 0 ? (
-                  f._indexParameterPairs.map(p => (
-                    <span key={p.key} className="param">
-                      <Typography variant="body1" className="key">
-                        {`${p.key}:`}
-                      </Typography>
-                      <Typography variant="body1" className="value">
-                        {p.value}
-                      </Typography>
-                    </span>
-                  ))
+                  f._indexParameterPairs.map(p =>
+                    p.value ? (
+                      <>
+                        <span key={p.key} className="param">
+                          <Typography variant="body1" className="key">
+                            {`${p.key}:`}
+                          </Typography>
+                          <Typography variant="body1" className="value">
+                            {p.value}
+                          </Typography>
+                        </span>
+                      </>
+                    ) : (
+                      ''
+                    )
+                  )
                 ) : (
                   <>--</>
                 )}
               </div>
             ),
             _indexTypeElement: (
-              <>
-                {f._fieldType !== DataTypeStringEnum.JSON ? (
-                  <IndexTypeElement
-                    data={f}
-                    collectionName={collectionName}
-                    cb={fetchFields}
-                  />
-                ) : null}
-              </>
+              <IndexTypeElement
+                data={f}
+                collectionName={collectionName}
+                cb={fetchFields}
+              />
             ),
           })
         );

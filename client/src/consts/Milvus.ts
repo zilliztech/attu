@@ -174,7 +174,7 @@ export const INDEX_OPTIONS_MAP = {
   [DataTypeEnum.VarChar]: [
     {
       label: 'marisa-trie',
-      value: INDEX_TYPES_ENUM.MARISA_TRIE
+      value: INDEX_TYPES_ENUM.MARISA_TRIE,
     },
   ],
 };
@@ -271,3 +271,23 @@ export enum MILVUS_DEPLOY_MODE {
   DISTRIBUTED = 'DISTRIBUTED',
   STANDALONE = 'STANDALONE',
 }
+
+export enum DataTypeStringEnum {
+  Bool = 'Bool',
+  Int8 = 'Int8',
+  Int16 = 'Int16',
+  Int32 = 'Int32',
+  Int64 = 'Int64',
+  Float = 'Float',
+  Double = 'Double',
+  String = 'String',
+  VarChar = 'VarChar',
+  JSON = 'JSON',
+  BinaryVector = 'BinaryVector',
+  FloatVector = 'FloatVector',
+}
+
+export const NONE_INDEXABLE_DATA_TYPES = [
+  DataTypeStringEnum.Bool,
+  DataTypeStringEnum.JSON,
+];
