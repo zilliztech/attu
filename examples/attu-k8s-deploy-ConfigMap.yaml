@@ -14,6 +14,13 @@ spec:
   selector:
     app: attu
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: milvus-config
+data:
+  milvus_url: "<SERVICE>:<PORT>"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40,4 +47,7 @@ spec:
           protocol: TCP
         env:
         - name: MILVUS_URL
-          value: "my-release-milvus:19530"
+          valueFrom:
+            configMapKeyRef:
+              name: milvus-config
+              key: milvus_url
