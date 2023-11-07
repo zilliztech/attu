@@ -12,7 +12,7 @@ export const url =
 
 const axiosInstance = axios.create({
   baseURL: `${url}/api/v1`,
-  timeout: 60000,
+  timeout: 60000 * 5, // 5 minutes
 });
 
 axiosInstance.interceptors.request.use(

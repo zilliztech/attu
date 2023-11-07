@@ -173,7 +173,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _aliases() {
-    return this.aliases;
+    return this.aliases || [];
   }
 
   get _desc() {
@@ -234,11 +234,11 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   }
 
   get _replicas(): Replica[] {
-    return this.replicas;
+    return this.replicas || [];
   }
 
   get _enableDynamicField(): boolean {
-    return this.schema.enable_dynamic_field;
+    return this.schema && this.schema.enable_dynamic_field;
   }
 
   get _schema() {

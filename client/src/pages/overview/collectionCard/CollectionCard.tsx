@@ -146,7 +146,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
             </li>
           ) : null}
           <li>
-            <Typography>{collectionTrans('rowCount')}</Typography>:
+            <Typography>{collectionTrans('count')}</Typography>:
             <Typography className={classes.rowCount}>{rowCount}</Typography>
           </li>
         </ul>
