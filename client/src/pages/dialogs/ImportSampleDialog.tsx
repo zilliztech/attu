@@ -62,12 +62,12 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
       value: '1000',
     },
     {
-      label: '10k',
-      value: '10000',
+      label: '5k',
+      value: '5000',
     },
     {
-      label: '50k',
-      value: '50000',
+      label: '10k',
+      value: '10000',
     },
   ];
 
