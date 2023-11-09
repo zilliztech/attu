@@ -8,6 +8,7 @@ export const findKeyValue = (obj: KeyValuePair[], key: string) =>
 
 export const makeDynamicBool = () => Math.random() > 0.5;
 export const makeRandomInt = () => Math.floor(Math.random() * 127);
+export const makeFloat = () => Math.random();
 
 export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
   switch (data_type) {
@@ -21,6 +22,10 @@ export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
       return Math.floor(Math.random() * 214748364);
     case 'Int64':
       return Math.floor(Math.random() * 214748364);
+    case 'Float':
+      return makeFloat();
+    case 'Double':
+      return makeFloat();
     case 'FloatVector':
       return Array.from({ length: (type_params as any)[0].value }).map(() =>
         Math.random()
