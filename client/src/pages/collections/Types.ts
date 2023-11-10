@@ -73,6 +73,7 @@ export enum DataTypeEnum {
   JSON = 23,
   BinaryVector = 100,
   FloatVector = 101,
+  Array = 22,
 }
 export enum DataTypeStringEnum {
   Bool = 'Bool',
@@ -87,6 +88,7 @@ export enum DataTypeStringEnum {
   JSON = 'JSON',
   BinaryVector = 'BinaryVector',
   FloatVector = 'FloatVector',
+  Array = 'Array',
 }
 
 export interface Field {
@@ -103,6 +105,7 @@ export interface Field {
     max_length?: string | number;
   };
   createType?: CreateFieldType;
+  element_type?: DataTypeEnum;
   max_length?: string | number | null;
   autoID?: boolean;
 }

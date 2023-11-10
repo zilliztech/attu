@@ -69,6 +69,10 @@ export const ALL_OPTIONS: KeyValuePair[] = [
     label: 'JSON',
     value: DataTypeEnum.JSON,
   },
+  {
+    label: 'Array',
+    value: DataTypeEnum.Array,
+  },
 ];
 
 export const AUTO_ID_OPTIONS: KeyValuePair[] = [

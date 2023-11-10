@@ -155,22 +155,33 @@ const CreateFields: FC<CreateFieldsProps> = ({
   );
 
   const getSelector = (
-    type: 'all' | 'vector',
+    type: 'all' | 'vector' | 'element',
     label: string,
     value: number,
     onChange: (value: DataTypeEnum) => void,
     options?: any[]
   ) => {
+    let _options = options || ALL_OPTIONS;
+    switch (type) {
+      case 'all':
+        _options = ALL_OPTIONS;
+        break;
+      case 'vector':
+        _options = VECTOR_FIELDS_OPTIONS;
+        break;
+      case 'element':
+        _options = ALL_OPTIONS.filter(
+          d => d.label !== 'Array' && d.label !== 'JSON'
+        );
+        break;
+      default:
+        break;
+    }
+
     return (
       <CustomSelector
         wrapperClass={classes.select}
-        options={
-          options
-            ? options
-            : type === 'all'
-            ? ALL_OPTIONS
-            : VECTOR_FIELDS_OPTIONS
-        }
+        options={_options}
         size="small"
         onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
           onChange(e.target.value as DataTypeEnum);
@@ -502,13 +513,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateNumberRow = (
+  const generateNonRequiredRow = (
     field: Field,
     index: number,
     fields: Field[]
   ): ReactElement => {
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
     const isInt64 = field.data_type === DataTypeEnum.Int64;
+    const isArray = field.data_type === DataTypeEnum.Array;
+    const isElementVarChar = field.element_type === DataTypeEnum.VarChar;
     return (
       <div className={`${classes.rowWrapper}`}>
         {generateFieldName(field)}
@@ -518,10 +531,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
+        {isArray
+          ? getSelector(
+              'element',
+              collectionTrans('elementType'),
+              field.element_type!,
+              (value: DataTypeEnum) =>
+                changeFields(field.id!, 'element_type', value)
+            )
+          : null}
         {generateDesc(field)}
 
-        {isVarChar && generateMaxLength(field)}
-        {(isVarChar || isInt64) && generateParitionKeyToggle(field, fields)}
+        {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
+        {isVarChar || isInt64 ? generateParitionKeyToggle(field, fields) : null}
         <IconButton
           onClick={() => {
             handleAddNewField(index);
@@ -589,7 +611,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     }
 
     // use number as default createType
-    return generateNumberRow(field, index, fields);
+    return generateNonRequiredRow(field, index, fields);
   };
 
   return (
