@@ -170,9 +170,19 @@ export class CollectionsService {
           collection_name: name,
         });
 
-        const collectionStatistics = await this.getCollectionStatistics({
-          collection_name: name,
-        });
+        let count: number | string;
+
+        try {
+          const countRes = await this.count({
+            collection_name: name,
+          });
+          count = countRes.data;
+        } catch (error) {
+          const collectionStatisticsRes = await this.getCollectionStatistics({
+            collection_name: name,
+          });
+          count = collectionStatisticsRes.data.row_count;
+        }
 
         const indexRes = await this.getIndexInfo({
           collection_name: item.name,
@@ -207,7 +217,7 @@ export class CollectionsService {
           schema: collectionInfo.schema,
           description: collectionInfo.schema.description,
           autoID,
-          rowCount: findKeyValue(collectionStatistics.stats, ROW_COUNT),
+          rowCount: count,
           id: collectionInfo.collectionID,
           loadedPercentage,
           createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),

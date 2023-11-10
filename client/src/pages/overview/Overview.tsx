@@ -131,9 +131,7 @@ const Overview = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     const res = (await CollectionHttp.getStatistics()) as statisticsType;
-    const collections = await CollectionHttp.getCollections({
-      type: ShowCollectionsType.InMemory,
-    });
+    const collections = await CollectionHttp.getCollections();
     const hasLoadingOrBuildingCollection = collections.some(
       v => checkLoading(v) || checkIndexBuilding(v)
     );
