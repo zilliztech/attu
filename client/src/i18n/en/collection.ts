@@ -45,7 +45,7 @@ const collectionTrans = {
   consistencyLevel: 'Consistency Level',
   description: 'Description',
   fieldType: 'Type',
-  elementType: 'Element Type',
+  elementType: 'Array Type',
   vectorFieldType: 'Vector Field Type',
   fieldName: 'Field',
   idFieldName: 'Primary Key Field',

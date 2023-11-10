@@ -29,6 +29,7 @@ import {
   DataTypeEnum,
   Field,
 } from './Types';
+import { DEFUALT_MAX_CAPACITY, DEFUALT_VARCHAR_MAX_LENGTH } from '@/consts';
 
 const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
@@ -331,7 +332,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateMaxLength = (field: Field) => {
     return getInput({
       label: 'Max Length',
-      value: field.max_length!,
+      value: field.max_length || String(DEFUALT_VARCHAR_MAX_LENGTH),
       type: 'number',
       inputClassName: classes.maxLength,
       handleChange: (value: string) =>
@@ -351,6 +352,35 @@ const CreateFields: FC<CreateFieldsProps> = ({
           ? warningTrans('range', {
               min: 1,
               max: 65535,
+            })
+          : ' ';
+      },
+    });
+  };
+
+  const generateMaxCapacity = (field: Field) => {
+    return getInput({
+      label: 'Max Capacity',
+      value: field.max_capacity || String(DEFUALT_MAX_CAPACITY),
+      type: 'number',
+      inputClassName: classes.maxLength,
+      handleChange: (value: string) =>
+        changeFields(field.id!, 'max_capacity', value),
+      validate: (value: any) => {
+        if (value === null) return ' ';
+        const isEmptyValid = checkEmptyValid(value);
+        const isRangeValid = checkRange({
+          value,
+          min: 1,
+          max: 4096,
+          type: 'number',
+        });
+        return !isEmptyValid
+          ? warningTrans('requiredOnly')
+          : !isRangeValid
+          ? warningTrans('range', {
+              min: 1,
+              max: 4096,
             })
           : ' ';
       },
@@ -532,18 +562,22 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
+
         {isArray
           ? getSelector(
               'element',
               collectionTrans('elementType'),
-              field.element_type!,
+              field.element_type || DataTypeEnum.Int8,
               (value: DataTypeEnum) =>
                 changeFields(field.id!, 'element_type', value)
             )
           : null}
+
+        {isArray ? generateMaxCapacity(field) : null}
+        {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
+
         {generateDesc(field)}
 
-        {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
         {isVarChar || isInt64 ? generateParitionKeyToggle(field, fields) : null}
         <IconButton
           onClick={() => {

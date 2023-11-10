@@ -1,0 +1,2 @@
+export const DEFUALT_MAX_CAPACITY = 64;
+export const DEFUALT_VARCHAR_MAX_LENGTH = 64;
