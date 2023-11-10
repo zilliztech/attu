@@ -155,14 +155,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
   );
 
   const getSelector = (
-    type: 'all' | 'vector' | 'element',
+    type: 'all' | 'vector' | 'element' | 'primaryKey',
     label: string,
     value: number,
-    onChange: (value: DataTypeEnum) => void,
-    options?: any[]
+    onChange: (value: DataTypeEnum) => void
   ) => {
-    let _options = options || ALL_OPTIONS;
+    let _options = ALL_OPTIONS;
     switch (type) {
+      case 'primaryKey':
+        _options = PRIMARY_FIELDS_OPTIONS;
+        break;
       case 'all':
         _options = ALL_OPTIONS;
         break;
@@ -441,7 +443,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       <div className={`${classes.rowWrapper}`}>
         {generateFieldName(field, collectionTrans('idFieldName'))}
         {getSelector(
-          'vector',
+          'primaryKey',
           `${collectionTrans('idType')} `,
           field.data_type,
           (value: DataTypeEnum) => {
@@ -449,8 +451,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
             if (value === DataTypeEnum.VarChar) {
               setAutoID(false);
             }
-          },
-          PRIMARY_FIELDS_OPTIONS
+          }
         )}
         {generateDesc(field)}
 

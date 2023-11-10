@@ -107,6 +107,7 @@ export interface Field {
   createType?: CreateFieldType;
   element_type?: DataTypeEnum;
   max_length?: string | number | null;
+  max_capacity?: string | number;
   autoID?: boolean;
 }
 
