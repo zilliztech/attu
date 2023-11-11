@@ -29,7 +29,12 @@ import {
   DataTypeEnum,
   Field,
 } from './Types';
-import { DEFUALT_MAX_CAPACITY, DEFUALT_VARCHAR_MAX_LENGTH } from '@/consts';
+import {
+  DEFAULT_ATTU_DIM,
+  DEFAULT_MAX_CAPACITY,
+  DEFAULT_VARCHAR_MAX_LENGTH,
+  DEFAULT_ELEMENT_TYPE,
+} from '@/consts';
 
 const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
@@ -332,7 +337,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateMaxLength = (field: Field) => {
     return getInput({
       label: 'Max Length',
-      value: field.max_length || String(DEFUALT_VARCHAR_MAX_LENGTH),
+      value: String(field.max_length),
       type: 'number',
       inputClassName: classes.maxLength,
       handleChange: (value: string) =>
@@ -361,7 +366,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateMaxCapacity = (field: Field) => {
     return getInput({
       label: 'Max Capacity',
-      value: field.max_capacity || String(DEFUALT_MAX_CAPACITY),
+      value: String(field.max_capacity),
       type: 'number',
       inputClassName: classes.maxLength,
       handleChange: (value: string) =>
@@ -443,8 +448,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
       is_primary_key: false,
       description: '',
       isDefault: false,
-      dimension: '128',
-      max_length: null,
+      dimension: DEFAULT_ATTU_DIM,
+      max_length: DEFAULT_VARCHAR_MAX_LENGTH,
+      max_capacity: DEFAULT_MAX_CAPACITY,
+      element_type: DEFAULT_ELEMENT_TYPE,
       id,
     };
     const newValidation = {
@@ -567,7 +574,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           ? getSelector(
               'element',
               collectionTrans('elementType'),
-              field.element_type || DataTypeEnum.Int8,
+              field.element_type!,
               (value: DataTypeEnum) =>
                 changeFields(field.id!, 'element_type', value)
             )

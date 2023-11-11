@@ -208,6 +208,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           dimension: vectorType.includes(v.data_type)
             ? Number(v.dimension)
             : undefined,
+          element_type: v.element_type,
+          max_capacity: v.max_capacity,
         };
 
         // if we need
