@@ -9,8 +9,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { ConditionProps, Field } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
-import { LOGICAL_OPERATORS } from '@/consts';
-import { DataTypeStringEnum } from '@/pages/collections/Types';
+import { LOGICAL_OPERATORS, DataTypeStringEnum } from '@/consts';
 import { formatValue, checkValue } from './utils';
 
 const Condition: FC<ConditionProps> = props => {

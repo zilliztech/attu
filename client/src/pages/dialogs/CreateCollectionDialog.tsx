@@ -13,13 +13,12 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
+import { DataTypeEnum, ConsistencyLevelEnum } from '@/consts';
 import CreateFields from '../collections/CreateFields';
 import { CollectionHttp } from '@/http';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
-  DataTypeEnum,
-  ConsistencyLevelEnum,
   Field,
 } from '../collections/Types';
 import { CONSISTENCY_LEVEL_OPTIONS } from '../collections/Constants';
@@ -227,7 +226,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
                 dim: Number(data.dimension!),
               },
             }
-          : v.data_type === DataTypeEnum.VarChar
+          : v.data_type === DataTypeEnum.VarChar ||
+            v.element_type === DataTypeEnum.VarChar
           ? {
               ...v,
               type_params: {

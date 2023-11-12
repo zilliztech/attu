@@ -8,10 +8,11 @@ import {
   INDEX_CONFIG,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
   DYNAMIC_FIELD,
+  DataTypeEnum,
+  DataTypeStringEnum,
 } from '@/consts';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { DataTypeEnum, DataTypeStringEnum } from '@/pages/collections/Types';
 import { getQueryStyles } from '../query/Styles';
 
 const Preview: FC<{

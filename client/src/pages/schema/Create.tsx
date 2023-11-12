@@ -10,6 +10,8 @@ import {
   INDEX_OPTIONS_MAP,
   METRIC_TYPES_VALUES,
   INDEX_TYPES_ENUM,
+  DataTypeEnum,
+  DataTypeStringEnum,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
@@ -21,7 +23,6 @@ import {
   computMilvusRecommonds,
   formatSize,
 } from '@/utils';
-import { DataTypeEnum, DataTypeStringEnum } from '../collections/Types';
 import CreateForm from './CreateForm';
 import SizingInfo from './SizingInfo';
 import { IndexType, IndexExtraParam } from './Types';

@@ -1,4 +1,4 @@
-import { DataTypeStringEnum } from '../../pages/collections/Types';
+import { DataTypeStringEnum } from '@/consts';
 
 export interface ConditionProps {
   others?: object;

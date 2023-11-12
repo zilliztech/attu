@@ -1,4 +1,4 @@
-import { DataTypeStringEnum } from '../../pages/collections/Types';
+import { DataTypeStringEnum } from '@/consts';
 
 export const formatValue = (value: string, type: string, operator: string) => {
   let conditionValue: string = ''; //

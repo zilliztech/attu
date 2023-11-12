@@ -22,6 +22,8 @@ export interface FieldData {
   _dimension: string;
   _desc: string;
   _maxLength: string;
+  _maxCapacity: string;
+  element_type?: DataTypeStringEnum;
 }
 
 export interface FieldView extends FieldData, IndexView {

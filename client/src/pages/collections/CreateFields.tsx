@@ -23,12 +23,9 @@ import {
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
-import {
-  CreateFieldsProps,
-  CreateFieldType,
-  DataTypeEnum,
-  Field,
-} from './Types';
+import { CreateFieldsProps, CreateFieldType, Field } from './Types';
+import { DataTypeEnum } from '@/consts';
+
 import {
   DEFAULT_ATTU_DIM,
   DEFAULT_MAX_CAPACITY,
@@ -286,7 +283,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         value,
         rule: 'positiveNumber',
       });
-      const isMutiple = getCheckResult({
+      const isMultiple = getCheckResult({
         value,
         rule: 'multiple',
         extraParam: {
@@ -295,7 +292,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       });
       if (field.data_type === DataTypeEnum.BinaryVector) {
         return {
-          isMutiple,
+          isMultiple,
           isPositive,
         };
       }
@@ -308,10 +305,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
       value: field.dimension as number,
       inputClassName: classes.numberBox,
       handleChange: (value: string) => {
-        const { isPositive, isMutiple } = validateDimension(value);
+        const { isPositive, isMultiple } = validateDimension(value);
         const isValid =
           field.data_type === DataTypeEnum.BinaryVector
-            ? !!isMutiple && isPositive
+            ? !!isMultiple && isPositive
             : isPositive;
 
         changeFields(field.id!, 'dimension', `${value}`);
@@ -324,9 +321,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
       },
       type: 'number',
       validate: (value: any) => {
-        const { isPositive, isMutiple } = validateDimension(value);
-        if (isMutiple === false) {
-          return collectionTrans('dimensionMutipleWarning');
+        const { isPositive, isMultiple } = validateDimension(value);
+        if (isMultiple === false) {
+          return collectionTrans('dimensionMultipleWarning');
         }
 
         return isPositive ? ' ' : collectionTrans('dimensionPositiveWarning');
@@ -337,7 +334,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateMaxLength = (field: Field) => {
     return getInput({
       label: 'Max Length',
-      value: String(field.max_length),
+      value: String(field.max_length) || DEFAULT_VARCHAR_MAX_LENGTH,
       type: 'number',
       inputClassName: classes.maxLength,
       handleChange: (value: string) =>
@@ -392,7 +389,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generateParitionKeyToggle = (field: Field, fields: Field[]) => {
+  const generatePartitionKeyToggle = (field: Field, fields: Field[]) => {
     return (
       <FormControlLabel
         control={
@@ -437,6 +434,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         [key]: value,
       };
     });
+
     setFields(newFields);
   };
 
@@ -449,7 +447,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
       description: '',
       isDefault: false,
       dimension: DEFAULT_ATTU_DIM,
-      max_length: DEFAULT_VARCHAR_MAX_LENGTH,
       max_capacity: DEFAULT_MAX_CAPACITY,
       element_type: DEFAULT_ELEMENT_TYPE,
       id,
@@ -585,7 +582,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         {generateDesc(field)}
 
-        {isVarChar || isInt64 ? generateParitionKeyToggle(field, fields) : null}
+        {isVarChar || isInt64
+          ? generatePartitionKeyToggle(field, fields)
+          : null}
         <IconButton
           onClick={() => {
             handleAddNewField(index);

@@ -150,11 +150,27 @@ const Schema: FC<{
                     variant="outlined"
                   />
                 ) : null}
+                {f.element_type && f.element_type !== 'None' ? (
+                  <Chip
+                    className={classes.chip}
+                    size="small"
+                    label={`${f.element_type}`}
+                    variant="outlined"
+                  />
+                ) : null}
+                {f._maxCapacity && f._maxCapacity !== 'null' ? (
+                  <Chip
+                    className={classes.chip}
+                    size="small"
+                    label={`capacity: ${f._maxCapacity}`}
+                    variant="outlined"
+                  />
+                ) : null}
                 {f._maxLength && f._maxLength !== 'null' ? (
                   <Chip
                     className={classes.chip}
                     size="small"
-                    label={`max: ${f._maxLength}`}
+                    label={`length: ${f._maxLength}`}
                     variant="outlined"
                   />
                 ) : null}
@@ -222,25 +238,6 @@ const Schema: FC<{
       disablePadding: false,
       label: collectionTrans('fieldType'),
     },
-    // {
-    //   id: '_dimension',
-    //   align: 'left',
-    //   disablePadding: false,
-    //   label: (
-    //     <span className="flex-center">
-    //       {collectionTrans('dimension')}
-    //       <CustomToolTip title={collectionTrans('dimensionTooltip')}>
-    //         <InfoIcon classes={{ root: classes.icon }} />
-    //       </CustomToolTip>
-    //     </span>
-    //   ),
-    // },
-    // {
-    //   id: '_maxLength',
-    //   align: 'left',
-    //   disablePadding: true,
-    //   label: collectionTrans('maxLength'),
-    // },
     {
       id: '_indexName',
       align: 'left',

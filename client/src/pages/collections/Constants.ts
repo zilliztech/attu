@@ -1,5 +1,5 @@
 import { KeyValuePair } from '../../types/Common';
-import { DataTypeEnum, ConsistencyLevelEnum } from './Types';
+import { DataTypeEnum, ConsistencyLevelEnum } from '@/consts';
 
 export const CONSISTENCY_LEVEL_OPTIONS: KeyValuePair[] = [
   {

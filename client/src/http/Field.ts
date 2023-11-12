@@ -65,4 +65,9 @@ export class FieldHttp extends BaseModel implements FieldData {
       this.type_params.find(item => item.key === 'max_length')?.value || ''
     );
   }
+  get _maxCapacity() {
+    return (
+      this.type_params.find(item => item.key === 'max_capacity')?.value || ''
+    );
+  }
 }
