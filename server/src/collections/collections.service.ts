@@ -321,6 +321,7 @@ export class CollectionsService {
       collectionInfo.schema.enable_dynamic_field
     );
 
+    console.log(fields_data);
     return await this.insert({ collection_name, fields_data });
   }
 

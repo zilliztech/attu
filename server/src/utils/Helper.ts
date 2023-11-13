@@ -1,44 +1,73 @@
-import {
-  KeyValuePair,
-  FieldSchema,
-} from '@zilliz/milvus2-sdk-node/dist/milvus/types';
+import { KeyValuePair, FieldSchema } from '@zilliz/milvus2-sdk-node';
 
 export const findKeyValue = (obj: KeyValuePair[], key: string) =>
   obj.find(v => v.key === key)?.value;
 
+const MAX_INT8 = 127;
+const MAX_INT16 = 32767;
+const MAX_INT32 = 214748364;
+const MAX_INT64 = 214748364;
+const CHARACTERS =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const CHARACTERS_LENGTH = CHARACTERS.length;
+const MAX_KEYS = 10;
+
+export const makeRandomId = (length: number): string =>
+  Array.from({ length })
+    .map(() => CHARACTERS.charAt(makeRandomInt(CHARACTERS_LENGTH)))
+    .join('');
+
 export const makeDynamicBool = () => Math.random() > 0.5;
-export const makeRandomInt = () => Math.floor(Math.random() * 127);
+export const makeRandomInt = (max: number) => Math.floor(Math.random() * max);
 export const makeFloat = () => Math.random();
 
-export const genDataByType = ({ data_type, type_params }: FieldSchema) => {
+export const genDataByType = (field: FieldSchema): any => {
+  const { data_type, type_params, element_type } = field;
   switch (data_type) {
     case 'Bool':
       return makeDynamicBool();
     case 'Int8':
-      return makeRandomInt();
+      return makeRandomInt(MAX_INT8);
     case 'Int16':
-      return Math.floor(Math.random() * 32767);
+      return makeRandomInt(MAX_INT16);
     case 'Int32':
-      return Math.floor(Math.random() * 214748364);
+      return makeRandomInt(MAX_INT32);
     case 'Int64':
-      return Math.floor(Math.random() * 214748364);
+      return makeRandomInt(MAX_INT64);
     case 'Float':
-      return makeFloat();
     case 'Double':
       return makeFloat();
     case 'FloatVector':
-      return Array.from({ length: (type_params as any)[0].value }).map(() =>
-        Math.random()
-      );
     case 'BinaryVector':
-      return Array.from({ length: (type_params as any)[0].value / 8 }).map(
-        () => (Math.random() > 0.5 ? 1 : 0)
-      );
+      return Array.from({
+        length:
+          Number(type_params[0].value) / (data_type === 'BinaryVector' ? 8 : 1),
+      }).map(makeFloat);
     case 'VarChar':
-      return makeRandomId((type_params as any)[0].value);
+      return makeRandomId(Number(findKeyValue(type_params, 'max_length')));
     case 'JSON':
       return makeRandomJSON();
+    case 'Array':
+      return Array.from({
+        length: Number(findKeyValue(type_params, 'max_capacity')),
+      }).map(() => genDataByType({ ...field, data_type: element_type }));
   }
+};
+
+export const makeRandomJSON = () => {
+  const obj: any = {};
+  const numKeys = makeRandomInt(MAX_KEYS) + 1;
+  for (let i = 0; i < numKeys; i++) {
+    const key = `key${i}`;
+    const value = Math.random() < 0.5 ? makeRandomInt(100) : `value${i}`;
+    obj[key] = value;
+  }
+
+  const arrayKey = 'containsKey';
+  const arrayLength = makeRandomInt(MAX_KEYS) + 1;
+  obj[arrayKey] = Array.from({ length: arrayLength }, () => makeRandomInt(100));
+
+  return obj;
 };
 
 export const genRow = (
@@ -47,6 +76,7 @@ export const genRow = (
 ) => {
   const result: any = {};
   fields.forEach(field => {
+    console.log(field.max_capacity);
     if (!field.autoID) {
       result[field.name] = genDataByType(field);
     }
@@ -54,7 +84,7 @@ export const genRow = (
 
   if (enableDynamicField) {
     result.dynamicBool = makeDynamicBool();
-    result.dynamicInt = makeRandomInt();
+    result.dynamicInt = makeRandomInt(MAX_INT8);
     result.dynamicJSON = makeRandomJSON();
   }
   return result;
@@ -64,41 +94,4 @@ export const genRows = (
   fields: FieldSchema[],
   size: number,
   enableDynamicField: boolean = false
-) => {
-  const result = [];
-  for (let i = 0; i < size; i++) {
-    result[i] = genRow(fields, enableDynamicField);
-  }
-  return result;
-};
-
-export const makeRandomId = (length: number): string => {
-  let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
-
-export const makeRandomJSON = () => {
-  const obj: any = {};
-  const numKeys = Math.floor(Math.random() * 10) + 1; // generate a random number of keys between 1 and 10
-  for (let i = 0; i < numKeys; i++) {
-    const key = `key${i}`;
-    const value =
-      Math.random() < 0.5 ? Math.floor(Math.random() * 100) : `value${i}`; // randomly choose between a number or a string value
-    obj[key] = value;
-  }
-
-  const arrayKey = 'containsKey';
-  const arrayLength = Math.floor(Math.random() * 10) + 1; // generate a random length for the array between 1 and 10
-  const randomArray = Array.from({ length: arrayLength }, () =>
-    Math.floor(Math.random() * 100)
-  );
-  obj[arrayKey] = randomArray;
-
-  return obj;
-};
+) => Array.from({ length: size }, () => genRow(fields, enableDynamicField));
