@@ -108,6 +108,7 @@ const Schema: FC<{
 
       try {
         const list = await fetchSchemaListWithIndex(collectionName);
+        console.log(list)
         const fields: FieldView[] = list.map(f =>
           Object.assign(f, {
             _fieldNameElement: (
@@ -158,7 +159,7 @@ const Schema: FC<{
                     variant="outlined"
                   />
                 ) : null}
-                {f._maxCapacity && f._maxCapacity !== 'null' ? (
+                {f._maxCapacity && f._maxCapacity !== null ? (
                   <Chip
                     className={classes.chip}
                     size="small"

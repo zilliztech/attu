@@ -45,8 +45,8 @@ export enum TypeEnum {
   'number' = 'number',
 }
 
-export const checkEmptyValid = (value: string): boolean => {
-  return value.trim() !== '';
+export const checkEmptyValid = (value: string | number): boolean => {
+  return String(value).trim() !== '';
 };
 
 export const checkEmail = (value: string): boolean => {

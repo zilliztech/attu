@@ -63,7 +63,7 @@ export interface ITextfieldConfig {
   variant: VariantType;
   value?: any;
   label?: string;
-  hiddenLabel?: boolean;
+  hiddenlabel?: boolean;
   size?: SizeType;
   placeholder?: string;
   required?: boolean;

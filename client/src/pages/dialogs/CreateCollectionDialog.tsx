@@ -81,7 +81,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       name: null, // we need hide helpertext at first time, so we use null to detect user enter input or not.
       description: '',
       isDefault: true,
-      max_length: null,
       id: '1',
     },
     {
@@ -195,6 +194,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
   const handleCreateCollection = async () => {
     const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
+    console.log('create', fields)
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
@@ -204,16 +204,20 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           is_primary_key: v.is_primary_key,
           is_partition_key: v.is_partition_key,
           data_type: v.data_type,
-          dimension: vectorType.includes(v.data_type)
-            ? Number(v.dimension)
-            : undefined,
-          element_type: v.element_type,
-          max_capacity: v.max_capacity,
         };
 
         // if we need
+        if (typeof v.dimension !== undefined) {
+          data.dimension = Number(v.dimension);
+        }
         if (typeof v.max_length === 'number') {
           data.max_length = Number(v.max_length);
+        }
+        if (typeof v.element_type !== 'undefined') {
+          data.element_type = Number(v.element_type);
+        }
+        if (typeof v.max_capacity !== 'undefined') {
+          data.max_capacity = Number(v.max_capacity);
         }
 
         v.is_primary_key && (data.autoID = form.autoID);
@@ -299,7 +303,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
-            hiddenLabel={true}
+            hiddenlabel={true}
             value={consistencyLevel}
             variant="filled"
           />
