@@ -1,4 +1,4 @@
-import { DataTypeStringEnum } from '../pages/collections/Types';
+import { DataTypeStringEnum } from '@/consts';
 import { FieldData } from '../pages/schema/Types';
 import BaseModel from './BaseModel';
 
@@ -11,6 +11,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   name!: string;
   description!: string;
   autoID!: boolean;
+  element_type!:  DataTypeStringEnum;
 
   constructor(props: {}) {
     super(props);

@@ -1,6 +1,5 @@
 import { ReactElement } from 'react';
-import { MetricType, INDEX_TYPES_ENUM } from '@/consts';
-import { DataTypeStringEnum } from '../collections/Types';
+import { MetricType, INDEX_TYPES_ENUM, DataTypeStringEnum } from '@/consts';
 
 export interface Field {
   data_type: DataTypeStringEnum;
@@ -23,7 +22,7 @@ export interface FieldData {
   _desc: string;
   _maxLength: string;
   _maxCapacity: string;
-  element_type?: DataTypeStringEnum;
+  element_type: string;
 }
 
 export interface FieldView extends FieldData, IndexView {

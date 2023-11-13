@@ -102,13 +102,27 @@ const Schema: FC<{
     return fields;
   };
 
+  const formatFieldType = (field: FieldView) => {
+    const { _fieldType, element_type, _maxLength, _maxCapacity, _dimension } =
+      field;
+
+    const elementType =
+      element_type !== 'None'
+        ? `<${element_type}${_maxLength ? `(${_maxLength})` : ''}>`
+        : '';
+    const maxCapacity = _maxCapacity ? `[${_maxCapacity}]` : '';
+    const dimension = _dimension ? `(${_dimension})` : '';
+    const maxLength = _fieldType === 'VarChar' ? `(${_maxLength})` : '';
+
+    return `${_fieldType}${elementType}${maxCapacity}${dimension}${maxLength}`;
+  };
+
   const fetchFields = useCallback(
     async (collectionName: string) => {
       const KeyIcon = icons.key;
 
       try {
         const list = await fetchSchemaListWithIndex(collectionName);
-        console.log(list)
         const fields: FieldView[] = list.map(f =>
           Object.assign(f, {
             _fieldNameElement: (
@@ -140,43 +154,8 @@ const Schema: FC<{
                 ) : null}
               </div>
             ),
-            _fieldTypeElement: (
-              <div className={classes.nameWrapper}>
-                {f._fieldType}
-                {f._dimension ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label={`dim: ${f._dimension}`}
-                    variant="outlined"
-                  />
-                ) : null}
-                {f.element_type && f.element_type !== 'None' ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label={`${f.element_type}`}
-                    variant="outlined"
-                  />
-                ) : null}
-                {f._maxCapacity && f._maxCapacity !== null ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label={`capacity: ${f._maxCapacity}`}
-                    variant="outlined"
-                  />
-                ) : null}
-                {f._maxLength && f._maxLength !== 'null' ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label={`length: ${f._maxLength}`}
-                    variant="outlined"
-                  />
-                ) : null}
-              </div>
-            ),
+            // Array<VarChar(64)>[Capacity]
+            _fieldTypeElement: formatFieldType(f),
             _indexParamElement: (
               <div className={classes.paramWrapper}>
                 {f._indexParameterPairs?.length > 0 ? (
