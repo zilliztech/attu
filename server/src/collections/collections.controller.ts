@@ -287,6 +287,7 @@ export class CollectionController {
         collection_name: name,
         ...data,
       });
+
       // const queryResultList = result.data;
       const queryResultLength = result.data.length;
       // const startNum = page * limit;

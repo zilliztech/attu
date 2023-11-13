@@ -134,6 +134,8 @@ export class CollectionsService {
   ) {
     const now = Date.now();
     const res = await this.milvusService.client.query(data);
+
+    console.log('query', res)
     const after = Date.now();
 
     throwErrorFromSDK(res.status);
@@ -321,7 +323,6 @@ export class CollectionsService {
       collectionInfo.schema.enable_dynamic_field
     );
 
-    console.log(fields_data);
     return await this.insert({ collection_name, fields_data });
   }
 
