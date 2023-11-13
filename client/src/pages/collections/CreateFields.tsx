@@ -453,7 +453,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
       }
 
       // remove dimension, if not vector
-      if (updatedField.data_type !== DataTypeEnum.FloatVector) {
+      if (
+        updatedField.data_type !== DataTypeEnum.FloatVector &&
+        updatedField.data_type !== DataTypeEnum.BinaryVector
+      ) {
         delete updatedField.dimension;
       }
 
