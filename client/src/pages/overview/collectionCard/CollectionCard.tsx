@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
 } from '@material-ui/core';
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect, useState, useCallback } from 'react';
 import CustomButton from '@/components/customButton/CustomButton';
 import icons from '@/components/icons/Icons';
 import Status from '@/components/status/Status';
@@ -14,9 +14,11 @@ import { useTranslation } from 'react-i18next';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useNavigate, Link } from 'react-router-dom';
 import { LOADING_STATE } from '@/consts';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
 import { CollectionCardProps } from './Types';
+import { CollectionHttp } from '@/http';
+import { CollectionData } from '@/pages/collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -86,16 +88,13 @@ const CollectionCard: FC<CollectionCardProps> = ({
   onRelease,
   wrapperClass = '',
 }) => {
+  const { database } = useContext(dataContext);
+  const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState<string>('');
   const classes = useStyles();
   const { setDialog } = useContext(rootContext);
 
-  const {
-    _name: name,
-    _status: status,
-    _rowCount: rowCount,
-    _loadedPercentage,
-    _replicas,
-  } = data;
+  const { _name: name, _status: status, _loadedPercentage, _replicas } = data;
   const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
@@ -122,6 +121,21 @@ const CollectionCard: FC<CollectionCardProps> = ({
     navigate({ pathname: '/search', search: `?collectionName=${name}` });
   };
 
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = (await CollectionHttp.count(name)) as CollectionData;
+      setCount(data._rowCount);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData, database]);
+
   return (
     <Card
       className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
@@ -147,7 +161,11 @@ const CollectionCard: FC<CollectionCardProps> = ({
           ) : null}
           <li>
             <Typography>{collectionTrans('count')}</Typography>:
-            <Typography className={classes.rowCount}>{rowCount}</Typography>
+            {loading ? (
+              `...`
+            ) : (
+              <Typography className={classes.rowCount}>{count}</Typography>
+            )}
           </li>
         </ul>
         <Divider classes={{ root: classes.divider }} />

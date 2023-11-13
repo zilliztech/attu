@@ -51,6 +51,7 @@ export class CollectionController {
     );
     this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
     this.router.get('/:name', this.describeCollection.bind(this));
+    this.router.get('/:name/count', this.count.bind(this));
 
     // load / release
     this.router.put('/:name/load', this.loadCollection.bind(this));
@@ -366,6 +367,19 @@ export class CollectionController {
         collection_name: name,
       });
       res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async count(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    try {
+      const result = await this.collectionsService.count({
+        collection_name: name,
+      });
+
+      res.send({ collection_name: name, rowCount: result });
     } catch (error) {
       next(error);
     }

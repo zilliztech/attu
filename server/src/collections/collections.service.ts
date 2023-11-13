@@ -77,9 +77,15 @@ export class CollectionsService {
   }
 
   async count(data: CountReq) {
-    const res = await this.milvusService.client.count(data);
-    throwErrorFromSDK(res.status);
-    return res;
+    let count = 0;
+    try {
+      const countRes = await this.milvusService.client.count(data);
+      count = countRes.data;
+    } catch (error) {
+      const collectionStatisticsRes = await this.getCollectionStatistics(data);
+      count = collectionStatisticsRes.data.row_count;
+    }
+    return count;
   }
 
   async insert(data: InsertReq) {
@@ -172,17 +178,17 @@ export class CollectionsService {
 
         let count: number | string;
 
-        try {
-          const countRes = await this.count({
-            collection_name: name,
-          });
-          count = countRes.data;
-        } catch (error) {
-          const collectionStatisticsRes = await this.getCollectionStatistics({
-            collection_name: name,
-          });
-          count = collectionStatisticsRes.data.row_count;
-        }
+        const collectionStatisticsRes = await this.getCollectionStatistics({
+          collection_name: name,
+        });
+        count = collectionStatisticsRes.data.row_count;
+        // try {
+        //   const countRes = await this.count({
+        //     collection_name: name,
+        //   });
+        //   count = countRes.data;
+        // } catch (error) {
+        // }
 
         const indexRes = await this.getIndexInfo({
           collection_name: item.name,
@@ -241,20 +247,7 @@ export class CollectionsService {
       for (const item of res.data) {
         const { id, name } = item;
 
-        let count: number | string;
-
-        try {
-          const countRes = await this.count({
-            collection_name: name,
-          });
-          count = countRes.data;
-        } catch (error) {
-          const collectionStatisticsRes = await this.getCollectionStatistics({
-            collection_name: name,
-          });
-          count = collectionStatisticsRes.data.row_count;
-        }
-
+        const count = this.count({ collection_name: name });
         data.push({
           id,
           collection_name: name,

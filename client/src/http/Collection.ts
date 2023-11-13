@@ -107,6 +107,13 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
+  static count(collectionName: string) {
+    return super.search({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/count`,
+      params: {},
+    });
+  }
+
   static getQSegments(collectionName: string) {
     return super.search({
       path: `${this.COLLECTIONS_URL}/${collectionName}/qsegments`,
