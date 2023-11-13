@@ -25,7 +25,6 @@ import {
 } from './Constants';
 import { CreateFieldsProps, CreateFieldType, Field } from './Types';
 import { DataTypeEnum } from '@/consts';
-
 import {
   DEFAULT_ATTU_DIM,
   DEFAULT_ATTU_MAX_CAPACITY,
@@ -460,8 +459,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
       return updatedField;
     });
-
-    console.log('changed', newFields);
 
     setFields(newFields);
   };

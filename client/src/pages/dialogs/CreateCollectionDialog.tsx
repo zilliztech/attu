@@ -13,7 +13,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
-import { DataTypeEnum, ConsistencyLevelEnum } from '@/consts';
+import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
 import CreateFields from '../collections/CreateFields';
 import { CollectionHttp } from '@/http';
 import {
@@ -87,7 +87,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
       name: null,
-      dimension: '128',
+      dimension: DEFAULT_ATTU_DIM,
       description: '',
       isDefault: true,
       id: '2',
@@ -194,7 +194,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
   const handleCreateCollection = async () => {
     const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
-    console.log('create', fields)
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
