@@ -76,7 +76,6 @@ export const genRow = (
 ) => {
   const result: any = {};
   fields.forEach(field => {
-    console.log(field.max_capacity);
     if (!field.autoID) {
       result[field.name] = genDataByType(field);
     }
