@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { FieldHttp, IndexHttp } from '@/http';
+import { formatFieldType } from '@/utils';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
 
@@ -100,21 +101,6 @@ const Schema: FC<{
       fields = [...fields, field];
     }
     return fields;
-  };
-
-  const formatFieldType = (field: FieldView) => {
-    const { _fieldType, element_type, _maxLength, _maxCapacity, _dimension } =
-      field;
-
-    const elementType =
-      element_type !== 'None'
-        ? `<${element_type}${_maxLength ? `(${_maxLength})` : ''}>`
-        : '';
-    const maxCapacity = _maxCapacity ? `[${_maxCapacity}]` : '';
-    const dimension = _dimension ? `(${_dimension})` : '';
-    const maxLength = _fieldType === 'VarChar' ? `(${_maxLength})` : '';
-
-    return `${_fieldType}${elementType}${maxCapacity}${dimension}${maxLength}`;
   };
 
   const fetchFields = useCallback(
