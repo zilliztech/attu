@@ -1,7 +1,6 @@
 import { Option } from '@/components/customSelector/Types';
-import { METRIC_TYPES_VALUES } from '@/consts';
+import { METRIC_TYPES_VALUES, DataTypeStringEnum } from '@/consts';
 import { IForm } from '@/hooks';
-import { DataTypeStringEnum } from '@/pages/collections/Types';
 import { IndexType } from '@/pages/schema/Types';
 
 interface IInfo {

@@ -31,11 +31,12 @@ import {
   LOADING_STATE,
   DEFAULT_METRIC_VALUE_MAP,
   DYNAMIC_FIELD,
+  DataTypeEnum,
 } from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
-import { CollectionData, DataTypeEnum } from '../collections/Types';
+import { CollectionData } from '../collections/Types';
 import { TOP_K_OPTIONS } from './Constants';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 

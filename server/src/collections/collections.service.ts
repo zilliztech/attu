@@ -140,6 +140,7 @@ export class CollectionsService {
   ) {
     const now = Date.now();
     const res = await this.milvusService.client.query(data);
+
     const after = Date.now();
 
     throwErrorFromSDK(res.status);

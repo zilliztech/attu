@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { FieldHttp, IndexHttp } from '@/http';
+import { formatFieldType } from '@/utils';
 import { FieldView } from './Types';
 import IndexTypeElement from './IndexTypeElement';
 
@@ -139,27 +140,8 @@ const Schema: FC<{
                 ) : null}
               </div>
             ),
-            _fieldTypeElement: (
-              <div className={classes.nameWrapper}>
-                {f._fieldType}
-                {f._dimension ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label={`dim: ${f._dimension}`}
-                    variant="outlined"
-                  />
-                ) : null}
-                {f._maxLength && f._maxLength !== 'null' ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label={`max: ${f._maxLength}`}
-                    variant="outlined"
-                  />
-                ) : null}
-              </div>
-            ),
+            // Array<VarChar(64)>[Capacity]
+            _fieldTypeElement: formatFieldType(f),
             _indexParamElement: (
               <div className={classes.paramWrapper}>
                 {f._indexParameterPairs?.length > 0 ? (
@@ -222,25 +204,6 @@ const Schema: FC<{
       disablePadding: false,
       label: collectionTrans('fieldType'),
     },
-    // {
-    //   id: '_dimension',
-    //   align: 'left',
-    //   disablePadding: false,
-    //   label: (
-    //     <span className="flex-center">
-    //       {collectionTrans('dimension')}
-    //       <CustomToolTip title={collectionTrans('dimensionTooltip')}>
-    //         <InfoIcon classes={{ root: classes.icon }} />
-    //       </CustomToolTip>
-    //     </span>
-    //   ),
-    // },
-    // {
-    //   id: '_maxLength',
-    //   align: 'left',
-    //   disablePadding: true,
-    //   label: collectionTrans('maxLength'),
-    // },
     {
       id: '_indexName',
       align: 'left',

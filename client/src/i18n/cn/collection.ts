@@ -53,7 +53,7 @@ const collectionTrans = {
   idType: 'Type',
   dimension: 'Dimension',
   dimensionTooltip: 'Only vector type has dimension',
-  dimensionMutipleWarning: 'Dimension should be 8 multiple',
+  dimensionMultipleWarning: 'Dimension should be 8 multiple',
   dimensionPositiveWarning: 'Positive number only',
   newBtn: 'add new field',
   nameLengthWarning: 'Name length should be less than 256',

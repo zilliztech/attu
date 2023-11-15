@@ -16,10 +16,9 @@ import Filter from '@/components/advancedSearch';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
 // import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
-import { DataTypeStringEnum } from '../collections/Types';
 import { getLabelDisplayedRows } from '../search/Utils';
 import { getQueryStyles } from './Styles';
-import { DYNAMIC_FIELD } from '@/consts';
+import { DYNAMIC_FIELD, DataTypeStringEnum } from '@/consts';
 
 const Query: FC<{
   collectionName: string;

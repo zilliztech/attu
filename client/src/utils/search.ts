@@ -1,7 +1,6 @@
 import { Field } from '../components/advancedSearch/Types';
-import { DataTypeEnum, DataTypeStringEnum } from '../pages/collections/Types';
 import { FieldData, IndexType, IndexView } from '../pages/schema/Types';
-import { INDEX_TYPES_ENUM } from '@/consts';
+import { INDEX_TYPES_ENUM, DataTypeEnum, DataTypeStringEnum } from '@/consts';
 import { FieldOption } from '../types/SearchTypes';
 
 /**

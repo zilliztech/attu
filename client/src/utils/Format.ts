@@ -2,12 +2,10 @@ import {
   BYTE_UNITS,
   DEFAULT_MILVUS_PORT,
   DEFAULT_PROMETHEUS_PORT,
-} from '@/consts';
-import {
-  CreateFieldType,
   DataTypeEnum,
-  Field,
-} from '@/pages/collections/Types';
+} from '@/consts';
+import { CreateFieldType, Field } from '@/pages/collections/Types';
+import { FieldView } from '@/pages/schema/Types';
 
 /**
  * transform large capacity to capacity in b.
@@ -227,4 +225,24 @@ export const formatSystemTime = (time: string): string => {
 export const formatUtcToMilvus = (bigNumber: number) => {
   const milvusTimeStamp = BigInt(bigNumber) << BigInt(18);
   return milvusTimeStamp.toString();
+};
+
+/**
+ * Format field
+ * @param bigNumber
+ * @returns
+ */
+export const formatFieldType = (field: FieldView) => {
+  const { _fieldType, element_type, _maxLength, _maxCapacity, _dimension } =
+    field;
+
+  const elementType =
+    element_type !== 'None'
+      ? `<${element_type}${_maxLength ? `(${_maxLength})` : ''}>`
+      : '';
+  const maxCapacity = _maxCapacity ? `[${_maxCapacity}]` : '';
+  const dimension = _dimension ? `(${_dimension})` : '';
+  const maxLength = _fieldType === 'VarChar' ? `(${_maxLength})` : '';
+
+  return `${_fieldType}${elementType}${maxCapacity}${dimension}${maxLength}`;
 };

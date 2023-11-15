@@ -1,6 +1,6 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
 import { ChildrenStatusType } from '@/components/status/Types';
-import { LOADING_STATE } from '@/consts';
+import { LOADING_STATE, DataTypeEnum } from '@/consts';
 import { FieldData } from '../schema/Types';
 
 export interface CollectionData {
@@ -52,43 +52,6 @@ export interface CollectionCreateParam {
   consistency_level: string;
 }
 
-export enum ConsistencyLevelEnum {
-  Strong = 'Strong',
-  Session = 'Session', // default in PyMilvus
-  Bounded = 'Bounded',
-  Eventually = 'Eventually',
-  Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
-}
-
-export enum DataTypeEnum {
-  Bool = 1,
-  Int8 = 2,
-  Int16 = 3,
-  Int32 = 4,
-  Int64 = 5,
-  Float = 10,
-  Double = 11,
-  String = 20,
-  VarChar = 21,
-  JSON = 23,
-  BinaryVector = 100,
-  FloatVector = 101,
-}
-export enum DataTypeStringEnum {
-  Bool = 'Bool',
-  Int8 = 'Int8',
-  Int16 = 'Int16',
-  Int32 = 'Int32',
-  Int64 = 'Int64',
-  Float = 'Float',
-  Double = 'Double',
-  String = 'String',
-  VarChar = 'VarChar',
-  JSON = 'JSON',
-  BinaryVector = 'BinaryVector',
-  FloatVector = 'FloatVector',
-}
-
 export interface Field {
   name: string | null;
   data_type: DataTypeEnum;
@@ -103,7 +66,9 @@ export interface Field {
     max_length?: string | number;
   };
   createType?: CreateFieldType;
-  max_length?: string | number | null;
+  element_type?: DataTypeEnum;
+  max_length?: string | number;
+  max_capacity?: string | number;
   autoID?: boolean;
 }
 

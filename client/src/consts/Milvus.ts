@@ -1,9 +1,23 @@
-import { DataTypeEnum } from '@/pages/collections/Types';
-
 export const MILVUS_URL =
   ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';
 
 export const DYNAMIC_FIELD = `$meta`;
+
+export enum DataTypeEnum {
+  Bool = 1,
+  Int8 = 2,
+  Int16 = 3,
+  Int32 = 4,
+  Int64 = 5,
+  Float = 10,
+  Double = 11,
+  String = 20,
+  VarChar = 21,
+  JSON = 23,
+  BinaryVector = 100,
+  FloatVector = 101,
+  Array = 22,
+}
 
 export enum INDEX_TYPES_ENUM {
   AUTO_INDEX = 'AUTO_INDEX',
@@ -272,6 +286,14 @@ export enum MILVUS_DEPLOY_MODE {
   STANDALONE = 'STANDALONE',
 }
 
+export enum ConsistencyLevelEnum {
+  Strong = 'Strong',
+  Session = 'Session', // default in PyMilvus
+  Bounded = 'Bounded',
+  Eventually = 'Eventually',
+  Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
+}
+
 export enum DataTypeStringEnum {
   Bool = 'Bool',
   Int8 = 'Int8',
@@ -285,9 +307,12 @@ export enum DataTypeStringEnum {
   JSON = 'JSON',
   BinaryVector = 'BinaryVector',
   FloatVector = 'FloatVector',
+  Array = 'Array',
+  None = 'None',
 }
 
 export const NONE_INDEXABLE_DATA_TYPES = [
   DataTypeStringEnum.Bool,
   DataTypeStringEnum.JSON,
+  DataTypeStringEnum.Array,
 ];

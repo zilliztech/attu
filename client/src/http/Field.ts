@@ -1,4 +1,4 @@
-import { DataTypeStringEnum } from '../pages/collections/Types';
+import { DataTypeStringEnum } from '@/consts';
 import { FieldData } from '../pages/schema/Types';
 import BaseModel from './BaseModel';
 
@@ -11,6 +11,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   name!: string;
   description!: string;
   autoID!: boolean;
+  element_type!:  DataTypeStringEnum;
 
   constructor(props: {}) {
     super(props);
@@ -63,6 +64,11 @@ export class FieldHttp extends BaseModel implements FieldData {
   get _maxLength() {
     return (
       this.type_params.find(item => item.key === 'max_length')?.value || ''
+    );
+  }
+  get _maxCapacity() {
+    return (
+      this.type_params.find(item => item.key === 'max_capacity')?.value || ''
     );
   }
 }
