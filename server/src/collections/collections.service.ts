@@ -22,6 +22,7 @@ import {
   CompactReq,
   CountReq,
 } from '@zilliz/milvus2-sdk-node';
+import { Parser } from '@json2csv/plainjs';
 import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 
@@ -307,7 +308,7 @@ export class CollectionsService {
   /**
    * Load sample data into collection
    */
-  async importSample({ collection_name, size }: ImportSampleDto) {
+  async importSample({ collection_name, size, download }: ImportSampleDto) {
     const collectionInfo = await this.describeCollection({ collection_name });
     const fields_data = genRows(
       collectionInfo.schema.fields,
@@ -315,7 +316,15 @@ export class CollectionsService {
       collectionInfo.schema.enable_dynamic_field
     );
 
-    return await this.insert({ collection_name, fields_data });
+    if (download) {
+      const parser = new Parser({});
+      const csv = parser.parse(fields_data);
+      // If download is true, return the generated data directly
+      return { csv };
+    } else {
+      // Otherwise, insert the data into the collection
+      return await this.insert({ collection_name, fields_data });
+    }
   }
 
   async getCompactionState(data: GetCompactionStateReq) {

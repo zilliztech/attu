@@ -7,7 +7,7 @@
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "1.x",
-    "@json2csv/plainjs": "^7.0.1",
+    "@json2csv/plainjs": "^7.0.3",
     "@material-ui/core": "4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -17,6 +17,7 @@
     "d3": "^7.8.5",
     "dayjs": "^1.11.9",
     "file-saver": "^2.0.5",
+    "filesaver": "^0.0.13",
     "i18next": "^20.3.1",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
