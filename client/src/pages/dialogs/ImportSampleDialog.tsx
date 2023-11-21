@@ -1,17 +1,24 @@
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { FC, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { saveAs } from 'file-saver';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSelector from '@/components/customSelector/CustomSelector';
+import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { rootContext } from '@/context';
 import { InsertStatusEnum } from './insert/Types';
 import { CollectionHttp, MilvusHttp } from '@/http';
 import { LoadSampleParam } from './Types';
+import icons from '@/components/icons/Icons';
+const DownloadIcon = icons.download;
 
 const getStyles = makeStyles((theme: Theme) => {
   return {
     icon: {
       fontSize: '16px',
+    },
+    downloadBtn: {
+      margin: theme.spacing(1.5, 1),
     },
 
     selectors: {
@@ -23,6 +30,7 @@ const getStyles = makeStyles((theme: Theme) => {
         '& .selectLabel': {
           fontSize: '14px',
           lineHeight: '20px',
+
           color: theme.palette.attuDark.main,
         },
 
@@ -33,8 +41,13 @@ const getStyles = makeStyles((theme: Theme) => {
         },
       },
 
+      '& .actions': {
+        display: 'flex',
+        flexDirection: 'row',
+      },
+
       '& .selector': {
-        minWidth: '128px',
+        minWidth: theme.spacing(48),
       },
     },
   };
@@ -73,14 +86,24 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
 
   const handleImportSample = async (
     collectionName: string,
-    size: string
-  ): Promise<{ result: boolean; msg: string }> => {
+    size: string,
+    download: boolean = false
+  ): Promise<{ result: any; msg: string }> => {
     const param: LoadSampleParam = {
       collection_name: collectionName,
       size: size,
+      download,
     };
     try {
-      await CollectionHttp.importSample(collectionName, param);
+      const res = (await CollectionHttp.importSample(
+        collectionName,
+        param
+      )) as CollectionHttp;
+      if (download) {
+        const blob = new Blob([res._csv], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, 'data.csv');
+        return { result: res._csv, msg: '' };
+      }
       await MilvusHttp.flush(collectionName);
       return { result: true, msg: '' };
     } catch (err: any) {
@@ -93,7 +116,11 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
     }
   };
 
-  const handleNext = async () => {
+  const onDownloadCSVClicked = async () => {
+    return await handleImportSample(props.collection, size, true);
+  };
+
+  const importData = async () => {
     if (insertStatus === InsertStatusEnum.success) {
       handleCloseDialog();
       return;
@@ -127,7 +154,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
           ? btnTrans('done')
           : insertStatus
       }
-      handleConfirm={handleNext}
+      handleConfirm={importData}
       confirmDisabled={insertStatus === InsertStatusEnum.loading}
       showActions={true}
       showCancel={false}
@@ -142,18 +169,27 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
             </Typography>
           </div>
 
-          <CustomSelector
-            label={insertTrans('sampleDataSize')}
-            options={sizeOptions}
-            wrapperClass="selector"
-            labelClass="selectLabel"
-            value={size}
-            variant="filled"
-            onChange={(e: { target: { value: unknown } }) => {
-              const size = e.target.value;
-              setSize(size as string);
-            }}
-          />
+          <div className="actions">
+            <CustomSelector
+              label={insertTrans('sampleDataSize')}
+              options={sizeOptions}
+              wrapperClass="selector"
+              labelClass="selectLabel"
+              value={size}
+              variant="filled"
+              onChange={(e: { target: { value: unknown } }) => {
+                const size = e.target.value;
+                setSize(size as string);
+              }}
+            />
+            <CustomIconButton
+              className={classes.downloadBtn}
+              tooltip={insertTrans('downloadSampleDataCSV')}
+              onClick={onDownloadCSVClicked}
+            >
+              <DownloadIcon />
+            </CustomIconButton>
+          </div>
         </div>
       </form>
     </DialogTemplate>

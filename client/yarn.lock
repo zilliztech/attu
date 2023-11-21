@@ -484,18 +484,18 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@json2csv/formatters@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@json2csv/formatters/-/formatters-7.0.1.tgz#c025f0795f9bbab480de77e2248ab593987296b9"
-  integrity sha512-eCmYKIIoFDXUB0Fotet2RmcoFTtNLXLmSV7j6aEQH/D2GiO749Uan3ts03PtAhXpE11QghxBjS0toXom8VQNBw==
+"@json2csv/formatters@^7.0.3":
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/@json2csv/formatters/-/formatters-7.0.3.tgz#4d0584bd2664d6dfaa7bccc192d1d18aac7bee27"
+  integrity sha512-QLTpBNmNxGDAQNALkWwPdnyJ7IdXHQ0Motzog4fZOKK2ozpxckl6vwhWNBxbQs/25Zhp7bLS4J6ILu/hh0en6w==
 
-"@json2csv/plainjs@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@json2csv/plainjs/-/plainjs-7.0.1.tgz#361d849f04a2a5013c7880738f08b6bc193c24eb"
-  integrity sha512-UAdaZwahrUeYhMYYilJwDsRfE7wDRsmGMsszYH67j8FLD5gZitqG38RXpUgHEH0s6YjsY8iKYWeEQ19WILncFA==
+"@json2csv/plainjs@^7.0.3":
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/@json2csv/plainjs/-/plainjs-7.0.3.tgz#2182da06a38c17caceca64701389d9b80a233588"
+  integrity sha512-AEpEdeSu8o64Sdf7Xoy7BM4MyfZToN7oxxleXJ6u7v3h0V0hKdNIw7i4kQ08wiIe7lcJBhS3JRyEPKX6k2AsjA==
   dependencies:
-    "@json2csv/formatters" "^7.0.1"
-    "@streamparser/json" "^0.0.15"
+    "@json2csv/formatters" "^7.0.3"
+    "@streamparser/json" "^0.0.17"
     lodash.get "^4.4.2"
 
 "@material-ui/core@4.12.4":
@@ -636,10 +636,10 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@streamparser/json@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@streamparser/json/-/json-0.0.15.tgz#405fbe94877ce0cbd3cf650b4d9186a0ec6acd0a"
-  integrity sha512-6oikjkMTYAHGqKmcC9leE4+kY4Ch4eiTImXUN/N4d2bNGBYs0LJ/tfxmpvF5eExSU7iiPlV9jYlADqvj3NWA3Q==
+"@streamparser/json@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@streamparser/json/-/json-0.0.17.tgz#b68742ebb49eec9c1fcc76cfa730dd74a5131382"
+  integrity sha512-mW54K6CTVJVLwXRB6kSS1xGWPmtTuXAStWnlvtesmcySgtop+eFPWOywBFPpJO4UD173epYsPSP6HSW8kuqN8w==
 
 "@svgr/babel-plugin-add-jsx-attribute@^5.4.0":
   version "5.4.0"
@@ -2209,6 +2209,14 @@ file-saver@^2.0.5:
   resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
   integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
 
+filesaver@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/filesaver/-/filesaver-0.0.13.tgz#fa9b2ac1371d436fe5edc9285ed998d1e2782bee"
+  integrity sha512-ay2iShYJKmzKRPk89cgb14foqtCXcJIe5i+qdlSPAouKfBv7F2VZ0lxk9GjpcODe9p2YrXfi3Q+4CRn7ZDmleQ==
+  dependencies:
+    mkdirp "^0.5.0"
+    safename "0.0.4"
+
 fill-range@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-7.0.1.tgz#1919a6a7c75fe38b2c7c77e5198535da9acdda40"
@@ -2963,6 +2971,18 @@ minimatch@^3.0.4, minimatch@^3.1.1:
   dependencies:
     brace-expansion "^1.1.7"
 
+minimist@^1.2.6:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
+  integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
+
+mkdirp@^0.5.0:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
+  integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
+  dependencies:
+    minimist "^1.2.6"
+
 ms@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
@@ -3415,6 +3435,11 @@ rw@1:
   version "1.3.3"
   resolved "https://registry.npmmirror.com/rw/-/rw-1.3.3.tgz#3f862dfa91ab766b14885ef4d01124bfda074fb4"
   integrity sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==
+
+safename@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/safename/-/safename-0.0.4.tgz#b82c3b6db70d943a0582f9052fbfbfebbb589af5"
+  integrity sha512-+n4TsvESZKTXbHxOTSyQ0Q1JCXRb6MohgrqC2fbdALzTNQP/IhPOnCNRA4JPtagQq+6DD5ZsQ3lKMy57BYvwJA==
 
 "safer-buffer@>= 2.1.2 < 3.0.0":
   version "2.1.2"

@@ -738,6 +738,20 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@json2csv/formatters@^7.0.3":
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/@json2csv/formatters/-/formatters-7.0.3.tgz#4d0584bd2664d6dfaa7bccc192d1d18aac7bee27"
+  integrity sha512-QLTpBNmNxGDAQNALkWwPdnyJ7IdXHQ0Motzog4fZOKK2ozpxckl6vwhWNBxbQs/25Zhp7bLS4J6ILu/hh0en6w==
+
+"@json2csv/plainjs@^7.0.3":
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/@json2csv/plainjs/-/plainjs-7.0.3.tgz#2182da06a38c17caceca64701389d9b80a233588"
+  integrity sha512-AEpEdeSu8o64Sdf7Xoy7BM4MyfZToN7oxxleXJ6u7v3h0V0hKdNIw7i4kQ08wiIe7lcJBhS3JRyEPKX6k2AsjA==
+  dependencies:
+    "@json2csv/formatters" "^7.0.3"
+    "@streamparser/json" "^0.0.17"
+    lodash.get "^4.4.2"
+
 "@malept/cross-spawn-promise@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@malept/cross-spawn-promise/-/cross-spawn-promise-1.1.1.tgz#504af200af6b98e198bce768bc1730c6936ae01d"
@@ -841,6 +855,11 @@
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
+
+"@streamparser/json@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@streamparser/json/-/json-0.0.17.tgz#b68742ebb49eec9c1fcc76cfa730dd74a5131382"
+  integrity sha512-mW54K6CTVJVLwXRB6kSS1xGWPmtTuXAStWnlvtesmcySgtop+eFPWOywBFPpJO4UD173epYsPSP6HSW8kuqN8w==
 
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.6"
@@ -3429,6 +3448,11 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
+
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==
 
 lodash.memoize@4.x:
   version "4.1.2"

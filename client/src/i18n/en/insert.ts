@@ -31,7 +31,8 @@ const insertTrans = {
 
   importSampleData: 'Import sample data into {{collection}}',
   sampleDataSize: 'Choose sample data size',
-  importSampleDataDesc: `Import random data based on the collection's schema.`
+  importSampleDataDesc: `Import random data based on the collection's schema.`,
+  downloadSampleDataCSV: `Download Sample Data CSV`,
 };
 
 export default insertTrans;
