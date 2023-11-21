@@ -101,7 +101,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
       )) as CollectionHttp;
       if (download) {
         const blob = new Blob([res._csv], { type: 'text/csv;charset=utf-8;' });
-        saveAs(blob, `${collectionName}.sample.csv`);
+        saveAs(blob, `${collectionName}.sample.${size}.csv`);
         return { result: res._csv, msg: '' };
       }
       await MilvusHttp.flush(collectionName);
