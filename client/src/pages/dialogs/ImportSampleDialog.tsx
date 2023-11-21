@@ -88,7 +88,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
     collectionName: string,
     size: string,
     download: boolean = false
-  ): Promise<{ result: any; msg: string }> => {
+  ): Promise<{ result: string | boolean; msg: string }> => {
     const param: LoadSampleParam = {
       collection_name: collectionName,
       size: size,
