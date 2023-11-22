@@ -5,8 +5,8 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import { makeStyles, Theme, Link } from '@material-ui/core';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import { ReactComponent as peopleIcon } from '../../assets/icons/people.svg';
-import { ReactComponent as slackIcon } from '../../assets/icons/slack.svg';
+import peopleIcon from '@/assets/icons/people.svg?react';
+import slackIcon from '@/assets/icons/slack.svg?react';
 import qrcodePath from '../../assets/imgs/wechat_qrcode.png';
 
 const SLACK_LINK = 'https://slack.milvus.io';
@@ -78,14 +78,12 @@ const getStyles = makeStyles((theme: Theme) => ({
     fontWeight: 500,
     fontSize: theme.spacing(1.75),
     lineHeight: theme.spacing(2.5),
-
   },
   contentDesc: {
     fontSize: theme.spacing(1.5),
     lineHeight: theme.spacing(2.5),
     color: theme.palette.attuGrey.dark,
     marginBottom: theme.spacing(1),
-
   },
   contentLink: {
     display: 'block',
@@ -106,7 +104,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(2),
     width: theme.spacing(2.5),
     height: theme.spacing(2.5),
-  }
+  },
 }));
 
 const CommunityBtn = (props: any) => {
@@ -120,12 +118,8 @@ const CommunityBtn = (props: any) => {
       {open && (
         <div className={classes.container}>
           <div className={classes.head}>
-            <div className={classes.title}>
-              {communityTrans.hi}
-            </div>
-            <div className={classes.titleDesc}>
-              {communityTrans.growing}
-            </div>
+            <div className={classes.title}>{communityTrans.hi}</div>
+            <div className={classes.titleDesc}>{communityTrans.growing}</div>
           </div>
           <div className={classes.body}>
             <div className={classes.block}>
@@ -142,28 +136,32 @@ const CommunityBtn = (props: any) => {
                 {communityTrans.more}
               </div>
 
-              <SvgIcon viewBox="0 0 24 24" component={slackIcon} className={classes.icon} />
-              <div className={classes.contentDesc}>
-                {communityTrans.join}
-              </div>
+              <SvgIcon
+                viewBox="0 0 24 24"
+                component={slackIcon}
+                className={classes.icon}
+              />
+              <div className={classes.contentDesc}>{communityTrans.join}</div>
               <Link
                 classes={{ root: classes.contentLink }}
                 href={SLACK_LINK}
-                underline='always'
+                underline="always"
                 target="_blank"
                 rel="noopener"
               >
                 {SLACK_LINK}
               </Link>
 
-              <SvgIcon viewBox="0 0 24 24" component={GitHubIcon} className={classes.icon} />
-              <div className={classes.contentDesc}>
-                {communityTrans.get}
-              </div>
+              <SvgIcon
+                viewBox="0 0 24 24"
+                component={GitHubIcon}
+                className={classes.icon}
+              />
+              <div className={classes.contentDesc}>{communityTrans.get}</div>
               <Link
                 classes={{ root: classes.contentLink }}
                 href={GITHUB_LINK}
-                underline='always'
+                underline="always"
                 target="_blank"
                 rel="noopener"
               >
@@ -176,13 +174,15 @@ const CommunityBtn = (props: any) => {
       <Button
         className={classes.menuBtn}
         aria-haspopup="true"
-        onClick={() => { setOpen(!open) }}
+        onClick={() => {
+          setOpen(!open);
+        }}
       >
-        {open ?
+        {open ? (
           <ChevronRightIcon className={classes.chevronIcon} />
-          :
+        ) : (
           <SvgIcon viewBox="0 0 24 24" component={peopleIcon} />
-        }
+        )}
       </Button>
     </div>
   );
