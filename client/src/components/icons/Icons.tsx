@@ -29,20 +29,20 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 // import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PersonOutlineIcon from '@material-ui/icons/Person';
 import { SvgIcon } from '@material-ui/core';
-import { ReactComponent as ZillizIcon } from '../../assets/icons/attu.svg';
-import { ReactComponent as OverviewIcon } from '../../assets/icons/overview.svg';
-import { ReactComponent as CollectionIcon } from '../../assets/icons/collecion.svg';
-import { ReactComponent as ConsoleIcon } from '../../assets/icons/console.svg';
-import { ReactComponent as InfoIcon } from '../../assets/icons/info.svg';
-import { ReactComponent as ReleaseIcon } from '../../assets/icons/release.svg';
-import { ReactComponent as LoadIcon } from '../../assets/icons/load.svg';
-import { ReactComponent as KeyIcon } from '../../assets/icons/key.svg';
-import { ReactComponent as UploadIcon } from '../../assets/icons/upload.svg';
-import { ReactComponent as VectorSearchIcon } from '../../assets/icons/nav-search.svg';
-import { ReactComponent as SearchEmptyIcon } from '../../assets/icons/search.svg';
-import { ReactComponent as CopyIcon } from '../../assets/icons/copy.svg';
-import { ReactComponent as SystemIcon } from '../../assets/icons/system.svg';
-import { ReactComponent as Compact } from '../../assets/icons/compact.svg';
+import ZillizIcon from '@/assets/icons/attu.svg?react';
+import OverviewIcon from '@/assets/icons/overview.svg?react';
+import CollectionIcon from '@/assets/icons/collecion.svg?react';
+import ConsoleIcon from '@/assets/icons/console.svg?react';
+import InfoIcon from '@/assets/icons/info.svg?react';
+import ReleaseIcon from '@/assets/icons/release.svg?react';
+import LoadIcon from '@/assets/icons/load.svg?react';
+import KeyIcon from '@/assets/icons/key.svg?react';
+import UploadIcon from '@/assets/icons/upload.svg?react';
+import VectorSearchIcon from '@/assets/icons/nav-search.svg?react';
+import SearchEmptyIcon from '@/assets/icons/search.svg?react';
+import CopyIcon from '@/assets/icons/copy.svg?react';
+import SystemIcon from '@/assets/icons/system.svg?react';
+import Compact from '@/assets/icons/compact.svg?react';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import * as path from 'path';
 import reactRefresh from '@vitejs/plugin-react';
-const svgrPlugin = require('vite-plugin-svgr');
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,11 +16,12 @@ export default defineConfig({
   },
   plugins: [
     reactRefresh(),
-    svgrPlugin({
-      svgrOptions: {
-        icon: true,
-        // ...svgr options (https://react-svgr.com/docs/options/)
-      },
+    svgr({
+      // A minimatch pattern, or array of patterns, which specifies the files in the build the plugin should include.
+      include: '**/*.svg?react',
+
+      //  A minimatch pattern, or array of patterns, which specifies the files in the build the plugin should ignore. By default no files are ignored.
+      exclude: '',
     }),
   ],
   resolve: {
