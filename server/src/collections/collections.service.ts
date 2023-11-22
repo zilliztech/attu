@@ -308,7 +308,12 @@ export class CollectionsService {
   /**
    * Load sample data into collection
    */
-  async importSample({ collection_name, size, download }: ImportSampleDto) {
+  async importSample({
+    collection_name,
+    size,
+    download,
+    format,
+  }: ImportSampleDto) {
     const collectionInfo = await this.describeCollection({ collection_name });
     const fields_data = genRows(
       collectionInfo.schema.fields,
@@ -318,9 +323,12 @@ export class CollectionsService {
 
     if (download) {
       const parser = new Parser({});
-      const csv = parser.parse(fields_data);
+      const sampleFile =
+        format === 'csv'
+          ? parser.parse(fields_data)
+          : JSON.stringify(fields_data);
       // If download is true, return the generated data directly
-      return { csv };
+      return { sampleFile };
     } else {
       // Otherwise, insert the data into the collection
       return await this.insert({ collection_name, fields_data });

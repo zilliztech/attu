@@ -28,7 +28,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private id!: string;
   private loadedPercentage!: string;
   private createdTime!: string;
-  private csv!: string;
+  private sampleFile!: string;
   private schema!: {
     fields: Field[];
     autoID: boolean;
@@ -253,7 +253,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return this.schema;
   }
 
-  get _csv() {
-    return this.csv;
+  get _sampleFile() {
+    return this.sampleFile;
   }
 }

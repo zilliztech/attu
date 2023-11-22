@@ -1,10 +1,9 @@
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
 import { FC, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { saveAs } from 'file-saver';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { rootContext } from '@/context';
 import { InsertStatusEnum } from './insert/Types';
 import { CollectionHttp, MilvusHttp } from '@/http';
@@ -18,9 +17,9 @@ const getStyles = makeStyles((theme: Theme) => {
       fontSize: '16px',
     },
     downloadBtn: {
-      margin: theme.spacing(1.5, 1),
+      maxWidth: '240px',
+      margin: theme.spacing(1.5, 1.5, 0, 0),
     },
-
     selectors: {
       '& .selectorWrapper': {
         display: 'flex',
@@ -36,26 +35,56 @@ const getStyles = makeStyles((theme: Theme) => {
 
         '& .description': {
           color: theme.palette.attuGrey.dark,
-          marginBottom: theme.spacing(1),
-          fontSize: 12,
+          marginBottom: theme.spacing(2),
+          fontSize: 13,
+          lineHeight: 1.5,
+          width: '35vw',
         },
       },
-
       '& .actions': {
+        display: 'flex',
+        flexDirection: 'column',
+      },
+      '& .download-actions': {
         display: 'flex',
         flexDirection: 'row',
       },
-
       '& .selector': {
-        minWidth: theme.spacing(48),
+        maxWidth: '35vw',
       },
     },
   };
 });
 
+const sizeOptions = [
+  {
+    label: '100',
+    value: '100',
+  },
+  {
+    label: '1000',
+    value: '1000',
+  },
+  {
+    label: '5000',
+    value: '5000',
+  },
+  {
+    label: '10k',
+    value: '10000',
+  },
+];
+
 const ImportSampleDialog: FC<{ collection: string }> = props => {
   const classes = getStyles();
-  const [size, setSize] = useState<string>('100');
+  const { collection } = props;
+  const [size, setSize] = useState<string>(sizeOptions[0].value);
+  const [csvFileName, setCsvFileName] = useState<string>(
+    `${collection}.sample.${size}.csv`
+  );
+  const [jsonFileName, setJsonFileName] = useState<string>(
+    `${collection}.sample.${size}.json`
+  );
   const [insertStatus, setInsertStatus] = useState<InsertStatusEnum>(
     InsertStatusEnum.init
   );
@@ -65,34 +94,17 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   // selected collection name
 
-  const sizeOptions = [
-    {
-      label: '100',
-      value: '100',
-    },
-    {
-      label: '1k',
-      value: '1000',
-    },
-    {
-      label: '5k',
-      value: '5000',
-    },
-    {
-      label: '10k',
-      value: '10000',
-    },
-  ];
-
   const handleImportSample = async (
     collectionName: string,
     size: string,
-    download: boolean = false
+    download: boolean = false,
+    format: 'csv' | 'json' = 'csv'
   ): Promise<{ result: string | boolean; msg: string }> => {
     const param: LoadSampleParam = {
       collection_name: collectionName,
       size: size,
       download,
+      format: format,
     };
     try {
       const res = (await CollectionHttp.importSample(
@@ -100,9 +112,12 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
         param
       )) as CollectionHttp;
       if (download) {
-        const blob = new Blob([res._csv], { type: 'text/csv;charset=utf-8;' });
-        saveAs(blob, `${collectionName}.sample.${size}.csv`);
-        return { result: res._csv, msg: '' };
+        const fileName = format === 'csv' ? csvFileName : jsonFileName;
+        const type =
+          format === 'csv' ? 'text/csv;charset=utf-8;' : 'application/json';
+        const blob = new Blob([res._sampleFile], { type });
+        saveAs(blob, fileName);
+        return { result: res._sampleFile, msg: '' };
       }
       await MilvusHttp.flush(collectionName);
       return { result: true, msg: '' };
@@ -117,7 +132,11 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
   };
 
   const onDownloadCSVClicked = async () => {
-    return await handleImportSample(props.collection, size, true);
+    return await handleImportSample(collection, size, true, 'csv');
+  };
+
+  const onDownloadJSONClicked = async () => {
+    return await handleImportSample(collection, size, true, 'json');
   };
 
   const importData = async () => {
@@ -127,7 +146,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
     }
     // start loading
     setInsertStatus(InsertStatusEnum.loading);
-    const { result, msg } = await handleImportSample(props.collection, size);
+    const { result, msg } = await handleImportSample(collection, size);
 
     if (!result) {
       openSnackBar(msg, 'error');
@@ -142,7 +161,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
   return (
     <DialogTemplate
       title={insertTrans('importSampleData', {
-        collection: props.collection,
+        collection,
       })}
       handleClose={handleCloseDialog}
       confirmLabel={
@@ -180,15 +199,31 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
               onChange={(e: { target: { value: unknown } }) => {
                 const size = e.target.value;
                 setSize(size as string);
+                setCsvFileName(`${collection}.sample.${size}.csv`);
+                setJsonFileName(`${collection}.sample.${size}.json`);
               }}
             />
-            <CustomIconButton
+          </div>
+
+          <div className="download-actions">
+            <Chip
               className={classes.downloadBtn}
-              tooltip={insertTrans('downloadSampleDataCSV')}
+              icon={<DownloadIcon />}
+              label={csvFileName}
+              title={csvFileName}
+              variant="outlined"
+              size="small"
               onClick={onDownloadCSVClicked}
-            >
-              <DownloadIcon />
-            </CustomIconButton>
+            />
+            <Chip
+              className={classes.downloadBtn}
+              icon={<DownloadIcon />}
+              label={jsonFileName}
+              title={jsonFileName}
+              variant="outlined"
+              size="small"
+              onClick={onDownloadJSONClicked}
+            />
           </div>
         </div>
       </form>

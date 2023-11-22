@@ -55,10 +55,17 @@ export class InsertDataDto {
 export class ImportSampleDto {
   @IsOptional()
   readonly collection_name: string;
+
   @IsString()
   readonly size: string;
+
   @IsBoolean()
+  @IsOptional()
   readonly download?: boolean;
+
+  @IsString()
+  @IsOptional()
+  readonly format?: string;
 }
 
 export class GetReplicasDto {
