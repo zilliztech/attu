@@ -1,14 +1,19 @@
 import axios from 'axios';
 import { MILVUS_ADDRESS } from '@/consts';
 
-// console.log(import.meta.env.NODE_ENV, 'api:', import.meta.env.VITE_BASE_URL);
-// console.log('docker env', (window as any)._env_);
+// base hots url
+const DEFAULT_HOST_URL = `http://127.0.0.1:3000`;
+
+const hostUrl: { [key: string]: string | undefined } = {
+  development: DEFAULT_HOST_URL,
+  production: ((window as any)._env_ && (window as any)._env_.HOST_URL) || '',
+  electron: DEFAULT_HOST_URL,
+};
+
 const isElectron =
   (window as any)._env_ && (window as any)._env_.IS_ELECTRON === 'yes';
-export const url =
-  import.meta.env.MODE === 'development' || isElectron
-    ? (window as any)._env_ && (window as any)._env_.HOST_URL
-    : '';
+
+export const url = hostUrl[isElectron ? 'electron' : import.meta.env.MODE];
 
 const axiosInstance = axios.create({
   baseURL: `${url}/api/v1`,
