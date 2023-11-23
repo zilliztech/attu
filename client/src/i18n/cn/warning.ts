@@ -1,13 +1,13 @@
 const warningTrans = {
-  required: '{{name}} is required',
-  requiredOnly: 'Required',
-  positive: '{{name}} should be positive',
-  integer: '{{name}} should be integers',
-  range: 'Range is {{min}} ~ {{max}}',
+  required: '{{name}} 是必需的',
+  requiredOnly: '必需的',
+  positive: '{{name}} 应为正数',
+  integer: '{{name}} 应为整数',
+  range: '范围是 {{min}} ~ {{max}}',
   specValueOrRange:
-    '{{name}} should be {{specValue}}, or in range {{min}} ~ {{max}}',
+    '{{name}} 应为 {{specValue}}，或在范围 {{min}} ~ {{max}} 内',
   noSupportIndexType:
-    'Attu has not supported {{type}} yet. Please change another field',
+    'Attu 还不支持 {{type}}。请更换其他字段',
 };
 
 export default warningTrans;

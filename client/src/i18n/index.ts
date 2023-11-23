@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 import commonCn from './cn/common';
 import commonEn from './en/common';
@@ -35,7 +36,7 @@ import prometheusTransEn from './en/prometheus';
 import prometheusTransCn from './cn/prometheus';
 
 export const resources = {
-  cn: {
+  'zh-CN': {
     translation: commonCn,
     btn: buttonCn,
     warning: warningCn,
@@ -79,10 +80,9 @@ export const resources = {
 i18n
   // detect user language
   // learn more: https://github.com/i18next/i18next-browser-languageDetector
-  // .use(LanguageDetector)
+  .use(LanguageDetector)
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
-    lng: 'en',
     fallbackLng: 'en',
     resources,
     keySeparator: false, // we do not use keys in form messages.welcome
