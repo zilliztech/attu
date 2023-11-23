@@ -22,7 +22,7 @@ const btnTrans = {
   importSampleData: '导入样本数据',
   loading: '加载中...',
   importing: '导入中...',
-  example: '示例',
+  example: '生成随机向量',
   rename: '重命名',
 };
 

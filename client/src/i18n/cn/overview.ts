@@ -7,7 +7,7 @@ const overviewTrans = {
   sysInfo: '系统信息',
   database: '数据库',
   milvusVersion: 'Milvus版本',
-  upTime: '根协调器运行时间',
+  upTime: '运行时间',
   deployMode: '部署模式',
   databases: '数据库',
   users: '用户',
