@@ -1,10 +1,10 @@
 const prometheusTrans = {
-  ready: 'Prometheus is ready.',
-  invalid: 'Prometheus configuration is invalid.',
+  ready: 'Prometheus已准备好。',
+  invalid: 'Prometheus配置无效。',
 
-  totalCount: 'Total Count',
-  searchCount: 'Search Count',
-  searchLatency: 'Search Latency',
+  totalCount: '总数',
+  searchCount: '搜索次数',
+  searchLatency: '搜索延迟',
 };
 
 export default prometheusTrans;

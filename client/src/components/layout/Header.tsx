@@ -70,6 +70,7 @@ const Header: FC<HeaderType> = props => {
 
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
+  const { t: dbTrans } = useTranslation('database');
   const BackIcon = icons.back;
   const LogoutIcon = icons.logout;
 
@@ -91,7 +92,6 @@ const Header: FC<HeaderType> = props => {
   };
 
   const dbOptions = databases.map(d => ({ value: d, label: d }));
-
   return (
     <header className={classes.header}>
       <div className={classes.contentWrapper}>
@@ -104,7 +104,7 @@ const Header: FC<HeaderType> = props => {
           )}
           {navInfo.showDatabaseSelector ? (
             <CustomSelector
-              label="Database"
+              label={dbTrans('database')}
               value={database}
               onChange={async (e: { target: { value: unknown } }) => {
                 const database = e.target.value as string;

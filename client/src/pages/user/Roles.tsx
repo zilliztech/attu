@@ -6,7 +6,7 @@ import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import { DeleteRoleParams, RoleData } from './Types';
+import { DeleteRoleParams, RoleData, RolesType } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import UpdateRoleDialog from './UpdateRoleDialog';
@@ -35,7 +35,7 @@ const Roles = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchRoles = async () => {
-    const roles = await UserHttp.getRoles();
+    const roles = (await UserHttp.getRoles()) as RolesType;
     setSelectedRole([]);
 
     setRoles(

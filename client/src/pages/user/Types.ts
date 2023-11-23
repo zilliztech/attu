@@ -99,3 +99,16 @@ export interface PrivilegeOptionsProps {
   objectName?: string;
   title: string;
 }
+
+export type RBACOptions = {
+  GlobalPrivileges: Record<string, unknown>;
+  CollectionPrivileges: Record<string, unknown>;
+  RbacObjects: Record<string, unknown>;
+  UserPrivileges: Record<string, unknown>;
+  Privileges: Record<string, unknown>;
+};
+
+export type RoleOptions = string[];
+export type RolesType = {
+  results: any[];
+};
