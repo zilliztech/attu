@@ -1,3 +1,5 @@
+import { FILE_MIME_TYPE } from '@/consts';
+
 export interface UploaderProps {
   label: string;
   accept: string;
@@ -10,7 +12,11 @@ export interface UploaderProps {
   overSizeWarning?: string;
   setFileName: (fileName: string) => void;
   // handle uploader uploaded
-  handleUploadedData: (data: string, uploader: HTMLFormElement) => void;
+  handleUploadedData: (
+    data: string,
+    uploader: HTMLFormElement,
+    type: FILE_MIME_TYPE
+  ) => void;
   // handle uploader onchange
   handleUploadFileChange?: (file: File, uploader: HTMLFormElement) => void;
   handleUploadError?: () => void;

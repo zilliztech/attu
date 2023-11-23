@@ -2,6 +2,7 @@ import { CollectionData } from '../../collections/Types';
 import { PartitionView } from '../../partitions/Types';
 import { FieldData } from '../../schema/Types';
 import { Option } from '@/components/customSelector/Types';
+import { FILE_MIME_TYPE } from '@/consts';
 
 export interface InsertContentProps {
   // optional on partition page since its collection is fixed
@@ -53,7 +54,11 @@ export interface InsertImportProps {
   handleCollectionChange?: (collectionName: string) => void;
   handlePartitionChange: (partitionName: string) => void;
   // handle uploaded data
-  handleUploadedData: (data: string, uploader: HTMLFormElement) => void;
+  handleUploadedData: (
+    data: string,
+    uploader: HTMLFormElement,
+    type: FILE_MIME_TYPE
+  ) => void;
   handleUploadFileChange: (file: File, uploader: HTMLFormElement) => void;
   fileName: string;
   setFileName: (fileName: string) => void;

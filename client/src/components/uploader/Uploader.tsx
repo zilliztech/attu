@@ -3,6 +3,7 @@ import { FC, useContext, useRef } from 'react';
 import { rootContext } from '@/context';
 import CustomButton from '../customButton/CustomButton';
 import { UploaderProps } from './Types';
+import { FILE_MIME_TYPE } from '@/consts';
 
 const getStyles = makeStyles((theme: Theme) => ({
   btn: {},
@@ -22,6 +23,7 @@ const Uploader: FC<UploaderProps> = ({
   setFileName,
 }) => {
   const inputRef = useRef(null);
+  const type = useRef<FILE_MIME_TYPE>(FILE_MIME_TYPE.CSV);
   const classes = getStyles();
 
   const { openSnackBar } = useContext(rootContext);
@@ -33,7 +35,7 @@ const Uploader: FC<UploaderProps> = ({
     reader.onload = async e => {
       const data = reader.result;
       if (data) {
-        handleUploadedData(data as string, inputRef.current!);
+        handleUploadedData(data as string, inputRef.current!, type.current);
       }
     };
     // handle upload error
@@ -46,6 +48,9 @@ const Uploader: FC<UploaderProps> = ({
     uploader!.onchange = (e: Event) => {
       const target = e.target as HTMLInputElement;
       const file: File = (target.files as FileList)[0];
+      if (file) {
+        type.current = file.type as FILE_MIME_TYPE; // This will log the MIME type of the file
+      }
       const isSizeOverLimit = file && maxSize && maxSize < file.size;
 
       if (!file) {

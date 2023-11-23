@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DialogContent,

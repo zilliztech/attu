@@ -12,10 +12,11 @@ import { parse } from 'papaparse';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import icons from '@/components/icons/Icons';
-import { rootContext } from '@/context';
 import { Option } from '@/components/customSelector/Types';
 import { PartitionHttp } from '@/http';
+import { rootContext } from '@/context';
 import { combineHeadsAndData } from '@/utils';
+import { FILE_MIME_TYPE } from '@/consts';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
 import InsertStatus from './Status';
@@ -76,6 +77,9 @@ const InsertContainer: FC<InsertContentProps> = ({
 
   // uploaded csv data (type: string)
   const [csvData, setCsvData] = useState<any[]>([]);
+  const [jsonData, setJsonData] = useState<
+    Record<string, unknown> | undefined
+  >();
 
   // handle changed table heads
   const [tableHeads, setTableHeads] = useState<string[]>([]);
@@ -95,7 +99,7 @@ const InsertContainer: FC<InsertContentProps> = ({
        * 2. must upload a csv file
        */
       const selectValid = collectionValue !== '' && partitionValue !== '';
-      const uploadValid = csvData.length > 0;
+      const uploadValid = csvData.length > 0 || typeof jsonData !== 'undefined';
       const condition = selectValid && uploadValid;
       setNextDisabled(!condition);
     }
@@ -106,7 +110,14 @@ const InsertContainer: FC<InsertContentProps> = ({
       const headsValid = tableHeads.every(h => h !== '');
       setNextDisabled(!headsValid);
     }
-  }, [activeStep, collectionValue, partitionValue, csvData, tableHeads]);
+  }, [
+    activeStep,
+    collectionValue,
+    partitionValue,
+    csvData,
+    tableHeads,
+    jsonData,
+  ]);
 
   useEffect(() => {
     const heads = isContainFieldNames
@@ -280,8 +291,17 @@ const InsertContainer: FC<InsertContentProps> = ({
     return !isLengthEqual;
   };
 
-  const handleUploadedData = (csv: string, uploader: HTMLFormElement) => {
-    const { data } = parse(csv);
+  const handleUploadedData = (
+    content: string,
+    uploader: HTMLFormElement,
+    type: FILE_MIME_TYPE
+  ) => {
+    // if json, just parse json to object
+    if (type === FILE_MIME_TYPE.JSON) {
+      setJsonData(JSON.parse(content));
+      return;
+    }
+    const { data } = parse(content);
     // if uploaded csv contains heads, firstRowItems is the list of all heads
     const [firstRowItems = []] = data as string[][];
 
@@ -299,9 +319,16 @@ const InsertContainer: FC<InsertContentProps> = ({
   const handleInsertData = async () => {
     // start loading
     setInsertStatus(InsertStatusEnum.loading);
-    // combine table heads and data
-    const tableData = isContainFieldNames ? csvData.slice(1) : csvData;
-    const data = combineHeadsAndData(tableHeads, tableData);
+
+    // process data
+    const data =
+      typeof jsonData !== 'undefined'
+        ? jsonData
+        : combineHeadsAndData(
+            tableHeads,
+            isContainFieldNames ? csvData.slice(1) : csvData
+          );
+
     const { result, msg } = await handleInsert(
       collectionValue,
       partitionValue,
@@ -320,9 +347,13 @@ const InsertContainer: FC<InsertContentProps> = ({
   };
 
   const handleNext = () => {
+    const isJSON = typeof jsonData !== 'undefined';
     switch (activeStep) {
       case InsertStepperEnum.import:
-        setActiveStep(activeStep => activeStep + 1);
+        setActiveStep(activeStep => activeStep + (isJSON ? 2 : 1));
+        if (isJSON) {
+          handleInsertData();
+        }
         break;
       case InsertStepperEnum.preview:
         setActiveStep(activeStep => activeStep + 1);
