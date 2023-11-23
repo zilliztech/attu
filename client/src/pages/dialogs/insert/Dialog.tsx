@@ -299,6 +299,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     // if json, just parse json to object
     if (type === FILE_MIME_TYPE.JSON) {
       setJsonData(JSON.parse(content));
+      setCsvData([]);
       return;
     }
     const { data } = parse(content);
@@ -314,6 +315,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       return;
     }
     setCsvData(data);
+    setJsonData(undefined);
   };
 
   const handleInsertData = async () => {
