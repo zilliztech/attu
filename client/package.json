@@ -23,7 +23,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-highlight-words": "^0.17.0",
-    "react-i18next": "^12.0.0",
+    "react-i18next": "^13.5.0",
     "react-router-dom": "^6.14.2",
     "react-syntax-highlighter": "^15.5.0",
     "socket.io-client": "^4.7.1",

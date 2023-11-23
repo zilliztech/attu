@@ -109,6 +109,6 @@ export type RBACOptions = {
 };
 
 export type RoleOptions = string[];
-export type Roles = {
+export type RolesType = {
   results: any[];
 };
