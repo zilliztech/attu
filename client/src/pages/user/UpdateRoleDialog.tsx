@@ -11,6 +11,7 @@ import {
   CreateRoleProps,
   CreateRoleParams,
   PrivilegeOptionsProps,
+  RBACOptions,
 } from './Types';
 import PrivilegeOptions from './PrivilegeOptions';
 
@@ -40,7 +41,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
-  const [rbacOptions, setRbacOptions] = useState({
+  const [rbacOptions, setRbacOptions] = useState<RBACOptions>({
     GlobalPrivileges: {},
     CollectionPrivileges: {},
     RbacObjects: {},
@@ -49,7 +50,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   });
 
   const fetchRBAC = async () => {
-    const rbacOptions = await UserHttp.getRBAC();
+    const rbacOptions = (await UserHttp.getRBAC()) as RBACOptions;
 
     setRbacOptions(rbacOptions);
   };
