@@ -1,10 +1,10 @@
 const navTrans = {
-  overview: 'Overview',
+  overview: '概览',
   collection: 'Collection',
-  console: 'Search Console',
-  search: 'Vector Search',
-  system: 'System View',
-  user: 'User',
+  console: '搜索控制台',
+  search: '向量搜索',
+  system: '系统视图',
+  user: '用户',
 };
 
 export default navTrans;

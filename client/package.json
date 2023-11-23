@@ -19,6 +19,7 @@
     "file-saver": "^2.0.5",
     "filesaver": "^0.0.13",
     "i18next": "^20.3.1",
+    "i18next-browser-languagedetector": "^7.2.0",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
