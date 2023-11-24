@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useContext } from 'react';
 import { authContext } from '@/context';
 import Collection from '@/pages/collections/Collection';
@@ -11,54 +11,30 @@ import Search from '@/pages/search/VectorSearch';
 import System from '@/pages/system/SystemView';
 import SystemHealthy from '@/pages/systemHealthy/SystemHealthyView';
 
-const routeObj = [
-  {
-    path: '/',
-    element: <Index />,
-    children: [
-      {
-        path: '/databases',
-        element: <Database />,
-      },
-      {
-        path: '/collections',
-        element: <Collections />,
-      },
-      {
-        path: '/collections/:collectionName',
-        element: <Collection />,
-      },
-      {
-        path: '/search',
-        element: <Search />,
-      },
-      {
-        path: '/system_healthy',
-        element: <SystemHealthy />,
-      },
-    ],
-  },
-  { path: '/connect', element: <Connect /> },
-];
-
-const Router = () => {
+const RouterComponent = () => {
   const { isManaged } = useContext(authContext);
 
-  if (!isManaged) {
-    routeObj[0].children?.push(
-      {
-        path: '/users',
-        element: <Users />,
-      },
-      {
-        path: '/system',
-        element: <System />,
-      }
-    );
-  }
-
-  const router = createHashRouter(routeObj);
-
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Index />}>
+          <Route index element={<Database />} />
+          <Route path="databases" element={<Database />} />
+          <Route path="collections" element={<Collections />} />
+          <Route path="collections/:collectionName" element={<Collection />} />
+          <Route path="search" element={<Search />} />
+          <Route path="system_healthy" element={<SystemHealthy />} />
+          {!isManaged && (
+            <>
+              <Route path="users" element={<Users />} />
+              <Route path="system" element={<System />} />
+            </>
+          )}
+        </Route>
+        <Route path="connect" element={<Connect />} />
+      </Routes>
+    </Router>
+  );
 };
-export default Router;
+
+export default RouterComponent;

@@ -11,5 +11,8 @@
       "{name: 'beta', prerelease: true}"
     ]
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "react-router-dom": "^6.20.0"
+  }
 }
