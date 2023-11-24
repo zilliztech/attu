@@ -40,7 +40,7 @@ const collectionTrans = {
   // create dialog
   createTitle: '创建Collection',
   general: '一般信息',
-  schema: '模式',
+  schema: 'schema',
   consistency: '一致性',
   consistencyLevel: '一致性级别',
   description: '描述',
@@ -65,7 +65,7 @@ const collectionTrans = {
   partitionKey: '分区键',
   partitionKeyTooltip:
     'Milvus将根据分区键字段中的值在分区中存储entities。只支持一个Int64或VarChar字段。',
-  enableDynamicSchema: '启用动态模式',
+  enableDynamicSchema: '启用动态Schema',
 
   // load dialog
   loadTitle: '加载Collection',
@@ -89,7 +89,7 @@ const collectionTrans = {
 
   // collection tabs
   partitionTab: '分区',
-  schemaTab: '模式',
+  schemaTab: 'Schema',
   queryTab: '数据查询',
   previewTab: '数据预览',
   segmentsTab: '数据段(Segments)',
@@ -122,7 +122,7 @@ const collectionTrans = {
   // column tooltip
   autoIDTooltip: '主键列的值由Milvus自动生成。',
   dynamicSchemaTooltip:
-    '动态模式使用户能够在不修改现有模式的情况下向Milvus collection插入带有新字段的entities。',
+    '动态Schema使用户能够在不修改现有Schema的情况下向Milvus collection插入带有新字段的entities。',
   consistencyLevelTooltip:
     '在分布式数据库中，一致性特指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
   consistencyBoundedTooltip: '它允许在一定时间内数据不一致。',
