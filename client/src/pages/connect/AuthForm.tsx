@@ -61,10 +61,13 @@ export const AuthForm = (props: any) => {
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
+  const { t: dbTrans } = useTranslation('database');
+
   const [form, setForm] = useState({
     address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
     username: '',
     password: '',
+    database: '',
     ssl: false,
   });
   const checkedForm = useMemo(() => {
@@ -73,7 +76,7 @@ export const AuthForm = (props: any) => {
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
   const handleInputChange = (
-    key: 'address' | 'username' | 'password',
+    key: 'address' | 'username' | 'password' | 'database' | 'ssl',
     value: string | boolean
   ) => {
     setForm(v => ({ ...v, [key]: value }));
@@ -101,6 +104,16 @@ export const AuthForm = (props: any) => {
     return [
       ...noAuthConfigs,
       {
+        label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
+        key: 'database',
+        onChange: (value: string) => handleInputChange('database', value),
+        variant: 'filled',
+        className: classes.input,
+        placeholder: dbTrans('database'),
+        fullWidth: true,
+        defaultValue: form.database,
+      },
+      {
         label: `Milvus ${attuTrans.username} ${attuTrans.optional}`,
         key: 'username',
         onChange: (value: string) => handleInputChange('username', value),
@@ -108,7 +121,6 @@ export const AuthForm = (props: any) => {
         className: classes.input,
         placeholder: attuTrans.username,
         fullWidth: true,
-
         defaultValue: form.username,
       },
       {
@@ -180,7 +192,9 @@ export const AuthForm = (props: any) => {
     event.preventDefault();
     const address = form.address;
     const data = { ...form, address };
-    await MilvusHttp.connect(data);
+    const d = await MilvusHttp.connect(data);
+
+    console.log(111, d, data)
 
     setIsAuth(true);
     setAddress(address);
