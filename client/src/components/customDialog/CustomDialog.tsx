@@ -98,7 +98,11 @@ const CustomDialog: FC<CustomDialogType> = props => {
         container: `${containerClass}`,
       }}
       open={open}
-      onClose={handleCancel}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          handleCancel();
+        }
+      }}
     >
       {type === 'notice' ? (
         <form onSubmit={handleConfirm}>

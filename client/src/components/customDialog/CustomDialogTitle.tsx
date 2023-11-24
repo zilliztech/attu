@@ -1,9 +1,4 @@
-import {
-  DialogTitleProps,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { DialogTitleProps, makeStyles, Typography } from '@material-ui/core';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import icons from '../icons/Icons';
 import { theme } from '../../styles/theme';
@@ -18,7 +13,7 @@ const getStyles = makeStyles(() => ({
   title: {
     fontWeight: 500,
     wordBreak: 'break-all',
-    maxWidth: 500
+    maxWidth: 500,
   },
   icon: {
     fontSize: '24px',
