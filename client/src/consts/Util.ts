@@ -47,3 +47,8 @@ export const LOGICAL_OPERATORS = [
     label: 'JSON_CONTAINS',
   },
 ];
+
+export enum FILE_MIME_TYPE {
+  CSV = 'text/csv',
+  JSON = 'application/json',
+}

@@ -2,9 +2,9 @@ const insertTrans = {
   import: '导入数据',
   targetTip: '放置数据的位置',
   file: '文件',
-  uploaderLabel: '选择CSV文件',
+  uploaderLabel: '选择CSV或者JSON文件',
   fileNamePlaceHolder: '未选择文件',
-  sample: 'CSV样本',
+  sample: '样本',
   noteTitle: '注意',
   notes: [
     `确保数据中的列名与Schema中的字段标签名相同。`,

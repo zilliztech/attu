@@ -158,7 +158,7 @@ const InsertImport: FC<InsertImportProps> = ({
           <Uploader
             btnClass="uploader"
             label={insertTrans('uploaderLabel')}
-            accept=".csv"
+            accept=".csv,.json"
             // selected collection will affect schema, which is required for uploaded data validation check
             // so upload file should be disabled until user select one collection
             disabled={!selectedCollection}
