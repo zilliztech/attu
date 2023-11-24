@@ -38,10 +38,13 @@ function createWindow() {
     });
   });
 
+  // get system lang
+  mainWindow.webContents.executeJavaScript(`
+   localStorage.setItem('lang', '${app.getLocale()}');
+  `);
   // mainWindow.maximize();
   // mainWindow.show();
   // and load the index.html of the app.
-
   const startUrl =
     process.env.ELECTRON_START_URL ||
     url.format({

@@ -29,7 +29,7 @@ const insertTrans = {
 
   importSampleData: '将样本数据导入到{{collection}}',
   sampleDataSize: '选择样本数据大小',
-  importSampleDataDesc: `此功能导入与Collection模式匹配的随机生成的数据。对于测试和开发很有用。点击下载按钮获取数据。`,
+  importSampleDataDesc: `此功能导入与Collection Schema匹配的随机生成的数据。对于测试和开发很有用。点击下载按钮获取数据。`,
   downloadSampleDataCSV: `下载样本CSV数据`,
   downloadSampleDataJSON: `下载样本JSON数据`,
 };
