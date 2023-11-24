@@ -177,7 +177,7 @@ const Partitions: FC<{
       label: btnTrans('insert'),
       onClick: async () => {
         const collection = await fetchCollectionDetail(collectionName);
-        const schema = collection.schema.fields.map(
+        const schema = collection._schema.fields.map(
           (f: Field) => new FieldHttp(f)
         );
 

@@ -22,7 +22,9 @@ export class UserHttp extends BaseModel {
 
   // get user data
   static getUsers() {
-    return super.search({ path: this.USERS_URL, params: {} });
+    return super.search({ path: this.USERS_URL, params: {} }) as Promise<{
+      usernames: string[];
+    }>;
   }
 
   // create user
@@ -68,7 +70,9 @@ export class UserHttp extends BaseModel {
 
   // get all roles
   static getRoles() {
-    return super.search({ path: `${this.ROLES_URL}`, params: {} });
+    return super.search({ path: `${this.ROLES_URL}`, params: {} }) as Promise<{
+      results: string[];
+    }>;
   }
 
   // update role privileges
@@ -81,7 +85,16 @@ export class UserHttp extends BaseModel {
 
   // get RBAC info
   static getRBAC() {
-    return super.search({ path: `${this.USERS_URL}/rbac`, params: {} });
+    return super.search({
+      path: `${this.USERS_URL}/rbac`,
+      params: {},
+    }) as Promise<{
+      GlobalPrivileges: Record<string, unknown>;
+      CollectionPrivileges: Record<string, unknown>;
+      RbacObjects: Record<string, unknown>;
+      UserPrivileges: Record<string, unknown>;
+      Privileges: Record<string, unknown>;
+    }>;
   }
 
   get _names() {

@@ -105,7 +105,8 @@ const Preview: FC<{
         expr: '',
         vectors,
         output_fields: [primaryKey],
-        vector_type: DataTypeEnum[vectorField!._fieldType],
+        vector_type:
+          DataTypeEnum[vectorField!._fieldType as keyof typeof DataTypeEnum],
       });
 
       // compose random id list expression

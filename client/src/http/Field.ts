@@ -11,7 +11,7 @@ export class FieldHttp extends BaseModel implements FieldData {
   name!: string;
   description!: string;
   autoID!: boolean;
-  element_type!:  DataTypeStringEnum;
+  element_type!: DataTypeStringEnum;
 
   constructor(props: {}) {
     super(props);

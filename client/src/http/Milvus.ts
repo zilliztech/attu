@@ -33,7 +33,10 @@ export class MilvusHttp extends BaseModel {
   }
 
   static check(address: string) {
-    return super.search({ path: this.CHECK_URL, params: { address } });
+    return super.search({
+      path: this.CHECK_URL,
+      params: { address },
+    }) as Promise<{ connected: boolean }>;
   }
 
   static flush(collectionName: string) {

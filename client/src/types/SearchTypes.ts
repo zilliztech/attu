@@ -1,6 +1,5 @@
 import { Option } from '@/components/customSelector/Types';
-import { searchKeywordsType } from '@/consts';
-import { DataTypeEnum, DataTypeStringEnum } from '@/pages/collections/Types';
+import { searchKeywordsType, DataTypeEnum, DataTypeStringEnum } from '@/consts';
 import { IndexView } from '@/pages/schema/Types';
 
 export interface SearchParamsProps {

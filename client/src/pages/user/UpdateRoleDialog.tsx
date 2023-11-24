@@ -50,7 +50,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   });
 
   const fetchRBAC = async () => {
-    const rbacOptions = (await UserHttp.getRBAC()) as RBACOptions;
+    const rbacOptions = await UserHttp.getRBAC();
 
     setRbacOptions(rbacOptions);
   };

@@ -28,7 +28,6 @@ export class CollectionHttp extends BaseModel implements CollectionView {
   private id!: string;
   private loadedPercentage!: string;
   private createdTime!: string;
-  private sampleFile!: string;
   private schema!: {
     fields: Field[];
     autoID: boolean;
@@ -105,7 +104,9 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({
       path: `${this.COLLECTIONS_URL}/${collectionName}/psegments`,
       params: {},
-    });
+    }) as Promise<{
+      infos: any;
+    }>;
   }
 
   static count(collectionName: string) {
@@ -119,7 +120,9 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({
       path: `${this.COLLECTIONS_URL}/${collectionName}/qsegments`,
       params: {},
-    });
+    }) as Promise<{
+      infos: any;
+    }>;
   }
 
   static insertData(collectionName: string, param: InsertDataParam) {
@@ -133,7 +136,7 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.create({
       path: `${this.COLLECTIONS_URL}/${collectionName}/importSample`,
       data: param,
-    });
+    }) as Promise<{ sampleFile: string }>;
   }
 
   static deleteEntities(collectionName: string, param: DeleteEntitiesReq) {
@@ -251,9 +254,5 @@ export class CollectionHttp extends BaseModel implements CollectionView {
 
   get _schema() {
     return this.schema;
-  }
-
-  get _sampleFile() {
-    return this.sampleFile;
   }
 }

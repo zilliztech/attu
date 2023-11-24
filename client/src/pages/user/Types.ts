@@ -107,8 +107,3 @@ export type RBACOptions = {
   UserPrivileges: Record<string, unknown>;
   Privileges: Record<string, unknown>;
 };
-
-export type RoleOptions = string[];
-export type RolesType = {
-  results: any[];
-};

@@ -107,17 +107,14 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
       format: format,
     };
     try {
-      const res = (await CollectionHttp.importSample(
-        collectionName,
-        param
-      )) as CollectionHttp;
+      const res = await CollectionHttp.importSample(collectionName, param);
       if (download) {
         const fileName = format === 'csv' ? csvFileName : jsonFileName;
         const type =
           format === 'csv' ? 'text/csv;charset=utf-8;' : 'application/json';
-        const blob = new Blob([res._sampleFile], { type });
+        const blob = new Blob([res.sampleFile], { type });
         saveAs(blob, fileName);
-        return { result: res._sampleFile, msg: '' };
+        return { result: res.sampleFile, msg: '' };
       }
       await MilvusHttp.flush(collectionName);
       return { result: true, msg: '' };

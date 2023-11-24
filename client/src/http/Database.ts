@@ -15,7 +15,9 @@ export class DatabaseHttp extends BaseModel {
   static DATABASE_URL = `/databases`;
 
   static getDatabases() {
-    return super.search({ path: this.DATABASE_URL, params: {} });
+    return super.search({ path: this.DATABASE_URL, params: {} }) as Promise<{
+      db_names: string[];
+    }>;
   }
 
   static createDatabase(data: CreateDatabaseParams) {
