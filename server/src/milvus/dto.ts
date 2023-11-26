@@ -1,8 +1,11 @@
-import { ArrayMinSize, IsArray, IsString } from "class-validator";
+import { ArrayMinSize, IsArray, IsOptional, IsString } from "class-validator";
 
 export class ConnectMilvusDto {
   @IsString()
   readonly address: string;
+
+  @IsOptional()
+  readonly database: string;
 }
 
 export class CheckMilvusDto {

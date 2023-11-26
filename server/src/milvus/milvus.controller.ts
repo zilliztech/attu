@@ -43,11 +43,11 @@ export class MilvusController {
   }
 
   async connectMilvus(req: Request, res: Response, next: NextFunction) {
-    const { address, username, password } = req.body;
+    const { address, username, password, database } = req.body;
     const cache = req.app.get(CACHE_KEY);
     try {
       const result = await this.milvusService.connectMilvus(
-        { address, username, password },
+        { address, username, password, database },
         cache
       );
 

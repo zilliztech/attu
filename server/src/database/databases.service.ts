@@ -7,7 +7,7 @@ import {
 import { throwErrorFromSDK } from '../utils/Error';
 
 export class DatabasesService {
-  constructor(private milvusService: MilvusService) {}
+  constructor(private milvusService: MilvusService) { }
 
   async createDatabase(data: CreateDatabaseRequest) {
     const res = await this.milvusService.client.createDatabase(data);
@@ -29,5 +29,10 @@ export class DatabasesService {
 
   async use(db_name: string) {
     return await await MilvusService.activeMilvusClient.use({ db_name });
+  }
+
+  async hasDatabase(data: string) {
+    const { db_names } = await this.listDatabase();
+    return db_names.indexOf(data) !== -1;
   }
 }

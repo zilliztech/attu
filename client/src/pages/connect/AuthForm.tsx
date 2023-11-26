@@ -9,8 +9,19 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { MilvusHttp } from '@/http';
 import { useNavigate } from 'react-router-dom';
-import { rootContext, authContext, prometheusContext } from '@/context';
-import { MILVUS_ADDRESS, LAST_TIME_ADDRESS, MILVUS_URL } from '@/consts';
+import {
+  rootContext,
+  authContext,
+  prometheusContext,
+  dataContext,
+} from '@/context';
+import {
+  MILVUS_ADDRESS,
+  LAST_TIME_ADDRESS,
+  MILVUS_URL,
+  LAST_TIME_DATABASE,
+  MILVUS_DATABASE,
+} from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -18,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',
-
     padding: theme.spacing(0, 3),
   },
   titleWrapper: {
@@ -54,6 +64,7 @@ export const AuthForm = (props: any) => {
 
   const { openSnackBar } = useContext(rootContext);
   const { setAddress, setIsAuth } = useContext(authContext);
+  const { setDatabase } = useContext(dataContext);
 
   const Logo = icons.zilliz;
   const { t: commonTrans } = useTranslation();
@@ -67,7 +78,8 @@ export const AuthForm = (props: any) => {
     address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
     username: '',
     password: '',
-    database: '',
+    database:
+      window.localStorage.getItem(LAST_TIME_DATABASE) || MILVUS_DATABASE,
     ssl: false,
   });
   const checkedForm = useMemo(() => {
@@ -190,19 +202,18 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
-    const address = form.address;
-    const data = { ...form, address };
-    const d = await MilvusHttp.connect(data);
-
-    console.log(111, d, data)
+    const result = await MilvusHttp.connect(form);
 
     setIsAuth(true);
-    setAddress(address);
+    setAddress(form.address);
+    setDatabase(result.database);
 
     openSnackBar(successTrans('connect'));
-    window.localStorage.setItem(MILVUS_ADDRESS, address);
+    window.localStorage.setItem(MILVUS_ADDRESS, form.address);
     // store address for next time using
-    window.localStorage.setItem(LAST_TIME_ADDRESS, address);
+    window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);
+    window.localStorage.setItem(LAST_TIME_DATABASE, form.database);
+    // redirect to homepage
     navigate('/');
   };
 

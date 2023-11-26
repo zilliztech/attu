@@ -124,6 +124,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
+      console.log(name)
       const data = (await CollectionHttp.count(name)) as CollectionData;
       setCount(data._rowCount);
     } catch (e) {
