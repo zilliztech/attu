@@ -8,11 +8,7 @@ import {
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import {
-  UpdateUserRoleProps,
-  UpdateUserRoleParams,
-  RoleOptions,
-} from './Types';
+import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
 import { UserHttp } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -35,7 +31,7 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
 }) => {
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
-  const [roleOptions, setRoleOptions] = useState<RoleOptions>([]);
+  const [roleOptions, setRoleOptions] = useState<string[]>([]);
 
   const [form, setForm] = useState<UpdateUserRoleParams>({
     username: username,
