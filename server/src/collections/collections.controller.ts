@@ -376,9 +376,15 @@ export class CollectionController {
   async count(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.count({
+      const { value } = await this.collectionsService.hasCollection({
         collection_name: name,
       });
+      let result: any = '';
+      if (value) {
+        result = await this.collectionsService.count({
+          collection_name: name,
+        });
+      }
 
       res.send({ collection_name: name, rowCount: result });
     } catch (error) {
