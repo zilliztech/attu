@@ -50,9 +50,9 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
   };
 
   const fetchAllRoles = async () => {
-    const roles = (await UserHttp.getRoles()) as RoleOptions;
+    const roles = await UserHttp.getRoles();
 
-    setRoleOptions(roles.map((r: any) => r.role.name));
+    setRoleOptions(roles.results.map((r: any) => r.role.name));
   };
 
   useEffect(() => {
