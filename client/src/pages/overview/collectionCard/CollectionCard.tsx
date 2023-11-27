@@ -120,20 +120,6 @@ const CollectionCard: FC<CollectionCardProps> = ({
     navigate({ pathname: '/search', search: `?collectionName=${name}` });
   };
 
-<<<<<<< Updated upstream
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = (await CollectionHttp.count(name)) as CollectionData;
-      setCount(data._rowCount);
-    } catch (e) {
-    } finally {
-      setLoading(false);
-    }
-  }, [status]);
-
-=======
->>>>>>> Stashed changes
   useEffect(() => {
     const fetchData = async () => {
       try {
