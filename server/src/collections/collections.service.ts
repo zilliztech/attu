@@ -20,6 +20,7 @@ import {
   GetQuerySegmentInfoReq,
   GePersistentSegmentInfoReq,
   CompactReq,
+  HasCollectionReq,
   CountReq,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
@@ -355,6 +356,12 @@ export class CollectionsService {
 
   async compact(data: CompactReq) {
     const res = await this.milvusService.client.compact(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+  async hasCollection(data: HasCollectionReq) {
+    const res = await this.milvusService.client.hasCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }

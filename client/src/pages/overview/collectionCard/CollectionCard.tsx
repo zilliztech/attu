@@ -98,7 +98,6 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
-  const InfoIcon = icons.info;
   const ReleaseIcon = icons.release;
   const VectorSearchIcon = icons.navSearch;
   // i18n
@@ -121,6 +120,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
     navigate({ pathname: '/search', search: `?collectionName=${name}` });
   };
 
+<<<<<<< Updated upstream
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -133,9 +133,33 @@ const CollectionCard: FC<CollectionCardProps> = ({
     }
   }, [status]);
 
+=======
+>>>>>>> Stashed changes
   useEffect(() => {
-    fetchData();
-  }, [fetchData, database]);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        if (status === LOADING_STATE.LOADED) {
+          const data = (await CollectionHttp.count(name)) as CollectionData;
+          setCount(data._rowCount);
+        }
+      } catch (e) {
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    let exiting = false;
+
+    if (!exiting) {
+      fetchData();
+    }
+
+    return () => {
+      console.log('existing', name, database);
+      exiting = true;
+    };
+  }, [status, database]);
 
   return (
     <Card
