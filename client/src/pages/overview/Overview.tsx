@@ -154,7 +154,7 @@ const Overview = () => {
   const loadCollections = collections.filter(
     c => c._status !== LOADING_STATE.UNLOADED
   );
-  console.log('loadCollections', loadCollections);
+
   const onRelease = () => {
     openSnackBar(
       successTrans('release', { name: collectionTrans('collection') })
