@@ -9,8 +9,19 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { MilvusHttp } from '@/http';
 import { useNavigate } from 'react-router-dom';
-import { rootContext, authContext, prometheusContext } from '@/context';
-import { MILVUS_ADDRESS, LAST_TIME_ADDRESS, MILVUS_URL } from '@/consts';
+import {
+  rootContext,
+  authContext,
+  prometheusContext,
+  dataContext,
+} from '@/context';
+import {
+  MILVUS_ADDRESS,
+  LAST_TIME_ADDRESS,
+  MILVUS_URL,
+  LAST_TIME_DATABASE,
+  MILVUS_DATABASE,
+} from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -18,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',
-
     padding: theme.spacing(0, 3),
   },
   titleWrapper: {
@@ -54,6 +64,7 @@ export const AuthForm = (props: any) => {
 
   const { openSnackBar } = useContext(rootContext);
   const { setAddress, setIsAuth } = useContext(authContext);
+  const { setDatabase } = useContext(dataContext);
 
   const Logo = icons.zilliz;
   const { t: commonTrans } = useTranslation();
@@ -61,10 +72,14 @@ export const AuthForm = (props: any) => {
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
+  const { t: dbTrans } = useTranslation('database');
+
   const [form, setForm] = useState({
     address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
     username: '',
     password: '',
+    database:
+      window.localStorage.getItem(LAST_TIME_DATABASE) || MILVUS_DATABASE,
     ssl: false,
   });
   const checkedForm = useMemo(() => {
@@ -73,7 +88,7 @@ export const AuthForm = (props: any) => {
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
   const handleInputChange = (
-    key: 'address' | 'username' | 'password',
+    key: 'address' | 'username' | 'password' | 'database' | 'ssl',
     value: string | boolean
   ) => {
     setForm(v => ({ ...v, [key]: value }));
@@ -101,6 +116,16 @@ export const AuthForm = (props: any) => {
     return [
       ...noAuthConfigs,
       {
+        label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
+        key: 'database',
+        onChange: (value: string) => handleInputChange('database', value),
+        variant: 'filled',
+        className: classes.input,
+        placeholder: dbTrans('database'),
+        fullWidth: true,
+        defaultValue: form.database,
+      },
+      {
         label: `Milvus ${attuTrans.username} ${attuTrans.optional}`,
         key: 'username',
         onChange: (value: string) => handleInputChange('username', value),
@@ -108,7 +133,6 @@ export const AuthForm = (props: any) => {
         className: classes.input,
         placeholder: attuTrans.username,
         fullWidth: true,
-
         defaultValue: form.username,
       },
       {
@@ -178,17 +202,18 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
-    const address = form.address;
-    const data = { ...form, address };
-    await MilvusHttp.connect(data);
+    const result = await MilvusHttp.connect(form);
 
     setIsAuth(true);
-    setAddress(address);
+    setAddress(form.address);
+    setDatabase(result.database);
 
     openSnackBar(successTrans('connect'));
-    window.localStorage.setItem(MILVUS_ADDRESS, address);
+    window.localStorage.setItem(MILVUS_ADDRESS, form.address);
     // store address for next time using
-    window.localStorage.setItem(LAST_TIME_ADDRESS, address);
+    window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);
+    window.localStorage.setItem(LAST_TIME_DATABASE, form.database);
+    // redirect to homepage
     navigate('/');
   };
 

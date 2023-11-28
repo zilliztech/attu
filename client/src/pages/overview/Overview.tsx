@@ -17,7 +17,6 @@ import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { useNavigationHook } from '@/hooks';
 import { CollectionHttp, MilvusHttp } from '@/http';
-import { ShowCollectionsType } from '@/types/Milvus';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { checkLoading, checkIndexBuilding, formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
@@ -130,6 +129,7 @@ const Overview = () => {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setCollections([]);
     const res = (await CollectionHttp.getStatistics()) as statisticsType;
     const collections = await CollectionHttp.getCollections();
     const hasLoadingOrBuildingCollection = collections.some(
@@ -151,9 +151,8 @@ const Overview = () => {
     fetchData();
   }, [fetchData]);
 
-  const loadCollections = useMemo(
-    () => collections.filter(c => c._status !== LOADING_STATE.UNLOADED),
-    [collections]
+  const loadCollections = collections.filter(
+    c => c._status !== LOADING_STATE.UNLOADED
   );
 
   const onRelease = () => {

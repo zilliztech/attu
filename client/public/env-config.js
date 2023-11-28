@@ -2,6 +2,7 @@ window._env_ = {
   MILVUS_URL: '127.0.0.1:19530',
   HOST_URL: '',
   IS_ELECTRON: '{{IS_ELECTRON}}',
+  DATBASE: 'default',
   WITH_PROMETHEUS: '',
   PROMETHEUS_ADDRESS: '',
   PROMETHEUS_INSTANCE_NAME: '',

@@ -20,8 +20,12 @@ export class MilvusHttp extends BaseModel {
     address: string;
     username?: string;
     password?: string;
+    database?: string;
   }) {
-    return super.create({ path: this.CONNECT_URL, data });
+    return super.create({ path: this.CONNECT_URL, data }) as Promise<{
+      address: string;
+      database: string;
+    }>;
   }
 
   static closeConnection() {
