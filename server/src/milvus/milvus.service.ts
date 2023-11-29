@@ -11,9 +11,14 @@ import { connectivityState } from '@grpc/grpc-js';
 import { DatabasesService } from '../database/databases.service';
 
 export class MilvusService {
+  private databaseService: DatabasesService;
   // Share with all instances, so activeAddress is static
   static activeAddress: string;
   static activeMilvusClient: MilvusClient;
+
+  constructor() {
+    this.databaseService = new DatabasesService(this);
+  }
 
   get sdkInfo() {
     return MilvusClient.sdkInfo;
@@ -88,12 +93,16 @@ export class MilvusService {
       cache.set(address, milvusClient);
 
       // Create a new database service and check if the specified database exists
-      const databaseService = new DatabasesService(this);
-      const hasDatabase = await databaseService.hasDatabase(database);
+      let hasDatabase = false;
+      try {
+        hasDatabase = await this.databaseService.hasDatabase(database);
+      } catch (_) {
+        // ignore error
+      }
 
       // if database exists, use this db
       if (hasDatabase) {
-        await databaseService.use(database);
+        await this.databaseService.use(database);
       }
 
       // Return the address and the database (if it exists, otherwise return 'default')
