@@ -17,6 +17,7 @@ import {
 } from '@/context';
 import {
   MILVUS_ADDRESS,
+  LOGIN_USERNAME,
   LAST_TIME_ADDRESS,
   MILVUS_URL,
   LAST_TIME_DATABASE,
@@ -63,7 +64,7 @@ export const AuthForm = (props: any) => {
   const classes = useStyles();
 
   const { openSnackBar } = useContext(rootContext);
-  const { setAddress, setIsAuth } = useContext(authContext);
+  const { setAddress, setUsername, setIsAuth } = useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
   const Logo = icons.zilliz;
@@ -206,10 +207,12 @@ export const AuthForm = (props: any) => {
 
     setIsAuth(true);
     setAddress(form.address);
+    setUsername(form.username);
     setDatabase(result.database);
 
     openSnackBar(successTrans('connect'));
     window.localStorage.setItem(MILVUS_ADDRESS, form.address);
+    window.localStorage.setItem(LOGIN_USERNAME, form.username);
     // store address for next time using
     window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);
     window.localStorage.setItem(LAST_TIME_DATABASE, form.database);
