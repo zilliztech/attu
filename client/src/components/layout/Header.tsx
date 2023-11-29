@@ -1,10 +1,17 @@
 import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Typography,
+  Tooltip,
+} from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { navContext, dataContext, authContext } from '@/context';
 import { MilvusHttp } from '@/http';
-import { MILVUS_ADDRESS } from '@/consts';
+import { MILVUS_ADDRESS, LOGIN_USERNAME } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '../icons/Icons';
 import { HeaderType } from './Types';
@@ -65,7 +72,8 @@ const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
   const { database, databases, setDatabase } = useContext(dataContext);
-  const { address, setAddress, setIsAuth } = useContext(authContext);
+  const { address, setAddress, username, setUsername, setIsAuth } =
+    useContext(authContext);
   const navigate = useNavigate();
 
   const { t: commonTrans } = useTranslation();
@@ -80,9 +88,11 @@ const Header: FC<HeaderType> = props => {
 
   const handleLogout = async () => {
     setAddress('');
+    setUsername('');
     setIsAuth(false);
     await MilvusHttp.closeConnection();
     window.localStorage.removeItem(MILVUS_ADDRESS);
+    window.localStorage.removeItem(LOGIN_USERNAME);
     // make sure we clear state in all pages
     // navigate(0);
   };
@@ -127,6 +137,11 @@ const Header: FC<HeaderType> = props => {
             <Typography className="address">{address}</Typography>
             <Typography className="status">{statusTrans.running}</Typography>
           </div>
+          {username && (
+            <Tooltip title={username}>
+              <AccountCircleIcon classes={{ root: classes.icon }} />
+            </Tooltip>
+          )}
           <LogoutIcon classes={{ root: classes.icon }} onClick={handleLogout} />
         </div>
       </div>
