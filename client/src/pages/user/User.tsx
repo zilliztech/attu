@@ -49,7 +49,7 @@ const Users = () => {
           r.users.map((u: any) => u.name).includes(name)
         );
         const originRoles =
-          v === 'root' ? ['root'] : rolesByName.map((r: any) => r.role.name);
+          v === 'root' ? ['admin'] : rolesByName.map((r: any) => r.role.name);
         return {
           name: v,
           role: originRoles.join(' , '),
