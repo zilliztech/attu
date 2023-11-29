@@ -57,8 +57,10 @@ export type OpenSnackBarType = (
 export type AuthContextType = {
   isAuth: boolean;
   address: string;
+  username: string;
   isManaged: boolean;
   setAddress: Dispatch<SetStateAction<string>>;
+  setUsername: Dispatch<SetStateAction<string>>;
   setIsAuth: Dispatch<SetStateAction<boolean>>;
 };
 
