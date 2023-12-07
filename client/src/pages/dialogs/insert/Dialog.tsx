@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import icons from '@/components/icons/Icons';
 import { Option } from '@/components/customSelector/Types';
-import { PartitionHttp } from '@/http';
+import { Partition } from '@/http';
 import { rootContext } from '@/context';
 import { combineHeadsAndData } from '@/utils';
 import { FILE_MIME_TYPE } from '@/consts';
@@ -130,10 +130,10 @@ const InsertContainer: FC<InsertContentProps> = ({
   // every time selected collection value change, partition options and default value will change
   const fetchPartition = useCallback(async () => {
     if (collectionValue) {
-      const partitions = await PartitionHttp.getPartitions(collectionValue);
+      const partitions = await Partition.getPartitions(collectionValue);
       const partitionOptions: Option[] = partitions.map(p => ({
-        label: p._formatName,
-        value: p._name,
+        label: p.partitionName,
+        value: p.name,
       }));
       setPartitionOptions(partitionOptions);
 
@@ -152,8 +152,8 @@ const InsertContainer: FC<InsertContentProps> = ({
     } else {
       const options = partitions
         .map(p => ({
-          label: p._formatName,
-          value: p._name,
+          label: p.partitionName,
+          value: p.name,
         }))
         // when there's single selected partition
         // insert dialog partitions shouldn't selectable
@@ -209,8 +209,8 @@ const InsertContainer: FC<InsertContentProps> = ({
     () =>
       defaultSelectedCollection === ''
         ? collections.map(c => ({
-            label: c._name,
-            value: c._name,
+            label: c.collectionName,
+            value: c.collectionName,
           }))
         : [
             {
@@ -232,21 +232,20 @@ const InsertContainer: FC<InsertContentProps> = ({
     const list =
       schema && schema.length > 0
         ? schema
-        : collections.find(c => c._name === collectionValue)?._fields;
+        : collections.find(c => c.collectionName === collectionValue)?.fields;
 
     const autoIdFieldName =
-      list?.find(item => item._isPrimaryKey && item._isAutoId)?._fieldName ||
-      '';
+      list?.find(item => item.isPrimaryKey && item.isAutoId)?.name || '';
     /**
      * if below conditions all met, this schema shouldn't be selectable as head:
      * 1. this field is primary key
      * 2. this field auto id is true
      */
     const options = (list || [])
-      .filter(s => !s._isAutoId || !s._isPrimaryKey)
+      .filter(s => !s.isAutoId || !s.isPrimaryKey)
       .map(s => ({
-        label: s._fieldName,
-        value: s._fieldId,
+        label: s.name,
+        value: s.fieldID,
       }));
     return {
       schemaOptions: options,

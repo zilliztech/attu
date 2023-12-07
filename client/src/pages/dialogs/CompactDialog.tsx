@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CompactDialogProps } from './Types';
-import { CollectionHttp } from '@/http';
+import { Segement } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
     margin: '8px 0 16px 0',
-    maxWidth: '500px'
+    maxWidth: '500px',
   },
   dialog: {},
 }));
@@ -26,7 +26,7 @@ const CompactDialog: FC<CompactDialogProps> = props => {
   const { t: btnTrans } = useTranslation('btn');
 
   const handleConfirm = async () => {
-    await CollectionHttp.compact(collectionName);
+    await Segement.compact(collectionName);
 
     handleCloseDialog();
     cb && cb();
@@ -43,10 +43,14 @@ const CompactDialog: FC<CompactDialogProps> = props => {
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc} dangerouslySetInnerHTML={{
-                __html: collectionTrans('compactDialogInfo'),
-              }}>
-          </Typography>
+          <Typography
+            variant="body1"
+            component="p"
+            className={classes.desc}
+            dangerouslySetInnerHTML={{
+              __html: collectionTrans('compactDialogInfo'),
+            }}
+          ></Typography>
         </>
       }
       confirmLabel={btnTrans('confirm')}

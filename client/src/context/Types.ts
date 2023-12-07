@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { CollectionView } from '@/pages/collections/Types';
+import { Collection } from '@/http';
 import { NavInfo } from '@/router/Types';
 
 export type RootContextType = {
@@ -90,6 +90,6 @@ export type NavContextType = {
 };
 
 export type WebSocketType = {
-  collections: CollectionView[];
-  setCollections: (data: CollectionView[]) => void;
+  collections: Collection[];
+  setCollections: (data: Collection[]) => void;
 };

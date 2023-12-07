@@ -9,7 +9,7 @@ import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
-import { UserHttp } from '@/http';
+import { User } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -41,12 +41,12 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
   const classes = useStyles();
 
   const handleUpdate = async () => {
-    await UserHttp.updateUserRole(form);
+    await User.updateUserRole(form);
     onUpdate(form);
   };
 
   const fetchAllRoles = async () => {
-    const roles = await UserHttp.getRoles();
+    const roles = await User.getRoles();
 
     setRoleOptions(roles.results.map((r: any) => r.role.name));
   };

@@ -1,6 +1,6 @@
 import BaseModel from './BaseModel';
 
-export class PrometheusHttp extends BaseModel {
+export class PrometheusService extends BaseModel {
   static SET_PROMETHEUS_URL = '/prometheus/setPrometheus';
   static GET_MILVUS_HEALTHY_DATA_URL = '/prometheus/getMilvusHealthyData';
 
@@ -19,7 +19,7 @@ export class PrometheusHttp extends BaseModel {
     prometheusNamespace: string;
   }) {
     return super.search({
-      path: PrometheusHttp.SET_PROMETHEUS_URL,
+      path: PrometheusService.SET_PROMETHEUS_URL,
       params: { prometheusAddress, prometheusInstance, prometheusNamespace },
       timeout: 1000,
     });
@@ -35,7 +35,7 @@ export class PrometheusHttp extends BaseModel {
     step: number;
   }) {
     return super.search({
-      path: PrometheusHttp.GET_MILVUS_HEALTHY_DATA_URL,
+      path: PrometheusService.GET_MILVUS_HEALTHY_DATA_URL,
       params: { start, end, step },
     });
   }

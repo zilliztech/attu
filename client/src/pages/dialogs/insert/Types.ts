@@ -1,14 +1,13 @@
-import { CollectionData } from '../../collections/Types';
 import { PartitionView } from '../../partitions/Types';
-import { FieldData } from '../../schema/Types';
+import { FieldHttp, Collection } from '@/http';
 import { Option } from '@/components/customSelector/Types';
 import { FILE_MIME_TYPE } from '@/consts';
 
 export interface InsertContentProps {
   // optional on partition page since its collection is fixed
-  collections?: CollectionData[];
+  collections?: Collection[];
   // required on partition page since user can't select collection to get schema
-  schema?: FieldData[];
+  schema?: FieldHttp[];
   // required on partition page
   partitions?: PartitionView[];
 

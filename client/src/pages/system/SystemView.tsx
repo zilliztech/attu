@@ -4,7 +4,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { useNavigationHook, useInterval } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import { MilvusHttp } from '@/http';
+import { MilvusService } from '@/http';
 import { parseJson } from '@/utils';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
@@ -83,14 +83,14 @@ const SystemView: any = () => {
 
   useInterval(async () => {
     if (!selectedCord) {
-      const res = await MilvusHttp.getMetrics();
+      const res = await MilvusService.getMetrics();
       setData(parseJson(res));
     }
   }, INTERVAL);
 
   useEffect(() => {
     async function fetchData() {
-      const res = await MilvusHttp.getMetrics();
+      const res = await MilvusService.getMetrics();
       setData(parseJson(res));
     }
     fetchData();

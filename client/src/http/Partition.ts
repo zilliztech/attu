@@ -8,11 +8,11 @@ import {
 import { formatNumber } from '@/utils';
 import BaseModel from './BaseModel';
 
-export class PartitionHttp extends BaseModel implements PartitionData {
-  private id!: string;
-  private name!: string;
-  private rowCount!: string;
-  private createdTime!: string;
+export class Partition extends BaseModel implements PartitionData {
+  public id!: string;
+  public name!: string;
+  public rowCount!: string;
+  public createdTime!: string;
 
   constructor(props: {}) {
     super(props);
@@ -21,7 +21,7 @@ export class PartitionHttp extends BaseModel implements PartitionData {
 
   static URL_BASE = `/partitions`;
 
-  static getPartitions(collectionName: string): Promise<PartitionHttp[]> {
+  static getPartitions(collectionName: string): Promise<Partition[]> {
     const path = this.URL_BASE;
 
     return super.findAll({ path, params: { collection_name: collectionName } });
@@ -64,30 +64,22 @@ export class PartitionHttp extends BaseModel implements PartitionData {
     });
   }
 
-  get _id() {
-    return this.id;
-  }
-
-  get _name() {
-    return this.name;
-  }
-
-  get _formatName() {
+  get partitionName() {
     return this.name === '_default' ? 'Default partition' : this.name;
   }
 
-  get _rowCount() {
+  get entityCount() {
     return formatNumber(Number(this.rowCount));
   }
 
-  get _status() {
+  get status() {
     // @TODO replace mock data
     return LOADING_STATE.UNLOADED;
   }
 
   // Befor milvus-2.0-rc3  will return '0'.
   // If milvus is stable, we can remote this condition/
-  get _createdTime(): string {
+  get createdAt(): string {
     return this.createdTime && this.createdTime !== '0'
       ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
       : '';

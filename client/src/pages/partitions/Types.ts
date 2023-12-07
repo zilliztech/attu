@@ -3,11 +3,11 @@ import { LOADING_STATE } from '@/consts';
 import { ManageRequestMethods } from '../../types/Common';
 
 export interface PartitionData {
-  _id: string;
-  _name: string;
-  _status: LOADING_STATE;
-  _rowCount: string;
-  _formatName: string;
+  id: string;
+  name: string;
+  status: LOADING_STATE;
+  entityCount: string;
+  partitionName: string;
 }
 
 export interface PartitionView extends PartitionData {

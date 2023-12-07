@@ -1,5 +1,6 @@
 import { ChildrenStatusType } from '@/components/status/Types';
 import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
+import { Collection } from '@/http';
 
 export type ValidType =
   | 'email'
@@ -248,8 +249,8 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
 /**
  * Check collection is loading or not
  */
-export const checkLoading = (v: any): boolean =>
-  v._loadedPercentage !== '-1' && v._loadedPercentage !== '100';
+export const checkLoading = (v: Collection): boolean =>
+  v.loadedPercentage !== '-1' && v.loadedPercentage !== '100';
 
 /**
  * Check collection is index building or not.

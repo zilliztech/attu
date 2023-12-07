@@ -16,7 +16,7 @@ import icons from '@/components/icons/Icons';
 import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { useNavigationHook } from '@/hooks';
-import { CollectionHttp, MilvusHttp } from '@/http';
+import { Collection, MilvusService } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { checkLoading, checkIndexBuilding, formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
@@ -130,14 +130,14 @@ const Overview = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     setCollections([]);
-    const res = (await CollectionHttp.getStatistics()) as statisticsType;
-    const collections = await CollectionHttp.getCollections();
+    const res = (await Collection.getStatistics()) as statisticsType;
+    const collections = await Collection.getCollections();
     const hasLoadingOrBuildingCollection = collections.some(
       v => checkLoading(v) || checkIndexBuilding(v)
     );
     // if some collection is building index or loading, start pulling data
     if (hasLoadingOrBuildingCollection) {
-      MilvusHttp.triggerCron({
+      MilvusService.triggerCron({
         name: WS_EVENTS.COLLECTION,
         type: WS_EVENTS_TYPE.START,
       });
@@ -152,7 +152,7 @@ const Overview = () => {
   }, [fetchData]);
 
   const loadCollections = collections.filter(
-    c => c._status !== LOADING_STATE.UNLOADED
+    c => c.status !== LOADING_STATE.UNLOADED
   );
 
   const onRelease = () => {
@@ -237,7 +237,7 @@ const Overview = () => {
           <div className={classes.cardsWrapper}>
             {loadCollections.map(collection => (
               <CollectionCard
-                key={collection._id}
+                key={collection.id}
                 data={collection}
                 onRelease={onRelease}
               />

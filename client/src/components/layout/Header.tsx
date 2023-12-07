@@ -10,7 +10,7 @@ import {
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { navContext, dataContext, authContext } from '@/context';
-import { MilvusHttp } from '@/http';
+import { MilvusService } from '@/http';
 import { MILVUS_ADDRESS, LOGIN_USERNAME } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '../icons/Icons';
@@ -90,7 +90,7 @@ const Header: FC<HeaderType> = props => {
     setAddress('');
     setUsername('');
     setIsAuth(false);
-    await MilvusHttp.closeConnection();
+    await MilvusService.closeConnection();
     window.localStorage.removeItem(MILVUS_ADDRESS);
     window.localStorage.removeItem(LOGIN_USERNAME);
     // make sure we clear state in all pages
@@ -98,7 +98,7 @@ const Header: FC<HeaderType> = props => {
   };
 
   const useDatabase = async (database: string) => {
-    await MilvusHttp.useDatabase({ database });
+    await MilvusService.useDatabase({ database });
   };
 
   const dbOptions = databases.map(d => ({ value: d, label: d }));

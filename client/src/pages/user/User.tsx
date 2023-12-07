@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { UserHttp } from '@/http';
+import { User } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
@@ -39,8 +39,8 @@ const Users = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchUsers = async () => {
-    const res = await UserHttp.getUsers();
-    const roles = await UserHttp.getRoles();
+    const res = await User.getUsers();
+    const roles = await User.getRoles();
 
     setUsers(
       res.usernames.map((v: string) => {
@@ -60,9 +60,9 @@ const Users = () => {
   };
 
   const handleCreate = async (data: CreateUserParams) => {
-    await UserHttp.createUser(data);
+    await User.createUser(data);
     // assign user role if
-    await UserHttp.updateUserRole({
+    await User.updateUserRole({
       username: data.username,
       roles: data.roles,
     });
@@ -81,7 +81,7 @@ const Users = () => {
   };
 
   const handleUpdate = async (data: UpdateUserParams) => {
-    await UserHttp.updateUser(data);
+    await User.updateUser(data);
     fetchUsers();
     openSnackBar(successTrans('update', { name: userTrans('user') }));
     handleCloseDialog();
@@ -92,7 +92,7 @@ const Users = () => {
       const param: DeleteUserParams = {
         username: user.name,
       };
-      await UserHttp.deleteUser(param);
+      await User.deleteUser(param);
     }
 
     openSnackBar(successTrans('delete', { name: userTrans('user') }));
@@ -104,7 +104,7 @@ const Users = () => {
     {
       label: userTrans('user'),
       onClick: async () => {
-        const roles = await UserHttp.getRoles();
+        const roles = await User.getRoles();
         setDialog({
           open: true,
           type: 'custom',

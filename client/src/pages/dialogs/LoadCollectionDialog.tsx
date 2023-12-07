@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { authContext, rootContext } from '@/context';
-import { CollectionHttp, MilvusHttp } from '@/http';
+import { Collection, MilvusService } from '@/http';
 import { useFormValidation } from '@/hooks';
 import { formatForm, parseJson, getNode } from '@/utils';
 import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
@@ -56,7 +56,7 @@ const LoadCollectionDialog = (props: any) => {
   // check if it is cluster
   useEffect(() => {
     async function fetchData() {
-      const res = await MilvusHttp.getMetrics();
+      const res = await MilvusService.getMetrics();
       const parsedJson = parseJson(res);
       // get root cord
       const rootCoords = getNode(
@@ -98,7 +98,7 @@ const LoadCollectionDialog = (props: any) => {
     }
 
     // load collection request
-    await CollectionHttp.loadCollection(collection, params);
+    await Collection.loadCollection(collection, params);
 
     // callback
     onLoad && onLoad();

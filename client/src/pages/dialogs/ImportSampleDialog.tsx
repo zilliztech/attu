@@ -6,9 +6,10 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { rootContext } from '@/context';
 import { InsertStatusEnum } from './insert/Types';
-import { CollectionHttp, MilvusHttp } from '@/http';
+import { DataService } from '@/http';
 import { LoadSampleParam } from './Types';
 import icons from '@/components/icons/Icons';
+
 const DownloadIcon = icons.download;
 
 const getStyles = makeStyles((theme: Theme) => {
@@ -107,7 +108,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
       format: format,
     };
     try {
-      const res = await CollectionHttp.importSample(collectionName, param);
+      const res = await DataService.importSample(collectionName, param);
       if (download) {
         const fileName = format === 'csv' ? csvFileName : jsonFileName;
         const type =
@@ -116,7 +117,7 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
         saveAs(blob, fileName);
         return { result: res.sampleFile, msg: '' };
       }
-      await MilvusHttp.flush(collectionName);
+      await DataService.flush(collectionName);
       return { result: true, msg: '' };
     } catch (err: any) {
       const {

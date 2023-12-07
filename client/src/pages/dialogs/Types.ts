@@ -1,8 +1,8 @@
-import { CollectionData } from '../collections/Types';
+import { Collection } from '@/http';
 import { PartitionData } from '../partitions/Types';
 
 export interface DropCollectionProps {
-  collections: CollectionData[];
+  collections: Collection[];
   onDelete: () => void;
 }
 

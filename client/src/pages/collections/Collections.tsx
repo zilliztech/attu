@@ -9,20 +9,18 @@ import {
   dataContext,
   webSocketContext,
 } from '@/context';
+import { Collection, MilvusService, DataService } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { CollectionView, InsertDataParam } from './Types';
+import { InsertDataParam } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import icons from '@/components/icons/Icons';
 import EmptyCard from '@/components/cards/EmptyCard';
-import Status from '@/components/status/Status';
-import { ChildrenStatusType } from '@/components/status/Types';
-import StatusIcon from '@/components/status/StatusIcon';
+import StatusAction from '@/pages/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CreateCollectionDialog from '../dialogs/CreateCollectionDialog';
-import { CollectionHttp, MilvusHttp } from '@/http';
 import LoadCollectionDialog from '../dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
@@ -65,6 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   chip: {
     color: theme.palette.text.primary,
     marginRight: theme.spacing(0.5),
+    background: `rgba(0, 0, 0, 0.04)`,
   },
 }));
 
@@ -78,9 +77,9 @@ const Collections = () => {
     (searchParams.get('search') as string) || ''
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedCollections, setSelectedCollections] = useState<
-    CollectionView[]
-  >([]);
+  const [selectedCollections, setSelectedCollections] = useState<Collection[]>(
+    []
+  );
 
   const { setDialog, openSnackBar } = useContext(rootContext);
   const { collections, setCollections } = useContext(webSocketContext);
@@ -89,8 +88,6 @@ const Collections = () => {
   const { t: successTrans } = useTranslation('success');
   const classes = useStyles();
 
-  const LoadIcon = icons.load;
-  const ReleaseIcon = icons.release;
   const InfoIcon = icons.info;
   const SourceIcon = icons.source;
 
@@ -101,48 +98,59 @@ const Collections = () => {
     Eventually: collectionTrans('consistencyEventuallyTooltip'),
   };
 
+  const checkCollectionStatus = useCallback((collections: Collection[]) => {
+    const hasLoadingOrBuildingCollection = collections.some(
+      v => checkLoading(v) || checkIndexBuilding(v)
+    );
+
+    // if some collection is building index or loading, start pulling data
+    if (hasLoadingOrBuildingCollection) {
+      MilvusService.triggerCron({
+        name: WS_EVENTS.COLLECTION,
+        type: WS_EVENTS_TYPE.START,
+      });
+    }
+  }, []);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await CollectionHttp.getCollections();
-      const hasLoadingOrBuildingCollection = res.some(
-        v => checkLoading(v) || checkIndexBuilding(v)
-      );
-
-      // if some collection is building index or loading, start pulling data
-      if (hasLoadingOrBuildingCollection) {
-        MilvusHttp.triggerCron({
-          name: WS_EVENTS.COLLECTION,
-          type: WS_EVENTS_TYPE.START,
-        });
-      }
-
-      setCollections(res);
+      const collections = await Collection.getCollections();
+      setCollections(collections);
+      checkCollectionStatus(collections);
     } finally {
       setLoading(false);
     }
-  }, [setCollections]);
+  }, [setCollections, checkCollectionStatus]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData, database]);
 
+  const getVectorField = (collection: Collection) => {
+    return collection.fieldWithIndexInfo!.find(
+      d => d.fieldType === 'FloatVector' || d.fieldType === 'BinaryVector'
+    );
+  };
+
   const formatCollections = useMemo(() => {
     const filteredCollections = search
-      ? collections.filter(collection => collection._name.includes(search))
+      ? collections.filter(collection =>
+          collection.collectionName.includes(search)
+        )
       : collections;
 
     const data = filteredCollections.map(v => {
-      // const indexStatus = statusRes.find(item => item._name === v._name);
+      // const indexStatus = statusRes.find(item => item.collectionName === v.collectionName);
       Object.assign(v, {
         nameElement: (
           <Link
-            to={`/collections/${v._name}`}
+            to={`/collections/${v.collectionName}`}
             className={classes.link}
-            title={v._name}
+            title={v.collectionName}
           >
             <Highlighter
-              textToHighlight={v._name}
+              textToHighlight={v.collectionName}
               searchWords={[search]}
               highlightClassName={classes.highlight}
             />
@@ -150,7 +158,7 @@ const Collections = () => {
         ),
         features: (
           <>
-            {v._autoId ? (
+            {v.autoID ? (
               <Tooltip
                 title={collectionTrans('autoIDTooltip')}
                 placement="top"
@@ -163,7 +171,7 @@ const Collections = () => {
                 />
               </Tooltip>
             ) : null}
-            {v._enableDynamicField ? (
+            {v.enableDynamicField ? (
               <Tooltip
                 title={collectionTrans('dynamicSchemaTooltip')}
                 placement="top"
@@ -177,28 +185,51 @@ const Collections = () => {
               </Tooltip>
             ) : null}
             <Tooltip
-              title={consistencyTooltipsMap[v._consistencyLevel]}
+              title={consistencyTooltipsMap[v.consistency_level]}
               placement="top"
               arrow
             >
               <Chip
                 className={classes.chip}
-                label={v._consistencyLevel}
+                label={v.consistency_level}
                 size="small"
               />
             </Tooltip>
           </>
         ),
         statusElement: (
-          <Status status={v._status} percentage={v._loadedPercentage} />
-        ),
-        indexCreatingElement: (
-          <StatusIcon type={v._indexState || ChildrenStatusType.FINISH} />
+          <StatusAction
+            status={v.status}
+            onIndexCreate={fetchData}
+            percentage={v.loadedPercentage}
+            field={getVectorField(v)!}
+            collectionName={v.collectionName}
+            action={() => {
+              setDialog({
+                open: true,
+                type: 'custom',
+                params: {
+                  component:
+                    v.status === LOADING_STATE.UNLOADED ? (
+                      <LoadCollectionDialog
+                        collection={v.collectionName}
+                        onLoad={onLoad}
+                      />
+                    ) : (
+                      <ReleaseCollectionDialog
+                        collection={v.collectionName}
+                        onRelease={onRelease}
+                      />
+                    ),
+                },
+              });
+            }}
+          />
         ),
         _aliasElement: (
           <Aliases
-            aliases={v._aliases}
-            collectionName={v._name}
+            aliases={v.aliases}
+            collectionName={v.collectionName}
             onCreate={fetchData}
             onDelete={fetchData}
           />
@@ -232,8 +263,8 @@ const Collections = () => {
       fields_data: fieldData,
     };
     try {
-      await CollectionHttp.insertData(collectionName, param);
-      await MilvusHttp.flush(collectionName);
+      await DataService.insertData(collectionName, param);
+      await DataService.flush(collectionName);
       // update collections
       fetchData();
       return { result: true, msg: '' };
@@ -314,7 +345,7 @@ const Collections = () => {
                 collections={formatCollections}
                 defaultSelectedCollection={
                   selectedCollections.length === 1
-                    ? selectedCollections[0]._name
+                    ? selectedCollections[0].collectionName
                     : ''
                 }
                 // user can't select partition on collection page, so default value is ''
@@ -344,7 +375,7 @@ const Collections = () => {
             component: (
               <RenameCollectionDialog
                 cb={onRename}
-                collectionName={selectedCollections[0]._name}
+                collectionName={selectedCollections[0].collectionName}
               />
             ),
           },
@@ -402,25 +433,25 @@ const Collections = () => {
       id: 'nameElement',
       align: 'left',
       disablePadding: true,
-      sortBy: '_name',
+      sortBy: 'collectionName',
       label: collectionTrans('name'),
     },
     {
       id: 'statusElement',
       align: 'left',
       disablePadding: false,
-      sortBy: '_status',
+      sortBy: 'status',
       label: collectionTrans('status'),
     },
     {
       id: 'features',
       align: 'left',
       disablePadding: true,
-      sortBy: '_enableDynamicField',
+      sortBy: 'enableDynamicField',
       label: collectionTrans('features'),
     },
     {
-      id: '_rowCount',
+      id: 'entityCount',
       align: 'left',
       disablePadding: false,
       label: (
@@ -432,83 +463,17 @@ const Collections = () => {
         </span>
       ),
     },
-
-    // {
-    //   id: 'consistency_level',
-    //   align: 'left',
-    //   disablePadding: true,
-    //   label: (
-    //     <span className="flex-center">
-    //       {collectionTrans('consistency')}
-    //       <CustomToolTip title={collectionTrans('consistencyLevelInfo')}>
-    //         <InfoIcon classes={{ root: classes.icon }} />
-    //       </CustomToolTip>
-    //     </span>
-    //   ),
-    // },
-
     {
-      id: '_desc',
+      id: 'desc',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('desc'),
     },
     {
-      id: '_createdTime',
+      id: 'createdAt',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('createdTime'),
-    },
-    // {
-    //   id: 'indexCreatingElement',
-    //   align: 'left',
-    //   disablePadding: false,
-    //   label: '',
-    // },
-    {
-      id: 'action',
-      align: 'center',
-      disablePadding: false,
-      label: '',
-      showActionCell: true,
-      isHoverAction: true,
-      actionBarConfigs: [
-        {
-          onClick: (e: React.MouseEvent, row: CollectionView) => {
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component:
-                  row._status === LOADING_STATE.UNLOADED ? (
-                    <LoadCollectionDialog
-                      collection={row._name}
-                      onLoad={onLoad}
-                    />
-                  ) : (
-                    <ReleaseCollectionDialog
-                      collection={row._name}
-                      onRelease={onRelease}
-                    />
-                  ),
-              },
-            });
-
-            e.preventDefault();
-          },
-          icon: 'load',
-          label: 'load',
-          showIconMethod: 'renderFn',
-          getLabel: (row: CollectionView) =>
-            row._status === LOADING_STATE.UNLOADED ? 'load' : 'release',
-          renderIconFn: (row: CollectionView) =>
-            row._status === LOADING_STATE.UNLOADED ? (
-              <LoadIcon />
-            ) : (
-              <ReleaseIcon />
-            ),
-        },
-      ],
     },
     {
       id: 'import',
@@ -519,12 +484,14 @@ const Collections = () => {
       isHoverAction: true,
       actionBarConfigs: [
         {
-          onClick: (e: React.MouseEvent, row: CollectionView) => {
+          onClick: (e: React.MouseEvent, row: Collection) => {
             setDialog({
               open: true,
               type: 'custom',
               params: {
-                component: <ImportSampleDialog collection={row._name} />,
+                component: (
+                  <ImportSampleDialog collection={row.collectionName} />
+                ),
               },
             });
           },
@@ -532,7 +499,7 @@ const Collections = () => {
           label: 'Import',
           showIconMethod: 'renderFn',
           getLabel: () => 'Import sample data',
-          renderIconFn: (row: CollectionView) => <SourceIcon />,
+          renderIconFn: (row: Collection) => <SourceIcon />,
         },
       ],
     },
@@ -573,7 +540,7 @@ const Collections = () => {
           colDefinitions={colDefinitions}
           rows={collectionList}
           rowCount={total}
-          primaryKey="_name"
+          primaryKey="collectionName"
           selected={selectedCollections}
           setSelected={handleSelectChange}
           page={currentPage}

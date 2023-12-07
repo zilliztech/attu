@@ -2,7 +2,7 @@ import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionHttp } from '@/http';
+import { Collection } from '@/http';
 import { DropCollectionProps } from './Types';
 
 const DropCollectionDialog: FC<DropCollectionProps> = props => {
@@ -14,7 +14,7 @@ const DropCollectionDialog: FC<DropCollectionProps> = props => {
 
   const handleDelete = async () => {
     for (const item of collections) {
-      await CollectionHttp.deleteCollection(item._name);
+      await Collection.deleteCollection(item._name);
     }
 
     handleCloseDialog();

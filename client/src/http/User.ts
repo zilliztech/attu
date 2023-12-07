@@ -9,8 +9,8 @@ import {
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
 
-export class UserHttp extends BaseModel {
-  private names!: string[];
+export class User extends BaseModel {
+  public names!: string[];
 
   constructor(props: {}) {
     super(props);
@@ -95,9 +95,5 @@ export class UserHttp extends BaseModel {
       UserPrivileges: Record<string, unknown>;
       Privileges: Record<string, unknown>;
     }>;
-  }
-
-  get _names() {
-    return this.names;
   }
 }

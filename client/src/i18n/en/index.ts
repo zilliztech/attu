@@ -2,7 +2,7 @@ const indexTrans = {
   type: 'Index Type',
   param: 'Index Parameters',
 
-  create: 'Index',
+  create: 'Create Index',
   index: 'Index',
   desc: 'Description',
 

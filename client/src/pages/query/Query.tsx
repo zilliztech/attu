@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
 import { rootContext } from '@/context';
-import { CollectionHttp } from '@/http';
+import { Collection, DataService } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
@@ -12,10 +12,8 @@ import CustomButton from '@/components/customButton/CustomButton';
 import AttuGrid from '@/components/grid/Grid';
 import { ToolBarConfig } from '@/components/grid/Types';
 import Filter from '@/components/advancedSearch';
-// import { useTimeTravelHook } from '@/hooks';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
-// import { CustomDatePicker } from '@/components/customDatePicker/CustomDatePicker';
 import { getLabelDisplayedRows } from '../search/Utils';
 import { getQueryStyles } from './Styles';
 import { DYNAMIC_FIELD, DataTypeStringEnum } from '@/consts';
@@ -68,24 +66,24 @@ const Query: FC<{
   };
 
   const getFields = async (collectionName: string) => {
-    const collection = await CollectionHttp.getCollection(collectionName);
-    const schemaList = collection._fields;
+    const collection = await Collection.getCollection(collectionName);
+    const schemaList = collection.fields;
 
     const nameList = schemaList.map(v => ({
       name: v.name,
-      type: v.data_type,
+      type: v.fieldType,
     }));
 
     // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection._enableDynamicField) {
+    if (collection.enableDynamicField) {
       nameList.push({
         name: DYNAMIC_FIELD,
         type: DataTypeStringEnum.JSON,
       });
     }
 
-    const primaryKey = schemaList.find(v => v._isPrimaryKey === true)!;
-    setPrimaryKey({ value: primaryKey['name'], type: primaryKey['data_type'] });
+    const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
+    setPrimaryKey({ value: primaryKey['name'], type: primaryKey['fieldType'] });
 
     setFields(nameList);
   };
@@ -118,7 +116,7 @@ const Query: FC<{
       return;
     }
     try {
-      const res = await CollectionHttp.queryData(collectionName, {
+      const res = await Collection.queryData(collectionName, {
         expr: expr,
         output_fields: fields.map(i => i.name),
         offset: 0,
@@ -140,7 +138,7 @@ const Query: FC<{
   };
 
   const handleDelete = async () => {
-    await CollectionHttp.deleteEntities(collectionName, {
+    await DataService.deleteEntities(collectionName, {
       expr: `${primaryKey.value} in [${selectedData
         .map(v =>
           primaryKey.type === DataTypeStringEnum.VarChar

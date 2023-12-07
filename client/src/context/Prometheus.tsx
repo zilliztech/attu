@@ -13,7 +13,7 @@ import {
   WITH_PROMETHEUS,
 } from '@/consts';
 import { formatPrometheusAddress } from '@/utils';
-import { PrometheusHttp } from '@/http';
+import { PrometheusService } from '@/http';
 
 export const prometheusContext = createContext<PrometheusContextType>({
   withPrometheus: false,
@@ -59,7 +59,7 @@ export const PrometheusProvider = (props: { children: React.ReactNode }) => {
     if (withPrometheus) {
       const prometheusAddressformat =
         formatPrometheusAddress(prometheusAddress);
-      PrometheusHttp.setPrometheus({
+      PrometheusService.setPrometheus({
         prometheusAddress: prometheusAddressformat,
         prometheusInstance,
         prometheusNamespace,

@@ -155,10 +155,10 @@ export class CollectionController {
   async describeCollection(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.describeCollection({
-        collection_name: name,
+      const result = await this.collectionsService.getAllCollections({
+        data: [{ name }],
       });
-      res.send(result);
+      res.send(result[0]);
     } catch (error) {
       next(error);
     }

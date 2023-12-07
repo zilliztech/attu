@@ -1,6 +1,6 @@
 import { useEffect, useState, FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CollectionHttp } from '@/http';
+import { Segement } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import { rootContext } from '@/context';
 import AttuGrid from '@/components/grid/Grid';
@@ -24,18 +24,17 @@ const Segments: FC<{
   const fetchSegments = async () => {
     setLoading(true);
 
-    const psegments = await CollectionHttp.getPSegments(collectionName);
-    const qsegments = await CollectionHttp.getQSegments(collectionName);
+    const psegments = (await Segement.getPSegments(collectionName)) || {};
+    const qsegments = (await Segement.getQSegments(collectionName)) || {};
 
-    const combinedArray = psegments.infos.map((p: any) => {
-      const q = qsegments.infos.find((q: any) => q.segmentID === p.segmentID);
+    const combinedArray = psegments.infos.map(p => {
+      const q = qsegments.infos.find(q => q.segmentID === p.segmentID)! as any;
       return {
         ...p,
-        ...(q &&
-          Object.keys(q).reduce((acc: any, key) => {
-            acc[`q_${key}`] = q[key];
-            return acc;
-          }, {})),
+        ...Object.keys(q).reduce((acc, key) => {
+          acc[`q_${key}`] = q[key];
+          return acc;
+        }, {} as any),
       };
     });
 

@@ -4,8 +4,8 @@ import {
   DEFAULT_PROMETHEUS_PORT,
   DataTypeEnum,
 } from '@/consts';
-import { CreateFieldType, Field } from '@/pages/collections/Types';
-import { FieldView } from '@/pages/schema/Types';
+import { CreateFieldType, CreateField } from '@/pages/collections/Types';
+import { FieldHttp } from '@/http';
 
 /**
  * transform large capacity to capacity in b.
@@ -125,7 +125,7 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
   return metricLabel === 'Superstructure' || metricLabel === 'Substructure';
 };
 
-export const getCreateFieldType = (config: Field): CreateFieldType => {
+export const getCreateFieldType = (config: CreateField): CreateFieldType => {
   if (config.is_primary_key) {
     return 'primaryKey';
   }
@@ -232,17 +232,16 @@ export const formatUtcToMilvus = (bigNumber: number) => {
  * @param bigNumber
  * @returns
  */
-export const formatFieldType = (field: FieldView) => {
-  const { _fieldType, element_type, _maxLength, _maxCapacity, _dimension } =
-    field;
+export const formatFieldType = (field: FieldHttp) => {
+  const { fieldType, element_type, maxLength, maxCapacity, dimension } = field;
 
   const elementType =
     element_type !== 'None'
-      ? `<${element_type}${_maxLength ? `(${_maxLength})` : ''}>`
+      ? `<${element_type}${maxLength ? `(${maxLength})` : ''}>`
       : '';
-  const maxCapacity = _maxCapacity ? `[${_maxCapacity}]` : '';
-  const dimension = _dimension ? `(${_dimension})` : '';
-  const maxLength = _fieldType === 'VarChar' ? `(${_maxLength})` : '';
+  const maxCap = maxCapacity ? `[${maxCapacity}]` : '';
+  const dim = dimension ? `(${dimension})` : '';
+  const maxLn = fieldType === 'VarChar' ? `(${maxLength})` : '';
 
-  return `${_fieldType}${elementType}${maxCapacity}${dimension}${maxLength}`;
+  return `${fieldType}${elementType}${maxCap}${dim}${maxLn}`;
 };

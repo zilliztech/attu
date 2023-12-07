@@ -1,23 +1,5 @@
-import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { ChildrenStatusType } from '@/components/status/Types';
-import { LOADING_STATE, DataTypeEnum } from '@/consts';
-import { FieldData } from '../schema/Types';
-
-export interface CollectionData {
-  _name: string;
-  _id: string;
-  _loadedPercentage: string;
-  _status: LOADING_STATE;
-  _rowCount: string;
-  _desc: string;
-  _indexState: ChildrenStatusType;
-  _fields?: FieldData[];
-  _consistencyLevel: string;
-  _aliases: string[];
-  _replicas: Replica[];
-  _enableDynamicField: boolean;
-  _autoId: boolean;
-}
+import { Dispatch, SetStateAction } from 'react';
+import { DataTypeEnum } from '@/consts';
 
 export interface Replica {
   collectionID: string;
@@ -34,12 +16,6 @@ export interface ShardReplica {
   node_id: string[];
 }
 
-export interface CollectionView extends CollectionData {
-  nameElement?: ReactElement;
-  statusElement?: ReactElement;
-  indexCreatingElement?: ReactElement;
-}
-
 export interface CollectionCreateProps {
   onCreate?: () => void;
 }
@@ -48,11 +24,11 @@ export interface CollectionCreateParam {
   collection_name: string;
   description: string;
   autoID: boolean;
-  fields: Field[];
+  fields: CreateField[];
   consistency_level: string;
 }
 
-export interface Field {
+export interface CreateField {
   name: string | null;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
@@ -79,8 +55,8 @@ export type CreateFieldType =
   | 'number';
 
 export interface CreateFieldsProps {
-  fields: Field[];
-  setFields: Dispatch<SetStateAction<Field[]>>;
+  fields: CreateField[];
+  setFields: Dispatch<SetStateAction<CreateField[]>>;
   setFieldsValidation: Dispatch<
     SetStateAction<{ [x: string]: string | boolean }[]>
   >;

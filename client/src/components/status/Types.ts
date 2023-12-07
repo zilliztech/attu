@@ -1,13 +1,18 @@
 import { LOADING_STATE } from '@/consts';
+import { FieldHttp } from '@/http';
 
-// export enum StatusEnum {
-//   'unloaded',
-//   'loaded',
-//   'error',
-// }
 export type StatusType = {
   status: LOADING_STATE;
   percentage?: string;
+};
+
+export type StatusActionType = {
+  status: LOADING_STATE;
+  percentage?: string;
+  action?: Function;
+  field: FieldHttp;
+  collectionName: string;
+  onIndexCreate: Function;
 };
 
 // @todo need rename

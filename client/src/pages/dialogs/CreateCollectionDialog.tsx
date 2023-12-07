@@ -15,11 +15,11 @@ import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
 import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
 import CreateFields from '../collections/CreateFields';
-import { CollectionHttp } from '@/http';
+import { Collection } from '@/http';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
-  Field,
+  CreateField,
 } from '../collections/Types';
 import { CONSISTENCY_LEVEL_OPTIONS } from '../collections/Constants';
 
@@ -74,7 +74,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   const [consistencyLevel, setConsistencyLevel] =
     useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Bounded); // Bounded is the default value of consistency level
 
-  const [fields, setFields] = useState<Field[]>([
+  const [fields, setFields] = useState<CreateField[]>([
     {
       data_type: DataTypeEnum.Int64,
       is_primary_key: true,
@@ -197,7 +197,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
-        let data: Field = {
+        let data: CreateField = {
           name: v.name,
           description: v.description,
           is_primary_key: v.is_primary_key,
@@ -242,7 +242,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       consistency_level: consistencyLevel,
     };
 
-    await CollectionHttp.createCollection({
+    await Collection.createCollection({
       ...param,
     });
 

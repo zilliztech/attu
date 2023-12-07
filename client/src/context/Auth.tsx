@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
 import { MILVUS_ADDRESS, LOGIN_USERNAME } from '@/consts';
-import { MilvusHttp } from '@/http';
+import { MilvusService } from '@/http';
 import { AuthContextType } from './Types';
 
 export const authContext = createContext<AuthContextType>({
@@ -33,7 +33,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       if (!milvusAddress) {
         return;
       }
-      const res = await MilvusHttp.check(milvusAddress);
+      const res = await MilvusService.check(milvusAddress);
       setAddress(res.connected ? milvusAddress : '');
       res.connected && setIsAuth(true);
       if (!res.connected) {

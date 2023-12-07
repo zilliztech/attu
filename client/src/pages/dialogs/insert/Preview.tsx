@@ -116,8 +116,9 @@ const InsertPreview: FC<InsertPreviewProps> = ({
             menuItems={schemaOptions.map(schema => ({
               label: schema.label,
               callback: () => handleTableHeadChange(index, schema.label),
-              wrapperClass: `${classes.menuItem} ${head === schema.label ? classes.menuActive : ''
-                }`,
+              wrapperClass: `${classes.menuItem} ${
+                head === schema.label ? classes.menuActive : ''
+              }`,
             }))}
             buttonProps={{
               className: classes.menuLabel,

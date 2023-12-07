@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DatabaseHttp } from '@/http';
+import { Database } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
@@ -14,7 +14,7 @@ import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './Create';
 
-const Database = () => {
+const DatabasePage = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES);
   const { setDatabaseList } = useContext(dataContext);
 
@@ -31,7 +31,7 @@ const Database = () => {
 
   const fetchDatabases = async () => {
     try {
-      const res = await DatabaseHttp.getDatabases();
+      const res = await Database.getDatabases();
       setDatabases(res.db_names.map((v: string) => ({ name: v })));
       setDatabaseList(res.db_names);
     } catch (error) {
@@ -40,7 +40,7 @@ const Database = () => {
   };
 
   const handleCreate = async (data: CreateDatabaseParams) => {
-    await DatabaseHttp.createDatabase(data);
+    await Database.createDatabase(data);
     fetchDatabases();
     openSnackBar(successTrans('create', { name: dbTrans('database') }));
     handleCloseDialog();
@@ -51,7 +51,7 @@ const Database = () => {
       const param: DropDatabaseParams = {
         db_name: db.name,
       };
-      await DatabaseHttp.dropDatabase(param);
+      await Database.dropDatabase(param);
     }
 
     openSnackBar(successTrans('delete', { name: dbTrans('database') }));
@@ -150,4 +150,4 @@ const Database = () => {
   );
 };
 
-export default Database;
+export default DatabasePage;

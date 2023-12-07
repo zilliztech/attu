@@ -6,7 +6,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { UserHttp } from '@/http';
+import { User } from '@/http';
 import {
   CreateRoleProps,
   CreateRoleParams,
@@ -50,7 +50,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   });
 
   const fetchRBAC = async () => {
-    const rbacOptions = await UserHttp.getRBAC();
+    const rbacOptions = await User.getRBAC();
 
     setRbacOptions(rbacOptions);
   };
@@ -108,10 +108,10 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
 
   const handleCreateRole = async () => {
     if (!isEditing) {
-      await UserHttp.createRole(form);
+      await User.createRole(form);
     }
 
-    await UserHttp.updateRolePrivileges(form);
+    await User.updateRolePrivileges(form);
 
     onUpdate({ data: form, isEditing: isEditing });
   };

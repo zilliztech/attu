@@ -5,9 +5,8 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
-import { FieldHttp, IndexHttp } from '@/http';
 import { formatFieldType } from '@/utils';
-import { FieldView } from './Types';
+import { Collection, FieldHttp } from '@/http';
 import IndexTypeElement from './IndexTypeElement';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -66,7 +65,7 @@ const Schema: FC<{
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
 
-  const [fields, setFields] = useState<FieldView[]>([]);
+  const [fields, setFields] = useState<FieldHttp[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const {
@@ -81,40 +80,18 @@ const Schema: FC<{
     handleGridSort,
   } = usePaginationHook(fields);
 
-  const fetchSchemaListWithIndex = async (
-    collectionName: string
-  ): Promise<FieldView[]> => {
-    const indexList = await IndexHttp.getIndexInfo(collectionName);
-    const schemaList = await FieldHttp.getFields(collectionName);
-    let fields: FieldView[] = [];
-    for (const schema of schemaList) {
-      let field: FieldView = Object.assign(schema, {
-        _indexParameterPairs: [],
-        _indexType: '',
-        _indexName: '',
-      });
-      const index = indexList.find(i => i._fieldName === schema.name);
-      field._indexParameterPairs = index?._indexParameterPairs || [];
-      field._indexType = index?._indexType || '';
-      field._indexName = index?._indexName || '';
-
-      fields = [...fields, field];
-    }
-    return fields;
-  };
-
   const fetchFields = useCallback(
     async (collectionName: string) => {
       const KeyIcon = icons.key;
 
       try {
-        const list = await fetchSchemaListWithIndex(collectionName);
-        const fields: FieldView[] = list.map(f =>
+        const collection = await Collection.getCollection(collectionName);
+        const fields = collection.fieldWithIndexInfo.map(f =>
           Object.assign(f, {
             _fieldNameElement: (
               <div className={classes.nameWrapper}>
-                {f._fieldName}
-                {f._isPrimaryKey ? (
+                {f.name}
+                {f.isPrimaryKey ? (
                   <div
                     className={classes.iconTitle}
                     title={collectionTrans('idFieldName')}
@@ -130,7 +107,7 @@ const Schema: FC<{
                     variant="outlined"
                   />
                 ) : null}
-                {f._isAutoId ? (
+                {f.autoID ? (
                   <Chip
                     className={classes.chip}
                     size="small"
@@ -144,11 +121,11 @@ const Schema: FC<{
             _fieldTypeElement: formatFieldType(f),
             _indexParamElement: (
               <div className={classes.paramWrapper}>
-                {f._indexParameterPairs?.length > 0 ? (
-                  f._indexParameterPairs.map(p =>
+                {f.indexParameterPairs?.length > 0 ? (
+                  f.indexParameterPairs.map(p =>
                     p.value ? (
                       <>
-                        <span key={p.key} className="param">
+                        <span key={p.key + p.value} className="param">
                           <Typography variant="body1" className="key">
                             {`${p.key}:`}
                           </Typography>
@@ -196,7 +173,7 @@ const Schema: FC<{
       align: 'left',
       disablePadding: true,
       label: collectionTrans('fieldName'),
-      sortBy: '_fieldName',
+      sortBy: 'name',
     },
     {
       id: '_fieldTypeElement',
@@ -205,7 +182,7 @@ const Schema: FC<{
       label: collectionTrans('fieldType'),
     },
     {
-      id: '_indexName',
+      id: 'indexName',
       align: 'left',
       disablePadding: true,
       label: 'Index name',
@@ -215,7 +192,7 @@ const Schema: FC<{
       align: 'left',
       disablePadding: true,
       label: indexTrans('type'),
-      sortBy: '_indexType',
+      sortBy: 'indexType',
     },
     {
       id: '_indexParamElement',
@@ -225,7 +202,7 @@ const Schema: FC<{
       notSort: true,
     },
     {
-      id: '_desc',
+      id: 'desc',
       align: 'left',
       disablePadding: false,
       label: indexTrans('desc'),
@@ -243,7 +220,7 @@ const Schema: FC<{
         colDefinitions={colDefinitions}
         rows={schemaList}
         rowCount={total}
-        primaryKey="_fieldId"
+        primaryKey="fieldID"
         showHoverStyle={false}
         page={currentPage}
         onPageChange={handlePageChange}

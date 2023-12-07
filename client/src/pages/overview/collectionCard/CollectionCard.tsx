@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
 } from '@material-ui/core';
-import { FC, useContext, useEffect, useState, useCallback } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import CustomButton from '@/components/customButton/CustomButton';
 import icons from '@/components/icons/Icons';
 import Status from '@/components/status/Status';
@@ -17,8 +17,7 @@ import { LOADING_STATE } from '@/consts';
 import { rootContext, dataContext } from '@/context';
 import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
 import { CollectionCardProps } from './Types';
-import { CollectionHttp } from '@/http';
-import { CollectionData } from '@/pages/collections/Types';
+import { Collection } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -94,7 +93,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const classes = useStyles();
   const { setDialog } = useContext(rootContext);
 
-  const { _name: name, _status: status, _loadedPercentage, _replicas } = data;
+  const { collectionName, status: status, loadedPercentage, replicasInfo } = data;
   const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
@@ -110,14 +109,14 @@ const CollectionCard: FC<CollectionCardProps> = ({
       type: 'custom',
       params: {
         component: (
-          <ReleaseCollectionDialog collection={name} onRelease={onRelease} />
+          <ReleaseCollectionDialog collection={collectionName} onRelease={onRelease} />
         ),
       },
     });
   };
 
   const onVectorSearchClick = () => {
-    navigate({ pathname: '/search', search: `?collectionName=${name}` });
+    navigate({ pathname: '/search', search: `?collectionName=${collectionName}` });
   };
 
   useEffect(() => {
@@ -125,8 +124,8 @@ const CollectionCard: FC<CollectionCardProps> = ({
       try {
         setLoading(true);
         if (status === LOADING_STATE.LOADED) {
-          const data = (await CollectionHttp.count(name)) as CollectionData;
-          setCount(data._rowCount);
+          const data = await Collection.count(collectionName);
+          setCount(data.entityCount);
         }
       } catch (e) {
       } finally {
@@ -141,7 +140,6 @@ const CollectionCard: FC<CollectionCardProps> = ({
     }
 
     return () => {
-      console.log('existing', name, database);
       exiting = true;
     };
   }, [status, database]);
@@ -149,23 +147,23 @@ const CollectionCard: FC<CollectionCardProps> = ({
   return (
     <Card
       className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
-        data._status === LOADING_STATE.LOADING && classes.loading
+        data.status === LOADING_STATE.LOADING && classes.loading
       }`}
     >
       <CardContent>
         <div>
-          <Status status={status} percentage={_loadedPercentage} />
+          <Status status={status} percentage={loadedPercentage} />
         </div>
-        <Link className="link" to={`/collections/${name}`}>
-          {name}
+        <Link className="link" to={`/collections/${collectionName}`}>
+          {collectionName}
           <RightArrowIcon classes={{ root: classes.icon }} />
         </Link>
         <ul className={classes.content}>
-          {_replicas && _replicas.length > 1 ? (
+          {replicasInfo && replicasInfo.length > 1 ? (
             <li>
               <Typography>{collectionTrans('replicaNum')}</Typography>:
               <Typography className={classes.rowCount}>
-                {_replicas.length}
+                {replicasInfo.length}
               </Typography>
             </li>
           ) : null}

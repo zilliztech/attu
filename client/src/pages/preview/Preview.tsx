@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AttuGrid from '@/components/grid/Grid';
-import { CollectionHttp, IndexHttp } from '@/http';
+import { Collection, MilvusIndex } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
 import { generateVector } from '@/utils';
 import {
@@ -45,42 +45,42 @@ const Preview: FC<{
 
   const loadData = async (collectionName: string) => {
     // get schema list
-    const collection = await CollectionHttp.getCollection(collectionName);
+    const collection = await Collection.getCollection(collectionName);
 
-    const schemaList = collection._fields!;
+    const schemaList = collection.fields!;
     let nameList = schemaList.map(v => ({
       name: v.name,
-      type: v.data_type,
+      type: v.fieldType,
     }));
 
     // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection._enableDynamicField) {
+    if (collection.enableDynamicField) {
       nameList.push({
         name: DYNAMIC_FIELD,
         type: DataTypeStringEnum.JSON,
       });
     }
 
-    const id = schemaList.find(v => v._isPrimaryKey === true);
-    const primaryKey = id?._fieldName || '';
-    const delimiter = id?.data_type === 'Int64' ? '' : '"';
+    const id = schemaList.find(v => v.isPrimaryKey === true);
+    const primaryKey = id?.name || '';
+    const delimiter = id?.fieldType === 'Int64' ? '' : '"';
 
     const vectorField = schemaList.find(
-      v => v.data_type === 'FloatVector' || v.data_type === 'BinaryVector'
+      v => v.fieldType === 'FloatVector' || v.fieldType === 'BinaryVector'
     );
-    const anns_field = vectorField?._fieldName!;
-    const dim = Number(vectorField?._dimension);
+    const anns_field = vectorField?.name!;
+    const dim = Number(vectorField?.dimension);
     const vectors = [
-      generateVector(vectorField?.data_type === 'FloatVector' ? dim : dim / 8),
+      generateVector(vectorField?.fieldType === 'FloatVector' ? dim : dim / 8),
     ];
     // get search params
-    const indexesInfo = await IndexHttp.getIndexInfo(collectionName);
-    const vectorIndex = indexesInfo.filter(i => i._fieldName === anns_field)[0];
+    const indexesInfo = await MilvusIndex.getIndexInfo(collectionName);
+    const vectorIndex = indexesInfo.filter(i => i.field_name === anns_field)[0];
 
-    const indexType = indexesInfo.length == 0 ? 'FLAT' : vectorIndex._indexType;
+    const indexType = indexesInfo.length == 0 ? 'FLAT' : vectorIndex.indexType;
     const indexConfig = INDEX_CONFIG[indexType];
     const metric_type =
-      indexesInfo.length === 0 ? 'L2' : vectorIndex._metricType;
+      indexesInfo.length === 0 ? 'L2' : vectorIndex.metricType;
     const searchParamKey = indexConfig.search[0];
     const searchParamValue = DEFAULT_SEARCH_PARAM_VALUE_MAP[searchParamKey];
     const searchParam = { [searchParamKey]: searchParamValue };
@@ -95,7 +95,7 @@ const Preview: FC<{
 
     try {
       // first, search random data to get random id
-      const searchRes = await CollectionHttp.vectorSearchData(collectionName, {
+      const searchRes = await Collection.vectorSearchData(collectionName, {
         search_params: {
           topk: 100,
           anns_field,
@@ -106,7 +106,7 @@ const Preview: FC<{
         vectors,
         output_fields: [primaryKey],
         vector_type:
-          DataTypeEnum[vectorField!._fieldType as keyof typeof DataTypeEnum],
+          DataTypeEnum[vectorField!.fieldType as keyof typeof DataTypeEnum],
       });
 
       // compose random id list expression
@@ -115,7 +115,7 @@ const Preview: FC<{
         .join(',')}]`;
 
       // query by random id
-      const res = await CollectionHttp.queryData(collectionName, {
+      const res = await Collection.queryData(collectionName, {
         expr: expr,
         output_fields: [...nameList.map(i => i.name)],
       });

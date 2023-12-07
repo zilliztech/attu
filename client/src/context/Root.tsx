@@ -11,7 +11,7 @@ import {
 } from './Types';
 import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
 import CustomDialog from '@/components/customDialog/CustomDialog';
-import { MilvusHttp } from '@/http';
+import { MilvusService } from '@/http';
 import { theme } from '../styles/theme';
 
 const DefaultDialogConfigs: DialogType = {
@@ -115,7 +115,7 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
   useEffect(() => {
     if (isAuth) {
       const fetchVersion = async () => {
-        const res = await MilvusHttp.getVersion();
+        const res = await MilvusService.getVersion();
         setVersionInfo(res);
       };
       fetchVersion();

@@ -13,7 +13,6 @@ import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Preview from '../preview/Preview';
 import Segments from '../segments/Segments';
-
 import { TAB_ENUM } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

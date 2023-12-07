@@ -7,7 +7,7 @@ import icons from '@/components/icons/Icons';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { MilvusHttp } from '@/http';
+import { MilvusService } from '@/http';
 import { useNavigate } from 'react-router-dom';
 import {
   rootContext,
@@ -203,7 +203,7 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
-    const result = await MilvusHttp.connect(form);
+    const result = await MilvusService.connect(form);
 
     setIsAuth(true);
     setAddress(form.address);

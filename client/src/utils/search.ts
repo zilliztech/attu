@@ -1,7 +1,8 @@
 import { Field } from '../components/advancedSearch/Types';
-import { FieldData, IndexType, IndexView } from '../pages/schema/Types';
+import { IndexType } from '../pages/schema/Types';
 import { INDEX_TYPES_ENUM, DataTypeEnum, DataTypeStringEnum } from '@/consts';
 import { FieldOption } from '../types/SearchTypes';
+import { FieldHttp, MilvusIndex } from '@/http';
 
 /**
  * function to get EmbeddingType
@@ -35,15 +36,15 @@ export const getDefaultIndexType = (embeddingType: DataTypeEnum): IndexType => {
  * funtion to divide fields into two categories: vector or nonVector
  */
 export const classifyFields = (
-  fields: FieldData[]
-): { vectorFields: FieldData[]; nonVectorFields: FieldData[] } => {
+  fields: FieldHttp[]
+): { vectorFields: FieldHttp[]; nonVectorFields: FieldHttp[] } => {
   const vectorTypes: DataTypeStringEnum[] = [
     DataTypeStringEnum.BinaryVector,
     DataTypeStringEnum.FloatVector,
   ];
   return fields.reduce(
     (result, cur) => {
-      const changedFieldType = vectorTypes.includes(cur._fieldType)
+      const changedFieldType = vectorTypes.includes(cur.fieldType)
         ? 'vectorFields'
         : 'nonVectorFields';
 
@@ -51,34 +52,34 @@ export const classifyFields = (
 
       return result;
     },
-    { vectorFields: [] as FieldData[], nonVectorFields: [] as FieldData[] }
+    { vectorFields: [] as FieldHttp[], nonVectorFields: [] as FieldHttp[] }
   );
 };
 
 export const getVectorFieldOptions = (
-  fields: FieldData[],
-  indexes: IndexView[]
+  fields: FieldHttp[],
+  indexes: MilvusIndex[]
 ): FieldOption[] => {
   const options: FieldOption[] = fields.map(f => {
-    const embeddingType = getEmbeddingType(f._fieldType);
+    const embeddingType = getEmbeddingType(f.fieldType);
     const defaultIndex = getDefaultIndexType(embeddingType);
-    const index = indexes.find(i => i._fieldName === f._fieldName);
+    const index = indexes.find(i => i.field_name === f.name);
 
     return {
-      label: `${f._fieldName} (${index?._indexType || defaultIndex})`,
-      value: f._fieldName,
-      fieldType: f._fieldType,
+      label: `${f.name} (${index?.indexType || defaultIndex})`,
+      value: f.name,
+      fieldType: f.fieldType,
       indexInfo: index || null,
-      dimension: Number(f._dimension),
+      dimension: Number(f.dimension),
     };
   });
 
   return options;
 };
 
-export const getNonVectorFieldsForFilter = (fields: FieldData[]): Field[] => {
+export const getNonVectorFieldsForFilter = (fields: FieldHttp[]): Field[] => {
   return fields.map(f => ({
-    name: f._fieldName,
-    type: f._fieldType,
+    name: f.name,
+    type: f.fieldType,
   }));
 };

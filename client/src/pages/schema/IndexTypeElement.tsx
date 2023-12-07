@@ -1,28 +1,30 @@
-import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  MouseEvent,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
-import { makeStyles, Theme } from '@material-ui/core';
-import {
-  FieldView,
-  IndexCreateParam,
-  IndexExtraParam,
-  IndexManageParam,
-} from './Types';
-import { IndexHttp } from '@/http';
+import { makeStyles, Theme, Tooltip } from '@material-ui/core';
+import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
+import { MilvusIndex, FieldHttp } from '@/http';
 import { rootContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
 import { sleep } from '@/utils';
-import CreateIndex from './Create';
-import { IndexState } from '../../types/Milvus';
+import { IndexState } from '@/types/Milvus';
 import { NONE_INDEXABLE_DATA_TYPES } from '@/consts';
+import CreateIndex from './Create';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     // give fixed width to prevent table cell stretching
-    width: 150,
+    width: 'auto',
   },
   item: {
     paddingLeft: theme.spacing(1),
@@ -30,10 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   btn: {
     display: 'flex',
     alignItems: 'center',
-    textTransform: 'uppercase',
     whiteSpace: 'nowrap',
-
-    fontSize: '14px',
     color: theme.palette.primary.main,
 
     '&:hover': {
@@ -49,8 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   chip: {
-    height: '24px',
-    backgroundColor: '#e9e9ed',
+    background: `rgba(0, 0, 0, 0.04)`,
     padding: theme.spacing(0.5),
 
     '& .icon': {
@@ -60,7 +58,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   chipLabel: {
     fontSize: '12px',
-    lineHeight: '16px',
   },
   addIcon: {
     width: '20px',
@@ -69,10 +66,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const IndexTypeElement: FC<{
-  data: FieldView;
+  data: FieldHttp;
   collectionName: string;
+  disabled?: boolean;
+  disabledTooltip?: string;
   cb: (collectionName: string) => void;
-}> = ({ data, collectionName, cb }) => {
+}> = ({ data, collectionName, cb, disabled, disabledTooltip }) => {
   const classes = useStyles();
   // set empty string as default status
   const [status, setStatus] = useState<string>(IndexState.Default);
@@ -104,7 +103,7 @@ const IndexTypeElement: FC<{
       indexName: string
     ) => {
       // get fetch data
-      const index_descriptions = await IndexHttp.getIndexInfo(collectionName);
+      const index_descriptions = await MilvusIndex.getIndexInfo(collectionName);
 
       const indexDescription = index_descriptions.find(
         i => i.field_name === fieldName
@@ -127,14 +126,14 @@ const IndexTypeElement: FC<{
       }
     };
     // prevent delete index trigger fetching index status
-    if (data._indexType !== '' && status !== IndexState.Delete) {
-      fetchStatus(collectionName, data._fieldName, data._indexName);
+    if (data.indexType !== '' && status !== IndexState.Delete) {
+      fetchStatus(collectionName, data.name, data.indexName!);
     }
 
     return () => {
       running = false;
     };
-  }, [collectionName, data._indexType, data._fieldName, data._indexName]);
+  }, [collectionName, data.indexType, data.name, data.indexName]);
 
   const requestCreateIndex = async (
     params: IndexExtraParam,
@@ -142,11 +141,11 @@ const IndexTypeElement: FC<{
   ) => {
     const indexCreateParam: IndexCreateParam = {
       collection_name: collectionName,
-      field_name: data._fieldName,
+      field_name: data.name,
       index_name,
       extra_params: params,
     };
-    await IndexHttp.createIndex(indexCreateParam);
+    await MilvusIndex.createIndex(indexCreateParam);
     // reset status to default empty string
     setStatus(IndexState.Default);
     handleCloseDialog();
@@ -154,7 +153,9 @@ const IndexTypeElement: FC<{
     cb(collectionName);
   };
 
-  const handleCreate = () => {
+  const handleCreate = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
     setDialog({
       open: true,
       type: 'custom',
@@ -162,9 +163,9 @@ const IndexTypeElement: FC<{
         component: (
           <CreateIndex
             collectionName={collectionName}
-            fieldName={data._fieldName}
-            fieldType={data._fieldType}
-            dimension={Number(data._dimension)}
+            fieldName={data.name}
+            fieldType={data.fieldType}
+            dimension={Number(data.dimension)}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}
           />
@@ -176,11 +177,11 @@ const IndexTypeElement: FC<{
   const requestDeleteIndex = async () => {
     const indexDeleteParam: IndexManageParam = {
       collection_name: collectionName,
-      field_name: data._fieldName,
-      index_name: data._indexName,
+      field_name: data.name,
+      index_name: data.indexName!,
     };
 
-    await IndexHttp.deleteIndex(indexDeleteParam);
+    await MilvusIndex.deleteIndex(indexDeleteParam);
     // use 'delete' as special status for whether fetching index status check
     setStatus(IndexState.Delete);
     cb(collectionName);
@@ -208,20 +209,20 @@ const IndexTypeElement: FC<{
   const generateElement = () => {
     // only vector type field is able to create index
     if (
-      data._isPrimaryKey ||
-      NONE_INDEXABLE_DATA_TYPES.indexOf(data._fieldType) !== -1
+      data.isPrimaryKey ||
+      NONE_INDEXABLE_DATA_TYPES.indexOf(data.fieldType) !== -1
     ) {
       return <div className={classes.item}>--</div>;
     }
-    // _indexType example: FLAT
-    switch (data._indexType) {
+    // indexType example: FLAT
+    switch (data.indexType) {
       case '': {
         return (
           <div
             role="button"
             onClick={handleCreate}
             className={`${classes.btn} ${
-              data._createIndexDisabled ? classes.btnDisabled : ''
+              data.createIndexDisabled ? classes.btnDisabled : ''
             }`}
           >
             <AddIcon classes={{ root: classes.addIcon }} />
@@ -242,16 +243,34 @@ const IndexTypeElement: FC<{
           return <StatusIcon type={ChildrenStatusType.CREATING} />;
         }
 
-        /**
-         * if creating finished, show chip that contains index type
-         */
-        return (
+        const chipComp = () => (
           <Chip
-            label={data._indexType}
+            label={data.indexType}
             classes={{ root: classes.chip, label: classes.chipLabel }}
             deleteIcon={<DeleteIcon classes={{ root: 'icon' }} />}
             onDelete={handleDelete}
+            disabled={disabled}
+            onClick={(e: MouseEvent<HTMLDivElement>) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
+            size="small"
           />
+        );
+        /**
+         * if creating finished, show chip that contains index type
+         */
+        return disabled ? (
+          <Tooltip
+            interactive
+            arrow
+            title={disabledTooltip ?? ''}
+            placement={'top'}
+          >
+            <div>{chipComp()}</div>
+          </Tooltip>
+        ) : (
+          <div>{chipComp()}</div>
         );
       }
     }

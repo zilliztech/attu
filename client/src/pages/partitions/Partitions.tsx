@@ -9,9 +9,8 @@ import { usePaginationHook, useInsertDialogHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
-import { CollectionHttp, PartitionHttp, FieldHttp, MilvusHttp } from '@/http';
+import { Collection, Partition, FieldHttp, DataService } from '@/http';
 import InsertContainer from '../dialogs/insert/Dialog';
-import { Field } from '../schema/Types';
 import { InsertDataParam } from '../collections/Types';
 import CreatePartitionDialog from '../dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '../dialogs/DropPartitionDialog';
@@ -73,7 +72,7 @@ const Partitions: FC<{
 
   const fetchPartitions = async (collectionName: string) => {
     try {
-      const res = await PartitionHttp.getPartitions(collectionName);
+      const res = await Partition.getPartitions(collectionName);
       setLoading(false);
       setPartitions(res);
     } catch (err) {
@@ -82,7 +81,7 @@ const Partitions: FC<{
   };
 
   const fetchCollectionDetail = async (name: string) => {
-    const res = await CollectionHttp.getCollection(name);
+    const res = await Collection.getCollection(name);
     return res;
   };
 
@@ -99,14 +98,14 @@ const Partitions: FC<{
     timer = setTimeout(() => {
       const searchWords = [search];
       const list = search
-        ? partitions.filter(p => p._formatName.includes(search))
+        ? partitions.filter(p => p.partitionName.includes(search))
         : partitions;
 
       const highlightList = list.map(c => {
         Object.assign(c, {
           _nameElement: (
             <Highlighter
-              textToHighlight={c._formatName}
+              textToHighlight={c.partitionName}
               searchWords={searchWords}
               highlightClassName={classes.highlight}
             />
@@ -138,8 +137,8 @@ const Partitions: FC<{
       fields_data: fieldData,
     };
     try {
-      await CollectionHttp.insertData(collectionName, param);
-      await MilvusHttp.flush(collectionName);
+      await DataService.insertData(collectionName, param);
+      await DataService.flush(collectionName);
       // update partitions
       fetchPartitions(collectionName);
 
@@ -177,9 +176,7 @@ const Partitions: FC<{
       label: btnTrans('insert'),
       onClick: async () => {
         const collection = await fetchCollectionDetail(collectionName);
-        const schema = collection._schema.fields.map(
-          (f: Field) => new FieldHttp(f)
-        );
+        const schema = collection.schema.fields.map(f => new FieldHttp(f));
 
         handleInsertDialog(
           <InsertContainer
@@ -187,7 +184,7 @@ const Partitions: FC<{
             defaultSelectedCollection={collectionName}
             defaultSelectedPartition={
               selectedPartitions.length === 1
-                ? selectedPartitions[0]._formatName
+                ? selectedPartitions[0].partitionName
                 : ''
             }
             partitions={partitions}
@@ -225,8 +222,8 @@ const Partitions: FC<{
       // can't delete default partition
       disabled: () =>
         selectedPartitions.length === 0 ||
-        selectedPartitions.some(p => p._name === '_default'),
-      tooltip: selectedPartitions.some(p => p._name === '_default')
+        selectedPartitions.some(p => p.name === '_default'),
+      tooltip: selectedPartitions.some(p => p.name === '_default')
         ? t('deletePartitionError')
         : '',
     },
@@ -248,7 +245,7 @@ const Partitions: FC<{
       label: t('name'),
     },
     {
-      id: '_createdTime',
+      id: 'createdAt',
       align: 'left',
       disablePadding: false,
       label: t('createdTime'),
@@ -260,7 +257,7 @@ const Partitions: FC<{
     //   label: t('status'),
     // },
     {
-      id: '_rowCount',
+      id: 'entityCount',
       align: 'left',
       disablePadding: false,
       label: (

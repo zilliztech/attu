@@ -7,7 +7,7 @@ import icons from '@/components/icons/Icons';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateAliasDialog from '../dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionHttp } from '@/http';
+import { Collection } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -77,7 +77,7 @@ export default function Aliases(props: AliasesProps) {
     collection: string;
     alias: string;
   }) => {
-    await CollectionHttp.dropAlias(params.collection, { alias: params.alias });
+    await Collection.dropAlias(params.collection, { alias: params.alias });
     openSnackBar(successTrans('delete', { name: collectionTrans('alias') }));
     handleCloseDialog();
     onDelete();

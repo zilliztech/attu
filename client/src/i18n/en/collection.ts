@@ -130,6 +130,11 @@ const collectionTrans = {
   consistencyStrongTooltip: `It ensures that users can read the latest version of data.`,
   consistencySessionTooltip: `It ensures that all data writes can be immediately perceived in reads during the same session.`,
   consistencyEventuallyTooltip: `There is no guaranteed order of reads and writes, and replicas eventually converge to the same state given that no further write operations are done.`,
+  releaseCollectionFirst: `Please release your collection first.`,
+
+  clickToLoad: 'Click to load the collection.',
+  clickToRelease: 'Click to release the collection.',
+  collectionIsLoading: 'The collection is loading...',
 };
 
 export default collectionTrans;

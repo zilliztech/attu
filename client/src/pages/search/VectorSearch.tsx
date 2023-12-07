@@ -15,7 +15,7 @@ import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { Field } from '@/components/advancedSearch/Types';
-import { CollectionHttp, IndexHttp } from '@/http';
+import { Collection, MilvusIndex } from '@/http';
 import {
   parseValue,
   parseLocationSearch,
@@ -36,7 +36,6 @@ import {
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
-import { CollectionData } from '../collections/Types';
 import { TOP_K_OPTIONS } from './Constants';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 
@@ -53,7 +52,7 @@ const VectorSearch = () => {
 
   // data stored inside the component
   const [tableLoading, setTableLoading] = useState<boolean>(false);
-  const [collections, setCollections] = useState<CollectionData[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   // fields for advanced filter
@@ -95,29 +94,29 @@ const VectorSearch = () => {
   const collectionOptions: Option[] = useMemo(
     () =>
       collections.map(c => ({
-        label: c._name,
-        value: c._name,
+        label: c.collectionName,
+        value: c.collectionName,
       })),
     [collections]
   );
 
   const outputFields: string[] = useMemo(() => {
-    const s = collections.find(c => c._name === selectedCollection);
+    const s = collections.find(c => c.collectionName === selectedCollection);
 
     if (!s) {
       return [];
     }
 
-    const fields = s._fields || [];
+    const fields = s.fields || [];
 
     // vector field can't be output fields
     const invalidTypes = ['BinaryVector', 'FloatVector'];
     const nonVectorFields = fields.filter(
-      field => !invalidTypes.includes(field._fieldType)
+      field => !invalidTypes.includes(field.fieldType)
     );
 
-    const _outputFields = nonVectorFields.map(f => f._fieldName);
-    if (s._enableDynamicField) {
+    const _outputFields = nonVectorFields.map(f => f.name);
+    if (s.enableDynamicField) {
       _outputFields.push(DYNAMIC_FIELD);
     }
     return _outputFields;
@@ -125,10 +124,10 @@ const VectorSearch = () => {
 
   const primaryKeyField = useMemo(() => {
     const selectedCollectionInfo = collections.find(
-      c => c._name === selectedCollection
+      c => c.collectionName === selectedCollection
     );
-    const fields = selectedCollectionInfo?._fields || [];
-    return fields.find(f => f._isPrimaryKey)?._fieldName;
+    const fields = selectedCollectionInfo?.fields || [];
+    return fields.find(f => f.isPrimaryKey)?.name;
   }, [selectedCollection, collections]);
 
   const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
@@ -178,16 +177,19 @@ const VectorSearch = () => {
       const index = selectedFieldInfo?.indexInfo;
       const embeddingType = getEmbeddingType(selectedFieldInfo!.fieldType);
       const metric =
-        index?._metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
-      const indexParams = index?._indexParameterPairs || [];
+        index?.metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
+      const indexParams = index?.indexParameterPairs || [];
       const dim = selectedFieldInfo?.dimension || 0;
       setSelectedMetricType(metric);
 
       return {
         metricType: metric,
-        indexType: index?._indexType || getDefaultIndexType(embeddingType),
+        indexType: index?.indexType || getDefaultIndexType(embeddingType),
         indexParams,
-        fieldType: DataTypeEnum[selectedFieldInfo?.fieldType!],
+        fieldType:
+          DataTypeEnum[
+            selectedFieldInfo?.fieldType! as keyof typeof DataTypeEnum
+          ],
         embeddingType,
         selectedFieldDimension: dim,
       };
@@ -245,15 +247,16 @@ const VectorSearch = () => {
 
   // fetch data
   const fetchCollections = useCallback(async () => {
-    const collections = await CollectionHttp.getCollections();
-    setCollections(collections.filter(c => c._status === LOADING_STATE.LOADED));
+    const collections = await Collection.getCollections();
+    setCollections(collections.filter(c => c.status === LOADING_STATE.LOADED));
   }, [database]);
 
   const fetchFieldsWithIndex = useCallback(
-    async (collectionName: string, collections: CollectionData[]) => {
+    async (collectionName: string, collections: Collection[]) => {
       const fields =
-        collections.find(c => c._name === collectionName)?._fields || [];
-      const indexes = await IndexHttp.getIndexInfo(collectionName);
+        collections.find(c => c.collectionName === collectionName)?.fields ||
+        [];
+      const indexes = await MilvusIndex.getIndexInfo(collectionName);
 
       const { vectorFields, nonVectorFields } = classifyFields(fields);
 
@@ -295,7 +298,7 @@ const VectorSearch = () => {
       const { collectionName } = parseLocationSearch(location.search);
       // collection name validation
       const isNameValid = collections
-        .map(c => c._name)
+        .map(c => c.collectionName)
         .includes(collectionName);
       isNameValid && setSelectedCollection(collectionName);
     }
@@ -348,7 +351,7 @@ const VectorSearch = () => {
 
     setTableLoading(true);
     try {
-      const res = await CollectionHttp.vectorSearchData(
+      const res = await Collection.vectorSearchData(
         selectedCollection,
         params
       );
@@ -390,9 +393,9 @@ const VectorSearch = () => {
             disabled={collectionOptions.length === 0}
             value={selectedCollection}
             onChange={(e: { target: { value: unknown } }) => {
-              const collection = e.target.value;
+              const collection = e.target.value as string;
 
-              setSelectedCollection(collection as string);
+              setSelectedCollection(collection);
               // every time selected collection changed, reset field
               setSelectedField('');
               setSearchResult([]);
@@ -407,8 +410,8 @@ const VectorSearch = () => {
             label={searchTrans('field')}
             value={selectedField}
             onChange={(e: { target: { value: unknown } }) => {
-              const field = e.target.value;
-              setSelectedField(field as string);
+              const field = e.target.value as string;
+              setSelectedField(field);
             }}
           />
         </CardContent>

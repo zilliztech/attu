@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, useContext } from 'react';
-import { DatabaseHttp, UserHttp, MilvusHttp } from '@/http';
+import { Database, User, MilvusService } from '@/http';
 import { parseJson, getNode, getSystemConfigs } from '@/utils';
 import { MILVUS_NODE_TYPE } from '@/consts';
 import { authContext } from '@/context';
@@ -24,10 +24,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     try {
       // fetch all data
       const [databases, metrics, users, roles] = await Promise.all([
-        DatabaseHttp.getDatabases(),
-        MilvusHttp.getMetrics(),
-        UserHttp.getUsers(),
-        UserHttp.getRoles(),
+        Database.getDatabases(),
+        MilvusService.getMetrics(),
+        User.getUsers(),
+        User.getRoles(),
       ]);
 
       // parse data

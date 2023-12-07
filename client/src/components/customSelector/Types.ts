@@ -1,9 +1,9 @@
 import { FormControlClassKey, SelectProps } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
-export interface Option {
-  label: string;
-  value: string | number;
+export interface Option<T = string, U = string | number> {
+  label: T;
+  value: U;
 }
 
 export interface GroupOption {

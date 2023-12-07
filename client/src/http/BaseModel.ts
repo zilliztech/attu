@@ -41,7 +41,7 @@ export default class BaseModel {
     );
   }
 
-  static async search(data: findParamsType) {
+  static async search<T>(data: findParamsType) {
     const { method = 'get', params = {}, path = '', timeout } = data;
     const httpConfig = {
       method,
@@ -50,26 +50,26 @@ export default class BaseModel {
     } as any;
     if (timeout) httpConfig.timeout = timeout;
     const res = await http(httpConfig);
-    return new this(res.data.data || {});
+    return new this(res.data.data || {}) as T;
   }
 
   /**
    * Create instance in database
    */
-  static async create(options: updateParamsType) {
+  static async create<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.post(path, data);
-    return new this(res.data.data || {});
+    return new this(res.data.data || {}) as T;
   }
 
-  static async update(options: updateParamsType) {
+  static async update<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.put(path, data);
 
-    return new this(res.data.data || {});
+    return new this(res.data.data || {}) as T;
   }
 
-  static async delete(options: updateParamsType) {
+  static async delete<T>(options: updateParamsType) {
     const { path, data } = options;
 
     const res = await http.delete(path, { data: data });

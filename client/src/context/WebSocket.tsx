@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
-import { url, CollectionHttp, MilvusHttp } from '@/http';
-import { CollectionView } from '@/pages/collections/Types';
+import { url, Collection, MilvusService } from '@/http';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import { WebSocketType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
@@ -15,13 +14,13 @@ export const webSocketContext = createContext<WebSocketType>({
 const { Provider } = webSocketContext;
 
 export const WebSocketProvider = (props: { children: React.ReactNode }) => {
-  const [collections, setCollections] = useState<CollectionView[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const { isAuth } = useContext(authContext);
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (isAuth) {
-      socket.current = io(url);
+      socket.current = io(url as string);
 
       socket.current.on('connect', function () {
         console.log('--- ws connected ---');
@@ -34,8 +33,8 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
        * After all collections are not loading or building index, tell server stop pulling data.
        */
       socket.current.on(WS_EVENTS.COLLECTION, (data: any) => {
-        const collections: CollectionHttp[] = data.map(
-          (v: any) => new CollectionHttp(v)
+        const collections: Collection[] = data.map(
+          (v: any) => new Collection(v)
         );
 
         const hasLoadingOrBuildingCollection = collections.some(
@@ -46,7 +45,7 @@ export const WebSocketProvider = (props: { children: React.ReactNode }) => {
         // If no collection is building index or loading collection
         // stop server cron job
         if (!hasLoadingOrBuildingCollection) {
-          MilvusHttp.triggerCron({
+          MilvusService.triggerCron({
             name: WS_EVENTS.COLLECTION,
             type: WS_EVENTS_TYPE.STOP,
           });

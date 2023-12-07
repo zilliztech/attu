@@ -1,11 +1,10 @@
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import BaseModel from './BaseModel';
 
-export class MilvusHttp extends BaseModel {
+export class MilvusService extends BaseModel {
   static CONNECT_URL = '/milvus/connect';
   static DISCONNECT_URL = '/milvus/disconnect';
   static CHECK_URL = '/milvus/check';
-  static FLUSH_URL = '/milvus/flush';
   static METRICS_URL = '/milvus/metrics';
   static VERSION_URL = '/milvus/version';
   static USE_DB_URL = '/milvus/usedb';
@@ -41,15 +40,6 @@ export class MilvusHttp extends BaseModel {
       path: this.CHECK_URL,
       params: { address },
     }) as Promise<{ connected: boolean }>;
-  }
-
-  static flush(collectionName: string) {
-    return super.update({
-      path: this.FLUSH_URL,
-      data: {
-        collection_names: [collectionName],
-      },
-    });
   }
 
   static getMetrics() {

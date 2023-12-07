@@ -4,8 +4,8 @@ import {
 } from '../pages/database/Types';
 import BaseModel from './BaseModel';
 
-export class DatabaseHttp extends BaseModel {
-  private names!: string[];
+export class Database extends BaseModel {
+  public db_names!: string[];
 
   constructor(props: {}) {
     super(props);
@@ -15,9 +15,7 @@ export class DatabaseHttp extends BaseModel {
   static DATABASE_URL = `/databases`;
 
   static getDatabases() {
-    return super.search({ path: this.DATABASE_URL, params: {} }) as Promise<{
-      db_names: string[];
-    }>;
+    return super.search({ path: this.DATABASE_URL, params: {} }) as Promise<Database>;
   }
 
   static createDatabase(data: CreateDatabaseParams) {
@@ -26,9 +24,5 @@ export class DatabaseHttp extends BaseModel {
 
   static dropDatabase(data: DropDatabaseParams) {
     return super.delete({ path: `${this.DATABASE_URL}/${data.db_name}` });
-  }
-
-  get _names() {
-    return this.names;
   }
 }

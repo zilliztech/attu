@@ -1,72 +1,56 @@
-import { ChildrenStatusType } from '../components/status/Types';
-import {
-  CollectionView,
-  DeleteEntitiesReq,
-  InsertDataParam,
-  LoadReplicaReq,
-  Replica,
-} from '../pages/collections/Types';
-import { LoadSampleParam } from '../pages/dialogs/Types';
-import { Field } from '@/pages/schema/Types';
-import { VectorSearchParam } from '../types/SearchTypes';
-import { QueryParam } from '@/pages/query/Types';
-import { IndexState, ShowCollectionsType } from '../types/Milvus';
-import { formatNumber } from '../utils/Common';
-import BaseModel from './BaseModel';
-import { FieldHttp } from './Field';
 import dayjs from 'dayjs';
+import { LoadReplicaReq } from '@/pages/collections/Types';
+import { VectorSearchParam } from '@/types/SearchTypes';
+import { QueryParam } from '@/pages/query/Types';
+import { formatNumber } from '@/utils/Common';
+import BaseModel from './BaseModel';
 import { LOADING_STATE } from '@/consts';
+import {
+  IndexDescription,
+  ShowCollectionsType,
+  CollectionSchema,
+  ReplicaInfo,
+  CollectionData,
+} from '@server/types';
+import { MilvusIndex, FieldHttp } from '@/http';
 
-export class CollectionHttp extends BaseModel implements CollectionView {
-  private aliases!: string[];
-  private autoID!: boolean;
-  private collection_name!: string;
-  private description!: string;
-  private consistency_level!: string;
-  private rowCount!: string;
-  private index_status!: string;
-  private id!: string;
-  private loadedPercentage!: string;
-  private createdTime!: string;
-  private schema!: {
-    fields: Field[];
-    autoID: boolean;
-    description: string;
-    enable_dynamic_field: boolean;
-  };
-  private replicas!: Replica[];
+export class Collection extends BaseModel implements CollectionData {
+  public aliases: string[] = [];
+  public autoID!: boolean;
+  public collection_name!: string;
+  public description: string = '';
+  public consistency_level!: string;
+  public rowCount!: string;
+  public id!: string;
+  public loadedPercentage!: string;
+  public createdTime!: number;
+  public index_descriptions!: IndexDescription[];
+  public schema!: CollectionSchema;
+  public replicas!: ReplicaInfo[];
 
   static COLLECTIONS_URL = '/collections';
-  static COLLECTIONS_INDEX_STATUS_URL = '/collections/indexes/status';
   static COLLECTIONS_STATISTICS_URL = '/collections/statistics';
 
-  constructor(props: CollectionView) {
+  constructor(props: Collection) {
     super(props);
     Object.assign(this, props);
   }
 
   static getCollections(data?: {
     type: ShowCollectionsType;
-  }): Promise<CollectionHttp[]> {
+  }): Promise<Collection[]> {
     return super.findAll({ path: this.COLLECTIONS_URL, params: data || {} });
   }
 
   static getCollection(name: string) {
-    return super.search({
+    return super.search<Collection>({
       path: `${this.COLLECTIONS_URL}/${name}`,
       params: {},
-    }) as Promise<CollectionHttp>;
+    });
   }
 
   static createCollection(data: any) {
     return super.create({ path: this.COLLECTIONS_URL, data });
-  }
-
-  static getCollectionsIndexState(): Promise<CollectionHttp[]> {
-    return super.findAll({
-      path: this.COLLECTIONS_INDEX_STATUS_URL,
-      params: {},
-    });
   }
 
   static deleteCollection(collectionName: string) {
@@ -100,49 +84,10 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
   }
 
-  static getPSegments(collectionName: string) {
-    return super.search({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/psegments`,
-      params: {},
-    }) as Promise<{
-      infos: any;
-    }>;
-  }
-
   static count(collectionName: string) {
-    return super.search({
+    return super.search<Collection>({
       path: `${this.COLLECTIONS_URL}/${collectionName}/count`,
       params: {},
-    });
-  }
-
-  static getQSegments(collectionName: string) {
-    return super.search({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/qsegments`,
-      params: {},
-    }) as Promise<{
-      infos: any;
-    }>;
-  }
-
-  static insertData(collectionName: string, param: InsertDataParam) {
-    return super.create({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/insert`,
-      data: param,
-    });
-  }
-
-  static importSample(collectionName: string, param: LoadSampleParam) {
-    return super.create({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/importSample`,
-      data: param,
-    }) as Promise<{ sampleFile: string }>;
-  }
-
-  static deleteEntities(collectionName: string, param: DeleteEntitiesReq) {
-    return super.update({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/entities`,
-      data: param,
     });
   }
 
@@ -173,86 +118,64 @@ export class CollectionHttp extends BaseModel implements CollectionView {
     });
   }
 
-  static compact(collectionName: string) {
-    return super.update({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/compact`,
-    });
-  }
-
-  get _autoId() {
-    return this.autoID;
-  }
-
-  get _aliases() {
-    return this.aliases || [];
-  }
-
-  get _desc() {
+  get desc() {
     return this.description || '--';
   }
 
-  get _id() {
-    return this.id;
-  }
-
-  get _name() {
+  get collectionName() {
     return this.collection_name;
   }
 
-  get _rowCount() {
+  get entityCount() {
     return formatNumber(Number(this.rowCount));
   }
 
-  get _loadedPercentage() {
-    return this.loadedPercentage;
-  }
   // load status
-  get _status() {
+  get status() {
     // If not load, insight server will return '-1'. Otherwise milvus will return percentage
-    return this._loadedPercentage === '-1'
+    return this.loadedPercentage === '-1'
       ? LOADING_STATE.UNLOADED
-      : this._loadedPercentage === '100'
+      : this.loadedPercentage === '100'
       ? LOADING_STATE.LOADED
       : LOADING_STATE.LOADING;
     // return LOADING_STATE.LOADING
   }
 
-  get _consistencyLevel() {
-    return this.consistency_level;
-  }
-
-  get _fields() {
+  get fields() {
     return this.schema.fields.map(f => new FieldHttp(f));
   }
 
-  get _indexState() {
-    switch (this.index_status) {
-      case IndexState.InProgress:
-        return ChildrenStatusType.CREATING;
-      case IndexState.Failed:
-        return ChildrenStatusType.ERROR;
-      default:
-        return ChildrenStatusType.FINISH;
-    }
+  get indexes() {
+    return this.index_descriptions.map(index => new MilvusIndex(index));
   }
 
   // Befor milvus-2.0-rc3  will return '0'.
   // If milvus is stable, we can remote this condition
-  get _createdTime(): string {
-    return this.createdTime && this.createdTime !== '0'
+  get createdAt(): string {
+    return this.createdTime && this.createdTime !== 0
       ? dayjs(Number(this.createdTime)).format('YYYY-MM-DD HH:mm:ss')
       : '';
   }
 
-  get _replicas(): Replica[] {
+  get replicasInfo(): ReplicaInfo[] {
     return this.replicas || [];
   }
 
-  get _enableDynamicField(): boolean {
+  get enableDynamicField(): boolean {
     return this.schema && this.schema.enable_dynamic_field;
   }
 
-  get _schema() {
-    return this.schema;
+  get fieldWithIndexInfo() {
+    let fields: FieldHttp[] = [];
+    for (const schema of this.fields) {
+      let field: FieldHttp = schema;
+      const index = this.indexes.find(i => i.field_name === schema.name);
+      field.indexParameterPairs = index?.indexParameterPairs || [];
+      field.indexType = index?.indexType || '';
+      field.indexName = index?.index_name || '';
+
+      fields.push(field);
+    }
+    return fields;
   }
 }

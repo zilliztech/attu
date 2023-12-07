@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme, Chip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { UserHttp } from '@/http';
+import { User } from '@/http';
 import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
@@ -35,7 +35,7 @@ const Roles = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchRoles = async () => {
-    const roles = (await UserHttp.getRoles()) as RolesType;
+    const roles = (await User.getRoles()) as RolesType;
     setSelectedRole([]);
 
     setRoles(
@@ -81,7 +81,7 @@ const Roles = () => {
         roleName: role.name,
         force,
       };
-      await UserHttp.deleteRole(param);
+      await User.deleteRole(param);
     }
 
     openSnackBar(successTrans('delete', { name: userTrans('role') }));

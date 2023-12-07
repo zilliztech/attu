@@ -26,6 +26,7 @@ import {
 import { Parser } from '@json2csv/plainjs';
 import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
+import { CollectionData } from '../types';
 
 export class CollectionsService {
   constructor(private milvusService: MilvusService) {}
@@ -166,49 +167,49 @@ export class CollectionsService {
    * Get all collections meta data
    * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string, consistency_level:string}
    */
-  async getAllCollections() {
-    const data: any = [];
-    const res = await this.getCollections();
+  async getAllCollections(collections?: {
+    data: { name: string }[];
+  }): Promise<CollectionData[]> {
+    const data: CollectionData[] = [];
+    const res = collections || (await this.getCollections());
     const loadedCollections = await this.getCollections({
       type: ShowCollectionsType.Loaded,
     });
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { name } = item;
+
+        // get collection schema and properties
         const collectionInfo = await this.describeCollection({
           collection_name: name,
         });
 
-        let count: number | string;
-
+        // get collection statistic data
         const collectionStatisticsRes = await this.getCollectionStatistics({
           collection_name: name,
         });
-        count = collectionStatisticsRes.data.row_count;
-        // try {
-        //   const countRes = await this.count({
-        //     collection_name: name,
-        //   });
-        //   count = countRes.data;
-        // } catch (error) {
-        // }
 
+        // get index info for collections
         const indexRes = await this.getIndexInfo({
           collection_name: item.name,
         });
 
+        // extract autoID
         const autoID = collectionInfo.schema.fields.find(
           v => v.is_primary_key === true
         )?.autoID;
 
+        // if it is loaded
         const loadCollection = loadedCollections.data.find(
           v => v.name === name
         );
 
+        // loading info
         const loadedPercentage = !loadCollection
           ? '-1'
           : loadCollection.loadedPercentage;
 
+        // get replica info
         let replicas;
         try {
           replicas = loadCollection
@@ -226,18 +227,18 @@ export class CollectionsService {
           schema: collectionInfo.schema,
           description: collectionInfo.schema.description,
           autoID,
-          rowCount: count,
+          rowCount: collectionStatisticsRes.data.row_count,
           id: collectionInfo.collectionID,
           loadedPercentage,
           createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
-          index_descriptions: indexRes,
+          index_descriptions: indexRes.index_descriptions,
           consistency_level: collectionInfo.consistency_level,
           replicas: replicas && replicas.replicas,
         });
       }
     }
     // add default sort - Descending order
-    data.sort((a: any, b: any) => b.createdTime - a.createdTime);
+    data.sort((a, b) => b.createdTime - a.createdTime);
     return data;
   }
 

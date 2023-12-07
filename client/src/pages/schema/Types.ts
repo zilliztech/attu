@@ -1,46 +1,7 @@
-import { ReactElement } from 'react';
-import { MetricType, INDEX_TYPES_ENUM, DataTypeStringEnum } from '@/consts';
-
-export interface Field {
-  data_type: DataTypeStringEnum;
-  fieldID: string;
-  type_params: { key: string; value: string }[];
-  is_primary_key: true;
-  name: string;
-  description: string;
-}
-
-export interface FieldData {
-  _fieldId: string;
-  _isPrimaryKey: boolean;
-  is_partition_key: boolean;
-  _isAutoId: boolean;
-  _fieldName: string;
-  _fieldNameElement?: ReactElement;
-  _fieldType: DataTypeStringEnum;
-  _dimension: string;
-  _desc: string;
-  _maxLength: string;
-  _maxCapacity: string;
-  element_type: string;
-}
-
-export interface FieldView extends FieldData, IndexView {
-  _createIndexDisabled?: boolean;
-}
+import { INDEX_TYPES_ENUM } from '@/consts';
 
 export interface Index {
   params: { key: string; value: string }[];
-}
-
-export interface IndexView {
-  _fieldName: string;
-  _indexType: string;
-  _indexName: string;
-  _indexTypeElement?: ReactElement;
-  _indexParameterPairs: { key: string; value: string }[];
-  _indexParamElement?: ReactElement;
-  _metricType?: MetricType | string;
 }
 
 export type IndexType =
