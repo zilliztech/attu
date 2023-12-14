@@ -17,7 +17,7 @@ const DropPartitionDialog: FC<DropPartitionProps> = props => {
   const handleDelete = async () => {
     for (const partition of partitions) {
       const param: PartitionManageParam = {
-        partitionName: partition._name,
+        partitionName: partition.partitionName,
         collectionName,
         type: ManageRequestMethods.DELETE,
       };
