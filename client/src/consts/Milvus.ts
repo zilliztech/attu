@@ -257,7 +257,7 @@ export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   // range: [10, 300]
   search_length: 10,
   level: 1,
-  search_list: 20,
+  search_list: 150,
 };
 
 export const DEFAULT_NLIST_VALUE = 1024;

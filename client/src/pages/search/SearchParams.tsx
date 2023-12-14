@@ -271,7 +271,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           label: 'search_list',
           key: 'search_list',
           value: searchParamsForm['search_list'] || '',
-          min: 20,
+          min: 150,
           max: 65535,
           isInt: true,
           handleChange: value => {
