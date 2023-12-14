@@ -14,7 +14,7 @@ const DropCollectionDialog: FC<DropCollectionProps> = props => {
 
   const handleDelete = async () => {
     for (const item of collections) {
-      await Collection.deleteCollection(item._name);
+      await Collection.deleteCollection(item.collectionName);
     }
 
     handleCloseDialog();

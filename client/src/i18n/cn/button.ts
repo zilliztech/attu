@@ -9,7 +9,7 @@ const btnTrans = {
   connect: '连接',
   import: '导入',
   delete: '删除',
-  drop: '放弃',
+  drop: 'drop',
   release: '发布',
   load: '加载',
   insert: '导入数据',
