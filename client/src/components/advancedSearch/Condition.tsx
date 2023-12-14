@@ -54,7 +54,7 @@ const Condition: FC<ConditionProps> = props => {
 
     // if type is json, check the json key is valid
     if (type === DataTypeStringEnum.JSON) {
-      isKeyLegal = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(jsonKeyValue.trim());
+      isKeyLegal = jsonKeyValue.trim() !== '';
     }
 
     setIsKeyLegal(isKeyLegal);
