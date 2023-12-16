@@ -9,6 +9,8 @@ export {
   QuerySegmentInfo,
   GePersistentSegmentInfoResponse,
   PersistentSegmentInfo,
+  DescribeIndexResponse,
+  MilvusClient
 } from '@zilliz/milvus2-sdk-node';
 
 export * from './collections.type';

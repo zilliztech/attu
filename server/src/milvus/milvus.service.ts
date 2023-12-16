@@ -4,11 +4,11 @@ import {
   GetMetricsResponse,
 } from '@zilliz/milvus2-sdk-node';
 import HttpErrors from 'http-errors';
-import LruCache from 'lru-cache';
 import { HTTP_STATUS_CODE } from '../utils/Const';
 import { DEFAULT_MILVUS_PORT } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 import { DatabasesService } from '../database/databases.service';
+import { clientCache } from '../app';
 
 export class MilvusService {
   private databaseService: DatabasesService;
@@ -40,23 +40,17 @@ export class MilvusService {
         HTTP_STATUS_CODE.FORBIDDEN,
         'Can not find your connection, please check your connection settings.'
       );
-
-      // throw new Error('Please connect milvus first');
     }
   }
 
-  async connectMilvus(
-    data: {
-      address: string;
-      username?: string;
-      password?: string;
-      database?: string;
-    },
-    cache: LruCache<any, any>
-  ) {
+  async connectMilvus(data: {
+    address: string;
+    username?: string;
+    password?: string;
+    database?: string;
+  }) {
     // Destructure the data object to get the connection details
     const { address, username, password, database } = data;
-
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
@@ -76,7 +70,7 @@ export class MilvusService {
         await milvusClient.connectPromise;
       } catch (error) {
         // If the connection fails, clear the cache and throw an error
-        cache.dump();
+        clientCache.dump();
         throw new Error('Failed to connect to Milvus: ' + error);
       }
 
@@ -90,7 +84,7 @@ export class MilvusService {
 
       // If the server is healthy, set the active address and add the client to the cache
       MilvusService.activeAddress = address;
-      cache.set(address, milvusClient);
+      clientCache.set(address, milvusClient);
 
       // Create a new database service and check if the specified database exists
       let hasDatabase = false;
@@ -109,14 +103,14 @@ export class MilvusService {
       return { address, database: hasDatabase ? database : 'default' };
     } catch (error) {
       // If any error occurs, clear the cache and throw the error
-      cache.dump();
+      clientCache.dump();
       throw error;
     }
   }
 
-  async checkConnect(address: string, cache: LruCache<any, any>) {
+  async checkConnect(address: string) {
     const milvusAddress = MilvusService.formatAddress(address);
-    return { connected: cache.has(milvusAddress) };
+    return { connected: clientCache.has(milvusAddress) };
   }
 
   async flush(data: FlushReq) {

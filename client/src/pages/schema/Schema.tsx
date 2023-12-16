@@ -85,7 +85,9 @@ const Schema: FC<{
       const KeyIcon = icons.key;
 
       try {
-        const collection = await Collection.getCollection(collectionName);
+        const collection = await Collection.getCollectionWithIndexInfo(
+          collectionName
+        );
         const fields = collection.fieldWithIndexInfo.map(f =>
           Object.assign(f, {
             _fieldNameElement: (

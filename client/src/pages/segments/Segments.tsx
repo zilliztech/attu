@@ -28,7 +28,8 @@ const Segments: FC<{
     const qsegments = (await Segement.getQSegments(collectionName)) || {};
 
     const combinedArray = psegments.infos.map(p => {
-      const q = qsegments.infos.find(q => q.segmentID === p.segmentID)! as any;
+      const q: any =
+        qsegments.infos.find(q => q.segmentID === p.segmentID)! || {};
       return {
         ...p,
         ...Object.keys(q).reduce((acc, key) => {

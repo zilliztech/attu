@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { MilvusService } from './milvus.service';
 import { ConnectMilvusDto, FlushDto, UseDatabaseDto } from './dto';
-import { CACHE_KEY } from '../utils';
 import packageJson from '../../package.json';
 
 export class MilvusController {
@@ -44,12 +43,13 @@ export class MilvusController {
 
   async connectMilvus(req: Request, res: Response, next: NextFunction) {
     const { address, username, password, database } = req.body;
-    const cache = req.app.get(CACHE_KEY);
     try {
-      const result = await this.milvusService.connectMilvus(
-        { address, username, password, database },
-        cache
-      );
+      const result = await this.milvusService.connectMilvus({
+        address,
+        username,
+        password,
+        database,
+      });
 
       res.send(result);
     } catch (error) {
@@ -60,10 +60,9 @@ export class MilvusController {
 
   async checkConnect(req: Request, res: Response, next: NextFunction) {
     const address = '' + req.query?.address;
-    const cache = req.app.get(CACHE_KEY);
 
     try {
-      const result = await this.milvusService.checkConnect(address, cache);
+      const result = await this.milvusService.checkConnect(address);
       res.send(result);
     } catch (error) {
       next(error);

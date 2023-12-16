@@ -27,9 +27,14 @@ import { Parser } from '@json2csv/plainjs';
 import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import { CollectionData } from '../types';
+import { SchemaService } from '../schema/schema.service';
 
 export class CollectionsService {
-  constructor(private milvusService: MilvusService) {}
+  private schemaService: SchemaService;
+
+  constructor(private milvusService: MilvusService) {
+    this.schemaService = new SchemaService(milvusService);
+  }
 
   async getCollections(data?: ShowCollectionsReq) {
     const res = await this.milvusService.client.showCollections(data);
@@ -152,18 +157,6 @@ export class CollectionsService {
   }
 
   /**
-   * We do not throw error for this.
-   * Because if collection dont have index, it will throw error.
-   * We need wait for milvus error code.
-   * @param data
-   * @returns
-   */
-  async getIndexInfo(data: GetIndexStateReq) {
-    const res = await this.milvusService.client.describeIndex(data);
-    return res;
-  }
-
-  /**
    * Get all collections meta data
    * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string, consistency_level:string}
    */
@@ -190,7 +183,7 @@ export class CollectionsService {
         });
 
         // get index info for collections
-        const indexRes = await this.getIndexInfo({
+        const indexRes = await this.schemaService.describeIndex({
           collection_name: item.name,
         });
 
@@ -295,7 +288,7 @@ export class CollectionsService {
     const res = await this.getCollections();
     if (res.data.length > 0) {
       for (const item of res.data) {
-        const indexRes = await this.getIndexInfo({
+        const indexRes = await this.schemaService.describeIndex({
           collection_name: item.name,
         });
         data.push({

@@ -15,7 +15,7 @@ import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { Field } from '@/components/advancedSearch/Types';
-import { Collection, MilvusIndex } from '@/http';
+import { Collection } from '@/http';
 import {
   parseValue,
   parseLocationSearch,
@@ -253,15 +253,17 @@ const VectorSearch = () => {
 
   const fetchFieldsWithIndex = useCallback(
     async (collectionName: string, collections: Collection[]) => {
-      const fields =
-        collections.find(c => c.collectionName === collectionName)?.fields ||
-        [];
-      const indexes = await MilvusIndex.getIndexInfo(collectionName);
+      const col = collections.find(c => c.collectionName === collectionName);
+
+      const fields = col?.fields ?? [];
 
       const { vectorFields, nonVectorFields } = classifyFields(fields);
 
       // only vector type fields can be select
-      const fieldOptions = getVectorFieldOptions(vectorFields, indexes);
+      const fieldOptions = getVectorFieldOptions(
+        vectorFields,
+        col?.indexes ?? []
+      );
       setFieldOptions(fieldOptions);
       if (fieldOptions.length > 0) {
         // set first option value as default field value
@@ -351,10 +353,7 @@ const VectorSearch = () => {
 
     setTableLoading(true);
     try {
-      const res = await Collection.vectorSearchData(
-        selectedCollection,
-        params
-      );
+      const res = await Collection.vectorSearchData(selectedCollection, params);
       setTableLoading(false);
       setSearchResult(res.results);
       setLatency(res.latency);

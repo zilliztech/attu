@@ -45,7 +45,7 @@ const Preview: FC<{
 
   const loadData = async (collectionName: string) => {
     // get schema list
-    const collection = await Collection.getCollection(collectionName);
+    const collection = await Collection.getCollectionInfo(collectionName);
 
     const schemaList = collection.fields!;
     let nameList = schemaList.map(v => ({

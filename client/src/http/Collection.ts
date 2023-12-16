@@ -42,9 +42,16 @@ export class Collection extends BaseModel implements CollectionData {
     return super.findAll({ path: this.COLLECTIONS_URL, params: data || {} });
   }
 
-  static getCollection(name: string) {
+  static getCollectionWithIndexInfo(name: string) {
     return super.search<Collection>({
       path: `${this.COLLECTIONS_URL}/${name}`,
+      params: {},
+    });
+  }
+
+  static getCollectionInfo(collectionName: string) {
+    return super.search<Collection>({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/info`,
       params: {},
     });
   }
