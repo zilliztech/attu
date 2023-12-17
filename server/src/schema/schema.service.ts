@@ -70,4 +70,8 @@ export class SchemaService {
     throwErrorFromSDK(res);
     return res;
   }
+
+  async clearCache() {
+    return indexCache.clear();
+  }
 }

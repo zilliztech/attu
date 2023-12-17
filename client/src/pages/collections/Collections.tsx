@@ -9,7 +9,7 @@ import {
   dataContext,
   webSocketContext,
 } from '@/context';
-import { Collection, MilvusService, DataService } from '@/http';
+import { Collection, MilvusService, DataService, MilvusIndex } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -122,6 +122,10 @@ const Collections = () => {
       setLoading(false);
     }
   }, [setCollections, checkCollectionStatus]);
+
+  const clearIndexCache = useCallback(async () => {
+    await MilvusIndex.flush();
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -412,6 +416,7 @@ const Collections = () => {
     {
       type: 'iconBtn',
       onClick: () => {
+        clearIndexCache();
         fetchData();
       },
       label: collectionTrans('delete'),
