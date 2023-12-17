@@ -4,7 +4,6 @@ import {
   DescribeCollectionReq,
   DropCollectionReq,
   GetCollectionStatisticsReq,
-  GetIndexStateReq,
   InsertReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
