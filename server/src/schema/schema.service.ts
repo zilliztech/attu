@@ -35,7 +35,7 @@ export class SchemaService {
     const key = data.collection_name;
 
     // Try to get the index description from the cache
-    let value: DescribeIndexResponse = indexCache.get(key);
+    const value: DescribeIndexResponse = indexCache.get(key);
 
     // If the index description is in the cache, return it
     if (value) {
