@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
-import LruCache from 'lru-cache';
+import { LRUCache } from 'lru-cache';
 import * as path from 'path';
 import chalk from 'chalk';
 import { router as connectRouter } from './milvus';
@@ -21,15 +21,21 @@ import {
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middleware';
-import { EXPIRED_TIME, CACHE_KEY } from './utils';
+import { CLIENT_TTL, INDEX_TTL } from './utils';
 import { getIp } from './utils/Network';
+import { DescribeIndexResponse, MilvusClient } from './types';
 // initialize express app
 export const app = express();
 
 // initialize cache store
-const cache = new LruCache({
-  maxAge: EXPIRED_TIME,
-  updateAgeOnGet: true,
+export const clientCache = new LRUCache<string, MilvusClient>({
+  ttl: CLIENT_TTL,
+  ttlAutopurge: true,
+});
+
+export const indexCache = new LRUCache<string, DescribeIndexResponse>({
+  ttl: INDEX_TTL,
+  ttlAutopurge: true,
 });
 
 // initialize express router
@@ -52,9 +58,8 @@ router.get('/healthy', (req, res, next) => {
 const server = http.createServer(app);
 // default port 3000
 const PORT = 3000;
+
 // setup middlewares
-// use cache
-app.set(CACHE_KEY, cache);
 // use cors https://expressjs.com/en/resources/middleware/cors.html
 app.use(cors());
 // use helmet https://github.com/helmetjs/helmet

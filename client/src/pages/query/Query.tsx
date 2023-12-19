@@ -66,7 +66,7 @@ const Query: FC<{
   };
 
   const getFields = async (collectionName: string) => {
-    const collection = await Collection.getCollection(collectionName);
+    const collection = await Collection.getCollectionInfo(collectionName);
     const schemaList = collection.fields;
 
     const nameList = schemaList.map(v => ({

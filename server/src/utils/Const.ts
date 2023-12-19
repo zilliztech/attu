@@ -5,8 +5,10 @@ export const ROW_COUNT = 'row_count';
 export const MILVUS_ADDRESS = 'milvus-address';
 
 // for lru cache
-export const CACHE_KEY = 'insight_cache';
-export const EXPIRED_TIME = 1000 * 60 * 60 * 24;
+export const CLIENT_CACHE = 'insight_cache';
+export const INDEX_CACHE = 'index_cache';
+export const CLIENT_TTL = 1000 * 60 * 60 * 24;
+export const INDEX_TTL = 1000 * 60 * 60;
 
 export enum LOADING_STATE {
   LOADED,

@@ -50,7 +50,10 @@ export class CollectionController {
       this.renameCollection.bind(this)
     );
     this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
+    // collection with index info
     this.router.get('/:name', this.describeCollection.bind(this));
+    // just collection info
+    this.router.get('/:name/info', this.getCollectionInfo.bind(this));
     this.router.get('/:name/count', this.count.bind(this));
 
     // load / release
@@ -159,6 +162,18 @@ export class CollectionController {
         data: [{ name }],
       });
       res.send(result[0]);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCollectionInfo(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    try {
+      const result = await this.collectionsService.describeCollection({
+        collection_name: name,
+      });
+      res.send(result);
     } catch (error) {
       next(error);
     }

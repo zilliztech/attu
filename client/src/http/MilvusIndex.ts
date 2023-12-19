@@ -49,6 +49,12 @@ export class MilvusIndex extends BaseModel {
     return super.batchDelete({ path, data: { ...param, type } });
   }
 
+  static async flush() {
+    const path = `${this.BASE_URL}/flush`;
+
+    return super.query({ path, data: {} });
+  }
+
   get indexType() {
     return this.params.find(p => p.key === 'index_type')?.value || '';
   }

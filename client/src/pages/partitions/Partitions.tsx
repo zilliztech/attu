@@ -81,7 +81,7 @@ const Partitions: FC<{
   };
 
   const fetchCollectionDetail = async (name: string) => {
-    const res = await Collection.getCollection(name);
+    const res = await Collection.getCollectionInfo(name);
     return res;
   };
 

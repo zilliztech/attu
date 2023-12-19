@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { SchemaService } from './schema.service';
 import { milvusService } from '../milvus';
-
 import { ManageIndexDto } from './dto';
 
 export class SchemaController {
@@ -22,6 +21,7 @@ export class SchemaController {
     );
 
     this.router.get('/index', this.describeIndex.bind(this));
+    this.router.post('/index/flush', this.clearCache.bind(this));
 
     return this.router;
   }
@@ -55,6 +55,15 @@ export class SchemaController {
       const result = await this.schemaService.describeIndex({
         collection_name: data,
       });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async clearCache(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.schemaService.clearCache();
       res.send(result);
     } catch (error) {
       next(error);
