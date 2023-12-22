@@ -29,6 +29,8 @@ export interface CreateAliasProps {
   cb?: () => void;
 }
 
+export interface DuplicateCollectionDialogProps extends CreateAliasProps {}
+
 export interface RenameCollectionProps {
   collectionName: string;
   cb?: () => void;

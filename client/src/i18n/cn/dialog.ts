@@ -4,6 +4,7 @@ const dialogTrans = {
   deleteTitle: `删除 {{type}}`,
   renameTitle: `重命名 {{type}}`,
   releaseTitle: `发布 {{type}}`,
+  duplicateTitle: `复制 {{type}}`,
   createAlias: `为 {{type}} 创建别名`,
   compact: `压缩Collection {{type}}`,
   loadTitle: `加载 {{type}}`,

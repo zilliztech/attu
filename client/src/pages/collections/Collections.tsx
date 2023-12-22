@@ -25,6 +25,7 @@ import LoadCollectionDialog from '../dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
+import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
@@ -379,6 +380,30 @@ const Collections = () => {
             component: (
               <RenameCollectionDialog
                 cb={onRename}
+                collectionName={selectedCollections[0].collectionName}
+              />
+            ),
+          },
+        });
+      },
+      label: collectionTrans('rename'),
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('renameTooltip'),
+      disabled: data => data.length !== 1,
+    },
+    {
+      icon: 'copy',
+      type: 'iconBtn',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DuplicateCollectionDialog
+                cb={() => {
+                  console.log('on dupe');
+                }}
                 collectionName={selectedCollections[0].collectionName}
               />
             ),

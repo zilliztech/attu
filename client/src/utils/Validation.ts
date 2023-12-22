@@ -17,7 +17,8 @@ export type ValidType =
   | 'multiple'
   | 'partitionName'
   | 'firstCharacter'
-  | 'specValueOrRange';
+  | 'specValueOrRange'
+  | 'duplicate';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
@@ -201,6 +202,13 @@ export const checkSpecValueOrRange = (param: {
   );
 };
 
+export const checkDuplicate = (param: {
+  value: string | number;
+  compare: string | number;
+}) => {
+  return param.value !== param.compare;
+};
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
@@ -241,6 +249,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       max: extraParam?.max || 0,
       compareValue: Number(extraParam.compareValue) || 0,
     }),
+    duplicate: checkDuplicate({ value, compare: extraParam.compareValue! }),
   };
 
   return checkMap[rule];

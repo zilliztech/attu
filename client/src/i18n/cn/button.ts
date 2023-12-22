@@ -24,6 +24,7 @@ const btnTrans = {
   importing: '导入中...',
   example: '生成随机向量',
   rename: '重命名',
+  duplicate: '复制',
 };
 
 export default btnTrans;
