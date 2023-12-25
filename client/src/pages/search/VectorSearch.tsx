@@ -349,6 +349,9 @@ const VectorSearch = () => {
       search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
+      consistency_level: collections.find(
+        c => c.collectionName == selectedCollection
+      )?.consistency_level!,
     };
 
     setTableLoading(true);
