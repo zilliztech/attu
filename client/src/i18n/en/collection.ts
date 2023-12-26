@@ -11,7 +11,7 @@ const collectionTrans = {
   rename: 'rename',
   renameTooltip: 'Please select one collection to rename.',
   duplicate: 'duplicate',
-  duplicateTooltip: 'Please select one collection to rename.',
+  duplicateTooltip: 'Please select one collection to duplicate.',
   newColName: 'New Collection Name',
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',

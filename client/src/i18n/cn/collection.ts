@@ -39,7 +39,7 @@ const collectionTrans = {
     '一致性是指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
   entityCountInfo: '大约的Entity数量。',
   duplicateCollectionInfo:
-    '复制Collection不会复制Collection中的数据。它只会使用现有的模式创建一个新的Collection。',
+    '复制Collection不会复制Collection中的数据。它只会使用现有的Schema创建一个新的Collection。',
 
   // create dialog
   createTitle: '创建Collection',
