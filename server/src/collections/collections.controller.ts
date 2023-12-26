@@ -10,6 +10,7 @@ import {
   VectorSearchDto,
   QueryDto,
   RenameCollectionDto,
+  DuplicateCollectionDto,
 } from './dto';
 import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node';
 
@@ -48,6 +49,11 @@ export class CollectionController {
       '/:name',
       dtoValidationMiddleware(RenameCollectionDto),
       this.renameCollection.bind(this)
+    );
+    this.router.post(
+      '/:name/duplicate',
+      dtoValidationMiddleware(DuplicateCollectionDto),
+      this.duplicateCollection.bind(this)
     );
     this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
     // collection with index info
@@ -134,6 +140,20 @@ export class CollectionController {
     const data = req.body;
     try {
       const result = await this.collectionsService.renameCollection({
+        collection_name: name,
+        ...data,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async duplicateCollection(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    const data = req.body;
+    try {
+      const result = await this.collectionsService.duplicateCollection({
         collection_name: name,
         ...data,
       });

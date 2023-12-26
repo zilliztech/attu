@@ -87,6 +87,16 @@ export class Collection extends BaseModel implements CollectionData {
     });
   }
 
+  static duplicate(
+    collectionName: string,
+    params: { new_collection_name: string }
+  ) {
+    return super.create({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/duplicate`,
+      data: params,
+    });
+  }
+
   static getStatistics() {
     return super.search({ path: this.COLLECTIONS_STATISTICS_URL, params: {} });
   }

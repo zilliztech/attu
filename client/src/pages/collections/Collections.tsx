@@ -283,38 +283,38 @@ const Collections = () => {
     }
   };
 
-  const onCreate = () => {
+  const onCreate = async () => {
     openSnackBar(
       successTrans('create', { name: collectionTrans('collection') })
     );
-    fetchData();
+    await fetchData();
   };
 
   const onRelease = async () => {
     openSnackBar(
       successTrans('release', { name: collectionTrans('collection') })
     );
-    fetchData();
+    await fetchData();
   };
 
-  const onLoad = () => {
+  const onLoad = async () => {
     openSnackBar(successTrans('load', { name: collectionTrans('collection') }));
-    fetchData();
+    await fetchData();
   };
 
-  const onDelete = () => {
+  const onDelete = async () => {
     openSnackBar(
       successTrans('delete', { name: collectionTrans('collection') })
     );
-    fetchData();
+    await fetchData();
     setSelectedCollections([]);
   };
 
-  const onRename = () => {
+  const onRename = async () => {
     openSnackBar(
       successTrans('rename', { name: collectionTrans('collection') })
     );
-    fetchData();
+    await fetchData();
     setSelectedCollections([]);
   };
 
@@ -401,8 +401,9 @@ const Collections = () => {
           params: {
             component: (
               <DuplicateCollectionDialog
-                cb={() => {
-                  console.log('on dupe');
+                cb={async () => {
+                  setSelectedCollections([]);
+                  await fetchData();
                 }}
                 collectionName={selectedCollections[0].collectionName}
               />

@@ -46,6 +46,10 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   const handleConfirm = async () => {
     // duplicate
+    await Collection.duplicate(collectionName, {
+      new_collection_name: form.duplicate,
+    });
+    // close dialog
     handleCloseDialog();
     cb && cb();
   };
@@ -71,9 +75,9 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
       {
         rule: 'duplicate',
         extraParam: {
-          compareValue: collectionName
+          compareValue: collectionName,
         },
-        errorText: 'collection should be not equal'
+        errorText: 'collection should be not equal',
       },
     ],
     defaultValue: form.duplicate,

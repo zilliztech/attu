@@ -21,6 +21,9 @@ import {
   CompactReq,
   HasCollectionReq,
   CountReq,
+  convertToDataType,
+  FieldSchema,
+  FieldType,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import { throwErrorFromSDK, findKeyValue, genRows, ROW_COUNT } from '../utils';
@@ -358,4 +361,46 @@ export class CollectionsService {
     throwErrorFromSDK(res.status);
     return res;
   }
+
+  async duplicateCollection(data: RenameCollectionReq) {
+    const collection: any = await this.describeCollection({
+      collection_name: data.collection_name,
+    });
+
+    const createCollectionParams: CreateCollectionReq = {
+      collection_name: data.new_collection_name,
+      fields: collection.schema.fields.map(convertFieldSchemaToFieldType),
+      consistency_level: collection.consistency_level,
+      enable_dynamic_field: !!collection.enable_dynamic_field,
+    };
+
+    if (collection.schema.fields.some((f: FieldSchema) => f.is_partition_key)) {
+      createCollectionParams.num_partitions = Number(collection.num_partitions);
+    }
+
+    console.dir(createCollectionParams, { depth: null });
+    return await this.createCollection(createCollectionParams);
+  }
+}
+
+function convertFieldSchemaToFieldType(fieldSchema: FieldSchema) {
+  const fieldType: FieldType = {
+    name: fieldSchema.name,
+    description: fieldSchema.description,
+    data_type: convertToDataType(fieldSchema.data_type),
+    element_type: convertToDataType(fieldSchema.element_type),
+    is_primary_key: fieldSchema.is_primary_key,
+    is_partition_key: fieldSchema.is_partition_key,
+    autoID: fieldSchema.autoID,
+  };
+
+  // Convert type_params from array to object
+  if (fieldSchema.type_params) {
+    fieldType.type_params = {};
+    for (const param of fieldSchema.type_params) {
+      fieldType.type_params[param.key] = param.value;
+    }
+  }
+
+  return fieldType;
 }
