@@ -1,4 +1,9 @@
-import { KeyValuePair, FieldSchema } from '@zilliz/milvus2-sdk-node';
+import {
+  KeyValuePair,
+  FieldSchema,
+  convertToDataType,
+  FieldType,
+} from '@zilliz/milvus2-sdk-node';
 
 export const findKeyValue = (obj: KeyValuePair[], key: string) =>
   obj.find(v => v.key === key)?.value;
@@ -94,3 +99,25 @@ export const genRows = (
   size: number,
   enableDynamicField: boolean = false
 ) => Array.from({ length: size }, () => genRow(fields, enableDynamicField));
+
+export const convertFieldSchemaToFieldType = (fieldSchema: FieldSchema) => {
+  const fieldType: FieldType = {
+    name: fieldSchema.name,
+    description: fieldSchema.description,
+    data_type: convertToDataType(fieldSchema.data_type),
+    element_type: convertToDataType(fieldSchema.element_type),
+    is_primary_key: fieldSchema.is_primary_key,
+    is_partition_key: fieldSchema.is_partition_key,
+    autoID: fieldSchema.autoID,
+  };
+
+  // Convert type_params from array to object
+  if (fieldSchema.type_params) {
+    fieldType.type_params = {};
+    for (const param of fieldSchema.type_params) {
+      fieldType.type_params[param.key] = param.value;
+    }
+  }
+
+  return fieldType;
+};
