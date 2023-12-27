@@ -53,7 +53,14 @@ Make sure that the Attu pod can access the Milvus service. In the example provid
 To run the Docker container with these environment variables, use the following command:
 
 ```bash
-docker run -e MILVUS_URL=192.168.0.1:19530 -e ATTU_LOG_LEVEL=info -e ROOT_CERT_PATH=/path/to/root/cert -e PRIVATE_KEY_PATH=/path/to/private/key -e CERT_CHAIN_PATH=/path/to/cert/chain -e SERVER_NAME=your_server_name zilliz/attu:v2.3.5
+docker run -p 8000:3000 \
+-v /Users/zilliz/workspace/attu/server/test/tls:/app/tls \
+-e ATTU_LOG_LEVEL=info  \
+-e ROOT_CERT_PATH=/app/tls/ca.pem \
+-e PRIVATE_KEY_PATH=/app/tls/client.key \
+-e CERT_CHAIN_PATH=/app/tls/client.pem \
+-e SERVER_NAME=your_server_name \
+zilliz/attu:dev
 ```
 
 ## Common connection problem using Attu
