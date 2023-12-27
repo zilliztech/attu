@@ -2,6 +2,7 @@ import {
   MilvusClient,
   FlushReq,
   GetMetricsResponse,
+  ClientConfig,
 } from '@zilliz/milvus2-sdk-node';
 import HttpErrors from 'http-errors';
 import { HTTP_STATUS_CODE } from '../utils/Const';
@@ -56,11 +57,32 @@ export class MilvusService {
 
     try {
       // Create a new Milvus client with the provided connection details
-      const milvusClient: MilvusClient = new MilvusClient({
+      const clientOptions: ClientConfig = {
         address: milvusAddress,
         username,
         password,
-      });
+        logLevel: process.env.ATTU_LOG_LEVEL || 'info',
+      };
+
+      if (process.env.ROOT_CERT_PATH) {
+        clientOptions.tls = {
+          rootCertPath: process.env.ROOT_CERT_PATH,
+        };
+
+        if (process.env.PRIVATE_KEY_PATH) {
+          clientOptions.tls.privateKeyPath = process.env.PRIVATE_KEY_PATH;
+        }
+
+        if (process.env.CERT_CHAIN_PATH) {
+          clientOptions.tls.certChainPath = process.env.CERT_CHAIN_PATH;
+        }
+
+        if (process.env.SERVER_NAME) {
+          clientOptions.tls.serverName = process.env.SERVER_NAME;
+        }
+      }
+      // create the client
+      const milvusClient: MilvusClient = new MilvusClient(clientOptions);
 
       // Set the active Milvus client to the newly created client
       MilvusService.activeMilvusClient = milvusClient;
