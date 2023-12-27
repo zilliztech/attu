@@ -20,7 +20,7 @@ Before you begin, make sure that you have Milvus installed on either [your serve
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.1
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.5
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
@@ -37,13 +37,24 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 
 Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
 
-#### Parameters for Docker CLI
+#### Optional Environment Variables for Running Attu Docker
 
-| Parameter  | Example           | Required | Description                 |
-| :--------- | :---------------- | :------: | --------------------------- |
-| MILVUS_URL | 192.168.0.1:19530 |  false   | Optional, Milvus server URL |
+| Parameter        | Example              | Required | Description                             |
+| :--------------- | :------------------- | :------: | --------------------------------------- |
+| MILVUS_URL       | 192.168.0.1:19530    |  false   | Optional, Milvus server URL             |
+| ATTU_LOG_LEVEL   | info                 |  false   | Optional, sets the log level for Attu   |
+| ROOT_CERT_PATH   | /path/to/root/cert   |  false   | Optional, path to the root certificate  |
+| PRIVATE_KEY_PATH | /path/to/private/key |  false   | Optional, path to the private key       |
+| CERT_CHAIN_PATH  | /path/to/cert/chain  |  false   | Optional, path to the certificate chain |
+| SERVER_NAME      | your_server_name     |  false   | Optional, name of your server           |
 
-Note that "127.0.0.1" or "localhost" will not work when running Attu on Docker.
+> Please note that the `MILVUS_URL` should be an address that the Attu Docker container can access. Therefore, "127.0.0.1" or "localhost" will not work.
+
+To run the Docker container with these environment variables, use the following command:
+
+```bash
+docker run -e MILVUS_URL=192.168.0.1:19530 -e ATTU_LOG_LEVEL=info -e ROOT_CERT_PATH=/path/to/root/cert -e PRIVATE_KEY_PATH=/path/to/private/key -e CERT_CHAIN_PATH=/path/to/cert/chain -e SERVER_NAME=your_server_name zilliz/attu:v2.3.5
+```
 
 ## Common connection problem using Attu
 
