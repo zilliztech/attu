@@ -398,6 +398,7 @@ const Collections = () => {
                   await fetchData();
                 }}
                 collectionName={selectedCollections[0].collectionName}
+                collections={collections}
               />
             ),
           },

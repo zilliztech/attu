@@ -108,6 +108,9 @@ const collectionTrans = {
   newColNamePlaceholder: '新的Collection名称',
   newNameInfo: '只允许数字，字母和下划线。',
 
+  // duplicate dialog
+  duplicateNameExist: 'Collection已经存在。',
+
   // segment
   segments: '数据段',
   segPState: '持久数据段状态',

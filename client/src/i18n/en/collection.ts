@@ -111,6 +111,9 @@ const collectionTrans = {
   newColNamePlaceholder: 'New Collection Name',
   newNameInfo: 'Only numbers, letters, and underscores are allowed.',
 
+  // duplicate dialog
+  duplicateNameExist: 'A collection with this name already exists.',
+
   // segment
   segments: 'Segments',
   segPState: 'Persistent Segment State',

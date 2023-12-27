@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
-  const { cb, collectionName } = props;
+  const { cb, collectionName, collections } = props;
   const [form, setForm] = useState({
     duplicate: `${collectionName}_duplicate`,
   });
@@ -73,11 +73,13 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
         errorText: collectionTrans('nameContentWarning'),
       },
       {
-        rule: 'duplicate',
+        rule: 'custom',
         extraParam: {
-          compareValue: collectionName,
+          compare: (value) => {
+            return !collections.some(collection => collection.collectionName === value);
+          },
         },
-        errorText: 'collection should be not equal',
+        errorText: collectionTrans('duplicateNameExist'),
       },
     ],
     defaultValue: form.duplicate,

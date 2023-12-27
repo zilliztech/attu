@@ -18,7 +18,8 @@ export type ValidType =
   | 'partitionName'
   | 'firstCharacter'
   | 'specValueOrRange'
-  | 'duplicate';
+  | 'duplicate'
+  | 'custom';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
@@ -38,6 +39,8 @@ export interface IExtraParam {
 
   // used for check start item
   invalidTypes?: TypeEnum[];
+  // used for custom validation
+  compare?: (value?: any) => boolean;
 }
 export type CheckMap = {
   [key in ValidType]: boolean;
@@ -250,6 +253,10 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       compareValue: Number(extraParam.compareValue) || 0,
     }),
     duplicate: checkDuplicate({ value, compare: extraParam.compareValue! }),
+    custom:
+      extraParam && typeof extraParam.compare === 'function'
+        ? extraParam.compare(value)
+        : true,
   };
 
   return checkMap[rule];
