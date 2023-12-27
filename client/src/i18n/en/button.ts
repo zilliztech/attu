@@ -24,6 +24,7 @@ const btnTrans = {
   importing: 'Importing...',
   example: 'Generate random vector',
   rename: 'Rename',
+  duplicate: 'Duplicate',
 };
 
 export default btnTrans;

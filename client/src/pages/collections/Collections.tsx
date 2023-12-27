@@ -25,6 +25,7 @@ import LoadCollectionDialog from '../dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
+import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
@@ -217,12 +218,26 @@ const Collections = () => {
                     v.status === LOADING_STATE.UNLOADED ? (
                       <LoadCollectionDialog
                         collection={v.collectionName}
-                        onLoad={onLoad}
+                        onLoad={async () => {
+                          openSnackBar(
+                            successTrans('load', {
+                              name: collectionTrans('collection'),
+                            })
+                          );
+                          await fetchData();
+                        }}
                       />
                     ) : (
                       <ReleaseCollectionDialog
                         collection={v.collectionName}
-                        onRelease={onRelease}
+                        onRelease={async () => {
+                          openSnackBar(
+                            successTrans('release', {
+                              name: collectionTrans('collection'),
+                            })
+                          );
+                          await fetchData();
+                        }}
                       />
                     ),
                 },
@@ -257,70 +272,6 @@ const Collections = () => {
     orderBy,
   } = usePaginationHook(formatCollections);
 
-  const handleInsert = async (
-    collectionName: string,
-    partitionName: string,
-    fieldData: any[]
-  ): Promise<{ result: boolean; msg: string }> => {
-    const param: InsertDataParam = {
-      partition_name: partitionName,
-      fields_data: fieldData,
-    };
-    try {
-      await DataService.insertData(collectionName, param);
-      await DataService.flush(collectionName);
-      // update collections
-      fetchData();
-      return { result: true, msg: '' };
-    } catch (err: any) {
-      const {
-        response: {
-          data: { message },
-        },
-      } = err;
-      return { result: false, msg: message || '' };
-    }
-  };
-
-  const onCreate = () => {
-    openSnackBar(
-      successTrans('create', { name: collectionTrans('collection') })
-    );
-    fetchData();
-  };
-
-  const onRelease = async () => {
-    openSnackBar(
-      successTrans('release', { name: collectionTrans('collection') })
-    );
-    fetchData();
-  };
-
-  const onLoad = () => {
-    openSnackBar(successTrans('load', { name: collectionTrans('collection') }));
-    fetchData();
-  };
-
-  const onDelete = () => {
-    openSnackBar(
-      successTrans('delete', { name: collectionTrans('collection') })
-    );
-    fetchData();
-    setSelectedCollections([]);
-  };
-
-  const onRename = () => {
-    openSnackBar(
-      successTrans('rename', { name: collectionTrans('collection') })
-    );
-    fetchData();
-    setSelectedCollections([]);
-  };
-
-  const handleSearch = (value: string) => {
-    setSearch(value);
-  };
-
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: collectionTrans('create'),
@@ -329,7 +280,18 @@ const Collections = () => {
           open: true,
           type: 'custom',
           params: {
-            component: <CreateCollectionDialog onCreate={onCreate} />,
+            component: (
+              <CreateCollectionDialog
+                onCreate={async () => {
+                  openSnackBar(
+                    successTrans('create', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  await fetchData();
+                }}
+              />
+            ),
           },
         });
       },
@@ -354,7 +316,30 @@ const Collections = () => {
                 }
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                handleInsert={handleInsert}
+                handleInsert={async (
+                  collectionName: string,
+                  partitionName: string,
+                  fieldData: any[]
+                ): Promise<{ result: boolean; msg: string }> => {
+                  const param: InsertDataParam = {
+                    partition_name: partitionName,
+                    fields_data: fieldData,
+                  };
+                  try {
+                    await DataService.insertData(collectionName, param);
+                    await DataService.flush(collectionName);
+                    // update collections
+                    fetchData();
+                    return { result: true, msg: '' };
+                  } catch (err: any) {
+                    const {
+                      response: {
+                        data: { message },
+                      },
+                    } = err;
+                    return { result: false, msg: message || '' };
+                  }
+                }}
               />
             ),
           },
@@ -378,8 +363,42 @@ const Collections = () => {
           params: {
             component: (
               <RenameCollectionDialog
-                cb={onRename}
+                cb={async () => {
+                  openSnackBar(
+                    successTrans('rename', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  await fetchData();
+                  setSelectedCollections([]);
+                }}
                 collectionName={selectedCollections[0].collectionName}
+              />
+            ),
+          },
+        });
+      },
+      label: collectionTrans('rename'),
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('renameTooltip'),
+      disabled: data => data.length !== 1,
+    },
+    {
+      icon: 'copy',
+      type: 'iconBtn',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DuplicateCollectionDialog
+                cb={async () => {
+                  setSelectedCollections([]);
+                  await fetchData();
+                }}
+                collectionName={selectedCollections[0].collectionName}
+                collections={collections}
               />
             ),
           },
@@ -399,7 +418,15 @@ const Collections = () => {
           params: {
             component: (
               <DropCollectionDialog
-                onDelete={onDelete}
+                onDelete={async () => {
+                  openSnackBar(
+                    successTrans('delete', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  await fetchData();
+                  setSelectedCollections([]);
+                }}
                 collections={selectedCollections}
               />
             ),
@@ -428,7 +455,7 @@ const Collections = () => {
       icon: 'search',
       searchText: search,
       onSearch: (value: string) => {
-        handleSearch(value);
+        setSearch(value);
       },
     },
   ];

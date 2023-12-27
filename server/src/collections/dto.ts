@@ -123,3 +123,9 @@ export class RenameCollectionDto {
   @IsNotEmpty({ message: 'new_collection_name is empty.' })
   new_collection_name: string;
 }
+
+export class DuplicateCollectionDto {
+  @IsString()
+  @IsNotEmpty({ message: 'new_collection_name is empty.' })
+  new_collection_name: string;
+}

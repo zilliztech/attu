@@ -9,7 +9,9 @@ const collectionTrans = {
   delete: '删除',
   deleteTooltip: '请至少选择一个要删除的项目。',
   rename: '重命名',
-  renameTooltip: '请选择一个要重命名的项目。',
+  renameTooltip: '请选择一个要重命名的Collection。',
+  duplicate: '复制',
+  duplicateTooltip: '请选择一个要复制的Collection。',
   newColName: '新的Collection名称',
   alias: '别名',
   aliasTooltip: '请选择一个Collection创建别名',
@@ -36,6 +38,8 @@ const collectionTrans = {
   consistencyLevelInfo:
     '一致性是指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
   entityCountInfo: '大约的Entity数量。',
+  duplicateCollectionInfo:
+    '复制Collection不会复制Collection中的数据。它只会使用现有的Schema创建一个新的Collection。',
 
   // create dialog
   createTitle: '创建Collection',
@@ -103,6 +107,9 @@ const collectionTrans = {
   // rename dialog
   newColNamePlaceholder: '新的Collection名称',
   newNameInfo: '只允许数字，字母和下划线。',
+
+  // duplicate dialog
+  duplicateNameExist: 'Collection已经存在。',
 
   // segment
   segments: '数据段',

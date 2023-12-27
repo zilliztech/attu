@@ -9,7 +9,9 @@ const collectionTrans = {
   delete: 'delete',
   deleteTooltip: 'Please select at least one item to delete.',
   rename: 'rename',
-  renameTooltip: 'Please select one item to rename.',
+  renameTooltip: 'Please select one collection to rename.',
+  duplicate: 'duplicate',
+  duplicateTooltip: 'Please select one collection to duplicate.',
   newColName: 'New Collection Name',
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
@@ -36,6 +38,8 @@ const collectionTrans = {
   consistencyLevelInfo:
     'Consistency refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time.',
   entityCountInfo: 'Approximately entity count.',
+  duplicateCollectionInfo:
+    'Duplicating a collection does not copy the data within the collection. It only creates a new collection using the existing schema.',
 
   // create dialog
   createTitle: 'Create Collection',
@@ -106,6 +110,9 @@ const collectionTrans = {
   // rename dialog
   newColNamePlaceholder: 'New Collection Name',
   newNameInfo: 'Only numbers, letters, and underscores are allowed.',
+
+  // duplicate dialog
+  duplicateNameExist: 'A collection with this name already exists.',
 
   // segment
   segments: 'Segments',

@@ -17,7 +17,9 @@ export type ValidType =
   | 'multiple'
   | 'partitionName'
   | 'firstCharacter'
-  | 'specValueOrRange';
+  | 'specValueOrRange'
+  | 'duplicate'
+  | 'custom';
 export interface ICheckMapParam {
   value: string;
   extraParam?: IExtraParam;
@@ -37,6 +39,8 @@ export interface IExtraParam {
 
   // used for check start item
   invalidTypes?: TypeEnum[];
+  // used for custom validation
+  compare?: (value?: any) => boolean;
 }
 export type CheckMap = {
   [key in ValidType]: boolean;
@@ -201,6 +205,13 @@ export const checkSpecValueOrRange = (param: {
   );
 };
 
+export const checkDuplicate = (param: {
+  value: string | number;
+  compare: string | number;
+}) => {
+  return param.value !== param.compare;
+};
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
@@ -241,6 +252,11 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       max: extraParam?.max || 0,
       compareValue: Number(extraParam.compareValue) || 0,
     }),
+    duplicate: checkDuplicate({ value, compare: extraParam.compareValue! }),
+    custom:
+      extraParam && typeof extraParam.compare === 'function'
+        ? extraParam.compare(value)
+        : true,
   };
 
   return checkMap[rule];

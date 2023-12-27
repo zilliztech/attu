@@ -4,6 +4,7 @@ const dialogTrans = {
   deleteTitle: `Drop {{type}}`,
   renameTitle: `Rename {{type}}`,
   releaseTitle: `Release {{type}}`,
+  duplicateTitle: `Duplicate {{type}}`,
   createAlias: `Create alias for {{type}}`,
   compact: `Compact collection {{type}}`,
   loadTitle: `Load {{type}}`,
