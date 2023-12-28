@@ -54,7 +54,7 @@ To run the Docker container with these environment variables, use the following 
 
 ```bash
 docker run -p 8000:3000 \
--v /Users/zilliz/workspace/attu/server/test/tls:/app/tls \
+-v /your-tls-file-path:/app/tls \
 -e ATTU_LOG_LEVEL=info  \
 -e ROOT_CERT_PATH=/app/tls/ca.pem \
 -e PRIVATE_KEY_PATH=/app/tls/client.key \
