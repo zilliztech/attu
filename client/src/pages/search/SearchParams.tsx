@@ -26,12 +26,12 @@ const getStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   inlineInput: {
-    width: '48%',
+    width: 160,
+    '&:nth-child(odd)': {
+      marginRight: theme.spacing(1),
+    },
   },
-  inlineInputWrapper: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
+  inlineInputWrapper: {},
 }));
 
 const SearchParams: FC<SearchParamsProps> = ({

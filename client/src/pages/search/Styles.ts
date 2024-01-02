@@ -3,18 +3,22 @@ import { makeStyles, Theme } from '@material-ui/core';
 export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   pageContainer: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
+    gap: theme.spacing(2),
   },
   form: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     gap: theme.spacing(0),
+    width: 360,
+    flexShrink: 0,
 
     '& textarea': {
       border: `1px solid ${theme.palette.attuGrey.main}`,
       borderRadius: theme.spacing(0.5),
       padding: theme.spacing(0.5, 1),
       marginTop: theme.spacing(0),
+      marginBottom: theme.spacing(1),
       overflow: 'scroll',
       height: '130px',
       maxWidth: '100%',
@@ -23,31 +27,33 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       boxSizing: 'border-box',
     },
     '& .text': {
-      marginBottom: theme.spacing(2),
+      marginBottom: theme.spacing(1),
+      fontWeight: '600',
     },
-    height: '210px',
     overflow: 'hidden',
   },
   s1: {
+    '& .wrapper': {
+      display: 'flex',
+      flexDirection: 'row',
+      gap: theme.spacing(2),
+    },
+
     '& .MuiSelect-root': {
-      minWidth: '240px',
+      minWidth: '116px',
     },
   },
   s2: {
-    minWidth: '600px',
     position: 'relative',
+    textAlign: 'right',
   },
-  s3: {
-    minWidth: '260px',
-  },
+  s3: {},
   selector: {
     display: 'block',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(0),
   },
   exampleBtn: {
-    right: theme.spacing(2),
-    top: theme.spacing(1.5),
-    position: 'absolute',
+    marginRight: theme.spacing(1),
   },
   paramsWrapper: {
     display: 'flex',
@@ -57,14 +63,14 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   resultsWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    flexGrow: 1,
+    flexGrow: 0,
+    width: 'calc(100vw - 500px)', // replace 300px with the actual width of your form
+    height: `calc(100vh - 108px)`,
   },
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-
-    padding: theme.spacing(2, 0),
 
     '& .left': {
       display: 'flex',
@@ -100,5 +106,10 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   },
   error: {
     color: theme.palette.error.main,
+  },
+
+  vectorTableCell: {
+    display: 'flex',
+    whiteSpace: 'nowrap'
   },
 }));

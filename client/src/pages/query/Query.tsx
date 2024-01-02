@@ -1,11 +1,10 @@
 import { FC, useEffect, useState, useRef, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { saveAs } from 'file-saver';
-import { Parser } from '@json2csv/plainjs';
 import { rootContext } from '@/context';
 import { Collection, DataService } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
+import { saveCsvAs } from '@/utils';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
@@ -182,17 +181,7 @@ const Query: FC<{
     {
       type: 'iconBtn',
       onClick: () => {
-        try {
-          const opts = {};
-          const parser = new Parser(opts);
-          const csv = parser.parse(queryResult);
-          const csvData = new Blob([csv], {
-            type: 'text/csv;charset=utf-8',
-          });
-          saveAs(csvData, 'milvus_query_result.csv');
-        } catch (err) {
-          console.error(err);
-        }
+        saveCsvAs(queryResult, 'milvus_query_result.csv');
       },
       label: '',
       icon: 'download',
