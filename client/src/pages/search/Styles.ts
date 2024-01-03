@@ -65,7 +65,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     flexGrow: 0,
     width: 'calc(100vw - 500px)', // replace 300px with the actual width of your form
-    height: `calc(100vh - 130px)`,
+    height: `calc(100vh - 112px)`,
   },
   toolbar: {
     display: 'flex',
@@ -107,12 +107,12 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   error: {
     display: 'block',
     marginTop: theme.spacing(-1),
-    padding:  '8px 0',
+    padding: '8px 0',
     color: theme.palette.error.main,
   },
 
   vectorTableCell: {
     display: 'flex',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
   },
 }));
