@@ -428,6 +428,17 @@ const VectorSearch = () => {
               handleVectorChange(e.target.value as string);
             }}
           />
+          {/* validation */}
+          {!vectorValueValid && (
+            <Typography variant="caption" className={classes.error}>
+              {searchTrans('vectorValueWarning', {
+                dimension:
+                  fieldType === DataTypeEnum.BinaryVector
+                    ? selectedFieldDimension / 8
+                    : selectedFieldDimension,
+              })}
+            </Typography>
+          )}
           {selectedFieldDimension !== 0 ? (
             <Button
               className={classes.exampleBtn}
@@ -449,17 +460,6 @@ const VectorSearch = () => {
           >
             {btnTrans('search')}
           </CustomButton>
-          {/* validation */}
-          {!vectorValueValid && (
-            <Typography variant="caption" className={classes.error}>
-              {searchTrans('vectorValueWarning', {
-                dimension:
-                  fieldType === DataTypeEnum.BinaryVector
-                    ? selectedFieldDimension / 8
-                    : selectedFieldDimension,
-              })}
-            </Typography>
-          )}
         </CardContent>
 
         <CardContent className={classes.s3}>
@@ -519,7 +519,7 @@ const VectorSearch = () => {
               className="btn"
               disabled={result.length === 0}
               onClick={() => {
-                console.log(searchResult)
+                console.log(searchResult);
                 saveCsvAs(searchResult, `search_result_${selectedCollection}`);
               }}
             >

@@ -105,6 +105,9 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.attuGrey.dark,
   },
   error: {
+    display: 'block',
+    marginTop: theme.spacing(-1),
+    padding:  '8px 0',
     color: theme.palette.error.main,
   },
 
