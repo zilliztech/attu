@@ -65,7 +65,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     flexGrow: 0,
     width: 'calc(100vw - 500px)', // replace 300px with the actual width of your form
-    height: `calc(100vh - 108px)`,
+    height: `calc(100vh - 130px)`,
   },
   toolbar: {
     display: 'flex',
