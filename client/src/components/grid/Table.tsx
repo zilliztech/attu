@@ -52,6 +52,10 @@ const useStyles = makeStyles(theme => ({
     background: theme.palette.common.white,
     padding: `${theme.spacing(1.5)} ${theme.spacing(2)}`,
   },
+  cellContainer: {
+    display: 'flex',
+    whiteSpace: 'nowrap'
+  },
   hoverActionCell: {
     transition: '0.2s all',
     padding: 0,
@@ -261,53 +265,57 @@ const EnhancedTable: FC<TableType> = props => {
                             className={`${classes.cell} ${classes.tableCell}`}
                             style={cellStyle}
                           >
-                            {row[colDef.id] &&
-                            typeof row[colDef.id] === 'string' ? (
-                              <Typography title={row[colDef.id]}>
-                                {colDef.onClick ? (
-                                  <Button
-                                    color="primary"
-                                    data-data={row[colDef.id]}
-                                    data-index={index}
-                                    size="small"
-                                    onClick={e => {
-                                      colDef.onClick && colDef.onClick(e, row);
-                                    }}
-                                  >
-                                    {row[colDef.id]}
-                                  </Button>
-                                ) : (
-                                  row[colDef.id]
-                                )}
-                              </Typography>
-                            ) : (
-                              <>
-                                {colDef.onClick ? (
-                                  <Button
-                                    color="primary"
-                                    data-data={row[colDef.id]}
-                                    data-index={index}
-                                    size="small"
-                                    onClick={e => {
-                                      colDef.onClick && colDef.onClick(e, row);
-                                    }}
-                                  >
-                                    {row[colDef.id]}
-                                  </Button>
-                                ) : (
-                                  row[colDef.id]
-                                )}
-                              </>
-                            )}
+                            <div className={classes.cellContainer}>
+                              {row[colDef.id] &&
+                              typeof row[colDef.id] === 'string' ? (
+                                <Typography title={row[colDef.id]}>
+                                  {colDef.onClick ? (
+                                    <Button
+                                      color="primary"
+                                      data-data={row[colDef.id]}
+                                      data-index={index}
+                                      size="small"
+                                      onClick={e => {
+                                        colDef.onClick &&
+                                          colDef.onClick(e, row);
+                                      }}
+                                    >
+                                      {row[colDef.id]}
+                                    </Button>
+                                  ) : (
+                                    row[colDef.id]
+                                  )}
+                                </Typography>
+                              ) : (
+                                <>
+                                  {colDef.onClick ? (
+                                    <Button
+                                      color="primary"
+                                      data-data={row[colDef.id]}
+                                      data-index={index}
+                                      size="small"
+                                      onClick={e => {
+                                        colDef.onClick &&
+                                          colDef.onClick(e, row);
+                                      }}
+                                    >
+                                      {row[colDef.id]}
+                                    </Button>
+                                  ) : (
+                                    row[colDef.id]
+                                  )}
+                                </>
+                              )}
 
-                            {needCopy && row[colDef.id] && (
-                              <CopyButton
-                                label={copyTrans.label}
-                                value={row[colDef.id]}
-                                size="small"
-                                className={classes.copyBtn}
-                              />
-                            )}
+                              {needCopy && row[colDef.id] && (
+                                <CopyButton
+                                  label={copyTrans.label}
+                                  value={row[colDef.id]}
+                                  size="small"
+                                  className={classes.copyBtn}
+                                />
+                              )}
+                            </div>
                           </TableCell>
                         );
                       })}

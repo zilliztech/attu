@@ -1,3 +1,6 @@
+import { saveAs } from 'file-saver';
+import { Parser } from '@json2csv/plainjs';
+
 export const copyToCommand = (
   value: string,
   classSelector?: string,
@@ -63,7 +66,7 @@ export const generateIdByHash = (salt?: string) => {
 };
 
 export const generateVector = (dim: number) => {
-  return Array.from({ length: dim }).map(() => (Math.random()));
+  return Array.from({ length: dim }).map(() => Math.random());
 };
 
 export const cloneObj = (obj: any) => {
@@ -81,5 +84,19 @@ export const detectItemType = (item: unknown) => {
     return 'json';
   } else {
     return 'unknown';
+  }
+};
+
+export const saveCsvAs = (csvObj: any, as: string) => {
+  try {
+    const opts = {};
+    const parser = new Parser(opts);
+    const csv = parser.parse(csvObj);
+    const csvData = new Blob([csv], {
+      type: 'text/csv;charset=utf-8',
+    });
+    saveAs(csvData, as);
+  } catch (err) {
+    console.error(err);
   }
 };

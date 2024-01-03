@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { useNavigationHook, useSearchResult, usePaginationHook } from '@/hooks';
 import { dataContext } from '@/context';
+import { saveCsvAs } from '@/utils';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -310,6 +311,7 @@ const VectorSearch = () => {
   const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
   const ArrowIcon = icons.dropdown;
+  const ExportIcon = icons.download;
 
   // methods
   const handlePageChange = (e: any, page: number) => {
@@ -384,66 +386,40 @@ const VectorSearch = () => {
     <section className={`page-wrapper ${classes.pageContainer}`}>
       <Card className={classes.form}>
         <CardContent className={classes.s1}>
-          <Typography className="text">{searchTrans('secondTip')}</Typography>
-          <CustomSelector
-            options={collectionOptions}
-            wrapperClass={classes.selector}
-            variant="filled"
-            label={searchTrans(
-              collectionOptions.length === 0 ? 'noCollection' : 'collection'
-            )}
-            disabled={collectionOptions.length === 0}
-            value={selectedCollection}
-            onChange={(e: { target: { value: unknown } }) => {
-              const collection = e.target.value as string;
+          <div className="wrapper">
+            <CustomSelector
+              options={collectionOptions}
+              wrapperClass={classes.selector}
+              variant="filled"
+              label={searchTrans('collection')}
+              disabled={collectionOptions.length === 0}
+              value={selectedCollection}
+              onChange={(e: { target: { value: unknown } }) => {
+                const collection = e.target.value as string;
 
-              setSelectedCollection(collection);
-              // every time selected collection changed, reset field
-              setSelectedField('');
-              setSearchResult([]);
-            }}
-          />
-          <CustomSelector
-            options={fieldOptions}
-            // readOnly can't avoid all events, so we use disabled instead
-            disabled={selectedCollection === ''}
-            wrapperClass={classes.selector}
-            variant="filled"
-            label={searchTrans('field')}
-            value={selectedField}
-            onChange={(e: { target: { value: unknown } }) => {
-              const field = e.target.value as string;
-              setSelectedField(field);
-            }}
-          />
+                setSelectedCollection(collection);
+                // every time selected collection changed, reset field
+                setSelectedField('');
+                setSearchResult([]);
+              }}
+            />
+            <CustomSelector
+              options={fieldOptions}
+              // readOnly can't avoid all events, so we use disabled instead
+              disabled={selectedCollection === ''}
+              wrapperClass={classes.selector}
+              variant="filled"
+              label={searchTrans('field')}
+              value={selectedField}
+              onChange={(e: { target: { value: unknown } }) => {
+                const field = e.target.value as string;
+                setSelectedField(field);
+              }}
+            />
+          </div>
         </CardContent>
 
         <CardContent className={classes.s2}>
-          <Typography className="text">
-            {searchTrans('firstTip', {
-              dimensionTip:
-                selectedFieldDimension !== 0
-                  ? `(dimension: ${selectedFieldDimension})`
-                  : '',
-            })}
-            {selectedFieldDimension !== 0 ? (
-              <Button
-                className={classes.exampleBtn}
-                variant="outlined"
-                size="small"
-                onClick={() => {
-                  const dim =
-                    fieldType === DataTypeEnum.BinaryVector
-                      ? selectedFieldDimension / 8
-                      : selectedFieldDimension;
-                  fillWithExampleVector(dim);
-                }}
-              >
-                {btnTrans('example')}
-              </Button>
-            ) : null}
-          </Typography>
-
           <textarea
             className="textarea"
             placeholder={searchTrans('vectorPlaceholder')}
@@ -452,6 +428,27 @@ const VectorSearch = () => {
               handleVectorChange(e.target.value as string);
             }}
           />
+          {selectedFieldDimension !== 0 ? (
+            <Button
+              className={classes.exampleBtn}
+              onClick={() => {
+                const dim =
+                  fieldType === DataTypeEnum.BinaryVector
+                    ? selectedFieldDimension / 8
+                    : selectedFieldDimension;
+                fillWithExampleVector(dim);
+              }}
+            >
+              {btnTrans('example')}
+            </Button>
+          ) : null}
+          <CustomButton
+            variant="contained"
+            disabled={searchDisabled}
+            onClick={() => handleSearch(topK)}
+          >
+            {btnTrans('search')}
+          </CustomButton>
           {/* validation */}
           {!vectorValueValid && (
             <Typography variant="caption" className={classes.error}>
@@ -518,18 +515,22 @@ const VectorSearch = () => {
               filterDisabled={selectedField === '' || selectedCollection === ''}
               onSubmit={handleAdvancedFilterChange}
             />
+            <CustomButton
+              className="btn"
+              disabled={result.length === 0}
+              onClick={() => {
+                console.log(searchResult)
+                saveCsvAs(searchResult, `search_result_${selectedCollection}`);
+              }}
+            >
+              <ExportIcon classes={{ root: 'icon' }} />
+              {btnTrans('export')}
+            </CustomButton>
           </div>
           <div className="right">
             <CustomButton className="btn" onClick={handleReset}>
               <ResetIcon classes={{ root: 'icon' }} />
               {btnTrans('reset')}
-            </CustomButton>
-            <CustomButton
-              variant="contained"
-              disabled={searchDisabled}
-              onClick={() => handleSearch(topK)}
-            >
-              {btnTrans('search')}
             </CustomButton>
           </div>
         </section>
