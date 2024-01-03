@@ -8,7 +8,7 @@ const userTrans = {
   oldPassword: 'Current Password',
   newPassword: 'New Password',
   confirmPassword: 'Confirm Password',
-  update: 'Update password',
+  update: 'Update Password',
   isNotSame: 'Not same as new password',
   deleteTip:
     'Please select at least one item to drop and the root user can not be dropped.',

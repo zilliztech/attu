@@ -1,12 +1,12 @@
 const systemViewTrans = {
-  diskTitle: 'disk',
-  memoryTitle: 'memory',
-  qpsTitle: 'qps',
-  latencyTitle: 'latency',
-  hardwareTitle: 'hardware',
-  configTitle: 'config',
-  valueTitle: 'value',
-  systemTitle: 'system',
+  diskTitle: 'Disk',
+  memoryTitle: 'Memory',
+  qpsTitle: 'QPS',
+  latencyTitle: 'Latency',
+  hardwareTitle: 'Hardware',
+  configTitle: 'Config',
+  valueTitle: 'Value',
+  systemTitle: 'System',
   thName: 'Node Name',
   thIP: 'IP',
   thCPUCount: 'CPU Core Count',
@@ -14,9 +14,9 @@ const systemViewTrans = {
   thDiskUsage: 'Disk Usage',
   thMemUsage: 'Memory Usage',
   thVersion: 'version',
-  thDeployMode: 'deploy mode',
-  thCreateTime: 'create time',
-  thUpdateTime: 'updated time',
+  thDeployMode: 'Deploy Mode',
+  thCreateTime: 'Create Time',
+  thUpdateTime: 'Updated Time',
 };
 
 export default systemViewTrans;

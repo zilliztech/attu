@@ -99,13 +99,13 @@ const collectionTrans = {
   queryTab: 'Data Query',
   previewTab: 'Data Preview',
   segmentsTab: 'Segments',
-  startTip: 'Start your data query',
+  startTip: 'Start Your Data Query',
   dataQuerylimits:
     ' Please note that the maximum number of results for your data query is 16384.',
   exprPlaceHolder: 'Please enter your data query, for example id > 0',
 
   // alias dialog
-  aliasCreatePlaceholder: 'Alias name',
+  aliasCreatePlaceholder: 'Alias Name',
 
   // rename dialog
   newColNamePlaceholder: 'New Collection Name',

@@ -57,7 +57,7 @@ const commonTrans = {
     pb: 'PB',
   },
 
-  size: 'Approximate size',
+  size: 'Approximate Size',
   tip: 'Use 100k vectors and 1024 segment file size as example',
   disk: 'Disk',
   memory: 'Memory',

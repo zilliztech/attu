@@ -187,7 +187,7 @@ const Schema: FC<{
       id: 'indexName',
       align: 'left',
       disablePadding: true,
-      label: 'Index name',
+      label: indexTrans('indexName')
     },
     {
       id: '_indexTypeElement',

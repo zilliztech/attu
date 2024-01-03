@@ -5,6 +5,7 @@ const indexTrans = {
   create: 'Create Index',
   index: 'Index',
   desc: 'Description',
+  indexName: 'Index Name',
 
   creating: 'Creating Index',
 

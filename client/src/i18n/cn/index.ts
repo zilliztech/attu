@@ -5,6 +5,7 @@ const indexTrans = {
   create: '创建索引',
   index: '索引',
   desc: '描述',
+  indexName: '索引名称',
 
   creating: '正在创建索引',
 
