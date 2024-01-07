@@ -8,6 +8,7 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import CompactDialog from '@/pages/dialogs/CompactDialog';
+import FlushDialog from '@/pages/dialogs/FlushDialog';
 import { getQueryStyles } from '../query/Styles';
 import { Segment } from './Types';
 
@@ -74,6 +75,25 @@ const Segments: FC<{
       },
       label: collectionTrans('compact'),
       icon: 'compact',
+    },
+    {
+      type: 'iconBtn',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <FlushDialog
+                collectionName={collectionName}
+                cb={onCompactExecuted}
+              />
+            ),
+          },
+        });
+      },
+      label: collectionTrans('flush'),
+      icon: 'saveAs',
     },
   ];
 

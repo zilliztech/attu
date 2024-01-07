@@ -143,6 +143,10 @@ const collectionTrans = {
   clickToLoad: '点击加载collection。',
   clickToRelease: '点击释放collection。',
   collectionIsLoading: 'colleciton正在加载...',
+
+  // flush dialog
+  flush: '落盘',
+  flushDialogInfo: `落盘是一个在数据被插入到Milvus后，封闭和索引任何剩余段的过程。这避免了在未封闭的段上进行暴力搜索。  <br /><br />最好在插入会话结束时使用落盘，以防止数据碎片化。 <br /><br /><strong>注意：对于大型数据集，此操作可能需要一些时间。</strong>`,
 };
 
 export default collectionTrans;

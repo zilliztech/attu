@@ -142,6 +142,10 @@ const collectionTrans = {
   clickToLoad: 'Click to load the collection.',
   clickToRelease: 'Click to release the collection.',
   collectionIsLoading: 'The collection is loading...',
+
+  // flush dialog
+  flush: 'Flush',
+  flushDialogInfo: `Flush is a process that seals and indexes any remaining segments after data is upserted into Milvus. This avoids brute force searches on unsealed segments.  <br /><br />It's best to use flush at the end of an upsert session to prevent data fragmentation. <br /><br /><strong>Note: that this operation may take some time for large datasets.</strong>`,
 };
 
 export default collectionTrans;
