@@ -134,12 +134,12 @@ const Segments: FC<{
       disablePadding: false,
       label: collectionTrans('q_state'),
     },
-    {
-      id: 'q_index_name',
-      align: 'left',
-      disablePadding: false,
-      label: collectionTrans('q_index_name'),
-    },
+    // {
+    //   id: 'q_index_name',
+    //   align: 'left',
+    //   disablePadding: false,
+    //   label: collectionTrans('q_index_name'),
+    // },
   ];
 
   useEffect(() => {
