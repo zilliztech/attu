@@ -23,6 +23,7 @@ interface CollectionDialogBaseProps {
 }
 
 export interface CompactDialogProps extends CollectionDialogBaseProps {}
+export interface FlushDialogProps extends CollectionDialogBaseProps {}
 
 export interface CreateAliasProps {
   collectionName: string;

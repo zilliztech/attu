@@ -7,6 +7,7 @@ const dialogTrans = {
   duplicateTitle: `复制 {{type}}`,
   createAlias: `为 {{type}} 创建别名`,
   compact: `压缩Collection {{type}}`,
+  flush: `为 {{type}} 的数据落盘`,
   loadTitle: `加载 {{type}}`,
 
   loadContent: `您正在尝试加载带有数据的 {{type}}。只有已加载的 {{type}} 可以被搜索。`,
