@@ -14,6 +14,7 @@ const dialogTrans = {
   releaseContent: `您正在尝试发布带有数据的 {{type}}。请注意，数据将不再可用于搜索。`,
 
   createTitle: `在 "{{name}}" 上创建 {{type}}`,
+  emptyTitle: `清空{{type}}的数据`,
 };
 
 export default dialogTrans;

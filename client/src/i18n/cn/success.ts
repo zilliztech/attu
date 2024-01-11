@@ -7,6 +7,7 @@ const successTrans = {
   update: `{{name}}更新成功。`,
   rename: `{{name}}重命名成功。`,
   duplicate: `{{name}}复制成功.`,
+  empty: `{{name}}清空成功.`,
 };
 
 export default successTrans;

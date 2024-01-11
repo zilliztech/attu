@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: '480px',
     backgroundColor: '#fff',
   },
+  info: {
+    marginBottom: theme.spacing(0.5),
+  },
   mb: {
     marginBottom: theme.spacing(2.5),
   },
@@ -42,8 +45,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const DeleteTemplate: FC<DeleteDialogContentType> = props => {
-  const { title, text, label, handleDelete, handleCancel, forceDelLabel } =
-    props;
+  const {
+    title,
+    text,
+    label,
+    compare,
+    handleDelete,
+    handleCancel,
+    forceDelLabel,
+  } = props;
   const { handleCloseDialog } = useContext(rootContext);
   const classes = useStyles();
   const { t: dialogTrans } = useTranslation('dialog');
@@ -67,7 +77,7 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
     const value = event.target.value;
     setValue(value);
 
-    setDeleteReady(value.toLowerCase() === label.toLowerCase());
+    setDeleteReady(value.toLowerCase() === (compare || label).toLowerCase());
   };
 
   return (
@@ -81,12 +91,12 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
         </CustomDialogTitle>
 
         <DialogContent>
-          <Typography variant="body1">{text}</Typography>
+          <Typography variant="body1" className={classes.info}>{text}</Typography>
           <Typography variant="body1" className={classes.mb}>
             {dialogTrans('deleteTipAction')}
-            <strong
-              className={classes.btnLabel}
-            >{` ${label.toLowerCase()} `}</strong>
+            <strong className={classes.btnLabel}>{` ${(
+              compare || label
+            ).toLowerCase()} `}</strong>
             {dialogTrans('deleteTipPurpose')}
           </Typography>
           <TextField

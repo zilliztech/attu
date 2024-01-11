@@ -25,7 +25,8 @@ const btnTrans = {
   example: 'Generate Random Vector',
   rename: 'Rename',
   duplicate: 'Duplicate',
-  export: 'Export'
+  export: 'Export',
+  empty: 'Empty'
 };
 
 export default btnTrans;

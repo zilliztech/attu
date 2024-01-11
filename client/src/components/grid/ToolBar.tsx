@@ -25,8 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       opacity: 0.4,
     },
     btn: {
-      // marginLeft: theme.spacing(1),
-      marginRight: '12px',
+      marginRight:  theme.spacing(.5),
     },
     gridEnd: {
       display: 'flex',
@@ -83,7 +82,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 size="small"
                 onClick={c.onClick}
                 startIcon={Icon}
-                color="primary"
+                color={c.btnColor || 'primary'}
                 disabled={disabled}
                 // use contained variant as default
                 variant={c.btnVariant || 'contained'}
