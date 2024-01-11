@@ -80,7 +80,9 @@ const DatabasePage = () => {
     },
 
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       onClick: () => {
         setDialog({
           open: true,
@@ -99,7 +101,7 @@ const DatabasePage = () => {
           },
         });
       },
-      label: '',
+      label: btnTrans('drop'),
       disabled: () =>
         selectedDatabase.length === 0 ||
         selectedDatabase.findIndex(v => v.name === 'default') > -1,

@@ -153,7 +153,8 @@ const Query: FC<{
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         setDialog({
           open: true,
@@ -172,18 +173,19 @@ const Query: FC<{
           },
         });
       },
-      label: collectionTrans('delete'),
+      label: btnTrans('delete'),
       icon: 'delete',
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: () => selectedData.length === 0,
     },
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         saveCsvAs(queryResult, 'milvus_query_result.csv');
       },
-      label: '',
+      label: btnTrans('export'),
       icon: 'download',
       tooltip: collectionTrans('downloadTooltip'),
       disabledTooltip: collectionTrans('downloadDisabledTooltip'),

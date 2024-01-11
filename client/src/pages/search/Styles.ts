@@ -40,7 +40,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     },
 
     '& .MuiSelect-root': {
-      minWidth: '116px',
+      width: '116px',
     },
   },
   s2: {

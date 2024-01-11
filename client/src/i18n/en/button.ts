@@ -26,7 +26,9 @@ const btnTrans = {
   rename: 'Rename',
   duplicate: 'Duplicate',
   export: 'Export',
-  empty: 'Empty'
+  empty: 'Empty',
+  flush: 'Flush',
+  compact: 'Compact',
 };
 
 export default btnTrans;

@@ -24,6 +24,7 @@ const Preview: FC<{
   const [primaryKey, setPrimaryKey] = useState<string>('');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: searchTrans } = useTranslation('search');
+  const { t: btnTrans } = useTranslation('btn');
 
   const classes = getQueryStyles();
 
@@ -136,12 +137,13 @@ const Preview: FC<{
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      type: 'iconBtn',
+      icon: 'refresh',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         loadData(collectionName);
       },
-      label: collectionTrans('refresh'),
-      icon: 'refresh',
+      label: btnTrans('refresh'),
     },
   ];
 

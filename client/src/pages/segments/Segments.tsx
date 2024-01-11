@@ -20,6 +20,8 @@ const Segments: FC<{
 
   const [segments, setSegments] = useState<Segment[]>([]);
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
+
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchSegments = async () => {
@@ -50,15 +52,17 @@ const Segments: FC<{
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         fetchSegments();
       },
-      label: collectionTrans('refresh'),
-      icon: 'refresh',
+      label: btnTrans('refresh'),
+      icon: 'refresh'
     },
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         setDialog({
           open: true,
@@ -73,11 +77,12 @@ const Segments: FC<{
           },
         });
       },
-      label: collectionTrans('compact'),
+      label: btnTrans('compact'),
       icon: 'compact',
     },
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         setDialog({
           open: true,
@@ -92,7 +97,7 @@ const Segments: FC<{
           },
         });
       },
-      label: collectionTrans('flush'),
+      label: btnTrans('flush'),
       icon: 'saveAs',
     },
   ];

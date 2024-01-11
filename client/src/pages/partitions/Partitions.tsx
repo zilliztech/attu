@@ -173,6 +173,9 @@ const Partitions: FC<{
       icon: 'add',
     },
     {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       label: btnTrans('insert'),
       onClick: async () => {
         const collection = await fetchCollectionDetail(collectionName);
@@ -198,10 +201,12 @@ const Partitions: FC<{
        * 2. selected partition quantity shouldn't over 1
        */
       disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
-      btnVariant: 'outlined',
     },
     {
-      type: 'iconBtn',
+      icon: 'delete',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       onClick: () => {
         setDialog({
           open: true,
@@ -217,8 +222,7 @@ const Partitions: FC<{
           },
         });
       },
-      label: '',
-      icon: 'delete',
+      label: btnTrans('drop'),
       // can't delete default partition
       disabled: () =>
         selectedPartitions.length === 0 ||

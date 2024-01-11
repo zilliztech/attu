@@ -6,7 +6,7 @@ import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import { DeleteRoleParams, RoleData, RolesType } from './Types';
+import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import UpdateRoleDialog from './UpdateRoleDialog';
@@ -35,7 +35,7 @@ const Roles = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchRoles = async () => {
-    const roles = (await User.getRoles()) as RolesType;
+    const roles = await User.getRoles();
     setSelectedRole([]);
 
     setRoles(
@@ -110,7 +110,9 @@ const Roles = () => {
     },
 
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       label: userTrans('editRole'),
       onClick: async () => {
         setDialog({
@@ -137,7 +139,9 @@ const Roles = () => {
     },
 
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       onClick: () => {
         setDialog({
           open: true,
@@ -155,7 +159,7 @@ const Roles = () => {
           },
         });
       },
-      label: '',
+      label: btnTrans('drop'),
       disabled: () =>
         selectedRole.length === 0 ||
         selectedRole.findIndex(v => v.name === 'admin') > -1 ||

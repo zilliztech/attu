@@ -26,7 +26,9 @@ const btnTrans = {
   rename: '重命名',
   duplicate: '复制',
   export: '导出',
-  empty: '清空数据'
+  empty: '清空数据',
+  flush: '落盘(Flush)',
+  compact: '压缩(Compact)',
 };
 
 export default btnTrans;

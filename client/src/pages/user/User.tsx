@@ -125,7 +125,9 @@ const Users = () => {
     },
 
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       label: userTrans('editRole'),
       onClick: async () => {
         setDialog({
@@ -154,7 +156,9 @@ const Users = () => {
     },
 
     {
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       onClick: () => {
         setDialog({
           open: true,
@@ -171,7 +175,7 @@ const Users = () => {
           },
         });
       },
-      label: '',
+      label: btnTrans('drop'),
       disabled: () =>
         selectedUser.length === 0 ||
         selectedUser.findIndex(v => v.name === 'root') > -1,
