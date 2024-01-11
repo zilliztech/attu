@@ -102,7 +102,6 @@ export class MilvusService {
 
       // If the server is healthy, set the active address and add the client to the cache
       MilvusService.activeAddress = address;
-      clientCache.set(address, milvusClient);
       clientCache.set(milvusClient.clientId, milvusClient);
 
       // Create a new database service and check if the specified database exists

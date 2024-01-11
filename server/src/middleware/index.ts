@@ -17,7 +17,7 @@ export const ReqHeaderMiddleware = (
   const milvusClientId = (req.headers[MILVUS_CLIENT_ID] as string) || '';
 
   // console.log('------ Request headers -------', req.headers);
-  //  only api request has MILVUS_ADDRESS.
+  //  only api request has MILVUS_CLIENT_ID.
   //  When client run in express, we dont need static files like: xx.js run this logic.
   //  Otherwise will cause 401 error.
   if (milvusClientId && clientCache.has(milvusClientId)) {
