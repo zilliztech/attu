@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { SchemaService } from './schema.service';
-import { milvusService } from '../milvus';
 import { ManageIndexDto } from './dto';
 
 export class SchemaController {
@@ -9,7 +8,7 @@ export class SchemaController {
   private schemaService: SchemaService;
 
   constructor() {
-    this.schemaService = new SchemaService(milvusService);
+    this.schemaService = new SchemaService();
     this.router = Router();
   }
 

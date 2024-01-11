@@ -11,7 +11,6 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { navContext, dataContext, authContext } from '@/context';
 import { MilvusService } from '@/http';
-import { MILVUS_ADDRESS, LOGIN_USERNAME } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '../icons/Icons';
 import { HeaderType } from './Types';
@@ -72,8 +71,7 @@ const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
   const { database, databases, setDatabase } = useContext(dataContext);
-  const { address, setAddress, username, setUsername, setIsAuth } =
-    useContext(authContext);
+  const { address, username, logout } = useContext(authContext);
   const navigate = useNavigate();
 
   const { t: commonTrans } = useTranslation();
@@ -87,14 +85,7 @@ const Header: FC<HeaderType> = props => {
   };
 
   const handleLogout = async () => {
-    setAddress('');
-    setUsername('');
-    setIsAuth(false);
-    await MilvusService.closeConnection();
-    window.localStorage.removeItem(MILVUS_ADDRESS);
-    window.localStorage.removeItem(LOGIN_USERNAME);
-    // make sure we clear state in all pages
-    // navigate(0);
+    logout();
   };
 
   const useDatabase = async (database: string) => {

@@ -12,8 +12,6 @@ import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils';
 
 export class PartitionsService {
-  constructor(private milvusService: MilvusService) {}
-
   async getPartitionsInfo(data: ShowPartitionsReq) {
     const result = [];
     const res = await this.getPartitions(data);
@@ -35,37 +33,39 @@ export class PartitionsService {
   }
 
   async getPartitions(data: ShowPartitionsReq) {
-    const res = await this.milvusService.client.showPartitions(data);
+    const res = await MilvusService.activeMilvusClient.showPartitions(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async createPartition(data: CreatePartitionReq) {
-    const res = await this.milvusService.client.createPartition(data);
+    const res = await MilvusService.activeMilvusClient.createPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async deletePartition(data: DropPartitionReq) {
-    const res = await this.milvusService.client.dropPartition(data);
+    const res = await MilvusService.activeMilvusClient.dropPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getPartitionStatistics(data: GetPartitionStatisticsReq) {
-    const res = await this.milvusService.client.getPartitionStatistics(data);
+    const res = await MilvusService.activeMilvusClient.getPartitionStatistics(
+      data
+    );
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async loadPartitions(data: LoadPartitionsReq) {
-    const res = await this.milvusService.client.loadPartitions(data);
+    const res = await MilvusService.activeMilvusClient.loadPartitions(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async releasePartitions(data: ReleasePartitionsReq) {
-    const res = await this.milvusService.client.releasePartitions(data);
+    const res = await MilvusService.activeMilvusClient.releasePartitions(data);
     throwErrorFromSDK(res);
     return res;
   }

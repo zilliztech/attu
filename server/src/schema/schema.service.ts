@@ -9,10 +9,8 @@ import { MilvusService } from '../milvus/milvus.service';
 import { indexCache } from '../app';
 
 export class SchemaService {
-  constructor(private milvusService: MilvusService) {}
-
   async createIndex(data: CreateIndexReq) {
-    const res = await this.milvusService.client.createIndex(data);
+    const res = await MilvusService.activeMilvusClient.createIndex(data);
     const key = data.collection_name;
 
     // clear cache;
@@ -42,7 +40,7 @@ export class SchemaService {
       return value;
     } else {
       // If the index description is not in the cache, call the Milvus SDK's describeIndex function
-      const res = await this.milvusService.client.describeIndex(data);
+      const res = await MilvusService.activeMilvusClient.describeIndex(data);
 
       // If the index is finished building and there is at least one index description,
       // cache the index description for future use
@@ -62,7 +60,7 @@ export class SchemaService {
   }
 
   async dropIndex(data: DropIndexReq) {
-    const res = await this.milvusService.client.dropIndex(data);
+    const res = await MilvusService.activeMilvusClient.dropIndex(data);
     const key = data.collection_name;
 
     // clear cache;

@@ -59,6 +59,7 @@ export type AuthContextType = {
   address: string;
   username: string;
   isManaged: boolean;
+  logout: Function;
   setAddress: Dispatch<SetStateAction<string>>;
   setUsername: Dispatch<SetStateAction<string>>;
   setIsAuth: Dispatch<SetStateAction<boolean>>;

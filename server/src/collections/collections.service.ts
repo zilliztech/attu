@@ -38,54 +38,56 @@ import { SchemaService } from '../schema/schema.service';
 export class CollectionsService {
   private schemaService: SchemaService;
 
-  constructor(private milvusService: MilvusService) {
-    this.schemaService = new SchemaService(milvusService);
+  constructor() {
+    this.schemaService = new SchemaService();
   }
 
   async getCollections(data?: ShowCollectionsReq) {
-    const res = await this.milvusService.client.showCollections(data);
+    const res = await MilvusService.activeMilvusClient.showCollections(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async createCollection(data: CreateCollectionReq) {
-    const res = await this.milvusService.client.createCollection(data);
+    const res = await MilvusService.activeMilvusClient.createCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async describeCollection(data: DescribeCollectionReq) {
-    const res = await this.milvusService.client.describeCollection(data);
+    const res = await MilvusService.activeMilvusClient.describeCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async renameCollection(data: RenameCollectionReq) {
-    const res = await this.milvusService.client.renameCollection(data);
+    const res = await MilvusService.activeMilvusClient.renameCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async dropCollection(data: DropCollectionReq) {
-    const res = await this.milvusService.client.dropCollection(data);
+    const res = await MilvusService.activeMilvusClient.dropCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async loadCollection(data: LoadCollectionReq) {
-    const res = await this.milvusService.client.loadCollection(data);
+    const res = await MilvusService.activeMilvusClient.loadCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async releaseCollection(data: ReleaseLoadCollectionReq) {
-    const res = await this.milvusService.client.releaseCollection(data);
+    const res = await MilvusService.activeMilvusClient.releaseCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getCollectionStatistics(data: GetCollectionStatisticsReq) {
-    const res = await this.milvusService.client.getCollectionStatistics(data);
+    const res = await MilvusService.activeMilvusClient.getCollectionStatistics(
+      data
+    );
     throwErrorFromSDK(res.status);
     return res;
   }
@@ -93,7 +95,7 @@ export class CollectionsService {
   async count(data: CountReq) {
     let count = 0;
     try {
-      const countRes = await this.milvusService.client.count(data);
+      const countRes = await MilvusService.activeMilvusClient.count(data);
       count = countRes.data;
     } catch (error) {
       const collectionStatisticsRes = await this.getCollectionStatistics(data);
@@ -103,20 +105,20 @@ export class CollectionsService {
   }
 
   async insert(data: InsertReq) {
-    const res = await this.milvusService.client.insert(data);
+    const res = await MilvusService.activeMilvusClient.insert(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async deleteEntities(data: DeleteEntitiesReq) {
-    const res = await this.milvusService.client.deleteEntities(data);
+    const res = await MilvusService.activeMilvusClient.deleteEntities(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async vectorSearch(data: SearchReq) {
     const now = Date.now();
-    const res = await this.milvusService.client.search(data);
+    const res = await MilvusService.activeMilvusClient.search(data);
     const after = Date.now();
 
     throwErrorFromSDK(res.status);
@@ -125,25 +127,25 @@ export class CollectionsService {
   }
 
   async createAlias(data: CreateAliasReq) {
-    const res = await this.milvusService.client.createAlias(data);
+    const res = await MilvusService.activeMilvusClient.createAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async alterAlias(data: AlterAliasReq) {
-    const res = await this.milvusService.client.alterAlias(data);
+    const res = await MilvusService.activeMilvusClient.alterAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async dropAlias(data: DropAliasReq) {
-    const res = await this.milvusService.client.dropAlias(data);
+    const res = await MilvusService.activeMilvusClient.dropAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getReplicas(data: GetReplicasDto) {
-    const res = await this.milvusService.client.getReplicas(data);
+    const res = await MilvusService.activeMilvusClient.getReplicas(data);
     return res;
   }
 
@@ -153,7 +155,7 @@ export class CollectionsService {
     } & QueryDto
   ) {
     const now = Date.now();
-    const res = await this.milvusService.client.query(data);
+    const res = await MilvusService.activeMilvusClient.query(data);
 
     const after = Date.now();
 
@@ -337,31 +339,35 @@ export class CollectionsService {
   }
 
   async getCompactionState(data: GetCompactionStateReq) {
-    const res = await this.milvusService.client.getCompactionState(data);
+    const res = await MilvusService.activeMilvusClient.getCompactionState(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async getQuerySegmentInfo(data: GetQuerySegmentInfoReq) {
-    const res = await this.milvusService.client.getQuerySegmentInfo(data);
+    const res = await MilvusService.activeMilvusClient.getQuerySegmentInfo(
+      data
+    );
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async getPersistentSegmentInfo(data: GePersistentSegmentInfoReq) {
-    const res = await this.milvusService.client.getPersistentSegmentInfo(data);
+    const res = await MilvusService.activeMilvusClient.getPersistentSegmentInfo(
+      data
+    );
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async compact(data: CompactReq) {
-    const res = await this.milvusService.client.compact(data);
+    const res = await MilvusService.activeMilvusClient.compact(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async hasCollection(data: HasCollectionReq) {
-    const res = await this.milvusService.client.hasCollection(data);
+    const res = await MilvusService.activeMilvusClient.hasCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }

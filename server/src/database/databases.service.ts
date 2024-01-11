@@ -7,22 +7,20 @@ import {
 import { throwErrorFromSDK } from '../utils/Error';
 
 export class DatabasesService {
-  constructor(private milvusService: MilvusService) { }
-
   async createDatabase(data: CreateDatabaseRequest) {
-    const res = await this.milvusService.client.createDatabase(data);
+    const res = await MilvusService.activeMilvusClient.createDatabase(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async listDatabase(data?: ListDatabasesRequest) {
-    const res = await this.milvusService.client.listDatabases(data);
+    const res = await MilvusService.activeMilvusClient.listDatabases(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async dropDatabase(data: DropDatabasesRequest) {
-    const res = await this.milvusService.client.dropDatabase(data);
+    const res = await MilvusService.activeMilvusClient.dropDatabase(data);
     throwErrorFromSDK(res);
     return res;
   }

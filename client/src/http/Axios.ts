@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MILVUS_ADDRESS } from '@/consts';
+import { MILVUS_CLIENT_ID } from '@/consts';
 
 // base hots url
 const DEFAULT_HOST_URL = `http://127.0.0.1:3000`;
@@ -23,9 +23,9 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const address = window.localStorage.getItem(MILVUS_ADDRESS);
+    const address = window.localStorage.getItem(MILVUS_CLIENT_ID);
 
-    address && (config.headers[MILVUS_ADDRESS] = address);
+    address && (config.headers[MILVUS_CLIENT_ID] = address);
 
     return config;
   },

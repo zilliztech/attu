@@ -24,6 +24,7 @@ export class MilvusService extends BaseModel {
     return super.create({ path: this.CONNECT_URL, data }) as Promise<{
       address: string;
       database: string;
+      clientId: string;
     }>;
   }
 
