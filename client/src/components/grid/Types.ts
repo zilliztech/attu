@@ -46,6 +46,7 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     position?: 'right' | 'left';
     component?: ReactElement;
     btnVariant?: 'contained' | 'outlined' | 'text';
+    btnColor?: 'primary' | 'secondary'
   };
 
 export type TableHeadType = {

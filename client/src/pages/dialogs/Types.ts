@@ -30,6 +30,11 @@ export interface CreateAliasProps {
   cb?: () => void;
 }
 
+export interface EmptyDataProps {
+  collectionName: string;
+  cb?: () => void;
+}
+
 export interface DuplicateCollectionDialogProps extends CreateAliasProps {
   collections: Collection[];
 }

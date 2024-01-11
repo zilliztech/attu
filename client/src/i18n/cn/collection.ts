@@ -18,6 +18,8 @@ const collectionTrans = {
   download: '下载',
   downloadTooltip: '将所有查询结果导出到CSV文件',
   downloadDisabledTooltip: '请在导出前查询数据',
+  empty: '清空数据',
+  emptyDataDisableTooltip: '请选择一个已加载的Collection进行清空数据操作',
 
   collection: 'Collection',
   entities: 'Entities',
@@ -37,7 +39,8 @@ const collectionTrans = {
   aliasInfo: '别名可以在向量搜索中用作Collection名称。',
   consistencyLevelInfo:
     '一致性是指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
-  entityCountInfo: '大约的Entity数量。',
+  entityCountInfo:
+    '这个计数是一个近似值，并可能因为Milvus的独特机制而稍有延迟。实际的计数可能会有所变化，并会定期更新。请注意，这个数字应该被用作参考，而不是精确的计数。',
   duplicateCollectionInfo:
     '复制Collection不会复制Collection中的数据。它只会使用现有的Schema创建一个新的Collection。',
 
@@ -147,6 +150,8 @@ const collectionTrans = {
   // flush dialog
   flush: '落盘',
   flushDialogInfo: `落盘是一个在数据被插入到Milvus后，封闭和索引任何剩余段的过程。这避免了在未封闭的段上进行暴力搜索。  <br /><br />最好在插入会话结束时使用落盘，以防止数据碎片化。 <br /><br /><strong>注意：对于大型数据集，此操作可能需要一些时间。</strong>`,
+
+  emptyDataDialogInfo: `您正在尝试清空数据。此操作无法撤销，请谨慎操作。`,
 };
 
 export default collectionTrans;

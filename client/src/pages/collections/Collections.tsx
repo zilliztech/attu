@@ -26,6 +26,7 @@ import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
+import EmptyDataDialog from '../dialogs/EmptyDataDialog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
@@ -299,7 +300,9 @@ const Collections = () => {
     },
     {
       icon: 'uploadFile',
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       label: btnTrans('insert'),
       onClick: () => {
         setDialog({
@@ -355,7 +358,9 @@ const Collections = () => {
     },
     {
       icon: 'edit',
-      type: 'iconBtn',
+      type: 'button',
+      btnColor: 'secondary',
+      btnVariant: 'text',
       onClick: () => {
         setDialog({
           open: true,
@@ -378,14 +383,15 @@ const Collections = () => {
           },
         });
       },
-      label: collectionTrans('rename'),
+      label: btnTrans('rename'),
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('renameTooltip'),
       disabled: data => data.length !== 1,
     },
     {
       icon: 'copy',
-      type: 'iconBtn',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         setDialog({
           open: true,
@@ -409,13 +415,51 @@ const Collections = () => {
           },
         });
       },
-      label: collectionTrans('duplicate'),
+      label: btnTrans('duplicate'),
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
     {
-      type: 'iconBtn',
+      icon: 'deleteOutline',
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <EmptyDataDialog
+                cb={async () => {
+                  openSnackBar(
+                    successTrans('empty', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  setSelectedCollections([]);
+                  await fetchData();
+                }}
+                collectionName={selectedCollections[0].collectionName}
+              />
+            ),
+          },
+        });
+      },
+      label: btnTrans('empty'),
+      disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
+      disabled: (data: any) => {
+        if (data.length === 0 || data.length > 1) {
+          return true;
+        } else {
+          return Number(data[0].loadedPercentage) !== 100;
+        }
+      },
+    },
+    {
+      icon: 'delete',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         setDialog({
           open: true,
@@ -438,21 +482,21 @@ const Collections = () => {
           },
         });
       },
-      label: collectionTrans('delete'),
-      icon: 'delete',
+      label: btnTrans('drop'),
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
-      disabled: data => data.length === 0,
+      disabled: data => data.length !== 1,
     },
 
     {
-      type: 'iconBtn',
+      icon: 'refresh',
+      type: 'button',
+      btnVariant: 'text',
       onClick: () => {
         clearIndexCache();
         fetchData();
       },
-      label: collectionTrans('delete'),
-      icon: 'refresh',
+      label: btnTrans('refresh'),
     },
 
     {

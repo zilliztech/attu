@@ -14,6 +14,7 @@ const dialogTrans = {
   releaseContent: `You are trying to release {{type}} with data. Please be aware that the data will no longer be available for search.`,
 
   createTitle: `Create {{type}} on "{{name}}"`,
+  emptyTitle: `Empty data for {{type}}`,
 };
 
 export default dialogTrans;

@@ -64,6 +64,8 @@ export class CollectionController {
     // load / release
     this.router.put('/:name/load', this.loadCollection.bind(this));
     this.router.put('/:name/release', this.releaseCollection.bind(this));
+    this.router.put('/:name/empty', this.empty.bind(this));
+
     this.router.post(
       '/:name/insert',
       dtoValidationMiddleware(InsertDataDto),
@@ -421,6 +423,19 @@ export class CollectionController {
       }
 
       res.send({ collection_name: name, rowCount: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async empty(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    try {
+      const result = await this.collectionsService.emptyCollection({
+        collection_name: name,
+      });
+
+      res.send(result);
     } catch (error) {
       next(error);
     }

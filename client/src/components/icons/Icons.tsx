@@ -4,6 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -49,6 +50,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   add: (props = {}) => <AddIcon {...props} />,
   addOutline: (props = {}) => <AddCircleOutlineIcon {...props} />,
   delete: (props = {}) => <DeleteIcon {...props} />,
+  deleteOutline: (props = {}) => <DeleteOutlineIcon {...props} />,
   list: (props = {}) => <ReorderIcon {...props} />,
   copy: (props = {}) => <FileCopyIcon {...props} />,
   visible: (props = {}) => <Visibility {...props} />,

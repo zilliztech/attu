@@ -3,6 +3,7 @@ export type IconsType =
   | 'add'
   | 'addOutline'
   | 'delete'
+  | 'deleteOutline'
   | 'list'
   | 'copy'
   | 'visible'
