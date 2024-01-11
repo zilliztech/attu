@@ -2,6 +2,7 @@ import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import { DataService } from '@/http';
 import { EmptyDataProps } from './Types';
 
 const EmptyDataDialog: FC<EmptyDataProps> = props => {
@@ -14,7 +15,7 @@ const EmptyDataDialog: FC<EmptyDataProps> = props => {
 
   const handleDelete = async () => {
     // duplicate
-    console.log('confirm');
+    DataService.emptyData(collectionName);
     // close dialog
     handleCloseDialog();
     cb && cb();

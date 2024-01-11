@@ -19,7 +19,7 @@ const collectionTrans = {
   downloadTooltip: '将所有查询结果导出到CSV文件',
   downloadDisabledTooltip: '请在导出前查询数据',
   empty: '清空数据',
-  emptyDataDisableTooltip: '请选择一个要清空的Collection',
+  emptyDataDisableTooltip: '请选择一个已加载的Collection进行清空数据操作',
 
   collection: 'Collection',
   entities: 'Entities',
@@ -39,7 +39,8 @@ const collectionTrans = {
   aliasInfo: '别名可以在向量搜索中用作Collection名称。',
   consistencyLevelInfo:
     '一致性是指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
-  entityCountInfo: '大约的Entity数量。',
+  entityCountInfo:
+    '这个计数是一个近似值，并可能因为Milvus的独特机制而稍有延迟。实际的计数可能会有所变化，并会定期更新。请注意，这个数字应该被用作参考，而不是精确的计数。',
   duplicateCollectionInfo:
     '复制Collection不会复制Collection中的数据。它只会使用现有的Schema创建一个新的Collection。',
 

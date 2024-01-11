@@ -41,4 +41,10 @@ export class DataService extends BaseModel {
       },
     });
   }
+
+  static emptyData(collectionName: string) {
+    return super.update({
+      path: `${this.COLLECTIONS_URL}/${collectionName}/empty`,
+    });
+  }
 }

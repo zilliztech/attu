@@ -19,7 +19,7 @@ const collectionTrans = {
   downloadTooltip: 'Export all query results to CSV file',
   downloadDisabledTooltip: 'Please query data before exporting',
   empty: 'empty data',
-  emptyDataDisableTooltip: 'Please select one collection to empty data',
+  emptyDataDisableTooltip: 'Please select one loaded collection to empty data',
 
   collection: 'Collection',
   entities: 'entities',
@@ -39,7 +39,8 @@ const collectionTrans = {
   aliasInfo: 'Alias can be used as collection name in vector search.',
   consistencyLevelInfo:
     'Consistency refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time.',
-  entityCountInfo: 'Approximately entity count.',
+  entityCountInfo:
+    'This count is an approximation and may be slightly delayed due to the unique mechanisms of Milvus. The actual count may vary and is updated periodically. Please note that this number should be used as a reference and not as an exact count.',
   duplicateCollectionInfo:
     'Duplicating a collection does not copy the data within the collection. It only creates a new collection using the existing schema.',
 

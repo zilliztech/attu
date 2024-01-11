@@ -7,7 +7,7 @@ const successTrans = {
   update: `{{name}} has been updated.`,
   rename: `{{name}} has been renamed.`,
   duplicate: `{{name}} has been duplicated.`,
-  empty: `{{name}} has been emptied.`,
+  empty: `Emptying data for {{name}} has started.`,
 };
 
 export default successTrans;

@@ -448,7 +448,13 @@ const Collections = () => {
       },
       label: btnTrans('empty'),
       disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
-      disabled: data => data.length !== 1,
+      disabled: (data: any) => {
+        if (data.length === 0 || data.length > 1) {
+          return true;
+        } else {
+          return Number(data[0].loadedPercentage) !== 100;
+        }
+      },
     },
     {
       icon: 'delete',
@@ -476,10 +482,10 @@ const Collections = () => {
           },
         });
       },
-      label: btnTrans('delete'),
+      label: btnTrans('drop'),
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
-      disabled: data => data.length === 0,
+      disabled: data => data.length !== 1,
     },
 
     {

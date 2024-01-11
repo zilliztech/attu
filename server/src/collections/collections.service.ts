@@ -394,4 +394,16 @@ export class CollectionsService {
     console.dir(createCollectionParams, { depth: null });
     return await this.createCollection(createCollectionParams);
   }
+
+  async emptyCollection(data: HasCollectionReq) {
+    const pkField = await MilvusService.activeMilvusClient.getPkFieldName(data);
+    const pkType = await MilvusService.activeMilvusClient.getPkFieldType(data);
+
+    const res = await MilvusService.activeMilvusClient.deleteEntities({
+      collection_name: data.collection_name,
+      filter: pkType === 'Int64' ? `${pkField} >= 0` : `${pkField} != ''`,
+    });
+
+    return res;
+  }
 }
