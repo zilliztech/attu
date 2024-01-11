@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
-import { milvusService } from '../milvus';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto';
 
@@ -9,7 +8,7 @@ export class DatabasesController {
   private router: Router;
 
   constructor() {
-    this.databasesService = new DatabasesService(milvusService);
+    this.databasesService = new DatabasesService();
 
     this.router = Router();
   }

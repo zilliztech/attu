@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import chalk from 'chalk';
 import { MilvusService } from '../milvus/milvus.service';
-import { MILVUS_ADDRESS, HTTP_STATUS_CODE } from '../utils';
+import { MILVUS_CLIENT_ID, HTTP_STATUS_CODE } from '../utils';
 import { HttpError } from 'http-errors';
 import HttpErrors from 'http-errors';
 import { clientCache } from '../app';
@@ -14,23 +14,23 @@ export const ReqHeaderMiddleware = (
 ) => {
   // all ape requests need set milvus address in header.
   // server will set active address in milvus service.
-  const milvusAddress = (req.headers[MILVUS_ADDRESS] as string) || '';
+  const milvusClientId = (req.headers[MILVUS_CLIENT_ID] as string) || '';
 
   // console.log('------ Request headers -------', req.headers);
-  //  only api request has MILVUS_ADDRESS.
+  //  only api request has MILVUS_CLIENT_ID.
   //  When client run in express, we dont need static files like: xx.js run this logic.
   //  Otherwise will cause 401 error.
-  if (milvusAddress && clientCache.has(milvusAddress)) {
-    MilvusService.activeAddress = milvusAddress;
+  if (milvusClientId && clientCache.has(milvusClientId)) {
+    MilvusService.activeAddress = milvusClientId;
     // insight cache will update expire time when use insightCache.get
-    MilvusService.activeMilvusClient = clientCache.get(milvusAddress);
+    MilvusService.activeMilvusClient = clientCache.get(milvusClientId);
   }
 
   const CONNECT_URL = `/api/v1/milvus/connect`;
 
   if (
     req.url !== CONNECT_URL &&
-    milvusAddress &&
+    milvusClientId &&
     !MilvusService.activeMilvusClient
   ) {
     throw HttpErrors(

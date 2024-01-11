@@ -394,6 +394,11 @@ const Collections = () => {
             component: (
               <DuplicateCollectionDialog
                 cb={async () => {
+                  openSnackBar(
+                    successTrans('duplicate', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
                   setSelectedCollections([]);
                   await fetchData();
                 }}
@@ -404,9 +409,9 @@ const Collections = () => {
           },
         });
       },
-      label: collectionTrans('rename'),
+      label: collectionTrans('duplicate'),
       // tooltip: collectionTrans('deleteTooltip'),
-      disabledTooltip: collectionTrans('renameTooltip'),
+      disabledTooltip: collectionTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
     {

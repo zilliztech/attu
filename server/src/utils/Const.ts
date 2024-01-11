@@ -2,7 +2,7 @@
 export const ROW_COUNT = 'row_count';
 
 // use in req header
-export const MILVUS_ADDRESS = 'milvus-address';
+export const MILVUS_CLIENT_ID = 'milvus-client-id';
 
 // for lru cache
 export const CLIENT_CACHE = 'insight_cache';

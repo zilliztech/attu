@@ -16,7 +16,7 @@ import {
   dataContext,
 } from '@/context';
 import {
-  MILVUS_ADDRESS,
+  MILVUS_CLIENT_ID,
   LOGIN_USERNAME,
   LAST_TIME_ADDRESS,
   MILVUS_URL,
@@ -211,7 +211,7 @@ export const AuthForm = (props: any) => {
     setDatabase(result.database);
 
     openSnackBar(successTrans('connect'));
-    window.localStorage.setItem(MILVUS_ADDRESS, form.address);
+    window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
     window.localStorage.setItem(LOGIN_USERNAME, form.username);
     // store address for next time using
     window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);

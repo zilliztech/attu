@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
-import { milvusService } from '../milvus';
 import { CollectionsService } from './collections.service';
 import {
   CreateAliasDto,
@@ -19,7 +18,7 @@ export class CollectionController {
   private router: Router;
 
   constructor() {
-    this.collectionsService = new CollectionsService(milvusService);
+    this.collectionsService = new CollectionsService();
 
     this.router = Router();
   }

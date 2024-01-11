@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import axiosInstance from '@/http/Axios';
 import { rootContext, authContext } from '@/context';
-import { MILVUS_ADDRESS, LOGIN_USERNAME } from '@/consts';
 import { HTTP_STATUS_CODE } from '@server/utils/Const';
 
 let axiosResInterceptor: number | null = null;
@@ -9,7 +8,7 @@ let axiosResInterceptor: number | null = null;
 // we only take side effect here, nothing else
 const GlobalEffect = (props: { children: React.ReactNode }) => {
   const { openSnackBar } = useContext(rootContext);
-  const { setIsAuth, setAddress, setUsername } = useContext(authContext);
+  const { logout } = useContext(authContext);
 
   // catch axios error here
   if (axiosResInterceptor === null) {
@@ -24,17 +23,11 @@ const GlobalEffect = (props: { children: React.ReactNode }) => {
       },
       function (error: any) {
         const { response = {} } = error;
-        const reset = () => {
-          setIsAuth(false);
-          setAddress('');
-          setUsername('');
-          window.localStorage.removeItem(MILVUS_ADDRESS);
-          window.localStorage.removeItem(LOGIN_USERNAME);
-        };
+
         switch (response.status) {
           case HTTP_STATUS_CODE.UNAUTHORIZED:
           case HTTP_STATUS_CODE.FORBIDDEN:
-            setTimeout(reset, 2000);
+            setTimeout(logout, 1000);
             break;
           default:
             break;

@@ -18,15 +18,11 @@ export class MilvusService {
   static activeMilvusClient: MilvusClient;
 
   constructor() {
-    this.databaseService = new DatabasesService(this);
+    this.databaseService = new DatabasesService();
   }
 
   get sdkInfo() {
     return MilvusClient.sdkInfo;
-  }
-
-  get client() {
-    return MilvusService.activeMilvusClient;
   }
 
   static formatAddress(address: string) {
@@ -106,7 +102,7 @@ export class MilvusService {
 
       // If the server is healthy, set the active address and add the client to the cache
       MilvusService.activeAddress = address;
-      clientCache.set(address, milvusClient);
+      clientCache.set(milvusClient.clientId, milvusClient);
 
       // Create a new database service and check if the specified database exists
       let hasDatabase = false;
@@ -122,7 +118,11 @@ export class MilvusService {
       }
 
       // Return the address and the database (if it exists, otherwise return 'default')
-      return { address, database: hasDatabase ? database : 'default' };
+      return {
+        address,
+        database: hasDatabase ? database : 'default',
+        clientId: milvusClient.clientId,
+      };
     } catch (error) {
       // If any error occurs, clear the cache and throw the error
       clientCache.dump();

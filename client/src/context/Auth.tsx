@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { MILVUS_ADDRESS, LOGIN_USERNAME } from '@/consts';
-import { MilvusService } from '@/http';
+import { MILVUS_CLIENT_ID, LAST_TIME_ADDRESS, LOGIN_USERNAME } from '@/consts';
 import { AuthContextType } from './Types';
 
 export const authContext = createContext<AuthContextType>({
@@ -8,6 +7,7 @@ export const authContext = createContext<AuthContextType>({
   address: '',
   username: '',
   isManaged: false,
+  logout: () => {},
   setAddress: () => {},
   setUsername: () => {},
   setIsAuth: () => {},
@@ -17,7 +17,7 @@ const { Provider } = authContext;
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   // get milvus address from local storage
   const [address, setAddress] = useState<string>(
-    window.localStorage.getItem(MILVUS_ADDRESS) || ''
+    window.localStorage.getItem(LAST_TIME_ADDRESS) || ''
   );
   // get login username from local storage
   const [username, setUsername] = useState<string>(
@@ -26,28 +26,16 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [isAuth, setIsAuth] = useState<boolean>(address !== '');
   // const isAuth = useMemo(() => !!address, [address]);
 
-  useEffect(() => {
-    // check if the milvus is still available
-    const check = async () => {
-      const milvusAddress = window.localStorage.getItem(MILVUS_ADDRESS) || '';
-      if (!milvusAddress) {
-        return;
-      }
-      const res = await MilvusService.check(milvusAddress);
-      setAddress(res.connected ? milvusAddress : '');
-      res.connected && setIsAuth(true);
-      if (!res.connected) {
-        window.localStorage.removeItem(MILVUS_ADDRESS);
-      }
+  const logout = () => {
+    // remove user data from local storage
+    window.localStorage.removeItem(MILVUS_CLIENT_ID);
+    window.localStorage.removeItem(LOGIN_USERNAME);
 
-      const username = window.localStorage.getItem(LOGIN_USERNAME) || '';
-      if (!username) {
-        return;
-      }
-      setUsername(username);
-    };
-    check();
-  }, [setAddress, setUsername]);
+    // update state
+    setAddress('');
+    setUsername('');
+    setIsAuth(false);
+  };
 
   useEffect(() => {
     document.title = address ? `${address} - Attu` : 'Attu';
@@ -62,6 +50,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         setAddress,
         setUsername,
         setIsAuth,
+        logout,
         isManaged: address.includes('vectordb.zillizcloud.com'),
       }}
     >

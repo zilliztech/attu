@@ -12,15 +12,15 @@ export class CronsService {
   async toggleCronJobByName(data: {
     name: string;
     type: WS_EVENTS_TYPE;
-    address: string;
+    milvusClientId: string;
   }) {
-    const { name, type, address } = data;
+    const { name, type, milvusClientId } = data;
 
     switch (name) {
       case WS_EVENTS.COLLECTION:
-        const cronJobEntity = this.schedulerRegistry.getCronJob(name, address);
+        const cronJobEntity = this.schedulerRegistry.getCronJob(name, milvusClientId);
         if (!cronJobEntity && Number(type) === WS_EVENTS_TYPE.START) {
-          return this.getCollections(WS_EVENTS.COLLECTION, address);
+          return this.getCollections(WS_EVENTS.COLLECTION, milvusClientId);
         }
         if (!cronJobEntity) {
           return;
@@ -33,7 +33,7 @@ export class CronsService {
     }
   }
 
-  async getCollections(name: string, address: string) {
+  async getCollections(name: string, milvusClientId: string) {
     const task = async () => {
       try {
         const res = await this.collectionService.getAllCollections();
@@ -46,7 +46,7 @@ export class CronsService {
         return res;
       } catch (error) {
         // When user not connect milvus, stop cron
-        const cronJobEntity = this.schedulerRegistry.getCronJob(name, address);
+        const cronJobEntity = this.schedulerRegistry.getCronJob(name, milvusClientId);
         if (cronJobEntity) {
           cronJobEntity.stop();
         }
@@ -54,23 +54,23 @@ export class CronsService {
         throw new Error(error);
       }
     };
-    this.schedulerRegistry.setCronJobEveryFiveSecond(name, task, address);
+    this.schedulerRegistry.setCronJobEveryFiveSecond(name, task, milvusClientId);
   }
 }
 
 export class SchedulerRegistry {
   constructor(private cronJobList: CronJob[]) {}
 
-  getCronJob(name: string, address: string) {
+  getCronJob(name: string, milvusClientId: string) {
     const target = this.cronJobList.find(
-      item => item.name === name && item.address === address
+      item => item.name === name && item.milvusClientId === milvusClientId
     );
     return target?.entity;
   }
 
-  setCronJobEveryFiveSecond(name: string, func: () => {}, address: string) {
+  setCronJobEveryFiveSecond(name: string, func: () => {}, milvusClientId: string) {
     // The cron job will run every second
-    this.setCronJob(name, '*/5 * * * * *', func, address);
+    this.setCronJob(name, '*/5 * * * * *', func, milvusClientId);
   }
 
   // ┌────────────── second (optional)
@@ -83,9 +83,9 @@ export class SchedulerRegistry {
   // │ │ │ │ │ │
   // * * * * * *
   // https://www.npmjs.com/package/node-cron
-  setCronJob(name: string, scheduler: string, func: () => {}, address: string) {
+  setCronJob(name: string, scheduler: string, func: () => {}, milvusClientId: string) {
     const target = this.cronJobList.find(
-      item => item.name === name && item.address === address
+      item => item.name === name && item.milvusClientId === milvusClientId
     );
     if (target) {
       target?.entity?.stop();
@@ -97,7 +97,7 @@ export class SchedulerRegistry {
       this.cronJobList.push({
         name,
         entity: task,
-        address,
+        milvusClientId,
       });
     }
   }
@@ -106,5 +106,5 @@ export class SchedulerRegistry {
 interface CronJob {
   name: string;
   entity: ScheduledTask;
-  address: string; // milvus address
+  milvusClientId: string; // milvus milvusClientId
 }

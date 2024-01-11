@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { UserService } from './users.service';
-import { milvusService } from '../milvus';
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -15,7 +14,7 @@ export class UserController {
   private userService: UserService;
 
   constructor() {
-    this.userService = new UserService(milvusService);
+    this.userService = new UserService();
     this.router = Router();
   }
 

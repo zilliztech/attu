@@ -6,6 +6,7 @@ const successTrans = {
   release: `{{name}} has been released.`,
   update: `{{name}} has been updated.`,
   rename: `{{name}} has been renamed.`,
+  duplicate: `{{name}} has been duplicated.`,
 };
 
 export default successTrans;

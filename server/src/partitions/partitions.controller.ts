@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { PartitionsService } from './partitions.service';
-import { milvusService } from '../milvus';
 
 import {
   GetPartitionsInfoDto,
@@ -14,7 +13,7 @@ export class PartitionController {
   private partitionsService: PartitionsService;
 
   constructor() {
-    this.partitionsService = new PartitionsService(milvusService);
+    this.partitionsService = new PartitionsService();
     this.router = Router();
   }
 
