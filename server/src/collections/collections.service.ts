@@ -391,7 +391,6 @@ export class CollectionsService {
       createCollectionParams.num_partitions = Number(collection.num_partitions);
     }
 
-    console.dir(createCollectionParams, { depth: null });
     return await this.createCollection(createCollectionParams);
   }
 
