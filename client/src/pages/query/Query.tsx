@@ -15,7 +15,12 @@ import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { getLabelDisplayedRows } from '../search/Utils';
 import { getQueryStyles } from './Styles';
-import { DYNAMIC_FIELD, DataTypeStringEnum } from '@/consts';
+import {
+  DYNAMIC_FIELD,
+  DataTypeStringEnum,
+  CONSISTENCY_LEVEL_OPTIONS,
+} from '@/consts';
+import CustomSelector from '@/components/customSelector/CustomSelector';
 
 const Query: FC<{
   collectionName: string;
@@ -28,6 +33,7 @@ const Query: FC<{
   const [primaryKey, setPrimaryKey] = useState<{ value: string; type: string }>(
     { value: '', type: DataTypeStringEnum.Int64 }
   );
+  const [consistency_level, setConsistency_level] = useState<string>('');
 
   // latency
   const [latency, setLatency] = useState<number>(0);
@@ -83,6 +89,7 @@ const Query: FC<{
 
     const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
     setPrimaryKey({ value: primaryKey['name'], type: primaryKey['fieldType'] });
+    setConsistency_level(collection.consistency_level);
 
     setFields(nameList);
   };
@@ -120,6 +127,7 @@ const Query: FC<{
         output_fields: fields.map(i => i.name),
         offset: 0,
         limit: 16384,
+        consistency_level: consistency_level,
         // travel_timestamp: timeTravelInfo.timestamp,
       });
       const result = res.data;
@@ -233,13 +241,17 @@ const Query: FC<{
             showTooltip={false}
           />
           {/* </div> */}
-
-          {/* <CustomDatePicker
-            label={timeTravelInfo.label}
-            onChange={handleDateTimeChange}
-            date={timeTravel}
-            setDate={setTimeTravel}
-          /> */}
+          <CustomSelector
+            options={CONSISTENCY_LEVEL_OPTIONS}
+            value={consistency_level}
+            label={collectionTrans('consistencyLevel')}
+            wrapperClass={classes.selector}
+            variant="filled"
+            onChange={(e: { target: { value: unknown } }) => {
+              const consistency = e.target.value as string;
+              setConsistency_level(consistency);
+            }}
+          />
         </div>
         <div className="right">
           <CustomButton
