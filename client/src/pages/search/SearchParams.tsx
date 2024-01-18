@@ -11,6 +11,7 @@ import {
   INDEX_CONFIG,
   METRIC_OPTIONS_MAP,
   searchKeywordsType,
+  CONSISTENCY_LEVEL_OPTIONS,
 } from '@/consts';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
@@ -40,13 +41,16 @@ const SearchParams: FC<SearchParamsProps> = ({
   searchParamsForm,
   handleFormChange,
   handleMetricTypeChange,
+  handleConsistencyChange,
   embeddingType,
   metricType,
+  consistency_level,
   topK,
   setParamsDisabled,
   wrapperClass = '',
 }) => {
   const { t: indexTrans } = useTranslation('index');
+  const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
   const classes = getStyles();
 
@@ -329,6 +333,18 @@ const SearchParams: FC<SearchParamsProps> = ({
         onChange={(e: { target: { value: unknown } }) => {
           const metricType = e.target.value as string;
           handleMetricTypeChange(metricType);
+        }}
+      />
+      {/* consistency level */}
+      <CustomSelector
+        options={CONSISTENCY_LEVEL_OPTIONS}
+        value={consistency_level}
+        label={collectionTrans('consistencyLevel')}
+        wrapperClass={classes.selector}
+        variant="filled"
+        onChange={(e: { target: { value: unknown } }) => {
+          const consistency = e.target.value as string;
+          handleConsistencyChange(consistency);
         }}
       />
       <div className={classes.inlineInputWrapper}>

@@ -297,6 +297,25 @@ export enum ConsistencyLevelEnum {
   Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
 }
 
+export const CONSISTENCY_LEVEL_OPTIONS = [
+  {
+    value: ConsistencyLevelEnum.Bounded,
+    label: ConsistencyLevelEnum.Bounded,
+  },
+  {
+    value: ConsistencyLevelEnum.Strong,
+    label: ConsistencyLevelEnum.Strong,
+  },
+  {
+    value: ConsistencyLevelEnum.Session,
+    label: ConsistencyLevelEnum.Session,
+  },
+  {
+    value: ConsistencyLevelEnum.Eventually,
+    label: ConsistencyLevelEnum.Eventually,
+  },
+];
+
 export enum DataTypeStringEnum {
   Bool = 'Bool',
   Int8 = 'Int8',
