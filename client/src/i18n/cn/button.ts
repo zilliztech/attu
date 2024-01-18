@@ -10,7 +10,7 @@ const btnTrans = {
   import: '导入',
   delete: '删除',
   drop: 'drop',
-  release: '发布',
+  release: '释放',
   load: '加载',
   insert: '导入数据',
   refresh: '刷新',
