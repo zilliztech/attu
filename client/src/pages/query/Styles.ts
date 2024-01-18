@@ -56,6 +56,9 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       gap: theme.spacing(2),
     },
   },
+  selector: {
+    width: 180,
+  },
   vectorTableCell: {
     '& >div': {
       maxWidth: theme.spacing(50),
