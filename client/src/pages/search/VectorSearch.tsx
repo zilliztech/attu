@@ -162,6 +162,8 @@ const VectorSearch = () => {
   }, [searchResult, primaryKeyField, orderArray]);
 
   const [selectedMetricType, setSelectedMetricType] = useState<string>('');
+  const [selectedConsistencyLevel, setSelectedConsistencyLevel] =
+    useState<string>('');
 
   const {
     indexType,
@@ -293,6 +295,9 @@ const VectorSearch = () => {
     if (selectedCollection !== '') {
       fetchFieldsWithIndex(selectedCollection, collections);
     }
+    const level = collections.find(c => c.collectionName == selectedCollection)
+      ?.consistency_level!;
+    setSelectedConsistencyLevel(level);
   }, [selectedCollection, collections, fetchFieldsWithIndex]);
 
   // set default collection value if is from overview page
@@ -351,9 +356,10 @@ const VectorSearch = () => {
       search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
       vector_type: fieldType,
-      consistency_level: collections.find(
-        c => c.collectionName == selectedCollection
-      )?.consistency_level!,
+      consistency_level:
+        selectedConsistencyLevel ||
+        collections.find(c => c.collectionName == selectedCollection)
+          ?.consistency_level!,
     };
 
     setTableLoading(true);
@@ -472,6 +478,10 @@ const VectorSearch = () => {
                 | DataTypeEnum.BinaryVector
                 | DataTypeEnum.FloatVector
             }
+            consistency_level={selectedConsistencyLevel}
+            handleConsistencyChange={(level: string) => {
+              setSelectedConsistencyLevel(level);
+            }}
             indexType={indexType}
             indexParams={indexParams!}
             searchParamsForm={searchParam}
