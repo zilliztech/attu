@@ -322,19 +322,6 @@ const SearchParams: FC<SearchParamsProps> = ({
 
   return (
     <div className={wrapperClass}>
-      {/* metric type */}
-      <CustomSelector
-        options={metricOptions}
-        value={metricType}
-        label={indexTrans('metric')}
-        wrapperClass={classes.selector}
-        variant="filled"
-        disabled={true}
-        onChange={(e: { target: { value: unknown } }) => {
-          const metricType = e.target.value as string;
-          handleMetricTypeChange(metricType);
-        }}
-      />
       {/* consistency level */}
       <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
@@ -364,3 +351,16 @@ const SearchParams: FC<SearchParamsProps> = ({
 };
 
 export default SearchParams;
+
+// <CustomSelector
+// options={metricOptions}
+// value={metricType}
+// label={indexTrans('metric')}
+// wrapperClass={classes.selector}
+// variant="filled"
+// disabled={true}
+// onChange={(e: { target: { value: unknown } }) => {
+//   const metricType = e.target.value as string;
+//   handleMetricTypeChange(metricType);
+// }}
+// />

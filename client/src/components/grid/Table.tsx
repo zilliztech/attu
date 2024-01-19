@@ -287,9 +287,7 @@ const EnhancedTable: FC<TableType> = props => {
                                           : row[colDef.id]}
                                       </Button>
                                     ) : colDef.formatter ? (
-                                      <Typography title={row[colDef.id]}>
-                                        {colDef.formatter(row)}
-                                      </Typography>
+                                      colDef.formatter(row)
                                     ) : (
                                       row[colDef.id]
                                     )}

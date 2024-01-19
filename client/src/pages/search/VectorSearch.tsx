@@ -156,7 +156,7 @@ const VectorSearch = () => {
             align: 'left',
             disablePadding: false,
             label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
-            needCopy: primaryKeyField === key,
+            needCopy: key !== 'score',
           }))
       : [];
   }, [searchResult, primaryKeyField, orderArray]);
@@ -469,7 +469,9 @@ const VectorSearch = () => {
         </CardContent>
 
         <CardContent className={classes.s3}>
-          <Typography className="text">{searchTrans('thirdTip')}</Typography>
+          <Typography className="text">
+            {searchTrans('thirdTip')} ({selectedMetricType})
+          </Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
             metricType={selectedMetricType}
@@ -529,7 +531,6 @@ const VectorSearch = () => {
               className="btn"
               disabled={result.length === 0}
               onClick={() => {
-                console.log(searchResult);
                 saveCsvAs(searchResult, `search_result_${selectedCollection}`);
               }}
             >
@@ -563,7 +564,6 @@ const VectorSearch = () => {
             order={order}
             labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
             handleSort={handleGridSort}
-            tableCellMaxWidth="100%"
           />
         ) : (
           <EmptyCard
