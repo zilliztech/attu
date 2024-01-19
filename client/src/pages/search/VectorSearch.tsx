@@ -78,7 +78,7 @@ const VectorSearch = () => {
   // latency
   const [latency, setLatency] = useState<number>(0);
 
-  const searchResultMemo = useSearchResult(searchResult as any, classes);
+  const searchResultMemo = useSearchResult(searchResult as any);
 
   const {
     pageSize,

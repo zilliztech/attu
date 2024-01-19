@@ -82,6 +82,8 @@ export const detectItemType = (item: unknown) => {
     return 'array';
   } else if (typeof item === 'object' && item !== null) {
     return 'json';
+  } else if (typeof item === 'boolean') {
+    return 'bool';
   } else {
     return 'unknown';
   }

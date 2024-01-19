@@ -22,14 +22,13 @@ const Preview: FC<{
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
   const [primaryKey, setPrimaryKey] = useState<string>('');
-  const { t: collectionTrans } = useTranslation('collection');
   const { t: searchTrans } = useTranslation('search');
   const { t: btnTrans } = useTranslation('btn');
 
   const classes = getQueryStyles();
 
   // Format result list
-  const queryResultMemo = useSearchResult(queryResult, classes);
+  const queryResultMemo = useSearchResult(queryResult);
 
   const {
     pageSize,
@@ -157,6 +156,7 @@ const Preview: FC<{
           id: i.name,
           align: 'left',
           disablePadding: false,
+          needCopy: true,
           label:
             i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
         }))}
