@@ -33,7 +33,6 @@ export const clientCache = new LRUCache<
   {
     milvusClient: MilvusClient;
     address: string;
-    exportStream?: NodeJS.ReadWriteStream;
     indexCache: LRUCache<string, DescribeIndexResponse>;
   }
 >({
