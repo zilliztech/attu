@@ -5,12 +5,12 @@ import {
   DescribeIndexResponse,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
-import { MilvusService } from '../milvus/milvus.service';
-import { indexCache } from '../app';
+import { clientCache } from '../app';
 
 export class SchemaService {
-  async createIndex(data: CreateIndexReq) {
-    const res = await MilvusService.activeMilvusClient.createIndex(data);
+  async createIndex(clientId: string, data: CreateIndexReq) {
+    const { milvusClient, indexCache } = clientCache.get(clientId);
+    const res = await milvusClient.createIndex(data);
     const key = data.collection_name;
 
     // clear cache;
@@ -28,7 +28,9 @@ export class SchemaService {
    * @param data - The request data for describing an index. It contains the collection name.
    * @returns - The response from the Milvus SDK's describeIndex function or the cached index description.
    */
-  async describeIndex(data: DescribeIndexReq) {
+  async describeIndex(clientId: string, data: DescribeIndexReq) {
+    const { milvusClient, indexCache } = clientCache.get(clientId);
+
     // Get the collection name from the request data
     const key = data.collection_name;
 
@@ -40,7 +42,7 @@ export class SchemaService {
       return value;
     } else {
       // If the index description is not in the cache, call the Milvus SDK's describeIndex function
-      const res = await MilvusService.activeMilvusClient.describeIndex(data);
+      const res = await milvusClient.describeIndex(data);
 
       // If the index is finished building and there is at least one index description,
       // cache the index description for future use
@@ -59,8 +61,10 @@ export class SchemaService {
     }
   }
 
-  async dropIndex(data: DropIndexReq) {
-    const res = await MilvusService.activeMilvusClient.dropIndex(data);
+  async dropIndex(clientId: string, data: DropIndexReq) {
+    const { milvusClient, indexCache } = clientCache.get(clientId);
+
+    const res = await milvusClient.dropIndex(data);
     const key = data.collection_name;
 
     // clear cache;
@@ -69,7 +73,8 @@ export class SchemaService {
     return res;
   }
 
-  async clearCache() {
+  async clearCache(clientId: string) {
+    const { indexCache } = clientCache.get(clientId);
     return indexCache.clear();
   }
 }

@@ -19,76 +19,99 @@ import {
   OperateRolePrivilegeReq,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
+import { clientCache } from '../app';
 
 export class UserService {
-  async getUsers() {
-    const res = await MilvusService.activeMilvusClient.listUsers();
+  async getUsers(clientId: string) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.listUsers();
     throwErrorFromSDK(res.status);
 
     return res;
   }
 
-  async createUser(data: CreateUserReq) {
-    const res = await MilvusService.activeMilvusClient.createUser(data);
+  async createUser(clientId: string, data: CreateUserReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.createUser(data);
     throwErrorFromSDK(res);
 
     return res;
   }
 
-  async updateUser(data: UpdateUserReq) {
-    const res = await MilvusService.activeMilvusClient.updateUser(data);
+  async updateUser(clientId: string, data: UpdateUserReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.updateUser(data);
     throwErrorFromSDK(res);
 
     return res;
   }
 
-  async deleteUser(data: DeleteUserReq) {
-    const res = await MilvusService.activeMilvusClient.deleteUser(data);
+  async deleteUser(clientId: string, data: DeleteUserReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.deleteUser(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async getRoles(data?: listRoleReq) {
-    const res = await MilvusService.activeMilvusClient.listRoles(data);
+  async getRoles(clientId: string, data?: listRoleReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.listRoles(data);
     throwErrorFromSDK(res.status);
 
     return res;
   }
 
-  async selectUser(data?: SelectUserReq) {
-    const res = await MilvusService.activeMilvusClient.selectUser(data);
+  async selectUser(clientId: string, data?: SelectUserReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.selectUser(data);
     throwErrorFromSDK(res.status);
 
     return res;
   }
 
-  async createRole(data: CreateRoleReq) {
-    const res = await MilvusService.activeMilvusClient.createRole(data);
+  async createRole(clientId: string, data: CreateRoleReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.createRole(data);
     throwErrorFromSDK(res);
 
     return res;
   }
 
-  async deleteRole(data: DropRoleReq) {
-    const res = await MilvusService.activeMilvusClient.dropRole(data);
+  async deleteRole(clientId: string, data: DropRoleReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.dropRole(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async assignUserRole(data: AddUserToRoleReq) {
-    const res = await MilvusService.activeMilvusClient.addUserToRole(data);
+  async assignUserRole(clientId: string, data: AddUserToRoleReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.addUserToRole(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async unassignUserRole(data: RemoveUserFromRoleReq) {
-    const res = await MilvusService.activeMilvusClient.removeUserFromRole(data);
+  async unassignUserRole(clientId: string, data: RemoveUserFromRoleReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.removeUserFromRole(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async hasRole(data: HasRoleReq) {
-    const res = await MilvusService.activeMilvusClient.hasRole(data);
+  async hasRole(clientId: string, data: HasRoleReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.hasRole(data);
     throwErrorFromSDK(res.status);
     return res;
   }
@@ -103,36 +126,39 @@ export class UserService {
     };
   }
 
-  async listGrants(data: ListGrantsReq) {
-    const res = await MilvusService.activeMilvusClient.listGrants(data);
+  async listGrants(clientId: string, data: ListGrantsReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.listGrants(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async grantRolePrivilege(data: OperateRolePrivilegeReq) {
-    const res = await MilvusService.activeMilvusClient.grantRolePrivilege(data);
+  async grantRolePrivilege(clientId: string, data: OperateRolePrivilegeReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.grantRolePrivilege(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async revokeRolePrivilege(data: OperateRolePrivilegeReq) {
-    const res = await MilvusService.activeMilvusClient.revokeRolePrivilege(
-      data
-    );
+  async revokeRolePrivilege(clientId: string, data: OperateRolePrivilegeReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.revokeRolePrivilege(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async revokeAllRolePrivileges(data: { roleName: string }) {
+  async revokeAllRolePrivileges(clientId: string, data: { roleName: string }) {
     // get existing privileges
-    const existingPrivileges = await this.listGrants({
+    const existingPrivileges = await this.listGrants(clientId, {
       roleName: data.roleName,
     });
 
     // revoke all
     for (let i = 0; i < existingPrivileges.entities.length; i++) {
       const res = existingPrivileges.entities[i];
-      await this.revokeRolePrivilege({
+      await this.revokeRolePrivilege(clientId, {
         object: res.object.name,
         objectName: res.object_name,
         privilegeName: res.grantor.privilege.name,

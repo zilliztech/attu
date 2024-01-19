@@ -1,4 +1,3 @@
-import { MilvusService } from '../milvus/milvus.service';
 import {
   CreatePartitionReq,
   DropPartitionReq,
@@ -10,14 +9,15 @@ import {
 import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils';
+import { clientCache } from '../app';
 
 export class PartitionsService {
-  async getPartitionsInfo(data: ShowPartitionsReq) {
+  async getPartitionsInfo(clientId: string, data: ShowPartitionsReq) {
     const result = [];
-    const res = await this.getPartitions(data);
+    const res = await this.getPartitions(clientId, data);
     if (res.partition_names && res.partition_names.length) {
       for (const [index, name] of res.partition_names.entries()) {
-        const statistics = await this.getPartitionStatistics({
+        const statistics = await this.getPartitionStatistics(clientId, {
           ...data,
           partition_name: name,
         });
@@ -32,40 +32,53 @@ export class PartitionsService {
     return result;
   }
 
-  async getPartitions(data: ShowPartitionsReq) {
-    const res = await MilvusService.activeMilvusClient.showPartitions(data);
+  async getPartitions(clientId: string, data: ShowPartitionsReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.showPartitions(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async createPartition(data: CreatePartitionReq) {
-    const res = await MilvusService.activeMilvusClient.createPartition(data);
+  async createPartition(clientId: string, data: CreatePartitionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.createPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async deletePartition(data: DropPartitionReq) {
-    const res = await MilvusService.activeMilvusClient.dropPartition(data);
+  async deletePartition(clientId: string, data: DropPartitionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.dropPartition(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async getPartitionStatistics(data: GetPartitionStatisticsReq) {
-    const res = await MilvusService.activeMilvusClient.getPartitionStatistics(
-      data
-    );
+  async getPartitionStatistics(
+    clientId: string,
+    data: GetPartitionStatisticsReq
+  ) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.getPartitionStatistics(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async loadPartitions(data: LoadPartitionsReq) {
-    const res = await MilvusService.activeMilvusClient.loadPartitions(data);
+  async loadPartitions(clientId: string, data: LoadPartitionsReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.loadPartitions(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async releasePartitions(data: ReleasePartitionsReq) {
-    const res = await MilvusService.activeMilvusClient.releasePartitions(data);
+  async releasePartitions(clientId: string, data: ReleasePartitionsReq) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.releasePartitions(data);
     throwErrorFromSDK(res);
     return res;
   }

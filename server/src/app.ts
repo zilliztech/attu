@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import * as http from 'http';
-import { Server, Socket } from 'socket.io';
 import { LRUCache } from 'lru-cache';
 import * as path from 'path';
 import chalk from 'chalk';
@@ -14,27 +13,30 @@ import { router as schemaRouter } from './schema';
 import { router as cronsRouter } from './crons';
 import { router as userRouter } from './users';
 import { router as prometheusRouter } from './prometheus';
-import { pubSub } from './events';
 import {
   TransformResMiddleware,
   LoggingMiddleware,
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middleware';
-import { CLIENT_TTL, INDEX_TTL } from './utils';
+import { CLIENT_TTL } from './utils';
 import { getIp } from './utils/Network';
 import { DescribeIndexResponse, MilvusClient } from './types';
+import { initWebSocket } from './socket';
+
 // initialize express app
 export const app = express();
 
 // initialize cache store
-export const clientCache = new LRUCache<string, MilvusClient>({
+export const clientCache = new LRUCache<
+  string,
+  {
+    milvusClient: MilvusClient;
+    address: string;
+    indexCache: LRUCache<string, DescribeIndexResponse>;
+  }
+>({
   ttl: CLIENT_TTL,
-  ttlAutopurge: true,
-});
-
-export const indexCache = new LRUCache<string, DescribeIndexResponse>({
-  ttl: INDEX_TTL,
   ttlAutopurge: true,
 });
 
@@ -88,41 +90,11 @@ app.get('*', (request, response) => {
 });
 // ErrorInterceptor
 app.use(ErrorMiddleware);
+// init websocket server
+initWebSocket(server);
 
 // start server
 server.listen(PORT, () => {
-  // initialize the WebSocket server instance
-  const io = new Server(server, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST'],
-    },
-  });
-
-  // Init WebSocket server event listener
-  io.on('connection', (socket: Socket) => {
-    console.info(
-      chalk.green(`ws client connected ${socket.client.conn.remoteAddress}`)
-    );
-    socket.on('COLLECTION', (message: any) => {
-      socket.emit('COLLECTION', { data: message });
-    });
-    pubSub.on('ws_pubsub', (msg: any) => {
-      socket.emit(msg.event, msg.data);
-    });
-    socket.on('disconnect', () => {
-      console.info(
-        chalk.green(
-          `ws client disconnected ${socket.client.conn.remoteAddress}`
-        )
-      );
-    });
-  });
-
-  server.on('disconnect', (socket: Socket) => {
-    io.removeAllListeners();
-  });
-
   const ips = getIp();
   ips.forEach(ip => {
     console.info(chalk.cyanBright(`Attu server started: http://${ip}:${PORT}`));

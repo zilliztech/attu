@@ -1,4 +1,3 @@
-import { MilvusService } from '../milvus/milvus.service';
 import {
   CreateCollectionReq,
   DescribeCollectionReq,
@@ -34,6 +33,7 @@ import {
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import { CollectionData } from '../types';
 import { SchemaService } from '../schema/schema.service';
+import { clientCache } from '../app';
 
 export class CollectionsService {
   private schemaService: SchemaService;
@@ -42,83 +42,99 @@ export class CollectionsService {
     this.schemaService = new SchemaService();
   }
 
-  async getCollections(data?: ShowCollectionsReq) {
-    const res = await MilvusService.activeMilvusClient.showCollections(data);
+  async getCollections(clientId: string, data?: ShowCollectionsReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.showCollections(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async createCollection(data: CreateCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.createCollection(data);
+  async createCollection(clientId: string, data: CreateCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.createCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async describeCollection(data: DescribeCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.describeCollection(data);
+  async describeCollection(clientId: string, data: DescribeCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.describeCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async renameCollection(data: RenameCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.renameCollection(data);
+  async renameCollection(clientId: string, data: RenameCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.renameCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async dropCollection(data: DropCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.dropCollection(data);
+  async dropCollection(clientId: string, data: DropCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.dropCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async loadCollection(data: LoadCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.loadCollection(data);
+  async loadCollection(clientId: string, data: LoadCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.loadCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async releaseCollection(data: ReleaseLoadCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.releaseCollection(data);
+  async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.releaseCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async getCollectionStatistics(data: GetCollectionStatisticsReq) {
-    const res = await MilvusService.activeMilvusClient.getCollectionStatistics(
-      data
-    );
+  async getCollectionStatistics(
+    clientId: string,
+    data: GetCollectionStatisticsReq
+  ) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getCollectionStatistics(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async count(data: CountReq) {
+  async count(clientId: string, data: CountReq) {
+        const { milvusClient } = clientCache.get(clientId);
     let count = 0;
     try {
-      const countRes = await MilvusService.activeMilvusClient.count(data);
+      const countRes = await milvusClient.count(data);
       count = countRes.data;
     } catch (error) {
-      const collectionStatisticsRes = await this.getCollectionStatistics(data);
+      const collectionStatisticsRes = await this.getCollectionStatistics(
+        clientId,
+        data
+      );
       count = collectionStatisticsRes.data.row_count;
     }
     return count;
   }
 
-  async insert(data: InsertReq) {
-    const res = await MilvusService.activeMilvusClient.insert(data);
+  async insert(clientId: string, data: InsertReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.insert(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async deleteEntities(data: DeleteEntitiesReq) {
-    const res = await MilvusService.activeMilvusClient.deleteEntities(data);
+  async deleteEntities(clientId: string, data: DeleteEntitiesReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.deleteEntities(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async vectorSearch(data: SearchReq) {
+  async vectorSearch(clientId: string, data: SearchReq) {
+        const { milvusClient } = clientCache.get(clientId);
     const now = Date.now();
-    const res = await MilvusService.activeMilvusClient.search(data);
+    const res = await milvusClient.search(data);
     const after = Date.now();
 
     throwErrorFromSDK(res.status);
@@ -126,36 +142,42 @@ export class CollectionsService {
     return res;
   }
 
-  async createAlias(data: CreateAliasReq) {
-    const res = await MilvusService.activeMilvusClient.createAlias(data);
+  async createAlias(clientId: string, data: CreateAliasReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.createAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async alterAlias(data: AlterAliasReq) {
-    const res = await MilvusService.activeMilvusClient.alterAlias(data);
+  async alterAlias(clientId: string, data: AlterAliasReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.alterAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async dropAlias(data: DropAliasReq) {
-    const res = await MilvusService.activeMilvusClient.dropAlias(data);
+  async dropAlias(clientId: string, data: DropAliasReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.dropAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async getReplicas(data: GetReplicasDto) {
-    const res = await MilvusService.activeMilvusClient.getReplicas(data);
+  async getReplicas(clientId: string, data: GetReplicasDto) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getReplicas(data);
     return res;
   }
 
   async query(
+    clientId: string,
     data: {
       collection_name: string;
     } & QueryDto
   ) {
+        const { milvusClient } = clientCache.get(clientId);
     const now = Date.now();
-    const res = await MilvusService.activeMilvusClient.query(data);
+    const res = await milvusClient.query(data);
 
     const after = Date.now();
 
@@ -168,12 +190,15 @@ export class CollectionsService {
    * Get all collections meta data
    * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string, consistency_level:string}
    */
-  async getAllCollections(collections?: {
-    data: { name: string }[];
-  }): Promise<CollectionData[]> {
+  async getAllCollections(
+    clientId: string,
+    collections?: {
+      data: { name: string }[];
+    }
+  ): Promise<CollectionData[]> {
     const data: CollectionData[] = [];
-    const res = collections || (await this.getCollections());
-    const loadedCollections = await this.getCollections({
+    const res = collections || (await this.getCollections(clientId));
+    const loadedCollections = await this.getCollections(clientId, {
       type: ShowCollectionsType.Loaded,
     });
     if (res.data.length > 0) {
@@ -181,17 +206,20 @@ export class CollectionsService {
         const { name } = item;
 
         // get collection schema and properties
-        const collectionInfo = await this.describeCollection({
+        const collectionInfo = await this.describeCollection(clientId, {
           collection_name: name,
         });
 
         // get collection statistic data
-        const collectionStatisticsRes = await this.getCollectionStatistics({
-          collection_name: name,
-        });
+        const collectionStatisticsRes = await this.getCollectionStatistics(
+          clientId,
+          {
+            collection_name: name,
+          }
+        );
 
         // get index info for collections
-        const indexRes = await this.schemaService.describeIndex({
+        const indexRes = await this.schemaService.describeIndex(clientId, {
           collection_name: item.name,
         });
 
@@ -214,7 +242,7 @@ export class CollectionsService {
         let replicas;
         try {
           replicas = loadCollection
-            ? await this.getReplicas({
+            ? await this.getReplicas(clientId, {
                 collectionID: collectionInfo.collectionID,
               })
             : replicas;
@@ -243,16 +271,16 @@ export class CollectionsService {
     return data;
   }
 
-  async getLoadedCollections() {
+  async getLoadedCollections(clientId: string) {
     const data = [];
-    const res = await this.getCollections({
+    const res = await this.getCollections(clientId, {
       type: ShowCollectionsType.Loaded,
     });
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { id, name } = item;
 
-        const count = this.count({ collection_name: name });
+        const count = this.count(clientId, { collection_name: name });
         data.push({
           id,
           collection_name: name,
@@ -268,18 +296,21 @@ export class CollectionsService {
    * Get collections statistics data
    * @returns {collectionCount:number, totalData:number}
    */
-  async getStatistics() {
+  async getStatistics(clientId: string) {
     const data = {
       collectionCount: 0,
       totalData: 0,
     };
-    const res = await this.getCollections();
+    const res = await this.getCollections(clientId);
     data.collectionCount = res.data.length;
     if (res.data.length > 0) {
       for (const item of res.data) {
-        const collectionStatistics = await this.getCollectionStatistics({
-          collection_name: item.name,
-        });
+        const collectionStatistics = await this.getCollectionStatistics(
+          clientId,
+          {
+            collection_name: item.name,
+          }
+        );
         const rowCount = findKeyValue(collectionStatistics.stats, ROW_COUNT);
         data.totalData += isNaN(Number(rowCount)) ? 0 : Number(rowCount);
       }
@@ -291,12 +322,12 @@ export class CollectionsService {
    * Get all collection index status
    * @returns {collection_name:string, index_descriptions: index_descriptions}[]
    */
-  async getCollectionsIndexStatus() {
+  async getCollectionsIndexStatus(clientId: string) {
     const data = [];
-    const res = await this.getCollections();
+    const res = await this.getCollections(clientId);
     if (res.data.length > 0) {
       for (const item of res.data) {
-        const indexRes = await this.schemaService.describeIndex({
+        const indexRes = await this.schemaService.describeIndex(clientId, {
           collection_name: item.name,
         });
         data.push({
@@ -311,13 +342,13 @@ export class CollectionsService {
   /**
    * Load sample data into collection
    */
-  async importSample({
-    collection_name,
-    size,
-    download,
-    format,
-  }: ImportSampleDto) {
-    const collectionInfo = await this.describeCollection({ collection_name });
+  async importSample(
+    clientId: string,
+    { collection_name, size, download, format }: ImportSampleDto
+  ) {
+    const collectionInfo = await this.describeCollection(clientId, {
+      collection_name,
+    });
     const fields_data = genRows(
       collectionInfo.schema.fields,
       parseInt(size, 10),
@@ -334,46 +365,50 @@ export class CollectionsService {
       return { sampleFile };
     } else {
       // Otherwise, insert the data into the collection
-      return await this.insert({ collection_name, fields_data });
+      return await this.insert(clientId, { collection_name, fields_data });
     }
   }
 
-  async getCompactionState(data: GetCompactionStateReq) {
-    const res = await MilvusService.activeMilvusClient.getCompactionState(data);
+  async getCompactionState(clientId: string, data: GetCompactionStateReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getCompactionState(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async getQuerySegmentInfo(data: GetQuerySegmentInfoReq) {
-    const res = await MilvusService.activeMilvusClient.getQuerySegmentInfo(
-      data
-    );
+  async getQuerySegmentInfo(clientId: string, data: GetQuerySegmentInfoReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getQuerySegmentInfo(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async getPersistentSegmentInfo(data: GePersistentSegmentInfoReq) {
-    const res = await MilvusService.activeMilvusClient.getPersistentSegmentInfo(
-      data
-    );
+  async getPersistentSegmentInfo(
+    clientId: string,
+    data: GePersistentSegmentInfoReq
+  ) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getPersistentSegmentInfo(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async compact(data: CompactReq) {
-    const res = await MilvusService.activeMilvusClient.compact(data);
+  async compact(clientId: string, data: CompactReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.compact(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async hasCollection(data: HasCollectionReq) {
-    const res = await MilvusService.activeMilvusClient.hasCollection(data);
+  async hasCollection(clientId: string, data: HasCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.hasCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async duplicateCollection(data: RenameCollectionReq) {
-    const collection: any = await this.describeCollection({
+  async duplicateCollection(clientId: string, data: RenameCollectionReq) {
+    const collection: any = await this.describeCollection(clientId, {
       collection_name: data.collection_name,
     });
 
@@ -391,14 +426,15 @@ export class CollectionsService {
       createCollectionParams.num_partitions = Number(collection.num_partitions);
     }
 
-    return await this.createCollection(createCollectionParams);
+    return await this.createCollection(clientId, createCollectionParams);
   }
 
-  async emptyCollection(data: HasCollectionReq) {
-    const pkField = await MilvusService.activeMilvusClient.getPkFieldName(data);
-    const pkType = await MilvusService.activeMilvusClient.getPkFieldType(data);
+  async emptyCollection(clientId: string, data: HasCollectionReq) {
+        const { milvusClient } = clientCache.get(clientId);
+    const pkField = await milvusClient.getPkFieldName(data);
+    const pkType = await milvusClient.getPkFieldType(data);
 
-    const res = await MilvusService.activeMilvusClient.deleteEntities({
+    const res = await milvusClient.deleteEntities({
       collection_name: data.collection_name,
       filter: pkType === 'Int64' ? `${pkField} >= 0` : `${pkField} != ''`,
     });

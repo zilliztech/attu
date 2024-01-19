@@ -44,9 +44,12 @@ export class PartitionController {
   async getPartitionsInfo(req: Request, res: Response, next: NextFunction) {
     const collectionName = '' + req.query?.collection_name;
     try {
-      const result = await this.partitionsService.getPartitionsInfo({
-        collection_name: collectionName,
-      });
+      const result = await this.partitionsService.getPartitionsInfo(
+        req.clientId,
+        {
+          collection_name: collectionName,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -58,8 +61,8 @@ export class PartitionController {
     try {
       const result =
         type.toLocaleLowerCase() === 'create'
-          ? await this.partitionsService.createPartition(params)
-          : await this.partitionsService.deletePartition(params);
+          ? await this.partitionsService.createPartition(req.clientId, params)
+          : await this.partitionsService.deletePartition(req.clientId, params);
       res.send(result);
     } catch (error) {
       next(error);
@@ -69,7 +72,10 @@ export class PartitionController {
   async loadPartition(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
     try {
-      const result = await this.partitionsService.loadPartitions(data);
+      const result = await this.partitionsService.loadPartitions(
+        req.clientId,
+        data
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -79,7 +85,10 @@ export class PartitionController {
   async releasePartition(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
     try {
-      const result = await this.partitionsService.releasePartitions(data);
+      const result = await this.partitionsService.releasePartitions(
+        req.clientId,
+        data
+      );
       res.send(result);
     } catch (error) {
       next(error);

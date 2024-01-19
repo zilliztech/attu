@@ -3,7 +3,6 @@ import { dtoValidationMiddleware } from '../middleware/validation';
 import { CronsService, SchedulerRegistry } from './crons.service';
 import { collectionsService } from '../collections';
 import { ToggleCronJobByNameDto } from './dto';
-import { MILVUS_CLIENT_ID } from '../utils';
 
 export class CronsController {
   private router: Router;
@@ -31,12 +30,10 @@ export class CronsController {
 
   async toggleCronJobByName(req: Request, res: Response, next: NextFunction) {
     const cronData = req.body;
-    const milvusAddress = (req.headers[MILVUS_CLIENT_ID] as string) || '';
     // console.log(cronData, milvusAddress);
     try {
-      const result = await this.cronsService.toggleCronJobByName({
+      const result = await this.cronsService.toggleCronJobByName(req.clientId, {
         ...cronData,
-        address: milvusAddress,
       });
       res.send(result);
     } catch (error) {
