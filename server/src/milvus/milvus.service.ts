@@ -86,15 +86,13 @@ export class MilvusService {
       }
 
       // If the server is healthy, set the active address and add the client to the cache
-      const indexCache = new LRUCache<string, DescribeIndexResponse>({
-        ttl: INDEX_TTL,
-        ttlAutopurge: true,
-      });
-
       clientCache.set(milvusClient.clientId, {
         milvusClient,
         address,
-        indexCache,
+        indexCache: new LRUCache<string, DescribeIndexResponse>({
+          ttl: INDEX_TTL,
+          ttlAutopurge: true,
+        }),
       });
 
       // Create a new database service and check if the specified database exists

@@ -29,7 +29,7 @@ export const ReqHeaderMiddleware = (
   if (
     req.url !== CONNECT_URL &&
     milvusClientId &&
-    !clientCache.get(milvusClientId).milvusClient
+    !clientCache.get(milvusClientId)
   ) {
     throw HttpErrors(
       HTTP_STATUS_CODE.FORBIDDEN,
