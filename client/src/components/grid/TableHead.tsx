@@ -47,6 +47,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
     colDefinitions = [],
     handleSort,
     openCheckBox,
+    disableSelect
   } = props;
   const classes = useStyles();
   const createSortHandler = (property: string) => (event: React.MouseEvent) => {
@@ -63,6 +64,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
+              disabled={disableSelect}
               inputProps={{ 'aria-label': 'select all desserts', 'role': 'checkbox' }}
             />
           </TableCell>

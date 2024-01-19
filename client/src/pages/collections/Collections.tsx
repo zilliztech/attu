@@ -632,6 +632,7 @@ const Collections = () => {
           handleSort={handleGridSort}
           order={order}
           orderBy={orderBy}
+          hideOnDisable={true}
         />
       ) : (
         <>

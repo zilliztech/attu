@@ -132,6 +132,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     order,
     orderBy,
     showPagination = true,
+    hideOnDisable,
   } = props;
 
   const _isSelected = (row: { [x: string]: any }) => {
@@ -140,6 +141,9 @@ const AttuGrid: FC<AttuGridType> = props => {
   };
 
   const _onSelected = (event: React.MouseEvent, row: { [x: string]: any }) => {
+    if (disableSelect) {
+      return;
+    }
     let newSelected: any[] = ([] as any[]).concat(selected);
     if (_isSelected(row)) {
       newSelected = newSelected.filter(s => s[primaryKey] !== row[primaryKey]);
@@ -201,6 +205,7 @@ const AttuGrid: FC<AttuGridType> = props => {
           <CustomToolbar
             toolbarConfigs={toolbarConfigs}
             selected={selected}
+            hideOnDisable={hideOnDisable}
           ></CustomToolbar>
         </Grid>
       )}

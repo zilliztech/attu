@@ -18,6 +18,7 @@ export type ToolBarType = {
   toolbarConfigs: ToolBarConfig[];
   selected?: any[];
   setSelected?: (selected: any[]) => void;
+  hideOnDisable?: boolean;
 };
 
 export type TableSwitchType = {
@@ -46,7 +47,7 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     position?: 'right' | 'left';
     component?: ReactElement;
     btnVariant?: 'contained' | 'outlined' | 'text';
-    btnColor?: 'primary' | 'secondary'
+    btnColor?: 'primary' | 'secondary';
   };
 
 export type TableHeadType = {
@@ -58,6 +59,7 @@ export type TableHeadType = {
   colDefinitions: ColDefinitionsType[];
   handleSort?: (e: any, p: string) => void;
   openCheckBox?: boolean;
+  disableSelect?: boolean;
 };
 
 export type TableEditableHeadType = {
@@ -110,6 +112,7 @@ export type ColDefinitionsType = {
     data?: any
   ) => void;
   getStyle?: (data: any) => {};
+  formatter?: (data: any) => any;
 
   onConnect?: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -146,6 +149,7 @@ export type AttuGridType = ToolBarType & {
   orderBy?: string;
   tableHeaderHeight?: number;
   rowHeight?: number;
+  hideOnDisable?: boolean;
 };
 
 export type ActionBarType = {
