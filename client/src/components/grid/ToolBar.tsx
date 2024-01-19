@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       opacity: 0.4,
     },
     btn: {
-      marginRight:  theme.spacing(.5),
+      marginRight: theme.spacing(0.5),
     },
     gridEnd: {
       display: 'flex',
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const CustomToolBar: FC<ToolBarType> = props => {
-  const { toolbarConfigs, selected = [] } = props;
+  const { toolbarConfigs, selected = [], hideOnDisable = false } = props;
   const classes = useStyles();
 
   // remove hidden button
@@ -71,6 +71,10 @@ const CustomToolBar: FC<ToolBarType> = props => {
 
             const Icon = c.icon ? Icons[c.icon!]() : '';
             const disabled = c.disabled ? c.disabled(selected) : false;
+
+            if (disabled && hideOnDisable) {
+              return null;
+            }
             // when disabled "disabledTooltip" will replace "tooltip"
             const tooltip =
               disabled && c.disabledTooltip ? c.disabledTooltip : c.tooltip;
