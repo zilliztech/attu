@@ -33,6 +33,10 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
   );
 
+  useEffect(() => {
+    document.title = address ? `${address} - Attu` : 'Attu';
+  }, [address, username]);
+
   const logout = () => {
     // remove user data from local storage
     window.localStorage.removeItem(MILVUS_CLIENT_ID);
