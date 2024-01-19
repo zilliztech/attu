@@ -5,5 +5,5 @@ export interface QueryParam {
   travel_timestamp?: string;
   limit?: number;
   offset?: number;
-  consistency_level: string;
+  consistency_level?: string;
 }

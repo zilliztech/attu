@@ -268,62 +268,41 @@ const EnhancedTable: FC<TableType> = props => {
                             style={cellStyle}
                           >
                             <div className={classes.cellContainer}>
-                              {row[colDef.id] &&
-                              typeof row[colDef.id] === 'string' ? (
-                                <Typography title={row[colDef.id]}>
-                                  {colDef.onClick ? (
-                                    <Button
-                                      color="primary"
-                                      data-data={row[colDef.id]}
-                                      data-index={index}
-                                      size="small"
-                                      onClick={e => {
-                                        colDef.onClick &&
-                                          colDef.onClick(e, row);
-                                      }}
-                                    >
-                                      {colDef.formatter
-                                        ? colDef.formatter(row)
-                                        : row[colDef.id]}
-                                    </Button>
-                                  ) : colDef.formatter ? (
-                                    colDef.formatter(row)
-                                  ) : (
-                                    row[colDef.id]
-                                  )}
-                                </Typography>
-                              ) : (
+                              {row[colDef.id] && (
                                 <>
-                                  {colDef.onClick ? (
-                                    <Button
-                                      color="primary"
-                                      data-data={row[colDef.id]}
-                                      data-index={index}
+                                  <Typography title={row[colDef.id]}>
+                                    {colDef.onClick ? (
+                                      <Button
+                                        color="primary"
+                                        data-data={row[colDef.id]}
+                                        data-index={index}
+                                        size="small"
+                                        onClick={e => {
+                                          colDef.onClick &&
+                                            colDef.onClick(e, row);
+                                        }}
+                                      >
+                                        {colDef.formatter
+                                          ? colDef.formatter(row)
+                                          : row[colDef.id]}
+                                      </Button>
+                                    ) : colDef.formatter ? (
+                                      <Typography title={row[colDef.id]}>
+                                        {colDef.formatter(row)}
+                                      </Typography>
+                                    ) : (
+                                      row[colDef.id]
+                                    )}
+                                  </Typography>
+                                  {needCopy && (
+                                    <CopyButton
+                                      label={copyTrans.label}
+                                      value={row[colDef.id]}
                                       size="small"
-                                      onClick={e => {
-                                        colDef.onClick &&
-                                          colDef.onClick(e, row);
-                                      }}
-                                    >
-                                      {colDef.formatter
-                                        ? colDef.formatter(row)
-                                        : row[colDef.id]}
-                                    </Button>
-                                  ) : colDef.formatter ? (
-                                    colDef.formatter(row)
-                                  ) : (
-                                    row[colDef.id]
+                                      className={classes.copyBtn}
+                                    />
                                   )}
                                 </>
-                              )}
-
-                              {needCopy && row[colDef.id] && (
-                                <CopyButton
-                                  label={copyTrans.label}
-                                  value={row[colDef.id]}
-                                  size="small"
-                                  className={classes.copyBtn}
-                                />
                               )}
                             </div>
                           </TableCell>

@@ -52,7 +52,7 @@ const Query: FC<{
   const classes = getQueryStyles();
 
   // Format result list
-  const queryResultMemo = useSearchResult(queryResult, classes);
+  const queryResultMemo = useSearchResult(queryResult);
 
   const {
     pageSize,
@@ -278,6 +278,7 @@ const Query: FC<{
             id: i.name,
             align: 'left',
             disablePadding: false,
+            needCopy: true,
             label:
               i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
           }))}
