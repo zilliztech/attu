@@ -15,15 +15,18 @@ const { Provider } = webSocketContext;
 
 export const WebSocketProvider = (props: { children: React.ReactNode }) => {
   const [collections, setCollections] = useState<Collection[]>([]);
-  const { isAuth } = useContext(authContext);
+  const { isAuth, clientId } = useContext(authContext);
   const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (isAuth) {
+      // connect to socket server
       socket.current = io(url as string);
+      // register client
+      socket.current.emit(WS_EVENTS.REGISTER, clientId);
 
       socket.current.on('connect', function () {
-        console.log('--- ws connected ---');
+        console.log('--- ws connected ---', clientId);
       });
 
       /**

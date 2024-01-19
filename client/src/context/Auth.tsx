@@ -4,6 +4,7 @@ import { AuthContextType } from './Types';
 
 export const authContext = createContext<AuthContextType>({
   isAuth: false,
+  clientId: '',
   address: '',
   username: '',
   isManaged: false,
@@ -11,6 +12,7 @@ export const authContext = createContext<AuthContextType>({
   setAddress: () => {},
   setUsername: () => {},
   setIsAuth: () => {},
+  setClientId: () => {},
 });
 
 const { Provider } = authContext;
@@ -26,6 +28,11 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [isAuth, setIsAuth] = useState<boolean>(address !== '');
   // const isAuth = useMemo(() => !!address, [address]);
 
+  // get milvus address from local storage
+  const [clientId, setClientId] = useState<string>(
+    window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
+  );
+
   const logout = () => {
     // remove user data from local storage
     window.localStorage.removeItem(MILVUS_CLIENT_ID);
@@ -37,19 +44,17 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     setIsAuth(false);
   };
 
-  useEffect(() => {
-    document.title = address ? `${address} - Attu` : 'Attu';
-  }, [address, username]);
-
   return (
     <Provider
       value={{
         isAuth,
+        clientId,
         address,
         username,
         setAddress,
         setUsername,
         setIsAuth,
+        setClientId,
         logout,
         isManaged: address.includes('vectordb.zillizcloud.com'),
       }}

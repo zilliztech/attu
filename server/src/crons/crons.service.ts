@@ -1,7 +1,7 @@
 import { schedule, ScheduledTask } from 'node-cron';
 import { CollectionsService } from '../collections/collections.service';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '../utils';
-import { serverEvent } from '../events';
+import { clients } from '../socket';
 
 export class CronsService {
   constructor(
@@ -39,12 +39,10 @@ export class CronsService {
     const task = async () => {
       try {
         const res = await this.collectionService.getAllCollections(clientId);
-        // TODO
-        // this.eventService.server.emit("COLLECTION", res);
-        serverEvent.emit(WS_EVENTS.TO_CLIENT, {
-          event: WS_EVENTS.COLLECTION + '',
-          data: res,
-        });
+        // get current socket
+        const socketClient = clients.get(clientId);
+        // emit event to current client
+        socketClient.emit(WS_EVENTS.COLLECTION, res);
         return res;
       } catch (error) {
         // When user not connect milvus, stop cron

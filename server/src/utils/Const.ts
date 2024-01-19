@@ -17,8 +17,7 @@ export enum LOADING_STATE {
 }
 
 export enum WS_EVENTS {
-  TO_SERVER = 'TO_SERVER',
-  TO_CLIENT = 'TO_CLIENT',
+  REGISTER = 'REGISTER',
   COLLECTION = 'COLLECTION',
 }
 
