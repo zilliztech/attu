@@ -22,7 +22,7 @@ export class PubSub {
       console.warn(`eventType: ${eventType} missing`);
       return;
     }
-    this.handlers[eventType].forEach((handler) => {
+    this.handlers[eventType].forEach(handler => {
       handler(...handlerArgs);
     });
     return this;
@@ -36,7 +36,7 @@ export class PubSub {
     }
     // delete handler
     this.handlers[eventType] = this.handlers[eventType].filter(
-      (item) => item !== handler
+      item => item !== handler
     );
     return this;
   }
@@ -44,4 +44,4 @@ export class PubSub {
 
 type HandlerFunction = (...args: any) => void;
 
-export const pubSub = new PubSub();
+export const serverEvent = new PubSub();

@@ -62,7 +62,10 @@ export class MilvusController {
     const address = '' + req.query?.address;
 
     try {
-      const result = await this.milvusService.checkConnect(address);
+      const result = await this.milvusService.checkConnect(
+        req.clientId,
+        address
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -72,7 +75,10 @@ export class MilvusController {
   async flush(req: Request, res: Response, next: NextFunction) {
     const collectionNames = req.body;
     try {
-      const result = await this.milvusService.flush(collectionNames);
+      const result = await this.milvusService.flush(
+        req.clientId,
+        collectionNames
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -81,7 +87,7 @@ export class MilvusController {
 
   async getMetrics(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.milvusService.getMetrics();
+      const result = await this.milvusService.getMetrics(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);
@@ -100,7 +106,10 @@ export class MilvusController {
     const { database } = req.body;
 
     try {
-      const result = await this.milvusService.useDatabase(database);
+      const result = await this.milvusService.useDatabase(
+        req.clientId,
+        database
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -108,7 +117,7 @@ export class MilvusController {
   }
 
   closeConnection(req: Request, res: Response, next: NextFunction) {
-    const result = this.milvusService.closeConnection();
+    const result = this.milvusService.closeConnection(req.clientId);
     res.send({ result });
   }
 }

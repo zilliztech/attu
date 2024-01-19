@@ -31,13 +31,13 @@ export class SchemaController {
     try {
       const result =
         type.toLocaleLowerCase() === 'create'
-          ? await this.schemaService.createIndex({
+          ? await this.schemaService.createIndex(req.clientId, {
               collection_name,
               extra_params,
               field_name,
               index_name,
             })
-          : await this.schemaService.dropIndex({
+          : await this.schemaService.dropIndex(req.clientId, {
               collection_name,
               field_name,
               index_name,
@@ -51,7 +51,7 @@ export class SchemaController {
   async describeIndex(req: Request, res: Response, next: NextFunction) {
     const data = '' + req.query?.collection_name;
     try {
-      const result = await this.schemaService.describeIndex({
+      const result = await this.schemaService.describeIndex(req.clientId, {
         collection_name: data,
       });
       res.send(result);
@@ -62,7 +62,7 @@ export class SchemaController {
 
   async clearCache(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.schemaService.clearCache();
+      const result = await this.schemaService.clearCache(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);

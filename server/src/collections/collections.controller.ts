@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { CollectionsService } from './collections.service';
+import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node';
 import {
   CreateAliasDto,
   CreateCollectionDto,
@@ -11,7 +12,6 @@ import {
   RenameCollectionDto,
   DuplicateCollectionDto,
 } from './dto';
-import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node';
 
 export class CollectionController {
   private collectionsService: CollectionsService;
@@ -97,7 +97,7 @@ export class CollectionController {
     // segments
     this.router.get('/:name/psegments', this.getPSegment.bind(this));
     this.router.get('/:name/qsegments', this.getQSegment.bind(this));
-
+    // compact
     this.router.put('/:name/compact', this.compact.bind(this));
     return this.router;
   }
@@ -107,8 +107,8 @@ export class CollectionController {
     try {
       const result =
         type === 1
-          ? await this.collectionsService.getLoadedCollections()
-          : await this.collectionsService.getAllCollections();
+          ? await this.collectionsService.getLoadedCollections(req.clientId)
+          : await this.collectionsService.getAllCollections(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);
@@ -117,7 +117,7 @@ export class CollectionController {
 
   async getStatistics(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.collectionsService.getStatistics();
+      const result = await this.collectionsService.getStatistics(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);
@@ -128,6 +128,7 @@ export class CollectionController {
     const createCollectionData = req.body;
     try {
       const result = await this.collectionsService.createCollection(
+        req.clientId,
         createCollectionData
       );
       res.send(result);
@@ -140,10 +141,13 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.renameCollection({
-        collection_name: name,
-        ...data,
-      });
+      const result = await this.collectionsService.renameCollection(
+        req.clientId,
+        {
+          collection_name: name,
+          ...data,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -154,10 +158,13 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.duplicateCollection({
-        collection_name: name,
-        ...data,
-      });
+      const result = await this.collectionsService.duplicateCollection(
+        req.clientId,
+        {
+          collection_name: name,
+          ...data,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -167,9 +174,12 @@ export class CollectionController {
   async dropCollection(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.dropCollection({
-        collection_name: name,
-      });
+      const result = await this.collectionsService.dropCollection(
+        req.clientId,
+        {
+          collection_name: name,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -179,9 +189,12 @@ export class CollectionController {
   async describeCollection(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.getAllCollections({
-        data: [{ name }],
-      });
+      const result = await this.collectionsService.getAllCollections(
+        req.clientId,
+        {
+          data: [{ name }],
+        }
+      );
       res.send(result[0]);
     } catch (error) {
       next(error);
@@ -191,9 +204,12 @@ export class CollectionController {
   async getCollectionInfo(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.describeCollection({
-        collection_name: name,
-      });
+      const result = await this.collectionsService.describeCollection(
+        req.clientId,
+        {
+          collection_name: name,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -207,9 +223,12 @@ export class CollectionController {
   ) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.getCollectionStatistics({
-        collection_name: name,
-      });
+      const result = await this.collectionsService.getCollectionStatistics(
+        req.clientId,
+        {
+          collection_name: name,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -222,7 +241,9 @@ export class CollectionController {
     next: NextFunction
   ) {
     try {
-      const result = await this.collectionsService.getCollectionsIndexStatus();
+      const result = await this.collectionsService.getCollectionsIndexStatus(
+        req.clientId
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -237,7 +258,10 @@ export class CollectionController {
       param.replica_number = Number(data.replica_number);
     }
     try {
-      const result = await this.collectionsService.loadCollection(param);
+      const result = await this.collectionsService.loadCollection(
+        req.clientId,
+        param
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -247,9 +271,12 @@ export class CollectionController {
   async releaseCollection(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.releaseCollection({
-        collection_name: name,
-      });
+      const result = await this.collectionsService.releaseCollection(
+        req.clientId,
+        {
+          collection_name: name,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -260,7 +287,7 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.insert({
+      const result = await this.collectionsService.insert(req.clientId, {
         collection_name: name,
         ...data,
       });
@@ -273,7 +300,7 @@ export class CollectionController {
   async importSample(req: Request, res: Response, next: NextFunction) {
     const data = req.body;
     try {
-      const result = await this.collectionsService.importSample({
+      const result = await this.collectionsService.importSample(req.clientId, {
         ...data,
       });
       res.send(result);
@@ -285,10 +312,13 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.deleteEntities({
-        collection_name: name,
-        ...data,
-      });
+      const result = await this.collectionsService.deleteEntities(
+        req.clientId,
+        {
+          collection_name: name,
+          ...data,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -299,7 +329,7 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.vectorSearch({
+      const result = await this.collectionsService.vectorSearch(req.clientId, {
         collection_name: name,
         ...data,
       });
@@ -320,7 +350,7 @@ export class CollectionController {
       const page = isNaN(resultPage) ? 0 : parseInt(resultPage, 10);
       // TODO: add page and limit to node SDK
       // Here may raise "Error: 8 RESOURCE_EXHAUSTED: Received message larger than max"
-      const result = await this.collectionsService.query({
+      const result = await this.collectionsService.query(req.clientId, {
         collection_name: name,
         ...data,
       });
@@ -341,7 +371,7 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.createAlias({
+      const result = await this.collectionsService.createAlias(req.clientId, {
         collection_name: name,
         ...data,
       });
@@ -354,7 +384,9 @@ export class CollectionController {
   async dropAlias(req: Request, res: Response, next: NextFunction) {
     const alias = req.params?.alias;
     try {
-      const result = await this.collectionsService.dropAlias({ alias });
+      const result = await this.collectionsService.dropAlias(req.clientId, {
+        alias,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -364,7 +396,7 @@ export class CollectionController {
   async getReplicas(req: Request, res: Response, next: NextFunction) {
     const collectionID = req.params?.collectionID;
     try {
-      const result = await this.collectionsService.getReplicas({
+      const result = await this.collectionsService.getReplicas(req.clientId, {
         collectionID,
       });
       res.send(result);
@@ -376,9 +408,12 @@ export class CollectionController {
   async getPSegment(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.getPersistentSegmentInfo({
-        collectionName: name,
-      });
+      const result = await this.collectionsService.getPersistentSegmentInfo(
+        req.clientId,
+        {
+          collectionName: name,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -388,9 +423,12 @@ export class CollectionController {
   async getQSegment(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.getQuerySegmentInfo({
-        collectionName: name,
-      });
+      const result = await this.collectionsService.getQuerySegmentInfo(
+        req.clientId,
+        {
+          collectionName: name,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -400,7 +438,7 @@ export class CollectionController {
   async compact(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.compact({
+      const result = await this.collectionsService.compact(req.clientId, {
         collection_name: name,
       });
       res.send(result);
@@ -412,12 +450,15 @@ export class CollectionController {
   async count(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const { value } = await this.collectionsService.hasCollection({
-        collection_name: name,
-      });
+      const { value } = await this.collectionsService.hasCollection(
+        req.clientId,
+        {
+          collection_name: name,
+        }
+      );
       let result: any = '';
       if (value) {
-        result = await this.collectionsService.count({
+        result = await this.collectionsService.count(req.clientId, {
           collection_name: name,
         });
       }
@@ -431,9 +472,12 @@ export class CollectionController {
   async empty(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const result = await this.collectionsService.emptyCollection({
-        collection_name: name,
-      });
+      const result = await this.collectionsService.emptyCollection(
+        req.clientId,
+        {
+          collection_name: name,
+        }
+      );
 
       res.send(result);
     } catch (error) {

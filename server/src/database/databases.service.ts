@@ -5,32 +5,41 @@ import {
   DropDatabasesRequest,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
+import { clientCache } from '../app';
 
 export class DatabasesService {
-  async createDatabase(data: CreateDatabaseRequest) {
-    const res = await MilvusService.activeMilvusClient.createDatabase(data);
+  async createDatabase(clientId: string, data: CreateDatabaseRequest) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.createDatabase(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async listDatabase(data?: ListDatabasesRequest) {
-    const res = await MilvusService.activeMilvusClient.listDatabases(data);
+  async listDatabase(clientId: string, data?: ListDatabasesRequest) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.listDatabases(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
-  async dropDatabase(data: DropDatabasesRequest) {
-    const res = await MilvusService.activeMilvusClient.dropDatabase(data);
+  async dropDatabase(clientId: string, data: DropDatabasesRequest) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.dropDatabase(data);
     throwErrorFromSDK(res);
     return res;
   }
 
-  async use(db_name: string) {
-    return await await MilvusService.activeMilvusClient.use({ db_name });
+  async use(clientId: string, db_name: string) {
+        const { milvusClient } = clientCache.get(clientId);
+
+    return await await milvusClient.use({ db_name });
   }
 
-  async hasDatabase(data: string) {
-    const { db_names } = await this.listDatabase();
+  async hasDatabase(clientId: string, data: string) {
+    const { db_names } = await this.listDatabase(clientId);
     return db_names.indexOf(data) !== -1;
   }
 }

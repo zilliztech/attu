@@ -34,6 +34,7 @@ export class DatabasesController {
     const createDatabaseData = req.body;
     try {
       const result = await this.databasesService.createDatabase(
+        req.clientId,
         createDatabaseData
       );
       res.send(result);
@@ -44,7 +45,7 @@ export class DatabasesController {
 
   async listDatabases(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.databasesService.listDatabase();
+      const result = await this.databasesService.listDatabase(req.clientId);
       result.db_names = result.db_names.sort((a: string, b: string) => {
         if (a === 'default') {
           return -1; // 'default' comes before other strings
@@ -53,7 +54,7 @@ export class DatabasesController {
         } else {
           return a.localeCompare(b); // sort other strings alphabetically
         }
-      })
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -63,7 +64,9 @@ export class DatabasesController {
   async dropDatabase(req: Request, res: Response, next: NextFunction) {
     const db_name = req.params?.name;
     try {
-      const result = await this.databasesService.dropDatabase({ db_name });
+      const result = await this.databasesService.dropDatabase(req.clientId, {
+        db_name,
+      });
       res.send(result);
     } catch (error) {
       next(error);

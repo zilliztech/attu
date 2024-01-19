@@ -63,7 +63,7 @@ export class UserController {
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getUsers();
+      const result = await this.userService.getUsers(req.clientId);
 
       res.send(result);
     } catch (error) {
@@ -74,7 +74,10 @@ export class UserController {
   async createUsers(req: Request, res: Response, next: NextFunction) {
     const { username, password } = req.body;
     try {
-      const result = await this.userService.createUser({ username, password });
+      const result = await this.userService.createUser(req.clientId, {
+        username,
+        password,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -84,7 +87,7 @@ export class UserController {
   async updateUsers(req: Request, res: Response, next: NextFunction) {
     const { username, oldPassword, newPassword } = req.body;
     try {
-      const result = await this.userService.updateUser({
+      const result = await this.userService.updateUser(req.clientId, {
         username,
         oldPassword,
         newPassword,
@@ -98,7 +101,9 @@ export class UserController {
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     const { username } = req.params;
     try {
-      const result = await this.userService.deleteUser({ username });
+      const result = await this.userService.deleteUser(req.clientId, {
+        username,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -107,10 +112,10 @@ export class UserController {
 
   async getRoles(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = (await this.userService.getRoles()) as any;
+      const result = (await this.userService.getRoles(req.clientId)) as any;
 
       for (let i = 0; i < result.results.length; i++) {
-        const { entities } = await this.userService.listGrants({
+        const { entities } = await this.userService.listGrants(req.clientId, {
           roleName: result.results[i].role.name,
         });
         result.results[i].entities = entities;
@@ -125,7 +130,9 @@ export class UserController {
   async createRole(req: Request, res: Response, next: NextFunction) {
     const { roleName } = req.body;
     try {
-      const result = await this.userService.createRole({ roleName });
+      const result = await this.userService.createRole(req.clientId, {
+        roleName,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -138,9 +145,13 @@ export class UserController {
 
     try {
       if (force) {
-        await this.userService.revokeAllRolePrivileges({ roleName });
+        await this.userService.revokeAllRolePrivileges(req.clientId, {
+          roleName,
+        });
       }
-      const result = await this.userService.deleteRole({ roleName });
+      const result = await this.userService.deleteRole(req.clientId, {
+        roleName,
+      });
       res.send(result);
     } catch (error) {
       next(error);
@@ -155,7 +166,7 @@ export class UserController {
 
     try {
       // get user existing roles
-      const selectUser = await this.userService.selectUser({
+      const selectUser = await this.userService.selectUser(req.clientId, {
         username,
         includeRoleInfo: false,
       });
@@ -164,7 +175,7 @@ export class UserController {
       // remove user existing roles
       for (let i = 0; i < existingRoles.length; i++) {
         if (existingRoles[i].name.length > 0) {
-          await this.userService.unassignUserRole({
+          await this.userService.unassignUserRole(req.clientId, {
             username,
             roleName: existingRoles[i].name,
           });
@@ -173,7 +184,7 @@ export class UserController {
 
       // assign new user roles
       for (let i = 0; i < roles.length; i++) {
-        const result = await this.userService.assignUserRole({
+        const result = await this.userService.assignUserRole(req.clientId, {
           username,
           roleName: roles[i],
         });
@@ -191,7 +202,7 @@ export class UserController {
     const { username } = req.params;
 
     try {
-      const result = await this.userService.unassignUserRole({
+      const result = await this.userService.unassignUserRole(req.clientId, {
         username,
         roleName,
       });
@@ -213,7 +224,7 @@ export class UserController {
   async listGrant(req: Request, res: Response, next: NextFunction) {
     const { roleName } = req.params;
     try {
-      const result = await this.userService.listGrants({
+      const result = await this.userService.listGrants(req.clientId, {
         roleName,
       });
       res.send(result);
@@ -230,11 +241,16 @@ export class UserController {
 
     try {
       // revoke all
-      await this.userService.revokeAllRolePrivileges({ roleName });
+      await this.userService.revokeAllRolePrivileges(req.clientId, {
+        roleName,
+      });
 
       // assign new user roles
       for (let i = 0; i < privileges.length; i++) {
-        const result = await this.userService.grantRolePrivilege(privileges[i]);
+        const result = await this.userService.grantRolePrivilege(
+          req.clientId,
+          privileges[i]
+        );
         results.push(result);
       }
 
