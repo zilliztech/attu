@@ -64,7 +64,8 @@ export const AuthForm = (props: any) => {
   const classes = useStyles();
 
   const { openSnackBar } = useContext(rootContext);
-  const { setAddress, setUsername, setIsAuth } = useContext(authContext);
+  const { setAddress, setUsername, setIsAuth, setClientId } =
+    useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
   const Logo = icons.zilliz;
@@ -206,6 +207,7 @@ export const AuthForm = (props: any) => {
     const result = await MilvusService.connect(form);
 
     setIsAuth(true);
+    setClientId(result.clientId);
     setAddress(form.address);
     setUsername(form.username);
     setDatabase(result.database);
