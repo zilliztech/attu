@@ -57,9 +57,14 @@ const CreateIndex = (props: {
       case DataTypeStringEnum.BinaryVector:
         return INDEX_TYPES_ENUM.BIN_IVF_FLAT;
       case DataTypeStringEnum.FloatVector:
-        return INDEX_TYPES_ENUM.IVF_FLAT;
+        return INDEX_TYPES_ENUM.AUTOINDEX;
       case DataTypeStringEnum.VarChar:
         return INDEX_TYPES_ENUM.MARISA_TRIE;
+      case DataTypeStringEnum.Int8:
+      case DataTypeStringEnum.Int16:
+      case DataTypeStringEnum.Int32:
+      case DataTypeStringEnum.Int64:
+        return INDEX_TYPES_ENUM.SORT;
       default:
         return INDEX_TYPES_ENUM.SORT;
     }
