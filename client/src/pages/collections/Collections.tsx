@@ -485,7 +485,7 @@ const Collections = () => {
       label: btnTrans('drop'),
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
-      disabled: data => data.length !== 1,
+      disabled: data => data.length < 1,
     },
 
     {
