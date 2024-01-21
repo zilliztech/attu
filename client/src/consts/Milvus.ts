@@ -23,7 +23,7 @@ export enum DataTypeEnum {
 }
 
 export enum INDEX_TYPES_ENUM {
-  AUTO_INDEX = 'AUTO_INDEX',
+  AUTOINDEX = 'AUTOINDEX',
   IVF_FLAT = 'IVF_FLAT',
   IVF_PQ = 'IVF_PQ',
   IVF_SQ8 = 'IVF_SQ8',
