@@ -28,7 +28,7 @@
     "react-router-dom": "^6.20.0",
     "react-syntax-highlighter": "^15.5.0",
     "socket.io-client": "^4.7.1",
-    "vite": "5.0.5",
+    "vite": "5.0.12",
     "vite-plugin-svgr": "4.2.0",
     "web-vitals": "^1.0.1"
   },
