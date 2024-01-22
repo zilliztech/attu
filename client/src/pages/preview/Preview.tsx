@@ -1,6 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AttuGrid from '@/components/grid/Grid';
+import { useParams } from 'react-router-dom';
 import { Collection, MilvusIndex } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
 import { generateVector } from '@/utils';
@@ -15,9 +16,8 @@ import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { getQueryStyles } from '../query/Styles';
 
-const Preview: FC<{
-  collectionName: string;
-}> = ({ collectionName }) => {
+const Preview = () => {
+  const { collectionName } = useParams<{ collectionName: string }>();
   const [fields, setFields] = useState<any[]>([]);
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
@@ -140,7 +140,7 @@ const Preview: FC<{
       type: 'button',
       btnVariant: 'text',
       onClick: () => {
-        loadData(collectionName);
+        loadData(collectionName!);
       },
       label: btnTrans('refresh'),
     },

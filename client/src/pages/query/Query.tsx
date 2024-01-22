@@ -1,6 +1,7 @@
-import { FC, useEffect, useState, useRef, useContext } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { rootContext } from '@/context';
 import { Collection, DataService } from '@/http';
 import { usePaginationHook, useSearchResult } from '@/hooks';
@@ -22,9 +23,8 @@ import {
 } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 
-const Query: FC<{
-  collectionName: string;
-}> = ({ collectionName }) => {
+const Query = () => {
+  const { collectionName } = useParams<{ collectionName: string }>();
   const [fields, setFields] = useState<any[]>([]);
   const [expression, setExpression] = useState('');
   const [tableLoading, setTableLoading] = useState<any>();
@@ -122,7 +122,7 @@ const Query: FC<{
       return;
     }
     try {
-      const res = await Collection.queryData(collectionName, {
+      const res = await Collection.queryData(collectionName!, {
         expr: expr,
         output_fields: fields.map(i => i.name),
         offset: 0,
@@ -145,7 +145,7 @@ const Query: FC<{
   };
 
   const handleDelete = async () => {
-    await DataService.deleteEntities(collectionName, {
+    await DataService.deleteEntities(collectionName!, {
       expr: `${primaryKey.value} in [${selectedData
         .map(v =>
           primaryKey.type === DataTypeStringEnum.VarChar

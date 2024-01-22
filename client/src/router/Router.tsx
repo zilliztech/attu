@@ -22,11 +22,17 @@ const RouterComponent = () => {
           <Route path="databases" element={<Database />} />
           <Route path="collections" element={<Collections />} />
           <Route path="collections/:collectionName" element={<Collection />} />
+          <Route
+            path="collections/:collectionName/:tab"
+            element={<Collection />}
+          />
+
           <Route path="search" element={<Search />} />
           <Route path="system_healthy" element={<SystemHealthy />} />
           {!isManaged && (
             <>
               <Route path="users" element={<Users />} />
+              <Route path="roles" element={<Users />} />
               <Route path="system" element={<System />} />
             </>
           )}

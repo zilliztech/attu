@@ -151,7 +151,7 @@ const Collections = () => {
       Object.assign(v, {
         nameElement: (
           <Link
-            to={`/collections/${v.collectionName}`}
+            to={`/collections/${v.collectionName}/schema`}
             className={classes.link}
             title={v.collectionName}
           >

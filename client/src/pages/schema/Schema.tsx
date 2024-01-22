@@ -1,5 +1,6 @@
 import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
@@ -58,9 +59,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Schema: FC<{
-  collectionName: string;
-}> = ({ collectionName }) => {
+const Schema = () => {
+  const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
@@ -187,7 +187,7 @@ const Schema: FC<{
       id: 'indexName',
       align: 'left',
       disablePadding: true,
-      label: indexTrans('indexName')
+      label: indexTrans('indexName'),
     },
     {
       id: '_indexTypeElement',

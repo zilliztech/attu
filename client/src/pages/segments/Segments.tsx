@@ -1,5 +1,6 @@
-import { useEffect, useState, FC, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { Segement } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import { rootContext } from '@/context';
@@ -12,9 +13,8 @@ import FlushDialog from '@/pages/dialogs/FlushDialog';
 import { getQueryStyles } from '../query/Styles';
 import { Segment } from './Types';
 
-const Segments: FC<{
-  collectionName: string;
-}> = ({ collectionName }) => {
+const Segments = () => {
+  const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = getQueryStyles();
   const { setDialog } = useContext(rootContext);
 
@@ -58,7 +58,7 @@ const Segments: FC<{
         fetchSegments();
       },
       label: btnTrans('refresh'),
-      icon: 'refresh'
+      icon: 'refresh',
     },
     {
       type: 'button',
