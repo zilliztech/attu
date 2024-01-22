@@ -1,19 +1,17 @@
-import { useMemo, useContext } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import { authContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import CustomTabList from '@/components/customTabList/CustomTabList';
+import RouteTabList from '@/components/customTabList/RouteTabList';
 import { ITab } from '@/components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
-import { parseLocationSearch } from '@/utils';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Preview from '../preview/Preview';
 import Segments from '../segments/Segments';
-import { TAB_ENUM } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -38,49 +36,40 @@ const Collection = () => {
   const classes = useStyles();
   const { isManaged } = useContext(authContext);
 
-  const { collectionName = '' } = useParams<{
+  const { collectionName = '', tab = '' } = useParams<{
     collectionName: string;
+    tab: string;
   }>();
 
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const { t: collectionTrans } = useTranslation('collection');
-
-  const activeTabIndex = useMemo(() => {
-    const { activeIndex } = location.search
-      ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_ENUM.schema };
-    return Number(activeIndex);
-  }, [location]);
-
-  const handleTabChange = (activeIndex: number) => {
-    const path = location.pathname;
-    navigate(`${path}?activeIndex=${activeIndex}`);
-  };
 
   const tabs: ITab[] = [
     {
       label: collectionTrans('schemaTab'),
-      component: <Schema collectionName={collectionName} />,
+      component: <Schema />,
+      path: `schema`,
     },
     {
       label: collectionTrans('partitionTab'),
-      component: <Partitions collectionName={collectionName} />,
+      component: <Partitions />,
+      path: `partitions`,
     },
     {
       label: collectionTrans('previewTab'),
-      component: <Preview collectionName={collectionName} />,
+      component: <Preview />,
+      path: `preview`,
     },
     {
       label: collectionTrans('queryTab'),
-      component: <Query collectionName={collectionName} />,
+      component: <Query />,
+      path: `query`,
     },
     {
       label: collectionTrans('segmentsTab'),
-      component: <Segments collectionName={collectionName} />,
+      component: <Segments />,
+      path: `segments`,
     },
   ];
 
@@ -89,13 +78,14 @@ const Collection = () => {
     tabs.splice(1, 1);
   }
 
+  const activeTab = tabs.findIndex(t => t.path === tab);
+
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
-      <CustomTabList
+      <RouteTabList
         tabs={tabs}
         wrapperClass={classes.tab}
-        activeIndex={activeTabIndex}
-        handleTabChange={handleTabChange}
+        activeIndex={activeTab !== -1 ? activeTab : 0}
       />
     </section>
   );

@@ -1,15 +1,12 @@
-import { useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import CustomTabList from '@/components/customTabList/CustomTabList';
+import RouteTabList from '@/components/customTabList/RouteTabList';
 import { ITab } from '@/components/customTabList/Types';
-import { parseLocationSearch } from '@/utils';
 import User from './User';
 import Roles from './Roles';
-import { TAB_ENUM } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -34,41 +31,32 @@ const Users = () => {
   const classes = useStyles();
   useNavigationHook(ALL_ROUTER_TYPES.USER);
 
-  const navigate = useNavigate();
   const location = useLocation();
+  const currentPath = location.pathname.slice(1);
 
   const { t: userTrans } = useTranslation('user');
-
-  const activeTabIndex = useMemo(() => {
-    const { activeIndex } = location.search
-      ? parseLocationSearch(location.search)
-      : { activeIndex: TAB_ENUM.schema };
-    return Number(activeIndex);
-  }, [location]);
-
-  const handleTabChange = (activeIndex: number) => {
-    const path = location.pathname;
-    navigate(`${path}?activeIndex=${activeIndex}`);
-  };
 
   const tabs: ITab[] = [
     {
       label: userTrans('users'),
       component: <User />,
+      path: 'users',
     },
     {
       label: userTrans('roles'),
       component: <Roles />,
+      path: 'roles',
     },
   ];
 
+  const activeTabIndex = tabs.findIndex(t => t.path === currentPath);
+
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
-      <CustomTabList
+      <RouteTabList
         tabs={tabs}
         wrapperClass={classes.tab}
         activeIndex={activeTabIndex}
-        handleTabChange={handleTabChange}
       />
     </section>
   );

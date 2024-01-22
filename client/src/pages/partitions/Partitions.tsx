@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useContext, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { useSearchParams, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
@@ -31,11 +31,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 let timer: NodeJS.Timeout | null = null;
-// get init search value from url
-// const { search = '' } = parseLocationSearch(window.location.search);
-const Partitions: FC<{
-  collectionName: string;
-}> = ({ collectionName }) => {
+
+const Partitions = () => {
+  const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
@@ -67,8 +65,7 @@ const Partitions: FC<{
     handleGridSort,
   } = usePaginationHook(searchedPartitions);
   const [loading, setLoading] = useState<boolean>(true);
-  const { setDialog, handleCloseDialog, openSnackBar } =
-    useContext(rootContext);
+  const { setDialog, openSnackBar } = useContext(rootContext);
 
   const fetchPartitions = async (collectionName: string) => {
     try {

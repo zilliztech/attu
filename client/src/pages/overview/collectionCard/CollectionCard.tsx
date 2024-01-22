@@ -154,7 +154,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <div>
           <Status status={status} percentage={loadedPercentage} />
         </div>
-        <Link className="link" to={`/collections/${collectionName}`}>
+        <Link className="link" to={`/collections/${collectionName}/schema`}>
           {collectionName}
           <RightArrowIcon classes={{ root: classes.icon }} />
         </Link>
