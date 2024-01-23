@@ -30,6 +30,7 @@ const Query = () => {
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
+  const [expression, setExpression] = useState<string>('');
   // latency
   const [latency, setLatency] = useState<number>(0);
   // UI functions
@@ -59,11 +60,13 @@ const Query = () => {
     const currentFilter: any = filterRef.current;
     currentFilter?.getReset();
     setExpr('');
+    setExpression('');
     setTableLoading(null);
     setQueryResult(null);
   };
 
   const handleFilterSubmit = async (expression: string) => {
+    setExpression(expression);
     setExpr(expression);
     await query(expression);
   };
@@ -192,9 +195,9 @@ const Query = () => {
                 multiline: 'multiline',
               },
             }}
-            value={expr}
+            value={expression}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-              setExpr(e.target.value as string);
+              setExpression(e.target.value as string);
             }}
             InputLabelProps={{ shrink: true }}
             label={collectionTrans('exprPlaceHolder')}
@@ -202,7 +205,8 @@ const Query = () => {
               if (e.key === 'Enter') {
                 // Do code here
                 setCurrentPage(0);
-                query(expr);
+                setExpr(expression)
+                query(expression);
                 e.preventDefault();
               }
             }}
@@ -243,6 +247,7 @@ const Query = () => {
             variant="contained"
             onClick={() => {
               setCurrentPage(0);
+              setExpr(expr);
               query(expr);
             }}
           >

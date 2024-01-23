@@ -63,12 +63,12 @@ export const useQuery = (params: {
   };
 
   // query function
-  const query = async (expr: string = '') => {
-    params.onQueryStart(expr);
+  const query = async (_expr: string = '') => {
+    params.onQueryStart(_expr);
 
     try {
       const res = await Collection.queryData(params.collectionName, {
-        expr: expr,
+        expr: _expr,
         output_fields: collection.fields.map((i: any) => i.name),
         limit: pageSize,
         consistency_level: collection.consistencyLevel,
