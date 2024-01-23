@@ -97,11 +97,10 @@ const collectionTrans = {
   // collection tabs
   partitionTab: '分区',
   schemaTab: 'Schema',
-  queryTab: '数据查询',
+  queryTab: '数据',
   previewTab: '数据预览',
   segmentsTab: '数据段(Segments)',
   startTip: '开始你的数据查询',
-  dataQuerylimits: '请注意，你的数据查询的结果数量最大为16384。',
   exprPlaceHolder: '请输入你的数据查询，例如 id > 0',
 
   // alias dialog

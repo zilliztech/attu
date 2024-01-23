@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { rootContext } from '@/context';
-import { Collection, DataService } from '@/http';
-import { usePaginationHook, useSearchResult } from '@/hooks';
+import { DataService } from '@/http';
+import { useQuery, useSearchResult } from '@/hooks';
 import { saveCsvAs } from '@/utils';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
@@ -24,140 +24,112 @@ import {
 import CustomSelector from '@/components/customSelector/CustomSelector';
 
 const Query = () => {
-  const { collectionName } = useParams<{ collectionName: string }>();
-  const [fields, setFields] = useState<any[]>([]);
-  const [expression, setExpression] = useState('');
+  // get collection name from url
+  const { collectionName = '' } = useParams<{ collectionName: string }>();
+  // UI state
   const [tableLoading, setTableLoading] = useState<any>();
   const [queryResult, setQueryResult] = useState<any>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
-  const [primaryKey, setPrimaryKey] = useState<{ value: string; type: string }>(
-    { value: '', type: DataTypeStringEnum.Int64 }
-  );
-  const [consistency_level, setConsistency_level] = useState<string>('');
-
   // latency
   const [latency, setLatency] = useState<number>(0);
-
+  // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
+  // icons
   const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
-
+  // translations
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
-
+  // classes
   const classes = getQueryStyles();
 
   // Format result list
   const queryResultMemo = useSearchResult(queryResult);
 
-  const {
-    pageSize,
-    handlePageSize,
-    currentPage,
-    handleCurrentPage,
-    total,
-    data: result,
-    order,
-    orderBy,
-    handleGridSort,
-  } = usePaginationHook(queryResultMemo || []);
-
-  const handlePageChange = (e: any, page: number) => {
-    handleCurrentPage(page);
-  };
-
-  const getFields = async (collectionName: string) => {
-    const collection = await Collection.getCollectionInfo(collectionName);
-    const schemaList = collection.fields;
-
-    const nameList = schemaList.map(v => ({
-      name: v.name,
-      type: v.fieldType,
-    }));
-
-    // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection.enableDynamicField) {
-      nameList.push({
-        name: DYNAMIC_FIELD,
-        type: DataTypeStringEnum.JSON,
-      });
-    }
-
-    const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
-    setPrimaryKey({ value: primaryKey['name'], type: primaryKey['fieldType'] });
-    setConsistency_level(collection.consistency_level);
-
-    setFields(nameList);
-  };
-
-  // Get fields at first or collection name changed.
-  useEffect(() => {
-    collectionName && getFields(collectionName);
-  }, [collectionName]);
-
+  // UI ref
   const filterRef = useRef();
+  const inputRef = useRef<HTMLInputElement>();
 
-  const handleFilterReset = () => {
+  // UI event handlers
+  const handleFilterReset = async () => {
     const currentFilter: any = filterRef.current;
     currentFilter?.getReset();
-    setExpression('');
+    setExpr('');
     setTableLoading(null);
     setQueryResult(null);
-    handleCurrentPage(0);
   };
 
-  const handleFilterSubmit = (expression: string) => {
-    setExpression(expression);
-    handleQuery(expression);
+  const handleFilterSubmit = async (expression: string) => {
+    setExpr(expression);
+    await query(expression);
   };
 
-  const handleQuery = async (expr: string = '') => {
-    setTableLoading(true);
-    if (expr === '') {
-      handleFilterReset();
-      return;
-    }
-    try {
-      const res = await Collection.queryData(collectionName!, {
-        expr: expr,
-        output_fields: fields.map(i => i.name),
-        offset: 0,
-        limit: 16384,
-        consistency_level: consistency_level,
-        // travel_timestamp: timeTravelInfo.timestamp,
-      });
-      const result = res.data;
-      setQueryResult(result);
-      setLatency(res.latency);
-    } catch (err) {
-      setQueryResult([]);
-    } finally {
-      setTableLoading(false);
-    }
-  };
-
-  const handleSelectChange = (value: any) => {
-    setSelectedData(value);
+  const handlePageChange = async (e: any, page: number) => {
+    const expr = getExpr(page);
+    await query(expr);
+    setCurrentPage(page);
   };
 
   const handleDelete = async () => {
-    await DataService.deleteEntities(collectionName!, {
-      expr: `${primaryKey.value} in [${selectedData
+    await DataService.deleteEntities(collectionName, {
+      expr: `${collection.primaryKey.value} in [${selectedData
         .map(v =>
-          primaryKey.type === DataTypeStringEnum.VarChar
-            ? `"${v[primaryKey.value]}"`
-            : v[primaryKey.value]
+          collection.primaryKey.type === DataTypeStringEnum.VarChar
+            ? `"${v[collection.primaryKey.value]}"`
+            : v[collection.primaryKey.value]
         )
         .join(',')}]`,
     });
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: collectionTrans('entities') }));
-    handleQuery(expression);
+    setSelectedData([]);
+    await query(expr);
   };
+
+  const onSelectChange = (value: any) => {
+    setSelectedData(value);
+  };
+
+  const {
+    currentPage,
+    total,
+    pageSize,
+    setPageSize,
+    expr,
+    collection,
+    setConsistencyLevel,
+    setCurrentPage,
+    getExpr,
+    setExpr,
+    query,
+  } = useQuery({
+    collectionName,
+    expr: '',
+    data: queryResultMemo || [],
+    onQueryStart: (expr: string = '') => {
+      setTableLoading(true);
+      if (expr === '') {
+        handleFilterReset();
+        return;
+      }
+    },
+    onQueryEnd: (res: { latency: number; data: any[] }) => {
+      setQueryResult(res.data);
+      setLatency(res.latency);
+    },
+    onQueryFinally: () => {
+      setTableLoading(false);
+    },
+  });
+
+  // page size change, we start query
+  useEffect(() => {
+    query(expr);
+  }, [pageSize]);
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -201,6 +173,12 @@ const Query = () => {
     },
   ];
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <div className={classes.root}>
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
@@ -214,24 +192,27 @@ const Query = () => {
                 multiline: 'multiline',
               },
             }}
-            placeholder={collectionTrans('exprPlaceHolder')}
-            value={expression}
+            value={expr}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-              setExpression(e.target.value as string);
+              setExpr(e.target.value as string);
             }}
+            InputLabelProps={{ shrink: true }}
+            label={collectionTrans('exprPlaceHolder')}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 // Do code here
-                handleQuery(expression);
+                setCurrentPage(0);
+                query(expr);
                 e.preventDefault();
               }
             }}
+            inputRef={inputRef}
           />
           <Filter
             ref={filterRef}
             title="Advanced Filter"
-            fields={fields.filter(
-              i =>
+            fields={collection.fields.filter(
+              (i: any) =>
                 i.type !== DataTypeStringEnum.FloatVector &&
                 i.type !== DataTypeStringEnum.BinaryVector
             )}
@@ -243,29 +224,27 @@ const Query = () => {
           {/* </div> */}
           <CustomSelector
             options={CONSISTENCY_LEVEL_OPTIONS}
-            value={consistency_level}
-            label={collectionTrans('consistencyLevel')}
+            value={collection.consistencyLevel}
+            label={collectionTrans('consistency')}
             wrapperClass={classes.selector}
             variant="filled"
             onChange={(e: { target: { value: unknown } }) => {
               const consistency = e.target.value as string;
-              setConsistency_level(consistency);
+              setConsistencyLevel(consistency);
             }}
           />
         </div>
         <div className="right">
-          <CustomButton
-            className="btn"
-            onClick={handleFilterReset}
-            disabled={!expression}
-          >
+          <CustomButton className="btn" onClick={handleFilterReset}>
             <ResetIcon classes={{ root: 'icon' }} />
             {btnTrans('reset')}
           </CustomButton>
           <CustomButton
             variant="contained"
-            disabled={!expression}
-            onClick={() => handleQuery(expression)}
+            onClick={() => {
+              setCurrentPage(0);
+              query(expr);
+            }}
           >
             {btnTrans('query')}
           </CustomButton>
@@ -274,7 +253,7 @@ const Query = () => {
       {tableLoading || queryResult?.length ? (
         <AttuGrid
           toolbarConfigs={[]}
-          colDefinitions={fields.map(i => ({
+          colDefinitions={collection.fields.map((i: any) => ({
             id: i.name,
             align: 'left',
             disablePadding: false,
@@ -282,20 +261,17 @@ const Query = () => {
             label:
               i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
           }))}
-          primaryKey={primaryKey.value}
+          primaryKey={collection.primaryKey.value}
           openCheckBox={true}
           isLoading={!!tableLoading}
-          rows={result}
+          rows={queryResultMemo}
           rowCount={total}
           selected={selectedData}
-          setSelected={handleSelectChange}
+          setSelected={onSelectChange}
           page={currentPage}
           onPageChange={handlePageChange}
+          setRowsPerPage={setPageSize}
           rowsPerPage={pageSize}
-          setRowsPerPage={handlePageSize}
-          orderBy={orderBy}
-          order={order}
-          handleSort={handleGridSort}
           labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
         />
       ) : (
@@ -307,7 +283,6 @@ const Query = () => {
               ? searchTrans('empty')
               : collectionTrans('startTip')
           }
-          subText={collectionTrans('dataQuerylimits')}
         />
       )}
     </div>
