@@ -46,6 +46,11 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
+      label: collectionTrans('queryTab'),
+      component: <Query />,
+      path: `query`,
+    },
+    {
       label: collectionTrans('schemaTab'),
       component: <Schema />,
       path: `schema`,
@@ -55,11 +60,7 @@ const Collection = () => {
       component: <Partitions />,
       path: `partitions`,
     },
-    {
-      label: collectionTrans('queryTab'),
-      component: <Query />,
-      path: `query`,
-    },
+
     {
       label: collectionTrans('segmentsTab'),
       component: <Segments />,

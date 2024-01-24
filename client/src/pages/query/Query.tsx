@@ -20,19 +20,19 @@ import {
   DYNAMIC_FIELD,
   DataTypeStringEnum,
   CONSISTENCY_LEVEL_OPTIONS,
+  ConsistencyLevelEnum,
 } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
+import EmptyDataDialog from '../dialogs/EmptyDataDialog';
+import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 
 const Query = () => {
   // get collection name from url
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   // UI state
   const [tableLoading, setTableLoading] = useState<any>();
-  const [queryResult, setQueryResult] = useState<any>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const [expression, setExpression] = useState<string>('');
-  // latency
-  const [latency, setLatency] = useState<number>(0);
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -48,35 +48,35 @@ const Query = () => {
   // classes
   const classes = getQueryStyles();
 
-  // Format result list
-  const queryResultMemo = useSearchResult(queryResult);
-
   // UI ref
   const filterRef = useRef();
   const inputRef = useRef<HTMLInputElement>();
 
   // UI event handlers
   const handleFilterReset = async () => {
+    // reset advanced filter
     const currentFilter: any = filterRef.current;
     currentFilter?.getReset();
-    setExpr('');
+    // update UI expression
     setExpression('');
+    // reset query
+    reset();
+    // ensure not loading
     setTableLoading(null);
-    setQueryResult(null);
   };
-
   const handleFilterSubmit = async (expression: string) => {
+    // update UI expression
     setExpression(expression);
+    // update expression
     setExpr(expression);
-    await query(expression);
   };
-
   const handlePageChange = async (e: any, page: number) => {
-    const expr = getExpr(page);
-    await query(expr);
+    console.log('handlePageChange', page);
+    // do the query
+    await query(page);
+    // update page number
     setCurrentPage(page);
   };
-
   const handleDelete = async () => {
     await DataService.deleteEntities(collectionName, {
       expr: `${collection.primaryKey.value} in [${selectedData
@@ -90,29 +90,34 @@ const Query = () => {
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: collectionTrans('entities') }));
     setSelectedData([]);
-    await query(expr);
+    await onDelete();
   };
-
   const onSelectChange = (value: any) => {
     setSelectedData(value);
   };
+  const onDelete = async () => {
+    // reset query
+    reset();
+    count(ConsistencyLevelEnum.Strong);
+    await query(0, ConsistencyLevelEnum.Strong);
+  };
 
   const {
+    collection,
     currentPage,
     total,
     pageSize,
-    setPageSize,
     expr,
-    collection,
+    queryResult,
+    setPageSize,
     setConsistencyLevel,
     setCurrentPage,
-    getExpr,
     setExpr,
     query,
+    reset,
+    count,
   } = useQuery({
     collectionName,
-    expr: '',
-    data: queryResultMemo || [],
     onQueryStart: (expr: string = '') => {
       setTableLoading(true);
       if (expr === '') {
@@ -120,21 +125,38 @@ const Query = () => {
         return;
       }
     },
-    onQueryEnd: (res: { latency: number; data: any[] }) => {
-      setQueryResult(res.data);
-      setLatency(res.latency);
-    },
     onQueryFinally: () => {
       setTableLoading(false);
     },
   });
 
+  // Format result list
+  const queryResultMemo = useSearchResult(queryResult.data);
+
+  // console.log('refresh');
+
   // page size change, we start query
   useEffect(() => {
-    query(expr);
+    query();
   }, [pageSize]);
 
   const toolbarConfigs: ToolBarConfig[] = [
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: <ImportSampleDialog collection={collectionName} cb={onDelete} />,
+          },
+        });
+      },
+      label: btnTrans('importSampleData'),
+      icon: 'add',
+      // tooltip: collectionTrans('deleteTooltip'),
+    },
     {
       type: 'button',
       btnVariant: 'text',
@@ -161,6 +183,35 @@ const Query = () => {
       // tooltip: collectionTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: () => selectedData.length === 0,
+    },
+    {
+      icon: 'deleteOutline',
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <EmptyDataDialog
+                cb={async () => {
+                  openSnackBar(
+                    successTrans('empty', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  await onDelete();
+                }}
+                collectionName={collectionName}
+              />
+            ),
+          },
+        });
+      },
+      disabled: () => total == 0,
+      label: btnTrans('empty'),
+      disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
     },
     {
       type: 'button',
@@ -203,10 +254,14 @@ const Query = () => {
             label={collectionTrans('exprPlaceHolder')}
             onKeyDown={e => {
               if (e.key === 'Enter') {
-                // Do code here
+                // reset page
                 setCurrentPage(0);
-                setExpr(expression)
-                query(expression);
+                if (expr !== expression) {
+                  setExpr(expression);
+                } else {
+                  // ensure query
+                  query();
+                }
                 e.preventDefault();
               }
             }}
@@ -247,15 +302,19 @@ const Query = () => {
             variant="contained"
             onClick={() => {
               setCurrentPage(0);
-              setExpr(expr);
-              query(expr);
+              if (expr !== expression) {
+                setExpr(expression);
+              } else {
+                // ensure query
+                query();
+              }
             }}
           >
             {btnTrans('query')}
           </CustomButton>
         </div>
       </div>
-      {tableLoading || queryResult?.length ? (
+      {tableLoading || queryResultMemo?.length ? (
         <AttuGrid
           toolbarConfigs={[]}
           colDefinitions={collection.fields.map((i: any) => ({
@@ -277,7 +336,9 @@ const Query = () => {
           onPageChange={handlePageChange}
           setRowsPerPage={setPageSize}
           rowsPerPage={pageSize}
-          labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
+          labelDisplayedRows={getLabelDisplayedRows(
+            `(${queryResult.latency} ms)`
+          )}
         />
       ) : (
         <EmptyCard

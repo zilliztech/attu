@@ -26,7 +26,6 @@ import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
-import EmptyDataDialog from '../dialogs/EmptyDataDialog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
@@ -151,7 +150,7 @@ const Collections = () => {
       Object.assign(v, {
         nameElement: (
           <Link
-            to={`/collections/${v.collectionName}/schema`}
+            to={`/collections/${v.collectionName}/data`}
             className={classes.link}
             title={v.collectionName}
           >
@@ -420,42 +419,7 @@ const Collections = () => {
       disabledTooltip: collectionTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
-    {
-      icon: 'deleteOutline',
-      type: 'button',
-      btnVariant: 'text',
-      onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: (
-              <EmptyDataDialog
-                cb={async () => {
-                  openSnackBar(
-                    successTrans('empty', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
-                  setSelectedCollections([]);
-                  await fetchData();
-                }}
-                collectionName={selectedCollections[0].collectionName}
-              />
-            ),
-          },
-        });
-      },
-      label: btnTrans('empty'),
-      disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
-      disabled: (data: any) => {
-        if (data.length === 0 || data.length > 1) {
-          return true;
-        } else {
-          return Number(data[0].loadedPercentage) !== 100;
-        }
-      },
-    },
+   
     {
       icon: 'delete',
       type: 'button',

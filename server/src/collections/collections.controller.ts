@@ -346,7 +346,7 @@ export class CollectionController {
     const resultPage: any = req.query?.page;
 
     try {
-      const limit = isNaN(resultLimit) ? 100 : parseInt(resultLimit, 10);
+      const limit = parseInt(resultLimit, 10);
       const page = isNaN(resultPage) ? 0 : parseInt(resultPage, 10);
       // TODO: add page and limit to node SDK
       // Here may raise "Error: 8 RESOURCE_EXHAUSTED: Received message larger than max"

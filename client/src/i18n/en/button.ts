@@ -19,7 +19,7 @@ const btnTrans = {
   done: 'Done',
   vectorSearch: 'Vector Search',
   query: 'Query',
-  importSampleData: 'Import Sample data',
+  importSampleData: 'Add Sample data',
   loading: 'Loading...',
   importing: 'Importing...',
   example: 'Generate Random Vector',
