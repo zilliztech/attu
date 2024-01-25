@@ -16,7 +16,6 @@ const collectionTrans = {
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
-  downloadTooltip: 'Export selected query results to CSV file',
   downloadDisabledTooltip: 'Please select data before exporting',
   empty: 'empty data',
   emptyDataDisableTooltip: 'Please select one loaded collection to empty data',

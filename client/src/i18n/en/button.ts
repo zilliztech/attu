@@ -30,6 +30,15 @@ const btnTrans = {
   empty: 'Empty',
   flush: 'Flush',
   compact: 'Compact',
+  copyJson: 'Copy as JSON',
+
+  // tips
+  importFileTooltip: 'Import JSON or CSV file',
+  importSampleDataTooltip: 'Import sample data into the current collection',
+  exportTooltip: 'Export selected data to csv',
+  copyJsonTooltip: 'Copy selected data as JSON format',
+  emptyTooltip: 'Empty all data in the collection',
+  deleteTooltip: 'Delete selected data',
 };
 
 export default btnTrans;

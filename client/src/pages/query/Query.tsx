@@ -77,7 +77,17 @@ const Query = () => {
     // update page number
     setCurrentPage(page);
   };
+  const onSelectChange = (value: any) => {
+    setSelectedData(value);
+  };
+  const onDelete = async () => {
+    // reset query
+    reset();
+    count(ConsistencyLevelEnum.Strong);
+    await query(0, ConsistencyLevelEnum.Strong);
+  };
   const handleDelete = async () => {
+    // call delete api
     await DataService.deleteEntities(collectionName, {
       expr: `${collection.primaryKey.value} in [${selectedData
         .map(v =>
@@ -91,15 +101,6 @@ const Query = () => {
     openSnackBar(successTrans('delete', { name: collectionTrans('entities') }));
     setSelectedData([]);
     await onDelete();
-  };
-  const onSelectChange = (value: any) => {
-    setSelectedData(value);
-  };
-  const onDelete = async () => {
-    // reset query
-    reset();
-    count(ConsistencyLevelEnum.Strong);
-    await query(0, ConsistencyLevelEnum.Strong);
   };
 
   // Query hook
@@ -142,6 +143,7 @@ const Query = () => {
       btnVariant: 'text',
       btnColor: 'secondary',
       label: btnTrans('importFile'),
+      tooltip: btnTrans('importFileTooltip'),
       onClick: () => {
         setDialog({
           open: true,
@@ -173,21 +175,10 @@ const Query = () => {
           },
         });
       },
+      tooltip: btnTrans('importSampleDataTooltip'),
       label: btnTrans('importSampleData'),
       icon: 'add',
       // tooltip: collectionTrans('deleteTooltip'),
-    },
-    {
-      type: 'button',
-      btnVariant: 'text',
-      onClick: () => {
-        saveCsvAs(selectedData, `${collectionName}.query.csv`);
-      },
-      label: btnTrans('export'),
-      icon: 'download',
-      tooltip: collectionTrans('downloadTooltip'),
-      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
-      disabled: () => !selectedData?.length,
     },
     {
       icon: 'deleteOutline',
@@ -216,8 +207,40 @@ const Query = () => {
       },
       disabled: () => total == 0,
       label: btnTrans('empty'),
+      tooltip: btnTrans('emptyTooltip'),
       disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
     },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        saveCsvAs(selectedData, `${collectionName}.query.csv`);
+      },
+      label: btnTrans('export'),
+      icon: 'download',
+      tooltip: btnTrans('exportTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabled: () => !selectedData?.length,
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: async () => {
+        const json = JSON.stringify(selectedData);
+        try {
+          await navigator.clipboard.writeText(json);
+          alert(`${selectedData.length} rows copied to clipboard`);
+        } catch (err) {
+          console.error('Failed to copy text: ', err);
+        }
+      },
+      label: btnTrans('copyJson'),
+      icon: 'copy',
+      tooltip: btnTrans('copyJsonTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabled: () => !selectedData?.length,
+    },
+
     {
       type: 'button',
       btnVariant: 'text',
@@ -241,7 +264,7 @@ const Query = () => {
       },
       label: btnTrans('delete'),
       icon: 'delete',
-      // tooltip: collectionTrans('deleteTooltip'),
+      tooltip: btnTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: () => selectedData.length === 0,
     },
@@ -255,7 +278,7 @@ const Query = () => {
 
   return (
     <div className={classes.root}>
-      <CustomToolBar toolbarConfigs={toolbarConfigs} />
+      <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
       <div className={classes.toolbar}>
         <div className="left">
           <TextField
@@ -364,7 +387,7 @@ const Query = () => {
           setRowsPerPage={setPageSize}
           rowsPerPage={pageSize}
           labelDisplayedRows={getLabelDisplayedRows(
-            `(${queryResult.latency} ms)`
+            `(${queryResult.latency || ''} ms)`
           )}
         />
       ) : (

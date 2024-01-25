@@ -20,16 +20,25 @@ const btnTrans = {
   done: '完成',
   vectorSearch: '向量搜索',
   query: '查询',
-  importSampleData: '导入样本数据',
+  importSampleData: '插入样本数据',
   loading: '加载中...',
   importing: '导入中...',
   example: '生成随机向量',
   rename: '重命名',
   duplicate: '复制',
-  export: '导出',
+  export: '导出数据',
   empty: '清空数据',
   flush: '落盘(Flush)',
   compact: '压缩(Compact)',
+  copyJson: '复制为JSON',
+
+  // tips
+  importFileTooltip: '导入JSON或者CSV文件',
+  importSampleDataTooltip: '导入样例数据',
+  exportTooltip: '将选择的查询结果导出到CSV文件',
+  copyJsonTooltip: '复制所选的数据为JSON格式',
+  emptyTooltip: '清空所有数据',
+  deleteTooltip: '删除所选的数据',
 };
 
 export default btnTrans;

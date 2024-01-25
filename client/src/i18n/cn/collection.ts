@@ -16,10 +16,7 @@ const collectionTrans = {
   alias: '别名',
   aliasTooltip: '请选择一个Collection创建别名',
   download: '下载',
-  downloadTooltip: '将选择的查询结果导出到CSV文件',
-  downloadDisabledTooltip: '请在选择数据导出',
   empty: '清空数据',
-  emptyDataDisableTooltip: '请选择一个已加载的Collection进行清空数据操作',
 
   collection: 'Collection',
   entities: 'Entities',
