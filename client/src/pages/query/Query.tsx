@@ -14,6 +14,7 @@ import { ToolBarConfig } from '@/components/grid/Types';
 import Filter from '@/components/advancedSearch';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
+import InsertDialog from '../dialogs/insert/Dialog';
 import { getLabelDisplayedRows } from '../search/Utils';
 import { getQueryStyles } from './Styles';
 import {
@@ -30,7 +31,7 @@ const Query = () => {
   // get collection name from url
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   // UI state
-  const [tableLoading, setTableLoading] = useState<any>();
+  const [tableLoading, setTableLoading] = useState<boolean>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const [expression, setExpression] = useState<string>('');
   // UI functions
@@ -62,7 +63,7 @@ const Query = () => {
     // reset query
     reset();
     // ensure not loading
-    setTableLoading(null);
+    setTableLoading(false);
   };
   const handleFilterSubmit = async (expression: string) => {
     // update UI expression
@@ -102,6 +103,7 @@ const Query = () => {
     await query(0, ConsistencyLevelEnum.Strong);
   };
 
+  // Query hook
   const {
     collection,
     currentPage,
@@ -133,14 +135,31 @@ const Query = () => {
   // Format result list
   const queryResultMemo = useSearchResult(queryResult.data);
 
-  // console.log('refresh');
-
-  // page size change, we start query
-  useEffect(() => {
-    query();
-  }, [pageSize]);
-
+  // Toolbar settings
   const toolbarConfigs: ToolBarConfig[] = [
+    {
+      icon: 'uploadFile',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('importFile'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <InsertDialog
+                defaultSelectedCollection={collectionName}
+                // user can't select partition on collection page, so default value is ''
+                defaultSelectedPartition={''}
+                onInsert={() => {}}
+              />
+            ),
+          },
+        });
+      },
+    },
     {
       type: 'button',
       btnVariant: 'text',
@@ -149,7 +168,9 @@ const Query = () => {
           open: true,
           type: 'custom',
           params: {
-            component: <ImportSampleDialog collection={collectionName} cb={onDelete} />,
+            component: (
+              <ImportSampleDialog collection={collectionName} cb={onDelete} />
+            ),
           },
         });
       },
@@ -161,28 +182,13 @@ const Query = () => {
       type: 'button',
       btnVariant: 'text',
       onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: (
-              <DeleteTemplate
-                label={btnTrans('drop')}
-                title={dialogTrans('deleteTitle', {
-                  type: collectionTrans('entities'),
-                })}
-                text={collectionTrans('deleteDataWarning')}
-                handleDelete={handleDelete}
-              />
-            ),
-          },
-        });
+        saveCsvAs(queryResult, 'milvus_query_result.csv');
       },
-      label: btnTrans('delete'),
-      icon: 'delete',
-      // tooltip: collectionTrans('deleteTooltip'),
-      disabledTooltip: collectionTrans('deleteTooltip'),
-      disabled: () => selectedData.length === 0,
+      label: btnTrans('export'),
+      icon: 'download',
+      tooltip: collectionTrans('downloadTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabled: () => !queryResultMemo?.length,
     },
     {
       icon: 'deleteOutline',
@@ -217,13 +223,28 @@ const Query = () => {
       type: 'button',
       btnVariant: 'text',
       onClick: () => {
-        saveCsvAs(queryResult, 'milvus_query_result.csv');
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('drop')}
+                title={dialogTrans('deleteTitle', {
+                  type: collectionTrans('entities'),
+                })}
+                text={collectionTrans('deleteDataWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
       },
-      label: btnTrans('export'),
-      icon: 'download',
-      tooltip: collectionTrans('downloadTooltip'),
-      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
-      disabled: () => !queryResult?.length,
+      label: btnTrans('delete'),
+      icon: 'delete',
+      // tooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('deleteTooltip'),
+      disabled: () => selectedData.length === 0,
     },
   ];
 
@@ -250,6 +271,7 @@ const Query = () => {
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setExpression(e.target.value as string);
             }}
+            disabled={!collection.loaded}
             InputLabelProps={{ shrink: true }}
             label={collectionTrans('exprPlaceHolder')}
             onKeyDown={e => {
@@ -275,7 +297,7 @@ const Query = () => {
                 i.type !== DataTypeStringEnum.FloatVector &&
                 i.type !== DataTypeStringEnum.BinaryVector
             )}
-            filterDisabled={false}
+            filterDisabled={!collection.loaded}
             onSubmit={handleFilterSubmit}
             showTitle={false}
             showTooltip={false}
@@ -286,6 +308,7 @@ const Query = () => {
             value={collection.consistencyLevel}
             label={collectionTrans('consistency')}
             wrapperClass={classes.selector}
+            disabled={!collection.loaded}
             variant="filled"
             onChange={(e: { target: { value: unknown } }) => {
               const consistency = e.target.value as string;
@@ -294,7 +317,11 @@ const Query = () => {
           />
         </div>
         <div className="right">
-          <CustomButton className="btn" onClick={handleFilterReset}>
+          <CustomButton
+            className="btn"
+            onClick={handleFilterReset}
+            disabled={!collection.loaded}
+          >
             <ResetIcon classes={{ root: 'icon' }} />
             {btnTrans('reset')}
           </CustomButton>
@@ -309,6 +336,7 @@ const Query = () => {
                 query();
               }
             }}
+            disabled={!collection.loaded}
           >
             {btnTrans('query')}
           </CustomButton>
@@ -344,11 +372,9 @@ const Query = () => {
         <EmptyCard
           wrapperClass={`page-empty-card ${classes.emptyCard}`}
           icon={<VectorSearchIcon />}
-          text={
-            queryResult?.length === 0
-              ? searchTrans('empty')
-              : collectionTrans('startTip')
-          }
+          text={searchTrans(
+            `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
+          )}
         />
       )}
     </div>

@@ -9,12 +9,11 @@ import {
   dataContext,
   webSocketContext,
 } from '@/context';
-import { Collection, MilvusService, DataService, MilvusIndex } from '@/http';
+import { Collection, MilvusService, MilvusIndex } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { InsertDataParam } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import icons from '@/components/icons/Icons';
 import EmptyCard from '@/components/cards/EmptyCard';
@@ -302,7 +301,7 @@ const Collections = () => {
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
-      label: btnTrans('insert'),
+      label: btnTrans('importFile'),
       onClick: () => {
         setDialog({
           open: true,
@@ -318,30 +317,7 @@ const Collections = () => {
                 }
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                handleInsert={async (
-                  collectionName: string,
-                  partitionName: string,
-                  fieldData: any[]
-                ): Promise<{ result: boolean; msg: string }> => {
-                  const param: InsertDataParam = {
-                    partition_name: partitionName,
-                    fields_data: fieldData,
-                  };
-                  try {
-                    await DataService.insertData(collectionName, param);
-                    await DataService.flush(collectionName);
-                    // update collections
-                    fetchData();
-                    return { result: true, msg: '' };
-                  } catch (err: any) {
-                    const {
-                      response: {
-                        data: { message },
-                      },
-                    } = err;
-                    return { result: false, msg: message || '' };
-                  }
-                }}
+                onInsert={() => {}}
               />
             ),
           },
@@ -419,7 +395,7 @@ const Collections = () => {
       disabledTooltip: collectionTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
-   
+
     {
       icon: 'delete',
       type: 'button',

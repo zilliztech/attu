@@ -25,6 +25,8 @@ import {
   InsertStatusEnum,
   InsertStepperEnum,
 } from './Types';
+import { InsertDataParam } from '@/pages/collections/Types';
+import { DataService } from '@/http';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {
@@ -44,7 +46,7 @@ const InsertContainer: FC<InsertContentProps> = ({
 
   partitions,
   schema,
-  handleInsert,
+  onInsert,
 }) => {
   const classes = getStyles();
 
@@ -330,17 +332,26 @@ const InsertContainer: FC<InsertContentProps> = ({
             isContainFieldNames ? csvData.slice(1) : csvData
           );
 
-    const { result, msg } = await handleInsert(
-      collectionValue,
-      partitionValue,
-      data
-    );
+    const param: InsertDataParam = {
+      partition_name: partitionValue,
+      fields_data: data,
+    };
 
-    if (!result) {
-      setInsertFailMsg(msg);
+    try {
+      await DataService.insertData(collectionValue, param);
+      await DataService.flush(collectionValue);
+      // update collections
+      onInsert();
+      setInsertStatus(InsertStatusEnum.success);
+    } catch (err: any) {
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      setInsertFailMsg(message);
+      setInsertStatus(InsertStatusEnum.error);
     }
-    const status = result ? InsertStatusEnum.success : InsertStatusEnum.error;
-    setInsertStatus(status);
   };
 
   const handleCollectionChange = (name: string) => {

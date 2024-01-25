@@ -203,14 +203,21 @@ export class CollectionController {
 
   async getCollectionInfo(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
+    const params = {
+      collection_name: name,
+    };
     try {
       const result = await this.collectionsService.describeCollection(
         req.clientId,
-        {
-          collection_name: name,
-        }
+        params
       );
-      res.send(result);
+
+      const loadState = await this.collectionsService.getLoadState(
+        req.clientId,
+        params
+      );
+
+      res.send({ ...result, state: loadState.state });
     } catch (error) {
       next(error);
     }

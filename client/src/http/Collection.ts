@@ -4,7 +4,7 @@ import { VectorSearchParam } from '@/types/SearchTypes';
 import { QueryParam } from '@/pages/query/Types';
 import { formatNumber } from '@/utils/Common';
 import BaseModel from './BaseModel';
-import { LOADING_STATE } from '@/consts';
+import { LOADING_STATE, LOAD_STATE } from '@/consts';
 import {
   IndexDescription,
   ShowCollectionsType,
@@ -27,6 +27,7 @@ export class Collection extends BaseModel implements CollectionData {
   public index_descriptions!: IndexDescription[];
   public schema!: CollectionSchema;
   public replicas!: ReplicaInfo[];
+  public state!: LOAD_STATE;
 
   static COLLECTIONS_URL = '/collections';
   static COLLECTIONS_STATISTICS_URL = '/collections/statistics';
@@ -147,7 +148,7 @@ export class Collection extends BaseModel implements CollectionData {
     return formatNumber(Number(this.rowCount));
   }
 
-  // load status
+  // TODO: deprecated
   get status() {
     // If not load, insight server will return '-1'. Otherwise milvus will return percentage
     return this.loadedPercentage === '-1'

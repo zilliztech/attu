@@ -21,6 +21,7 @@ import {
   HasCollectionReq,
   CountReq,
   FieldSchema,
+  GetLoadStateReq,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -43,49 +44,49 @@ export class CollectionsService {
   }
 
   async getCollections(clientId: string, data?: ShowCollectionsReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.showCollections(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async createCollection(clientId: string, data: CreateCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.createCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async describeCollection(clientId: string, data: DescribeCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.describeCollection(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async renameCollection(clientId: string, data: RenameCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.renameCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async dropCollection(clientId: string, data: DropCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.dropCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async loadCollection(clientId: string, data: LoadCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.loadCollection(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.releaseCollection(data);
     throwErrorFromSDK(res);
     return res;
@@ -95,14 +96,21 @@ export class CollectionsService {
     clientId: string,
     data: GetCollectionStatisticsReq
   ) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.getCollectionStatistics(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
+  async getLoadState(clientId: string, data: GetLoadStateReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getLoadState(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
   async count(clientId: string, data: CountReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     let count = 0;
     try {
       const countRes = await milvusClient.count(data);
@@ -118,21 +126,21 @@ export class CollectionsService {
   }
 
   async insert(clientId: string, data: InsertReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.insert(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async deleteEntities(clientId: string, data: DeleteEntitiesReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.deleteEntities(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async vectorSearch(clientId: string, data: SearchReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const now = Date.now();
     const res = await milvusClient.search(data);
     const after = Date.now();
@@ -143,28 +151,28 @@ export class CollectionsService {
   }
 
   async createAlias(clientId: string, data: CreateAliasReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.createAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async alterAlias(clientId: string, data: AlterAliasReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.alterAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async dropAlias(clientId: string, data: DropAliasReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.dropAlias(data);
     throwErrorFromSDK(res);
     return res;
   }
 
   async getReplicas(clientId: string, data: GetReplicasDto) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.getReplicas(data);
     return res;
   }
@@ -175,7 +183,7 @@ export class CollectionsService {
       collection_name: string;
     } & QueryDto
   ) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const now = Date.now();
     const res = await milvusClient.query(data);
 
@@ -370,14 +378,14 @@ export class CollectionsService {
   }
 
   async getCompactionState(clientId: string, data: GetCompactionStateReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.getCompactionState(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async getQuerySegmentInfo(clientId: string, data: GetQuerySegmentInfoReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.getQuerySegmentInfo(data);
     throwErrorFromSDK(res.status);
     return res;
@@ -387,21 +395,21 @@ export class CollectionsService {
     clientId: string,
     data: GePersistentSegmentInfoReq
   ) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.getPersistentSegmentInfo(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async compact(clientId: string, data: CompactReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.compact(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async hasCollection(clientId: string, data: HasCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.hasCollection(data);
     throwErrorFromSDK(res.status);
     return res;
@@ -430,7 +438,7 @@ export class CollectionsService {
   }
 
   async emptyCollection(clientId: string, data: HasCollectionReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const pkField = await milvusClient.getPkFieldName(data);
     const pkType = await milvusClient.getPkFieldType(data);
 

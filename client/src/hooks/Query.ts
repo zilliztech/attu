@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { DataTypeStringEnum, DYNAMIC_FIELD } from '@/consts';
+import { DataTypeStringEnum, DYNAMIC_FIELD, LOAD_STATE } from '@/consts';
 import { Collection } from '@/http';
 
 export const useQuery = (params: {
@@ -13,6 +13,7 @@ export const useQuery = (params: {
     fields: [],
     consistencyLevel: '',
     primaryKey: { value: '', type: DataTypeStringEnum.Int64 },
+    loaded: false,
   });
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
@@ -58,12 +59,12 @@ export const useQuery = (params: {
     page: number = currentPage,
     consistency_level = collection.consistencyLevel
   ) => {
-    if (!collection.primaryKey.value) {
+    if (!collection.primaryKey.value || !collection.loaded) {
       //   console.info('[skip running query]: no key yet');
       return;
     }
     const _expr = getPageExpr(page);
-    //   console.log('query expr', _expr);
+    // console.log('query expr', _expr);
     params.onQueryStart(_expr);
 
     try {
@@ -88,12 +89,14 @@ export const useQuery = (params: {
         firstItem && firstItem[collection.primaryKey.value];
 
       // store pk id in the cache with the page number
-      pageCache.current.set(page, {
-        firstPKId,
-        lastPKId,
-      });
+      if (lastItem) {
+        pageCache.current.set(page, {
+          firstPKId,
+          lastPKId,
+        });
+      }
 
-      //   console.log('query result page', page, pageCache.current);
+      // console.log('query result page', page, pageCache.current);
 
       // update query result
       setQueryResult(res);
@@ -123,19 +126,17 @@ export const useQuery = (params: {
         type: DataTypeStringEnum.JSON,
       });
     }
-
     const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
-
     setCollection({
       fields: nameList as any[],
       consistencyLevel: collection.consistency_level,
       primaryKey: { value: primaryKey['name'], type: primaryKey['fieldType'] },
+      loaded: collection.state === LOAD_STATE.LoadStateLoaded,
     });
   };
 
   const count = async (consistency_level = collection.consistency_level) => {
-    if (!collection.primaryKey.value) {
-      //   console.info('[skip running count]: no key yet', expr);
+    if (!collection.primaryKey.value || !collection.loaded) {
       return;
     }
     const count = 'count(*)';
@@ -179,6 +180,14 @@ export const useQuery = (params: {
     // do the query
     query();
   }, [collection]);
+
+  // query if page size is changed
+  useEffect(() => {
+    // reset
+    reset();
+    // do the query
+    query();
+  }, [pageSize]);
 
   return {
     // collection info(primaryKey, consistency level, fields)
