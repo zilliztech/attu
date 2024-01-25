@@ -218,5 +218,7 @@ export const useQuery = (params: {
     reset,
     // count
     count,
+    // get expression
+    getPageExpr,
   };
 };

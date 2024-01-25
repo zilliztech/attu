@@ -72,7 +72,6 @@ const Query = () => {
     setExpr(expression);
   };
   const handlePageChange = async (e: any, page: number) => {
-    console.log('handlePageChange', page);
     // do the query
     await query(page);
     // update page number
@@ -182,13 +181,13 @@ const Query = () => {
       type: 'button',
       btnVariant: 'text',
       onClick: () => {
-        saveCsvAs(queryResult, 'milvus_query_result.csv');
+        saveCsvAs(selectedData, `${collectionName}.query.csv`);
       },
       label: btnTrans('export'),
       icon: 'download',
       tooltip: collectionTrans('downloadTooltip'),
       disabledTooltip: collectionTrans('downloadDisabledTooltip'),
-      disabled: () => !queryResultMemo?.length,
+      disabled: () => !selectedData?.length,
     },
     {
       icon: 'deleteOutline',
