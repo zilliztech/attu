@@ -267,6 +267,12 @@ export enum LOADING_STATE {
   LOADING,
   UNLOADED,
 }
+export enum LOAD_STATE {
+  LoadStateNotExist = 'LoadStateNotExist',
+  LoadStateNotLoad = 'LoadStateNotLoad',
+  LoadStateLoading = 'LoadStateLoading',
+  LoadStateLoaded = 'LoadStateLoaded',
+}
 
 export const DEFAULT_VECTORS = 100000;
 export const DEFAULT_SEFMENT_FILE_SIZE = 1024;

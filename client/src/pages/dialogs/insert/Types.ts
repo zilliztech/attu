@@ -19,11 +19,7 @@ export interface InsertContentProps {
   // if default value is not '', partitions not selectable
   defaultSelectedPartition: string;
 
-  handleInsert: (
-    collectionName: string,
-    partitionName: string,
-    fieldData: any[]
-  ) => Promise<{ result: boolean; msg: string }>;
+  onInsert: Function;
 }
 
 export enum InsertStepperEnum {

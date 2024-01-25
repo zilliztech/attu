@@ -15,6 +15,7 @@ const searchTrans = {
   timeTravel: 'Time Travel',
   timeTravelPrefix: 'Data before',
   dynamicFields: 'Dynamic Fields',
+  collectionNotLoaded: 'Collection not loaded',
 };
 
 export default searchTrans;

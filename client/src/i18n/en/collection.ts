@@ -16,8 +16,7 @@ const collectionTrans = {
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
   download: 'Download',
-  downloadTooltip: 'Export all query results to CSV file',
-  downloadDisabledTooltip: 'Please query data before exporting',
+  downloadDisabledTooltip: 'Please select data before exporting',
   empty: 'empty data',
   emptyDataDisableTooltip: 'Please select one loaded collection to empty data',
 
@@ -99,12 +98,10 @@ const collectionTrans = {
   // collection tabs
   partitionTab: 'Partitions',
   schemaTab: 'Schema',
-  queryTab: 'Data Query',
+  queryTab: 'Data',
   previewTab: 'Data Preview',
   segmentsTab: 'Segments',
   startTip: 'Start Your Data Query',
-  dataQuerylimits:
-    ' Please note that the maximum number of results for your data query is 16384.',
   exprPlaceHolder: 'Please enter your data query, for example id > 0',
 
   // alias dialog

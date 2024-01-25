@@ -10,7 +10,6 @@ import { ITab } from '@/components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
-import Preview from '../preview/Preview';
 import Segments from '../segments/Segments';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -47,6 +46,11 @@ const Collection = () => {
 
   const tabs: ITab[] = [
     {
+      label: collectionTrans('queryTab'),
+      component: <Query />,
+      path: `query`,
+    },
+    {
       label: collectionTrans('schemaTab'),
       component: <Schema />,
       path: `schema`,
@@ -56,16 +60,7 @@ const Collection = () => {
       component: <Partitions />,
       path: `partitions`,
     },
-    {
-      label: collectionTrans('previewTab'),
-      component: <Preview />,
-      path: `preview`,
-    },
-    {
-      label: collectionTrans('queryTab'),
-      component: <Query />,
-      path: `query`,
-    },
+
     {
       label: collectionTrans('segmentsTab'),
       component: <Segments />,

@@ -76,7 +76,7 @@ const sizeOptions = [
   },
 ];
 
-const ImportSampleDialog: FC<{ collection: string }> = props => {
+const ImportSampleDialog: FC<{ collection: string; cb?: Function }> = props => {
   const classes = getStyles();
   const { collection } = props;
   const [size, setSize] = useState<string>(sizeOptions[0].value);
@@ -118,6 +118,9 @@ const ImportSampleDialog: FC<{ collection: string }> = props => {
         return { result: res.sampleFile, msg: '' };
       }
       await DataService.flush(collectionName);
+      if (props.cb) {
+        props.cb();
+      }
       return { result: true, msg: '' };
     } catch (err: any) {
       const {

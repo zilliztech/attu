@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { rootContext } from '@/context';
-import { Collection, DataService } from '@/http';
-import { usePaginationHook, useSearchResult } from '@/hooks';
+import { DataService } from '@/http';
+import { useQuery, useSearchResult } from '@/hooks';
 import { saveCsvAs } from '@/utils';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
@@ -14,152 +14,233 @@ import { ToolBarConfig } from '@/components/grid/Types';
 import Filter from '@/components/advancedSearch';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
+import InsertDialog from '../dialogs/insert/Dialog';
 import { getLabelDisplayedRows } from '../search/Utils';
 import { getQueryStyles } from './Styles';
 import {
   DYNAMIC_FIELD,
   DataTypeStringEnum,
   CONSISTENCY_LEVEL_OPTIONS,
+  ConsistencyLevelEnum,
 } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
+import EmptyDataDialog from '../dialogs/EmptyDataDialog';
+import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 
 const Query = () => {
-  const { collectionName } = useParams<{ collectionName: string }>();
-  const [fields, setFields] = useState<any[]>([]);
-  const [expression, setExpression] = useState('');
-  const [tableLoading, setTableLoading] = useState<any>();
-  const [queryResult, setQueryResult] = useState<any>();
+  // get collection name from url
+  const { collectionName = '' } = useParams<{ collectionName: string }>();
+  // UI state
+  const [tableLoading, setTableLoading] = useState<boolean>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
-  const [primaryKey, setPrimaryKey] = useState<{ value: string; type: string }>(
-    { value: '', type: DataTypeStringEnum.Int64 }
-  );
-  const [consistency_level, setConsistency_level] = useState<string>('');
-
-  // latency
-  const [latency, setLatency] = useState<number>(0);
-
+  const [expression, setExpression] = useState<string>('');
+  // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
+  // icons
   const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
-
+  // translations
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
-
+  // classes
   const classes = getQueryStyles();
 
-  // Format result list
-  const queryResultMemo = useSearchResult(queryResult);
-
-  const {
-    pageSize,
-    handlePageSize,
-    currentPage,
-    handleCurrentPage,
-    total,
-    data: result,
-    order,
-    orderBy,
-    handleGridSort,
-  } = usePaginationHook(queryResultMemo || []);
-
-  const handlePageChange = (e: any, page: number) => {
-    handleCurrentPage(page);
-  };
-
-  const getFields = async (collectionName: string) => {
-    const collection = await Collection.getCollectionInfo(collectionName);
-    const schemaList = collection.fields;
-
-    const nameList = schemaList.map(v => ({
-      name: v.name,
-      type: v.fieldType,
-    }));
-
-    // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection.enableDynamicField) {
-      nameList.push({
-        name: DYNAMIC_FIELD,
-        type: DataTypeStringEnum.JSON,
-      });
-    }
-
-    const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
-    setPrimaryKey({ value: primaryKey['name'], type: primaryKey['fieldType'] });
-    setConsistency_level(collection.consistency_level);
-
-    setFields(nameList);
-  };
-
-  // Get fields at first or collection name changed.
-  useEffect(() => {
-    collectionName && getFields(collectionName);
-  }, [collectionName]);
-
+  // UI ref
   const filterRef = useRef();
+  const inputRef = useRef<HTMLInputElement>();
 
-  const handleFilterReset = () => {
+  // UI event handlers
+  const handleFilterReset = async () => {
+    // reset advanced filter
     const currentFilter: any = filterRef.current;
     currentFilter?.getReset();
+    // update UI expression
     setExpression('');
-    setTableLoading(null);
-    setQueryResult(null);
-    handleCurrentPage(0);
+    // reset query
+    reset();
+    // ensure not loading
+    setTableLoading(false);
   };
-
-  const handleFilterSubmit = (expression: string) => {
+  const handleFilterSubmit = async (expression: string) => {
+    // update UI expression
     setExpression(expression);
-    handleQuery(expression);
+    // update expression
+    setExpr(expression);
   };
-
-  const handleQuery = async (expr: string = '') => {
-    setTableLoading(true);
-    if (expr === '') {
-      handleFilterReset();
-      return;
-    }
-    try {
-      const res = await Collection.queryData(collectionName!, {
-        expr: expr,
-        output_fields: fields.map(i => i.name),
-        offset: 0,
-        limit: 16384,
-        consistency_level: consistency_level,
-        // travel_timestamp: timeTravelInfo.timestamp,
-      });
-      const result = res.data;
-      setQueryResult(result);
-      setLatency(res.latency);
-    } catch (err) {
-      setQueryResult([]);
-    } finally {
-      setTableLoading(false);
-    }
+  const handlePageChange = async (e: any, page: number) => {
+    // do the query
+    await query(page);
+    // update page number
+    setCurrentPage(page);
   };
-
-  const handleSelectChange = (value: any) => {
+  const onSelectChange = (value: any) => {
     setSelectedData(value);
   };
-
+  const onDelete = async () => {
+    // reset query
+    reset();
+    count(ConsistencyLevelEnum.Strong);
+    await query(0, ConsistencyLevelEnum.Strong);
+  };
   const handleDelete = async () => {
-    await DataService.deleteEntities(collectionName!, {
-      expr: `${primaryKey.value} in [${selectedData
+    // call delete api
+    await DataService.deleteEntities(collectionName, {
+      expr: `${collection.primaryKey.value} in [${selectedData
         .map(v =>
-          primaryKey.type === DataTypeStringEnum.VarChar
-            ? `"${v[primaryKey.value]}"`
-            : v[primaryKey.value]
+          collection.primaryKey.type === DataTypeStringEnum.VarChar
+            ? `"${v[collection.primaryKey.value]}"`
+            : v[collection.primaryKey.value]
         )
         .join(',')}]`,
     });
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: collectionTrans('entities') }));
-    handleQuery(expression);
+    setSelectedData([]);
+    await onDelete();
   };
 
+  // Query hook
+  const {
+    collection,
+    currentPage,
+    total,
+    pageSize,
+    expr,
+    queryResult,
+    setPageSize,
+    setConsistencyLevel,
+    setCurrentPage,
+    setExpr,
+    query,
+    reset,
+    count,
+  } = useQuery({
+    collectionName,
+    onQueryStart: (expr: string = '') => {
+      setTableLoading(true);
+      if (expr === '') {
+        handleFilterReset();
+        return;
+      }
+    },
+    onQueryFinally: () => {
+      setTableLoading(false);
+    },
+  });
+
+  // Format result list
+  const queryResultMemo = useSearchResult(queryResult.data);
+
+  // Toolbar settings
   const toolbarConfigs: ToolBarConfig[] = [
+    {
+      icon: 'uploadFile',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('importFile'),
+      tooltip: btnTrans('importFileTooltip'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <InsertDialog
+                defaultSelectedCollection={collectionName}
+                // user can't select partition on collection page, so default value is ''
+                defaultSelectedPartition={''}
+                onInsert={() => {}}
+              />
+            ),
+          },
+        });
+      },
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <ImportSampleDialog collection={collectionName} cb={onDelete} />
+            ),
+          },
+        });
+      },
+      tooltip: btnTrans('importSampleDataTooltip'),
+      label: btnTrans('importSampleData'),
+      icon: 'add',
+      // tooltip: collectionTrans('deleteTooltip'),
+    },
+    {
+      icon: 'deleteOutline',
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <EmptyDataDialog
+                cb={async () => {
+                  openSnackBar(
+                    successTrans('empty', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  await onDelete();
+                }}
+                collectionName={collectionName}
+              />
+            ),
+          },
+        });
+      },
+      disabled: () => total == 0,
+      label: btnTrans('empty'),
+      tooltip: btnTrans('emptyTooltip'),
+      disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        saveCsvAs(selectedData, `${collectionName}.query.csv`);
+      },
+      label: btnTrans('export'),
+      icon: 'download',
+      tooltip: btnTrans('exportTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabled: () => !selectedData?.length,
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: async () => {
+        const json = JSON.stringify(selectedData);
+        try {
+          await navigator.clipboard.writeText(json);
+          alert(`${selectedData.length} rows copied to clipboard`);
+        } catch (err) {
+          console.error('Failed to copy text: ', err);
+        }
+      },
+      label: btnTrans('copyJson'),
+      icon: 'copy',
+      tooltip: btnTrans('copyJsonTooltip'),
+      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabled: () => !selectedData?.length,
+    },
+
     {
       type: 'button',
       btnVariant: 'text',
@@ -183,27 +264,21 @@ const Query = () => {
       },
       label: btnTrans('delete'),
       icon: 'delete',
-      // tooltip: collectionTrans('deleteTooltip'),
+      tooltip: btnTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteTooltip'),
       disabled: () => selectedData.length === 0,
     },
-    {
-      type: 'button',
-      btnVariant: 'text',
-      onClick: () => {
-        saveCsvAs(queryResult, 'milvus_query_result.csv');
-      },
-      label: btnTrans('export'),
-      icon: 'download',
-      tooltip: collectionTrans('downloadTooltip'),
-      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
-      disabled: () => !queryResult?.length,
-    },
   ];
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   return (
     <div className={classes.root}>
-      <CustomToolBar toolbarConfigs={toolbarConfigs} />
+      <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
       <div className={classes.toolbar}>
         <div className="left">
           <TextField
@@ -214,28 +289,37 @@ const Query = () => {
                 multiline: 'multiline',
               },
             }}
-            placeholder={collectionTrans('exprPlaceHolder')}
             value={expression}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setExpression(e.target.value as string);
             }}
+            disabled={!collection.loaded}
+            InputLabelProps={{ shrink: true }}
+            label={collectionTrans('exprPlaceHolder')}
             onKeyDown={e => {
               if (e.key === 'Enter') {
-                // Do code here
-                handleQuery(expression);
+                // reset page
+                setCurrentPage(0);
+                if (expr !== expression) {
+                  setExpr(expression);
+                } else {
+                  // ensure query
+                  query();
+                }
                 e.preventDefault();
               }
             }}
+            inputRef={inputRef}
           />
           <Filter
             ref={filterRef}
             title="Advanced Filter"
-            fields={fields.filter(
-              i =>
+            fields={collection.fields.filter(
+              (i: any) =>
                 i.type !== DataTypeStringEnum.FloatVector &&
                 i.type !== DataTypeStringEnum.BinaryVector
             )}
-            filterDisabled={false}
+            filterDisabled={!collection.loaded}
             onSubmit={handleFilterSubmit}
             showTitle={false}
             showTooltip={false}
@@ -243,13 +327,14 @@ const Query = () => {
           {/* </div> */}
           <CustomSelector
             options={CONSISTENCY_LEVEL_OPTIONS}
-            value={consistency_level}
-            label={collectionTrans('consistencyLevel')}
+            value={collection.consistencyLevel}
+            label={collectionTrans('consistency')}
             wrapperClass={classes.selector}
+            disabled={!collection.loaded}
             variant="filled"
             onChange={(e: { target: { value: unknown } }) => {
               const consistency = e.target.value as string;
-              setConsistency_level(consistency);
+              setConsistencyLevel(consistency);
             }}
           />
         </div>
@@ -257,24 +342,32 @@ const Query = () => {
           <CustomButton
             className="btn"
             onClick={handleFilterReset}
-            disabled={!expression}
+            disabled={!collection.loaded}
           >
             <ResetIcon classes={{ root: 'icon' }} />
             {btnTrans('reset')}
           </CustomButton>
           <CustomButton
             variant="contained"
-            disabled={!expression}
-            onClick={() => handleQuery(expression)}
+            onClick={() => {
+              setCurrentPage(0);
+              if (expr !== expression) {
+                setExpr(expression);
+              } else {
+                // ensure query
+                query();
+              }
+            }}
+            disabled={!collection.loaded}
           >
             {btnTrans('query')}
           </CustomButton>
         </div>
       </div>
-      {tableLoading || queryResult?.length ? (
+      {tableLoading || queryResultMemo?.length ? (
         <AttuGrid
           toolbarConfigs={[]}
-          colDefinitions={fields.map(i => ({
+          colDefinitions={collection.fields.map((i: any) => ({
             id: i.name,
             align: 'left',
             disablePadding: false,
@@ -282,32 +375,28 @@ const Query = () => {
             label:
               i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
           }))}
-          primaryKey={primaryKey.value}
+          primaryKey={collection.primaryKey.value}
           openCheckBox={true}
           isLoading={!!tableLoading}
-          rows={result}
+          rows={queryResultMemo}
           rowCount={total}
           selected={selectedData}
-          setSelected={handleSelectChange}
+          setSelected={onSelectChange}
           page={currentPage}
           onPageChange={handlePageChange}
+          setRowsPerPage={setPageSize}
           rowsPerPage={pageSize}
-          setRowsPerPage={handlePageSize}
-          orderBy={orderBy}
-          order={order}
-          handleSort={handleGridSort}
-          labelDisplayedRows={getLabelDisplayedRows(`(${latency} ms)`)}
+          labelDisplayedRows={getLabelDisplayedRows(
+            `(${queryResult.latency || ''} ms)`
+          )}
         />
       ) : (
         <EmptyCard
           wrapperClass={`page-empty-card ${classes.emptyCard}`}
           icon={<VectorSearchIcon />}
-          text={
-            queryResult?.length === 0
-              ? searchTrans('empty')
-              : collectionTrans('startTip')
-          }
-          subText={collectionTrans('dataQuerylimits')}
+          text={searchTrans(
+            `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
+          )}
         />
       )}
     </div>

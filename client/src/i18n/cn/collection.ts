@@ -16,10 +16,7 @@ const collectionTrans = {
   alias: '别名',
   aliasTooltip: '请选择一个Collection创建别名',
   download: '下载',
-  downloadTooltip: '将所有查询结果导出到CSV文件',
-  downloadDisabledTooltip: '请在导出前查询数据',
   empty: '清空数据',
-  emptyDataDisableTooltip: '请选择一个已加载的Collection进行清空数据操作',
 
   collection: 'Collection',
   entities: 'Entities',
@@ -97,11 +94,10 @@ const collectionTrans = {
   // collection tabs
   partitionTab: '分区',
   schemaTab: 'Schema',
-  queryTab: '数据查询',
+  queryTab: '数据',
   previewTab: '数据预览',
   segmentsTab: '数据段(Segments)',
   startTip: '开始你的数据查询',
-  dataQuerylimits: '请注意，你的数据查询的结果数量最大为16384。',
   exprPlaceHolder: '请输入你的数据查询，例如 id > 0',
 
   // alias dialog

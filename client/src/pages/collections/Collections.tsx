@@ -9,12 +9,11 @@ import {
   dataContext,
   webSocketContext,
 } from '@/context';
-import { Collection, MilvusService, DataService, MilvusIndex } from '@/http';
+import { Collection, MilvusService, MilvusIndex } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { InsertDataParam } from './Types';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import icons from '@/components/icons/Icons';
 import EmptyCard from '@/components/cards/EmptyCard';
@@ -26,7 +25,6 @@ import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
-import EmptyDataDialog from '../dialogs/EmptyDataDialog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
@@ -151,7 +149,7 @@ const Collections = () => {
       Object.assign(v, {
         nameElement: (
           <Link
-            to={`/collections/${v.collectionName}/schema`}
+            to={`/collections/${v.collectionName}/data`}
             className={classes.link}
             title={v.collectionName}
           >
@@ -303,7 +301,7 @@ const Collections = () => {
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
-      label: btnTrans('insert'),
+      label: btnTrans('importFile'),
       onClick: () => {
         setDialog({
           open: true,
@@ -319,30 +317,7 @@ const Collections = () => {
                 }
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                handleInsert={async (
-                  collectionName: string,
-                  partitionName: string,
-                  fieldData: any[]
-                ): Promise<{ result: boolean; msg: string }> => {
-                  const param: InsertDataParam = {
-                    partition_name: partitionName,
-                    fields_data: fieldData,
-                  };
-                  try {
-                    await DataService.insertData(collectionName, param);
-                    await DataService.flush(collectionName);
-                    // update collections
-                    fetchData();
-                    return { result: true, msg: '' };
-                  } catch (err: any) {
-                    const {
-                      response: {
-                        data: { message },
-                      },
-                    } = err;
-                    return { result: false, msg: message || '' };
-                  }
-                }}
+                onInsert={() => {}}
               />
             ),
           },
@@ -420,42 +395,7 @@ const Collections = () => {
       disabledTooltip: collectionTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
-    {
-      icon: 'deleteOutline',
-      type: 'button',
-      btnVariant: 'text',
-      onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: (
-              <EmptyDataDialog
-                cb={async () => {
-                  openSnackBar(
-                    successTrans('empty', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
-                  setSelectedCollections([]);
-                  await fetchData();
-                }}
-                collectionName={selectedCollections[0].collectionName}
-              />
-            ),
-          },
-        });
-      },
-      label: btnTrans('empty'),
-      disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
-      disabled: (data: any) => {
-        if (data.length === 0 || data.length > 1) {
-          return true;
-        } else {
-          return Number(data[0].loadedPercentage) !== 100;
-        }
-      },
-    },
+
     {
       icon: 'delete',
       type: 'button',

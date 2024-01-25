@@ -15,7 +15,7 @@ const EmptyDataDialog: FC<EmptyDataProps> = props => {
 
   const handleDelete = async () => {
     // duplicate
-    DataService.emptyData(collectionName);
+    await DataService.emptyData(collectionName);
     // close dialog
     handleCloseDialog();
     cb && cb();

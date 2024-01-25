@@ -118,12 +118,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
     </svg>
   ),
   upload: (props = {}) => (
-    <SvgIcon
-      viewBox="0 0 16 16"
-      component={UploadIcon}
-      {...props}
-      fill="#000"
-    />
+    <SvgIcon viewBox="0 0 20 20" component={UploadIcon} {...props} fill="currentColor" />
   ),
   vectorSearch: (props = {}) => (
     <SvgIcon viewBox="0 0 48 48" component={SearchEmptyIcon} {...props} />
