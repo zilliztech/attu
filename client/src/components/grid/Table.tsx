@@ -146,7 +146,7 @@ const EnhancedTable: FC<TableType> = props => {
   const calculateRowCountAndPageSize = () => {
     if (containerRef.current && rowHeight > 0) {
       const containerHeight: number = containerRef.current.offsetHeight;
-      const rowCount = Math.floor(
+      const rowCount = Math.ceil(
         (containerHeight -
           tableHeaderHeight -
           (showPagination ? pagerHeight : 0)) /
@@ -269,7 +269,7 @@ const EnhancedTable: FC<TableType> = props => {
                             style={cellStyle}
                           >
                             <div className={classes.cellContainer}>
-                              {row[colDef.id] && (
+                              {typeof row[colDef.id] !== 'undefined' && (
                                 <>
                                   {colDef.onClick ? (
                                     <Button

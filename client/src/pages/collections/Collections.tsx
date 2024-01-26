@@ -188,49 +188,6 @@ const Collections = () => {
             </Tooltip>
           </>
         ),
-        statusElement: (
-          <StatusAction
-            status={v.status}
-            onIndexCreate={fetchData}
-            percentage={v.loadedPercentage}
-            field={getVectorField(v)!}
-            collectionName={v.collectionName}
-            action={() => {
-              setDialog({
-                open: true,
-                type: 'custom',
-                params: {
-                  component:
-                    v.status === LOADING_STATE.UNLOADED ? (
-                      <LoadCollectionDialog
-                        collection={v.collectionName}
-                        onLoad={async () => {
-                          openSnackBar(
-                            successTrans('load', {
-                              name: collectionTrans('collection'),
-                            })
-                          );
-                          await fetchData();
-                        }}
-                      />
-                    ) : (
-                      <ReleaseCollectionDialog
-                        collection={v.collectionName}
-                        onRelease={async () => {
-                          openSnackBar(
-                            successTrans('release', {
-                              name: collectionTrans('collection'),
-                            })
-                          );
-                          await fetchData();
-                        }}
-                      />
-                    ),
-                },
-              });
-            }}
-          />
-        ),
         _aliasElement: (
           <Aliases
             aliases={v.aliases}
@@ -459,11 +416,56 @@ const Collections = () => {
       label: collectionTrans('name'),
     },
     {
-      id: 'statusElement',
+      id: 'status',
       align: 'left',
       disablePadding: false,
       sortBy: 'status',
       label: collectionTrans('status'),
+      formatter(v) {
+        return (
+          <StatusAction
+            status={v.status}
+            onIndexCreate={fetchData}
+            percentage={v.loadedPercentage}
+            field={getVectorField(v)!}
+            collectionName={v.collectionName}
+            action={() => {
+              setDialog({
+                open: true,
+                type: 'custom',
+                params: {
+                  component:
+                    v.status === LOADING_STATE.UNLOADED ? (
+                      <LoadCollectionDialog
+                        collection={v.collectionName}
+                        onLoad={async () => {
+                          openSnackBar(
+                            successTrans('load', {
+                              name: collectionTrans('collection'),
+                            })
+                          );
+                          await fetchData();
+                        }}
+                      />
+                    ) : (
+                      <ReleaseCollectionDialog
+                        collection={v.collectionName}
+                        onRelease={async () => {
+                          openSnackBar(
+                            successTrans('release', {
+                              name: collectionTrans('collection'),
+                            })
+                          );
+                          await fetchData();
+                        }}
+                      />
+                    ),
+                },
+              });
+            }}
+          />
+        );
+      },
     },
     {
       id: 'features',
