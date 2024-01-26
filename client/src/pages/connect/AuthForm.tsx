@@ -24,6 +24,8 @@ import {
   MILVUS_DATABASE,
 } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
+import SvgIcon from '@material-ui/core/SvgIcon';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     alignItems: 'flex-end',
     padding: theme.spacing(0, 3),
+    position: 'relative',
   },
   titleWrapper: {
     display: 'flex',
@@ -58,7 +61,34 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     justifyContent: 'flex-start',
   },
+  star: {
+    position: 'absolute',
+    top: -48,
+    right: -8,
+    marginTop: theme.spacing(1),
+    alignItems: 'center',
+    height: '32px',
+    lineHeight: '32px',
+    color: '#333',
+    background: '#f1f1f1',
+    padding: theme.spacing(0.5, 0, 0.5, 1),
+    fontSize: 13,
+    display: 'block',
+    width: '132px',
+    textDecoration: 'none',
+    marginRight: theme.spacing(1),
+    fontWeight: 500,
+    borderRadius: 4,
+    '&:hover': {
+      fontWeight: 'bold',
+    },
+  },
+  icon: {
+    verticalAlign: '-5px',
+    marginRight: theme.spacing(),
+  },
 }));
+
 export const AuthForm = (props: any) => {
   const navigate = useNavigate();
   const classes = useStyles();
@@ -261,9 +291,23 @@ export const AuthForm = (props: any) => {
               key={v.label}
             />
           ))}
+
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans('connect')}
         </CustomButton>
+
+        <a
+          href="https://github.com/zilliztech/attu"
+          target="_blank"
+          className={classes.star}
+        >
+          <SvgIcon
+            viewBox="0 0 24 24"
+            component={GitHubIcon}
+            className={classes.icon}
+          />
+           {btnTrans('star')}
+        </a>
       </section>
     </form>
   );

@@ -31,6 +31,7 @@ const btnTrans = {
   flush: '落盘(Flush)',
   compact: '压缩(Compact)',
   copyJson: '复制为JSON',
+  star: '给我一颗小星星',
 
   // tips
   importFileTooltip: '导入JSON或者CSV文件',

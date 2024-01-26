@@ -31,6 +31,7 @@ const btnTrans = {
   flush: 'Flush',
   compact: 'Compact',
   copyJson: 'Copy as JSON',
+  star: 'Give me a Star',
 
   // tips
   importFileTooltip: 'Import JSON or CSV file',
