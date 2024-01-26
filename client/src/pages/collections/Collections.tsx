@@ -147,55 +147,7 @@ const Collections = () => {
     const data = filteredCollections.map(v => {
       // const indexStatus = statusRes.find(item => item.collectionName === v.collectionName);
       Object.assign(v, {
-        features: (
-          <>
-            {v.autoID ? (
-              <Tooltip
-                title={collectionTrans('autoIDTooltip')}
-                placement="top"
-                arrow
-              >
-                <Chip
-                  className={classes.chip}
-                  label={collectionTrans('autoID')}
-                  size="small"
-                />
-              </Tooltip>
-            ) : null}
-            {v.enableDynamicField ? (
-              <Tooltip
-                title={collectionTrans('dynamicSchemaTooltip')}
-                placement="top"
-                arrow
-              >
-                <Chip
-                  className={classes.chip}
-                  label={collectionTrans('dynmaicSchema')}
-                  size="small"
-                />
-              </Tooltip>
-            ) : null}
-            <Tooltip
-              title={consistencyTooltipsMap[v.consistency_level]}
-              placement="top"
-              arrow
-            >
-              <Chip
-                className={classes.chip}
-                label={v.consistency_level}
-                size="small"
-              />
-            </Tooltip>
-          </>
-        ),
-        _aliasElement: (
-          <Aliases
-            aliases={v.aliases}
-            collectionName={v.collectionName}
-            onCreate={fetchData}
-            onDelete={fetchData}
-          />
-        ),
+        features: v, // add `feature` as id to render
       });
       return v;
     });
@@ -473,6 +425,49 @@ const Collections = () => {
       disablePadding: true,
       sortBy: 'enableDynamicField',
       label: collectionTrans('features'),
+      formatter(v) {
+        return (
+          <>
+            {v.autoID ? (
+              <Tooltip
+                title={collectionTrans('autoIDTooltip')}
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={classes.chip}
+                  label={collectionTrans('autoID')}
+                  size="small"
+                />
+              </Tooltip>
+            ) : null}
+            {v.enableDynamicField ? (
+              <Tooltip
+                title={collectionTrans('dynamicSchemaTooltip')}
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={classes.chip}
+                  label={collectionTrans('dynmaicSchema')}
+                  size="small"
+                />
+              </Tooltip>
+            ) : null}
+            <Tooltip
+              title={consistencyTooltipsMap[v.consistency_level]}
+              placement="top"
+              arrow
+            >
+              <Chip
+                className={classes.chip}
+                label={v.consistency_level}
+                size="small"
+              />
+            </Tooltip>
+          </>
+        );
+      },
     },
     {
       id: 'entityCount',
@@ -531,7 +526,7 @@ const Collections = () => {
 
   if (!isManaged) {
     colDefinitions.splice(4, 0, {
-      id: '_aliasElement',
+      id: 'aliases',
       align: 'left',
       disablePadding: false,
       label: (
@@ -542,6 +537,16 @@ const Collections = () => {
           </CustomToolTip>
         </span>
       ),
+      formatter(v) {
+        return (
+          <Aliases
+            aliases={v.aliases}
+            collectionName={v.collectionName}
+            onCreate={fetchData}
+            onDelete={fetchData}
+          />
+        );
+      },
     });
   }
 
