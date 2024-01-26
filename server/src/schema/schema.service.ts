@@ -47,8 +47,9 @@ export class SchemaService {
       // If the index is finished building and there is at least one index description,
       // cache the index description for future use
       if (
-        res.index_descriptions?.length > 0 &&
-        res.index_descriptions.every(i => i.state === 'Finished')
+        (res.index_descriptions?.length > 0 &&
+          res.index_descriptions.every(i => i.state === 'Finished')) ||
+        res.index_descriptions.length === 0
       ) {
         indexCache.set(key, res);
       } else {
