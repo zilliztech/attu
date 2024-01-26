@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { MILVUS_CLIENT_ID, LOGIN_USERNAME } from '@/consts';
+import { MILVUS_CLIENT_ID, LOGIN_USERNAME, LAST_TIME_ADDRESS } from '@/consts';
 import { AuthContextType } from './Types';
 
 export const authContext = createContext<AuthContextType>({
@@ -19,19 +19,19 @@ const { Provider } = authContext;
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   // get milvus address from local storage
   const [address, setAddress] = useState<string>(
-    window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
+    window.localStorage.getItem(LAST_TIME_ADDRESS) || ''
   );
   // get login username from local storage
   const [username, setUsername] = useState<string>(
     window.localStorage.getItem(LOGIN_USERNAME) || ''
   );
-  const [isAuth, setIsAuth] = useState<boolean>(address !== '');
-  // const isAuth = useMemo(() => !!address, [address]);
 
   // get milvus address from local storage
   const [clientId, setClientId] = useState<string>(
     window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
   );
+  const [isAuth, setIsAuth] = useState<boolean>(clientId !== '');
+  // const isAuth = useMemo(() => !!address, [address]);
 
   useEffect(() => {
     document.title = address ? `${address} - Attu` : 'Attu';
