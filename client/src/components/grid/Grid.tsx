@@ -1,5 +1,4 @@
-import { FC, MouseEvent } from 'react';
-import React from 'react';
+import { FC, MouseEvent, useRef, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -93,6 +92,8 @@ const userStyle = makeStyles(theme => ({
  */
 const AttuGrid: FC<AttuGridType> = props => {
   const classes = userStyle();
+  const tableRef = useRef<HTMLDivElement | null>(null);
+  const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   // i18n
   const { t: commonTrans } = useTranslation();
@@ -176,10 +177,47 @@ const AttuGrid: FC<AttuGridType> = props => {
       </>
     );
   };
+
+  const calculateRowCountAndPageSize = () => {
+    if (tableRef.current && rowHeight > 0) {
+      const containerHeight: number = tableRef.current.offsetHeight;
+
+      const rowCount = Math.floor(
+        (containerHeight -
+          tableHeaderHeight -
+          (showPagination ? pagerHeight : 0)) /
+          rowHeight
+      );
+
+      // console.log('calc', tableRef.current.offsetHeight);
+      // console.log(rowCount, containerHeight, tableHeaderHeight);
+      setLoadingRowCount(rowCount);
+
+      if (setRowsPerPage) {
+        setRowsPerPage(rowCount);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      calculateRowCountAndPageSize();
+    }, 0);
+    // Add event listener for window resize
+    window.addEventListener('resize', calculateRowCountAndPageSize);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener('resize', calculateRowCountAndPageSize);
+      clearTimeout(timer);
+    };
+  }, [tableHeaderHeight, rowHeight, setRowsPerPage]);
+
   return (
     <Grid
       container
       classes={{ root: classes.wrapper, container: classes.container }}
+      ref={tableRef}
     >
       {title && (
         <Grid item xs={12} className={classes.tableTitle}>
@@ -213,6 +251,7 @@ const AttuGrid: FC<AttuGridType> = props => {
 
       <Grid item xs={12} className={classes.noBottomPadding}>
         <Table
+          loadingRowCount={loadingRowCount}
           openCheckBox={openCheckBox}
           primaryKey={primaryKey}
           rows={rows}
@@ -225,17 +264,12 @@ const AttuGrid: FC<AttuGridType> = props => {
           noData={noData}
           showHoverStyle={showHoverStyle}
           isLoading={isLoading}
-          setPageSize={setRowsPerPage}
           headEditable={headEditable}
           editHeads={editHeads}
           tableCellMaxWidth={tableCellMaxWidth}
           handleSort={handleSort}
           order={order}
           orderBy={orderBy}
-          tableHeaderHeight={tableHeaderHeight}
-          rowHeight={rowHeight}
-          showPagination={showPagination}
-          pagerHeight={pagerHeight}
         ></Table>
         {rowCount && showPagination ? (
           <TablePagination

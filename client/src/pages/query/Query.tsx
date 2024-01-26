@@ -6,7 +6,6 @@ import { rootContext } from '@/context';
 import { DataService } from '@/http';
 import { useQuery, useSearchResult } from '@/hooks';
 import { saveCsvAs } from '@/utils';
-import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import AttuGrid from '@/components/grid/Grid';
@@ -38,7 +37,6 @@ const Query = () => {
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   // icons
-  const VectorSearchIcon = icons.vectorSearch;
   const ResetIcon = icons.refresh;
   // translations
   const { t: dialogTrans } = useTranslation('dialog');
@@ -364,41 +362,34 @@ const Query = () => {
           </CustomButton>
         </div>
       </div>
-      {tableLoading || queryResultMemo?.length ? (
-        <AttuGrid
-          toolbarConfigs={[]}
-          colDefinitions={collection.fields.map((i: any) => ({
-            id: i.name,
-            align: 'left',
-            disablePadding: false,
-            needCopy: true,
-            label:
-              i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
-          }))}
-          primaryKey={collection.primaryKey.value}
-          openCheckBox={true}
-          isLoading={!!tableLoading}
-          rows={queryResultMemo}
-          rowCount={total}
-          selected={selectedData}
-          setSelected={onSelectChange}
-          page={currentPage}
-          onPageChange={handlePageChange}
-          setRowsPerPage={setPageSize}
-          rowsPerPage={pageSize}
-          labelDisplayedRows={getLabelDisplayedRows(
-            `(${queryResult.latency || ''} ms)`
-          )}
-        />
-      ) : (
-        <EmptyCard
-          wrapperClass={`page-empty-card ${classes.emptyCard}`}
-          icon={<VectorSearchIcon />}
-          text={searchTrans(
-            `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
-          )}
-        />
-      )}
+      <AttuGrid
+        toolbarConfigs={[]}
+        colDefinitions={collection.fields.map((i: any) => ({
+          id: i.name,
+          align: 'left',
+          disablePadding: false,
+          needCopy: true,
+          label:
+            i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
+        }))}
+        primaryKey={collection.primaryKey.value}
+        openCheckBox={true}
+        isLoading={!!tableLoading}
+        rows={queryResultMemo}
+        rowCount={total}
+        selected={selectedData}
+        setSelected={onSelectChange}
+        page={currentPage}
+        onPageChange={handlePageChange}
+        setRowsPerPage={setPageSize}
+        rowsPerPage={pageSize}
+        labelDisplayedRows={getLabelDisplayedRows(
+          `(${queryResult.latency || ''} ms)`
+        )}
+        noData={searchTrans(
+          `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
+        )}
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, forwardRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -106,7 +106,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EnhancedTable: FC<TableType> = props => {
-  const {
+  let {
     selected,
     onSelected,
     isSelected,
@@ -123,7 +123,6 @@ const EnhancedTable: FC<TableType> = props => {
     // set true as default
     showHoverStyle = true,
     isLoading,
-    setPageSize,
     headEditable = false,
     // editable heads required param, contains heads components and its value
     editHeads = [],
@@ -132,53 +131,14 @@ const EnhancedTable: FC<TableType> = props => {
     handleSort,
     order,
     orderBy,
-    tableHeaderHeight,
-    rowHeight,
-    showPagination,
-    pagerHeight,
+    loadingRowCount,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
-  const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const { t: commonTrans } = useTranslation();
   const copyTrans = commonTrans('copy');
 
-  const calculateRowCountAndPageSize = () => {
-    if (containerRef.current && rowHeight > 0) {
-      const containerHeight: number = containerRef.current.offsetHeight;
-      const rowCount = Math.ceil(
-        (containerHeight -
-          tableHeaderHeight -
-          (showPagination ? pagerHeight : 0)) /
-          rowHeight
-      );
-      // console.log(rowCount, containerHeight, tableHeaderHeight);
-      setLoadingRowCount(rowCount);
-
-      if (setPageSize) {
-        setPageSize(rowCount);
-      }
-    }
-  };
-
-  useEffect(() => {
-    calculateRowCountAndPageSize();
-    // Add event listener for window resize
-    window.addEventListener('resize', calculateRowCountAndPageSize);
-
-    // Clean up event listener on unmount
-    return () => {
-      window.removeEventListener('resize', calculateRowCountAndPageSize);
-    };
-  }, [tableHeaderHeight, rowHeight, setPageSize]);
-
   return (
-    <TableContainer
-      ref={el => {
-        containerRef.current = el;
-      }}
-      className={classes.root}
-    >
+    <TableContainer className={classes.root}>
       <Box height="100%" className={classes.box}>
         <Table
           stickyHeader

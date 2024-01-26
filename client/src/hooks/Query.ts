@@ -165,7 +165,7 @@ export const useQuery = (params: {
   // query if expr is changed
   useEffect(() => {
     if (!collection.primaryKey.value || !collection.loaded) {
-      console.info('[skip running query]: no key yet');
+      // console.info('[skip running query]: no key yet');
       return;
     } // reset
     reset();

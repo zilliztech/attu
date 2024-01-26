@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, Ref } from 'react';
 import { LabelDisplayedRowsArgs } from '@material-ui/core';
 import { IconsType } from '../icons/Types';
 import { SearchType } from '../customInput/Types';
@@ -84,7 +84,6 @@ export type TableType = {
   noData?: string;
   showHoverStyle?: boolean;
   isLoading?: boolean;
-  setPageSize?: (size: number) => void;
   headEditable?: boolean;
   editHeads: EditableHeads[];
   // with unit like '20px'
@@ -92,10 +91,8 @@ export type TableType = {
   handleSort?: (e: any, orderBy: string) => void;
   order?: SortDirection;
   orderBy?: string;
-  tableHeaderHeight: number;
-  rowHeight: number;
-  showPagination: boolean;
-  pagerHeight: number
+  loadingRowCount: number;
+  ref?: Ref<HTMLDivElement>;
 };
 
 export type ColDefinitionsType = {
