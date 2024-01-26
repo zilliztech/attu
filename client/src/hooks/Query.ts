@@ -20,6 +20,7 @@ export const useQuery = (params: {
   const [total, setTotal] = useState<number>(0);
   const [expr, setExpr] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>({ data: [], latency: 0 });
+  const lastQuery = useRef<any>();
 
   // build local cache for pk ids
   const pageCache = useRef(new Map());
@@ -59,23 +60,26 @@ export const useQuery = (params: {
     page: number = currentPage,
     consistency_level = collection.consistencyLevel
   ) => {
-    if (!collection.primaryKey.value || !collection.loaded) {
-      //   console.info('[skip running query]: no key yet');
-      return;
-    }
     const _expr = getPageExpr(page);
     // console.log('query expr', _expr);
     params.onQueryStart(_expr);
 
     try {
-      // execute query
-      const res = await Collection.queryData(params.collectionName, {
+      const queryParams = {
         expr: _expr,
         output_fields: collection.fields.map((i: any) => i.name),
         limit: pageSize || 10,
         consistency_level,
         // travel_timestamp: timeTravelInfo.timestamp,
-      });
+      };
+
+      // cache last query
+      lastQuery.current = queryParams;
+      // execute query
+      const res = await Collection.queryData(
+        params.collectionName,
+        queryParams
+      );
 
       // get last item of the data
       const lastItem = res.data[res.data.length - 1];
@@ -136,9 +140,6 @@ export const useQuery = (params: {
   };
 
   const count = async (consistency_level = collection.consistency_level) => {
-    if (!collection.primaryKey.value || !collection.loaded) {
-      return;
-    }
     const count = 'count(*)';
     const res = await Collection.queryData(params.collectionName, {
       expr: expr,
@@ -163,7 +164,10 @@ export const useQuery = (params: {
 
   // query if expr is changed
   useEffect(() => {
-    // reset
+    if (!collection.primaryKey.value || !collection.loaded) {
+      console.info('[skip running query]: no key yet');
+      return;
+    } // reset
     reset();
     // get count;
     count();
@@ -173,6 +177,10 @@ export const useQuery = (params: {
 
   // query if collection is changed
   useEffect(() => {
+    if (!collection.primaryKey.value || !collection.loaded) {
+      // console.info('[skip running query]: no key yet');
+      return;
+    }
     // reset
     reset();
     // get count;
@@ -183,6 +191,10 @@ export const useQuery = (params: {
 
   // query if page size is changed
   useEffect(() => {
+    if (!collection.primaryKey.value || !collection.loaded) {
+      // console.info('[skip running query]: no key yet');
+      return;
+    }
     // reset
     reset();
     // do the query

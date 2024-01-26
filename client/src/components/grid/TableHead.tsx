@@ -25,12 +25,12 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     // background: theme.palette.common.t,
-    paddingLeft: theme.spacing(2),
+    padding: theme.spacing(1.5),
     // borderBottom: 'none',
   },
   tableHeader: {
     color: 'rgba(0, 0, 0, 0.6)',
-    fontSize: '12.8px',
+    fontWeight: 500,
   },
   tableRow: {
     // borderBottom: '1px solid rgba(0, 0, 0, 0.6);',
@@ -47,7 +47,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
     colDefinitions = [],
     handleSort,
     openCheckBox,
-    disableSelect
+    disableSelect,
   } = props;
   const classes = useStyles();
   const createSortHandler = (property: string) => (event: React.MouseEvent) => {
@@ -65,7 +65,10 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
               disabled={disableSelect}
-              inputProps={{ 'aria-label': 'select all desserts', 'role': 'checkbox' }}
+              inputProps={{
+                'aria-label': 'select all desserts',
+                role: 'checkbox',
+              }}
             />
           </TableCell>
         )}

@@ -147,19 +147,6 @@ const Collections = () => {
     const data = filteredCollections.map(v => {
       // const indexStatus = statusRes.find(item => item.collectionName === v.collectionName);
       Object.assign(v, {
-        nameElement: (
-          <Link
-            to={`/collections/${v.collectionName}/data`}
-            className={classes.link}
-            title={v.collectionName}
-          >
-            <Highlighter
-              textToHighlight={v.collectionName}
-              searchWords={[search]}
-              highlightClassName={classes.highlight}
-            />
-          </Link>
-        ),
         features: (
           <>
             {v.autoID ? (
@@ -302,6 +289,7 @@ const Collections = () => {
       btnVariant: 'text',
       btnColor: 'secondary',
       label: btnTrans('importFile'),
+      tooltip: btnTrans('importFileTooltip'),
       onClick: () => {
         setDialog({
           open: true,
@@ -359,8 +347,7 @@ const Collections = () => {
         });
       },
       label: btnTrans('rename'),
-      // tooltip: collectionTrans('deleteTooltip'),
-      disabledTooltip: collectionTrans('renameTooltip'),
+      tooltip: btnTrans('renameTooltip'),
       disabled: data => data.length !== 1,
     },
     {
@@ -391,8 +378,7 @@ const Collections = () => {
         });
       },
       label: btnTrans('duplicate'),
-      // tooltip: collectionTrans('deleteTooltip'),
-      disabledTooltip: collectionTrans('duplicateTooltip'),
+      tooltip: btnTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
 
@@ -423,8 +409,8 @@ const Collections = () => {
         });
       },
       label: btnTrans('drop'),
-      // tooltip: collectionTrans('deleteTooltip'),
-      disabledTooltip: collectionTrans('deleteTooltip'),
+      tooltip: btnTrans('deleteColTooltip'),
+      disabledTooltip: btnTrans('deleteDisableTooltip'),
       disabled: data => data.length < 1,
     },
 
@@ -451,10 +437,25 @@ const Collections = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'nameElement',
+      id: 'collectionName',
       align: 'left',
       disablePadding: true,
       sortBy: 'collectionName',
+      formatter({ collectionName }) {
+        return (
+          <Link
+            to={`/collections/${collectionName}/data`}
+            className={classes.link}
+            title={collectionName}
+          >
+            <Highlighter
+              textToHighlight={collectionName}
+              searchWords={[search]}
+              highlightClassName={classes.highlight}
+            />
+          </Link>
+        );
+      },
       label: collectionTrans('name'),
     },
     {

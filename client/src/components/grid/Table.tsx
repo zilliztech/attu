@@ -40,17 +40,13 @@ const useStyles = makeStyles(theme => ({
   box: {
     backgroundColor: '#fff',
   },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
   table: {
     minWidth: '100%',
     minHeight: 57,
   },
   tableCell: {
     background: theme.palette.common.white,
-    padding: `${theme.spacing(1.5)} ${theme.spacing(2)}`,
+    padding: `${theme.spacing(1.5)} `,
   },
   cellContainer: {
     display: 'flex',
@@ -136,8 +132,10 @@ const EnhancedTable: FC<TableType> = props => {
     handleSort,
     order,
     orderBy,
-    tableHeaderHeight = 57,
-    rowHeight = 49,
+    tableHeaderHeight,
+    rowHeight,
+    showPagination,
+    pagerHeight,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
@@ -145,31 +143,34 @@ const EnhancedTable: FC<TableType> = props => {
   const { t: commonTrans } = useTranslation();
   const copyTrans = commonTrans('copy');
 
-  useEffect(() => {
-    // if the type of containerRef is null, set default height.
-    let height: number =
-      containerRef.current?.offsetHeight || tableHeaderHeight;
-    if (height < tableHeaderHeight) {
-      height = tableHeaderHeight;
-    }
-    // calculate how many rows can be fit in the container
-    const count = Math.floor((height - tableHeaderHeight) / rowHeight);
-    setLoadingRowCount(count);
-  }, [containerRef]);
+  const calculateRowCountAndPageSize = () => {
+    if (containerRef.current && rowHeight > 0) {
+      const containerHeight: number = containerRef.current.offsetHeight;
+      const rowCount = Math.floor(
+        (containerHeight -
+          tableHeaderHeight -
+          (showPagination ? pagerHeight : 0)) /
+          rowHeight
+      );
+      // console.log(rowCount, containerHeight, tableHeaderHeight);
+      setLoadingRowCount(rowCount);
 
-  useEffect(() => {
-    if (setPageSize) {
-      const containerHeight: number = (containerRef.current as any)!
-        .offsetHeight;
-
-      if (rowHeight > 0) {
-        const pageSize = Math.floor(
-          (containerHeight - tableHeaderHeight) / rowHeight
-        );
-        setPageSize(pageSize);
+      if (setPageSize) {
+        setPageSize(rowCount);
       }
     }
-  }, [setPageSize, tableHeaderHeight, rowHeight]);
+  };
+
+  useEffect(() => {
+    calculateRowCountAndPageSize();
+    // Add event listener for window resize
+    window.addEventListener('resize', calculateRowCountAndPageSize);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener('resize', calculateRowCountAndPageSize);
+    };
+  }, [tableHeaderHeight, rowHeight, setPageSize]);
 
   return (
     <TableContainer
@@ -270,28 +271,33 @@ const EnhancedTable: FC<TableType> = props => {
                             <div className={classes.cellContainer}>
                               {row[colDef.id] && (
                                 <>
-                                  <Typography title={row[colDef.id]}>
-                                    {colDef.onClick ? (
-                                      <Button
-                                        color="primary"
-                                        data-data={row[colDef.id]}
-                                        data-index={index}
-                                        size="small"
-                                        onClick={e => {
-                                          colDef.onClick &&
-                                            colDef.onClick(e, row);
-                                        }}
-                                      >
-                                        {colDef.formatter
-                                          ? colDef.formatter(row)
-                                          : row[colDef.id]}
-                                      </Button>
-                                    ) : colDef.formatter ? (
-                                      colDef.formatter(row)
-                                    ) : (
-                                      row[colDef.id]
-                                    )}
-                                  </Typography>
+                                  {colDef.onClick ? (
+                                    <Button
+                                      color="primary"
+                                      data-data={row[colDef.id]}
+                                      data-index={index}
+                                      size="small"
+                                      onClick={e => {
+                                        colDef.onClick &&
+                                          colDef.onClick(e, row);
+                                      }}
+                                    >
+                                      {colDef.formatter ? (
+                                        colDef.formatter(row)
+                                      ) : (
+                                        <Typography title={row[colDef.id]}>
+                                          {row[colDef.id]}
+                                        </Typography>
+                                      )}
+                                    </Button>
+                                  ) : colDef.formatter ? (
+                                    colDef.formatter(row)
+                                  ) : (
+                                    <Typography title={row[colDef.id]}>
+                                      {row[colDef.id]}
+                                    </Typography>
+                                  )}
+
                                   {needCopy && (
                                     <CopyButton
                                       label={copyTrans.label}

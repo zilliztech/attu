@@ -28,7 +28,7 @@ const EmptyDataDialog: FC<EmptyDataProps> = props => {
         type: collectionTrans('collection'),
       })}
       compare={collectionName}
-      text={collectionTrans('emptyDataDialogInfo')}
+      text={dialogTrans('emptyDataDialogInfo')}
       handleDelete={handleDelete}
     />
   );

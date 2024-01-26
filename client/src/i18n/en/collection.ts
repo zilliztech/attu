@@ -6,20 +6,9 @@ const collectionTrans = {
   count: 'Entity Count',
 
   create: 'Collection',
-  delete: 'delete',
-  deleteTooltip: 'Please select at least one item to delete.',
-  rename: 'rename',
-  renameTooltip: 'Please select one collection to rename.',
-  duplicate: 'duplicate',
-  duplicateTooltip: 'Please select one collection to duplicate.',
   newColName: 'New Collection Name',
   alias: 'Alias',
   aliasTooltip: 'Please select one collection to create alias',
-  download: 'Download',
-  downloadDisabledTooltip: 'Please select data before exporting',
-  empty: 'empty data',
-  emptyDataDisableTooltip: 'Please select one loaded collection to empty data',
-
   collection: 'Collection',
   entities: 'entities',
 
@@ -40,8 +29,6 @@ const collectionTrans = {
     'Consistency refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time.',
   entityCountInfo:
     'This count is an approximation and may be slightly delayed due to the unique mechanisms of Milvus. The actual count may vary and is updated periodically. Please note that this number should be used as a reference and not as an exact count.',
-  duplicateCollectionInfo:
-    'Duplicating a collection does not copy the data within the collection. It only creates a new collection using the existing schema.',
 
   // create dialog
   createTitle: 'Create Collection',
@@ -142,13 +129,6 @@ const collectionTrans = {
   clickToLoad: 'Click to load the collection.',
   clickToRelease: 'Click to release the collection.',
   collectionIsLoading: 'The collection is loading...',
-
-  // flush dialog
-  flush: 'Flush',
-  flushDialogInfo: `Flush is a process that seals and indexes any remaining segments after data is upserted into Milvus. This avoids brute force searches on unsealed segments.  <br /><br />It's best to use flush at the end of an upsert session to prevent data fragmentation. <br /><br /><strong>Note: that this operation may take some time for large datasets.</strong>`,
-
-  // empty dialog
-  emptyDataDialogInfo: `You are attempting to empty the data. This action cannot be undone, please proceed with caution.`,
 };
 
 export default collectionTrans;

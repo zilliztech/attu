@@ -47,12 +47,12 @@ const FlushDialog: FC<FlushDialogProps> = props => {
             component="p"
             className={classes.desc}
             dangerouslySetInnerHTML={{
-              __html: collectionTrans('flushDialogInfo'),
+              __html: dialogTrans('flushDialogInfo'),
             }}
           ></Typography>
         </>
       }
-      confirmLabel={btnTrans('confirm')}
+      confirmLabel={btnTrans('flush')}
       handleConfirm={handleConfirm}
       confirmDisabled={disabled}
     />

@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     toolbar: {
-      marginBottom: theme.spacing(2),
+      marginBottom: theme.spacing(1),
     },
   })
 );
@@ -62,7 +62,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
   return (
     <>
       <Grid container role="toolbar" className={classes.toolbar}>
-        <Grid item xs={8}>
+        <Grid item xs={10}>
           {leftConfigs.map((c, i) => {
             const isSelect = c.type === 'select' || c.type === 'groupSelect';
             if (isSelect) {
@@ -115,7 +115,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
         </Grid>
 
         {rightConfigs.length > 0 && (
-          <Grid className={classes.gridEnd} item xs={4}>
+          <Grid className={classes.gridEnd} item xs={2}>
             {rightConfigs.map((c, i) => {
               if (c.icon === 'search') {
                 if (!c.onSearch) {

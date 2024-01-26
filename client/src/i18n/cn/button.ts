@@ -39,6 +39,14 @@ const btnTrans = {
   copyJsonTooltip: '复制所选的数据为JSON格式',
   emptyTooltip: '清空所有数据',
   deleteTooltip: '删除所选的数据',
+  deleteColTooltip: '删除所选的collection',
+  duplicateTooltip: '复制collection，不包含数据',
+  renameTooltip: '重命名collection',
+
+  // disable tooltip
+  downloadDisabledTooltip: '导出前请先选择数据',
+  emptyDataDisabledTooltip: '请先选择一个已加载的集合以清空数据',
+  deleteDisableTooltip: '请至少选择一个要删除的项目。',
 };
 
 export default btnTrans;

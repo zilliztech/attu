@@ -92,8 +92,10 @@ export type TableType = {
   handleSort?: (e: any, orderBy: string) => void;
   order?: SortDirection;
   orderBy?: string;
-  tableHeaderHeight?: number;
-  rowHeight?: number;
+  tableHeaderHeight: number;
+  rowHeight: number;
+  showPagination: boolean;
+  pagerHeight: number
 };
 
 export type ColDefinitionsType = {
@@ -150,6 +152,7 @@ export type AttuGridType = ToolBarType & {
   tableHeaderHeight?: number;
   rowHeight?: number;
   hideOnDisable?: boolean;
+  pagerHeight?: number;
 };
 
 export type ActionBarType = {

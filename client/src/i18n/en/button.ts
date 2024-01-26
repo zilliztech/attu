@@ -37,8 +37,16 @@ const btnTrans = {
   importSampleDataTooltip: 'Import sample data into the current collection',
   exportTooltip: 'Export selected data to csv',
   copyJsonTooltip: 'Copy selected data as JSON format',
-  emptyTooltip: 'Empty all data in the collection',
+  emptyTooltip: 'Empty all data in the selected collection',
   deleteTooltip: 'Delete selected data',
+  deleteColTooltip: 'Drop selected collection',
+  duplicateTooltip: 'Duplicate selected collection without data',
+  renameTooltip: 'Rename collection',
+
+  // disable tooltip
+  downloadDisabledTooltip: 'Please select data before exporting',
+  emptyDataDisabledTooltip: 'Please select one loaded collection to empty data',
+  deleteDisableTooltip: 'Please select at least one item to delete.',
 };
 
 export default btnTrans;

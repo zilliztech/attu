@@ -188,7 +188,7 @@ const Partitions = () => {
                 : ''
             }
             partitions={partitions}
-            handleInsert={handleInsert}
+            onInsert={handleInsert}
           />
         );
       },

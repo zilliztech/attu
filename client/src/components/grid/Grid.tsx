@@ -101,8 +101,9 @@ const AttuGrid: FC<AttuGridType> = props => {
   const {
     rowCount = 20,
     rowsPerPage = 10,
-    tableHeaderHeight = 57,
+    tableHeaderHeight = 46,
     rowHeight = 49,
+    pagerHeight = 52,
     primaryKey = 'id',
     showToolbar = false,
     toolbarConfigs = [],
@@ -233,6 +234,8 @@ const AttuGrid: FC<AttuGridType> = props => {
           orderBy={orderBy}
           tableHeaderHeight={tableHeaderHeight}
           rowHeight={rowHeight}
+          showPagination={showPagination}
+          pagerHeight={pagerHeight}
         ></Table>
         {rowCount && showPagination ? (
           <TablePagination

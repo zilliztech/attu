@@ -208,7 +208,7 @@ const Query = () => {
       disabled: () => total == 0,
       label: btnTrans('empty'),
       tooltip: btnTrans('emptyTooltip'),
-      disabledTooltip: collectionTrans('emptyDataDisableTooltip'),
+      disabledTooltip: btnTrans('emptyDataDisabledTooltip'),
     },
     {
       type: 'button',
@@ -219,7 +219,7 @@ const Query = () => {
       label: btnTrans('export'),
       icon: 'download',
       tooltip: btnTrans('exportTooltip'),
-      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabledTooltip: btnTrans('downloadDisabledTooltip'),
       disabled: () => !selectedData?.length,
     },
     {
@@ -237,7 +237,7 @@ const Query = () => {
       label: btnTrans('copyJson'),
       icon: 'copy',
       tooltip: btnTrans('copyJsonTooltip'),
-      disabledTooltip: collectionTrans('downloadDisabledTooltip'),
+      disabledTooltip: btnTrans('downloadDisabledTooltip'),
       disabled: () => !selectedData?.length,
     },
 
@@ -265,7 +265,7 @@ const Query = () => {
       label: btnTrans('delete'),
       icon: 'delete',
       tooltip: btnTrans('deleteTooltip'),
-      disabledTooltip: collectionTrans('deleteTooltip'),
+      disabledTooltip: collectionTrans('deleteDisabledTooltip'),
       disabled: () => selectedData.length === 0,
     },
   ];

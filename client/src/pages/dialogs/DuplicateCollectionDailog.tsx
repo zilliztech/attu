@@ -95,7 +95,7 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
       children={
         <>
           <Typography variant="body1" component="p" className={classes.desc}>
-            {collectionTrans('duplicateCollectionInfo')}
+            {dialogTrans('duplicateCollectionInfo')}
           </Typography>
           <CustomInput
             type="text"
