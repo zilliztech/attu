@@ -6,11 +6,11 @@ import { makeStyles, Theme, Link } from '@material-ui/core';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import peopleIcon from '@/assets/icons/people.svg?react';
-import slackIcon from '@/assets/icons/slack.svg?react';
-import qrcodePath from '../../assets/imgs/wechat_qrcode.png';
+import qrcodePath from '@/assets/imgs/wechat_qrcode.jpeg';
+import discordIcon from '@/assets/icons/discord.svg?react';
 
-const SLACK_LINK = 'https://slack.milvus.io';
 const GITHUB_LINK = 'https://github.com/milvus-io/milvus/discussions';
+const DISCORD_LINK = 'https://discord.com/invite/8uyFbECzPX';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -138,18 +138,18 @@ const CommunityBtn = (props: any) => {
 
               <SvgIcon
                 viewBox="0 0 24 24"
-                component={slackIcon}
+                component={discordIcon}
                 className={classes.icon}
               />
               <div className={classes.contentDesc}>{communityTrans.join}</div>
               <Link
                 classes={{ root: classes.contentLink }}
-                href={SLACK_LINK}
+                href={DISCORD_LINK}
                 underline="always"
                 target="_blank"
                 rel="noopener"
               >
-                {SLACK_LINK}
+                {DISCORD_LINK}
               </Link>
 
               <SvgIcon
