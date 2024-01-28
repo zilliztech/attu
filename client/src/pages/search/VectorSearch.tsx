@@ -470,16 +470,14 @@ const VectorSearch = () => {
 
         <CardContent className={classes.s3}>
           <Typography className="text">
-            {searchTrans('thirdTip')} ({selectedMetricType})
+            {searchTrans('thirdTip', {
+              metricType: `${
+                selectedMetricType ? `(${selectedMetricType})` : ''
+              }`,
+            })}
           </Typography>
           <SearchParams
             wrapperClass={classes.paramsWrapper}
-            metricType={selectedMetricType}
-            embeddingType={
-              embeddingType as
-                | DataTypeEnum.BinaryVector
-                | DataTypeEnum.FloatVector
-            }
             consistency_level={selectedConsistencyLevel}
             handleConsistencyChange={(level: string) => {
               setSelectedConsistencyLevel(level);
@@ -488,7 +486,6 @@ const VectorSearch = () => {
             indexParams={indexParams!}
             searchParamsForm={searchParam}
             handleFormChange={setSearchParam}
-            handleMetricTypeChange={setSelectedMetricType}
             topK={topK}
             setParamsDisabled={setParamDisabled}
           />

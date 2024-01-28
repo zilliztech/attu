@@ -4,14 +4,13 @@ import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import { Option } from '@/components/customSelector/Types';
 import {
   DEFAULT_NLIST_VALUE,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
   INDEX_CONFIG,
-  METRIC_OPTIONS_MAP,
   searchKeywordsType,
   CONSISTENCY_LEVEL_OPTIONS,
+  ConsistencyLevelEnum,
 } from '@/consts';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
@@ -40,22 +39,17 @@ const SearchParams: FC<SearchParamsProps> = ({
   indexParams,
   searchParamsForm,
   handleFormChange,
-  handleMetricTypeChange,
   handleConsistencyChange,
-  embeddingType,
-  metricType,
   consistency_level,
   topK,
   setParamsDisabled,
   wrapperClass = '',
 }) => {
-  const { t: indexTrans } = useTranslation('index');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
   const classes = getStyles();
 
   const { openSnackBar } = useContext(rootContext);
-  const metricOptions: Option[] = METRIC_OPTIONS_MAP[embeddingType];
 
   // search params key list, depends on index type
   // e.g. ['nprobe']
@@ -325,7 +319,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       {/* consistency level */}
       <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
-        value={consistency_level}
+        value={consistency_level || ConsistencyLevelEnum.Bounded}
         label={collectionTrans('consistencyLevel')}
         wrapperClass={classes.selector}
         variant="filled"

@@ -1,7 +1,7 @@
 const searchTrans = {
   firstTip: '2. 输入搜索向量 {{dimensionTip}}',
   secondTip: '1. 选择Collection和字段',
-  thirdTip: '搜索参数',
+  thirdTip: '搜索参数 {{metricType}}',
   vectorPlaceholder: '请在此输入您的向量值，例如 [1, 2, 3, 4]',
   collection: '已加载的Collection',
   noCollection: '没有已加载的Collection',

@@ -4,11 +4,6 @@ import { DataTypeEnum, DataTypeStringEnum } from '@/consts';
 import { MilvusIndex } from '@/http';
 
 export interface SearchParamsProps {
-  // if user created index, pass metric type choosed when creating
-  // else pass empty string
-  metricType: string;
-  // used for getting metric type options
-  embeddingType: DataTypeEnum.FloatVector | DataTypeEnum.BinaryVector;
   // default index type is FLAT
   indexType: string;
   // index extra params, e.g. nlist
@@ -18,7 +13,6 @@ export interface SearchParamsProps {
   };
   topK: number;
   handleFormChange: (form: { [key in string]: number }) => void;
-  handleMetricTypeChange: (type: string) => void;
   handleConsistencyChange: (type: string) => void;
   wrapperClass?: string;
   setParamsDisabled: (isDisabled: boolean) => void;
