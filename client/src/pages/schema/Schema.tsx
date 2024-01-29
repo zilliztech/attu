@@ -68,6 +68,8 @@ const Schema = () => {
   const [fields, setFields] = useState<FieldHttp[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const KeyIcon = icons.key;
+
   const {
     pageSize,
     handlePageSize,
@@ -82,76 +84,18 @@ const Schema = () => {
 
   const fetchFields = useCallback(
     async (collectionName: string) => {
-      const KeyIcon = icons.key;
-
       try {
         const collection = await Collection.getCollectionWithIndexInfo(
           collectionName
         );
+
+        // add custom fields
         const fields = collection.fieldWithIndexInfo.map(f =>
           Object.assign(f, {
-            _fieldNameElement: (
-              <div className={classes.nameWrapper}>
-                {f.name}
-                {f.isPrimaryKey ? (
-                  <div
-                    className={classes.iconTitle}
-                    title={collectionTrans('idFieldName')}
-                  >
-                    <KeyIcon classes={{ root: 'key' }} />
-                  </div>
-                ) : null}
-                {f.is_partition_key ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label="Partition key"
-                    variant="outlined"
-                  />
-                ) : null}
-                {f.autoID ? (
-                  <Chip
-                    className={classes.chip}
-                    size="small"
-                    label="auto id"
-                    variant="outlined"
-                  />
-                ) : null}
-              </div>
-            ),
-            // Array<VarChar(64)>[Capacity]
-            _fieldTypeElement: formatFieldType(f),
-            _indexParamElement: (
-              <div className={classes.paramWrapper}>
-                {f.indexParameterPairs?.length > 0 ? (
-                  f.indexParameterPairs.map(p =>
-                    p.value ? (
-                      <>
-                        <span key={p.key + p.value} className="param">
-                          <Typography variant="body1" className="key">
-                            {`${p.key}:`}
-                          </Typography>
-                          <Typography variant="body1" className="value">
-                            {p.value}
-                          </Typography>
-                        </span>
-                      </>
-                    ) : (
-                      ''
-                    )
-                  )
-                ) : (
-                  <>--</>
-                )}
-              </div>
-            ),
-            _indexTypeElement: (
-              <IndexTypeElement
-                data={f}
-                collectionName={collectionName}
-                cb={fetchFields}
-              />
-            ),
+            _fieldNameElement: f,
+            _fieldTypeElement: f,
+            _indexParamElement: f,
+            _indexTypeElement: f,
           })
         );
 
@@ -174,6 +118,37 @@ const Schema = () => {
       id: '_fieldNameElement',
       align: 'left',
       disablePadding: true,
+      formatter(f) {
+        return (
+          <div className={classes.nameWrapper}>
+            {f.name}
+            {f.isPrimaryKey ? (
+              <div
+                className={classes.iconTitle}
+                title={collectionTrans('idFieldName')}
+              >
+                <KeyIcon classes={{ root: 'key' }} />
+              </div>
+            ) : null}
+            {f.is_partition_key ? (
+              <Chip
+                className={classes.chip}
+                size="small"
+                label="Partition key"
+                variant="outlined"
+              />
+            ) : null}
+            {f.autoID ? (
+              <Chip
+                className={classes.chip}
+                size="small"
+                label="auto id"
+                variant="outlined"
+              />
+            ) : null}
+          </div>
+        );
+      },
       label: collectionTrans('fieldName'),
       sortBy: 'name',
     },
@@ -181,6 +156,9 @@ const Schema = () => {
       id: '_fieldTypeElement',
       align: 'left',
       disablePadding: false,
+      formatter(f) {
+        return formatFieldType(f);
+      },
       label: collectionTrans('fieldType'),
     },
     {
@@ -195,6 +173,15 @@ const Schema = () => {
       disablePadding: true,
       label: indexTrans('type'),
       sortBy: 'indexType',
+      formatter(f) {
+        return (
+          <IndexTypeElement
+            data={f}
+            collectionName={collectionName}
+            cb={fetchFields}
+          />
+        );
+      },
     },
     {
       id: '_indexParamElement',
@@ -202,6 +189,32 @@ const Schema = () => {
       disablePadding: false,
       label: indexTrans('param'),
       notSort: true,
+      formatter(f) {
+        return (
+          <div className={classes.paramWrapper}>
+            {f.indexParameterPairs?.length > 0 ? (
+              f.indexParameterPairs.map((p: any) =>
+                p.value ? (
+                  <>
+                    <span key={p.key + p.value} className="param">
+                      <Typography variant="body1" className="key">
+                        {`${p.key}:`}
+                      </Typography>
+                      <Typography variant="body1" className="value">
+                        {p.value}
+                      </Typography>
+                    </span>
+                  </>
+                ) : (
+                  ''
+                )
+              )
+            ) : (
+              <>--</>
+            )}
+          </div>
+        );
+      },
     },
     {
       id: 'desc',
