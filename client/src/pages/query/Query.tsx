@@ -206,7 +206,6 @@ const Query = () => {
       disabled: () => total == 0,
       label: btnTrans('empty'),
       tooltip: btnTrans('emptyTooltip'),
-      disabledTooltip: btnTrans('emptyDataDisabledTooltip'),
     },
     {
       type: 'button',

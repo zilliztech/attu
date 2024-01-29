@@ -34,6 +34,8 @@ const btnTrans = {
   star: '给我一颗小星星',
 
   // tips
+  loadColTooltip: '加载Collection',
+  releaseColTooltip: '释放Collection',
   importFileTooltip: '导入JSON或者CSV文件',
   importSampleDataTooltip: '导入样例数据',
   exportTooltip: '将选择的查询结果导出到CSV文件',
@@ -46,7 +48,6 @@ const btnTrans = {
 
   // disable tooltip
   downloadDisabledTooltip: '导出前请先选择数据',
-  emptyDataDisabledTooltip: '请先选择一个已加载的集合以清空数据',
   deleteDisableTooltip: '请至少选择一个要删除的项目。',
 };
 

@@ -31,6 +31,7 @@ import { LOADING_STATE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import Aliases from './Aliases';
+import { select } from 'd3';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -191,6 +192,76 @@ const Collections = () => {
         });
       },
       icon: 'add',
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('load'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <LoadCollectionDialog
+                collection={selectedCollections[0].collectionName}
+                onLoad={async () => {
+                  openSnackBar(
+                    successTrans('load', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  setSelectedCollections([]);
+                  await fetchData();
+                }}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'load',
+      disabled: data => {
+        return (
+          data.length !== 1 ||
+          data[0].status !== LOADING_STATE.UNLOADED ||
+          data[0].indexes.length === 0
+        );
+      },
+      tooltip: btnTrans('loadColTooltip'),
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('release'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <ReleaseCollectionDialog
+                collection={selectedCollections[0].collectionName}
+                onRelease={async () => {
+                  openSnackBar(
+                    successTrans('release', {
+                      name: collectionTrans('collection'),
+                    })
+                  );
+                  setSelectedCollections([]);
+                  await fetchData();
+                }}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'release',
+      tooltip: btnTrans('releaseColTooltip'),
+      disabled: data => {
+        return data.length !== 1 || data[0].status !== LOADING_STATE.LOADED;
+      },
     },
     {
       icon: 'uploadFile',
