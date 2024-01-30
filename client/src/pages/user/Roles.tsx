@@ -41,20 +41,7 @@ const Roles = () => {
     setRoles(
       roles.results.map((v: any) => ({
         name: v.role.name,
-        privilegeContent: (
-          <>
-            {v.entities.map((e: any) => {
-              return (
-                <Chip
-                  className={classes.chip}
-                  size="small"
-                  label={e.grantor.privilege.name}
-                  variant="outlined"
-                />
-              );
-            })}
-          </>
-        ),
+        privilegeContent: v,
         privileges: v.entities.map((e: any) => ({
           roleName: v.role.name,
           object: e.object.name,
@@ -181,6 +168,22 @@ const Roles = () => {
       id: 'privilegeContent',
       align: 'left',
       disablePadding: false,
+      formatter({ privilegeContent }) {
+        return (
+          <>
+            {privilegeContent.entities.map((e: any) => {
+              return (
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={e.grantor.privilege.name}
+                  variant="outlined"
+                />
+              );
+            })}
+          </>
+        );
+      },
       label: userTrans('privileges'),
     },
   ];
