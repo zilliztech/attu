@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { rootContext } from '@/context';
 import { DataService } from '@/http';
-import { useQuery, useSearchResult } from '@/hooks';
+import { useQuery } from '@/hooks';
 import { saveCsvAs } from '@/utils';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
@@ -25,6 +25,7 @@ import {
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import EmptyDataDialog from '../dialogs/EmptyDataDialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
+import { detectItemType } from '@/utils';
 
 const Query = () => {
   // get collection name from url
@@ -110,6 +111,7 @@ const Query = () => {
     expr,
     queryResult,
     setPageSize,
+    consistencyLevel,
     setConsistencyLevel,
     setCurrentPage,
     setExpr,
@@ -130,9 +132,6 @@ const Query = () => {
     },
   });
 
-  // Format result list
-  const queryResultMemo = useSearchResult(queryResult.data);
-
   // Toolbar settings
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -152,6 +151,7 @@ const Query = () => {
                 defaultSelectedCollection={collectionName}
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
+                collections={[collection.data]}
                 onInsert={() => {}}
               />
             ),
@@ -223,7 +223,7 @@ const Query = () => {
       type: 'button',
       btnVariant: 'text',
       onClick: async () => {
-        const json = JSON.stringify(selectedData);
+        let json = JSON.stringify(selectedData);
         try {
           await navigator.clipboard.writeText(json);
           alert(`${selectedData.length} rows copied to clipboard`);
@@ -324,7 +324,7 @@ const Query = () => {
           {/* </div> */}
           <CustomSelector
             options={CONSISTENCY_LEVEL_OPTIONS}
-            value={collection.consistencyLevel}
+            value={consistencyLevel}
             label={collectionTrans('consistency')}
             wrapperClass={classes.selector}
             disabled={!collection.loaded}
@@ -363,18 +363,32 @@ const Query = () => {
       </div>
       <AttuGrid
         toolbarConfigs={[]}
-        colDefinitions={collection.fields.map((i: any) => ({
-          id: i.name,
-          align: 'left',
-          disablePadding: false,
-          needCopy: true,
-          label:
-            i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
-        }))}
+        colDefinitions={collection.fields.map((i: any) => {
+          return {
+            id: i.name,
+            align: 'left',
+            disablePadding: false,
+            needCopy: true,
+            formatter(_: any, cellData: any) {
+              const itemType = detectItemType(cellData);
+              switch (itemType) {
+                case 'json':
+                case 'array':
+                case 'bool':
+                  const res = JSON.stringify(cellData);
+                  return <Typography title={res}>{res}</Typography>;
+                default:
+                  return cellData;
+              }
+            },
+            label:
+              i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
+          };
+        })}
         primaryKey={collection.primaryKey.value}
         openCheckBox={true}
         isLoading={!!tableLoading}
-        rows={queryResultMemo}
+        rows={queryResult.data}
         rowCount={total}
         selected={selectedData}
         setSelected={onSelectChange}

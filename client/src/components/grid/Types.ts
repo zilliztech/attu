@@ -111,7 +111,7 @@ export type ColDefinitionsType = {
     data?: any
   ) => void;
   getStyle?: (data: any) => {};
-  formatter?: (data: any) => any;
+  formatter?: (data: any, cellData?: any, cellIndex?: number) => any;
 
   onConnect?: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,

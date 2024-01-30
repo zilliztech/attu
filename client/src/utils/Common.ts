@@ -1,5 +1,6 @@
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
+import { csv } from 'd3';
 
 export const copyToCommand = (
   value: string,
@@ -80,10 +81,14 @@ export const sleep = (ms: number) => {
 export const detectItemType = (item: unknown) => {
   if (Array.isArray(item)) {
     return 'array';
-  } else if (typeof item === 'object' && item !== null) {
-    return 'json';
+  } else if (typeof item === 'string') {
+    return 'string';
+  } else if (typeof item === 'number') {
+    return 'number';
   } else if (typeof item === 'boolean') {
     return 'bool';
+  } else if (typeof item === 'object' && item !== null) {
+    return 'json';
   } else {
     return 'unknown';
   }

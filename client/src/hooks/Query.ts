@@ -13,6 +13,7 @@ export const useQuery = (params: {
     fields: [],
     primaryKey: { value: '', type: DataTypeStringEnum.Int64 },
     loaded: false,
+    data: null
   });
   const [consistencyLevel, setConsistencyLevel] = useState<string>('Bounded');
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -136,6 +137,7 @@ export const useQuery = (params: {
       fields: nameList as any[],
       primaryKey: { value: primaryKey['name'], type: primaryKey['fieldType'] },
       loaded: collection.state === LOAD_STATE.LoadStateLoaded,
+      data: collection
     });
   };
 
