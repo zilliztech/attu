@@ -29,7 +29,6 @@ const Segments = () => {
 
     const psegments = (await Segement.getPSegments(collectionName)) || {};
     const qsegments = (await Segement.getQSegments(collectionName)) || {};
-
     const combinedArray = psegments.infos.map(p => {
       const q: any =
         qsegments.infos.find(q => q.segmentID === p.segmentID)! || {};
@@ -132,6 +131,9 @@ const Segments = () => {
       align: 'left',
       disablePadding: false,
       label: collectionTrans('q_nodeIds'),
+      formatter(data, cellData, cellIndex) {
+        return cellData.join(',');
+      },
     },
     {
       id: 'q_state',
