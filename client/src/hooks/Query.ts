@@ -11,10 +11,10 @@ export const useQuery = (params: {
   // state
   const [collection, setCollection] = useState<any>({
     fields: [],
-    consistencyLevel: '',
     primaryKey: { value: '', type: DataTypeStringEnum.Int64 },
     loaded: false,
   });
+  const [consistencyLevel, setConsistencyLevel] = useState<string>('Bounded');
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
@@ -58,7 +58,7 @@ export const useQuery = (params: {
   // query function
   const query = async (
     page: number = currentPage,
-    consistency_level = collection.consistencyLevel
+    consistency_level = consistencyLevel
   ) => {
     const _expr = getPageExpr(page);
     // console.log('query expr', _expr);
@@ -131,15 +131,15 @@ export const useQuery = (params: {
       });
     }
     const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
+    setConsistencyLevel(collection.consistency_level);
     setCollection({
       fields: nameList as any[],
-      consistencyLevel: collection.consistency_level,
       primaryKey: { value: primaryKey['name'], type: primaryKey['fieldType'] },
       loaded: collection.state === LOAD_STATE.LoadStateLoaded,
     });
   };
 
-  const count = async (consistency_level = collection.consistency_level) => {
+  const count = async (consistency_level = consistencyLevel) => {
     const count = 'count(*)';
     const res = await Collection.queryData(params.collectionName, {
       expr: expr,
@@ -210,10 +210,10 @@ export const useQuery = (params: {
     pageSize,
     // update page size
     setPageSize,
+    // consistency level
+    consistencyLevel,
     // update consistency level
-    setConsistencyLevel: (level: string) => {
-      setCollection({ ...collection, consistencyLevel: level });
-    },
+    setConsistencyLevel,
     // current page
     currentPage,
     // query current data page
