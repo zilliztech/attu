@@ -86,7 +86,6 @@ zilliz/attu:dev
 <img src="./.github/images/create_collection.png" width="800" alt="attu" />
 <img src="./.github/images/create_index.png" width="800" alt="attu" />
 <img src="./.github/images/data_preview.png" width="800" alt="attu" />
-<img src="./.github/images/query_advanced_filter.png" width="800" alt="attu" />
 <img src="./.github/images/vector_search.png" width="800" alt="attu" />
 
 ## ✨ Contributing Code
