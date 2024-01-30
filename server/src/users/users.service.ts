@@ -1,4 +1,3 @@
-import { MilvusService } from '../milvus/milvus.service';
 import {
   CreateUserReq,
   UpdateUserReq,
@@ -10,20 +9,22 @@ import {
   HasRoleReq,
   listRoleReq,
   SelectUserReq,
+  ListGrantsReq,
+  OperateRolePrivilegeReq,
+} from '@zilliz/milvus2-sdk-node';
+import { throwErrorFromSDK } from '../utils/Error';
+import {
   Privileges,
   GlobalPrivileges,
   CollectionPrivileges,
   UserPrivileges,
   RbacObjects,
-  ListGrantsReq,
-  OperateRolePrivilegeReq,
-} from '@zilliz/milvus2-sdk-node';
-import { throwErrorFromSDK } from '../utils/Error';
+} from '../utils';
 import { clientCache } from '../app';
 
 export class UserService {
   async getUsers(clientId: string) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.listUsers();
     throwErrorFromSDK(res.status);
@@ -32,7 +33,7 @@ export class UserService {
   }
 
   async createUser(clientId: string, data: CreateUserReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createUser(data);
     throwErrorFromSDK(res);
@@ -41,7 +42,7 @@ export class UserService {
   }
 
   async updateUser(clientId: string, data: UpdateUserReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.updateUser(data);
     throwErrorFromSDK(res);
@@ -50,7 +51,7 @@ export class UserService {
   }
 
   async deleteUser(clientId: string, data: DeleteUserReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.deleteUser(data);
     throwErrorFromSDK(res);
@@ -58,7 +59,7 @@ export class UserService {
   }
 
   async getRoles(clientId: string, data?: listRoleReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.listRoles(data);
     throwErrorFromSDK(res.status);
@@ -67,7 +68,7 @@ export class UserService {
   }
 
   async selectUser(clientId: string, data?: SelectUserReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.selectUser(data);
     throwErrorFromSDK(res.status);
@@ -76,7 +77,7 @@ export class UserService {
   }
 
   async createRole(clientId: string, data: CreateRoleReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createRole(data);
     throwErrorFromSDK(res);
@@ -85,7 +86,7 @@ export class UserService {
   }
 
   async deleteRole(clientId: string, data: DropRoleReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.dropRole(data);
     throwErrorFromSDK(res);
@@ -93,7 +94,7 @@ export class UserService {
   }
 
   async assignUserRole(clientId: string, data: AddUserToRoleReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.addUserToRole(data);
     throwErrorFromSDK(res);
@@ -101,7 +102,7 @@ export class UserService {
   }
 
   async unassignUserRole(clientId: string, data: RemoveUserFromRoleReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.removeUserFromRole(data);
     throwErrorFromSDK(res);
@@ -109,7 +110,7 @@ export class UserService {
   }
 
   async hasRole(clientId: string, data: HasRoleReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.hasRole(data);
     throwErrorFromSDK(res.status);
@@ -127,14 +128,14 @@ export class UserService {
   }
 
   async listGrants(clientId: string, data: ListGrantsReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.listGrants(data);
     throwErrorFromSDK(res.status);
     return res;
   }
 
   async grantRolePrivilege(clientId: string, data: OperateRolePrivilegeReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.grantRolePrivilege(data);
     throwErrorFromSDK(res);
@@ -142,7 +143,7 @@ export class UserService {
   }
 
   async revokeRolePrivilege(clientId: string, data: OperateRolePrivilegeReq) {
-        const { milvusClient } = clientCache.get(clientId);
+    const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.revokeRolePrivilege(data);
     throwErrorFromSDK(res);
