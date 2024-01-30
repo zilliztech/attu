@@ -199,7 +199,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           key: 'radius',
           value: searchParamsForm['radius'] || '',
           min: 1,
-          max: 1024,
+          max: nlist,
           isInt: false,
           required: false,
           handleChange: value => {
@@ -211,8 +211,8 @@ const SearchParams: FC<SearchParamsProps> = ({
           label: 'range filter',
           key: 'range_filter',
           value: searchParamsForm['range_filter'] || '',
-          min: 1,
-          max: 1024,
+          min: topK,
+          max: Infinity,
           isInt: false,
           required: false,
           handleChange: value => {
