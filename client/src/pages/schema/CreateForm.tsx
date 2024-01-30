@@ -89,12 +89,12 @@ const CreateForm = (
     const nbits = generateNumberConfig('nbits', 'nbits', 1, 16);
     const nTrees = generateNumberConfig('nTrees', 'n_trees', 1, 1024);
 
-    const M = generateNumberConfig('M', 'M', 4, 64);
+    const M = generateNumberConfig('M', 'M', 1, 2048);
     const efConstruction = generateNumberConfig(
       'Ef Construction',
       'efConstruction',
-      8,
-      512
+      1,
+      2147483647
     );
 
     const outDegree = generateNumberConfig('out_degree', 'out_degree', 5, 300);
