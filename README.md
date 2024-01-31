@@ -5,17 +5,21 @@
 
 Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
 
-<img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
+<img src="./.github/images/data_preview.png" width="800" alt="attu data view" />
 
-## Quick start guide for Attu
+## Installation Guides
 
-> ❗ attu version 2.2.3 or higher is incompatible with Milvus versions < v2.2.
+Before you begin, make sure that you have Milvus installed on either [your server](https://milvus.io/docs/install_cluster-docker.md) or [Zilliz Cloud](https://cloud.zilliz.com/signup).
 
-If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
+### Compatiblity
+
+| Milvus Version | Recommended Attu Version                                         |
+| -------------- | ---------------------------------------------------------------- |
+| 2.3.x          | [v2.3.7](https://github.com/zilliztech/attu/releases/tag/v2.3.7) |
+| 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
+| 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
 
 ### Running Attu from Docker
-
-Before you begin, make sure that you have Milvus installed on either [your server](https://milvus.io/docs/install_cluster-docker.md) or [Zilliz Cloud](https://zilliz.com/cloud). Note that Attu only supports Milvus 2.x and some of the features are not supported yet for Zilliz Cloud.
 
 Here are the steps to start a container for running Attu:
 
@@ -24,18 +28,6 @@ docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
-
-### Running Attu within Kubernetes
-
-Before you begin, make sure that you have Milvus installed and running within your [K8's Cluster](https://milvus.io/docs/install_cluster-milvusoperator.md). Note that Attu only supports Milvus 2.x.
-
-Here are the steps to start a container for running Attu:
-
-```code
-kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s-deploy.yaml
-```
-
-Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
 
 #### Optional Environment Variables for Running Attu Docker
 
@@ -52,6 +44,8 @@ Make sure that the Attu pod can access the Milvus service. In the example provid
 
 To run the Docker container with these environment variables, use the following command:
 
+#### Attu SSL Example
+
 ```bash
 docker run -p 8000:3000 \
 -v /your-tls-file-path:/app/tls \
@@ -63,29 +57,34 @@ docker run -p 8000:3000 \
 zilliz/attu:dev
 ```
 
-## Common connection problem using Attu
+### Running Attu within Kubernetes
+
+Before you begin, make sure that you have Milvus installed and running within your [K8's Cluster](https://milvus.io/docs/install_cluster-milvusoperator.md). Note that Attu only supports Milvus 2.x.
+
+Here are the steps to start a container for running Attu:
+
+```code
+kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s-deploy.yaml
+```
+
+Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
+
+### Install Desktop application
+
+If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
+
+## FAQ
 
 - I can't log into the system
   > Make sure that the IP address of the Milvus server can be accessed from the Attu container. [#161](https://github.com/zilliztech/attu/issues/161)
+- TBD
 
-## Features
-
-- Basic Dashboard
-- Collection Management: Create, drop, and manage collections using our intuitive interface. You can also create aliases, view collection schemas, and configure indexes with custom parameters.
-- Data Management: Insert entities, preview your data, and run queries to analyze your results.
-- Vector Search/Query: Use our advanced filtering system to search and query vectors with precision.
-- System View: View system information and Milvus node configurations easily.
-- Milvus User Management: Manage users and roles and their permissions with ease.
-- Database Management: Manage databases in Milvus.
-- More Features Coming Soon: Stay tuned for additional features that will make Milvus even more powerful and user-friendly.
-
-## Screenshots
+## More Screenshots
 
 <img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
 <img src="./.github/images/collections.png" alt="attu" width="800" alt="attu" />
 <img src="./.github/images/create_collection.png" width="800" alt="attu" />
 <img src="./.github/images/create_index.png" width="800" alt="attu" />
-<img src="./.github/images/data_preview.png" width="800" alt="attu" />
 <img src="./.github/images/vector_search.png" width="800" alt="attu" />
 
 ## ✨ Contributing Code
