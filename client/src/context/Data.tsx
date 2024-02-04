@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, useContext } from 'react';
 import { Database, User, MilvusService } from '@/http';
 import { parseJson, getNode, getSystemConfigs } from '@/utils';
-import { MILVUS_NODE_TYPE } from '@/consts';
+import { LAST_TIME_DATABASE, MILVUS_NODE_TYPE } from '@/consts';
 import { authContext } from '@/context';
 import { DataContextType } from './Types';
 
@@ -16,7 +16,9 @@ export const dataContext = createContext<DataContextType>({
 const { Provider } = dataContext;
 export const DataProvider = (props: { children: React.ReactNode }) => {
   const { isAuth } = useContext(authContext);
-  const [database, setDatabase] = useState<string>('default');
+  const [database, setDatabase] = useState<string>(
+    window.localStorage.getItem(LAST_TIME_DATABASE) || 'default'
+  );
   const [databases, setDatabases] = useState<string[]>(['default']);
   const [data, setData] = useState<any>({});
 

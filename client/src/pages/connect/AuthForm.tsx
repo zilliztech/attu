@@ -247,7 +247,8 @@ export const AuthForm = (props: any) => {
     window.localStorage.setItem(LOGIN_USERNAME, form.username);
     // store address for next time using
     window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);
-    window.localStorage.setItem(LAST_TIME_DATABASE, form.database);
+    window.localStorage.setItem(LAST_TIME_DATABASE, result.database);
+
     // redirect to homepage
     navigate('/');
   };
@@ -306,7 +307,7 @@ export const AuthForm = (props: any) => {
             component={GitHubIcon}
             className={classes.icon}
           />
-           {btnTrans('star')}
+          {btnTrans('star')}
         </a>
       </section>
     </form>
