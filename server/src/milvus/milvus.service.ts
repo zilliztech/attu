@@ -13,6 +13,7 @@ import { clientCache } from '../app';
 
 export class MilvusService {
   private databaseService: DatabasesService;
+  private DEFAULT_DATABASE = 'default';
 
   constructor() {
     this.databaseService = new DatabasesService();
@@ -35,7 +36,12 @@ export class MilvusService {
     database?: string;
   }) {
     // Destructure the data object to get the connection details
-    const { address, username, password, database } = data;
+    const {
+      address,
+      username,
+      password,
+      database = this.DEFAULT_DATABASE,
+    } = data;
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
@@ -95,26 +101,12 @@ export class MilvusService {
         }),
       });
 
-      // Create a new database service and check if the specified database exists
-      let hasDatabase = false;
-      try {
-        hasDatabase = await this.databaseService.hasDatabase(
-          milvusClient.clientId,
-          database
-        );
-      } catch (_) {
-        // ignore error
-      }
-
-      // if database exists, use this db
-      if (hasDatabase) {
-        await this.databaseService.use(milvusClient.clientId, database);
-      }
+      await this.databaseService.use(milvusClient.clientId, database);
 
       // Return the address and the database (if it exists, otherwise return 'default')
       return {
         address,
-        database: hasDatabase ? database : 'default',
+        database: database || this.DEFAULT_DATABASE,
         clientId: milvusClient.clientId,
       };
     } catch (error) {
