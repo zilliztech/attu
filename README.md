@@ -131,10 +131,8 @@ Here are some helpful resources to get you started with Milvus:
 
 ## Community
 
-💬 Join our vibrant community on the Milvus Slack Channel where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
+💬 Join our vibrant community on the Milvus Discord where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
 
-<a href="https://slack.milvus.io/">
-    <img src="https://assets.zilliz.com/readme_slack_4a07c4c92f.png" alt="Miluvs Slack Channel"  height="150" width="500">
-</a>
+  <a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
 
-Also, don't forget to check out our documentation and GitHub repositories for more resources and information. We look forward to seeing you on the channel!
+
