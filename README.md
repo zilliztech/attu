@@ -10,7 +10,7 @@ Attu is an all-in-one milvus administration tool. With Attu, you can dramaticall
 
 Before you begin, make sure that you have Milvus installed on either [Zilliz Cloud](https://cloud.zilliz.com/signup) or [your own server](https://milvus.io/docs/install_standalone-docker.md).
 
-### Compatiblity
+### Compatibility
 
 | Milvus Version | Recommended Attu Version                                         |
 | -------------- | ---------------------------------------------------------------- |
