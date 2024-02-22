@@ -29,7 +29,7 @@ import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
-import { checkIndexBuilding, checkLoading, formatNumber } from '@/utils';
+import { checkIndexBuilding, checkLoading } from '@/utils';
 import Aliases from './Aliases';
 
 const useStyles = makeStyles((theme: Theme) => ({
