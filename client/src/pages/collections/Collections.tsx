@@ -29,9 +29,8 @@ import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
-import { checkIndexBuilding, checkLoading } from '@/utils';
+import { checkIndexBuilding, checkLoading, formatNumber } from '@/utils';
 import Aliases from './Aliases';
-import { select } from 'd3';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -544,6 +543,7 @@ const Collections = () => {
       id: 'entityCount',
       align: 'left',
       disablePadding: false,
+      sortBy: 'rowCount',
       label: (
         <span className="flex-center">
           {collectionTrans('rowCount')}

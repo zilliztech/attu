@@ -196,7 +196,7 @@ export class CollectionsService {
 
   /**
    * Get all collections meta data
-   * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: string, consistency_level:string}
+   * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: number, consistency_level:string}
    */
   async getAllCollections(
     clientId: string,
@@ -264,7 +264,7 @@ export class CollectionsService {
           schema: collectionInfo.schema,
           description: collectionInfo.schema.description,
           autoID,
-          rowCount: collectionStatisticsRes.data.row_count,
+          rowCount: Number(collectionStatisticsRes.data.row_count),
           id: collectionInfo.collectionID,
           loadedPercentage,
           createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
