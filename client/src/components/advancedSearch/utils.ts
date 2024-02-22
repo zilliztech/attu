@@ -37,10 +37,10 @@ export const formatValue = (value: string, type: string, operator: string) => {
 export const checkValue = (data: any): boolean => {
   let isLegal = false;
 
-  const regInt = /^\d+$/;
-  const regFloat = /^\d+\.\d+$/;
-  const regIntInterval = /^\[\d+(,\d+)*\]$/;
-  const regFloatInterval = /^\[\d+\.\d+(,\d+\.\d+)*\]$/;
+  const regInt = /^-?\d+$/;
+  const regFloat = /^-?\d+\.\d+$/;
+  const regIntInterval = /^\[-?\d+(,-?\d+)*\]$/;
+  const regFloatInterval = /^\[-?\d+\.\d+(,-?\d+\.\d+)*\]$/;
   const isIn = data.operator === 'in';
 
   switch (data.type) {

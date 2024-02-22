@@ -23,8 +23,14 @@ export const makeRandomId = (length: number): string =>
     .join('');
 
 export const makeDynamicBool = () => Math.random() > 0.5;
-export const makeRandomInt = (max: number) => Math.floor(Math.random() * max);
-export const makeFloat = () => Math.random();
+export const makeRandomInt = (max: number, allowNegative: boolean = true) => {
+  const value = Math.floor(Math.random() * max);
+  return allowNegative && Math.random() < 0.5 ? -value : value;
+};
+export const makeFloat = (allowNegative: boolean = true) => {
+  const value = Math.random();
+  return allowNegative && Math.random() < 0.5 ? -value : value;
+};
 
 export const genDataByType = (field: FieldSchema): any => {
   const { data_type, type_params, element_type } = field;

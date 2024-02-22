@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { DataTypeStringEnum, DYNAMIC_FIELD, LOAD_STATE } from '@/consts';
+import {
+  DataTypeStringEnum,
+  DYNAMIC_FIELD,
+  LOAD_STATE,
+  MIN_INT64,
+} from '@/consts';
 import { Collection } from '@/http';
 
 export const useQuery = (params: {
@@ -13,7 +18,7 @@ export const useQuery = (params: {
     fields: [],
     primaryKey: { value: '', type: DataTypeStringEnum.Int64 },
     loaded: false,
-    data: null
+    data: null,
   });
   const [consistencyLevel, setConsistencyLevel] = useState<string>('Bounded');
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -40,7 +45,7 @@ export const useQuery = (params: {
     let condition = '';
     if (!cache) {
       const defaultValue =
-        primaryKey.type === DataTypeStringEnum.VarChar ? "''" : '0';
+        primaryKey.type === DataTypeStringEnum.VarChar ? "''" : `${MIN_INT64}`;
       condition = `${primaryKey.value} > ${defaultValue}`;
     } else {
       const { firstPKId, lastPKId } = cache;
@@ -137,7 +142,7 @@ export const useQuery = (params: {
       fields: nameList as any[],
       primaryKey: { value: primaryKey['name'], type: primaryKey['fieldType'] },
       loaded: collection.state === LOAD_STATE.LoadStateLoaded,
-      data: collection
+      data: collection,
     });
   };
 
