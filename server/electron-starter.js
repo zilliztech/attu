@@ -1,6 +1,9 @@
 const electron = require('electron');
+const { updateElectronApp } = require('update-electron-app');
 const fs = require('fs');
 require('./dist/src/app');
+
+updateElectronApp();
 
 // Module to control application life.
 const app = electron.app;
@@ -40,7 +43,7 @@ function createWindow() {
 
   // get system lang
   mainWindow.webContents.executeJavaScript(`
-   localStorage.setItem('lang', '${app.getLocale()}');
+    localStorage.setItem('lang', '${app.getLocale()}');
   `);
   // mainWindow.maximize();
   // mainWindow.show();

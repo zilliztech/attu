@@ -30,7 +30,8 @@
     "morgan": "^1.10.0",
     "node-cron": "^3.0.2",
     "rimraf": "^5.0.1",
-    "socket.io": "^4.7.1"
+    "socket.io": "^4.7.1",
+    "update-electron-app": "^3.0.0"
   },
   "jest": {
     "testEnvironment": "node",
@@ -78,6 +79,7 @@
     "build-electron": "node electron-prebuild && yarn build",
     "prestart": "rm -rf dist && yarn build",
     "start": "nodemon src/app.ts",
+    "start:app": "electron .",
     "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/attu/express/src/app.js",
     "start:prod": "node dist/src/app.js",
     "start:debug": "DEBUG=express:* nodemon src/app.ts",
