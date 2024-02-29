@@ -1,12 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { PartitionsService } from './partitions.service';
-
-import {
-  GetPartitionsInfoDto,
-  ManagePartitionDto,
-  LoadPartitionsDto,
-} from './dto';
+import { ManagePartitionDto, LoadPartitionsDto } from './dto';
 
 export class PartitionController {
   private router: Router;

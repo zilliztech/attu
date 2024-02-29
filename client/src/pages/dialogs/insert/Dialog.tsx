@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import icons from '@/components/icons/Icons';
 import { Option } from '@/components/customSelector/Types';
-import { Partition } from '@/http';
+import { PartitionService } from '@/http';
 import { rootContext } from '@/context';
 import { combineHeadsAndData } from '@/utils';
 import { FILE_MIME_TYPE } from '@/consts';
@@ -132,9 +132,9 @@ const InsertContainer: FC<InsertContentProps> = ({
   // every time selected collection value change, partition options and default value will change
   const fetchPartition = useCallback(async () => {
     if (collectionValue) {
-      const partitions = await Partition.getPartitions(collectionValue);
+      const partitions = await PartitionService.getPartitions(collectionValue);
       const partitionOptions: Option[] = partitions.map(p => ({
-        label: p.partitionName,
+        label: p.name,
         value: p.name,
       }));
       setPartitionOptions(partitionOptions);
@@ -154,7 +154,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     } else {
       const options = partitions
         .map(p => ({
-          label: p.partitionName,
+          label: p.name,
           value: p.name,
         }))
         // when there's single selected partition

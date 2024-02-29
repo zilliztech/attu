@@ -18,7 +18,7 @@ export default class BaseModel {
     return this;
   }
 
-  static async findAll(data: findParamsType) {
+  static async findAll<T>(data: findParamsType) {
     const { params = {}, path = '', method = 'get' } = data;
     const type = method === 'post' ? 'data' : 'params';
     const httpConfig = {
@@ -30,14 +30,14 @@ export default class BaseModel {
     const res = await http(httpConfig);
     let list = res.data.data || [];
     if (!Array.isArray(list)) {
-      return list;
+      return list as T;
     }
 
     return Object.assign(
       list.map(v => new this(v)),
       {
         _total: res.data.data.total_count || list.length,
-      }
+      } as T
     );
   }
 

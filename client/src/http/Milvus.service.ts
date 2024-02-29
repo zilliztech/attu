@@ -2,14 +2,6 @@ import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import BaseModel from './BaseModel';
 
 export class MilvusService extends BaseModel {
-  static CONNECT_URL = '/milvus/connect';
-  static DISCONNECT_URL = '/milvus/disconnect';
-  static CHECK_URL = '/milvus/check';
-  static METRICS_URL = '/milvus/metrics';
-  static VERSION_URL = '/milvus/version';
-  static USE_DB_URL = '/milvus/usedb';
-  static TIGGER_CRON_URL = '/crons';
-
   constructor(props: {}) {
     super(props);
     Object.assign(this, props);
@@ -21,7 +13,7 @@ export class MilvusService extends BaseModel {
     password?: string;
     database?: string;
   }) {
-    return super.create({ path: this.CONNECT_URL, data }) as Promise<{
+    return super.create({ path: '/milvus/connect', data }) as Promise<{
       address: string;
       database: string;
       clientId: string;
@@ -29,35 +21,35 @@ export class MilvusService extends BaseModel {
   }
 
   static closeConnection() {
-    return super.create({ path: this.DISCONNECT_URL });
+    return super.create({ path: '/milvus/disconnect' });
   }
 
   static getVersion() {
-    return super.search({ path: this.VERSION_URL, params: {} });
+    return super.search({ path: '/milvus/version', params: {} });
   }
 
   static check(address: string) {
     return super.search({
-      path: this.CHECK_URL,
+      path: '/milvus/check',
       params: { address },
     }) as Promise<{ connected: boolean }>;
   }
 
   static getMetrics() {
     return super.search({
-      path: this.METRICS_URL,
+      path: '/milvus/metrics',
       params: {},
     });
   }
 
   static triggerCron(data: { name: WS_EVENTS; type: WS_EVENTS_TYPE }) {
     return super.update({
-      path: this.TIGGER_CRON_URL,
+      path: '/crons',
       data,
     });
   }
 
   static useDatabase(data: { database: string }) {
-    return super.create({ path: this.USE_DB_URL, data });
+    return super.create({ path: '/milvus/usedb', data });
   }
 }

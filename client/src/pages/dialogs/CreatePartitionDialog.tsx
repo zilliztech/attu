@@ -7,7 +7,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { Partition } from '@/http';
+import { PartitionService } from '@/http';
 import { PartitionCreateProps } from './Types';
 import { PartitionManageParam } from '../partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
@@ -66,7 +66,7 @@ const CreatePartition: FC<PartitionCreateProps> = ({
       type: ManageRequestMethods.CREATE,
     };
 
-    await Partition.managePartition(param);
+    await PartitionService.managePartition(param);
     onCreate && onCreate();
     handleCloseDialog();
   };

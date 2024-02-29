@@ -1,7 +1,7 @@
-import { PartitionView } from '../../partitions/Types';
 import { FieldHttp, Collection } from '@/http';
 import { Option } from '@/components/customSelector/Types';
 import { FILE_MIME_TYPE } from '@/consts';
+import { PartitionData } from '@server/types';
 
 export interface InsertContentProps {
   // optional on partition page since its collection is fixed
@@ -9,7 +9,7 @@ export interface InsertContentProps {
   // required on partition page since user can't select collection to get schema
   schema?: FieldHttp[];
   // required on partition page
-  partitions?: PartitionView[];
+  partitions?: PartitionData[];
 
   // insert default selected collection
   // if default value is not '', collections not selectable

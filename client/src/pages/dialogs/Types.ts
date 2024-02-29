@@ -1,5 +1,5 @@
 import { Collection } from '@/http';
-import { PartitionData } from '../partitions/Types';
+import { PartitionData } from '@server/types';
 
 export interface DropCollectionProps {
   collections: Collection[];

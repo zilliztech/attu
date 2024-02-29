@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Database } from '@/http';
+import { DatabaseService } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
@@ -12,15 +12,12 @@ import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import CreateUser from './Create';
+import CreateDatabaseDialog from './Create';
 
 const DatabaseAdminPage = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DB_ADMIN);
-  const { setDatabaseList } = useContext(dataContext);
+  const { databases, fetchDatabases } = useContext(dataContext);
 
-  const [databases, setDatabases] = useState<DatabaseData[]>([
-    { name: 'default' },
-  ]);
   const [selectedDatabase, setSelectedDatabase] = useState<DatabaseData[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -29,18 +26,8 @@ const DatabaseAdminPage = () => {
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
 
-  const fetchDatabases = async () => {
-    try {
-      const res = await Database.getDatabases();
-      setDatabases(res.db_names.map((v: string) => ({ name: v })));
-      setDatabaseList(res.db_names);
-    } catch (error) {
-      // do nothing
-    }
-  };
-
   const handleCreate = async (data: CreateDatabaseParams) => {
-    await Database.createDatabase(data);
+    await DatabaseService.createDatabase(data);
     fetchDatabases();
     openSnackBar(successTrans('create', { name: dbTrans('database') }));
     handleCloseDialog();
@@ -51,11 +38,12 @@ const DatabaseAdminPage = () => {
       const param: DropDatabaseParams = {
         db_name: db.name,
       };
-      await Database.dropDatabase(param);
+      await DatabaseService.dropDatabase(param);
     }
 
     openSnackBar(successTrans('delete', { name: dbTrans('database') }));
     fetchDatabases();
+    setSelectedDatabase([]);
     handleCloseDialog();
   };
 
@@ -68,7 +56,7 @@ const DatabaseAdminPage = () => {
           type: 'custom',
           params: {
             component: (
-              <CreateUser
+              <CreateDatabaseDialog
                 handleCreate={handleCreate}
                 handleClose={handleCloseDialog}
               />
@@ -124,16 +112,12 @@ const DatabaseAdminPage = () => {
     setSelectedDatabase(value);
   };
 
-  useEffect(() => {
-    fetchDatabases();
-  }, []);
-
   return (
     <div className="page-wrapper">
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={databases}
+        rows={databases.map(d => ({ name: d }))}
         rowCount={databases.length}
         primaryKey="name"
         showPagination={false}
