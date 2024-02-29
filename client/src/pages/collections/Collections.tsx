@@ -6,8 +6,8 @@ import Highlighter from 'react-highlight-words';
 import {
   rootContext,
   authContext,
+  systemContext,
   dataContext,
-  webSocketContext,
 } from '@/context';
 import { Collection, MilvusService, MilvusIndex } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
@@ -82,7 +82,7 @@ const Collections = () => {
   );
 
   const { setDialog, openSnackBar } = useContext(rootContext);
-  const { collections, setCollections } = useContext(webSocketContext);
+  const { collections, setCollections } = useContext(dataContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');

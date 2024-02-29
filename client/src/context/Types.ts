@@ -67,11 +67,7 @@ export type AuthContextType = {
   setClientId: Dispatch<SetStateAction<string>>;
 };
 
-export type DataContextType = {
-  database: string;
-  databases: string[];
-  setDatabase: Dispatch<SetStateAction<string>>;
-  setDatabaseList: Dispatch<SetStateAction<string[]>>;
+export type SystemContextType = {
   data?: any;
 };
 
@@ -92,7 +88,12 @@ export type NavContextType = {
   setNavInfo: (param: NavInfo) => void;
 };
 
-export type WebSocketType = {
+export type DataContextType = {
+  loading: boolean;
   collections: Collection[];
-  setCollections: (data: Collection[]) => void;
+  setCollections: Dispatch<SetStateAction<Collection[]>>;
+  database: string;
+  setDatabase: Dispatch<SetStateAction<string>>;
+  databases: string[];
+  setDatabaseList: Dispatch<SetStateAction<string[]>>;
 };

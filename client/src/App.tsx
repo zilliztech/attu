@@ -5,26 +5,26 @@ import {
   RootProvider,
   NavProvider,
   AuthProvider,
-  WebSocketProvider,
-  PrometheusProvider,
   DataProvider,
+  PrometheusProvider,
+  SystemProvider,
 } from './context';
 
 function App() {
   return (
     <AuthProvider>
       <RootProvider>
-        <DataProvider>
+        <SystemProvider>
           <PrometheusProvider>
-            <WebSocketProvider>
+            <DataProvider>
               <NavProvider>
                 <MuiPickersUtilsProvider utils={DayjsUtils}>
                   <Router></Router>
                 </MuiPickersUtilsProvider>
               </NavProvider>
-            </WebSocketProvider>
+            </DataProvider>
           </PrometheusProvider>
-        </DataProvider>
+        </SystemProvider>
       </RootProvider>
     </AuthProvider>
   );
