@@ -646,6 +646,7 @@ const Collections = () => {
           page={currentPage}
           onPageChange={handlePageChange}
           rowsPerPage={pageSize}
+          rowHeight={49}
           setRowsPerPage={handlePageSize}
           isLoading={loading}
           handleSort={handleGridSort}

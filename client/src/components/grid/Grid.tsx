@@ -103,7 +103,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     rowCount = 20,
     rowsPerPage = 10,
     tableHeaderHeight = 46,
-    rowHeight = 49,
+    rowHeight = 43,
     pagerHeight = 52,
     primaryKey = 'id',
     showToolbar = false,
@@ -181,17 +181,14 @@ const AttuGrid: FC<AttuGridType> = props => {
   const calculateRowCountAndPageSize = () => {
     if (tableRef.current && rowHeight > 0) {
       const containerHeight: number = tableRef.current.offsetHeight;
+      const hasToolbar = toolbarConfigs.length > 0;
+      const totleHeight =
+        containerHeight -
+        tableHeaderHeight -
+        (showPagination ? pagerHeight : 0) -
+        (hasToolbar ? 34 : 0);
 
-      const rowCount = Math.floor(
-        (containerHeight -
-          tableHeaderHeight -
-          (showPagination ? pagerHeight : 0)) /
-          rowHeight
-      );
-
-      // console.log('calc', tableRef.current.offsetHeight);
-      // console.log(rowCount, containerHeight, tableHeaderHeight);
-      setLoadingRowCount(rowCount);
+      const rowCount = Math.floor(totleHeight / rowHeight);
 
       if (setRowsPerPage) {
         setRowsPerPage(rowCount);
