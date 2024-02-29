@@ -10,15 +10,14 @@ import {
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { rootContext, webSocketContext, dataContext } from '@/context';
+import { rootContext, dataContext, systemContext } from '@/context';
 import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { useNavigationHook } from '@/hooks';
-import { Collection, MilvusService } from '@/http';
+import { Collection } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import { checkLoading, checkIndexBuilding, formatNumber } from '@/utils';
+import { formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
 
@@ -113,7 +112,8 @@ type statisticsType = {
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
-  const { database, databases, data } = useContext(dataContext);
+  const { database, databases, collections, loading } = useContext(dataContext);
+  const { data } = useContext(systemContext);
   const classes = useStyles();
   const theme = useTheme();
   const { t: overviewTrans } = useTranslation('overview');
@@ -123,36 +123,23 @@ const Overview = () => {
     collectionCount: 0,
     totalData: 0,
   });
-  const [loading, setLoading] = useState(false);
-  const { collections, setCollections } = useContext(webSocketContext);
+  const [loadingLocal, setLoadingLocal] = useState(false);
   const { openSnackBar } = useContext(rootContext);
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
-    setCollections([]);
-    const res = (await Collection.getStatistics()) as statisticsType;
-    const collections = await Collection.getCollections();
-    const hasLoadingOrBuildingCollection = collections.some(
-      v => checkLoading(v) || checkIndexBuilding(v)
-    );
-    // if some collection is building index or loading, start pulling data
-    if (hasLoadingOrBuildingCollection) {
-      MilvusService.triggerCron({
-        name: WS_EVENTS.COLLECTION,
-        type: WS_EVENTS_TYPE.START,
-      });
-    }
+    if (loading) return;
+    setLoadingLocal(true);
+    const res = (await Collection.getStatistics()) as any;
     setStatistics(res);
-    setCollections(collections);
-    setLoading(false);
-  }, [setCollections, database]);
+    setLoadingLocal(false);
+  }, [database, collections]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   const loadCollections = collections.filter(
-    c => c.status !== LOADING_STATE.UNLOADED
+    c => c.status !== LOADING_STATE.UNLOADED || (c as any).loaded === 2
   );
 
   const onRelease = () => {
@@ -221,6 +208,8 @@ const Overview = () => {
     return `${duration.toFixed(2)} ${unit}`;
   }, [data.rootCoord]);
 
+  const _loading = loadingLocal || loading;
+
   return (
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
       <section className={classes.dbWrapper}>
@@ -245,11 +234,13 @@ const Overview = () => {
           </div>
         ) : (
           <EmptyCard
-            loading={loading}
+            loading={_loading}
             wrapperClass={classes.emptyCard}
-            icon={!loading ? <CollectionIcon /> : undefined}
+            icon={!_loading ? <CollectionIcon /> : undefined}
             text={
-              loading ? overviewTrans('loading') : collectionTrans('noLoadData')
+              _loading
+                ? overviewTrans('loading')
+                : collectionTrans('noLoadData')
             }
           />
         )}

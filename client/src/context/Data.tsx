@@ -1,101 +1,131 @@
-import { createContext, useEffect, useState, useContext } from 'react';
-import { Database, User, MilvusService } from '@/http';
-import { parseJson, getNode, getSystemConfigs } from '@/utils';
-import { LAST_TIME_DATABASE, MILVUS_NODE_TYPE } from '@/consts';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
+import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
+import { url, Collection, MilvusService, Database } from '@/http';
+import { checkIndexBuilding, checkLoading } from '@/utils';
 import { DataContextType } from './Types';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
+import { LAST_TIME_DATABASE } from '@/consts';
 
 export const dataContext = createContext<DataContextType>({
+  loading: false,
+  collections: [],
+  setCollections: () => {},
   database: 'default',
-  databases: ['default'],
-  data: {},
   setDatabase: () => {},
+  databases: [],
   setDatabaseList: () => {},
 });
 
 const { Provider } = dataContext;
+
 export const DataProvider = (props: { children: React.ReactNode }) => {
-  const { isAuth } = useContext(authContext);
+  // local data state
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [database, setDatabase] = useState<string>(
     window.localStorage.getItem(LAST_TIME_DATABASE) || 'default'
   );
   const [databases, setDatabases] = useState<string[]>(['default']);
-  const [data, setData] = useState<any>({});
+  // auth context
+  const { isAuth, clientId } = useContext(authContext);
+  // socket ref
+  const socket = useRef<Socket | null>(null);
 
-  const fetchData = async () => {
+  // socket callback
+  const socketCallBack = useCallback(
+    (data: any) => {
+      const collections: Collection[] = data.map((v: any) => new Collection(v));
+
+      const hasLoadingOrBuildingCollection = collections.some(
+        v => checkLoading(v) || checkIndexBuilding(v)
+      );
+
+      setCollections(collections);
+      // If no collection is building index or loading collection
+      // stop server cron job
+      if (!hasLoadingOrBuildingCollection) {
+        MilvusService.triggerCron({
+          name: WS_EVENTS.COLLECTION,
+          type: WS_EVENTS_TYPE.STOP,
+        });
+      }
+    },
+    [database]
+  );
+
+  // http fetch collection
+  const fetchCollection = async () => {
     try {
-      // fetch all data
-      const [databases, metrics, users, roles] = await Promise.all([
-        Database.getDatabases(),
-        MilvusService.getMetrics(),
-        User.getUsers(),
-        User.getRoles(),
-      ]);
-
-      // parse data
-      const parsedJson = parseJson(metrics);
-
-      // get query nodes
-      const queryNodes = getNode(
-        parsedJson.allNodes,
-        MILVUS_NODE_TYPE.QUERYNODE
-      );
-
-      // get data nodes
-      const dataNodes = getNode(parsedJson.allNodes, MILVUS_NODE_TYPE.DATANODE);
-
-      // get data nodes
-      const indexNodes = getNode(
-        parsedJson.allNodes,
-        MILVUS_NODE_TYPE.INDEXNODE
-      );
-
-      // get root coord
-      const rootCoord = getNode(
-        parsedJson.allNodes,
-        MILVUS_NODE_TYPE.ROOTCOORD
-      )[0];
-
-      // get system config
-      const systemConfig = getSystemConfigs(parsedJson.workingNodes);
-      const deployMode = rootCoord.infos.system_info.deploy_mode;
-      const systemInfo = rootCoord.infos.system_info;
-
-      const data = {
-        users: users.usernames,
-        roles: roles.results,
-        queryNodes,
-        dataNodes,
-        indexNodes,
-        rootCoord,
-        deployMode,
-        parsedJson,
-        systemConfig,
-        systemInfo,
-      };
-
-      // store databases
-      setDatabases(databases.db_names);
-      // store other datas
-      setData(data);
+      setLoading(true);
+      const res = await Collection.getCollections();
+      setCollections(res);
+      setLoading(false);
     } catch (error) {
-      // do nothing
-      console.log('fetch data error', error);
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const fetchDatabase = async () => {
+    const res = await Database.getDatabases();
+    setDatabases(res.db_names);
   };
 
   useEffect(() => {
     if (isAuth) {
-      fetchData();
+      // fetch db
+      fetchDatabase();
+      // connect to socket server
+      socket.current = io(url as string);
+      // register client
+      socket.current.emit(WS_EVENTS.REGISTER, clientId);
+
+      socket.current.on('connect', function () {
+        console.log('--- ws connected ---', clientId);
+        setConnected(true);
+      });
+
+      socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
     } else {
-      setData({});
+      socket.current?.disconnect();
+      // clear collections
+      setCollections([]);
+      // clear database
+      setDatabases(['default']);
+      // set connected to false
+      setConnected(false);
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    if (connected) {
+      // clear data
+      setCollections([]);
+      // remove all listeners
+      socket.current?.offAny();
+      // listen to collection event
+      socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
+      // get data
+      fetchCollection();
+    }
+  }, [socketCallBack, connected]);
 
   return (
     <Provider
       value={{
-        data,
+        loading,
+        collections,
+        setCollections,
         database,
         databases,
         setDatabase,

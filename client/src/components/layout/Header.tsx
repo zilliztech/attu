@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Header: FC<HeaderType> = props => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
-  const { database, databases, setDatabase } = useContext(dataContext);
+  const { database, databases, setDatabase, loading } = useContext(dataContext);
   const { address, username, logout } = useContext(authContext);
   const navigate = useNavigate();
 
@@ -118,10 +118,11 @@ const Header: FC<HeaderType> = props => {
               options={dbOptions}
               variant="filled"
               wrapperClass={classes.database}
+              disabled={loading}
             />
           ) : null}
 
-          <Typography variant="h4" color="textPrimary">
+          <Typography variant="h5" color="textPrimary">
             {navInfo.navTitle}
           </Typography>
         </div>
