@@ -390,6 +390,7 @@ const Query = () => {
         isLoading={!!tableLoading}
         rows={queryResult.data}
         rowCount={total}
+        rowHeight={43}
         selected={selectedData}
         setSelected={onSelectChange}
         page={currentPage}

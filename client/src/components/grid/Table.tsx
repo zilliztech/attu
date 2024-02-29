@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     background: theme.palette.common.white,
-    padding: `${theme.spacing(1.5)} `,
+    padding: theme.spacing(1, 1.5),
   },
   cellContainer: {
     display: 'flex',
