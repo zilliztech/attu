@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { User } from '@/http';
+import { UserService } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
@@ -39,17 +39,17 @@ const Users = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchUsers = async () => {
-    const res = await User.getUsers();
-    const roles = await User.getRoles();
+    const res = await UserService.getUsers();
+    const roles = await UserService.getRoles();
 
     setUsers(
       res.usernames.map((v: string) => {
         const name = v;
-        const rolesByName = roles.results.filter((r: any) =>
+        const rolesByName = roles.results.filter(r =>
           r.users.map((u: any) => u.name).includes(name)
         );
         const originRoles =
-          v === 'root' ? ['admin'] : rolesByName.map((r: any) => r.role.name);
+          v === 'root' ? ['admin'] : rolesByName.map(r => r.role.name);
         return {
           name: v,
           role: originRoles.join(' , '),
@@ -60,9 +60,9 @@ const Users = () => {
   };
 
   const handleCreate = async (data: CreateUserParams) => {
-    await User.createUser(data);
+    await UserService.createUser(data);
     // assign user role if
-    await User.updateUserRole({
+    await UserService.updateUserRole({
       username: data.username,
       roles: data.roles,
     });
@@ -81,7 +81,7 @@ const Users = () => {
   };
 
   const handleUpdate = async (data: UpdateUserParams) => {
-    await User.updateUser(data);
+    await UserService.updateUser(data);
     fetchUsers();
     openSnackBar(successTrans('update', { name: userTrans('user') }));
     handleCloseDialog();
@@ -92,7 +92,7 @@ const Users = () => {
       const param: DeleteUserParams = {
         username: user.name,
       };
-      await User.deleteUser(param);
+      await UserService.deleteUser(param);
     }
 
     openSnackBar(successTrans('delete', { name: userTrans('user') }));
@@ -104,7 +104,7 @@ const Users = () => {
     {
       label: userTrans('user'),
       onClick: async () => {
-        const roles = await User.getRoles();
+        const roles = await UserService.getRoles();
         setDialog({
           open: true,
           type: 'custom',
