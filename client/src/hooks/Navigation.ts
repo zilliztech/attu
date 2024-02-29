@@ -27,7 +27,7 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
-      case ALL_ROUTER_TYPES.DATABASES: {
+      case ALL_ROUTER_TYPES.DB_ADMIN: {
         const navInfo: NavInfo = {
           navTitle: navTrans('database'),
           backPath: '',
