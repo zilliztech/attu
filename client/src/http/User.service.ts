@@ -8,44 +8,43 @@ import {
   UnassignRoleParams,
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
+import { Users, UsersWithRoles } from '@server/types';
 
-export class User extends BaseModel {
-  public names!: string[];
-
+export class UserService extends BaseModel {
   constructor(props: {}) {
     super(props);
     Object.assign(this, props);
   }
 
-  static USERS_URL = `/users`;
-  static ROLES_URL = `/users/roles`;
-
   // get user data
   static getUsers() {
-    return super.search({ path: this.USERS_URL, params: {} }) as Promise<{
-      usernames: string[];
-    }>;
+    return super.search<Users>({ path: '/users', params: {} });
+  }
+
+  // get all roles
+  static getRoles() {
+    return super.search<UsersWithRoles>({ path: `/users/roles`, params: {} });
   }
 
   // create user
   static createUser(data: CreateUserParams) {
-    return super.create({ path: this.USERS_URL, data });
+    return super.create({ path: '/users', data });
   }
 
   // update user (pass)
   static updateUser(data: UpdateUserParams) {
-    return super.update({ path: this.USERS_URL, data });
+    return super.update({ path: '/users', data });
   }
 
   // delete user
   static deleteUser(data: DeleteUserParams) {
-    return super.delete({ path: `${this.USERS_URL}/${data.username}` });
+    return super.delete({ path: `/users/${data.username}` });
   }
 
   // update user role
   static updateUserRole(data: AssignRoleParams) {
     return super.update({
-      path: `${this.USERS_URL}/${data.username}/role/update`,
+      path: `/users/${data.username}/role/update`,
       data,
     });
   }
@@ -53,32 +52,25 @@ export class User extends BaseModel {
   // unassign user role
   static unassignUserRole(data: UnassignRoleParams) {
     return super.update({
-      path: `${this.USERS_URL}/${data.username}/role/unassign`,
+      path: `/users/${data.username}/role/unassign`,
       data,
     });
   }
 
   // create a role
   static createRole(data: CreateRoleParams) {
-    return super.create({ path: `${this.ROLES_URL}`, data });
+    return super.create({ path: `/users/roles`, data });
   }
 
   // delete a role
   static deleteRole(data: DeleteRoleParams) {
-    return super.delete({ path: `${this.ROLES_URL}/${data.roleName}`, data });
-  }
-
-  // get all roles
-  static getRoles() {
-    return super.search({ path: `${this.ROLES_URL}`, params: {} }) as Promise<{
-      results: string[];
-    }>;
+    return super.delete({ path: `/users/roles/${data.roleName}`, data });
   }
 
   // update role privileges
   static updateRolePrivileges(data: CreateRoleParams) {
     return super.update({
-      path: `${this.ROLES_URL}/${data.roleName}/updatePrivileges`,
+      path: `/users/roles/${data.roleName}/updatePrivileges`,
       data,
     });
   }
@@ -86,7 +78,7 @@ export class User extends BaseModel {
   // get RBAC info
   static getRBAC() {
     return super.search({
-      path: `${this.USERS_URL}/rbac`,
+      path: `/users/rbac`,
       params: {},
     }) as Promise<{
       GlobalPrivileges: Record<string, unknown>;
