@@ -96,4 +96,6 @@ export type DataContextType = {
   setDatabase: Dispatch<SetStateAction<string>>;
   databases: string[];
   setDatabaseList: Dispatch<SetStateAction<string[]>>;
+  fetchDatabases: () => Promise<void>;
+  fetchCollections: () => Promise<void>;
 };

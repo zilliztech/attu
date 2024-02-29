@@ -9,16 +9,16 @@ import { usePaginationHook, useInsertDialogHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
-import { Collection, Partition, FieldHttp, DataService } from '@/http';
+import { Collection, PartitionService, FieldHttp } from '@/http';
 import InsertContainer from '../dialogs/insert/Dialog';
-import { InsertDataParam } from '../collections/Types';
 import CreatePartitionDialog from '../dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '../dialogs/DropPartitionDialog';
-import { PartitionView } from './Types';
+import { PartitionData } from '@server/types';
+import { formatNumber } from '@/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
-    height: `calc(100vh - 160px)`,
+    height: `100%`,
   },
   icon: {
     fontSize: '20px',
@@ -29,8 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: 'transparent',
   },
 }));
-
-let timer: NodeJS.Timeout | null = null;
 
 const Partitions = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();
@@ -46,30 +44,20 @@ const Partitions = () => {
 
   const { handleInsertDialog } = useInsertDialogHook();
 
-  const [selectedPartitions, setSelectedPartitions] = useState<PartitionView[]>(
+  const [selectedPartitions, setSelectedPartitions] = useState<PartitionData[]>(
     []
   );
-  const [partitions, setPartitions] = useState<PartitionView[]>([]);
-  const [searchedPartitions, setSearchedPartitions] = useState<PartitionView[]>(
+  const [partitions, setPartitions] = useState<PartitionData[]>([]);
+  const [searchedPartitions, setSearchedPartitions] = useState<PartitionData[]>(
     []
   );
-  const {
-    pageSize,
-    handlePageSize,
-    currentPage,
-    handleCurrentPage,
-    total,
-    data: partitionList,
-    order,
-    orderBy,
-    handleGridSort,
-  } = usePaginationHook(searchedPartitions);
+
   const [loading, setLoading] = useState<boolean>(true);
   const { setDialog, openSnackBar } = useContext(rootContext);
 
   const fetchPartitions = async (collectionName: string) => {
     try {
-      const res = await Partition.getPartitions(collectionName);
+      const res = await PartitionService.getPartitions(collectionName);
       setLoading(false);
       setPartitions(res);
     } catch (err) {
@@ -86,72 +74,41 @@ const Partitions = () => {
     fetchPartitions(collectionName);
   }, [collectionName]);
 
+  // search
   useEffect(() => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-    // add loading manually
-    setLoading(true);
-    timer = setTimeout(() => {
-      const searchWords = [search];
-      const list = search
-        ? partitions.filter(p => p.partitionName.includes(search))
-        : partitions;
+    const list = search
+      ? partitions.filter(p => p.name.includes(search))
+      : partitions;
 
-      const highlightList = list.map(c => {
-        Object.assign(c, {
-          _nameElement: (
-            <Highlighter
-              textToHighlight={c.partitionName}
-              searchWords={searchWords}
-              highlightClassName={classes.highlight}
-            />
-          ),
-        });
-        return c;
-      });
-      setLoading(false);
-      setSearchedPartitions(highlightList);
-    }, 300);
+    setSearchedPartitions(list);
   }, [search, partitions]);
 
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data: partitionList,
+    order,
+    orderBy,
+    handleGridSort,
+  } = usePaginationHook(searchedPartitions);
+
+  // on delete
   const onDelete = () => {
     openSnackBar(successTrans('delete', { name: t('partition') }));
     fetchPartitions(collectionName);
   };
 
+  // on handle search
   const handleSearch = (value: string) => {
     setSearch(value);
   };
 
-  const handleInsert = async (
-    collectionName: string,
-    partitionName: string,
-    fieldData: any[]
-  ): Promise<{ result: boolean; msg: string }> => {
-    const param: InsertDataParam = {
-      partition_name: partitionName,
-      fields_data: fieldData,
-    };
-    try {
-      await DataService.insertData(collectionName, param);
-      await DataService.flush(collectionName);
-      // update partitions
-      fetchPartitions(collectionName);
-
-      return { result: true, msg: '' };
-    } catch (err: any) {
-      const {
-        response: {
-          data: { message },
-        },
-      } = err;
-      return { result: false, msg: message || '' };
-    }
-  };
-
   const toolbarConfigs: ToolBarConfig[] = [
     {
+      btnVariant: 'text',
       label: t('create'),
       onClick: () => {
         setDialog({
@@ -173,7 +130,8 @@ const Partitions = () => {
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
-      label: btnTrans('insert'),
+      label: btnTrans('importFile'),
+      icon: 'uploadFile',
       onClick: async () => {
         const collection = await fetchCollectionDetail(collectionName);
         const schema = collection.schema.fields.map(f => new FieldHttp(f));
@@ -183,12 +141,12 @@ const Partitions = () => {
             schema={schema}
             defaultSelectedCollection={collectionName}
             defaultSelectedPartition={
-              selectedPartitions.length === 1
-                ? selectedPartitions[0].partitionName
-                : ''
+              selectedPartitions.length === 1 ? selectedPartitions[0].name : ''
             }
             partitions={partitions}
-            onInsert={handleInsert}
+            onInsert={async () => {
+              await fetchPartitions(collectionName);
+            }}
           />
         );
       },
@@ -240,17 +198,23 @@ const Partitions = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: '_nameElement',
+      id: 'name',
       align: 'left',
-      disablePadding: false,
+      disablePadding: true,
+      sortBy: 'collectionName',
+      formatter({ name }) {
+        const newName = name === '_default' ? 'Default partition' : name;
+        return (
+          <Highlighter
+            textToHighlight={newName}
+            searchWords={[search]}
+            highlightClassName={classes.highlight}
+          />
+        );
+      },
       label: t('name'),
     },
-    {
-      id: 'createdAt',
-      align: 'left',
-      disablePadding: false,
-      label: t('createdTime'),
-    },
+
     // {
     //   id: '_statusElement',
     //   align: 'left',
@@ -258,7 +222,7 @@ const Partitions = () => {
     //   label: t('status'),
     // },
     {
-      id: 'entityCount',
+      id: 'rowCount',
       align: 'left',
       disablePadding: false,
       label: (
@@ -269,6 +233,9 @@ const Partitions = () => {
           </CustomToolTip>
         </span>
       ),
+      formatter(data) {
+        return formatNumber(Number(data.rowCount));
+      },
     },
     // {
     //   id: 'action',
@@ -294,9 +261,18 @@ const Partitions = () => {
     //     },
     //   ],
     // },
+    {
+      id: 'createdTime',
+      align: 'left',
+      disablePadding: false,
+      formatter(data) {
+        return new Date(Number(data.createdTime)).toLocaleString();
+      },
+      label: t('createdTime'),
+    },
   ];
 
-  const handleSelectChange = (value: PartitionView[]) => {
+  const handleSelectChange = (value: PartitionData[]) => {
     setSelectedPartitions(value);
   };
 

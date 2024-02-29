@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { LoadReplicaReq } from '@/pages/collections/Types';
-import { VectorSearchParam } from '@/types/SearchTypes';
 import { QueryParam } from '@/pages/query/Types';
 import { formatNumber } from '@/utils/Common';
 import BaseModel from './BaseModel';
@@ -109,12 +108,6 @@ export class Collection extends BaseModel implements CollectionData {
     });
   }
 
-  static vectorSearchData(collectionName: string, params: VectorSearchParam) {
-    return super.query({
-      path: `${this.COLLECTIONS_URL}/${collectionName}/search`,
-      data: params,
-    });
-  }
 
   static createAlias(collectionName: string, params: { alias: string }) {
     return super.create({

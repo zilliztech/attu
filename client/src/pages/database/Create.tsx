@@ -14,7 +14,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateUser: FC<CreateDatabaseProps> = ({ handleCreate, handleClose }) => {
+const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({
+  handleCreate,
+  handleClose,
+}) => {
   const { t: databaseTrans } = useTranslation('database');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
@@ -81,4 +84,4 @@ const CreateUser: FC<CreateDatabaseProps> = ({ handleCreate, handleClose }) => {
   );
 };
 
-export default CreateUser;
+export default CreateDatabaseDialog;

@@ -1,5 +1,5 @@
 const insertTrans = {
-  import: 'Import Data',
+  import: 'Import File',
   targetTip: 'Where to put your data',
   file: 'File',
   uploaderLabel: 'Select a .csv or .json file',
@@ -10,7 +10,7 @@ const insertTrans = {
     `CSV or JSON file is supported`,
     `Ensure data column names match field label names in Schema.`,
     `Data should be <150MB and <100,000 rows for proper import.`,
-    `"Import Data" only appends new records; it doesn't update existing ones.`,
+    `"Import File" only appends new records; it doesn't update existing ones.`,
   ],
   overSizeWarning: 'File data size should less than {{size}}MB',
   isContainFieldNames: 'First row contains field names?',
@@ -27,8 +27,8 @@ const insertTrans = {
 
   statusLoading: 'Your data is importing now...It may take few minutes',
   statusLoadingTip: 'Please wait patiently, thank you',
-  statusSuccess: 'Import Data Successfully!',
-  statusError: 'Import Data Failed!',
+  statusSuccess: 'Import File Successfully!',
+  statusError: 'Import File Failed!',
 
   importSampleData: 'Insert sample data into {{collection}}',
   sampleDataSize: 'Choose sample data size',

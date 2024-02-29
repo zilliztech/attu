@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
-import { url, Collection, MilvusService, Database } from '@/http';
+import { url, Collection, MilvusService, DatabaseService } from '@/http';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import { DataContextType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
@@ -22,6 +22,8 @@ export const dataContext = createContext<DataContextType>({
   setDatabase: () => {},
   databases: [],
   setDatabaseList: () => {},
+  fetchDatabases: async () => {},
+  fetchCollections: async () => {},
 });
 
 const { Provider } = dataContext;
@@ -63,7 +65,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   );
 
   // http fetch collection
-  const fetchCollection = async () => {
+  const fetchCollections = async () => {
     try {
       setLoading(true);
       const res = await Collection.getCollections();
@@ -76,15 +78,16 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     }
   };
 
-  const fetchDatabase = async () => {
-    const res = await Database.getDatabases();
+  const fetchDatabases = async () => {
+    const res = await DatabaseService.getDatabases();
+
     setDatabases(res.db_names);
   };
 
   useEffect(() => {
     if (isAuth) {
       // fetch db
-      fetchDatabase();
+      fetchDatabases();
       // connect to socket server
       socket.current = io(url as string);
       // register client
@@ -116,7 +119,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // listen to collection event
       socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
       // get data
-      fetchCollection();
+      fetchCollections();
     }
   }, [socketCallBack, connected]);
 
@@ -130,6 +133,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         databases,
         setDatabase,
         setDatabaseList: setDatabases,
+        fetchDatabases,
+        fetchCollections,
       }}
     >
       {props.children}

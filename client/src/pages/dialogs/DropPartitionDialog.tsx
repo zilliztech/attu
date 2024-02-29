@@ -2,7 +2,7 @@ import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { Partition } from '@/http';
+import { PartitionService } from '@/http';
 import { PartitionManageParam } from '../partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
 import { DropPartitionProps } from './Types';
@@ -17,11 +17,11 @@ const DropPartitionDialog: FC<DropPartitionProps> = props => {
   const handleDelete = async () => {
     for (const partition of partitions) {
       const param: PartitionManageParam = {
-        partitionName: partition.partitionName,
+        partitionName: partition.name,
         collectionName,
         type: ManageRequestMethods.DELETE,
       };
-      await Partition.managePartition(param);
+      await PartitionService.managePartition(param);
     }
 
     handleCloseDialog();

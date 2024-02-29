@@ -16,7 +16,7 @@ import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { Field } from '@/components/advancedSearch/Types';
-import { Collection } from '@/http';
+import { Collection, DataService } from '@/http';
 import {
   parseValue,
   parseLocationSearch,
@@ -43,7 +43,7 @@ import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
   const location = useLocation();
-  const { database } = useContext(dataContext);
+  const { database, collections } = useContext(dataContext);
 
   // i18n
   const { t: searchTrans } = useTranslation('search');
@@ -53,7 +53,6 @@ const VectorSearch = () => {
 
   // data stored inside the component
   const [tableLoading, setTableLoading] = useState<boolean>(false);
-  const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   // fields for advanced filter
@@ -91,15 +90,6 @@ const VectorSearch = () => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResultMemo || []);
-
-  const collectionOptions: Option[] = useMemo(
-    () =>
-      collections.map(c => ({
-        label: c.collectionName,
-        value: c.collectionName,
-      })),
-    [collections]
-  );
 
   const outputFields: string[] = useMemo(() => {
     const s = collections.find(c => c.collectionName === selectedCollection);
@@ -249,10 +239,17 @@ const VectorSearch = () => {
   ]);
 
   // fetch data
-  const fetchCollections = useCallback(async () => {
-    const collections = await Collection.getCollections();
-    setCollections(collections.filter(c => c.status === LOADING_STATE.LOADED));
-  }, [database]);
+  const loadedCollections = collections.filter(
+    c => c.status === LOADING_STATE.LOADED
+  );
+  const collectionOptions: Option[] = useMemo(
+    () =>
+      loadedCollections.map(c => ({
+        label: c.collectionName,
+        value: c.collectionName,
+      })),
+    [loadedCollections]
+  );
 
   const fetchFieldsWithIndex = useCallback(
     async (collectionName: string, collections: Collection[]) => {
@@ -281,13 +278,11 @@ const VectorSearch = () => {
     [collections]
   );
 
-  useEffect(() => {
-    fetchCollections();
-  }, [fetchCollections]);
-
   // clear selection if database is changed
   useEffect(() => {
     setSelectedCollection('');
+    setVectors('');
+    setSearchResult(null);
   }, [database]);
 
   // get field options with index when selected collection changed
@@ -364,7 +359,10 @@ const VectorSearch = () => {
 
     setTableLoading(true);
     try {
-      const res = await Collection.vectorSearchData(selectedCollection, params);
+      const res = await DataService.vectorSearchData(
+        selectedCollection,
+        params
+      );
       setTableLoading(false);
       setSearchResult(res.results);
       setLatency(res.latency);
@@ -552,6 +550,7 @@ const VectorSearch = () => {
             rowCount={total}
             primaryKey="rank"
             page={currentPage}
+            rowHeight={43}
             onPageChange={handlePageChange}
             rowsPerPage={pageSize}
             setRowsPerPage={handlePageSize}

@@ -1,8 +1,7 @@
-import BaseModel from './BaseModel';
 import { KeyValuePair } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
 
-export class FieldHttp extends BaseModel {
+export class FieldHttp {
   fieldID!: string;
   type_params!: { key: string; value: string }[];
   is_primary_key!: true;
@@ -19,7 +18,6 @@ export class FieldHttp extends BaseModel {
   indexParameterPairs: { key: string; value: string }[] = [];
 
   constructor(props: {}) {
-    super(props);
     Object.assign(this, props);
   }
 
