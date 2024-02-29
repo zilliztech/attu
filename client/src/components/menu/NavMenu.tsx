@@ -20,7 +20,7 @@ const duration = `${timeout}ms`;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderRight: '1px solid #efefef',
+      borderRight: '1px solid #e0e0e0',
       background: '#fff',
       paddingTop: 0,
       paddingBottom: theme.spacing(4),
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 'initial',
       color: theme.palette.attuGrey.dark,
       '&:hover': {
-        backgroundColor: '#efefef',
+        backgroundColor: '#e0e0e0',
       },
     },
     itemIcon: {
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     active: {
       color: '#000',
-      backgroundColor: '#efefef',
+      backgroundColor: '#e0e0e0',
 
       '& .icon': {
         stroke: theme.palette.primary.main,
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'fixed',
       borderRadius: '50%',
       backgroundColor: 'white',
-      top: '64px',
+      top: '24px',
       transition: theme.transitions.create('all', {
         duration,
       }),

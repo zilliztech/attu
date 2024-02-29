@@ -2,13 +2,11 @@ import { FC } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { SvgIcon } from '@material-ui/core';
 import { BaseCardProps } from './Types';
-import { ReactComponent } from '../../assets/imgs/pic.svg';
+import pic from '../../assets/imgs/pic.svg?react';
 
 const getStyles = makeStyles(theme => ({
   root: {
     backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     boxSizing: 'border-box',
     height: '150px',
     padding: theme.spacing(2),
@@ -64,7 +62,7 @@ const BaseCard: FC<BaseCardProps> = props => {
       {desc && <span className={classes.desc}>{desc}</span>}
       {!content && !desc && (
         <div className={classes.emptyRoot}>
-          <SvgIcon viewBox="0 0 101 26" component={ReactComponent} {...props} />
+          <SvgIcon viewBox="0 0 101 26" component={pic} {...props} />
           <span className={classes.emptyTitle}>no data available</span>
           <span className={classes.emptyDesc}>
             There is no data to show you right now.

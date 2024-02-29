@@ -26,8 +26,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     gridTemplateColumns: 'repeat(4, minmax(300px, 1fr))',
   },
   contentContainer: {
-    borderRadius: '8px',
-    boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     display: 'grid',
     marginTop: '14px',
   },

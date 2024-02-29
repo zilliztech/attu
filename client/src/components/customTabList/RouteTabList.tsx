@@ -11,16 +11,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     '& .MuiTab-wrapper': {
       textTransform: 'capitalize',
-      fontWeight: 'bold',
+      fontWeight: 'normal',
       color: '#323232',
     },
+    background: '#fff',
+    border: '1px solid #e9e9ed',
+    padding: theme.spacing(0, 1),
   },
   tab: {
     height: theme.spacing(0.5),
     backgroundColor: theme.palette.primary.main,
   },
   tabContainer: {
-    borderBottom: '1px solid #e9e9ed',
+    borderBottom: '1px solid #e0e0e0',
   },
   tabContent: {
     minWidth: 0,
@@ -29,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   tabPanel: {
     flexBasis: 0,
     flexGrow: 1,
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
     overflow: 'hidden',
   },
 }));

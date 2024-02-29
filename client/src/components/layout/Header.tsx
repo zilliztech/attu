@@ -21,14 +21,17 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       color: theme.palette.common.black,
-      marginRight: theme.spacing(5),
+      paddingRight: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      backgroundColor: '#fff',
+      borderBottom: '1px solid #e0e0e0',
     },
     contentWrapper: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingTop: theme.spacing(3),
-      paddingLeft: theme.spacing(3),
+      paddingTop: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
       flex: 1,
     },
     navigation: {
@@ -45,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
 
       '& .text': {
-        marginRight: theme.spacing(3),
+        marginRight: theme.spacing(2),
 
         '& .address': {
           fontSize: '14px',
