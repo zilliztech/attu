@@ -2,7 +2,8 @@ import { Field } from '../components/advancedSearch/Types';
 import { IndexType } from '../pages/schema/Types';
 import { INDEX_TYPES_ENUM, DataTypeEnum, DataTypeStringEnum } from '@/consts';
 import { FieldOption } from '../types/SearchTypes';
-import { FieldHttp, MilvusIndex } from '@/http';
+import { FieldHttp } from '@/http';
+import { MilvusIndex } from '@server/types';
 
 /**
  * function to get EmbeddingType
@@ -58,12 +59,12 @@ export const classifyFields = (
 
 export const getVectorFieldOptions = (
   fields: FieldHttp[],
-  indexes: MilvusIndex[]
+  index_descriptions: MilvusIndex[]
 ): FieldOption[] => {
   const options: FieldOption[] = fields.map(f => {
     const embeddingType = getEmbeddingType(f.fieldType);
     const defaultIndex = getDefaultIndexType(embeddingType);
-    const index = indexes.find(i => i.field_name === f.name);
+    const index = index_descriptions.find(i => i.field_name === f.name);
 
     return {
       label: `${f.name} (${index?.indexType || defaultIndex})`,

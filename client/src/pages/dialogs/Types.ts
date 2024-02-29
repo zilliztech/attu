@@ -1,8 +1,7 @@
-import { Collection } from '@/http';
-import { PartitionData } from '@server/types';
+import { PartitionData, CollectionData } from '@server/types';
 
 export interface DropCollectionProps {
-  collections: Collection[];
+  collections: CollectionData[];
   onDelete: () => void;
 }
 
@@ -36,7 +35,7 @@ export interface EmptyDataProps {
 }
 
 export interface DuplicateCollectionDialogProps extends CreateAliasProps {
-  collections: Collection[];
+  collections: CollectionData[];
 }
 
 export interface RenameCollectionProps {

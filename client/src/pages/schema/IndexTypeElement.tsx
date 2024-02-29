@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
-import { MilvusIndex, FieldHttp } from '@/http';
+import { IndexService, FieldHttp } from '@/http';
 import { rootContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
@@ -80,8 +80,6 @@ const IndexTypeElement: FC<{
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
 
-  // const [createProgress, setCreateProgress] = useState<number>(0);
-
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
@@ -103,7 +101,9 @@ const IndexTypeElement: FC<{
       indexName: string
     ) => {
       // get fetch data
-      const index_descriptions = await MilvusIndex.getIndexInfo(collectionName);
+      const index_descriptions = await IndexService.getIndexInfo(
+        collectionName
+      );
 
       const indexDescription = index_descriptions.find(
         i => i.field_name === fieldName
@@ -145,7 +145,7 @@ const IndexTypeElement: FC<{
       index_name,
       extra_params: params,
     };
-    await MilvusIndex.createIndex(indexCreateParam);
+    await IndexService.createIndex(indexCreateParam);
     // reset status to default empty string
     setStatus(IndexState.Default);
     handleCloseDialog();
@@ -181,7 +181,7 @@ const IndexTypeElement: FC<{
       index_name: data.indexName!,
     };
 
-    await MilvusIndex.deleteIndex(indexDeleteParam);
+    await IndexService.deleteIndex(indexDeleteParam);
     // use 'delete' as special status for whether fetching index status check
     setStatus(IndexState.Delete);
     cb(collectionName);

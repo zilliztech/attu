@@ -122,25 +122,25 @@ export const useQuery = (params: {
   // get collection info
   const prepare = async (collectionName: string) => {
     const collection = await Collection.getCollectionInfo(collectionName);
-    const schemaList = collection.fields;
+    const schemaList = collection.schema.fields;
 
     const nameList = schemaList.map(v => ({
       name: v.name,
-      type: v.fieldType,
+      type: v.data_type,
     }));
 
     // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection.enableDynamicField) {
+    if (collection.schema.enable_dynamic_field) {
       nameList.push({
         name: DYNAMIC_FIELD,
         type: DataTypeStringEnum.JSON,
       });
     }
-    const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
+    const primaryKey = schemaList.find(v => v.is_primary_key === true)!;
     setConsistencyLevel(collection.consistency_level);
     setCollection({
       fields: nameList as any[],
-      primaryKey: { value: primaryKey['name'], type: primaryKey['fieldType'] },
+      primaryKey: { value: primaryKey['name'], type: primaryKey.data_type },
       loaded: collection.state === LOAD_STATE.LoadStateLoaded,
       data: collection,
     });

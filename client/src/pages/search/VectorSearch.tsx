@@ -92,7 +92,7 @@ const VectorSearch = () => {
   } = usePaginationHook(searchResultMemo || []);
 
   const outputFields: string[] = useMemo(() => {
-    const s = collections.find(c => c.collectionName === selectedCollection);
+    const s = collections.find(c => c.collection_name === selectedCollection);
 
     if (!s) {
       return [];
@@ -115,7 +115,7 @@ const VectorSearch = () => {
 
   const primaryKeyField = useMemo(() => {
     const selectedCollectionInfo = collections.find(
-      c => c.collectionName === selectedCollection
+      c => c.collection_name === selectedCollection
     );
     const fields = selectedCollectionInfo?.fields || [];
     return fields.find(f => f.isPrimaryKey)?.name;
@@ -245,15 +245,15 @@ const VectorSearch = () => {
   const collectionOptions: Option[] = useMemo(
     () =>
       loadedCollections.map(c => ({
-        label: c.collectionName,
-        value: c.collectionName,
+        label: c.collection_name,
+        value: c.collection_name,
       })),
     [loadedCollections]
   );
 
   const fetchFieldsWithIndex = useCallback(
     async (collectionName: string, collections: Collection[]) => {
-      const col = collections.find(c => c.collectionName === collectionName);
+      const col = collections.find(c => c.collection_name === collectionName);
 
       const fields = col?.fields ?? [];
 
@@ -262,7 +262,7 @@ const VectorSearch = () => {
       // only vector type fields can be select
       const fieldOptions = getVectorFieldOptions(
         vectorFields,
-        col?.indexes ?? []
+        col?.index_descriptions ?? []
       );
       setFieldOptions(fieldOptions);
       if (fieldOptions.length > 0) {
@@ -290,7 +290,7 @@ const VectorSearch = () => {
     if (selectedCollection !== '') {
       fetchFieldsWithIndex(selectedCollection, collections);
     }
-    const level = collections.find(c => c.collectionName == selectedCollection)
+    const level = collections.find(c => c.collection_name == selectedCollection)
       ?.consistency_level!;
     setSelectedConsistencyLevel(level);
   }, [selectedCollection, collections, fetchFieldsWithIndex]);
@@ -301,7 +301,7 @@ const VectorSearch = () => {
       const { collectionName } = parseLocationSearch(location.search);
       // collection name validation
       const isNameValid = collections
-        .map(c => c.collectionName)
+        .map(c => c.collection_name)
         .includes(collectionName);
       isNameValid && setSelectedCollection(collectionName);
     }
@@ -353,7 +353,7 @@ const VectorSearch = () => {
       vector_type: fieldType,
       consistency_level:
         selectedConsistencyLevel ||
-        collections.find(c => c.collectionName == selectedCollection)
+        collections.find(c => c.collection_name == selectedCollection)
           ?.consistency_level!,
     };
 

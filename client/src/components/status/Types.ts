@@ -1,5 +1,5 @@
 import { LOADING_STATE } from '@/consts';
-import { FieldHttp } from '@/http';
+import { FieldSchema } from '@server/types';
 
 export type StatusType = {
   status: LOADING_STATE;
@@ -10,7 +10,7 @@ export type StatusActionType = {
   status: LOADING_STATE;
   percentage?: string;
   action?: Function;
-  field: FieldHttp;
+  field: FieldSchema;
   collectionName: string;
   onIndexCreate: Function;
 };

@@ -127,3 +127,31 @@ export const convertFieldSchemaToFieldType = (fieldSchema: FieldSchema) => {
 
   return fieldType;
 };
+
+/**
+ *
+ * @param obj e.g. {name: 'test'}
+ * @returns key value pair, e.g. [{key: 'name', value: 'test'}]
+ */
+export const getKeyValuePairFromObj = (obj: {
+  [key in string]: any;
+}): KeyValuePair[] => {
+  const pairs: { key: string; value: string }[] = Object.entries(obj).map(
+    ([key, value]) => ({
+      key,
+      value: value as string,
+    })
+  );
+  return pairs;
+};
+
+export const getKeyValueListFromJsonString = (json: string): KeyValuePair[] => {
+  try {
+    const obj = JSON.parse(json);
+    const pairs = getKeyValuePairFromObj(obj);
+
+    return pairs;
+  } catch (err) {
+    throw err;
+  }
+};

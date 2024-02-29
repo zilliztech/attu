@@ -93,7 +93,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const classes = useStyles();
   const { setDialog } = useContext(rootContext);
 
-  const { collectionName, status: status, loadedPercentage, replicasInfo } = data;
+  const { collectionName, status: status, loadedPercentage, replicas } = data;
   const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
@@ -109,14 +109,20 @@ const CollectionCard: FC<CollectionCardProps> = ({
       type: 'custom',
       params: {
         component: (
-          <ReleaseCollectionDialog collection={collectionName} onRelease={onRelease} />
+          <ReleaseCollectionDialog
+            collection={collectionName}
+            onRelease={onRelease}
+          />
         ),
       },
     });
   };
 
   const onVectorSearchClick = () => {
-    navigate({ pathname: '/search', search: `?collectionName=${collectionName}` });
+    navigate({
+      pathname: '/search',
+      search: `?collectionName=${collectionName}`,
+    });
   };
 
   useEffect(() => {
@@ -159,11 +165,11 @@ const CollectionCard: FC<CollectionCardProps> = ({
           <RightArrowIcon classes={{ root: classes.icon }} />
         </Link>
         <ul className={classes.content}>
-          {replicasInfo && replicasInfo.length > 1 ? (
+          {replicas && replicas.length > 1 ? (
             <li>
               <Typography>{collectionTrans('replicaNum')}</Typography>:
               <Typography className={classes.rowCount}>
-                {replicasInfo.length}
+                {replicas.length}
               </Typography>
             </li>
           ) : null}
