@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CompactDialogProps } from './Types';
-import { Segement } from '@/http';
+import { SegementService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -21,12 +21,11 @@ const CompactDialog: FC<CompactDialogProps> = props => {
 
   const { handleCloseDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
-  const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
   const handleConfirm = async () => {
-    await Segement.compact(collectionName);
+    await SegementService.compact(collectionName);
 
     handleCloseDialog();
     cb && cb();

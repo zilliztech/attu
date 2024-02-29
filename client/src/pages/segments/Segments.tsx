@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { Segement } from '@/http';
+import { SegementService } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import { rootContext } from '@/context';
 import AttuGrid from '@/components/grid/Grid';
@@ -27,8 +27,10 @@ const Segments = () => {
   const fetchSegments = async () => {
     setLoading(true);
 
-    const psegments = (await Segement.getPSegments(collectionName)) || {};
-    const qsegments = (await Segement.getQSegments(collectionName)) || {};
+    const psegments =
+      (await SegementService.getPSegments(collectionName)) || {};
+    const qsegments =
+      (await SegementService.getQSegments(collectionName)) || {};
     const combinedArray = psegments.infos.map(p => {
       const q: any =
         qsegments.infos.find(q => q.segmentID === p.segmentID)! || {};
@@ -50,15 +52,6 @@ const Segments = () => {
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
-    {
-      type: 'button',
-      btnVariant: 'text',
-      onClick: () => {
-        fetchSegments();
-      },
-      label: btnTrans('refresh'),
-      icon: 'refresh',
-    },
     {
       type: 'button',
       btnVariant: 'text',
@@ -98,6 +91,15 @@ const Segments = () => {
       },
       label: btnTrans('flush'),
       icon: 'saveAs',
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        fetchSegments();
+      },
+      label: btnTrans('refresh'),
+      icon: 'refresh',
     },
   ];
 
