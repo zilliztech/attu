@@ -15,7 +15,7 @@ import Segments from '../segments/Segments';
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
-    gap: theme.spacing(4),
+    gap: theme.spacing(2),
   },
   card: {
     boxShadow: 'none',

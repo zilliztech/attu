@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   tabContainer: {
-    borderBottom: '1px solid #e9e9ed',
+    borderBottom: '1px solid #e0e0e0',
   },
   tabContent: {
     minWidth: 0,

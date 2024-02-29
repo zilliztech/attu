@@ -8,8 +8,6 @@ import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 const getStyles = makeStyles(theme => ({
   root: {
     backgroundColor: '#F6F6F6',
-    borderTopRightRadius: '8px',
-    borderBottomRightRadius: '8px',
     height: '100%',
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',

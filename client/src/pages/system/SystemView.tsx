@@ -14,7 +14,7 @@ import DataCard from './DataCard';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: '12px 24px',
+    margin: '16px',
     position: 'relative',
     height: 'fit-content',
     display: 'flex',
@@ -30,8 +30,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     transition: 'opacity .5s',
   },
   contentContainer: {
-    borderRadius: '8px',
-    boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     display: 'grid',
     gridTemplateColumns: '1fr auto',
     marginTop: '14px',
@@ -102,26 +100,6 @@ const SystemView: any = () => {
 
   return (
     <div className={classes.root}>
-      {/* hide cards until metrics api can provide enough data*/}
-      {/* <div
-        className={clsx(
-          classes.cardContainer,
-          selectedCord && classes.transparent
-        )}
-      >
-        <ProgressCard
-          title={t('diskTitle')}
-          usage={system.diskUsage}
-          total={system.disk}
-        />
-        <ProgressCard
-          title={t('memoryTitle')}
-          usage={system.memoryUsage}
-          total={system.memory}
-        />
-        <LineChartCard title={t('qpsTitle')} value={qps} />
-        <LineChartCard title={t('latencyTitle')} value={latency} />
-      </div> */}
       <div className={classes.contentContainer}>
         <Topo
           nodes={nodes}

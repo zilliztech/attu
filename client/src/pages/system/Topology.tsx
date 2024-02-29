@@ -4,8 +4,6 @@ import { useEffect } from 'react';
 
 const getStyles = makeStyles((theme: Theme) => ({
   container: {
-    borderTopLeftRadius: '8px',
-    borderBottomLeftRadius: '8px',
     overflow: 'auto',
     backgroundColor: 'white',
     // height: 'auto',
