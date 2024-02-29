@@ -14,8 +14,8 @@ import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './Create';
 
-const DatabasePage = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.DATABASES);
+const DatabaseAdminPage = () => {
+  useNavigationHook(ALL_ROUTER_TYPES.DB_ADMIN);
   const { setDatabaseList } = useContext(dataContext);
 
   const [databases, setDatabases] = useState<DatabaseData[]>([
@@ -152,4 +152,4 @@ const DatabasePage = () => {
   );
 };
 
-export default DatabasePage;
+export default DatabaseAdminPage;

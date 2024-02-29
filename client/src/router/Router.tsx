@@ -19,7 +19,7 @@ const RouterComponent = () => {
       <Routes>
         <Route path="/" element={<Index />}>
           <Route index element={<Database />} />
-          <Route path="databases" element={<Database />} />
+          <Route path="db-admin" element={<Database />} />
           <Route path="collections" element={<Collections />} />
           <Route path="collections/:collectionName" element={<Collection />} />
           <Route

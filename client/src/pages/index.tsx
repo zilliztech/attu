@@ -67,7 +67,7 @@ function Index() {
       return navTrans('user');
     }
 
-    if (location.pathname.includes('databases')) {
+    if (location.pathname.includes('db-admin')) {
       return navTrans('database');
     }
 
@@ -112,7 +112,7 @@ function Index() {
       {
         icon: icons.database,
         label: navTrans('database'),
-        onClick: () => navigate('/databases'),
+        onClick: () => navigate('/db-admin'),
       }
     );
   }
