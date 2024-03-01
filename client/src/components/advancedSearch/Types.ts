@@ -1,22 +1,17 @@
-import { DataTypeStringEnum } from '@/consts';
+import { FieldObject } from '@server/types';
 
 export interface ConditionProps {
   others?: object;
   onDelete: () => void;
   triggerChange: (id: string, data: TriggerChangeData) => void;
-  fields: Field[];
+  fields: FieldObject[];
   id: string;
   initData: any;
   className?: string;
 }
 
-export interface Field {
-  name: string;
-  type: DataTypeStringEnum;
-}
-
 export interface TriggerChangeData {
-  field: Field;
+  field: FieldObject;
   op: string;
   value: string;
   originValue: string;
@@ -27,7 +22,7 @@ export interface TriggerChangeData {
 
 export interface ConditionGroupProps {
   others?: object;
-  fields: Field[];
+  fields: FieldObject[];
   handleConditions: any;
   conditions: any[];
 }
@@ -61,7 +56,7 @@ export interface DialogProps {
   onReset: () => void;
   onCancel: () => void;
   title: string;
-  fields: Field[];
+  fields: FieldObject[];
   handleConditions: any;
   conditions: any[];
   isLegal: boolean;
@@ -77,11 +72,11 @@ export interface FilterProps {
   others?: { [key: string]: any };
   onSubmit: (data: any) => void;
   tooltipPlacement?: 'left' | 'right' | 'bottom' | 'top';
-  fields: Field[];
+  fields: FieldObject[];
 }
 
 export interface ConditionData {
-  field: Field;
+  field: FieldObject;
   op: string;
   value: string;
   isCorrect: boolean;

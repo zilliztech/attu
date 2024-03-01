@@ -19,28 +19,19 @@ import { DataService } from '@/http';
 import {
   parseValue,
   parseLocationSearch,
-  classifyFields,
-  getDefaultIndexType,
-  getEmbeddingType,
-  getNonVectorFieldsForFilter,
   getVectorFieldOptions,
   cloneObj,
   generateVector,
 } from '@/utils';
-import {
-  LOADING_STATE,
-  DEFAULT_METRIC_VALUE_MAP,
-  DYNAMIC_FIELD,
-  DataTypeEnum,
-} from '@/consts';
+import { LOADING_STATE, DYNAMIC_FIELD, DataTypeEnum } from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
 import { TOP_K_OPTIONS } from './Constants';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 import {
-  CollectionObject,
   FieldObject,
+  CollectionObject,
   CollectionFullObject,
 } from '@server/types';
 
@@ -161,47 +152,30 @@ const VectorSearch = () => {
   const [selectedConsistencyLevel, setSelectedConsistencyLevel] =
     useState<string>('');
 
-  const {
-    indexType,
-    indexParams,
-    fieldType,
-    embeddingType,
-    selectedFieldDimension,
-  } = useMemo(() => {
-    if (selectedField !== '') {
-      // field options must contain selected field, so selectedFieldInfo will never undefined
-      const selectedFieldInfo = fieldOptions.find(
-        f => f.value === selectedField
-      );
-      const index = selectedFieldInfo?.indexInfo;
-      const embeddingType = getEmbeddingType(selectedFieldInfo!.fieldType);
-      const metric =
-        index?.metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
-      const indexParams = index?.indexParameterPairs || [];
-      const dim = selectedFieldInfo?.dimension || 0;
-      setSelectedMetricType(metric);
+  const { indexType, indexParams, fieldType, selectedFieldDimension } =
+    useMemo(() => {
+      if (selectedField !== '') {
+        // field options must contain selected field, so selectedFieldInfo will never undefined
+        const field = fieldOptions.find(f => f.value === selectedField)?.field;
+        const metric = field?.index.metricType || '';
+        setSelectedMetricType(metric);
+
+        return {
+          metricType: metric,
+          indexType: field?.index.indexType,
+          indexParams: field?.index.indexParameterPairs || [],
+          fieldType: field?.dataType,
+          selectedFieldDimension: field?.dimension || 0,
+        };
+      }
 
       return {
-        metricType: metric,
-        indexType: index?.indexType || getDefaultIndexType(embeddingType),
-        indexParams,
-        fieldType:
-          DataTypeEnum[
-            selectedFieldInfo?.fieldType! as keyof typeof DataTypeEnum
-          ],
-        embeddingType,
-        selectedFieldDimension: dim,
+        indexType: '',
+        indexParams: [],
+        fieldType: DataTypeEnum.FloatVector,
+        selectedFieldDimension: 0,
       };
-    }
-
-    return {
-      indexType: '',
-      indexParams: [],
-      fieldType: 0,
-      embeddingType: DataTypeEnum.FloatVector,
-      selectedFieldDimension: 0,
-    };
-  }, [selectedField, fieldOptions]);
+    }, [selectedField, fieldOptions]);
 
   /**
    * vector value validation
@@ -258,18 +232,11 @@ const VectorSearch = () => {
   );
 
   const fetchFieldsWithIndex = useCallback(
-    async (collectionName: string, collections: CollectionObject[]) => {
+    async (collectionName: string, collections: CollectionFullObject[]) => {
       const col = collections.find(c => c.collection_name === collectionName);
 
-      const fields = col?.schema.fields ?? [];
-
-      const { vectorFields, nonVectorFields } = classifyFields(fields);
-
       // only vector type fields can be select
-      const fieldOptions = getVectorFieldOptions(
-        vectorFields,
-        col?.index_descriptions ?? []
-      );
+      const fieldOptions = getVectorFieldOptions(col?.schema.vectorFields!);
       setFieldOptions(fieldOptions);
       if (fieldOptions.length > 0) {
         // set first option value as default field value
@@ -277,9 +244,7 @@ const VectorSearch = () => {
         setSelectedField(defaultFieldValue as string);
       }
 
-      // only non vector type fields can be advanced filter
-      const filterFields = getNonVectorFieldsForFilter(nonVectorFields);
-      setFilterFields(filterFields);
+      setFilterFields(col?.schema.scalarFields!);
     },
     [collections]
   );
@@ -294,7 +259,10 @@ const VectorSearch = () => {
   // get field options with index when selected collection changed
   useEffect(() => {
     if (selectedCollection !== '') {
-      fetchFieldsWithIndex(selectedCollection, collections);
+      fetchFieldsWithIndex(
+        selectedCollection,
+        collections as CollectionFullObject[]
+      );
     }
     const level = collections.find(c => c.collection_name == selectedCollection)
       ?.consistency_level!;
@@ -356,7 +324,7 @@ const VectorSearch = () => {
       expr,
       search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
-      vector_type: fieldType,
+      vector_type: fieldType as DataTypeEnum,
       consistency_level:
         selectedConsistencyLevel ||
         collections.find(c => c.collection_name == selectedCollection)
@@ -486,7 +454,7 @@ const VectorSearch = () => {
             handleConsistencyChange={(level: string) => {
               setSelectedConsistencyLevel(level);
             }}
-            indexType={indexType}
+            indexType={indexType!}
             indexParams={indexParams!}
             searchParamsForm={searchParam}
             handleFormChange={setSearchParam}

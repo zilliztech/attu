@@ -67,7 +67,9 @@ export class CollectionsService {
 
   async describeCollection(clientId: string, data: DescribeCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.describeCollection(data);
+    const res = (await milvusClient.describeCollection(
+      data
+    )) as DescribeCollectionRes;
 
     // get index info for collections
     const indexRes = await this.schemaService.describeIndex(clientId, {
@@ -75,6 +77,9 @@ export class CollectionsService {
     });
 
     throwErrorFromSDK(res.status);
+
+    const vectorFields: FieldObject[] = [];
+    const scalarFields: FieldObject[] = [];
 
     // append index info to each field
     res.schema.fields.forEach((field: FieldObject) => {
@@ -95,9 +100,28 @@ export class CollectionsService {
         Number(
           field.type_params.find(item => item.key === 'max_length')?.value
         ) || -1;
+
+      // classify fields
+      if (
+        field.data_type === 'BinaryVector' ||
+        field.data_type === 'FloatVector'
+      ) {
+        vectorFields.push(field);
+      } else {
+        scalarFields.push(field);
+      }
+
+      if (field.is_primary_key) {
+        res.schema.primaryField = field;
+      }
     });
 
-    return res as DescribeCollectionRes;
+    // add extra data to schema
+    res.schema.hasVectorIndex = vectorFields.some(v => v.index);
+    res.schema.scalarFields = scalarFields;
+    res.schema.vectorFields = vectorFields;
+
+    return res;
   }
 
   async renameCollection(clientId: string, data: RenameCollectionReq) {

@@ -26,7 +26,7 @@ import { LOADING_STATE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexBuilding, checkLoading, formatNumber } from '@/utils';
 import Aliases from './Aliases';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -130,7 +130,7 @@ const Collections = () => {
     fetchData();
   }, [fetchData, database]);
 
-  const getVectorField = (collection: CollectionObject) => {
+  const getVectorField = (collection: CollectionFullObject) => {
     return collection.schema.fields!.find(
       d => d.data_type === 'FloatVector' || d.data_type === 'BinaryVector'
     );
@@ -223,7 +223,7 @@ const Collections = () => {
         return (
           data.length !== 1 ||
           data[0].status !== LOADING_STATE.UNLOADED ||
-          data[0].index_descriptions.length === 0
+          !data[0].schema.hasVectorIndex
         );
       },
       tooltip: btnTrans('loadColTooltip'),
@@ -359,7 +359,6 @@ const Collections = () => {
       tooltip: btnTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
-
     {
       icon: 'delete',
       type: 'button',
@@ -448,7 +447,7 @@ const Collections = () => {
             status={v.status}
             onIndexCreate={fetchData}
             percentage={v.loadedPercentage}
-            field={getVectorField(v)!}
+            field={v.schema}
             collectionName={v.collection_name}
             action={() => {
               setDialog({

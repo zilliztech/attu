@@ -1,4 +1,4 @@
-import { FC, useMemo, MouseEvent, forwardRef } from 'react';
+import { FC, useMemo, MouseEvent } from 'react';
 import {
   ChildrenStatusType,
   StatusActionType,
@@ -131,12 +131,11 @@ const StatusAction: FC<StatusActionType> = props => {
   }, [status, statusTrans, percentage]);
 
   // UI state
-  const hasVectorIndex = field?.indexType !== '';
   const collectionLoaded = status === LOADING_STATE.LOADED;
 
   return (
     <div className={classes.root}>
-      {hasVectorIndex && (
+      {field.hasVectorIndex && (
         <Tooltip arrow interactive title={tooltip} placement={'top'}>
           <Chip
             className={classes.chip}
@@ -154,7 +153,7 @@ const StatusAction: FC<StatusActionType> = props => {
         </Tooltip>
       )}
       <IndexTypeElement
-        data={field!}
+        data={field.vectorFields[0]!}
         collectionName={collectionName}
         cb={() => onIndexCreate()}
         disabled={collectionLoaded}

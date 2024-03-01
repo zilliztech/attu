@@ -46,15 +46,20 @@ export class SchemaService {
       const res = (await milvusClient.describeIndex(data)) as DescribeIndexRes;
 
       res.index_descriptions.map(index => {
-        // format indexType
+        // get indexType
         index.indexType = (index.params.find(p => p.key === 'index_type')
           ?.value || '') as string;
-        const metricType =
+        // get metricType
+        const metricTypePair =
           index.params.filter(v => v.key === 'metric_type') || [];
-        index.metricType = metricType;
+        index.metricType = findKeyValue(
+          metricTypePair,
+          'metric_type'
+        ) as string;
+        // get index operams
         const params = findKeyValue(index.params, 'params') || '{}'; // params is a json string
         index.indexParameterPairs = [
-          ...metricType,
+          ...metricTypePair,
           ...getKeyValueListFromJsonString(params as string),
         ];
       });

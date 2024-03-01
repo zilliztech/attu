@@ -235,15 +235,6 @@ export const METRIC_OPTIONS_MAP = {
   ],
 };
 
-/**
- * use L2 as float default metric type
- * use Hamming as binary default metric type
- */
-export const DEFAULT_METRIC_VALUE_MAP = {
-  [DataTypeEnum.FloatVector]: METRIC_TYPES_VALUES.L2,
-  [DataTypeEnum.BinaryVector]: METRIC_TYPES_VALUES.HAMMING,
-};
-
 // search params default value map
 export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
   [key in searchKeywordsType]?: number;

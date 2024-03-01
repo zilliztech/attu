@@ -7,10 +7,11 @@ import {
   TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { ConditionProps, Field } from './Types';
+import { ConditionProps } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS, DataTypeStringEnum } from '@/consts';
 import { formatValue, checkValue } from './utils';
+import { FieldObject } from '@server/types';
 
 const Condition: FC<ConditionProps> = props => {
   const {
@@ -25,7 +26,7 @@ const Condition: FC<ConditionProps> = props => {
   const [operator, setOperator] = useState(
     initData?.op || LOGICAL_OPERATORS[0].value
   );
-  const [conditionField, setConditionField] = useState<Field>(
+  const [conditionField, setConditionField] = useState<FieldObject>(
     initData?.field || fields[0] || {}
   );
   const [jsonKeyValue, setJsonKeyValue] = useState(initData?.jsonKey || '');
@@ -43,7 +44,7 @@ const Condition: FC<ConditionProps> = props => {
    * Trigger condition change event.
    */
   useEffect(() => {
-    const type = conditionField?.type;
+    const type = conditionField?.data_type;
     const conditionValueWithNoSpace = conditionValue.replaceAll(' ', '');
     let isKeyLegal = false;
     let isLegal = checkValue({
@@ -78,7 +79,7 @@ const Condition: FC<ConditionProps> = props => {
   const classes = useStyles();
 
   const logicalOperators = useMemo(() => {
-    if (conditionField.type === DataTypeStringEnum.Bool) {
+    if (conditionField.data_type === DataTypeStringEnum.Bool) {
       const data = LOGICAL_OPERATORS.filter(v => v.value === '==');
       setOperator(data[0].value);
       // bool only support ==
@@ -114,14 +115,14 @@ const Condition: FC<ConditionProps> = props => {
   return (
     <div className={`${classes.wrapper} ${className}`} {...others}>
       <CustomSelector
-        label={conditionField.type}
+        label={conditionField.data_type}
         value={conditionField?.name}
         onChange={handleFieldNameChange}
         options={fields.map(i => ({ value: i.name, label: i.name }))}
         variant="filled"
         wrapperClass={classes.fieldName}
       />
-      {conditionField?.type === DataTypeStringEnum.JSON ? (
+      {conditionField?.data_type === DataTypeStringEnum.JSON ? (
         <TextField
           className={classes.key}
           label="key"

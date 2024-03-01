@@ -12,7 +12,7 @@ import { LOADING_STATE } from '../utils';
 
 export type IndexObject = IndexDescription & {
   indexType: string;
-  metricType: KeyValuePair[];
+  metricType: string;
   indexParameterPairs: KeyValuePair[];
 };
 export type FieldObject = FieldSchema & {
@@ -25,6 +25,10 @@ export type FieldObject = FieldSchema & {
 
 export type SchemaObject = CollectionSchema & {
   fields: FieldObject[];
+  primaryField: FieldObject;
+  vectorFields: FieldObject[];
+  scalarFields: FieldObject[];
+  hasVectorIndex: boolean;
 };
 
 export interface DescribeCollectionRes extends DescribeCollectionResponse {
