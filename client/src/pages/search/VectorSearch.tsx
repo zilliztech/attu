@@ -15,8 +15,7 @@ import CustomButton from '@/components/customButton/CustomButton';
 import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
-import { Field } from '@/components/advancedSearch/Types';
-import { Collection, DataService } from '@/http';
+import { DataService } from '@/http';
 import {
   parseValue,
   parseLocationSearch,
@@ -39,6 +38,11 @@ import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
 import { TOP_K_OPTIONS } from './Constants';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
+import {
+  CollectionObject,
+  FieldObject,
+  CollectionFullObject,
+} from '@server/types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -56,7 +60,7 @@ const VectorSearch = () => {
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   // fields for advanced filter
-  const [filterFields, setFilterFields] = useState<Field[]>([]);
+  const [filterFields, setFilterFields] = useState<FieldObject[]>([]);
   const [selectedField, setSelectedField] = useState<string>('');
 
   // search params form
@@ -92,22 +96,24 @@ const VectorSearch = () => {
   } = usePaginationHook(searchResultMemo || []);
 
   const outputFields: string[] = useMemo(() => {
-    const s = collections.find(c => c.collection_name === selectedCollection);
+    const s = collections.find(
+      c => c.collection_name === selectedCollection
+    ) as CollectionFullObject;
 
     if (!s) {
       return [];
     }
 
-    const fields = s.fields || [];
+    const fields = s.schema.fields || [];
 
     // vector field can't be output fields
     const invalidTypes = ['BinaryVector', 'FloatVector'];
     const nonVectorFields = fields.filter(
-      field => !invalidTypes.includes(field.fieldType)
+      field => !invalidTypes.includes(field.data_type)
     );
 
     const _outputFields = nonVectorFields.map(f => f.name);
-    if (s.enableDynamicField) {
+    if (s.schema?.enable_dynamic_field) {
       _outputFields.push(DYNAMIC_FIELD);
     }
     return _outputFields;
@@ -117,8 +123,8 @@ const VectorSearch = () => {
     const selectedCollectionInfo = collections.find(
       c => c.collection_name === selectedCollection
     );
-    const fields = selectedCollectionInfo?.fields || [];
-    return fields.find(f => f.isPrimaryKey)?.name;
+    const fields = selectedCollectionInfo?.schema?.fields || [];
+    return fields.find(f => f.is_primary_key)?.name;
   }, [selectedCollection, collections]);
 
   const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
@@ -252,10 +258,10 @@ const VectorSearch = () => {
   );
 
   const fetchFieldsWithIndex = useCallback(
-    async (collectionName: string, collections: Collection[]) => {
+    async (collectionName: string, collections: CollectionObject[]) => {
       const col = collections.find(c => c.collection_name === collectionName);
 
-      const fields = col?.fields ?? [];
+      const fields = col?.schema.fields ?? [];
 
       const { vectorFields, nonVectorFields } = classifyFields(fields);
 

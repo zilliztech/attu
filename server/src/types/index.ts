@@ -2,7 +2,6 @@ export {
   IndexDescription,
   CollectionSchema,
   ReplicaInfo,
-  FieldSchema,
   KeyValuePair,
   ShowCollectionsType,
   GetQuerySegmentInfoResponse,
@@ -14,6 +13,5 @@ export {
 } from '@zilliz/milvus2-sdk-node';
 
 export * from './collections.type';
-export * from './schema.type';
 export * from './partitions.type';
 export * from './users.type';

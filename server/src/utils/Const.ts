@@ -10,12 +10,6 @@ export const INDEX_CACHE = 'index_cache';
 export const CLIENT_TTL = 1000 * 60 * 60 * 24;
 export const INDEX_TTL = 1000 * 60 * 60;
 
-export enum LOADING_STATE {
-  LOADED,
-  LOADING,
-  UNLOADED,
-}
-
 export enum WS_EVENTS {
   REGISTER = 'REGISTER',
   COLLECTION = 'COLLECTION',
@@ -153,3 +147,9 @@ export const Privileges = {
   ...UserPrivileges,
   ...GlobalPrivileges,
 };
+
+export enum LOADING_STATE {
+  LOADED = 'loaded',
+  LOADING = 'loading',
+  UNLOADED = 'unloaded',
+}

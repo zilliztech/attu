@@ -2,10 +2,11 @@ import {
   CreateIndexReq,
   DescribeIndexReq,
   DropIndexReq,
-  DescribeIndexResponse,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { clientCache } from '../app';
+import { DescribeIndexRes } from '../types';
+import { getKeyValueListFromJsonString, findKeyValue } from '../utils';
 
 export class SchemaService {
   async createIndex(clientId: string, data: CreateIndexReq) {
@@ -35,14 +36,28 @@ export class SchemaService {
     const key = data.collection_name;
 
     // Try to get the index description from the cache
-    const value: DescribeIndexResponse = indexCache.get(key);
+    const value = indexCache.get(key);
 
     // If the index description is in the cache, return it
     if (value) {
       return value;
     } else {
       // If the index description is not in the cache, call the Milvus SDK's describeIndex function
-      const res = await milvusClient.describeIndex(data);
+      const res = (await milvusClient.describeIndex(data)) as DescribeIndexRes;
+
+      res.index_descriptions.map(index => {
+        // format indexType
+        index.indexType = (index.params.find(p => p.key === 'index_type')
+          ?.value || '') as string;
+        const metricType =
+          index.params.filter(v => v.key === 'metric_type') || [];
+        index.metricType = metricType;
+        const params = findKeyValue(index.params, 'params') || '{}'; // params is a json string
+        index.indexParameterPairs = [
+          ...metricType,
+          ...getKeyValueListFromJsonString(params as string),
+        ];
+      });
 
       // If the index is finished building and there is at least one index description,
       // cache the index description for future use

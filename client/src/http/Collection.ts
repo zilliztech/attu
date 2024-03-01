@@ -1,7 +1,11 @@
 import { LoadReplicaReq } from '@/pages/collections/Types';
 import { QueryParam } from '@/pages/query/Types';
 import BaseModel from './BaseModel';
-import { ShowCollectionsType, CollectionData } from '@server/types';
+import {
+  ShowCollectionsType,
+  CollectionFullObject,
+  CollectionObject,
+} from '@server/types';
 
 export class Collection extends BaseModel {
   constructor(props: Collection) {
@@ -11,26 +15,19 @@ export class Collection extends BaseModel {
 
   static getCollections(data?: {
     type: ShowCollectionsType;
-  }): Promise<CollectionData[]> {
+  }): Promise<CollectionObject[]> {
     return super.findAll({ path: '/collections', params: data || {} });
   }
 
-  static getCollectionWithIndexInfo(name: string) {
-    return super.search<CollectionData>({
-      path: `/collections/${name}`,
-      params: {},
-    });
-  }
-
   static getCollectionInfo(collectionName: string) {
-    return super.search<CollectionData>({
-      path: `/collections/${collectionName}/info`,
+    return super.search<CollectionFullObject>({
+      path: `/collections/${collectionName}`,
       params: {},
     });
   }
 
   static createCollection(data: any) {
-    return super.create({ path: '/collections', data });
+    return super.create({ path: `collections`, data });
   }
 
   static deleteCollection(collectionName: string) {

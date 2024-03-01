@@ -2,8 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { SchemaService } from './schema.service';
 import { ManageIndexDto } from './dto';
-import { getKeyValueListFromJsonString, findKeyValue } from '../utils';
-import { DescribeIndexRes } from '../types/schema.type';
+import { DescribeIndexRes } from '../types';
 
 export class SchemaController {
   private router: Router;
@@ -57,18 +56,6 @@ export class SchemaController {
         collection_name: data,
       })) as DescribeIndexRes;
 
-      result.index_descriptions.map(index => {
-        // format indexType
-        index.indexType = (index.params.find(p => p.key === 'index_type')
-          ?.value || '') as string;
-        const metricType = index.params.filter(v => v.key === 'metric_type');
-        index.metricType = metricType;
-        const params = findKeyValue(index.params, 'params');
-        index.indexParameterPairs = [
-          ...metricType,
-          ...getKeyValueListFromJsonString(params as string),
-        ];
-      });
       res.send(result);
     } catch (error) {
       next(error);

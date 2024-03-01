@@ -22,6 +22,7 @@ import {
   CountReq,
   FieldSchema,
   GetLoadStateReq,
+  CollectionData,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -30,9 +31,16 @@ import {
   genRows,
   ROW_COUNT,
   convertFieldSchemaToFieldType,
+  LOADING_STATE,
 } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
-import { CollectionData } from '../types';
+import {
+  CollectionObject,
+  CollectionLazyObject,
+  FieldObject,
+  IndexObject,
+  DescribeCollectionRes,
+} from '../types';
 import { SchemaService } from '../schema/schema.service';
 import { clientCache } from '../app';
 
@@ -43,7 +51,7 @@ export class CollectionsService {
     this.schemaService = new SchemaService();
   }
 
-  async getCollections(clientId: string, data?: ShowCollectionsReq) {
+  async showCollections(clientId: string, data?: ShowCollectionsReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.showCollections(data);
     throwErrorFromSDK(res.status);
@@ -60,8 +68,36 @@ export class CollectionsService {
   async describeCollection(clientId: string, data: DescribeCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.describeCollection(data);
+
+    // get index info for collections
+    const indexRes = await this.schemaService.describeIndex(clientId, {
+      collection_name: data.collection_name,
+    });
+
     throwErrorFromSDK(res.status);
-    return res;
+
+    // append index info to each field
+    res.schema.fields.forEach((field: FieldObject) => {
+      // add index
+      field.index = indexRes.index_descriptions.find(
+        index => index.field_name === field.name
+      ) as IndexObject;
+      // add dimension
+      field.dimension =
+        Number(field.type_params.find(item => item.key === 'dim')?.value) || -1;
+      // add max capacity
+      field.maxCapacity =
+        Number(
+          field.type_params.find(item => item.key === 'max_capacity')?.value
+        ) || -1;
+      // add max length
+      field.maxLength =
+        Number(
+          field.type_params.find(item => item.key === 'max_length')?.value
+        ) || -1;
+    });
+
+    return res as DescribeCollectionRes;
   }
 
   async renameCollection(clientId: string, data: RenameCollectionReq) {
@@ -194,94 +230,129 @@ export class CollectionsService {
     return res;
   }
 
-  /**
-   * Get all collections meta data
-   * @returns {id:string, collection_name:string, schema:Field[], autoID:boolean, rowCount: number, consistency_level:string}
-   */
+  // get single collection details
+  async getCollection(
+    clientId: string,
+    collection: CollectionData,
+    loadCollection: CollectionData,
+    lazy: boolean = false
+  ) {
+    if (lazy) {
+      return {
+        id: collection.id,
+        collection_name: collection.name,
+        createdTime: Number(collection.timestamp),
+        schema: undefined,
+        rowCount: undefined,
+        aliases: undefined,
+        description: undefined,
+        autoID: undefined,
+        loadedPercentage: undefined,
+        consistency_level: undefined,
+        replicas: undefined,
+      } as CollectionLazyObject;
+    }
+    // get collection schema and properties
+    const collectionInfo = await this.describeCollection(clientId, {
+      collection_name: collection.name,
+    });
+
+    // get collection statistic data
+    const collectionStatisticsRes = await this.getCollectionStatistics(
+      clientId,
+      {
+        collection_name: collection.name,
+      }
+    );
+    // extract autoID
+    const autoID = collectionInfo.schema.fields.find(
+      v => v.is_primary_key === true
+    )?.autoID;
+
+    // get replica info
+    let replicas;
+    try {
+      replicas = loadCollection
+        ? await this.getReplicas(clientId, {
+            collectionID: collectionInfo.collectionID,
+          })
+        : replicas;
+    } catch (e) {
+      console.log('ignore getReplica');
+    }
+
+    // loading info
+    const loadedPercentage = !loadCollection
+      ? '-1'
+      : loadCollection.loadedPercentage;
+
+    const status =
+      loadedPercentage === '-1'
+        ? LOADING_STATE.UNLOADED
+        : loadedPercentage === '100'
+        ? LOADING_STATE.LOADED
+        : LOADING_STATE.LOADING;
+
+    return {
+      collection_name: collection.name,
+      schema: collectionInfo.schema,
+      rowCount: Number(collectionStatisticsRes.data.row_count),
+      createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
+      aliases: collectionInfo.aliases,
+      description: collectionInfo.schema.description,
+      autoID,
+      id: collectionInfo.collectionID,
+      loadedPercentage,
+      consistency_level: collectionInfo.consistency_level,
+      replicas: replicas && replicas.replicas,
+      status: status,
+    };
+  }
+
   async getAllCollections(
     clientId: string,
-    collections?: {
-      data: { name: string }[];
-    }
-  ): Promise<CollectionData[]> {
-    const data: CollectionData[] = [];
-    const res = collections || (await this.getCollections(clientId));
-    const loadedCollections = await this.getCollections(clientId, {
+    collectionName?: string
+  ): Promise<CollectionObject[]> {
+    // get all collections(name, timestamp, id)
+    const allCollections = await this.showCollections(clientId);
+    // get all loaded collection
+    const loadedCollections = await this.showCollections(clientId, {
       type: ShowCollectionsType.Loaded,
     });
-    if (res.data.length > 0) {
-      for (const item of res.data) {
-        const { name } = item;
+    // data container
+    const data: CollectionObject[] = [];
+    // sort by created time
+    allCollections.data.sort(
+      (a, b) => Number(b.timestamp) - Number(a.timestamp)
+    );
 
-        // get collection schema and properties
-        const collectionInfo = await this.describeCollection(clientId, {
-          collection_name: name,
-        });
+    // get single collection details or all collection details
+    const loaded = loadedCollections.data.filter(
+      v => v.name === collectionName
+    );
+    const collectionsToGetDetail = loaded.length ? loaded : allCollections.data;
 
-        // get collection statistic data
-        const collectionStatisticsRes = await this.getCollectionStatistics(
+    // get all collection details
+    for (let i = 0; i < collectionsToGetDetail.length; i++) {
+      const collection = collectionsToGetDetail[i];
+      data.push(
+        await this.getCollection(
           clientId,
-          {
-            collection_name: name,
-          }
-        );
-
-        // get index info for collections
-        const indexRes = await this.schemaService.describeIndex(clientId, {
-          collection_name: item.name,
-        });
-
-        // extract autoID
-        const autoID = collectionInfo.schema.fields.find(
-          v => v.is_primary_key === true
-        )?.autoID;
-
-        // if it is loaded
-        const loadCollection = loadedCollections.data.find(
-          v => v.name === name
-        );
-
-        // loading info
-        const loadedPercentage = !loadCollection
-          ? '-1'
-          : loadCollection.loadedPercentage;
-
-        // get replica info
-        let replicas;
-        try {
-          replicas = loadCollection
-            ? await this.getReplicas(clientId, {
-                collectionID: collectionInfo.collectionID,
-              })
-            : replicas;
-        } catch (e) {
-          console.log('ignore getReplica');
-        }
-
-        data.push({
-          aliases: collectionInfo.aliases,
-          collection_name: name,
-          schema: collectionInfo.schema,
-          description: collectionInfo.schema.description,
-          autoID,
-          rowCount: Number(collectionStatisticsRes.data.row_count),
-          id: collectionInfo.collectionID,
-          loadedPercentage,
-          createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
-          index_descriptions: indexRes.index_descriptions,
-          consistency_level: collectionInfo.consistency_level,
-          replicas: replicas && replicas.replicas,
-        });
-      }
+          collection,
+          loadedCollections.data.find(v => v.name === collection.name),
+          false
+        )
+      );
     }
-    // add default sort - Descending order
-    data.sort((a, b) => b.createdTime - a.createdTime);
+
+    console.dir(data, { depth: null });
+
     return data;
   }
 
   async getLoadedCollections(clientId: string) {
     const data = [];
-    const res = await this.getCollections(clientId, {
+    const res = await this.showCollections(clientId, {
       type: ShowCollectionsType.Loaded,
     });
     if (res.data.length > 0) {
@@ -309,7 +380,7 @@ export class CollectionsService {
       collectionCount: 0,
       totalData: 0,
     };
-    const res = await this.getCollections(clientId);
+    const res = await this.showCollections(clientId);
     data.collectionCount = res.data.length;
     if (res.data.length > 0) {
       for (const item of res.data) {
@@ -321,27 +392,6 @@ export class CollectionsService {
         );
         const rowCount = findKeyValue(collectionStatistics.stats, ROW_COUNT);
         data.totalData += isNaN(Number(rowCount)) ? 0 : Number(rowCount);
-      }
-    }
-    return data;
-  }
-
-  /**
-   * Get all collection index status
-   * @returns {collection_name:string, index_descriptions: index_descriptions}[]
-   */
-  async getCollectionsIndexStatus(clientId: string) {
-    const data = [];
-    const res = await this.getCollections(clientId);
-    if (res.data.length > 0) {
-      for (const item of res.data) {
-        const indexRes = await this.schemaService.describeIndex(clientId, {
-          collection_name: item.name,
-        });
-        data.push({
-          collection_name: item.name,
-          index_descriptions: indexRes,
-        });
       }
     }
     return data;

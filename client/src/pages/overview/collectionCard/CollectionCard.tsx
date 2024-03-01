@@ -93,7 +93,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const classes = useStyles();
   const { setDialog } = useContext(rootContext);
 
-  const { collectionName, status: status, loadedPercentage, replicas } = data;
+  const { collection_name, status: status, loadedPercentage, replicas } = data;
   const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
@@ -110,7 +110,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       params: {
         component: (
           <ReleaseCollectionDialog
-            collection={collectionName}
+            collection={collection_name}
             onRelease={onRelease}
           />
         ),
@@ -121,7 +121,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const onVectorSearchClick = () => {
     navigate({
       pathname: '/search',
-      search: `?collectionName=${collectionName}`,
+      search: `?collectionName=${collection_name}`,
     });
   };
 
@@ -130,8 +130,8 @@ const CollectionCard: FC<CollectionCardProps> = ({
       try {
         setLoading(true);
         if (status === LOADING_STATE.LOADED) {
-          const data = await Collection.count(collectionName);
-          setCount(data.entityCount);
+          const data = await Collection.count(collection_name);
+          setCount(data.rowCount);
         }
       } catch (e) {
       } finally {
@@ -160,8 +160,8 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <div>
           <Status status={status} percentage={loadedPercentage} />
         </div>
-        <Link className="link" to={`/collections/${collectionName}/data`}>
-          {collectionName}
+        <Link className="link" to={`/collections/${collection_name}/data`}>
+          {collection_name}
           <RightArrowIcon classes={{ root: classes.icon }} />
         </Link>
         <ul className={classes.content}>

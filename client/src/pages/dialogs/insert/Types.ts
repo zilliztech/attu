@@ -1,11 +1,11 @@
 import { FieldHttp } from '@/http';
 import { Option } from '@/components/customSelector/Types';
 import { FILE_MIME_TYPE } from '@/consts';
-import { PartitionData, CollectionData } from '@server/types';
+import { PartitionData, CollectionObject } from '@server/types';
 
 export interface InsertContentProps {
   // optional on partition page since its collection is fixed
-  collections?: CollectionData[];
+  collections?: CollectionObject[];
   // required on partition page since user can't select collection to get schema
   schema?: FieldHttp[];
   // required on partition page

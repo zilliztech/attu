@@ -1,7 +1,7 @@
-import { Collection } from '@/http';
+import { CollectionObject } from '@server/types';
 
 export interface CollectionCardProps {
-  data: Collection;
+  data: CollectionObject;
   onRelease: () => void;
   wrapperClass?: string;
 }

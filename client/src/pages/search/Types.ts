@@ -1,7 +1,7 @@
 import { Option } from '@/components/customSelector/Types';
 import { searchKeywordsType } from '@/consts';
 import { DataTypeEnum, DataTypeStringEnum } from '@/consts';
-import { MilvusIndex } from '@/http';
+import { IndexObject } from '@server/types';
 
 export interface SearchParamsProps {
   // default index type is FLAT
@@ -30,7 +30,7 @@ export interface FieldOption extends Option {
   fieldType: DataTypeStringEnum;
   // used to get metric type, index type and index params for search params
   // if user doesn't create index, default value is null
-  indexInfo: MilvusIndex | null;
+  indexInfo: IndexObject | null;
   // used for check vector input validation
   dimension: number;
 }

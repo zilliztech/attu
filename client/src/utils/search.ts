@@ -2,8 +2,7 @@ import { Field } from '../components/advancedSearch/Types';
 import { IndexType } from '../pages/schema/Types';
 import { INDEX_TYPES_ENUM, DataTypeEnum, DataTypeStringEnum } from '@/consts';
 import { FieldOption } from '../types/SearchTypes';
-import { FieldHttp } from '@/http';
-import { MilvusIndex } from '@server/types';
+import { IndexObject, FieldObject } from '@server/types';
 
 /**
  * function to get EmbeddingType
@@ -37,15 +36,17 @@ export const getDefaultIndexType = (embeddingType: DataTypeEnum): IndexType => {
  * funtion to divide fields into two categories: vector or nonVector
  */
 export const classifyFields = (
-  fields: FieldHttp[]
-): { vectorFields: FieldHttp[]; nonVectorFields: FieldHttp[] } => {
+  fields: FieldObject[]
+): { vectorFields: FieldObject[]; nonVectorFields: FieldObject[] } => {
   const vectorTypes: DataTypeStringEnum[] = [
     DataTypeStringEnum.BinaryVector,
     DataTypeStringEnum.FloatVector,
   ];
   return fields.reduce(
     (result, cur) => {
-      const changedFieldType = vectorTypes.includes(cur.fieldType)
+      const changedFieldType = vectorTypes.includes(
+        cur.data_type as DataTypeStringEnum
+      )
         ? 'vectorFields'
         : 'nonVectorFields';
 
@@ -53,23 +54,23 @@ export const classifyFields = (
 
       return result;
     },
-    { vectorFields: [] as FieldHttp[], nonVectorFields: [] as FieldHttp[] }
+    { vectorFields: [] as FieldObject[], nonVectorFields: [] as FieldObject[] }
   );
 };
 
 export const getVectorFieldOptions = (
-  fields: FieldHttp[],
-  index_descriptions: MilvusIndex[]
+  fields: FieldObject[],
+  index_descriptions: IndexObject[]
 ): FieldOption[] => {
   const options: FieldOption[] = fields.map(f => {
-    const embeddingType = getEmbeddingType(f.fieldType);
+    const embeddingType = getEmbeddingType(f.data_type as DataTypeStringEnum);
     const defaultIndex = getDefaultIndexType(embeddingType);
     const index = index_descriptions.find(i => i.field_name === f.name);
 
     return {
       label: `${f.name} (${index?.indexType || defaultIndex})`,
       value: f.name,
-      fieldType: f.fieldType,
+      fieldType: f.data_type,
       indexInfo: index || null,
       dimension: Number(f.dimension),
     };
@@ -78,9 +79,11 @@ export const getVectorFieldOptions = (
   return options;
 };
 
-export const getNonVectorFieldsForFilter = (fields: FieldHttp[]): Field[] => {
+export const getNonVectorFieldsForFilter = (
+  fields: FieldObject[]
+): { name: string; type: string }[] => {
   return fields.map(f => ({
     name: f.name,
-    type: f.fieldType,
+    type: f.data_type,
   }));
 };

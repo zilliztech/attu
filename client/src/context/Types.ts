@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { CollectionData } from '@server/types';
+import { CollectionObject } from '@server/types';
 import { NavInfo } from '@/router/Types';
 
 export type RootContextType = {
@@ -90,8 +90,8 @@ export type NavContextType = {
 
 export type DataContextType = {
   loading: boolean;
-  collections: CollectionData[];
-  setCollections: Dispatch<SetStateAction<CollectionData[]>>;
+  collections: CollectionObject[];
+  setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
   database: string;
   setDatabase: Dispatch<SetStateAction<string>>;
   databases: string[];

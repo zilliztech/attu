@@ -28,49 +28,54 @@ export class CollectionController {
   }
 
   generateRoutes() {
+    // get all collections
     this.router.get('/', this.showCollections.bind(this));
+    // get collection with index info
+    this.router.get('/:name', this.describeCollection.bind(this));
+    // get count
+    this.router.get('/:name/count', this.count.bind(this));
+    // create collection
     this.router.post(
       '/',
       dtoValidationMiddleware(CreateCollectionDto),
       this.createCollection.bind(this)
     );
-    this.router.get('/statistics', this.getStatistics.bind(this));
-    this.router.get(
-      '/:name/statistics',
-      this.getCollectionStatistics.bind(this)
-    );
-    this.router.get(
-      '/indexes/status',
-      this.getCollectionsIndexStatus.bind(this)
-    );
+    // drop collection
     this.router.delete('/:name', this.dropCollection.bind(this));
+    // rename collection
     this.router.post(
       '/:name',
       dtoValidationMiddleware(RenameCollectionDto),
       this.renameCollection.bind(this)
     );
+    // duplicate collection
     this.router.post(
       '/:name/duplicate',
       dtoValidationMiddleware(DuplicateCollectionDto),
       this.duplicateCollection.bind(this)
     );
-    this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
-    // collection with index info
-    this.router.get('/:name', this.describeCollection.bind(this));
-    // just collection info
-    this.router.get('/:name/info', this.getCollectionInfo.bind(this));
-    this.router.get('/:name/count', this.count.bind(this));
+
+    // get all collections statistics
+    this.router.get('/statistics', this.getStatistics.bind(this));
+    // get collection statistics
+    this.router.get(
+      '/:name/statistics',
+      this.getCollectionStatistics.bind(this)
+    );
 
     // load / release
     this.router.put('/:name/load', this.loadCollection.bind(this));
     this.router.put('/:name/release', this.releaseCollection.bind(this));
     this.router.put('/:name/empty', this.empty.bind(this));
 
+    // insert data
     this.router.post(
       '/:name/insert',
       dtoValidationMiddleware(InsertDataDto),
       this.insert.bind(this)
     );
+
+    // insert sample data
     this.router.post(
       '/:name/importSample',
       dtoValidationMiddleware(ImportSampleDto),
@@ -83,16 +88,20 @@ export class CollectionController {
       dtoValidationMiddleware(VectorSearchDto),
       this.vectorSearch.bind(this)
     );
+    // query
     this.router.post(
       '/:name/query',
       dtoValidationMiddleware(QueryDto),
       this.query.bind(this)
     );
+    // create alias
     this.router.post(
       '/:name/alias',
       dtoValidationMiddleware(CreateAliasDto),
       this.createAlias.bind(this)
     );
+    // drop alias
+    this.router.delete('/:name/alias/:alias', this.dropAlias.bind(this));
 
     // segments
     this.router.get('/:name/psegments', this.getPSegment.bind(this));
@@ -191,33 +200,9 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.getAllCollections(
         req.clientId,
-        {
-          data: [{ name }],
-        }
+        name
       );
       res.send(result[0]);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getCollectionInfo(req: Request, res: Response, next: NextFunction) {
-    const name = req.params?.name;
-    const params = {
-      collection_name: name,
-    };
-    try {
-      const result = await this.collectionsService.describeCollection(
-        req.clientId,
-        params
-      );
-
-      const loadState = await this.collectionsService.getLoadState(
-        req.clientId,
-        params
-      );
-
-      res.send({ ...result, state: loadState.state });
     } catch (error) {
       next(error);
     }
@@ -235,21 +220,6 @@ export class CollectionController {
         {
           collection_name: name,
         }
-      );
-      res.send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getCollectionsIndexStatus(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const result = await this.collectionsService.getCollectionsIndexStatus(
-        req.clientId
       );
       res.send(result);
     } catch (error) {

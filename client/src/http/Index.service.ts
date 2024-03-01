@@ -1,7 +1,7 @@
 import { IndexCreateParam, IndexManageParam } from '../pages/schema/Types';
 import { ManageRequestMethods } from '../types/Common';
 import BaseModel from './BaseModel';
-import { DescribeIndexRes, MilvusIndex } from '@server/types';
+import { DescribeIndexRes, IndexObject } from '@server/types';
 
 export class IndexService extends BaseModel {
   constructor(props: {}) {
@@ -9,7 +9,7 @@ export class IndexService extends BaseModel {
     Object.assign(this, props);
   }
 
-  static async getIndexInfo(collectionName: string): Promise<MilvusIndex[]> {
+  static async getIndexInfo(collectionName: string): Promise<IndexObject[]> {
     const res = await super.findAll<DescribeIndexRes>({
       path: `/schema/index`,
       params: { collection_name: collectionName },

@@ -33,12 +33,9 @@ export default class BaseModel {
       return list as T;
     }
 
-    return Object.assign(
-      list.map(v => new this(v)),
-      {
-        _total: res.data.data.total_count || list.length,
-      } as T
-    );
+    return Object.assign(list, {
+      _total: res.data.data.total_count || list.length,
+    } as T);
   }
 
   static async search<T>(data: findParamsType) {

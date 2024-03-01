@@ -26,7 +26,7 @@ import { LOADING_STATE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexBuilding, checkLoading, formatNumber } from '@/utils';
 import Aliases from './Aliases';
-import { CollectionData } from '@server/types';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -74,7 +74,7 @@ const Collections = () => {
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCollections, setSelectedCollections] = useState<
-    CollectionData[]
+    CollectionObject[]
   >([]);
 
   const { setDialog, openSnackBar } = useContext(rootContext);
@@ -94,19 +94,22 @@ const Collections = () => {
     Eventually: collectionTrans('consistencyEventuallyTooltip'),
   };
 
-  const checkCollectionStatus = useCallback((collections: CollectionData[]) => {
-    const hasLoadingOrBuildingCollection = collections.some(
-      v => checkLoading(v) || checkIndexBuilding(v)
-    );
+  const checkCollectionStatus = useCallback(
+    (collections: CollectionObject[]) => {
+      const hasLoadingOrBuildingCollection = collections.some(
+        v => checkLoading(v) || checkIndexBuilding(v)
+      );
 
-    // if some collection is building index or loading, start pulling data
-    if (hasLoadingOrBuildingCollection) {
-      MilvusService.triggerCron({
-        name: WS_EVENTS.COLLECTION,
-        type: WS_EVENTS_TYPE.START,
-      });
-    }
-  }, []);
+      // if some collection is building index or loading, start pulling data
+      if (hasLoadingOrBuildingCollection) {
+        MilvusService.triggerCron({
+          name: WS_EVENTS.COLLECTION,
+          type: WS_EVENTS_TYPE.START,
+        });
+      }
+    },
+    []
+  );
 
   const fetchData = useCallback(async () => {
     try {
@@ -127,7 +130,7 @@ const Collections = () => {
     fetchData();
   }, [fetchData, database]);
 
-  const getVectorField = (collection: CollectionData) => {
+  const getVectorField = (collection: CollectionObject) => {
     return collection.schema.fields!.find(
       d => d.data_type === 'FloatVector' || d.data_type === 'BinaryVector'
     );
@@ -489,7 +492,7 @@ const Collections = () => {
       id: 'features',
       align: 'left',
       disablePadding: true,
-      sortBy: 'enableDynamicField',
+      notSort: true,
       label: collectionTrans('features'),
       formatter(v) {
         return (
@@ -579,7 +582,7 @@ const Collections = () => {
       isHoverAction: true,
       actionBarConfigs: [
         {
-          onClick: (e: React.MouseEvent, row: CollectionData) => {
+          onClick: (e: React.MouseEvent, row: CollectionObject) => {
             setDialog({
               open: true,
               type: 'custom',
@@ -645,7 +648,7 @@ const Collections = () => {
           colDefinitions={colDefinitions}
           rows={collectionList}
           rowCount={total}
-          primaryKey="collectionName"
+          primaryKey="collection_name"
           selected={selectedCollections}
           setSelected={handleSelectChange}
           page={currentPage}
