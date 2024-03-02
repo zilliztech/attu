@@ -4,7 +4,7 @@ import {
   GePersistentSegmentInfoResponse,
 } from '@server/types';
 
-export class SegementService extends BaseModel {
+export class SegmentService extends BaseModel {
   constructor(props: {}) {
     super(props);
     Object.assign(this, props);

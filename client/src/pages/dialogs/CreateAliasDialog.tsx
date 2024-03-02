@@ -7,7 +7,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import { CreateAliasProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,7 +42,7 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await Collection.createAlias(collectionName, form);
+    await CollectionService.createAlias(collectionName, form);
     handleCloseDialog();
     cb && cb();
   };

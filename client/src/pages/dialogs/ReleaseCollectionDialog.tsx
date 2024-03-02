@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import { rootContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -27,7 +27,7 @@ const ReleaseCollectionDialog = (props: any) => {
     setDisabled(true);
     try {
       // release collection
-      await Collection.releaseCollection(collection);
+      await CollectionService.releaseCollection(collection);
       // execute callback
       onRelease && onRelease();
       // enable confirm button

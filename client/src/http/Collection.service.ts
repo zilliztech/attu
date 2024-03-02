@@ -9,8 +9,8 @@ import {
   StatisticsObject,
 } from '@server/types';
 
-export class Collection extends BaseModel {
-  constructor(props: Collection) {
+export class CollectionService extends BaseModel {
+  constructor(props: any) {
     super(props);
     Object.assign(this, props);
   }

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import IndexTypeElement from './IndexTypeElement';
 import { FieldObject } from '@server/types';
 
@@ -86,7 +86,9 @@ const Schema = () => {
   const fetchFields = useCallback(
     async (collectionName: string) => {
       try {
-        const collection = await Collection.getCollectionInfo(collectionName);
+        const collection = await CollectionService.getCollectionInfo(
+          collectionName
+        );
 
         setFields(collection.schema.fields);
         setLoading(false);

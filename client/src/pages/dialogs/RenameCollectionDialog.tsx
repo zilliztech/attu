@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
@@ -42,7 +42,7 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await Collection.renameCollection(collectionName, form);
+    await CollectionService.renameCollection(collectionName, form);
     handleCloseDialog();
     cb && cb();
   };

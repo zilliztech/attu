@@ -15,11 +15,12 @@ import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
+import { StatisticsObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
@@ -105,11 +106,6 @@ const SysCard = (data: {
   );
 };
 
-type statisticsType = {
-  collectionCount: number;
-  totalData: number;
-};
-
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
   const { database, databases, collections, loading } = useContext(dataContext);
@@ -119,7 +115,7 @@ const Overview = () => {
   const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: successTrans } = useTranslation('success');
-  const [statistics, setStatistics] = useState<statisticsType>({
+  const [statistics, setStatistics] = useState<StatisticsObject>({
     collectionCount: 0,
     totalData: 0,
   });
@@ -129,7 +125,7 @@ const Overview = () => {
   const fetchData = useCallback(async () => {
     if (loading) return;
     setLoadingLocal(true);
-    const res = await Collection.getStatistics();
+    const res = await CollectionService.getStatistics();
     setStatistics(res);
     setLoadingLocal(false);
   }, [database, collections]);

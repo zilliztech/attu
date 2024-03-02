@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { DataTypeStringEnum, DYNAMIC_FIELD, MIN_INT64 } from '@/consts';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import { CollectionFullObject } from '@server/types';
 
 export const useQuery = (params: {
@@ -75,7 +75,7 @@ export const useQuery = (params: {
       // cache last query
       lastQuery.current = queryParams;
       // execute query
-      const res = await Collection.queryData(
+      const res = await CollectionService.queryData(
         params.collectionName,
         queryParams
       );
@@ -114,7 +114,7 @@ export const useQuery = (params: {
 
   // get collection info
   const prepare = async (collectionName: string) => {
-    const collection = await Collection.getCollectionInfo(collectionName);
+    const collection = await CollectionService.getCollectionInfo(collectionName);
     const schemaList = collection.schema.fields;
 
     const nameList = schemaList.map(v => ({
@@ -135,7 +135,7 @@ export const useQuery = (params: {
 
   const count = async (consistency_level = consistencyLevel) => {
     const count = 'count(*)';
-    const res = await Collection.queryData(params.collectionName, {
+    const res = await CollectionService.queryData(params.collectionName, {
       expr: expr,
       output_fields: [count],
       consistency_level,

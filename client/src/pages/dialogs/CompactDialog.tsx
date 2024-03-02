@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CompactDialogProps } from './Types';
-import { SegementService } from '@/http';
+import { SegmentService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -25,7 +25,7 @@ const CompactDialog: FC<CompactDialogProps> = props => {
   const { t: btnTrans } = useTranslation('btn');
 
   const handleConfirm = async () => {
-    await SegementService.compact(collectionName);
+    await SegmentService.compact(collectionName);
 
     handleCloseDialog();
     cb && cb();

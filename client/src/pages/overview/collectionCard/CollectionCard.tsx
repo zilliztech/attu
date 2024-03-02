@@ -17,7 +17,7 @@ import { LOADING_STATE } from '@/consts';
 import { rootContext, dataContext } from '@/context';
 import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
 import { CollectionCardProps } from './Types';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -130,7 +130,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       try {
         setLoading(true);
         if (status === LOADING_STATE.LOADED) {
-          const data = await Collection.count(collection_name);
+          const data = await CollectionService.count(collection_name);
           setCount(data.rowCount);
         }
       } catch (e) {

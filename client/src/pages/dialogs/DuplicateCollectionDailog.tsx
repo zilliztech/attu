@@ -7,7 +7,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import { DuplicateCollectionDialogProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -46,7 +46,7 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   const handleConfirm = async () => {
     // duplicate
-    await Collection.duplicate(collectionName, {
+    await CollectionService.duplicate(collectionName, {
       new_collection_name: form.duplicate,
     });
     // close dialog
@@ -76,7 +76,7 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
         rule: 'custom',
         extraParam: {
           compare: (value) => {
-            return !collections.some(collection => collection.collectionName === value);
+            return !collections.some(collection => collection.collection_name === value);
           },
         },
         errorText: collectionTrans('duplicateNameExist'),

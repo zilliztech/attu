@@ -4,7 +4,7 @@ import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
-import { Collection, MilvusService, IndexService } from '@/http';
+import { CollectionService, MilvusService, IndexService } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -114,7 +114,7 @@ const Collections = () => {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const collections = await Collection.getCollections();
+      const collections = await CollectionService.getCollections();
       setCollections(collections);
       checkCollectionStatus(collections);
     } finally {
@@ -590,7 +590,7 @@ const Collections = () => {
           label: 'Import',
           showIconMethod: 'renderFn',
           getLabel: () => 'Import sample data',
-          renderIconFn: (row: Collection) => <SourceIcon />,
+          renderIconFn: () => <SourceIcon />,
         },
       ],
     },

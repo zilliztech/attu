@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { authContext, rootContext } from '@/context';
-import { Collection, MilvusService } from '@/http';
+import { CollectionService, MilvusService } from '@/http';
 import { useFormValidation } from '@/hooks';
 import { formatForm, parseJson, getNode } from '@/utils';
 import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
@@ -98,7 +98,7 @@ const LoadCollectionDialog = (props: any) => {
     }
 
     // load collection request
-    await Collection.loadCollection(collection, params);
+    await CollectionService.loadCollection(collection, params);
 
     // callback
     onLoad && onLoad();

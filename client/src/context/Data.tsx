@@ -8,11 +8,12 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
-import { url, Collection, MilvusService, DatabaseService } from '@/http';
+import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
 import { checkIndexBuilding, checkLoading } from '@/utils';
 import { DataContextType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { LAST_TIME_DATABASE } from '@/consts';
+import { CollectionObject } from '@server/types';
 
 export const dataContext = createContext<DataContextType>({
   loading: false,
@@ -30,7 +31,7 @@ const { Provider } = dataContext;
 
 export const DataProvider = (props: { children: React.ReactNode }) => {
   // local data state
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(false);
   const [database, setDatabase] = useState<string>(
@@ -44,9 +45,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // socket callback
   const socketCallBack = useCallback(
-    (data: any) => {
-      const collections: Collection[] = data.map((v: any) => new Collection(v));
-
+    (collections: CollectionObject[]) => {
       const hasLoadingOrBuildingCollection = collections.some(
         v => checkLoading(v) || checkIndexBuilding(v)
       );
@@ -68,7 +67,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const fetchCollections = async () => {
     try {
       setLoading(true);
-      const res = await Collection.getCollections();
+      const res = await CollectionService.getCollections();
       setCollections(res);
       setLoading(false);
     } catch (error) {
