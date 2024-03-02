@@ -14,10 +14,6 @@ type updateParamsType = {
 };
 
 export default class BaseModel {
-  constructor(props: any) {
-    return this;
-  }
-
   static async findAll<T>(data: findParamsType) {
     const { params = {}, path = '', method = 'get' } = data;
     const type = method === 'post' ? 'data' : 'params';
@@ -33,12 +29,9 @@ export default class BaseModel {
       return list as T;
     }
 
-    return Object.assign(
-      list.map(v => new this(v)),
-      {
-        _total: res.data.data.total_count || list.length,
-      } as T
-    );
+    return Object.assign(list, {
+      _total: res.data.data.total_count || list.length,
+    } as T);
   }
 
   static async search<T>(data: findParamsType) {
@@ -52,7 +45,7 @@ export default class BaseModel {
     const res = await http(httpConfig);
     // conflict with collection view data structure, status is useless, so delete here.
     delete res.data.data.status;
-    return new this(res.data.data || {}) as T;
+    return (res.data.data || {}) as T;
   }
 
   /**
@@ -61,14 +54,14 @@ export default class BaseModel {
   static async create<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.post(path, data);
-    return new this(res.data.data || {}) as T;
+    return (res.data.data || {}) as T;
   }
 
   static async update<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.put(path, data);
 
-    return new this(res.data.data || {}) as T;
+    return (res.data.data || {}) as T;
   }
 
   static async delete<T>(options: updateParamsType) {

@@ -75,7 +75,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
 
         {colDefinitions.map(headCell => (
           <TableCell
-            key={headCell.id}
+            key={headCell.id + headCell.label}
             align={headCell.align || 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={

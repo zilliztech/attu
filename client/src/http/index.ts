@@ -1,11 +1,10 @@
 // objects map(deprecating)
 export * from './Axios';
 export * from './BaseModel';
-export * from './Collection';
-export * from './MilvusIndex';
-export * from './Field';
 
 // service
+export * from './Collection.service';
+export * from './Index.service';
 export * from './Partition.service';
 export * from './Data.service';
 export * from './Milvus.service';

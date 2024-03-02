@@ -4,11 +4,6 @@ export class PrometheusService extends BaseModel {
   static SET_PROMETHEUS_URL = '/prometheus/setPrometheus';
   static GET_MILVUS_HEALTHY_DATA_URL = '/prometheus/getMilvusHealthyData';
 
-  constructor(props: {}) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   static setPrometheus({
     prometheusAddress,
     prometheusInstance,

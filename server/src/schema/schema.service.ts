@@ -2,16 +2,17 @@ import {
   CreateIndexReq,
   DescribeIndexReq,
   DropIndexReq,
-  DescribeIndexResponse,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { clientCache } from '../app';
+import { DescribeIndexRes } from '../types';
+import { getKeyValueListFromJsonString, findKeyValue } from '../utils';
 
 export class SchemaService {
   async createIndex(clientId: string, data: CreateIndexReq) {
-    const { milvusClient, indexCache } = clientCache.get(clientId);
+    const { milvusClient, indexCache, database } = clientCache.get(clientId);
     const res = await milvusClient.createIndex(data);
-    const key = data.collection_name;
+    const key = `${database}/${data.collection_name}`;
 
     // clear cache;
     indexCache.delete(key);
@@ -29,33 +30,40 @@ export class SchemaService {
    * @returns - The response from the Milvus SDK's describeIndex function or the cached index description.
    */
   async describeIndex(clientId: string, data: DescribeIndexReq) {
-    const { milvusClient, indexCache } = clientCache.get(clientId);
+    const { milvusClient, indexCache, database } = clientCache.get(clientId);
 
     // Get the collection name from the request data
-    const key = data.collection_name;
+    const key = `${database}/${data.collection_name}`;
 
     // Try to get the index description from the cache
-    const value: DescribeIndexResponse = indexCache.get(key);
+    const value = indexCache.get(key);
 
     // If the index description is in the cache, return it
     if (value) {
-      return value;
+      return value as DescribeIndexRes;
     } else {
       // If the index description is not in the cache, call the Milvus SDK's describeIndex function
-      const res = await milvusClient.describeIndex(data);
+      const res = (await milvusClient.describeIndex(data)) as DescribeIndexRes;
 
-      // If the index is finished building and there is at least one index description,
-      // cache the index description for future use
-      if (
-        (res.index_descriptions?.length > 0 &&
-          res.index_descriptions.every(i => i.state === 'Finished')) ||
-        res.index_descriptions.length === 0
-      ) {
-        indexCache.set(key, res);
-      } else {
-        // If the index is not finished building, delete any cached value for this index
-        indexCache.delete(key);
-      }
+      res.index_descriptions.map(index => {
+        // get indexType
+        index.indexType = (index.params.find(p => p.key === 'index_type')
+          ?.value || '') as string;
+        // get metricType
+        const metricTypePair =
+          index.params.filter(v => v.key === 'metric_type') || [];
+        index.metricType = findKeyValue(
+          metricTypePair,
+          'metric_type'
+        ) as string;
+        // get index parameter pairs
+        const paramsJSONstring = findKeyValue(index.params, 'params'); // params is a json string
+        const params =
+          (paramsJSONstring &&
+            getKeyValueListFromJsonString(paramsJSONstring as string)) ||
+          [];
+        index.indexParameterPairs = [...metricTypePair, ...params];
+      });
 
       // Return the response from the Milvus SDK's describeIndex function
       return res;
@@ -63,10 +71,10 @@ export class SchemaService {
   }
 
   async dropIndex(clientId: string, data: DropIndexReq) {
-    const { milvusClient, indexCache } = clientCache.get(clientId);
+    const { milvusClient, indexCache, database } = clientCache.get(clientId);
 
     const res = await milvusClient.dropIndex(data);
-    const key = data.collection_name;
+    const key = `${database}/${data.collection_name}`;
 
     // clear cache;
     indexCache.delete(key);

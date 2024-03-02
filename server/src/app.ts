@@ -21,7 +21,7 @@ import {
 } from './middleware';
 import { CLIENT_TTL } from './utils';
 import { getIp } from './utils/Network';
-import { DescribeIndexResponse, MilvusClient } from './types';
+import { DescribeIndexRes, MilvusClient } from './types';
 import { initWebSocket } from './socket';
 
 // initialize express app
@@ -33,7 +33,8 @@ export const clientCache = new LRUCache<
   {
     milvusClient: MilvusClient;
     address: string;
-    indexCache: LRUCache<string, DescribeIndexResponse>;
+    indexCache: LRUCache<string, DescribeIndexRes>;
+    database: string;
   }
 >({
   ttl: CLIENT_TTL,

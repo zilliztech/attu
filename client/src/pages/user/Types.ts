@@ -81,13 +81,6 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export enum TAB_ENUM {
-  'schema',
-  'partition',
-  'data-preview',
-  'data-query',
-}
-
 export type RBACObject = 'Global' | 'Collection' | 'User';
 
 export interface PrivilegeOptionsProps {

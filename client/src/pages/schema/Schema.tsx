@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
-import { Collection, FieldHttp } from '@/http';
+import { CollectionService } from '@/http';
 import IndexTypeElement from './IndexTypeElement';
+import { FieldObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -65,7 +66,7 @@ const Schema = () => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
 
-  const [fields, setFields] = useState<FieldHttp[]>([]);
+  const [fields, setFields] = useState<FieldObject[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const KeyIcon = icons.key;
@@ -85,21 +86,11 @@ const Schema = () => {
   const fetchFields = useCallback(
     async (collectionName: string) => {
       try {
-        const collection = await Collection.getCollectionWithIndexInfo(
+        const collection = await CollectionService.getCollectionInfo(
           collectionName
         );
 
-        // add custom fields
-        const fields = collection.fieldWithIndexInfo.map(f =>
-          Object.assign(f, {
-            _fieldNameElement: f,
-            _fieldTypeElement: f,
-            _indexParamElement: f,
-            _indexTypeElement: f,
-          })
-        );
-
-        setFields(fields);
+        setFields(collection.schema.fields);
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -115,14 +106,14 @@ const Schema = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: '_fieldNameElement',
+      id: 'name',
       align: 'left',
       disablePadding: true,
       formatter(f) {
         return (
           <div className={classes.nameWrapper}>
             {f.name}
-            {f.isPrimaryKey ? (
+            {f.is_primary_key ? (
               <div
                 className={classes.iconTitle}
                 title={collectionTrans('idFieldName')}
@@ -153,7 +144,7 @@ const Schema = () => {
       sortBy: 'name',
     },
     {
-      id: '_fieldTypeElement',
+      id: 'data_type',
       align: 'left',
       disablePadding: false,
       formatter(f) {
@@ -162,17 +153,20 @@ const Schema = () => {
       label: collectionTrans('fieldType'),
     },
     {
-      id: 'indexName',
+      id: 'name',
       align: 'left',
       disablePadding: true,
       label: indexTrans('indexName'),
+      formatter(f) {
+        return f.index?.index_name;
+      },
     },
     {
-      id: '_indexTypeElement',
+      id: 'name',
       align: 'left',
       disablePadding: true,
       label: indexTrans('type'),
-      sortBy: 'indexType',
+      notSort: true,
       formatter(f) {
         return (
           <IndexTypeElement
@@ -184,19 +178,19 @@ const Schema = () => {
       },
     },
     {
-      id: '_indexParamElement',
+      id: 'name',
       align: 'left',
       disablePadding: false,
       label: indexTrans('param'),
       notSort: true,
       formatter(f) {
-        return (
+        return f.index ? (
           <div className={classes.paramWrapper}>
-            {f.indexParameterPairs?.length > 0 ? (
-              f.indexParameterPairs.map((p: any) =>
+            {f.index.indexParameterPairs.length > 0 ? (
+              f.index.indexParameterPairs.map((p: any) =>
                 p.value ? (
-                  <>
-                    <span key={p.key + p.value} className="param">
+                  <span key={p.key + p.value}>
+                    <span className="param">
                       <Typography variant="body1" className="key">
                         {`${p.key}:`}
                       </Typography>
@@ -204,7 +198,7 @@ const Schema = () => {
                         {p.value}
                       </Typography>
                     </span>
-                  </>
+                  </span>
                 ) : (
                   ''
                 )
@@ -213,11 +207,13 @@ const Schema = () => {
               <>--</>
             )}
           </div>
+        ) : (
+          <>--</>
         );
       },
     },
     {
-      id: 'desc',
+      id: 'description',
       align: 'left',
       disablePadding: false,
       label: indexTrans('desc'),

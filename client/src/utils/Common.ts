@@ -38,17 +38,6 @@ export const throwErrorForDev = (text: string) => {
   throw new Error(text);
 };
 
-/**
- *
- * @param obj key value pair Array
- * @param key the target you want to find.
- * @returns undefined | string
- */
-export const findKeyValue = (
-  obj: { key: string; value: string }[],
-  key: string
-) => obj.find(v => v.key === key)?.value;
-
 export const generateHashCode = (source: string) => {
   let hash = 0,
     i,

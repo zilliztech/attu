@@ -11,11 +11,6 @@ import BaseModel from './BaseModel';
 import { Users, UsersWithRoles } from '@server/types';
 
 export class UserService extends BaseModel {
-  constructor(props: {}) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   // get user data
   static getUsers() {
     return super.search<Users>({ path: '/users', params: {} });

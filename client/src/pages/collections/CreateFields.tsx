@@ -23,7 +23,7 @@ import {
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
-import { CreateFieldsProps, CreateFieldType, Field } from './Types';
+import { CreateFieldsProps, CreateFieldType, FieldType } from './Types';
 import { DataTypeEnum } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,
@@ -102,12 +102,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type inputType = {
   label: string;
-  value: string | number | null;
+  value: string | number;
   handleChange?: (value: string) => void;
   className?: string;
   inputClassName?: string;
   isReadOnly?: boolean;
-  validate?: (value: string | number | null) => string;
+  validate?: (value: string | number) => string;
   type?: 'number' | 'text';
 };
 
@@ -148,8 +148,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
           return acc;
         },
         {
-          requiredFields: [] as Field[],
-          optionalFields: [] as Field[],
+          requiredFields: [] as FieldType[],
+          optionalFields: [] as FieldType[],
         }
       ),
 
@@ -239,7 +239,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateFieldName = (
-    field: Field,
+    field: FieldType,
     label?: string,
     className?: string
   ) => {
@@ -266,7 +266,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generateDesc = (field: Field) => {
+  const generateDesc = (field: FieldType) => {
     return getInput({
       label: collectionTrans('description'),
       value: field.description,
@@ -276,7 +276,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generateDimension = (field: Field) => {
+  const generateDimension = (field: FieldType) => {
     const validateDimension = (value: string) => {
       const isPositive = getCheckResult({
         value,
@@ -330,7 +330,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generateMaxLength = (field: Field) => {
+  const generateMaxLength = (field: FieldType) => {
     // update data if needed
     if (typeof field.max_length === 'undefined') {
       changeFields(field.id!, 'max_length', DEFAULT_ATTU_VARCHAR_MAX_LENGTH);
@@ -363,7 +363,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generateMaxCapacity = (field: Field) => {
+  const generateMaxCapacity = (field: FieldType) => {
     return getInput({
       label: 'Max Capacity',
       value: field.max_capacity || DEFAULT_ATTU_MAX_CAPACITY,
@@ -392,7 +392,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generatePartitionKeyToggle = (field: Field, fields: Field[]) => {
+  const generatePartitionKeyToggle = (
+    field: FieldType,
+    fields: FieldType[]
+  ) => {
     return (
       <FormControlLabel
         control={
@@ -427,7 +430,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const changeFields = (id: string, key: keyof Field, value: any) => {
+  const changeFields = (id: string, key: keyof FieldType, value: any) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
         return f;
@@ -468,8 +471,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const handleAddNewField = (index: number) => {
     const id = generateId();
-    const newDefaultItem: Field = {
-      name: null,
+    const newDefaultItem: FieldType = {
+      name: '',
       data_type: DataTypeEnum.Int16,
       is_primary_key: false,
       description: '',
@@ -495,7 +498,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generatePrimaryKeyRow = (
-    field: Field,
+    field: FieldType,
     autoID: boolean
   ): ReactElement => {
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
@@ -544,7 +547,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateDefaultVectorRow = (
-    field: Field,
+    field: FieldType,
     index: number
   ): ReactElement => {
     return (
@@ -573,9 +576,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateNonRequiredRow = (
-    field: Field,
+    field: FieldType,
     index: number,
-    fields: Field[]
+    fields: FieldType[]
   ): ReactElement => {
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
     const isInt64 = field.data_type === DataTypeEnum.Int64;
@@ -641,7 +644,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateVectorRow = (field: Field) => {
+  const generateVectorRow = (field: FieldType) => {
     return (
       <div className={`${classes.rowWrapper}`}>
         <IconButton classes={{ root: classes.iconBtn }} aria-label="delete">
@@ -662,7 +665,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateRequiredFieldRow = (
-    field: Field,
+    field: FieldType,
     autoID: boolean,
     index: number
   ) => {
@@ -675,9 +678,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateOptionalFieldRow = (
-    field: Field,
+    field: FieldType,
     index: number,
-    fields: Field[]
+    fields: FieldType[]
   ) => {
     // optional type is vector or number
     if (field.createType === 'vector') {

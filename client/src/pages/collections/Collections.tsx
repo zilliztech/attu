@@ -3,13 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
-import {
-  rootContext,
-  authContext,
-  systemContext,
-  dataContext,
-} from '@/context';
-import { Collection, MilvusService, MilvusIndex } from '@/http';
+import { rootContext, authContext, dataContext } from '@/context';
+import { CollectionService, MilvusService, IndexService } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -29,8 +24,9 @@ import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
-import { checkIndexBuilding, checkLoading } from '@/utils';
+import { checkIndexBuilding, checkLoading, formatNumber } from '@/utils';
 import Aliases from './Aliases';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   emptyWrapper: {
@@ -77,9 +73,9 @@ const Collections = () => {
     (searchParams.get('search') as string) || ''
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedCollections, setSelectedCollections] = useState<Collection[]>(
-    []
-  );
+  const [selectedCollections, setSelectedCollections] = useState<
+    CollectionObject[]
+  >([]);
 
   const { setDialog, openSnackBar } = useContext(rootContext);
   const { collections, setCollections } = useContext(dataContext);
@@ -98,24 +94,27 @@ const Collections = () => {
     Eventually: collectionTrans('consistencyEventuallyTooltip'),
   };
 
-  const checkCollectionStatus = useCallback((collections: Collection[]) => {
-    const hasLoadingOrBuildingCollection = collections.some(
-      v => checkLoading(v) || checkIndexBuilding(v)
-    );
+  const checkCollectionStatus = useCallback(
+    (collections: CollectionObject[]) => {
+      const hasLoadingOrBuildingCollection = collections.some(
+        v => checkLoading(v) || checkIndexBuilding(v)
+      );
 
-    // if some collection is building index or loading, start pulling data
-    if (hasLoadingOrBuildingCollection) {
-      MilvusService.triggerCron({
-        name: WS_EVENTS.COLLECTION,
-        type: WS_EVENTS_TYPE.START,
-      });
-    }
-  }, []);
+      // if some collection is building index or loading, start pulling data
+      if (hasLoadingOrBuildingCollection) {
+        MilvusService.triggerCron({
+          name: WS_EVENTS.COLLECTION,
+          type: WS_EVENTS_TYPE.START,
+        });
+      }
+    },
+    []
+  );
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const collections = await Collection.getCollections();
+      const collections = await CollectionService.getCollections();
       setCollections(collections);
       checkCollectionStatus(collections);
     } finally {
@@ -124,28 +123,22 @@ const Collections = () => {
   }, [setCollections, checkCollectionStatus]);
 
   const clearIndexCache = useCallback(async () => {
-    await MilvusIndex.flush();
+    await IndexService.flush();
   }, []);
 
   useEffect(() => {
     fetchData();
   }, [fetchData, database]);
 
-  const getVectorField = (collection: Collection) => {
-    return collection.fieldWithIndexInfo!.find(
-      d => d.fieldType === 'FloatVector' || d.fieldType === 'BinaryVector'
-    );
-  };
-
   const formatCollections = useMemo(() => {
     const filteredCollections = search
       ? collections.filter(collection =>
-          collection.collectionName.includes(search)
+          collection.collection_name.includes(search)
         )
       : collections;
 
     const data = filteredCollections.map(v => {
-      // const indexStatus = statusRes.find(item => item.collectionName === v.collectionName);
+      // const indexStatus = statusRes.find(item => item.collectionName === v.collection_name);
       Object.assign(v, {
         features: v, // add `feature` as id to render
       });
@@ -204,7 +197,7 @@ const Collections = () => {
           params: {
             component: (
               <LoadCollectionDialog
-                collection={selectedCollections[0].collectionName}
+                collection={selectedCollections[0].collection_name}
                 onLoad={async () => {
                   openSnackBar(
                     successTrans('load', {
@@ -224,7 +217,7 @@ const Collections = () => {
         return (
           data.length !== 1 ||
           data[0].status !== LOADING_STATE.UNLOADED ||
-          data[0].indexes.length === 0
+          !data[0].schema.hasVectorIndex
         );
       },
       tooltip: btnTrans('loadColTooltip'),
@@ -241,7 +234,7 @@ const Collections = () => {
           params: {
             component: (
               <ReleaseCollectionDialog
-                collection={selectedCollections[0].collectionName}
+                collection={selectedCollections[0].collection_name}
                 onRelease={async () => {
                   openSnackBar(
                     successTrans('release', {
@@ -279,7 +272,7 @@ const Collections = () => {
                 collections={formatCollections}
                 defaultSelectedCollection={
                   selectedCollections.length === 1
-                    ? selectedCollections[0].collectionName
+                    ? selectedCollections[0].collection_name
                     : ''
                 }
                 // user can't select partition on collection page, so default value is ''
@@ -319,7 +312,7 @@ const Collections = () => {
                   await fetchData();
                   setSelectedCollections([]);
                 }}
-                collectionName={selectedCollections[0].collectionName}
+                collectionName={selectedCollections[0].collection_name}
               />
             ),
           },
@@ -349,7 +342,7 @@ const Collections = () => {
                   setSelectedCollections([]);
                   await fetchData();
                 }}
-                collectionName={selectedCollections[0].collectionName}
+                collectionName={selectedCollections[0].collection_name}
                 collections={collections}
               />
             ),
@@ -360,7 +353,6 @@ const Collections = () => {
       tooltip: btnTrans('duplicateTooltip'),
       disabled: data => data.length !== 1,
     },
-
     {
       icon: 'delete',
       type: 'button',
@@ -416,19 +408,19 @@ const Collections = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'collectionName',
+      id: 'collection_name',
       align: 'left',
       disablePadding: true,
-      sortBy: 'collectionName',
-      formatter({ collectionName }) {
+      sortBy: 'collection_name',
+      formatter({ collection_name }) {
         return (
           <Link
-            to={`/collections/${collectionName}/data`}
+            to={`/collections/${collection_name}/data`}
             className={classes.link}
-            title={collectionName}
+            title={collection_name}
           >
             <Highlighter
-              textToHighlight={collectionName}
+              textToHighlight={collection_name}
               searchWords={[search]}
               highlightClassName={classes.highlight}
             />
@@ -449,8 +441,8 @@ const Collections = () => {
             status={v.status}
             onIndexCreate={fetchData}
             percentage={v.loadedPercentage}
-            field={getVectorField(v)!}
-            collectionName={v.collectionName}
+            field={v.schema}
+            collectionName={v.collection_name}
             action={() => {
               setDialog({
                 open: true,
@@ -459,7 +451,7 @@ const Collections = () => {
                   component:
                     v.status === LOADING_STATE.UNLOADED ? (
                       <LoadCollectionDialog
-                        collection={v.collectionName}
+                        collection={v.collection_name}
                         onLoad={async () => {
                           openSnackBar(
                             successTrans('load', {
@@ -471,7 +463,7 @@ const Collections = () => {
                       />
                     ) : (
                       <ReleaseCollectionDialog
-                        collection={v.collectionName}
+                        collection={v.collection_name}
                         onRelease={async () => {
                           openSnackBar(
                             successTrans('release', {
@@ -493,7 +485,7 @@ const Collections = () => {
       id: 'features',
       align: 'left',
       disablePadding: true,
-      sortBy: 'enableDynamicField',
+      notSort: true,
       label: collectionTrans('features'),
       formatter(v) {
         return (
@@ -511,7 +503,7 @@ const Collections = () => {
                 />
               </Tooltip>
             ) : null}
-            {v.enableDynamicField ? (
+            {v.schema.enable_dynamic_field ? (
               <Tooltip
                 title={collectionTrans('dynamicSchemaTooltip')}
                 placement="top"
@@ -540,7 +532,7 @@ const Collections = () => {
       },
     },
     {
-      id: 'entityCount',
+      id: 'rowCount',
       align: 'left',
       disablePadding: false,
       sortBy: 'rowCount',
@@ -552,18 +544,27 @@ const Collections = () => {
           </CustomToolTip>
         </span>
       ),
+      formatter(v) {
+        return formatNumber(Number(v.rowCount));
+      },
     },
     {
-      id: 'desc',
+      id: 'description',
       align: 'left',
       disablePadding: false,
-      label: collectionTrans('desc'),
+      label: collectionTrans('description'),
+      formatter(v) {
+        return v.description || '--';
+      },
     },
     {
-      id: 'createdAt',
+      id: 'createdTime',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('createdTime'),
+      formatter(data) {
+        return new Date(data.createdTime).toLocaleString();
+      },
     },
     {
       id: 'import',
@@ -574,13 +575,13 @@ const Collections = () => {
       isHoverAction: true,
       actionBarConfigs: [
         {
-          onClick: (e: React.MouseEvent, row: Collection) => {
+          onClick: (e: React.MouseEvent, row: CollectionObject) => {
             setDialog({
               open: true,
               type: 'custom',
               params: {
                 component: (
-                  <ImportSampleDialog collection={row.collectionName} />
+                  <ImportSampleDialog collection={row.collection_name} />
                 ),
               },
             });
@@ -589,7 +590,7 @@ const Collections = () => {
           label: 'Import',
           showIconMethod: 'renderFn',
           getLabel: () => 'Import sample data',
-          renderIconFn: (row: Collection) => <SourceIcon />,
+          renderIconFn: () => <SourceIcon />,
         },
       ],
     },
@@ -612,7 +613,7 @@ const Collections = () => {
         return (
           <Aliases
             aliases={v.aliases}
-            collectionName={v.collectionName}
+            collectionName={v.collection_name}
             onCreate={fetchData}
             onDelete={fetchData}
           />
@@ -640,7 +641,7 @@ const Collections = () => {
           colDefinitions={colDefinitions}
           rows={collectionList}
           rowCount={total}
-          primaryKey="collectionName"
+          primaryKey="collection_name"
           selected={selectedCollections}
           setSelected={handleSelectChange}
           page={currentPage}

@@ -1,7 +1,7 @@
-import { KeyValuePair } from '../../types/Common';
+import { LabelValuePair } from '../../types/Common';
 import { DataTypeEnum, ConsistencyLevelEnum } from '@/consts';
 
-export const CONSISTENCY_LEVEL_OPTIONS: KeyValuePair[] = [
+export const CONSISTENCY_LEVEL_OPTIONS: LabelValuePair[] = [
   {
     label: 'Strong',
     value: ConsistencyLevelEnum.Strong,
@@ -20,7 +20,7 @@ export const CONSISTENCY_LEVEL_OPTIONS: KeyValuePair[] = [
   },
 ];
 
-export const VECTOR_FIELDS_OPTIONS: KeyValuePair[] = [
+export const VECTOR_FIELDS_OPTIONS: LabelValuePair[] = [
   {
     label: 'Binary Vector',
     value: DataTypeEnum.BinaryVector,
@@ -31,7 +31,7 @@ export const VECTOR_FIELDS_OPTIONS: KeyValuePair[] = [
   },
 ];
 
-export const ALL_OPTIONS: KeyValuePair[] = [
+export const ALL_OPTIONS: LabelValuePair[] = [
   // ...VECTOR_FIELDS_OPTIONS,
   {
     label: 'Int8',
@@ -75,7 +75,7 @@ export const ALL_OPTIONS: KeyValuePair[] = [
   },
 ];
 
-export const AUTO_ID_OPTIONS: KeyValuePair[] = [
+export const AUTO_ID_OPTIONS: LabelValuePair[] = [
   {
     label: 'On',
     value: 'true',
@@ -86,7 +86,7 @@ export const AUTO_ID_OPTIONS: KeyValuePair[] = [
   },
 ];
 
-export const PRIMARY_FIELDS_OPTIONS: KeyValuePair[] = [
+export const PRIMARY_FIELDS_OPTIONS: LabelValuePair[] = [
   {
     label: 'INT64',
     value: DataTypeEnum.Int64,

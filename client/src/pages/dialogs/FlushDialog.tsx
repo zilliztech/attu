@@ -21,7 +21,6 @@ const FlushDialog: FC<FlushDialogProps> = props => {
 
   const { handleCloseDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
-  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
   const handleConfirm = async () => {

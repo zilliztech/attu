@@ -1,13 +1,13 @@
 import { Option } from '@/components/customSelector/Types';
 import { searchKeywordsType } from '@/consts';
-import { DataTypeEnum, DataTypeStringEnum } from '@/consts';
-import { MilvusIndex } from '@/http';
+import { DataTypeEnum } from '@/consts';
+import { FieldObject, KeyValuePair } from '@server/types';
 
 export interface SearchParamsProps {
   // default index type is FLAT
   indexType: string;
   // index extra params, e.g. nlist
-  indexParams: { key: string; value: string }[];
+  indexParams: KeyValuePair[];
   searchParamsForm: {
     [key in string]: number;
   };
@@ -27,12 +27,7 @@ export interface SearchResultView {
 }
 
 export interface FieldOption extends Option {
-  fieldType: DataTypeStringEnum;
-  // used to get metric type, index type and index params for search params
-  // if user doesn't create index, default value is null
-  indexInfo: MilvusIndex | null;
-  // used for check vector input validation
-  dimension: number;
+  field: FieldObject;
 }
 
 export interface SearchParamInputConfig {

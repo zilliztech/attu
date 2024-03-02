@@ -3,13 +3,13 @@ import {
   FlushReq,
   GetMetricsResponse,
   ClientConfig,
-  DescribeIndexResponse,
 } from '@zilliz/milvus2-sdk-node';
 import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 import { DatabasesService } from '../database/databases.service';
 import { clientCache } from '../app';
+import { DescribeIndexRes } from '../types';
 
 export class MilvusService {
   private databaseService: DatabasesService;
@@ -95,10 +95,11 @@ export class MilvusService {
       clientCache.set(milvusClient.clientId, {
         milvusClient,
         address,
-        indexCache: new LRUCache<string, DescribeIndexResponse>({
+        indexCache: new LRUCache<string, DescribeIndexRes>({
           ttl: INDEX_TTL,
           ttlAutopurge: true,
         }),
+        database: database,
       });
 
       await this.databaseService.use(milvusClient.clientId, database);
@@ -114,11 +115,6 @@ export class MilvusService {
       clientCache.dump();
       throw error;
     }
-  }
-
-  async checkConnect(clientId: string, address: string) {
-    const milvusAddress = MilvusService.formatAddress(address);
-    return { connected: clientCache.has(milvusAddress) };
   }
 
   async flush(clientId: string, data: FlushReq) {
@@ -141,6 +137,9 @@ export class MilvusService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = milvusClient.closeConnection();
+    // clear cache on disconnect
+    clientCache.delete(milvusClient.clientId);
+
     return res;
   }
 
@@ -150,6 +149,10 @@ export class MilvusService {
     const res = milvusClient.use({
       db_name: db,
     });
+
+    // update the database in the cache
+    const cache = clientCache.get(clientId);
+    cache.database = db;
     return res;
   }
 }

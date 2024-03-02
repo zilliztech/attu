@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { SegementService } from '@/http';
+import { SegmentService } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import { rootContext } from '@/context';
 import AttuGrid from '@/components/grid/Grid';
@@ -27,13 +27,12 @@ const Segments = () => {
   const fetchSegments = async () => {
     setLoading(true);
 
-    const psegments =
-      (await SegementService.getPSegments(collectionName)) || {};
-    const qsegments =
-      (await SegementService.getQSegments(collectionName)) || {};
-    const combinedArray = psegments.infos.map(p => {
-      const q: any =
-        qsegments.infos.find(q => q.segmentID === p.segmentID)! || {};
+    const psegments = await SegmentService.getPSegments(collectionName);
+    const qsegments = await SegmentService.getQSegments(collectionName);
+
+    console.log('psegments', psegments);
+    const combinedArray = psegments.map(p => {
+      const q: any = qsegments.find(q => q.segmentID === p.segmentID)! || {};
       return {
         ...p,
         ...Object.keys(q).reduce((acc, key) => {

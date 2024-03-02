@@ -15,7 +15,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
 import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
 import CreateFields from '../collections/CreateFields';
-import { Collection } from '@/http';
+import { CollectionService } from '@/http';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
@@ -242,7 +242,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       consistency_level: consistencyLevel,
     };
 
-    await Collection.createCollection({
+    await CollectionService.createCollection({
       ...param,
     });
 

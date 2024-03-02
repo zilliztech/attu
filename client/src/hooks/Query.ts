@@ -1,11 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import {
-  DataTypeStringEnum,
-  DYNAMIC_FIELD,
-  LOAD_STATE,
-  MIN_INT64,
-} from '@/consts';
-import { Collection } from '@/http';
+import { DataTypeStringEnum, DYNAMIC_FIELD, MIN_INT64 } from '@/consts';
+import { CollectionService } from '@/http';
+import { CollectionFullObject } from '@server/types';
 
 export const useQuery = (params: {
   onQueryStart: Function;
@@ -14,12 +10,7 @@ export const useQuery = (params: {
   collectionName: string;
 }) => {
   // state
-  const [collection, setCollection] = useState<any>({
-    fields: [],
-    primaryKey: { value: '', type: DataTypeStringEnum.Int64 },
-    loaded: false,
-    data: null,
-  });
+  const [collection, setCollection] = useState<CollectionFullObject>();
   const [consistencyLevel, setConsistencyLevel] = useState<string>('Bounded');
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
@@ -36,17 +27,19 @@ export const useQuery = (params: {
     const cache = pageCache.current.get(
       page > currentPage ? currentPage : page
     );
-    const primaryKey = collection.primaryKey;
+    const primaryKey = collection?.schema?.primaryField;
 
     const formatPKValue = (pkId: string | number) =>
-      primaryKey.type === DataTypeStringEnum.VarChar ? `'${pkId}'` : pkId;
+      primaryKey?.data_type === DataTypeStringEnum.VarChar ? `'${pkId}'` : pkId;
 
     // If cache does not exist, return expression based on primaryKey type
     let condition = '';
     if (!cache) {
       const defaultValue =
-        primaryKey.type === DataTypeStringEnum.VarChar ? "''" : `${MIN_INT64}`;
-      condition = `${primaryKey.value} > ${defaultValue}`;
+        primaryKey?.data_type === DataTypeStringEnum.VarChar
+          ? "''"
+          : `${MIN_INT64}`;
+      condition = `${primaryKey?.name} > ${defaultValue}`;
     } else {
       const { firstPKId, lastPKId } = cache;
       const lastPKValue = formatPKValue(lastPKId);
@@ -54,8 +47,8 @@ export const useQuery = (params: {
 
       condition =
         page > currentPage
-          ? `(${primaryKey.value} > ${lastPKValue})`
-          : `((${primaryKey.value} <= ${lastPKValue}) && (${primaryKey.value} >= ${firstPKValue}))`;
+          ? `(${primaryKey?.name} > ${lastPKValue})`
+          : `((${primaryKey?.name} <= ${lastPKValue}) && (${primaryKey?.name} >= ${firstPKValue}))`;
     }
 
     return expr ? `${expr} && ${condition}` : condition;
@@ -73,7 +66,7 @@ export const useQuery = (params: {
     try {
       const queryParams = {
         expr: _expr,
-        output_fields: collection.fields.map((i: any) => i.name),
+        output_fields: collection!.schema.fields.map(i => i.name),
         limit: pageSize || 10,
         consistency_level,
         // travel_timestamp: timeTravelInfo.timestamp,
@@ -82,7 +75,7 @@ export const useQuery = (params: {
       // cache last query
       lastQuery.current = queryParams;
       // execute query
-      const res = await Collection.queryData(
+      const res = await CollectionService.queryData(
         params.collectionName,
         queryParams
       );
@@ -93,10 +86,10 @@ export const useQuery = (params: {
       const firstItem = res.data[0];
       // get last pk id
       const lastPKId: string | number =
-        lastItem && lastItem[collection.primaryKey.value];
+        lastItem && lastItem[collection!.schema.primaryField.name];
       // get first pk id
       const firstPKId: string | number =
-        firstItem && firstItem[collection.primaryKey.value];
+        firstItem && firstItem[collection!.schema.primaryField.name];
 
       // store pk id in the cache with the page number
       if (lastItem) {
@@ -121,34 +114,28 @@ export const useQuery = (params: {
 
   // get collection info
   const prepare = async (collectionName: string) => {
-    const collection = await Collection.getCollectionInfo(collectionName);
-    const schemaList = collection.fields;
+    const collection = await CollectionService.getCollectionInfo(collectionName);
+    const schemaList = collection.schema.fields;
 
     const nameList = schemaList.map(v => ({
       name: v.name,
-      type: v.fieldType,
+      type: v.data_type,
     }));
 
     // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection.enableDynamicField) {
+    if (collection.schema.enable_dynamic_field) {
       nameList.push({
         name: DYNAMIC_FIELD,
         type: DataTypeStringEnum.JSON,
       });
     }
-    const primaryKey = schemaList.find(v => v.isPrimaryKey === true)!;
     setConsistencyLevel(collection.consistency_level);
-    setCollection({
-      fields: nameList as any[],
-      primaryKey: { value: primaryKey['name'], type: primaryKey['fieldType'] },
-      loaded: collection.state === LOAD_STATE.LoadStateLoaded,
-      data: collection,
-    });
+    setCollection(collection);
   };
 
   const count = async (consistency_level = consistencyLevel) => {
     const count = 'count(*)';
-    const res = await Collection.queryData(params.collectionName, {
+    const res = await CollectionService.queryData(params.collectionName, {
       expr: expr,
       output_fields: [count],
       consistency_level,
@@ -171,7 +158,7 @@ export const useQuery = (params: {
 
   // query if expr is changed
   useEffect(() => {
-    if (!collection.primaryKey.value || !collection.loaded) {
+    if (!collection || !collection!.loaded) {
       // console.info('[skip running query]: no key yet');
       return;
     } // reset
@@ -184,7 +171,7 @@ export const useQuery = (params: {
 
   // query if collection is changed
   useEffect(() => {
-    if (!collection.primaryKey.value || !collection.loaded) {
+    if (!collection || !collection!.loaded) {
       // console.info('[skip running query]: no key yet');
       return;
     }
@@ -198,7 +185,7 @@ export const useQuery = (params: {
 
   // query if page size is changed
   useEffect(() => {
-    if (!collection.primaryKey.value || !collection.loaded) {
+    if (!collection || !collection!.loaded) {
       // console.info('[skip running query]: no key yet');
       return;
     }

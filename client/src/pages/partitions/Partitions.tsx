@@ -9,7 +9,7 @@ import { usePaginationHook, useInsertDialogHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
-import { Collection, PartitionService, FieldHttp } from '@/http';
+import { CollectionService, PartitionService } from '@/http';
 import InsertContainer from '../dialogs/insert/Dialog';
 import CreatePartitionDialog from '../dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '../dialogs/DropPartitionDialog';
@@ -66,7 +66,7 @@ const Partitions = () => {
   };
 
   const fetchCollectionDetail = async (name: string) => {
-    const res = await Collection.getCollectionInfo(name);
+    const res = await CollectionService.getCollectionInfo(name);
     return res;
   };
 
@@ -134,7 +134,7 @@ const Partitions = () => {
       icon: 'uploadFile',
       onClick: async () => {
         const collection = await fetchCollectionDetail(collectionName);
-        const schema = collection.schema.fields.map(f => new FieldHttp(f));
+        const schema = collection.schema;
 
         handleInsertDialog(
           <InsertContainer

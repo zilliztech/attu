@@ -1,10 +1,10 @@
-import { KeyValuePair } from '../../../types/Common';
+import { LabelValuePair } from '../../../types/Common';
 
 export interface StatisticsCardProps {
   wrapperClass?: string;
   data: Item[];
 }
 
-export interface Item extends KeyValuePair {
+export interface Item extends LabelValuePair {
   valueColor: string;
 }

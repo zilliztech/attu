@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { SchemaService } from './schema.service';
 import { ManageIndexDto } from './dto';
+import { DescribeIndexRes } from '../types';
 
 export class SchemaController {
   private router: Router;
@@ -51,9 +52,10 @@ export class SchemaController {
   async describeIndex(req: Request, res: Response, next: NextFunction) {
     const data = '' + req.query?.collection_name;
     try {
-      const result = await this.schemaService.describeIndex(req.clientId, {
+      const result = (await this.schemaService.describeIndex(req.clientId, {
         collection_name: data,
-      });
+      })) as DescribeIndexRes;
+
       res.send(result);
     } catch (error) {
       next(error);

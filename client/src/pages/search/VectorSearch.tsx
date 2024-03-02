@@ -15,30 +15,25 @@ import CustomButton from '@/components/customButton/CustomButton';
 import SimpleMenu from '@/components/menu/SimpleMenu';
 import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
-import { Field } from '@/components/advancedSearch/Types';
-import { Collection, DataService } from '@/http';
+import { DataService } from '@/http';
 import {
   parseValue,
   parseLocationSearch,
-  classifyFields,
-  getDefaultIndexType,
-  getEmbeddingType,
-  getNonVectorFieldsForFilter,
   getVectorFieldOptions,
   cloneObj,
   generateVector,
 } from '@/utils';
-import {
-  LOADING_STATE,
-  DEFAULT_METRIC_VALUE_MAP,
-  DYNAMIC_FIELD,
-  DataTypeEnum,
-} from '@/consts';
+import { LOADING_STATE, DYNAMIC_FIELD, DataTypeEnum } from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
 import { TOP_K_OPTIONS } from './Constants';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
+import {
+  FieldObject,
+  CollectionObject,
+  CollectionFullObject,
+} from '@server/types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
@@ -56,7 +51,7 @@ const VectorSearch = () => {
   const [selectedCollection, setSelectedCollection] = useState<string>('');
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
   // fields for advanced filter
-  const [filterFields, setFilterFields] = useState<Field[]>([]);
+  const [filterFields, setFilterFields] = useState<FieldObject[]>([]);
   const [selectedField, setSelectedField] = useState<string>('');
 
   // search params form
@@ -92,22 +87,24 @@ const VectorSearch = () => {
   } = usePaginationHook(searchResultMemo || []);
 
   const outputFields: string[] = useMemo(() => {
-    const s = collections.find(c => c.collectionName === selectedCollection);
+    const s = collections.find(
+      c => c.collection_name === selectedCollection
+    ) as CollectionFullObject;
 
     if (!s) {
       return [];
     }
 
-    const fields = s.fields || [];
+    const fields = s.schema.fields || [];
 
     // vector field can't be output fields
     const invalidTypes = ['BinaryVector', 'FloatVector'];
     const nonVectorFields = fields.filter(
-      field => !invalidTypes.includes(field.fieldType)
+      field => !invalidTypes.includes(field.data_type)
     );
 
     const _outputFields = nonVectorFields.map(f => f.name);
-    if (s.enableDynamicField) {
+    if (s.schema?.enable_dynamic_field) {
       _outputFields.push(DYNAMIC_FIELD);
     }
     return _outputFields;
@@ -115,10 +112,10 @@ const VectorSearch = () => {
 
   const primaryKeyField = useMemo(() => {
     const selectedCollectionInfo = collections.find(
-      c => c.collectionName === selectedCollection
+      c => c.collection_name === selectedCollection
     );
-    const fields = selectedCollectionInfo?.fields || [];
-    return fields.find(f => f.isPrimaryKey)?.name;
+    const fields = selectedCollectionInfo?.schema?.fields || [];
+    return fields.find(f => f.is_primary_key)?.name;
   }, [selectedCollection, collections]);
 
   const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
@@ -155,47 +152,30 @@ const VectorSearch = () => {
   const [selectedConsistencyLevel, setSelectedConsistencyLevel] =
     useState<string>('');
 
-  const {
-    indexType,
-    indexParams,
-    fieldType,
-    embeddingType,
-    selectedFieldDimension,
-  } = useMemo(() => {
-    if (selectedField !== '') {
-      // field options must contain selected field, so selectedFieldInfo will never undefined
-      const selectedFieldInfo = fieldOptions.find(
-        f => f.value === selectedField
-      );
-      const index = selectedFieldInfo?.indexInfo;
-      const embeddingType = getEmbeddingType(selectedFieldInfo!.fieldType);
-      const metric =
-        index?.metricType || DEFAULT_METRIC_VALUE_MAP[embeddingType];
-      const indexParams = index?.indexParameterPairs || [];
-      const dim = selectedFieldInfo?.dimension || 0;
-      setSelectedMetricType(metric);
+  const { indexType, indexParams, fieldType, selectedFieldDimension } =
+    useMemo(() => {
+      if (selectedField !== '') {
+        // field options must contain selected field, so selectedFieldInfo will never undefined
+        const field = fieldOptions.find(f => f.value === selectedField)?.field;
+        const metric = field?.index.metricType || '';
+        setSelectedMetricType(metric);
+
+        return {
+          metricType: metric,
+          indexType: field?.index.indexType,
+          indexParams: field?.index.indexParameterPairs || [],
+          fieldType: field?.dataType,
+          selectedFieldDimension: field?.dimension || 0,
+        };
+      }
 
       return {
-        metricType: metric,
-        indexType: index?.indexType || getDefaultIndexType(embeddingType),
-        indexParams,
-        fieldType:
-          DataTypeEnum[
-            selectedFieldInfo?.fieldType! as keyof typeof DataTypeEnum
-          ],
-        embeddingType,
-        selectedFieldDimension: dim,
+        indexType: '',
+        indexParams: [],
+        fieldType: DataTypeEnum.FloatVector,
+        selectedFieldDimension: 0,
       };
-    }
-
-    return {
-      indexType: '',
-      indexParams: [],
-      fieldType: 0,
-      embeddingType: DataTypeEnum.FloatVector,
-      selectedFieldDimension: 0,
-    };
-  }, [selectedField, fieldOptions]);
+    }, [selectedField, fieldOptions]);
 
   /**
    * vector value validation
@@ -245,25 +225,18 @@ const VectorSearch = () => {
   const collectionOptions: Option[] = useMemo(
     () =>
       loadedCollections.map(c => ({
-        label: c.collectionName,
-        value: c.collectionName,
+        label: c.collection_name,
+        value: c.collection_name,
       })),
     [loadedCollections]
   );
 
   const fetchFieldsWithIndex = useCallback(
-    async (collectionName: string, collections: Collection[]) => {
-      const col = collections.find(c => c.collectionName === collectionName);
-
-      const fields = col?.fields ?? [];
-
-      const { vectorFields, nonVectorFields } = classifyFields(fields);
+    async (collectionName: string, collections: CollectionFullObject[]) => {
+      const col = collections.find(c => c.collection_name === collectionName);
 
       // only vector type fields can be select
-      const fieldOptions = getVectorFieldOptions(
-        vectorFields,
-        col?.indexes ?? []
-      );
+      const fieldOptions = getVectorFieldOptions(col?.schema.vectorFields!);
       setFieldOptions(fieldOptions);
       if (fieldOptions.length > 0) {
         // set first option value as default field value
@@ -271,9 +244,7 @@ const VectorSearch = () => {
         setSelectedField(defaultFieldValue as string);
       }
 
-      // only non vector type fields can be advanced filter
-      const filterFields = getNonVectorFieldsForFilter(nonVectorFields);
-      setFilterFields(filterFields);
+      setFilterFields(col?.schema.scalarFields!);
     },
     [collections]
   );
@@ -288,9 +259,12 @@ const VectorSearch = () => {
   // get field options with index when selected collection changed
   useEffect(() => {
     if (selectedCollection !== '') {
-      fetchFieldsWithIndex(selectedCollection, collections);
+      fetchFieldsWithIndex(
+        selectedCollection,
+        collections as CollectionFullObject[]
+      );
     }
-    const level = collections.find(c => c.collectionName == selectedCollection)
+    const level = collections.find(c => c.collection_name == selectedCollection)
       ?.consistency_level!;
     setSelectedConsistencyLevel(level);
   }, [selectedCollection, collections, fetchFieldsWithIndex]);
@@ -301,7 +275,7 @@ const VectorSearch = () => {
       const { collectionName } = parseLocationSearch(location.search);
       // collection name validation
       const isNameValid = collections
-        .map(c => c.collectionName)
+        .map(c => c.collection_name)
         .includes(collectionName);
       isNameValid && setSelectedCollection(collectionName);
     }
@@ -350,10 +324,10 @@ const VectorSearch = () => {
       expr,
       search_params: searchParamPairs,
       vectors: [parseValue(vectors)],
-      vector_type: fieldType,
+      vector_type: fieldType as DataTypeEnum,
       consistency_level:
         selectedConsistencyLevel ||
-        collections.find(c => c.collectionName == selectedCollection)
+        collections.find(c => c.collection_name == selectedCollection)
           ?.consistency_level!,
     };
 
@@ -480,7 +454,7 @@ const VectorSearch = () => {
             handleConsistencyChange={(level: string) => {
               setSelectedConsistencyLevel(level);
             }}
-            indexType={indexType}
+            indexType={indexType!}
             indexParams={indexParams!}
             searchParamsForm={searchParam}
             handleFormChange={setSearchParam}

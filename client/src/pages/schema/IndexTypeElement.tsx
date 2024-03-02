@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
-import { MilvusIndex, FieldHttp } from '@/http';
+import { IndexService } from '@/http';
 import { rootContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
@@ -18,8 +18,9 @@ import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
 import { sleep } from '@/utils';
 import { IndexState } from '@/types/Milvus';
-import { NONE_INDEXABLE_DATA_TYPES } from '@/consts';
+import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndex from './Create';
+import { FieldObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -66,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const IndexTypeElement: FC<{
-  data: FieldHttp;
+  data: FieldObject;
   collectionName: string;
   disabled?: boolean;
   disabledTooltip?: string;
@@ -80,8 +81,6 @@ const IndexTypeElement: FC<{
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
 
-  // const [createProgress, setCreateProgress] = useState<number>(0);
-
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
@@ -94,6 +93,9 @@ const IndexTypeElement: FC<{
   );
 
   useEffect(() => {
+    if (!data.index) {
+      return;
+    }
     let running = true;
 
     // define async data getter
@@ -103,7 +105,9 @@ const IndexTypeElement: FC<{
       indexName: string
     ) => {
       // get fetch data
-      const index_descriptions = await MilvusIndex.getIndexInfo(collectionName);
+      const index_descriptions = await IndexService.describeIndex(
+        collectionName
+      );
 
       const indexDescription = index_descriptions.find(
         i => i.field_name === fieldName
@@ -126,14 +130,18 @@ const IndexTypeElement: FC<{
       }
     };
     // prevent delete index trigger fetching index status
-    if (data.indexType !== '' && status !== IndexState.Delete) {
-      fetchStatus(collectionName, data.name, data.indexName!);
+    if (data.index.indexType !== '' && status !== IndexState.Delete) {
+      fetchStatus(
+        collectionName,
+        data.name,
+        data.index && data.index.index_name!
+      );
     }
 
     return () => {
       running = false;
     };
-  }, [collectionName, data.indexType, data.name, data.indexName]);
+  }, [collectionName, data.name, data.index && data.index.index_name]);
 
   const requestCreateIndex = async (
     params: IndexExtraParam,
@@ -145,7 +153,7 @@ const IndexTypeElement: FC<{
       index_name,
       extra_params: params,
     };
-    await MilvusIndex.createIndex(indexCreateParam);
+    await IndexService.createIndex(indexCreateParam);
     // reset status to default empty string
     setStatus(IndexState.Default);
     handleCloseDialog();
@@ -164,7 +172,7 @@ const IndexTypeElement: FC<{
           <CreateIndex
             collectionName={collectionName}
             fieldName={data.name}
-            fieldType={data.fieldType}
+            fieldType={data.data_type as DataTypeStringEnum}
             dimension={Number(data.dimension)}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}
@@ -178,10 +186,10 @@ const IndexTypeElement: FC<{
     const indexDeleteParam: IndexManageParam = {
       collection_name: collectionName,
       field_name: data.name,
-      index_name: data.indexName!,
+      index_name: data.index.index_name!,
     };
 
-    await MilvusIndex.deleteIndex(indexDeleteParam);
+    await IndexService.deleteIndex(indexDeleteParam);
     // use 'delete' as special status for whether fetching index status check
     setStatus(IndexState.Delete);
     cb(collectionName);
@@ -209,27 +217,24 @@ const IndexTypeElement: FC<{
   const generateElement = () => {
     // only vector type field is able to create index
     if (
-      data.isPrimaryKey ||
-      NONE_INDEXABLE_DATA_TYPES.indexOf(data.fieldType) !== -1
+      data.is_primary_key ||
+      NONE_INDEXABLE_DATA_TYPES.indexOf(
+        data.data_type as DataTypeStringEnum
+      ) !== -1
     ) {
       return <div className={classes.item}>--</div>;
     }
+
+    if (!data.index) {
+      return (
+        <div role="button" onClick={handleCreate} className={`${classes.btn}`}>
+          <AddIcon classes={{ root: classes.addIcon }} />
+          {indexTrans('create')}
+        </div>
+      );
+    }
     // indexType example: FLAT
-    switch (data.indexType) {
-      case '': {
-        return (
-          <div
-            role="button"
-            onClick={handleCreate}
-            className={`${classes.btn} ${
-              data.createIndexDisabled ? classes.btnDisabled : ''
-            }`}
-          >
-            <AddIcon classes={{ root: classes.addIcon }} />
-            {indexTrans('create')}
-          </div>
-        );
-      }
+    switch (data.index.indexType) {
       default: {
         /**
          * empty string or 'delete' means fetching progress hasn't finished
@@ -245,7 +250,7 @@ const IndexTypeElement: FC<{
 
         const chipComp = () => (
           <Chip
-            label={data.indexType}
+            label={data.index.indexType}
             classes={{ root: classes.chip, label: classes.chipLabel }}
             deleteIcon={<DeleteIcon classes={{ root: 'icon' }} />}
             onDelete={handleDelete}

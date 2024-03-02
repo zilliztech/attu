@@ -211,8 +211,8 @@ const InsertContainer: FC<InsertContentProps> = ({
     () =>
       defaultSelectedCollection === ''
         ? collections.map(c => ({
-            label: c.collectionName,
-            value: c.collectionName,
+            label: c.collection_name,
+            value: c.collection_name,
           }))
         : [
             {
@@ -231,23 +231,23 @@ const InsertContainer: FC<InsertContentProps> = ({
      * on collection page, we get schema data from collection
      * on partition page, we pass schema as props
      */
-    const list =
-      schema && schema.length > 0
-        ? schema
-        : collections.find(c => c.collectionName === collectionValue)?.fields;
+    const list = schema
+      ? schema.fields
+      : collections.find(c => c.collection_name === collectionValue)?.schema
+          ?.fields;
 
     const autoIdFieldName =
-      list?.find(item => item.isPrimaryKey && item.isAutoId)?.name || '';
+      list?.find(item => item.is_primary_key && item.autoID)?.name || '';
     /**
      * if below conditions all met, this schema shouldn't be selectable as head:
      * 1. this field is primary key
      * 2. this field auto id is true
      */
     const options = (list || [])
-      .filter(s => !s.isAutoId || !s.isPrimaryKey)
+      .filter(s => !s.autoID || !s.is_primary_key)
       .map(s => ({
         label: s.name,
-        value: s.fieldID,
+        value: s.name,
       }));
     return {
       schemaOptions: options,
