@@ -30,6 +30,9 @@ export class CollectionController {
   generateRoutes() {
     // get all collections
     this.router.get('/', this.showCollections.bind(this));
+    // get all collections statistics
+    this.router.get('/statistics', this.getStatistics.bind(this));
+
     // get collection with index info
     this.router.get('/:name', this.describeCollection.bind(this));
     // get count
@@ -55,8 +58,6 @@ export class CollectionController {
       this.duplicateCollection.bind(this)
     );
 
-    // get all collections statistics
-    this.router.get('/statistics', this.getStatistics.bind(this));
     // get collection statistics
     this.router.get(
       '/:name/statistics',
@@ -427,20 +428,11 @@ export class CollectionController {
   async count(req: Request, res: Response, next: NextFunction) {
     const name = req.params?.name;
     try {
-      const { value } = await this.collectionsService.hasCollection(
-        req.clientId,
-        {
-          collection_name: name,
-        }
-      );
-      let result: any = '';
-      if (value) {
-        result = await this.collectionsService.count(req.clientId, {
-          collection_name: name,
-        });
-      }
+      const result = await this.collectionsService.count(req.clientId, {
+        collection_name: name,
+      });
 
-      res.send({ collection_name: name, rowCount: result });
+      res.send(result);
     } catch (error) {
       next(error);
     }

@@ -231,11 +231,10 @@ const InsertContainer: FC<InsertContentProps> = ({
      * on collection page, we get schema data from collection
      * on partition page, we pass schema as props
      */
-    const list =
-      schema && schema.length > 0
-        ? schema
-        : collections.find(c => c.collection_name === collectionValue)?.schema
-            ?.fields;
+    const list = schema
+      ? schema.fields
+      : collections.find(c => c.collection_name === collectionValue)?.schema
+          ?.fields;
 
     const autoIdFieldName =
       list?.find(item => item.is_primary_key && item.autoID)?.name || '';

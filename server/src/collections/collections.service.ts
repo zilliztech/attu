@@ -20,7 +20,6 @@ import {
   CompactReq,
   HasCollectionReq,
   CountReq,
-  FieldSchema,
   GetLoadStateReq,
   CollectionData,
 } from '@zilliz/milvus2-sdk-node';
@@ -40,9 +39,12 @@ import {
   FieldObject,
   IndexObject,
   DescribeCollectionRes,
+  CountObject,
+  StatisticsObject,
 } from '../types';
 import { SchemaService } from '../schema/schema.service';
 import { clientCache } from '../app';
+import { MIN_INT64 } from '../utils/Const';
 
 export class CollectionsService {
   private schemaService: SchemaService;
@@ -182,7 +184,7 @@ export class CollectionsService {
       );
       count = collectionStatisticsRes.data.row_count;
     }
-    return count;
+    return { rowCount: Number(count) } as CountObject;
   }
 
   async insert(clientId: string, data: InsertReq) {
@@ -274,6 +276,7 @@ export class CollectionsService {
         loadedPercentage: undefined,
         consistency_level: undefined,
         replicas: undefined,
+        loaded: undefined,
       } as CollectionLazyObject;
     }
     // get collection schema and properties
@@ -329,7 +332,8 @@ export class CollectionsService {
       loadedPercentage,
       consistency_level: collectionInfo.consistency_level,
       replicas: replicas && replicas.replicas,
-      status: status,
+      loaded: status === LOADING_STATE.LOADED,
+      status,
     };
   }
 
@@ -343,6 +347,7 @@ export class CollectionsService {
     const loadedCollections = await this.showCollections(clientId, {
       type: ShowCollectionsType.Loaded,
     });
+
     // data container
     const data: CollectionObject[] = [];
     // sort by created time
@@ -350,15 +355,23 @@ export class CollectionsService {
       (a, b) => Number(b.timestamp) - Number(a.timestamp)
     );
 
-    // get single collection details or all collection details
-    const loaded = loadedCollections.data.filter(
-      v => v.name === collectionName
+    // get single collection details
+    const targetCollections = allCollections.data.find(
+      d => d.name === collectionName
     );
-    const collectionsToGetDetail = loaded.length ? loaded : allCollections.data;
+    if (targetCollections) {
+      const res = await this.getCollection(
+        clientId,
+        targetCollections,
+        loadedCollections.data.find(v => v.name === targetCollections.name),
+        false
+      );
+      return [res];
+    }
 
     // get all collection details
-    for (let i = 0; i < collectionsToGetDetail.length; i++) {
-      const collection = collectionsToGetDetail[i];
+    for (let i = 0; i < allCollections.data.length; i++) {
+      const collection = allCollections.data[i];
       data.push(
         await this.getCollection(
           clientId,
@@ -368,8 +381,6 @@ export class CollectionsService {
         )
       );
     }
-
-    console.dir(data, { depth: null });
 
     return data;
   }
@@ -403,7 +414,7 @@ export class CollectionsService {
     const data = {
       collectionCount: 0,
       totalData: 0,
-    };
+    } as StatisticsObject;
     const res = await this.showCollections(clientId);
     data.collectionCount = res.data.length;
     if (res.data.length > 0) {
@@ -490,19 +501,19 @@ export class CollectionsService {
   }
 
   async duplicateCollection(clientId: string, data: RenameCollectionReq) {
-    const collection: any = await this.describeCollection(clientId, {
+    const collection = await this.describeCollection(clientId, {
       collection_name: data.collection_name,
     });
 
     const createCollectionParams: CreateCollectionReq = {
       collection_name: data.new_collection_name,
       fields: collection.schema.fields.map(convertFieldSchemaToFieldType),
-      consistency_level: collection.consistency_level,
-      enable_dynamic_field: !!collection.enable_dynamic_field,
+      consistency_level: collection.consistency_level as any,
+      enable_dynamic_field: !!collection.schema.enable_dynamic_field,
     };
 
     if (
-      collection.schema.fields.some((f: FieldSchema) => f.is_partition_key) &&
+      collection.schema.fields.some(f => f.is_partition_key) &&
       collection.num_partitions
     ) {
       createCollectionParams.num_partitions = Number(collection.num_partitions);
@@ -518,7 +529,8 @@ export class CollectionsService {
 
     const res = await milvusClient.deleteEntities({
       collection_name: data.collection_name,
-      filter: pkType === 'Int64' ? `${pkField} >= 0` : `${pkField} != ''`,
+      filter:
+        pkType === 'Int64' ? `${pkField} >= ${MIN_INT64}` : `${pkField} != ''`,
     });
 
     return res;

@@ -153,3 +153,5 @@ export enum LOADING_STATE {
   LOADING = 'loading',
   UNLOADED = 'unloaded',
 }
+
+export const MIN_INT64 = `-9223372036854775807`; // safe int64 min value

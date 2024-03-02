@@ -1,21 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { DataTypeEnum } from '@/consts';
 
-export interface Replica {
-  collectionID: string;
-  node_ids: string[];
-  partition_ids: string[];
-  replicaID: string;
-  shard_replicas: ShardReplica[];
-}
-
-export interface ShardReplica {
-  dm_channel_name: string;
-  leaderID: string;
-  leader_addr: string;
-  node_id: string[];
-}
-
 export interface CollectionCreateProps {
   onCreate?: () => void;
 }
@@ -29,7 +14,7 @@ export interface CollectionCreateParam {
 }
 
 export interface CreateField {
-  name: string | null;
+  name: string;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
   is_partition_key?: boolean;
@@ -53,6 +38,26 @@ export type CreateFieldType =
   | 'defaultVector'
   | 'vector'
   | 'number';
+
+export type FieldType = {
+  name: string;
+  data_type: DataTypeEnum;
+  element_type?: DataTypeEnum;
+  is_primary_key: boolean;
+  is_partition_key?: boolean;
+  description: string;
+  dimension?: number | string;
+  isDefault?: boolean;
+  id?: string;
+  type_params?: {
+    dim?: string | number;
+    max_length?: string | number;
+  };
+  createType?: CreateFieldType;
+  max_length?: string | number;
+  max_capacity?: string | number;
+  autoID?: boolean;
+};
 
 export interface CreateFieldsProps {
   fields: CreateField[];
@@ -84,11 +89,4 @@ export interface AliasesProps {
 
 export interface LoadReplicaReq {
   replica_number: number;
-}
-
-export enum TAB_ENUM {
-  'schema',
-  'partition',
-  'data-preview',
-  'data-query',
 }

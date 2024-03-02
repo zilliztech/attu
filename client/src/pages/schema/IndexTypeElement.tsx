@@ -105,7 +105,7 @@ const IndexTypeElement: FC<{
       indexName: string
     ) => {
       // get fetch data
-      const index_descriptions = await IndexService.getIndexInfo(
+      const index_descriptions = await IndexService.describeIndex(
         collectionName
       );
 

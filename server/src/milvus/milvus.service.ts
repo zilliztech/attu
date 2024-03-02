@@ -99,6 +99,7 @@ export class MilvusService {
           ttl: INDEX_TTL,
           ttlAutopurge: true,
         }),
+        database: database,
       });
 
       await this.databaseService.use(milvusClient.clientId, database);
@@ -114,11 +115,6 @@ export class MilvusService {
       clientCache.dump();
       throw error;
     }
-  }
-
-  async checkConnect(clientId: string, address: string) {
-    const milvusAddress = MilvusService.formatAddress(address);
-    return { connected: clientCache.has(milvusAddress) };
   }
 
   async flush(clientId: string, data: FlushReq) {
@@ -141,6 +137,9 @@ export class MilvusService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = milvusClient.closeConnection();
+    // clear cache on disconnect
+    clientCache.delete(milvusClient.clientId);
+
     return res;
   }
 
@@ -150,6 +149,10 @@ export class MilvusService {
     const res = milvusClient.use({
       db_name: db,
     });
+
+    // update the database in the cache
+    const cache = clientCache.get(clientId);
+    cache.database = db;
     return res;
   }
 }

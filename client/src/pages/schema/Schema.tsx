@@ -164,7 +164,7 @@ const Schema = () => {
       align: 'left',
       disablePadding: true,
       label: indexTrans('type'),
-      sortBy: 'indexType',
+      notSort: true,
       formatter(f) {
         return (
           <IndexTypeElement
@@ -184,11 +184,11 @@ const Schema = () => {
       formatter(f) {
         return f.index ? (
           <div className={classes.paramWrapper}>
-            {f.index.params.length > 0 ? (
-              f.index.params.map((p: any) =>
+            {f.index.indexParameterPairs.length > 0 ? (
+              f.index.indexParameterPairs.map((p: any) =>
                 p.value ? (
-                  <>
-                    <span key={p.key + p.value} className="param">
+                  <span key={p.key + p.value}>
+                    <span className="param">
                       <Typography variant="body1" className="key">
                         {`${p.key}:`}
                       </Typography>
@@ -196,7 +196,7 @@ const Schema = () => {
                         {p.value}
                       </Typography>
                     </span>
-                  </>
+                  </span>
                 ) : (
                   ''
                 )
@@ -205,7 +205,9 @@ const Schema = () => {
               <>--</>
             )}
           </div>
-        ) : null;
+        ) : (
+          <>--</>
+        );
       },
     },
     {

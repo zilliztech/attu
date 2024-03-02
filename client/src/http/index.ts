@@ -2,7 +2,6 @@
 export * from './Axios';
 export * from './BaseModel';
 export * from './Collection';
-export * from './Field';
 
 // service
 export * from './Index.service';

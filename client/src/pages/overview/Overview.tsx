@@ -129,7 +129,7 @@ const Overview = () => {
   const fetchData = useCallback(async () => {
     if (loading) return;
     setLoadingLocal(true);
-    const res = (await Collection.getStatistics()) as any;
+    const res = await Collection.getStatistics();
     setStatistics(res);
     setLoadingLocal(false);
   }, [database, collections]);
@@ -139,7 +139,7 @@ const Overview = () => {
   }, [fetchData]);
 
   const loadCollections = collections.filter(
-    c => c.status !== LOADING_STATE.UNLOADED || (c as any).loaded === 2
+    c => c.status !== LOADING_STATE.UNLOADED
   );
 
   const onRelease = () => {

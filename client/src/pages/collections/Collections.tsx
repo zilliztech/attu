@@ -130,12 +130,6 @@ const Collections = () => {
     fetchData();
   }, [fetchData, database]);
 
-  const getVectorField = (collection: CollectionFullObject) => {
-    return collection.schema.fields!.find(
-      d => d.data_type === 'FloatVector' || d.data_type === 'BinaryVector'
-    );
-  };
-
   const formatCollections = useMemo(() => {
     const filteredCollections = search
       ? collections.filter(collection =>

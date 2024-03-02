@@ -9,7 +9,7 @@ export class IndexService extends BaseModel {
     Object.assign(this, props);
   }
 
-  static async getIndexInfo(collectionName: string): Promise<IndexObject[]> {
+  static async describeIndex(collectionName: string): Promise<IndexObject[]> {
     const res = await super.findAll<DescribeIndexRes>({
       path: `/schema/index`,
       params: { collection_name: collectionName },

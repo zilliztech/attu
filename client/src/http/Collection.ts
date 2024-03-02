@@ -5,6 +5,8 @@ import {
   ShowCollectionsType,
   CollectionFullObject,
   CollectionObject,
+  CountObject,
+  StatisticsObject,
 } from '@server/types';
 
 export class Collection extends BaseModel {
@@ -68,11 +70,14 @@ export class Collection extends BaseModel {
   }
 
   static getStatistics() {
-    return super.search({ path: '/collections/statistics', params: {} });
+    return super.search<StatisticsObject>({
+      path: `/collections/statistics`,
+      params: {},
+    });
   }
 
   static count(collectionName: string) {
-    return super.search<{}>({
+    return super.search<CountObject>({
       path: `/collections/${collectionName}/count`,
       params: {},
     });

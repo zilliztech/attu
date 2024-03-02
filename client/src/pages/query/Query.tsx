@@ -88,11 +88,12 @@ const Query = () => {
   const handleDelete = async () => {
     // call delete api
     await DataService.deleteEntities(collectionName, {
-      expr: `${collection.primaryKey.value} in [${selectedData
+      expr: `${collection!.schema.primaryField.name} in [${selectedData
         .map(v =>
-          collection.primaryKey.type === DataTypeStringEnum.VarChar
-            ? `"${v[collection.primaryKey.value]}"`
-            : v[collection.primaryKey.value]
+          collection!.schema.primaryField.data_type ===
+          DataTypeStringEnum.VarChar
+            ? `"${v[collection!.schema.primaryField.name]}"`
+            : v[collection!.schema.primaryField.name]
         )
         .join(',')}]`,
     });
@@ -151,7 +152,7 @@ const Query = () => {
                 defaultSelectedCollection={collectionName}
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                collections={[collection.data]}
+                collections={[collection!]}
                 onInsert={() => {}}
               />
             ),
@@ -275,135 +276,141 @@ const Query = () => {
 
   return (
     <div className={classes.root}>
-      <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
-      <div className={classes.toolbar}>
-        <div className="left">
-          <TextField
-            className="textarea"
-            InputProps={{
-              classes: {
-                root: 'textfield',
-                multiline: 'multiline',
-              },
-            }}
-            value={expression}
-            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-              setExpression(e.target.value as string);
-            }}
-            disabled={!collection.loaded}
-            InputLabelProps={{ shrink: true }}
-            label={collectionTrans('exprPlaceHolder')}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                // reset page
-                setCurrentPage(0);
-                if (expr !== expression) {
-                  setExpr(expression);
-                } else {
-                  // ensure query
-                  query();
-                }
-                e.preventDefault();
-              }
-            }}
-            inputRef={inputRef}
-          />
-          <Filter
-            ref={filterRef}
-            title="Advanced Filter"
-            fields={collection.fields.filter(
-              (i: any) =>
-                i.type !== DataTypeStringEnum.FloatVector &&
-                i.type !== DataTypeStringEnum.BinaryVector
+      {collection && (
+        <>
+          <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
+          <div className={classes.toolbar}>
+            <div className="left">
+              <TextField
+                className="textarea"
+                InputProps={{
+                  classes: {
+                    root: 'textfield',
+                    multiline: 'multiline',
+                  },
+                }}
+                value={expression}
+                onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                  setExpression(e.target.value as string);
+                }}
+                disabled={!collection!.loaded}
+                InputLabelProps={{ shrink: true }}
+                label={collectionTrans('exprPlaceHolder')}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    // reset page
+                    setCurrentPage(0);
+                    if (expr !== expression) {
+                      setExpr(expression);
+                    } else {
+                      // ensure query
+                      query();
+                    }
+                    e.preventDefault();
+                  }
+                }}
+                inputRef={inputRef}
+              />
+              <Filter
+                ref={filterRef}
+                title="Advanced Filter"
+                fields={collection.schema.fields.filter(
+                  i =>
+                    i.data_type !== DataTypeStringEnum.FloatVector &&
+                    i.data_type !== DataTypeStringEnum.BinaryVector
+                )}
+                filterDisabled={!collection.loaded}
+                onSubmit={handleFilterSubmit}
+                showTitle={false}
+                showTooltip={false}
+              />
+              {/* </div> */}
+              <CustomSelector
+                options={CONSISTENCY_LEVEL_OPTIONS}
+                value={consistencyLevel}
+                label={collectionTrans('consistency')}
+                wrapperClass={classes.selector}
+                disabled={!collection.loaded}
+                variant="filled"
+                onChange={(e: { target: { value: unknown } }) => {
+                  const consistency = e.target.value as string;
+                  setConsistencyLevel(consistency);
+                }}
+              />
+            </div>
+            <div className="right">
+              <CustomButton
+                className="btn"
+                onClick={handleFilterReset}
+                disabled={!collection.loaded}
+              >
+                <ResetIcon classes={{ root: 'icon' }} />
+                {btnTrans('reset')}
+              </CustomButton>
+              <CustomButton
+                variant="contained"
+                onClick={() => {
+                  setCurrentPage(0);
+                  if (expr !== expression) {
+                    setExpr(expression);
+                  } else {
+                    // ensure query
+                    query();
+                  }
+                }}
+                disabled={!collection.loaded}
+              >
+                {btnTrans('query')}
+              </CustomButton>
+            </div>
+          </div>
+          <AttuGrid
+            toolbarConfigs={[]}
+            colDefinitions={collection.schema.fields.map((i: any) => {
+              return {
+                id: i.name,
+                align: 'left',
+                disablePadding: false,
+                needCopy: true,
+                formatter(_: any, cellData: any) {
+                  const itemType = detectItemType(cellData);
+                  switch (itemType) {
+                    case 'json':
+                    case 'array':
+                    case 'bool':
+                      const res = JSON.stringify(cellData);
+                      return <Typography title={res}>{res}</Typography>;
+                    default:
+                      return cellData;
+                  }
+                },
+                label:
+                  i.name === DYNAMIC_FIELD
+                    ? searchTrans('dynamicFields')
+                    : i.name,
+              };
+            })}
+            primaryKey={collection.schema.primaryField.name}
+            openCheckBox={true}
+            isLoading={!!tableLoading}
+            rows={queryResult.data}
+            rowCount={total}
+            rowHeight={43}
+            selected={selectedData}
+            setSelected={onSelectChange}
+            page={currentPage}
+            onPageChange={handlePageChange}
+            setRowsPerPage={setPageSize}
+            rowsPerPage={pageSize}
+            labelDisplayedRows={getLabelDisplayedRows(
+              `(${queryResult.latency || ''} ms)`
             )}
-            filterDisabled={!collection.loaded}
-            onSubmit={handleFilterSubmit}
-            showTitle={false}
-            showTooltip={false}
+            noData={searchTrans(
+              `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
+            )}
           />
-          {/* </div> */}
-          <CustomSelector
-            options={CONSISTENCY_LEVEL_OPTIONS}
-            value={consistencyLevel}
-            label={collectionTrans('consistency')}
-            wrapperClass={classes.selector}
-            disabled={!collection.loaded}
-            variant="filled"
-            onChange={(e: { target: { value: unknown } }) => {
-              const consistency = e.target.value as string;
-              setConsistencyLevel(consistency);
-            }}
-          />
-        </div>
-        <div className="right">
-          <CustomButton
-            className="btn"
-            onClick={handleFilterReset}
-            disabled={!collection.loaded}
-          >
-            <ResetIcon classes={{ root: 'icon' }} />
-            {btnTrans('reset')}
-          </CustomButton>
-          <CustomButton
-            variant="contained"
-            onClick={() => {
-              setCurrentPage(0);
-              if (expr !== expression) {
-                setExpr(expression);
-              } else {
-                // ensure query
-                query();
-              }
-            }}
-            disabled={!collection.loaded}
-          >
-            {btnTrans('query')}
-          </CustomButton>
-        </div>
-      </div>
-      <AttuGrid
-        toolbarConfigs={[]}
-        colDefinitions={collection.fields.map((i: any) => {
-          return {
-            id: i.name,
-            align: 'left',
-            disablePadding: false,
-            needCopy: true,
-            formatter(_: any, cellData: any) {
-              const itemType = detectItemType(cellData);
-              switch (itemType) {
-                case 'json':
-                case 'array':
-                case 'bool':
-                  const res = JSON.stringify(cellData);
-                  return <Typography title={res}>{res}</Typography>;
-                default:
-                  return cellData;
-              }
-            },
-            label:
-              i.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i.name,
-          };
-        })}
-        primaryKey={collection.primaryKey.value}
-        openCheckBox={true}
-        isLoading={!!tableLoading}
-        rows={queryResult.data}
-        rowCount={total}
-        rowHeight={43}
-        selected={selectedData}
-        setSelected={onSelectChange}
-        page={currentPage}
-        onPageChange={handlePageChange}
-        setRowsPerPage={setPageSize}
-        rowsPerPage={pageSize}
-        labelDisplayedRows={getLabelDisplayedRows(
-          `(${queryResult.latency || ''} ms)`
-        )}
-        noData={searchTrans(
-          `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
-        )}
-      />
+        </>
+      )}
     </div>
   );
 };

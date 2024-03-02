@@ -34,6 +34,7 @@ export const clientCache = new LRUCache<
     milvusClient: MilvusClient;
     address: string;
     indexCache: LRUCache<string, DescribeIndexResponse>;
+    database: string;
   }
 >({
   ttl: CLIENT_TTL,

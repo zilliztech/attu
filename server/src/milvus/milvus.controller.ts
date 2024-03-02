@@ -30,7 +30,6 @@ export class MilvusController {
       this.useDatabase.bind(this)
     );
     this.router.post('/disconnect', this.closeConnection.bind(this));
-    this.router.get('/check', this.checkConnect.bind(this));
     this.router.put(
       '/flush',
       dtoValidationMiddleware(FlushDto),
@@ -54,20 +53,6 @@ export class MilvusController {
       res.send(result);
     } catch (error) {
       console.log(error);
-      next(error);
-    }
-  }
-
-  async checkConnect(req: Request, res: Response, next: NextFunction) {
-    const address = '' + req.query?.address;
-
-    try {
-      const result = await this.milvusService.checkConnect(
-        req.clientId,
-        address
-      );
-      res.send(result);
-    } catch (error) {
       next(error);
     }
   }

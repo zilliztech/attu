@@ -89,7 +89,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
 }) => {
   const { database } = useContext(dataContext);
   const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState<string>('');
+  const [count, setCount] = useState<number>();
   const classes = useStyles();
   const { setDialog } = useContext(rootContext);
 
