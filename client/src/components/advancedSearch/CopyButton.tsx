@@ -34,6 +34,11 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {
     event.stopPropagation();
 
+    // for non-string or number value, convert to string
+    if (typeof v !== 'string' || typeof v !== 'number') {
+      v = JSON.stringify(v);
+    }
+
     setTooltipTitle(copyTrans.copied);
     navigator.clipboard?.writeText(v) ?? unsecuredCopyToClipboard(v);
     setTimeout(() => {

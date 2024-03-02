@@ -30,6 +30,7 @@ export interface SchemaObject extends CollectionSchema {
   primaryField: FieldObject;
   vectorFields: FieldObject[];
   scalarFields: FieldObject[];
+  dynamicFields: FieldObject[];
   hasVectorIndex: boolean;
 }
 

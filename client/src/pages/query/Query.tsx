@@ -106,6 +106,7 @@ const Query = () => {
   // Query hook
   const {
     collection,
+    fields,
     currentPage,
     total,
     pageSize,
@@ -293,7 +294,7 @@ const Query = () => {
                 onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                   setExpression(e.target.value as string);
                 }}
-                disabled={!collection!.loaded}
+                disabled={!collection.loaded}
                 InputLabelProps={{ shrink: true }}
                 label={collectionTrans('exprPlaceHolder')}
                 onKeyDown={e => {
@@ -366,7 +367,7 @@ const Query = () => {
           </div>
           <AttuGrid
             toolbarConfigs={[]}
-            colDefinitions={collection.schema.fields.map((i: any) => {
+            colDefinitions={fields.map(i => {
               return {
                 id: i.name,
                 align: 'left',
@@ -392,7 +393,7 @@ const Query = () => {
             })}
             primaryKey={collection.schema.primaryField.name}
             openCheckBox={true}
-            isLoading={!!tableLoading}
+            isLoading={tableLoading}
             rows={queryResult.data}
             rowCount={total}
             rowHeight={43}

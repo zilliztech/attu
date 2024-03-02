@@ -31,6 +31,7 @@ import {
   ROW_COUNT,
   convertFieldSchemaToFieldType,
   LOADING_STATE,
+  DYNAMIC_FIELD,
 } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import {
@@ -122,6 +123,22 @@ export class CollectionsService {
     res.schema.hasVectorIndex = vectorFields.some(v => v.index);
     res.schema.scalarFields = scalarFields;
     res.schema.vectorFields = vectorFields;
+    res.schema.dynamicFields = res.schema.enable_dynamic_field
+      ? [
+          {
+            name: DYNAMIC_FIELD,
+            data_type: 'JSON',
+            type_params: [],
+            index: undefined,
+            description: '',
+            index_params: [],
+            dimension: -1,
+            maxCapacity: -1,
+            maxLength: -1,
+            autoID: false,
+          },
+        ]
+      : [];
 
     return res;
   }

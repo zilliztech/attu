@@ -29,11 +29,7 @@ import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
 import { TOP_K_OPTIONS } from './Constants';
 import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
-import {
-  FieldObject,
-  CollectionObject,
-  CollectionFullObject,
-} from '@server/types';
+import { FieldObject, CollectionFullObject } from '@server/types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);
