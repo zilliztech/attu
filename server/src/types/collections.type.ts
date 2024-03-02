@@ -6,6 +6,8 @@ import {
   KeyValuePair,
   DescribeIndexResponse,
   DescribeCollectionResponse,
+  QuerySegmentInfo,
+  PersistentSegmentInfo,
 } from '@zilliz/milvus2-sdk-node';
 
 import { LOADING_STATE } from '../utils';
@@ -81,3 +83,6 @@ export type StatisticsObject = {
   collectionCount: number;
   totalData: number;
 };
+
+export type QuerySegmentObjects = QuerySegmentInfo[];
+export type PersistentSegmentObjects = PersistentSegmentInfo[];

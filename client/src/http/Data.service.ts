@@ -4,11 +4,6 @@ import { VectorSearchParam } from '@/types/SearchTypes';
 import BaseModel from './BaseModel';
 
 export class DataService extends BaseModel {
-  constructor(props: DataService) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   static importSample(collectionName: string, param: LoadSampleParam) {
     return super.create<{ sampleFile: string }>({
       path: `/collections/${collectionName}/importSample`,

@@ -40,7 +40,7 @@ export class SchemaService {
 
     // If the index description is in the cache, return it
     if (value) {
-      return value;
+      return value as DescribeIndexRes;
     } else {
       // If the index description is not in the cache, call the Milvus SDK's describeIndex function
       const res = (await milvusClient.describeIndex(data)) as DescribeIndexRes;

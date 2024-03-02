@@ -392,7 +392,7 @@ export class CollectionController {
           collectionName: name,
         }
       );
-      res.send(result);
+      res.send(result.infos);
     } catch (error) {
       next(error);
     }
@@ -407,7 +407,7 @@ export class CollectionController {
           collectionName: name,
         }
       );
-      res.send(result);
+      res.send(result.infos);
     } catch (error) {
       next(error);
     }

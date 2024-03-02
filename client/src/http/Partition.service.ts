@@ -3,11 +3,6 @@ import BaseModel from './BaseModel';
 import { PartitionData } from '@server/types';
 
 export class PartitionService extends BaseModel {
-  constructor(props: {}) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   static getPartitions(collectionName: string) {
     const path = `/partitions`;
 

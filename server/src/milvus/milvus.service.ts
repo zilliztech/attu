@@ -3,13 +3,13 @@ import {
   FlushReq,
   GetMetricsResponse,
   ClientConfig,
-  DescribeIndexResponse,
 } from '@zilliz/milvus2-sdk-node';
 import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 import { DatabasesService } from '../database/databases.service';
 import { clientCache } from '../app';
+import { DescribeIndexRes } from '../types';
 
 export class MilvusService {
   private databaseService: DatabasesService;
@@ -95,7 +95,7 @@ export class MilvusService {
       clientCache.set(milvusClient.clientId, {
         milvusClient,
         address,
-        indexCache: new LRUCache<string, DescribeIndexResponse>({
+        indexCache: new LRUCache<string, DescribeIndexRes>({
           ttl: INDEX_TTL,
           ttlAutopurge: true,
         }),

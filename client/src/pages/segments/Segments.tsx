@@ -27,13 +27,12 @@ const Segments = () => {
   const fetchSegments = async () => {
     setLoading(true);
 
-    const psegments =
-      (await SegmentService.getPSegments(collectionName)) || {};
-    const qsegments =
-      (await SegmentService.getQSegments(collectionName)) || {};
-    const combinedArray = psegments.infos.map(p => {
-      const q: any =
-        qsegments.infos.find(q => q.segmentID === p.segmentID)! || {};
+    const psegments = await SegmentService.getPSegments(collectionName);
+    const qsegments = await SegmentService.getQSegments(collectionName);
+
+    console.log('psegments', psegments);
+    const combinedArray = psegments.map(p => {
+      const q: any = qsegments.find(q => q.segmentID === p.segmentID)! || {};
       return {
         ...p,
         ...Object.keys(q).reduce((acc, key) => {

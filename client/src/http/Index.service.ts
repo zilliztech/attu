@@ -4,11 +4,6 @@ import BaseModel from './BaseModel';
 import { DescribeIndexRes, IndexObject } from '@server/types';
 
 export class IndexService extends BaseModel {
-  constructor(props: {}) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   static async describeIndex(collectionName: string): Promise<IndexObject[]> {
     const res = await super.findAll<DescribeIndexRes>({
       path: `/schema/index`,

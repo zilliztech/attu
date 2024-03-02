@@ -1,24 +1,16 @@
 import BaseModel from './BaseModel';
-import {
-  GetQuerySegmentInfoResponse,
-  GePersistentSegmentInfoResponse,
-} from '@server/types';
+import { QuerySegmentObjects, PersistentSegmentObjects } from '@server/types';
 
 export class SegmentService extends BaseModel {
-  constructor(props: {}) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   static getQSegments(collectionName: string) {
-    return super.search<GetQuerySegmentInfoResponse>({
+    return super.search<QuerySegmentObjects>({
       path: `/collections/${collectionName}/qsegments`,
       params: {},
     });
   }
 
   static getPSegments(collectionName: string) {
-    return super.search<GePersistentSegmentInfoResponse>({
+    return super.search<PersistentSegmentObjects>({
       path: `/collections/${collectionName}/psegments`,
       params: {},
     });

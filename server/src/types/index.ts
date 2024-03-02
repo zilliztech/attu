@@ -1,14 +1,6 @@
 export {
-  IndexDescription,
-  CollectionSchema,
-  ReplicaInfo,
   KeyValuePair,
   ShowCollectionsType,
-  GetQuerySegmentInfoResponse,
-  QuerySegmentInfo,
-  GePersistentSegmentInfoResponse,
-  PersistentSegmentInfo,
-  DescribeIndexResponse,
   MilvusClient,
 } from '@zilliz/milvus2-sdk-node';
 

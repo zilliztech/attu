@@ -10,11 +10,6 @@ import {
 } from '@server/types';
 
 export class CollectionService extends BaseModel {
-  constructor(props: any) {
-    super(props);
-    Object.assign(this, props);
-  }
-
   static getCollections(data?: {
     type: ShowCollectionsType;
   }): Promise<CollectionObject[]> {
