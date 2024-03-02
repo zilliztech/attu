@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { DataTypeStringEnum, DYNAMIC_FIELD, MIN_INT64 } from '@/consts';
+import { DataTypeStringEnum, MIN_INT64 } from '@/consts';
 import { CollectionService } from '@/http';
-import { CollectionFullObject } from '@server/types';
+import { CollectionFullObject, FieldObject } from '@server/types';
 
 export const useQuery = (params: {
   onQueryStart: Function;
@@ -11,6 +11,7 @@ export const useQuery = (params: {
 }) => {
   // state
   const [collection, setCollection] = useState<CollectionFullObject>();
+  const [fields, setFields] = useState<FieldObject[]>([]);
   const [consistencyLevel, setConsistencyLevel] = useState<string>('Bounded');
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
@@ -66,7 +67,7 @@ export const useQuery = (params: {
     try {
       const queryParams = {
         expr: _expr,
-        output_fields: collection!.schema.fields.map(i => i.name),
+        output_fields: fields.map(i => i.name),
         limit: pageSize || 10,
         consistency_level,
         // travel_timestamp: timeTravelInfo.timestamp,
@@ -114,21 +115,13 @@ export const useQuery = (params: {
 
   // get collection info
   const prepare = async (collectionName: string) => {
-    const collection = await CollectionService.getCollectionInfo(collectionName);
-    const schemaList = collection.schema.fields;
-
-    const nameList = schemaList.map(v => ({
-      name: v.name,
-      type: v.data_type,
-    }));
-
-    // if the dynamic field is enabled, we add $meta column in the grid
-    if (collection.schema.enable_dynamic_field) {
-      nameList.push({
-        name: DYNAMIC_FIELD,
-        type: DataTypeStringEnum.JSON,
-      });
-    }
+    const collection = await CollectionService.getCollectionInfo(
+      collectionName
+    );
+    setFields([
+      ...collection.schema.fields,
+      ...collection.schema.dynamicFields,
+    ]);
     setConsistencyLevel(collection.consistency_level);
     setCollection(collection);
   };
@@ -198,6 +191,8 @@ export const useQuery = (params: {
   return {
     // collection info(primaryKey, consistency level, fields)
     collection,
+    // fields,
+    fields,
     // total query count
     total,
     // page size

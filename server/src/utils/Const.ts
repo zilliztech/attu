@@ -155,3 +155,4 @@ export enum LOADING_STATE {
 }
 
 export const MIN_INT64 = `-9223372036854775807`; // safe int64 min value
+export const DYNAMIC_FIELD = `$meta`;
