@@ -1,3 +1,5 @@
+// objects map(deprecating)
+export * from './Axios';
 export * from './BaseModel';
 
 // service
