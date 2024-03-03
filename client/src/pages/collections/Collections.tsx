@@ -1,10 +1,10 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
-import { CollectionService, MilvusService, IndexService } from '@/http';
+import { IndexService } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -23,8 +23,7 @@ import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
-import { checkIndexBuilding, checkLoading, formatNumber } from '@/utils';
+import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 
@@ -66,19 +65,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
-  const { database } = useContext(dataContext);
+  const { database, collections, setCollections, loading, fetchCollections } =
+    useContext(dataContext);
 
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
   );
-  const [loading, setLoading] = useState<boolean>(false);
   const [selectedCollections, setSelectedCollections] = useState<
     CollectionObject[]
   >([]);
 
   const { setDialog, openSnackBar } = useContext(rootContext);
-  const { collections, setCollections } = useContext(dataContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
@@ -94,41 +92,9 @@ const Collections = () => {
     Eventually: collectionTrans('consistencyEventuallyTooltip'),
   };
 
-  const checkCollectionStatus = useCallback(
-    (collections: CollectionObject[]) => {
-      const hasLoadingOrBuildingCollection = collections.some(
-        v => checkLoading(v) || checkIndexBuilding(v)
-      );
-
-      // if some collection is building index or loading, start pulling data
-      if (hasLoadingOrBuildingCollection) {
-        MilvusService.triggerCron({
-          name: WS_EVENTS.COLLECTION,
-          type: WS_EVENTS_TYPE.START,
-        });
-      }
-    },
-    []
-  );
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const collections = await CollectionService.getCollections();
-      setCollections(collections);
-      checkCollectionStatus(collections);
-    } finally {
-      setLoading(false);
-    }
-  }, [setCollections, checkCollectionStatus]);
-
   const clearIndexCache = useCallback(async () => {
     await IndexService.flush();
   }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData, database]);
 
   const formatCollections = useMemo(() => {
     const filteredCollections = search
@@ -137,15 +103,7 @@ const Collections = () => {
         )
       : collections;
 
-    const data = filteredCollections.map(v => {
-      // const indexStatus = statusRes.find(item => item.collectionName === v.collection_name);
-      Object.assign(v, {
-        features: v, // add `feature` as id to render
-      });
-      return v;
-    });
-
-    return data;
+    return filteredCollections;
   }, [search, collections]);
 
   const {
@@ -176,7 +134,7 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchData();
+                  await fetchCollections();
                 }}
               />
             ),
@@ -205,7 +163,6 @@ const Collections = () => {
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchData();
                 }}
               />
             ),
@@ -242,7 +199,7 @@ const Collections = () => {
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchData();
+                  await fetchCollections();
                 }}
               />
             ),
@@ -309,7 +266,7 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchData();
+                  await fetchCollections();
                   setSelectedCollections([]);
                 }}
                 collectionName={selectedCollections[0].collection_name}
@@ -340,7 +297,7 @@ const Collections = () => {
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchData();
+                  await fetchCollections();
                 }}
                 collectionName={selectedCollections[0].collection_name}
                 collections={collections}
@@ -370,7 +327,7 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchData();
+                  await fetchCollections();
                   setSelectedCollections([]);
                 }}
                 collections={selectedCollections}
@@ -391,7 +348,7 @@ const Collections = () => {
       btnVariant: 'text',
       onClick: () => {
         clearIndexCache();
-        fetchData();
+        fetchCollections();
       },
       label: btnTrans('refresh'),
     },
@@ -439,7 +396,7 @@ const Collections = () => {
         return (
           <StatusAction
             status={v.status}
-            onIndexCreate={fetchData}
+            onIndexCreate={fetchCollections}
             percentage={v.loadedPercentage}
             field={v.schema}
             collectionName={v.collection_name}
@@ -458,7 +415,7 @@ const Collections = () => {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await fetchData();
+                          await fetchCollections();
                         }}
                       />
                     ) : (
@@ -470,7 +427,7 @@ const Collections = () => {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await fetchData();
+                          await fetchCollections();
                         }}
                       />
                     ),
@@ -482,7 +439,7 @@ const Collections = () => {
       },
     },
     {
-      id: 'features',
+      id: 'collection_name',
       align: 'left',
       disablePadding: true,
       notSort: true,
@@ -511,7 +468,7 @@ const Collections = () => {
               >
                 <Chip
                   className={classes.chip}
-                  label={collectionTrans('dynmaicSchema')}
+                  label={collectionTrans('dynamicSchema')}
                   size="small"
                 />
               </Tooltip>
@@ -614,8 +571,8 @@ const Collections = () => {
           <Aliases
             aliases={v.aliases}
             collectionName={v.collection_name}
-            onCreate={fetchData}
-            onDelete={fetchData}
+            onCreate={fetchCollections}
+            onDelete={fetchCollections}
           />
         );
       },

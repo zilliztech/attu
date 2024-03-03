@@ -17,6 +17,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -100,8 +101,15 @@ const LoadCollectionDialog = (props: any) => {
     // load collection request
     await CollectionService.loadCollection(collection, params);
 
+    MilvusService.triggerCron({
+      name: WS_EVENTS.COLLECTION,
+      type: WS_EVENTS_TYPE.START,
+    });
+
     // callback
-    onLoad && onLoad();
+    if (onLoad) {
+      await onLoad();
+    }
     // close dialog
     handleCloseDialog();
   };
