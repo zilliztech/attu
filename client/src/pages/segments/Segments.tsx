@@ -30,7 +30,6 @@ const Segments = () => {
     const psegments = await SegmentService.getPSegments(collectionName);
     const qsegments = await SegmentService.getQSegments(collectionName);
 
-    console.log('psegments', psegments);
     const combinedArray = psegments.map(p => {
       const q: any = qsegments.find(q => q.segmentID === p.segmentID)! || {};
       return {
