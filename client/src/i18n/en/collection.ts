@@ -21,7 +21,7 @@ const collectionTrans = {
   desc: 'Description',
   createdTime: 'Created Time',
   maxLength: 'Max Length',
-  dynmaicSchema: 'Dynamic Schema',
+  dynamicSchema: 'Dynamic Schema',
 
   // table tooltip
   aliasInfo: 'Alias can be used as collection name in vector search.',

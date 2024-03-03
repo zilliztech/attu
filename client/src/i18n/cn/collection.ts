@@ -21,7 +21,7 @@ const collectionTrans = {
   desc: '描述',
   createdTime: '创建时间',
   maxLength: '最大长度',
-  dynmaicSchema: '动态schema',
+  dynamicSchema: '动态schema',
 
   // table tooltip
   aliasInfo: '别名可以在向量搜索中用作Collection名称。',
