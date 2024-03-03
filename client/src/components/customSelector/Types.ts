@@ -20,7 +20,7 @@ export type CustomSelectorType = SelectProps & {
   variant?: 'filled' | 'outlined' | 'standard';
   labelClass?: string;
   wrapperClass?: string;
-  hiddenlabel?: boolean;
+  hiddenlabel?: string;
   size?: 'small' | 'medium' | undefined;
 };
 

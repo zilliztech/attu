@@ -134,7 +134,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     if (collectionValue) {
       const partitions = await PartitionService.getPartitions(collectionValue);
       const partitionOptions: Option[] = partitions.map(p => ({
-        label: p.name,
+        label: p.name === '_default' ? insertTrans('defaultPartition') : p.name,
         value: p.name,
       }));
       setPartitionOptions(partitionOptions);
@@ -183,7 +183,7 @@ const InsertContainer: FC<InsertContentProps> = ({
         cancel: btnTrans('cancel'),
       },
       [InsertStepperEnum.preview]: {
-        confirm: btnTrans('insert'),
+        confirm: btnTrans('importFile'),
         cancel: (
           <>
             <BackIcon classes={{ root: classes.icon }} />

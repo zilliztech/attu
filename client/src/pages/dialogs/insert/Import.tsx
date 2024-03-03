@@ -117,7 +117,7 @@ const InsertImport: FC<InsertImportProps> = ({
         {insertTrans('targetTip')}
       </Typography>
 
-      <form className={classes.selectors}>
+      <section className={classes.selectors}>
         <div className="selectorWrapper">
           <CustomSelector
             options={collectionOptions}
@@ -148,7 +148,7 @@ const InsertImport: FC<InsertImportProps> = ({
             }}
           />
         </div>
-      </form>
+      </section>
 
       <div className={classes.uploadWrapper}>
         <Typography className="text file" variant="body1">

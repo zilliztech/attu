@@ -14,7 +14,7 @@ export interface CollectionCreateParam {
 }
 
 export interface CreateField {
-  name: string;
+  name: string | null;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
   is_partition_key?: boolean;

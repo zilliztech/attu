@@ -234,7 +234,10 @@ const Collections = () => {
                 }
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                onInsert={() => {}}
+                onInsert={async () => {
+                  await fetchCollections();
+                  setSelectedCollections([]);
+                }}
               />
             ),
           },

@@ -302,7 +302,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
-            hiddenlabel={true}
+            hiddenlabel={'true'}
             value={consistencyLevel}
             variant="filled"
           />
