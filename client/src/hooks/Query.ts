@@ -140,18 +140,21 @@ export const useQuery = (params: {
   // reset
   const reset = () => {
     setCurrentPage(0);
-    setQueryResult({ data: [] });
+    setQueryResult({ data: [], latency: 0 });
     pageCache.current.clear();
   };
 
   // Get fields at first or collection name changed.
   useEffect(() => {
+    // reset
+    reset();
+    // get collection info
     params.collectionName && prepare(params.collectionName);
   }, [params.collectionName]);
 
   // query if expr is changed
   useEffect(() => {
-    if (!collection || !collection!.loaded) {
+    if (!collection || !collection.loaded) {
       // console.info('[skip running query]: no key yet');
       return;
     } // reset
@@ -160,33 +163,20 @@ export const useQuery = (params: {
     count();
     // do the query
     query();
-  }, [expr]);
+  }, [expr, pageSize]);
 
   // query if collection is changed
   useEffect(() => {
-    if (!collection || !collection!.loaded) {
+    if (!collection || !collection.loaded) {
       // console.info('[skip running query]: no key yet');
       return;
     }
-    // reset
-    reset();
+
     // get count;
     count();
     // do the query
     query();
   }, [collection]);
-
-  // query if page size is changed
-  useEffect(() => {
-    if (!collection || !collection!.loaded) {
-      // console.info('[skip running query]: no key yet');
-      return;
-    }
-    // reset
-    reset();
-    // do the query
-    query();
-  }, [pageSize]);
 
   return {
     // collection info(primaryKey, consistency level, fields)

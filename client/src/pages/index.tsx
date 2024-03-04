@@ -7,7 +7,12 @@ import Header from '@/components/layout/Header';
 import NavMenu from '@/components/menu/NavMenu';
 import { NavMenuItem } from '@/components/menu/Types';
 import icons from '@/components/icons/Icons';
-import { authContext, rootContext, prometheusContext } from '@/context';
+import {
+  authContext,
+  rootContext,
+  prometheusContext,
+  dataContext,
+} from '@/context';
 import Overview from '@/pages/overview/Overview';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,14 +50,18 @@ function Index() {
   const navigate = useNavigate();
   const { isAuth, isManaged } = useContext(authContext);
   const { isPrometheusReady } = useContext(prometheusContext);
+  const { database } = useContext(dataContext);
   const { versionInfo } = useContext(rootContext);
   const { t: navTrans } = useTranslation('nav');
   const classes = useStyles();
   const location = useLocation();
   const isIndex = location.pathname === '/';
   const defaultActive = useMemo(() => {
-    if (location.pathname.includes('collection')) {
-      return navTrans('collection');
+    if (location.pathname.includes('databases')) {
+      return navTrans('databases');
+    }
+    if (location.pathname.includes('db-admin')) {
+      return navTrans('db-admin');
     }
 
     if (location.pathname.includes('search')) {
@@ -67,10 +76,6 @@ function Index() {
       return navTrans('user');
     }
 
-    if (location.pathname.includes('db-admin')) {
-      return navTrans('database');
-    }
-
     return navTrans('overview');
   }, [location, navTrans]);
 
@@ -81,9 +86,9 @@ function Index() {
       onClick: () => navigate('/'),
     },
     {
-      icon: icons.navCollection,
-      label: navTrans('collection'),
-      onClick: () => navigate('/collections'),
+      icon: icons.database,
+      label: navTrans('databases'),
+      onClick: () => navigate(`/databases/${database}`),
     },
     {
       icon: icons.navSearch,
@@ -110,8 +115,8 @@ function Index() {
         iconNormalClass: 'active',
       },
       {
-        icon: icons.database,
-        label: navTrans('database'),
+        icon: icons.settings,
+        label: navTrans('db-admin'),
         onClick: () => navigate('/db-admin'),
       }
     );

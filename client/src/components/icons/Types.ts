@@ -44,4 +44,5 @@ export type IconsType =
   | 'database'
   | 'uploadFile'
   | 'compact'
-  | 'saveAs';
+  | 'saveAs'
+  | 'settings';

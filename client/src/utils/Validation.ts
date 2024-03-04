@@ -1,6 +1,6 @@
 import { ChildrenStatusType } from '@/components/status/Types';
 import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
-import { Collection } from '@/http';
+import { CollectionObject } from '@server/types';
 
 export type ValidType =
   | 'email'
@@ -265,7 +265,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
 /**
  * Check collection is loading or not
  */
-export const checkLoading = (v: Collection): boolean =>
+export const checkLoading = (v: CollectionObject): boolean =>
   v.loadedPercentage !== '-1' && v.loadedPercentage !== '100';
 
 /**
@@ -275,3 +275,11 @@ export const checkLoading = (v: Collection): boolean =>
  */
 export const checkIndexBuilding = (v: any): boolean =>
   v._indexState === ChildrenStatusType.CREATING;
+
+// get database name from url
+export const getDbValueFromUrl = (currentUrl: string) => {
+  const url = new URL(currentUrl);
+  const pathname = url.hash;
+  const match = pathname.match(/\/databases\/([^/]+)/);
+  return match ? match[1] : null;
+};
