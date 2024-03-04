@@ -190,6 +190,9 @@ const AttuGrid: FC<AttuGridType> = props => {
 
       const rowCount = Math.floor(totleHeight / rowHeight);
 
+      // fix loading mask
+      setLoadingRowCount(rowCount);
+
       if (setRowsPerPage) {
         setRowsPerPage(rowCount);
       }
