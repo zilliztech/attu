@@ -12,6 +12,7 @@ import CompactDialog from '@/pages/dialogs/CompactDialog';
 import FlushDialog from '@/pages/dialogs/FlushDialog';
 import { getQueryStyles } from '../query/Styles';
 import { Segment } from './Types';
+import { getLabelDisplayedRows } from '../search/Utils';
 
 const Segments = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();
@@ -21,6 +22,8 @@ const Segments = () => {
   const [segments, setSegments] = useState<Segment[]>([]);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid');
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -189,6 +192,9 @@ const Segments = () => {
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
+        labelDisplayedRows={getLabelDisplayedRows(
+          gridTrans[data.length > 1 ? 'segments' : 'segment']
+        )}
       />
     </div>
   );

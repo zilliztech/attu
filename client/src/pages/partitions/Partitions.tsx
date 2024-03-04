@@ -15,6 +15,7 @@ import CreatePartitionDialog from '../dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '../dialogs/DropPartitionDialog';
 import { PartitionData } from '@server/types';
 import { formatNumber } from '@/utils';
+import { getLabelDisplayedRows } from '../search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -36,6 +37,8 @@ const Partitions = () => {
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid');
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
@@ -306,6 +309,9 @@ const Partitions = () => {
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
+        labelDisplayedRows={getLabelDisplayedRows(
+          gridTrans[partitionList.length > 1 ? 'partitions' : 'partition']
+        )}
       />
     </section>
   );
