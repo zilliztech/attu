@@ -1,3 +1,5 @@
+import { partition } from "d3";
+
 const commonTrans = {
   attu: {
     admin: 'Attu',
@@ -22,6 +24,16 @@ const commonTrans = {
     action: 'action',
     noData: 'No Data',
     rows: 'Rows',
+    entity: 'Entity',
+    entities: 'Entities',
+    collection: 'Collection',
+    collections: 'Collections',
+    field: 'Field',
+    fields: 'Fields',
+    segment: 'Segment',
+    segments: 'Segments',
+    partition: 'Partition',
+    partitions: 'Partitions',
     results: 'results',
     of: 'of',
     nextLabel: 'next page',

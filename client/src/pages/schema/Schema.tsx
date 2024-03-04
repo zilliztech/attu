@@ -10,6 +10,7 @@ import { formatFieldType } from '@/utils';
 import { CollectionService } from '@/http';
 import IndexTypeElement from './IndexTypeElement';
 import { FieldObject } from '@server/types';
+import { getLabelDisplayedRows } from '../search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -65,6 +66,8 @@ const Schema = () => {
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid');
 
   const [fields, setFields] = useState<FieldObject[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -242,6 +245,9 @@ const Schema = () => {
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
+        labelDisplayedRows={getLabelDisplayedRows(
+          gridTrans[schemaList.length > 1 ? 'fields' : 'field']
+        )}
       />
     </section>
   );

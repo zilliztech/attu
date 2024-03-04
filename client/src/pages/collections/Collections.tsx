@@ -22,6 +22,7 @@ import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
 import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
+import { getLabelDisplayedRows } from '../search/Utils';
 import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
@@ -85,6 +86,9 @@ const Collections = () => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid');
+
   const classes = useStyles();
 
   const InfoIcon = icons.info;
@@ -619,6 +623,7 @@ const Collections = () => {
           order={order}
           orderBy={orderBy}
           hideOnDisable={true}
+          labelDisplayedRows={getLabelDisplayedRows(gridTrans.collections)}
         />
       ) : (
         <>

@@ -45,6 +45,8 @@ const Query = () => {
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: commonTrans } = useTranslation();
+  const gridTrans = commonTrans('grid');
   // classes
   const classes = getQueryStyles();
 
@@ -404,6 +406,7 @@ const Query = () => {
             setRowsPerPage={setPageSize}
             rowsPerPage={pageSize}
             labelDisplayedRows={getLabelDisplayedRows(
+              gridTrans[queryResult.data.length > 1 ? 'entities' : 'entity'],
               `(${queryResult.latency || ''} ms)`
             )}
             noData={searchTrans(
