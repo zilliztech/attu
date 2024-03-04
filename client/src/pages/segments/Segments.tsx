@@ -151,7 +151,7 @@ const Segments = () => {
 
   useEffect(() => {
     fetchSegments();
-  }, []);
+  }, [collectionName]);
 
   const {
     pageSize,

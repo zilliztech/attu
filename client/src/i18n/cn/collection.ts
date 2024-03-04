@@ -83,7 +83,7 @@ const collectionTrans = {
   // collection tabs
   partitionTab: '分区',
   schemaTab: 'Schema',
-  queryTab: '数据',
+  dataTab: '数据',
   previewTab: '数据预览',
   segmentsTab: '数据段(Segments)',
   startTip: '开始你的数据查询',

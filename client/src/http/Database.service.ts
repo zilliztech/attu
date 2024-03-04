@@ -1,7 +1,7 @@
 import {
   CreateDatabaseParams,
   DropDatabaseParams,
-} from '../pages/database/Types';
+} from '../pages/dbAdmin/Types';
 import BaseModel from './BaseModel';
 
 export class DatabaseService extends BaseModel {

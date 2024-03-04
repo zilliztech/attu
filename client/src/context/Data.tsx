@@ -9,7 +9,7 @@ import {
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
 import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
-import { checkIndexBuilding, checkLoading } from '@/utils';
+import { checkIndexBuilding, checkLoading, getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { LAST_TIME_DATABASE } from '@/consts';
@@ -30,14 +30,19 @@ export const dataContext = createContext<DataContextType>({
 const { Provider } = dataContext;
 
 export const DataProvider = (props: { children: React.ReactNode }) => {
+  // get database name from url
+  const currentUrl = window.location.href;
+  const initialDatabase = getDbValueFromUrl(currentUrl);
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(false);
   const [database, setDatabase] = useState<string>(
-    window.localStorage.getItem(LAST_TIME_DATABASE) || 'default'
+    initialDatabase ||
+      window.localStorage.getItem(LAST_TIME_DATABASE) ||
+      'default'
   );
-  const [databases, setDatabases] = useState<string[]>(['default']);
+  const [databases, setDatabases] = useState<string[]>([database]);
   // auth context
   const { isAuth, clientId } = useContext(authContext);
   // socket ref

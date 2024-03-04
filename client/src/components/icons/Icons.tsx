@@ -29,6 +29,7 @@ import DatePicker from '@material-ui/icons/Event';
 import GetAppIcon from '@material-ui/icons/GetApp';
 // import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PersonOutlineIcon from '@material-ui/icons/Person';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { SvgIcon } from '@material-ui/core';
 import ZillizIcon from '@/assets/icons/attu.svg?react';
 import OverviewIcon from '@/assets/icons/overview.svg?react';
@@ -44,6 +45,7 @@ import SearchEmptyIcon from '@/assets/icons/search.svg?react';
 import CopyIcon from '@/assets/icons/copy.svg?react';
 import SystemIcon from '@/assets/icons/system.svg?react';
 import Compact from '@/assets/icons/compact.svg?react';
+import Settings from '@material-ui/icons/Settings';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => <SearchIcon {...props} />,
@@ -100,6 +102,9 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   navSystem: (props = {}) => (
     <SvgIcon viewBox="0 0 20 20" component={SystemIcon} {...props} />
   ),
+  settings: (props = {}) => (
+    <SvgIcon viewBox="0 0 24 24" component={SettingsIcon} {...props} />
+  ),
   info: (props = {}) => (
     <SvgIcon viewBox="0 0 16 16" component={InfoIcon} {...props} />
   ),
@@ -118,7 +123,12 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
     </svg>
   ),
   upload: (props = {}) => (
-    <SvgIcon viewBox="0 0 20 20" component={UploadIcon} {...props} fill="currentColor" />
+    <SvgIcon
+      viewBox="0 0 20 20"
+      component={UploadIcon}
+      {...props}
+      fill="currentColor"
+    />
   ),
   vectorSearch: (props = {}) => (
     <SvgIcon viewBox="0 0 48 48" component={SearchEmptyIcon} {...props} />

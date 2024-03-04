@@ -29,16 +29,16 @@ export const useNavigationHook = (
       }
       case ALL_ROUTER_TYPES.DB_ADMIN: {
         const navInfo: NavInfo = {
-          navTitle: navTrans('database'),
+          navTitle: navTrans('dbAdmin'),
           backPath: '',
           showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;
       }
-      case ALL_ROUTER_TYPES.COLLECTIONS: {
+      case ALL_ROUTER_TYPES.DATABASES: {
         const navInfo: NavInfo = {
-          navTitle: navTrans('collection'),
+          navTitle: navTrans('database'),
           backPath: '',
           showDatabaseSelector: true,
         };
@@ -48,8 +48,8 @@ export const useNavigationHook = (
       case ALL_ROUTER_TYPES.COLLECTION_DETAIL: {
         const navInfo: NavInfo = {
           navTitle: collectionName,
-          backPath: '/collections',
-          showDatabaseSelector: false,
+          backPath: '',
+          showDatabaseSelector: true,
         };
         setNavInfo(navInfo);
         break;

@@ -25,9 +25,14 @@ import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: `100%`,
+  },
   emptyWrapper: {
     marginTop: theme.spacing(2),
   },
@@ -65,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
-  const { database, collections, setCollections, loading, fetchCollections } =
+  const { collections, database, loading, fetchCollections } =
     useContext(dataContext);
 
   const [searchParams] = useSearchParams();
@@ -375,7 +380,7 @@ const Collections = () => {
       formatter({ collection_name }) {
         return (
           <Link
-            to={`/collections/${collection_name}/data`}
+            to={`/databases/${database}/${collection_name}/data`}
             className={classes.link}
             title={collection_name}
           >
@@ -594,7 +599,7 @@ const Collections = () => {
   const CollectionIcon = icons.navCollection;
 
   return (
-    <section className="page-wrapper">
+    <section className={classes.root}>
       {collections.length > 0 || loading ? (
         <AttuGrid
           toolbarConfigs={toolbarConfigs}
