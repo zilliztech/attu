@@ -31,15 +31,23 @@ jobs:
       #     # token: ${{ secrets.CODECOV_TOKEN }}
       #     # only upload server test coverage
       #     flags: server
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PWD }}
-
-      - name: Docker Build
-        run: docker build -t zilliz/attu:dev --build-arg VERSION=dev .
-
-      - name: Docker Push Dev
-        run: docker push zilliz/attu:dev
+        
+      - name: Docker Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: zilliz/attu:dev
+          build-args: VERSION=dev
+          push: true
