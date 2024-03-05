@@ -135,7 +135,7 @@ const Overview = () => {
   }, [fetchData]);
 
   const loadCollections = collections.filter(
-    c => c.status !== LOADING_STATE.UNLOADED
+    c => c.status !== LOADING_STATE.UNLOADED && typeof c.status !== 'undefined'
   );
 
   const onRelease = () => {

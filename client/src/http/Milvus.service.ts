@@ -1,5 +1,5 @@
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import BaseModel from './BaseModel';
+import { CronJobObject } from '@server/types';
 
 export class MilvusService extends BaseModel {
   static connect(data: {
@@ -37,7 +37,7 @@ export class MilvusService extends BaseModel {
     });
   }
 
-  static triggerCron(data: { name: WS_EVENTS; type: WS_EVENTS_TYPE }) {
+  static triggerCron(data: CronJobObject) {
     return super.update({
       path: '/crons',
       data,

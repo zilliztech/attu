@@ -173,7 +173,7 @@ const Schema = () => {
       formatter(f) {
         return (
           <IndexTypeElement
-            data={f}
+            field={f}
             collectionName={collectionName}
             cb={fetchFields}
           />

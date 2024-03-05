@@ -153,7 +153,7 @@ const StatusAction: FC<StatusActionType> = props => {
         </Tooltip>
       )}
       <IndexTypeElement
-        data={field.vectorFields[0]!}
+        field={field.vectorFields[0]!}
         collectionName={collectionName}
         cb={() => onIndexCreate()}
         disabled={collectionLoaded}

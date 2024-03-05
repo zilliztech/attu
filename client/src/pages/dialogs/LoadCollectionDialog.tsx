@@ -102,13 +102,14 @@ const LoadCollectionDialog = (props: any) => {
     await CollectionService.loadCollection(collection, params);
 
     MilvusService.triggerCron({
-      name: WS_EVENTS.COLLECTION,
+      name: WS_EVENTS.COLLECTION_UPDATE,
       type: WS_EVENTS_TYPE.START,
+      payload: [collection],
     });
 
     // callback
     if (onLoad) {
-      await onLoad();
+      onLoad();
     }
     // close dialog
     handleCloseDialog();

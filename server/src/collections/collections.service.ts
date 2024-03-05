@@ -327,13 +327,13 @@ export class CollectionsService {
 
     // loading info
     const loadedPercentage = !loadCollection
-      ? '-1'
-      : loadCollection.loadedPercentage;
+      ? -1
+      : Number(loadCollection.loadedPercentage);
 
     const status =
-      loadedPercentage === '-1'
+      loadedPercentage === -1
         ? LOADING_STATE.UNLOADED
-        : loadedPercentage === '100'
+        : loadedPercentage === 100
         ? LOADING_STATE.LOADED
         : LOADING_STATE.LOADING;
 
@@ -346,7 +346,7 @@ export class CollectionsService {
       description: collectionInfo.schema.description,
       autoID,
       id: collectionInfo.collectionID,
-      loadedPercentage,
+      loadedPercentage: loadedPercentage,
       consistency_level: collectionInfo.consistency_level,
       replicas: replicas && replicas.replicas,
       loaded: status === LOADING_STATE.LOADED,
@@ -356,7 +356,7 @@ export class CollectionsService {
 
   async getAllCollections(
     clientId: string,
-    collectionName?: string
+    collectionName: string[] = []
   ): Promise<CollectionObject[]> {
     // get all collections(name, timestamp, id)
     const allCollections = await this.showCollections(clientId);
@@ -372,29 +372,29 @@ export class CollectionsService {
       (a, b) => Number(b.timestamp) - Number(a.timestamp)
     );
 
-    // get single collection details
-    const targetCollections = allCollections.data.find(
-      d => d.name === collectionName
+    // get target collections details
+    const targetCollections = allCollections.data.filter(
+      d => collectionName.indexOf(d.name) !== -1
     );
-    if (targetCollections) {
-      const res = await this.getCollection(
-        clientId,
-        targetCollections,
-        loadedCollections.data.find(v => v.name === targetCollections.name),
-        false
-      );
-      return [res];
-    }
+
+    const targets =
+      targetCollections.length > 0 ? targetCollections : allCollections.data;
 
     // get all collection details
-    for (let i = 0; i < allCollections.data.length; i++) {
-      const collection = allCollections.data[i];
+    for (let i = 0; i < targets.length; i++) {
+      const collection = targets[i];
+      const loadedCollection = loadedCollections.data.find(
+        v => v.name === collection.name
+      );
+
+      const notLazy = !!loadedCollection || i < 5; //lazy is true, only load full details for the first 10 collections
+
       data.push(
         await this.getCollection(
           clientId,
           collection,
-          loadedCollections.data.find(v => v.name === collection.name),
-          false
+          loadedCollection,
+          !notLazy
         )
       );
     }

@@ -265,16 +265,25 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
 /**
  * Check collection is loading or not
  */
-export const checkLoading = (v: CollectionObject): boolean =>
-  v.loadedPercentage !== '-1' && v.loadedPercentage !== '100';
+export const checkLoading = (v: CollectionObject): boolean => {
+  return (
+    typeof v.loadedPercentage !== 'undefined' &&
+    v.loadedPercentage !== -1 &&
+    v.loadedPercentage !== 100
+  );
+};
 
 /**
  * Check collection is index building or not.
  * @param v
  * @returns boolean
  */
-export const checkIndexBuilding = (v: any): boolean =>
-  v._indexState === ChildrenStatusType.CREATING;
+export const checkIndexBuilding = (v: CollectionObject): boolean => {
+  return Boolean(
+    v.schema &&
+      v.schema?.fields.some(field => field.index?.state === 'InProgress')
+  );
+};
 
 // get database name from url
 export const getDbValueFromUrl = (currentUrl: string) => {

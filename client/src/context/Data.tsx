@@ -48,31 +48,66 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // socket ref
   const socket = useRef<Socket | null>(null);
 
-  // socket callback
-  const socketCallBack = useCallback(
+  // get all collections callback, refresh all
+  const collectionsUpdateCallback = useCallback(
     (collections: CollectionObject[]) => {
-      const hasLoadingOrBuildingCollection = collections.some(
-        v => checkLoading(v) || checkIndexBuilding(v)
-      );
-
       setCollections(collections);
-      // If no collection is building index or loading collection
-      // stop server cron job
-      if (!hasLoadingOrBuildingCollection) {
-        MilvusService.triggerCron({
-          name: WS_EVENTS.COLLECTION,
-          type: WS_EVENTS_TYPE.STOP,
-        });
-      }
     },
     [database]
   );
+
+  // get collection callback, refresh partial
+  const collectionUpdateCallback = useCallback(
+    (collections: CollectionObject[]) => {
+      console.log('collection callback', collections);
+      setCollections(prev => {
+        const newCollections = prev.map(v => {
+          const newCollection = collections.find(
+            c => c.collection_name === v.collection_name
+          );
+
+          if (newCollection) {
+            return newCollection;
+          }
+
+          return v;
+        });
+
+        return newCollections;
+      });
+    },
+    [database]
+  );
+
+  // check loading or building index
+  useEffect(() => {
+    const LoadingOrBuildingCollections = collections.filter(v => {
+      const isLoading = checkLoading(v);
+      const isBuildingIndex = checkIndexBuilding(v);
+
+      return isLoading || isBuildingIndex;
+    });
+    // If no collection is building index or loading collection
+    // stop server cron job
+
+    console.log('LoadingOrBuildingCollections', LoadingOrBuildingCollections);
+
+    MilvusService.triggerCron({
+      name: WS_EVENTS.COLLECTION_UPDATE,
+      type:
+        LoadingOrBuildingCollections.length > 0
+          ? WS_EVENTS_TYPE.START
+          : WS_EVENTS_TYPE.STOP,
+      payload: LoadingOrBuildingCollections.map(c => c.collection_name),
+    });
+  }, [collections]);
 
   // http fetch collection
   const fetchCollections = async () => {
     try {
       setLoading(true);
       const res = await CollectionService.getCollections();
+
       setCollections(res);
       setLoading(false);
     } catch (error) {
@@ -101,8 +136,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         console.log('--- ws connected ---', clientId);
         setConnected(true);
       });
-
-      socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
     } else {
       socket.current?.disconnect();
       // clear collections
@@ -121,11 +154,17 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // remove all listeners
       socket.current?.offAny();
       // listen to collection event
-      socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
+      socket.current?.on(WS_EVENTS.COLLECTIONS, collectionsUpdateCallback);
+      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, collectionUpdateCallback);
+
       // get data
       fetchCollections();
     }
-  }, [socketCallBack, connected]);
+
+    return () => {
+      socket.current?.offAny();
+    };
+  }, [collectionsUpdateCallback, collectionUpdateCallback, connected]);
 
   return (
     <Provider

@@ -201,7 +201,7 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.getAllCollections(
         req.clientId,
-        name
+        [name]
       );
       res.send(result[0]);
     } catch (error) {

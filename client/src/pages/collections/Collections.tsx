@@ -402,7 +402,7 @@ const Collections = () => {
       id: 'status',
       align: 'left',
       disablePadding: false,
-      sortBy: 'status',
+      sortBy: 'loadedPercentage',
       label: collectionTrans('status'),
       formatter(v) {
         return (
@@ -472,7 +472,7 @@ const Collections = () => {
                 />
               </Tooltip>
             ) : null}
-            {v.schema.enable_dynamic_field ? (
+            {v.schema && v.schema.enable_dynamic_field ? (
               <Tooltip
                 title={collectionTrans('dynamicSchemaTooltip')}
                 placement="top"
