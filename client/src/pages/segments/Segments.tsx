@@ -109,12 +109,14 @@ const Segments = () => {
       id: 'segmentID',
       align: 'left',
       disablePadding: false,
+      needCopy: true,
       label: collectionTrans('segmentID'),
     },
     {
       id: 'partitionID',
       align: 'left',
       disablePadding: false,
+      needCopy: true,
       label: collectionTrans('partitionID'),
     },
     {
