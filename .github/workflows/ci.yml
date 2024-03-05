@@ -16,5 +16,17 @@ jobs:
         with:
           node-version: 18
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Docker Build
-        run: docker build -t zilliz/attu:dev --build-arg VERSION=dev .
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: zilliz/attu:dev
+          build-args: VERSION=dev
+          push: false
