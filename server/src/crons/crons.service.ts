@@ -14,7 +14,7 @@ const isPayloadEqual = (a: any, b: any) => {
   return JSON.stringify(a) === JSON.stringify(b);
 };
 
-const mergePayload = (a: any, b: any) => {
+const mergePayload = (a: string[], b: string[]) => {
   return Array.from(new Set([...a, ...b]));
 };
 
@@ -37,6 +37,10 @@ export class CronsService {
       name === cronJob.name &&
       isPayloadEqual(payload, cronJob.payload)
     ) {
+      console.log(
+        'ignore multiple start event for all collections event',
+        data
+      );
       return;
     }
 
@@ -58,6 +62,7 @@ export class CronsService {
       // collection update(queue update)
       case WS_EVENTS.COLLECTION_UPDATE:
         if (type === WS_EVENTS_TYPE.START && cronJob) {
+          console.log('merge payload', cronJob.payload, payload);
           cronJob.payload = mergePayload(cronJob.payload, payload);
           return;
         }
@@ -74,8 +79,18 @@ export class CronsService {
 
   async getCollections(clientId: string, data: CronJobObject) {
     // create task
-    const task = async () => {
+    const task = async (clientId: string, name: string) => {
       try {
+        const currentJob: CronJob = this.schedulerRegistry.getCronJob(
+          clientId,
+          name
+        );
+
+        console.log(
+          `running getCollections task, payload:`,
+          currentJob.payload
+        );
+
         const res = await this.collectionService.getAllCollections(clientId);
         // get current socket
         const socketClient = clients.get(clientId);
@@ -93,11 +108,18 @@ export class CronsService {
   }
 
   async getCollection(clientId: string, data: CronJobObject) {
-    const task = async () => {
+    const task = async (clientId: string, name: string) => {
       try {
+        const currentJob: CronJob = this.schedulerRegistry.getCronJob(
+          clientId,
+          name
+        );
+
+        console.log(`running getCollection task, payload:`, currentJob.payload);
+
         const res = await this.collectionService.getAllCollections(
           clientId,
-          data.payload
+          currentJob.payload
         );
         // get current socket
         const socketClient = clients.get(clientId);
@@ -143,7 +165,7 @@ export class SchedulerRegistry {
   setCronJobEveryFiveSecond(
     clientId: string,
     name: string,
-    func: () => {},
+    func: Function,
     payload?: any
   ) {
     // The cron job will run every 5 second
@@ -164,7 +186,7 @@ export class SchedulerRegistry {
     clientId: string,
     name: string,
     cronExpression: string,
-    func: () => {},
+    func: Function,
     payload?: any
   ) {
     const target = this.cronJobList.find(
@@ -175,9 +197,9 @@ export class SchedulerRegistry {
     } else {
       const task = schedule(cronExpression, () => {
         console.log(
-          `[cronExpression:${cronExpression}] ${name}: running a task, payload is ${payload}.`
+          `[cronExpression:${cronExpression}] ${name}: running a task.`
         );
-        func();
+        func(clientId, name);
       });
       this.cronJobList.push({ clientId, name, entity: task, payload });
     }

@@ -1,24 +1,24 @@
 import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionService } from '@/http';
 import { DropCollectionProps } from './Types';
 
 const DropCollectionDialog: FC<DropCollectionProps> = props => {
   const { collections, onDelete } = props;
   const { handleCloseDialog } = useContext(rootContext);
+  const { dropCollection } = useContext(dataContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
 
   const handleDelete = async () => {
     for (const item of collections) {
-      await CollectionService.deleteCollection(item.collection_name);
+      await dropCollection(item.collection_name);
     }
 
     handleCloseDialog();
-    onDelete && onDelete();
+    onDelete && (await onDelete());
   };
 
   return (

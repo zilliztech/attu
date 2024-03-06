@@ -42,6 +42,7 @@ import {
   DescribeCollectionRes,
   CountObject,
   StatisticsObject,
+  CollectionFullObject,
 } from '../types';
 import { SchemaService } from '../schema/schema.service';
 import { clientCache } from '../app';
@@ -64,8 +65,12 @@ export class CollectionsService {
   async createCollection(clientId: string, data: CreateCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.createCollection(data);
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
+    ])) as CollectionFullObject[];
+
     throwErrorFromSDK(res);
-    return res;
+    return newCollection[0];
   }
 
   async describeCollection(clientId: string, data: DescribeCollectionReq) {
@@ -146,8 +151,13 @@ export class CollectionsService {
   async renameCollection(clientId: string, data: RenameCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.renameCollection(data);
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.new_collection_name,
+    ])) as CollectionFullObject[];
+
     throwErrorFromSDK(res);
-    return res;
+    return newCollection[0];
   }
 
   async dropCollection(clientId: string, data: DropCollectionReq) {

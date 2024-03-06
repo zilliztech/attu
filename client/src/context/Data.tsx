@@ -28,6 +28,16 @@ export const dataContext = createContext<DataContextType>({
   fetchCollection: async () => {
     return {} as CollectionFullObject;
   },
+  createCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  renameCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  duplicateCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  dropCollection: async () => {},
 });
 
 const { Provider } = dataContext;
@@ -52,7 +62,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const socket = useRef<Socket | null>(null);
 
   // collection state test
-  const checkCollectionState = useCallback(
+  const detectLoadingIndexing = useCallback(
     (collections: CollectionObject[]) => {
       const LoadingOrBuildingCollections = collections.filter(v => {
         const isLoading = checkLoading(v);
@@ -62,9 +72,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       });
       // If no collection is building index or loading collection
       // stop server cron job
-
-      console.log('LoadingOrBuildingCollections', LoadingOrBuildingCollections);
-
       MilvusService.triggerCron({
         name: WS_EVENTS.COLLECTION_UPDATE,
         type:
@@ -77,30 +84,29 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     []
   );
 
-  // get all collections callback, refresh all
+  //  Websocket Callback: update all collections
   const updateCollections = useCallback(
     (collections: CollectionObject[]) => {
       // check state
-      checkCollectionState(collections);
+      detectLoadingIndexing(collections);
       // update collections
       setCollections(collections);
     },
     [database]
   );
 
-  // get collection callback, refresh partial
+  // Websocket Callback: update single collection
   const updateCollection = useCallback(
-    (collections: CollectionObject[]) => {
+    (collections: CollectionFullObject[]) => {
       // check state
-      checkCollectionState(collections);
+      detectLoadingIndexing(collections);
       // update single collection
       setCollections(prev => {
+        // update exsit collection
         const newCollections = prev.map(v => {
           const newCollection = collections.find(c => c.id === v.id);
 
           if (newCollection) {
-            console.log('update', newCollection);
-
             return newCollection;
           }
 
@@ -113,7 +119,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     [database]
   );
 
-  // fetch collections api
+  // API:fetch collections
   const fetchCollections = async () => {
     try {
       // set loading true
@@ -121,7 +127,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // fetch collections
       const res = await CollectionService.getCollections();
       // check state
-      checkCollectionState(res);
+      detectLoadingIndexing(res);
       // set collections
       setCollections(res);
       // set loading false
@@ -131,7 +137,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     }
   };
 
-  // fetch collection api
+  // API: fetch single collection
   const fetchCollection = async (name: string) => {
     // fetch collections
     const res = await CollectionService.getCollection(name);
@@ -142,6 +148,48 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     return res;
   };
 
+  // API: create collection
+  const createCollection = async (data: any) => {
+    // create collection
+    const newCollection = await CollectionService.createCollection(data);
+    // inset collection to state
+    setCollections(prev => [...prev, newCollection]);
+
+    return newCollection;
+  };
+
+  // API: rename collection
+  const renameCollection = async (name: string, newName: string) => {
+    // rename collection
+    const newCollection = await CollectionService.renameCollection(name, {
+      new_collection_name: newName,
+    });
+    updateCollection([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: duplicate collection
+  const duplicateCollection = async (name: string, newName: string) => {
+    // duplicate collection
+    const newCollection = await CollectionService.duplicateCollection(name, {
+      new_collection_name: newName,
+    });
+    // inset collection to state
+    setCollections(prev => [...prev, newCollection]);
+
+    return newCollection;
+  };
+
+  // API: drop collection
+  const dropCollection = async (name: string) => {
+    // drop collection
+    await CollectionService.dropCollection(name);
+    // remove collection from state
+    setCollections(prev => prev.filter(v => v.collection_name !== name));
+  };
+
+  // API: fetch databases
   const fetchDatabases = async () => {
     const res = await DatabaseService.getDatabases();
 
@@ -205,6 +253,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         fetchDatabases,
         fetchCollections,
         fetchCollection,
+        createCollection,
+        renameCollection,
+        duplicateCollection,
+        dropCollection,
       }}
     >
       {props.children}

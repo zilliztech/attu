@@ -24,10 +24,10 @@ export class CollectionService extends BaseModel {
   }
 
   static createCollection(data: any) {
-    return super.create({ path: `collections`, data });
+    return super.create<CollectionFullObject>({ path: `collections`, data });
   }
 
-  static deleteCollection(collectionName: string) {
+  static dropCollection(collectionName: string) {
     return super.delete({ path: `/collections/${collectionName}` });
   }
 
@@ -48,17 +48,17 @@ export class CollectionService extends BaseModel {
     collectionName: string,
     params: { new_collection_name: string }
   ) {
-    return super.create({
+    return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}`,
       data: params,
     });
   }
 
-  static duplicate(
+  static duplicateCollection(
     collectionName: string,
     params: { new_collection_name: string }
   ) {
-    return super.create({
+    return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}/duplicate`,
       data: params,
     });

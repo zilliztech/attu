@@ -10,12 +10,11 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
 import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
 import CreateFields from '../collections/CreateFields';
-import { CollectionService } from '@/http';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
@@ -58,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
+  const { createCollection } = useContext(dataContext);
   const classes = useStyles();
   const { handleCloseDialog } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
@@ -242,7 +242,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       consistency_level: consistencyLevel,
     };
 
-    await CollectionService.createCollection({
+    await createCollection({
       ...param,
     });
 

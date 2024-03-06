@@ -148,7 +148,6 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchCollections();
                 }}
               />
             ),
@@ -286,7 +285,6 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await updateCollection(collectionName);
                   setSelectedCollections([]);
                 }}
                 collectionName={selectedCollections[0].collection_name}
@@ -317,7 +315,6 @@ const Collections = () => {
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchCollections();
                 }}
                 collectionName={selectedCollections[0].collection_name}
                 collections={collections}
@@ -347,7 +344,6 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchCollections();
                   setSelectedCollections([]);
                 }}
                 collections={selectedCollections}

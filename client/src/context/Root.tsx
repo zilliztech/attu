@@ -116,7 +116,7 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     if (isAuth) {
       const fetchVersion = async () => {
         const res = await MilvusService.getVersion();
-        setVersionInfo(res);
+        setVersionInfo(res as any);
       };
       fetchVersion();
     }

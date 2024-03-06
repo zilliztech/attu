@@ -99,4 +99,8 @@ export type DataContextType = {
   fetchDatabases: () => Promise<void>;
   fetchCollections: () => Promise<void>;
   fetchCollection: (name: string) => Promise<CollectionFullObject>;
+  createCollection: (data: any) => Promise<CollectionFullObject>;
+  renameCollection: (name: string, newName: string) => Promise<CollectionFullObject>;
+  duplicateCollection: (name: string, newName: string) => Promise<CollectionFullObject>;
+  dropCollection: (name: string) => Promise<void>;
 };

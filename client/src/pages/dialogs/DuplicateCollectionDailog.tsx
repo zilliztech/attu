@@ -1,13 +1,12 @@
 import { FC, useContext, useMemo, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CollectionService } from '@/http';
 import { DuplicateCollectionDialogProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -20,6 +19,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
+  const { duplicateCollection } = useContext(dataContext);
+
   const { cb, collectionName, collections } = props;
   const [form, setForm] = useState({
     duplicate: `${collectionName}_duplicate`,
@@ -46,12 +47,10 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   const handleConfirm = async () => {
     // duplicate
-    await CollectionService.duplicate(collectionName, {
-      new_collection_name: form.duplicate,
-    });
+    await duplicateCollection(collectionName, form.duplicate);
     // close dialog
     handleCloseDialog();
-    cb && cb();
+    cb && (await cb(form.duplicate));
   };
 
   const duplicateInputConfig: ITextfieldConfig = {
@@ -75,8 +74,10 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
       {
         rule: 'custom',
         extraParam: {
-          compare: (value) => {
-            return !collections.some(collection => collection.collection_name === value);
+          compare: value => {
+            return !collections.some(
+              collection => collection.collection_name === value
+            );
           },
         },
         errorText: collectionTrans('duplicateNameExist'),
