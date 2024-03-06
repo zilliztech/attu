@@ -1,5 +1,5 @@
 import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
@@ -7,9 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
-import { CollectionService } from '@/http';
+import { dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
-import { FieldObject } from '@server/types';
 import { getLabelDisplayedRows } from '../search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -62,6 +61,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Schema = () => {
+  const { fetchCollection, collections, loading } = useContext(dataContext);
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
@@ -69,8 +69,13 @@ const Schema = () => {
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
 
-  const [fields, setFields] = useState<FieldObject[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // get collection
+  const collection = collections.find(
+    c => c.collection_name === collectionName
+  );
+
+  // get fields
+  const fileds = collection?.schema?.fields || [];
 
   const KeyIcon = icons.key;
 
@@ -84,28 +89,7 @@ const Schema = () => {
     order,
     orderBy,
     handleGridSort,
-  } = usePaginationHook(fields);
-
-  const fetchFields = useCallback(
-    async (collectionName: string) => {
-      try {
-        const collection = await CollectionService.getCollectionInfo(
-          collectionName
-        );
-
-        setFields(collection.schema.fields);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        throw err;
-      }
-    },
-    [classes.nameWrapper, classes.paramWrapper]
-  );
-
-  useEffect(() => {
-    fetchFields(collectionName);
-  }, [collectionName, fetchFields]);
+  } = usePaginationHook(fileds);
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -175,7 +159,9 @@ const Schema = () => {
           <IndexTypeElement
             field={f}
             collectionName={collectionName}
-            cb={fetchFields}
+            cb={async () => {
+              await fetchCollection(collectionName);
+            }}
           />
         );
       },

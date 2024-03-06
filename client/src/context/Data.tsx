@@ -13,7 +13,7 @@ import { checkIndexBuilding, checkLoading, getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { LAST_TIME_DATABASE } from '@/consts';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 export const dataContext = createContext<DataContextType>({
   loading: false,
@@ -25,6 +25,9 @@ export const dataContext = createContext<DataContextType>({
   setDatabaseList: () => {},
   fetchDatabases: async () => {},
   fetchCollections: async () => {},
+  fetchCollection: async () => {
+    return {} as CollectionFullObject;
+  },
 });
 
 const { Provider } = dataContext;
@@ -48,25 +51,56 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // socket ref
   const socket = useRef<Socket | null>(null);
 
-  // get all collections callback, refresh all
-  const collectionsUpdateCallback = useCallback(
+  // collection state test
+  const checkCollectionState = useCallback(
     (collections: CollectionObject[]) => {
+      const LoadingOrBuildingCollections = collections.filter(v => {
+        const isLoading = checkLoading(v);
+        const isBuildingIndex = checkIndexBuilding(v);
+
+        return isLoading || isBuildingIndex;
+      });
+      // If no collection is building index or loading collection
+      // stop server cron job
+
+      console.log('LoadingOrBuildingCollections', LoadingOrBuildingCollections);
+
+      MilvusService.triggerCron({
+        name: WS_EVENTS.COLLECTION_UPDATE,
+        type:
+          LoadingOrBuildingCollections.length > 0
+            ? WS_EVENTS_TYPE.START
+            : WS_EVENTS_TYPE.STOP,
+        payload: LoadingOrBuildingCollections.map(c => c.collection_name),
+      });
+    },
+    []
+  );
+
+  // get all collections callback, refresh all
+  const updateCollections = useCallback(
+    (collections: CollectionObject[]) => {
+      // check state
+      checkCollectionState(collections);
+      // update collections
       setCollections(collections);
     },
     [database]
   );
 
   // get collection callback, refresh partial
-  const collectionUpdateCallback = useCallback(
+  const updateCollection = useCallback(
     (collections: CollectionObject[]) => {
-      console.log('collection callback', collections);
+      // check state
+      checkCollectionState(collections);
+      // update single collection
       setCollections(prev => {
         const newCollections = prev.map(v => {
-          const newCollection = collections.find(
-            c => c.collection_name === v.collection_name
-          );
+          const newCollection = collections.find(c => c.id === v.id);
 
           if (newCollection) {
+            console.log('update', newCollection);
+
             return newCollection;
           }
 
@@ -79,42 +113,33 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     [database]
   );
 
-  // check loading or building index
-  useEffect(() => {
-    const LoadingOrBuildingCollections = collections.filter(v => {
-      const isLoading = checkLoading(v);
-      const isBuildingIndex = checkIndexBuilding(v);
-
-      return isLoading || isBuildingIndex;
-    });
-    // If no collection is building index or loading collection
-    // stop server cron job
-
-    console.log('LoadingOrBuildingCollections', LoadingOrBuildingCollections);
-
-    MilvusService.triggerCron({
-      name: WS_EVENTS.COLLECTION_UPDATE,
-      type:
-        LoadingOrBuildingCollections.length > 0
-          ? WS_EVENTS_TYPE.START
-          : WS_EVENTS_TYPE.STOP,
-      payload: LoadingOrBuildingCollections.map(c => c.collection_name),
-    });
-  }, [collections]);
-
-  // http fetch collection
+  // fetch collections api
   const fetchCollections = async () => {
     try {
+      // set loading true
       setLoading(true);
+      // fetch collections
       const res = await CollectionService.getCollections();
-
+      // check state
+      checkCollectionState(res);
+      // set collections
       setCollections(res);
+      // set loading false
       setLoading(false);
-    } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // fetch collection api
+  const fetchCollection = async (name: string) => {
+    // fetch collections
+    const res = await CollectionService.getCollection(name);
+
+    // update collection
+    updateCollection([res]);
+
+    return res;
   };
 
   const fetchDatabases = async () => {
@@ -153,18 +178,19 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       setCollections([]);
       // remove all listeners
       socket.current?.offAny();
-      // listen to collection event
-      socket.current?.on(WS_EVENTS.COLLECTIONS, collectionsUpdateCallback);
-      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, collectionUpdateCallback);
+      // listen to backend collection event
+      socket.current?.on(WS_EVENTS.COLLECTIONS, updateCollections);
+      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollection);
 
-      // get data
+      // get data at first time
       fetchCollections();
     }
 
     return () => {
+      // remove all listeners when component unmount
       socket.current?.offAny();
     };
-  }, [collectionsUpdateCallback, collectionUpdateCallback, connected]);
+  }, [updateCollections, updateCollection, connected]);
 
   return (
     <Provider
@@ -178,6 +204,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         setDatabaseList: setDatabases,
         fetchDatabases,
         fetchCollections,
+        fetchCollection,
       }}
     >
       {props.children}

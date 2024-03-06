@@ -48,8 +48,8 @@ export default function Aliases(props: AliasesProps) {
         component: (
           <CreateAliasDialog
             collectionName={collectionName}
-            cb={() => {
-              onCreate();
+            cb={async collectionName => {
+              await onCreate(collectionName);
             }}
           />
         ),
@@ -82,7 +82,7 @@ export default function Aliases(props: AliasesProps) {
     });
     openSnackBar(successTrans('delete', { name: collectionTrans('alias') }));
     handleCloseDialog();
-    onDelete();
+    await onDelete(collectionName);
   };
 
   const _onDelete = (alias: { collection: string; alias: string }) => {

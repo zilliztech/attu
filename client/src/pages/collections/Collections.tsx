@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
-  const { collections, database, loading, fetchCollections } =
+  const { collections, database, loading, fetchCollections, fetchCollection } =
     useContext(dataContext);
 
   const [searchParams] = useSearchParams();
@@ -114,6 +114,11 @@ const Collections = () => {
 
     return filteredCollections;
   }, [search, collections]);
+
+  // update react UI data
+  const updateCollection = async (collectionName: string) => {
+    await fetchCollection(collectionName);
+  };
 
   const {
     pageSize,
@@ -165,13 +170,14 @@ const Collections = () => {
             component: (
               <LoadCollectionDialog
                 collection={selectedCollections[0].collection_name}
-                onLoad={async () => {
+                onLoad={async (collectionName: string) => {
                   openSnackBar(
                     successTrans('load', {
                       name: collectionTrans('collection'),
                     })
                   );
                   setSelectedCollections([]);
+                  await updateCollection(collectionName);
                 }}
               />
             ),
@@ -201,14 +207,14 @@ const Collections = () => {
             component: (
               <ReleaseCollectionDialog
                 collection={selectedCollections[0].collection_name}
-                onRelease={async () => {
+                onRelease={async (collectionName: string) => {
                   openSnackBar(
                     successTrans('release', {
                       name: collectionTrans('collection'),
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchCollections();
+                  await updateCollection(collectionName);
                 }}
               />
             ),
@@ -243,8 +249,10 @@ const Collections = () => {
                 }
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                onInsert={async () => {
-                  await fetchCollections();
+                onInsert={async (collectionName: string) => {
+                  setTimeout(async () => {
+                    await updateCollection(collectionName);
+                  });
                   setSelectedCollections([]);
                 }}
               />
@@ -272,13 +280,13 @@ const Collections = () => {
           params: {
             component: (
               <RenameCollectionDialog
-                cb={async () => {
+                cb={async (collectionName: string) => {
                   openSnackBar(
                     successTrans('rename', {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchCollections();
+                  await updateCollection(collectionName);
                   setSelectedCollections([]);
                 }}
                 collectionName={selectedCollections[0].collection_name}
@@ -408,7 +416,7 @@ const Collections = () => {
         return (
           <StatusAction
             status={v.status}
-            onIndexCreate={fetchCollections}
+            onIndexCreate={updateCollection}
             percentage={v.loadedPercentage}
             field={v.schema}
             collectionName={v.collection_name}
@@ -420,26 +428,26 @@ const Collections = () => {
                   component:
                     v.status === LOADING_STATE.UNLOADED ? (
                       <LoadCollectionDialog
-                        collection={v.collection_name}
-                        onLoad={async () => {
+                        collectionName={v.collection_name}
+                        onLoad={async (collectionName: string) => {
                           openSnackBar(
                             successTrans('load', {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await fetchCollections();
+                          await updateCollection(collectionName);
                         }}
                       />
                     ) : (
                       <ReleaseCollectionDialog
-                        collection={v.collection_name}
-                        onRelease={async () => {
+                        collectionName={v.collection_name}
+                        onRelease={async (collectionName: string) => {
                           openSnackBar(
                             successTrans('release', {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await fetchCollections();
+                          await updateCollection(collectionName);
                         }}
                       />
                     ),
@@ -550,7 +558,14 @@ const Collections = () => {
               type: 'custom',
               params: {
                 component: (
-                  <ImportSampleDialog collection={row.collection_name} />
+                  <ImportSampleDialog
+                    collection={row.collection_name}
+                    cb={async (collectionName: string) => {
+                      setTimeout(async () => {
+                        await updateCollection(collectionName);
+                      });
+                    }}
+                  />
                 ),
               },
             });
@@ -583,8 +598,8 @@ const Collections = () => {
           <Aliases
             aliases={v.aliases}
             collectionName={v.collection_name}
-            onCreate={fetchCollections}
-            onDelete={fetchCollections}
+            onCreate={updateCollection}
+            onDelete={updateCollection}
           />
         );
       },
@@ -610,7 +625,7 @@ const Collections = () => {
           colDefinitions={colDefinitions}
           rows={collectionList}
           rowCount={total}
-          primaryKey="collection_name"
+          primaryKey="id"
           selected={selectedCollections}
           setSelected={handleSelectChange}
           page={currentPage}

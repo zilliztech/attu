@@ -16,7 +16,7 @@ export class CollectionService extends BaseModel {
     return super.findAll({ path: '/collections', params: data || {} });
   }
 
-  static getCollectionInfo(collectionName: string) {
+  static getCollection(collectionName: string) {
     return super.search<CollectionFullObject>({
       path: `/collections/${collectionName}`,
       params: {},

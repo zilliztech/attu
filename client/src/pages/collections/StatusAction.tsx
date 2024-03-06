@@ -132,7 +132,6 @@ const StatusAction: FC<StatusActionType> = props => {
 
   // UI state
   const collectionLoaded = status === LOADING_STATE.LOADED;
-
   return (
     <div className={classes.root}>
       {field.hasVectorIndex && (
@@ -155,7 +154,7 @@ const StatusAction: FC<StatusActionType> = props => {
       <IndexTypeElement
         field={field.vectorFields[0]!}
         collectionName={collectionName}
-        cb={() => onIndexCreate()}
+        cb={collectionName => onIndexCreate(collectionName)}
         disabled={collectionLoaded}
         disabledTooltip={collectionTrans('releaseCollectionFirst')}
       />

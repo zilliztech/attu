@@ -43,8 +43,6 @@ export default class BaseModel {
     } as any;
     if (timeout) httpConfig.timeout = timeout;
     const res = await http(httpConfig);
-    // conflict with collection view data structure, status is useless, so delete here.
-    delete res.data.data.status;
     return (res.data.data || {}) as T;
   }
 

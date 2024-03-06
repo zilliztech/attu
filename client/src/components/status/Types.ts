@@ -3,7 +3,7 @@ import { SchemaObject } from '@server/types';
 
 export type StatusType = {
   status: LOADING_STATE;
-  percentage?: string;
+  percentage?: number;
 };
 
 export type StatusActionType = {

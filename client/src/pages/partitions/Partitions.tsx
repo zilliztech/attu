@@ -69,7 +69,7 @@ const Partitions = () => {
   };
 
   const fetchCollectionDetail = async (name: string) => {
-    const res = await CollectionService.getCollectionInfo(name);
+    const res = await CollectionService.getCollection(name);
     return res;
   };
 

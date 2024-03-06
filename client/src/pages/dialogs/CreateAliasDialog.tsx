@@ -44,7 +44,7 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   const handleConfirm = async () => {
     await CollectionService.createAlias(collectionName, form);
     handleCloseDialog();
-    cb && cb();
+    cb && (await cb(collectionName));
   };
 
   const aliasInputConfig: ITextfieldConfig = {

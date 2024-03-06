@@ -34,6 +34,7 @@ export class CronsService {
     if (
       cronJob &&
       type === WS_EVENTS_TYPE.START &&
+      name === cronJob.name &&
       isPayloadEqual(payload, cronJob.payload)
     ) {
       return;

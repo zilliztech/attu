@@ -12,7 +12,7 @@ export interface DropPartitionProps {
 }
 
 export interface PartitionCreateProps {
-  onCreate: () => void;
+  onCreate: (collectionName: string) => void;
   collectionName: string;
 }
 
@@ -26,7 +26,7 @@ export interface FlushDialogProps extends CollectionDialogBaseProps {}
 
 export interface CreateAliasProps {
   collectionName: string;
-  cb?: () => void;
+  cb?: (collectionName: string) => void;
 }
 
 export interface EmptyDataProps {
@@ -40,7 +40,7 @@ export interface DuplicateCollectionDialogProps extends CreateAliasProps {
 
 export interface RenameCollectionProps {
   collectionName: string;
-  cb?: () => void;
+  cb?: (collectionName: string) => void;
 }
 export interface LoadSampleParam {
   collection_name: string;

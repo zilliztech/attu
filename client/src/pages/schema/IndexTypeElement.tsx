@@ -92,7 +92,7 @@ const IndexTypeElement: FC<{
     // reset status to default empty string
     handleCloseDialog();
     openSnackBar(indexTrans('createSuccess'));
-    cb(collectionName);
+    await cb(collectionName);
   };
 
   const handleCreate = (e: MouseEvent<HTMLDivElement>) => {
@@ -124,7 +124,7 @@ const IndexTypeElement: FC<{
     };
 
     await IndexService.deleteIndex(indexDeleteParam);
-    cb(collectionName);
+    await cb(collectionName);
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: indexTrans('index') }));
   };

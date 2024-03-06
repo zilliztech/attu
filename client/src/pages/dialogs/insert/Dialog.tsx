@@ -341,7 +341,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       await DataService.insertData(collectionValue, param);
       await DataService.flush(collectionValue);
       // update collections
-      onInsert();
+      await onInsert(collectionValue);
       setInsertStatus(InsertStatusEnum.success);
     } catch (err: any) {
       const {

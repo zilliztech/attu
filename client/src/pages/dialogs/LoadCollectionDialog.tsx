@@ -17,7 +17,6 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -39,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const LoadCollectionDialog = (props: any) => {
   const classes = useStyles();
-  const { collection, onLoad } = props;
+  const { collectionName, onLoad } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -99,17 +98,11 @@ const LoadCollectionDialog = (props: any) => {
     }
 
     // load collection request
-    await CollectionService.loadCollection(collection, params);
-
-    MilvusService.triggerCron({
-      name: WS_EVENTS.COLLECTION_UPDATE,
-      type: WS_EVENTS_TYPE.START,
-      payload: [collection],
-    });
+    await CollectionService.loadCollection(collectionName, params);
 
     // callback
     if (onLoad) {
-      onLoad();
+      await onLoad(collectionName);
     }
     // close dialog
     handleCloseDialog();
@@ -171,7 +164,7 @@ const LoadCollectionDialog = (props: any) => {
   return (
     <DialogTemplate
       title={dialogTrans('loadTitle', {
-        type: collection,
+        type: collectionName,
       })}
       handleClose={handleCloseDialog}
       children={

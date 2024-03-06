@@ -44,7 +44,7 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   const handleConfirm = async () => {
     await CollectionService.renameCollection(collectionName, form);
     handleCloseDialog();
-    cb && cb();
+    cb && await cb(form.new_collection_name);
   };
 
   const renameInputCfg: ITextfieldConfig = {

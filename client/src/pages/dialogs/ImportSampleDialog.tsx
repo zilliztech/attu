@@ -119,7 +119,7 @@ const ImportSampleDialog: FC<{ collection: string; cb?: Function }> = props => {
       }
       await DataService.flush(collectionName);
       if (props.cb) {
-        props.cb();
+        await props.cb(collectionName);
       }
       return { result: true, msg: '' };
     } catch (err: any) {

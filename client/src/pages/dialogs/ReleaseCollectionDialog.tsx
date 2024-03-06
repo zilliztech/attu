@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const ReleaseCollectionDialog = (props: any) => {
   const classes = useStyles();
 
-  const { collection, onRelease } = props;
+  const { collectionName, onRelease } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
   const { handleCloseDialog } = useContext(rootContext);
@@ -27,9 +27,10 @@ const ReleaseCollectionDialog = (props: any) => {
     setDisabled(true);
     try {
       // release collection
-      await CollectionService.releaseCollection(collection);
+      await CollectionService.releaseCollection(collectionName);
+
       // execute callback
-      onRelease && onRelease();
+      onRelease && (await onRelease(collectionName));
       // enable confirm button
       setDisabled(false);
       // close dialog
@@ -43,13 +44,13 @@ const ReleaseCollectionDialog = (props: any) => {
   return (
     <DialogTemplate
       title={dialogTrans('releaseTitle', {
-        type: collection,
+        type: collectionName,
       })}
       handleClose={handleCloseDialog}
       children={
         <>
           <Typography variant="body1" component="p" className={classes.desc}>
-            {dialogTrans('releaseContent', { type: collection })}
+            {dialogTrans('releaseContent', { type: collectionName })}
           </Typography>
         </>
       }
