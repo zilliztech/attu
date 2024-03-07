@@ -145,9 +145,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
     if (status === LOADING_STATE.LOADED) {
       fetchData();
     }
-
-    return () => {};
-  }, [status, database]);
+  }, [status]);
 
   return (
     <Card
