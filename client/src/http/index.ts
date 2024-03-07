@@ -4,7 +4,6 @@ export * from './BaseModel';
 
 // service
 export * from './Collection.service';
-export * from './Index.service';
 export * from './Partition.service';
 export * from './Data.service';
 export * from './Milvus.service';

@@ -12,7 +12,7 @@ export type StatusActionType = {
   action?: Function;
   field: SchemaObject;
   collectionName: string;
-  onIndexCreate: Function;
+  onIndexCreate?: Function;
 };
 
 // @todo need rename

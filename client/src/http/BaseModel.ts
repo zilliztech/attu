@@ -67,13 +67,13 @@ export default class BaseModel {
 
     const res = await http.delete(path, { data: data });
 
-    return res.data;
+    return res.data as T;
   }
 
-  static async batchDelete(options: updateParamsType) {
+  static async batchDelete<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.post(path, data);
-    return res.data;
+    return res.data as T;
   }
 
   static async query(options: updateParamsType) {

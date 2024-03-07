@@ -4,7 +4,7 @@ import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
-import { IndexService } from '@/http';
+import { CollectionService } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -102,7 +102,7 @@ const Collections = () => {
   };
 
   const clearIndexCache = useCallback(async () => {
-    await IndexService.flush();
+    await CollectionService.flush();
   }, []);
 
   const formatCollections = useMemo(() => {
@@ -169,14 +169,13 @@ const Collections = () => {
             component: (
               <LoadCollectionDialog
                 collection={selectedCollections[0].collection_name}
-                onLoad={async (collectionName: string) => {
+                onLoad={async () => {
                   openSnackBar(
                     successTrans('load', {
                       name: collectionTrans('collection'),
                     })
                   );
                   setSelectedCollections([]);
-                  await updateCollection(collectionName);
                 }}
               />
             ),
@@ -206,14 +205,13 @@ const Collections = () => {
             component: (
               <ReleaseCollectionDialog
                 collection={selectedCollections[0].collection_name}
-                onRelease={async (collectionName: string) => {
+                onRelease={async () => {
                   openSnackBar(
                     successTrans('release', {
                       name: collectionTrans('collection'),
                     })
                   );
                   setSelectedCollections([]);
-                  await updateCollection(collectionName);
                 }}
               />
             ),
@@ -412,7 +410,6 @@ const Collections = () => {
         return (
           <StatusAction
             status={v.status}
-            onIndexCreate={updateCollection}
             percentage={v.loadedPercentage}
             field={v.schema}
             collectionName={v.collection_name}
@@ -431,7 +428,6 @@ const Collections = () => {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await updateCollection(collectionName);
                         }}
                       />
                     ) : (
@@ -443,7 +439,6 @@ const Collections = () => {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await updateCollection(collectionName);
                         }}
                       />
                     ),
@@ -591,12 +586,7 @@ const Collections = () => {
       ),
       formatter(v) {
         return (
-          <Aliases
-            aliases={v.aliases}
-            collectionName={v.collection_name}
-            onCreate={updateCollection}
-            onDelete={updateCollection}
-          />
+          <Aliases aliases={v.aliases} collectionName={v.collection_name} />
         );
       },
     });

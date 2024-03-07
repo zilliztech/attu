@@ -11,6 +11,7 @@ import {
   QueryDto,
   RenameCollectionDto,
   DuplicateCollectionDto,
+  ManageIndexDto,
 } from './dto';
 
 export class CollectionController {
@@ -32,6 +33,15 @@ export class CollectionController {
     this.router.get('/', this.showCollections.bind(this));
     // get all collections statistics
     this.router.get('/statistics', this.getStatistics.bind(this));
+    // index
+    this.router.post(
+      '/index',
+      dtoValidationMiddleware(ManageIndexDto),
+      this.manageIndex.bind(this)
+    );
+
+    this.router.get('/index', this.describeIndex.bind(this));
+    this.router.post('/index/flush', this.clearCache.bind(this));
 
     // get collection with index info
     this.router.get('/:name', this.describeCollection.bind(this));
@@ -109,6 +119,7 @@ export class CollectionController {
     this.router.get('/:name/qsegments', this.getQSegment.bind(this));
     // compact
     this.router.put('/:name/compact', this.compact.bind(this));
+
     return this.router;
   }
 
@@ -361,10 +372,15 @@ export class CollectionController {
 
   async dropAlias(req: Request, res: Response, next: NextFunction) {
     const alias = req.params?.alias;
+    const name = req.params?.name;
     try {
-      const result = await this.collectionsService.dropAlias(req.clientId, {
-        alias,
-      });
+      const result = await this.collectionsService.dropAlias(
+        req.clientId,
+        name,
+        {
+          alias,
+        }
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -448,6 +464,51 @@ export class CollectionController {
         }
       );
 
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async manageIndex(req: Request, res: Response, next: NextFunction) {
+    const { type, collection_name, index_name, extra_params, field_name } =
+      req.body;
+    try {
+      const result =
+        type.toLocaleLowerCase() === 'create'
+          ? await this.collectionsService.createIndex(req.clientId, {
+              collection_name,
+              extra_params,
+              field_name,
+              index_name,
+            })
+          : await this.collectionsService.dropIndex(req.clientId, {
+              collection_name,
+              field_name,
+              index_name,
+            });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async describeIndex(req: Request, res: Response, next: NextFunction) {
+    const data = '' + req.query?.collection_name;
+    try {
+      const result = await this.collectionsService.describeIndex(req.clientId, {
+        collection_name: data,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async clearCache(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.collectionsService.clearCache(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);

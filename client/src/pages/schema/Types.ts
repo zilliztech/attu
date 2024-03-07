@@ -17,7 +17,7 @@ export type IndexType =
   | INDEX_TYPES_ENUM.BIN_FLAT
   | INDEX_TYPES_ENUM.MARISA_TRIE
   | INDEX_TYPES_ENUM.SORT
-  | INDEX_TYPES_ENUM.AUTO_INDEX;
+  | INDEX_TYPES_ENUM.AUTOINDEX;
 
 export interface IndexManageParam {
   collection_name: string;

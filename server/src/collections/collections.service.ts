@@ -22,11 +22,15 @@ import {
   CountReq,
   GetLoadStateReq,
   CollectionData,
+  CreateIndexReq,
+  DescribeIndexReq,
+  DropIndexReq,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
   throwErrorFromSDK,
   findKeyValue,
+  getKeyValueListFromJsonString,
   genRows,
   ROW_COUNT,
   convertFieldSchemaToFieldType,
@@ -43,18 +47,12 @@ import {
   CountObject,
   StatisticsObject,
   CollectionFullObject,
+  DescribeIndexRes,
 } from '../types';
-import { SchemaService } from '../schema/schema.service';
 import { clientCache } from '../app';
 import { MIN_INT64 } from '../utils/Const';
 
 export class CollectionsService {
-  private schemaService: SchemaService;
-
-  constructor() {
-    this.schemaService = new SchemaService();
-  }
-
   async showCollections(clientId: string, data?: ShowCollectionsReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.showCollections(data);
@@ -80,7 +78,7 @@ export class CollectionsService {
     )) as DescribeCollectionRes;
 
     // get index info for collections
-    const indexRes = await this.schemaService.describeIndex(clientId, {
+    const indexRes = await this.describeIndex(clientId, {
       collection_name: data.collection_name,
     });
 
@@ -151,12 +149,12 @@ export class CollectionsService {
   async renameCollection(clientId: string, data: RenameCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.renameCollection(data);
+    throwErrorFromSDK(res);
 
     const newCollection = (await this.getAllCollections(clientId, [
       data.new_collection_name,
     ])) as CollectionFullObject[];
 
-    throwErrorFromSDK(res);
     return newCollection[0];
   }
 
@@ -171,14 +169,24 @@ export class CollectionsService {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.loadCollection(data);
     throwErrorFromSDK(res);
-    return res;
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
   }
 
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.releaseCollection(data);
     throwErrorFromSDK(res);
-    return res;
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
   }
 
   async getCollectionStatistics(
@@ -243,7 +251,12 @@ export class CollectionsService {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.createAlias(data);
     throwErrorFromSDK(res);
-    return res;
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
   }
 
   async alterAlias(clientId: string, data: AlterAliasReq) {
@@ -253,11 +266,20 @@ export class CollectionsService {
     return res;
   }
 
-  async dropAlias(clientId: string, data: DropAliasReq) {
+  async dropAlias(
+    clientId: string,
+    collection_name: string,
+    data: DropAliasReq
+  ) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.dropAlias(data);
     throwErrorFromSDK(res);
-    return res;
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
   }
 
   async getReplicas(clientId: string, data: GetReplicasDto) {
@@ -561,5 +583,94 @@ export class CollectionsService {
     });
 
     return res;
+  }
+
+  async createIndex(clientId: string, data: CreateIndexReq) {
+    const { milvusClient, indexCache, database } = clientCache.get(clientId);
+    const res = await milvusClient.createIndex(data);
+    throwErrorFromSDK(res);
+    const key = `${database}/${data.collection_name}`;
+    // clear cache;
+    indexCache.delete(key);
+
+    // fetch new collections
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
+    ])) as CollectionFullObject[];
+
+    throwErrorFromSDK(res);
+    return newCollection[0];
+  }
+
+  /**
+   * This function is used to describe an index in Milvus.
+   * It first checks if the index description is cached, if so, it returns the cached value.
+   * If not, it calls the Milvus SDK's describeIndex function to get the index description.
+   * If the index is finished building, it caches the index description for future use.
+   * If the index is not finished building, it deletes any cached value for this index.
+   * @param data - The request data for describing an index. It contains the collection name.
+   * @returns - The response from the Milvus SDK's describeIndex function or the cached index description.
+   */
+  async describeIndex(clientId: string, data: DescribeIndexReq) {
+    const { milvusClient, indexCache, database } = clientCache.get(clientId);
+
+    // Get the collection name from the request data
+    const key = `${database}/${data.collection_name}`;
+
+    // Try to get the index description from the cache
+    const value = indexCache.get(key);
+
+    // If the index description is in the cache, return it
+    if (value) {
+      return value as DescribeIndexRes;
+    } else {
+      // If the index description is not in the cache, call the Milvus SDK's describeIndex function
+      const res = (await milvusClient.describeIndex(data)) as DescribeIndexRes;
+
+      res.index_descriptions.map(index => {
+        // get indexType
+        index.indexType = (index.params.find(p => p.key === 'index_type')
+          ?.value || '') as string;
+        // get metricType
+        const metricTypePair =
+          index.params.filter(v => v.key === 'metric_type') || [];
+        index.metricType = findKeyValue(
+          metricTypePair,
+          'metric_type'
+        ) as string;
+        // get index parameter pairs
+        const paramsJSONstring = findKeyValue(index.params, 'params'); // params is a json string
+        const params =
+          (paramsJSONstring &&
+            getKeyValueListFromJsonString(paramsJSONstring as string)) ||
+          [];
+        index.indexParameterPairs = [...metricTypePair, ...params];
+      });
+
+      // Return the response from the Milvus SDK's describeIndex function
+      return res;
+    }
+  }
+
+  async dropIndex(clientId: string, data: DropIndexReq) {
+    const { milvusClient, indexCache, database } = clientCache.get(clientId);
+    const res = await milvusClient.dropIndex(data);
+    throwErrorFromSDK(res);
+
+    const key = `${database}/${data.collection_name}`;
+
+    // clear cache;
+    indexCache.delete(key);
+    // fetch new collections
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
+  }
+
+  async clearCache(clientId: string) {
+    const { indexCache } = clientCache.get(clientId);
+    return indexCache.clear();
   }
 }

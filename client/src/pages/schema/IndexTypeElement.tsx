@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
-import { IndexService } from '@/http';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon from '@/components/status/StatusIcon';
@@ -63,8 +62,10 @@ const IndexTypeElement: FC<{
   collectionName: string;
   disabled?: boolean;
   disabledTooltip?: string;
-  cb: (collectionName: string) => void;
+  cb?: (collectionName: string) => void;
 }> = ({ field, collectionName, cb, disabled, disabledTooltip }) => {
+  const { createIndex, dropIndex } = useContext(dataContext);
+
   const classes = useStyles();
   // set empty string as default status
   const { t: indexTrans } = useTranslation('index');
@@ -88,11 +89,11 @@ const IndexTypeElement: FC<{
       index_name,
       extra_params: params,
     };
-    await IndexService.createIndex(indexCreateParam);
+    await createIndex(indexCreateParam);
     // reset status to default empty string
     handleCloseDialog();
     openSnackBar(indexTrans('createSuccess'));
-    await cb(collectionName);
+    cb && (await cb(collectionName));
   };
 
   const handleCreate = (e: MouseEvent<HTMLDivElement>) => {
@@ -123,8 +124,8 @@ const IndexTypeElement: FC<{
       index_name: field.index.index_name,
     };
 
-    await IndexService.deleteIndex(indexDeleteParam);
-    await cb(collectionName);
+    await dropIndex(indexDeleteParam);
+    cb && (await cb(collectionName));
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: indexTrans('index') }));
   };

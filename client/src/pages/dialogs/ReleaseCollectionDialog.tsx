@@ -2,8 +2,7 @@ import { useContext, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { CollectionService } from '@/http';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -13,6 +12,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ReleaseCollectionDialog = (props: any) => {
+  const { releaseCollection } = useContext(dataContext);
+
   const classes = useStyles();
 
   const { collectionName, onRelease } = props;
@@ -27,7 +28,7 @@ const ReleaseCollectionDialog = (props: any) => {
     setDisabled(true);
     try {
       // release collection
-      await CollectionService.releaseCollection(collectionName);
+      await releaseCollection(collectionName);
 
       // execute callback
       onRelease && (await onRelease(collectionName));

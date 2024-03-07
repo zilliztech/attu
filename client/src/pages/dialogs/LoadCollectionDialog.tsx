@@ -7,8 +7,8 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { authContext, rootContext } from '@/context';
-import { CollectionService, MilvusService } from '@/http';
+import { authContext, rootContext, dataContext } from '@/context';
+import { MilvusService } from '@/http';
 import { useFormValidation } from '@/hooks';
 import { formatForm, parseJson, getNode } from '@/utils';
 import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const LoadCollectionDialog = (props: any) => {
+  const { loadCollection } = useContext(dataContext);
   const classes = useStyles();
   const { collectionName, onLoad } = props;
   const { t: dialogTrans } = useTranslation('dialog');
@@ -98,7 +99,7 @@ const LoadCollectionDialog = (props: any) => {
     }
 
     // load collection request
-    await CollectionService.loadCollection(collectionName, params);
+    await loadCollection(collectionName, params);
 
     // callback
     if (onLoad) {

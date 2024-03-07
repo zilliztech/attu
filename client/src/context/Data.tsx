@@ -8,12 +8,18 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
-import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
+import {
+  url,
+  CollectionService,
+  MilvusService,
+  DatabaseService,
+} from '@/http';
 import { checkIndexBuilding, checkLoading, getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { LAST_TIME_DATABASE } from '@/consts';
 import { CollectionObject, CollectionFullObject } from '@server/types';
+import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
 
 export const dataContext = createContext<DataContextType>({
   loading: false,
@@ -31,6 +37,12 @@ export const dataContext = createContext<DataContextType>({
   createCollection: async () => {
     return {} as CollectionFullObject;
   },
+  loadCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  releaseCollection: async () => {
+    return {} as CollectionFullObject;
+  },
   renameCollection: async () => {
     return {} as CollectionFullObject;
   },
@@ -38,6 +50,18 @@ export const dataContext = createContext<DataContextType>({
     return {} as CollectionFullObject;
   },
   dropCollection: async () => {},
+  createIndex: async () => {
+    return {} as CollectionFullObject;
+  },
+  dropIndex: async () => {
+    return {} as CollectionFullObject;
+  },
+  createAlias: async () => {
+    return {} as CollectionFullObject;
+  },
+  dropAlias: async () => {
+    return {} as CollectionFullObject;
+  },
 });
 
 const { Provider } = dataContext;
@@ -97,17 +121,17 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // Websocket Callback: update single collection
   const updateCollection = useCallback(
-    (collections: CollectionFullObject[]) => {
-      // check state
-      detectLoadingIndexing(collections);
+    (updateCollections: CollectionFullObject[]) => {
+      // check state to see if it is loading or building index, if so, start server cron job
+      detectLoadingIndexing(updateCollections);
       // update single collection
       setCollections(prev => {
         // update exsit collection
         const newCollections = prev.map(v => {
-          const newCollection = collections.find(c => c.id === v.id);
+          const collectionToUpdate = updateCollections.find(c => c.id === v.id);
 
-          if (newCollection) {
-            return newCollection;
+          if (collectionToUpdate) {
+            return collectionToUpdate;
           }
 
           return v;
@@ -118,6 +142,13 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     },
     [database]
   );
+
+  // API: fetch databases
+  const fetchDatabases = async () => {
+    const res = await DatabaseService.getDatabases();
+
+    setDatabases(res.db_names);
+  };
 
   // API:fetch collections
   const fetchCollections = async () => {
@@ -158,6 +189,26 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     return newCollection;
   };
 
+  // API: load collection
+  const loadCollection = async (name: string, param?: any) => {
+    // load collection
+    const newCollection = await CollectionService.loadCollection(name, param);
+    // update collection
+    updateCollection([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: release collection
+  const releaseCollection = async (name: string) => {
+    // release collection
+    const newCollection = await CollectionService.releaseCollection(name);
+    // update collection
+    updateCollection([newCollection]);
+
+    return newCollection;
+  };
+
   // API: rename collection
   const renameCollection = async (name: string, newName: string) => {
     // rename collection
@@ -184,16 +235,56 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // API: drop collection
   const dropCollection = async (name: string) => {
     // drop collection
-    await CollectionService.dropCollection(name);
-    // remove collection from state
-    setCollections(prev => prev.filter(v => v.collection_name !== name));
+    const dropped = await CollectionService.dropCollection(name);
+    if (dropped.error_code === 'Success') {
+      // remove collection from state
+      setCollections(prev => prev.filter(v => v.collection_name !== name));
+    }
   };
 
-  // API: fetch databases
-  const fetchDatabases = async () => {
-    const res = await DatabaseService.getDatabases();
+  // API: create index
+  const createIndex = async (param: IndexCreateParam) => {
+    // create index
+    const newCollection = await CollectionService.createIndex(param);
+    // update collection
+    updateCollection([newCollection]);
 
-    setDatabases(res.db_names);
+    return newCollection;
+  };
+
+  // API: drop index
+  const dropIndex = async (params: IndexManageParam) => {
+    // drop index
+    const { data } = await CollectionService.dropIndex(params);
+    // update collection
+    updateCollection([data]);
+
+    return data;
+  };
+
+  // API: create alias
+  const createAlias = async (collectionName: string, alias: string) => {
+    // create alias
+    const newCollection = await CollectionService.createAlias(collectionName, {
+      alias,
+    });
+    // update collection
+    updateCollection([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: drop alias
+  const dropAlias = async (collectionName: string, alias: string) => {
+    // drop alias
+    const { data } = await CollectionService.dropAlias(collectionName, {
+      alias,
+    });
+
+    // update collection
+    updateCollection([data]);
+
+    return data;
   };
 
   useEffect(() => {
@@ -254,9 +345,15 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         fetchCollections,
         fetchCollection,
         createCollection,
+        loadCollection,
+        releaseCollection,
         renameCollection,
         duplicateCollection,
         dropCollection,
+        createIndex,
+        dropIndex,
+        createAlias,
+        dropAlias,
       }}
     >
       {props.children}

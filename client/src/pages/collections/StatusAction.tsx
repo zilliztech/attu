@@ -154,7 +154,6 @@ const StatusAction: FC<StatusActionType> = props => {
       <IndexTypeElement
         field={field.vectorFields[0]!}
         collectionName={collectionName}
-        cb={collectionName => onIndexCreate(collectionName)}
         disabled={collectionLoaded}
         disabledTooltip={collectionTrans('releaseCollectionFirst')}
       />

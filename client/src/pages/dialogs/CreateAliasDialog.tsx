@@ -1,13 +1,12 @@
 import { FC, useContext, useMemo, useState } from 'react';
 import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CollectionService } from '@/http';
 import { CreateAliasProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -17,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CreateAliasDialog: FC<CreateAliasProps> = props => {
+  const { createAlias } = useContext(dataContext);
+  const { handleCloseDialog } = useContext(rootContext);
+
   const { cb, collectionName } = props;
   const [form, setForm] = useState({
     alias: '',
@@ -31,7 +33,6 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const { handleCloseDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
@@ -42,7 +43,7 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await CollectionService.createAlias(collectionName, form);
+    await createAlias(collectionName, form.alias);
     handleCloseDialog();
     cb && (await cb(collectionName));
   };
