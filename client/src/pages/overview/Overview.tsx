@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import {
   makeStyles,
   Theme,
@@ -15,12 +15,10 @@ import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
-import { CollectionService } from '@/http';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import { formatNumber } from '@/utils';
 import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
-import { StatisticsObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
@@ -115,24 +113,7 @@ const Overview = () => {
   const { t: overviewTrans } = useTranslation('overview');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: successTrans } = useTranslation('success');
-  const [statistics, setStatistics] = useState<StatisticsObject>({
-    collectionCount: 0,
-    totalData: 0,
-  });
-  const [loadingLocal, setLoadingLocal] = useState(false);
   const { openSnackBar } = useContext(rootContext);
-
-  const fetchData = useCallback(async () => {
-    if (loading) return;
-    setLoadingLocal(true);
-    const res = await CollectionService.getStatistics();
-    setStatistics(res);
-    setLoadingLocal(false);
-  }, [database, collections]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   const loadCollections = collections.filter(
     c => c.status !== LOADING_STATE.UNLOADED && typeof c.status !== 'undefined'
@@ -142,7 +123,6 @@ const Overview = () => {
     openSnackBar(
       successTrans('release', { name: collectionTrans('collection') })
     );
-    fetchData();
   };
 
   const statisticsData = useMemo(() => {
@@ -155,19 +135,24 @@ const Overview = () => {
         },
         {
           label: overviewTrans('all'),
-          value: formatNumber(statistics.collectionCount),
+          value: collections.length,
           valueColor: theme.palette.primary.main,
         },
         {
           label: overviewTrans('data'),
           value: overviewTrans('rows', {
-            number: formatNumber(statistics.totalData),
+            number: formatNumber(
+              collections.reduce(
+                (acc, cur) => acc + Number(cur.rowCount || 0),
+                0
+              )
+            ),
           }) as string,
           valueColor: theme.palette.primary.dark,
         },
       ],
     };
-  }, [overviewTrans, statistics, loadCollections]);
+  }, [overviewTrans, loadCollections]);
 
   const CollectionIcon = icons.navCollection;
 
@@ -204,8 +189,6 @@ const Overview = () => {
     return `${duration.toFixed(2)} ${unit}`;
   }, [data.rootCoord]);
 
-  const _loading = loadingLocal || loading;
-
   return (
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
       <section className={classes.dbWrapper}>
@@ -223,20 +206,18 @@ const Overview = () => {
             {loadCollections.map(collection => (
               <CollectionCard
                 key={collection.id}
-                data={collection}
+                collection={collection}
                 onRelease={onRelease}
               />
             ))}
           </div>
         ) : (
           <EmptyCard
-            loading={_loading}
+            loading={loading}
             wrapperClass={classes.emptyCard}
-            icon={!_loading ? <CollectionIcon /> : undefined}
+            icon={!loading ? <CollectionIcon /> : undefined}
             text={
-              _loading
-                ? overviewTrans('loading')
-                : collectionTrans('noLoadData')
+              loading ? overviewTrans('loading') : collectionTrans('noLoadData')
             }
           />
         )}
