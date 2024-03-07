@@ -364,6 +364,9 @@ const Collections = () => {
         clearIndexCache();
         fetchCollections();
       },
+      disabled: () => {
+        return loading;
+      },
       label: btnTrans('refresh'),
     },
 

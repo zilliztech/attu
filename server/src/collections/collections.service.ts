@@ -36,6 +36,8 @@ import {
   convertFieldSchemaToFieldType,
   LOADING_STATE,
   DYNAMIC_FIELD,
+  SimpleQueue,
+  MIN_INT64,
 } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import {
@@ -50,7 +52,8 @@ import {
   DescribeIndexRes,
 } from '../types';
 import { clientCache } from '../app';
-import { MIN_INT64 } from '../utils/Const';
+import { clients } from '../socket';
+import { WS_EVENTS } from '../utils';
 
 export class CollectionsService {
   async showCollections(clientId: string, data?: ShowCollectionsReq) {
@@ -312,7 +315,12 @@ export class CollectionsService {
     loadCollection: CollectionData,
     lazy: boolean = false
   ) {
+    const { collectionsQueue } = clientCache.get(clientId);
     if (lazy) {
+      // add to lazy queue
+      collectionsQueue.enqueue(collection.name);
+
+      // return lazy object
       return {
         id: collection.id,
         collection_name: collection.name,
@@ -386,10 +394,19 @@ export class CollectionsService {
     };
   }
 
+  // get all collections details
   async getAllCollections(
     clientId: string,
     collectionName: string[] = []
   ): Promise<CollectionObject[]> {
+    let cache = clientCache.get(clientId);
+
+    // clear collectionsQueue
+    if (collectionName.length === 0) {
+      cache.collectionsQueue.stop();
+      cache.collectionsQueue = new SimpleQueue<string>();
+    }
+
     // get all collections(name, timestamp, id)
     const allCollections = await this.showCollections(clientId);
     // get all loaded collection
@@ -431,6 +448,26 @@ export class CollectionsService {
       );
     }
 
+    // start the queue
+    if (cache.collectionsQueue.size() > 0) {
+      cache.collectionsQueue.executeNext(async (collections, q) => {
+        if (q.isObseleted) {
+          return;
+        }
+        try {
+          const res = await this.getAllCollections(clientId, collections);
+          // get current socket
+          const socketClient = clients.get(clientId);
+
+          // emit event to current client
+          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
+        } catch (e) {
+          console.log('ignore queue error', e);
+        }
+      }, 5);
+    }
+
+    // return data
     return data;
   }
 

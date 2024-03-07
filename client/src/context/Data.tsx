@@ -8,12 +8,7 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
-import {
-  url,
-  CollectionService,
-  MilvusService,
-  DatabaseService,
-} from '@/http';
+import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
 import { checkIndexBuilding, checkLoading, getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
@@ -109,7 +104,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   );
 
   //  Websocket Callback: update all collections
-  const updateCollections = useCallback(
+  const updateAllCollections = useCallback(
     (collections: CollectionObject[]) => {
       // check state
       detectLoadingIndexing(collections);
@@ -120,7 +115,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   );
 
   // Websocket Callback: update single collection
-  const updateCollection = useCallback(
+  const updateCollections = useCallback(
     (updateCollections: CollectionFullObject[]) => {
       // check state to see if it is loading or building index, if so, start server cron job
       detectLoadingIndexing(updateCollections);
@@ -174,7 +169,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     const res = await CollectionService.getCollection(name);
 
     // update collection
-    updateCollection([res]);
+    updateCollections([res]);
 
     return res;
   };
@@ -194,7 +189,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     // load collection
     const newCollection = await CollectionService.loadCollection(name, param);
     // update collection
-    updateCollection([newCollection]);
+    updateCollections([newCollection]);
 
     return newCollection;
   };
@@ -204,7 +199,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     // release collection
     const newCollection = await CollectionService.releaseCollection(name);
     // update collection
-    updateCollection([newCollection]);
+    updateCollections([newCollection]);
 
     return newCollection;
   };
@@ -215,7 +210,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     const newCollection = await CollectionService.renameCollection(name, {
       new_collection_name: newName,
     });
-    updateCollection([newCollection]);
+    updateCollections([newCollection]);
 
     return newCollection;
   };
@@ -247,7 +242,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     // create index
     const newCollection = await CollectionService.createIndex(param);
     // update collection
-    updateCollection([newCollection]);
+    updateCollections([newCollection]);
 
     return newCollection;
   };
@@ -257,7 +252,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     // drop index
     const { data } = await CollectionService.dropIndex(params);
     // update collection
-    updateCollection([data]);
+    updateCollections([data]);
 
     return data;
   };
@@ -269,7 +264,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       alias,
     });
     // update collection
-    updateCollection([newCollection]);
+    updateCollections([newCollection]);
 
     return newCollection;
   };
@@ -282,7 +277,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     });
 
     // update collection
-    updateCollection([data]);
+    updateCollections([data]);
 
     return data;
   };
@@ -318,10 +313,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // remove all listeners
       socket.current?.offAny();
       // listen to backend collection event
-      socket.current?.on(WS_EVENTS.COLLECTIONS, updateCollections);
-      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollection);
+      socket.current?.on(WS_EVENTS.COLLECTIONS, updateAllCollections);
+      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
 
-      // get data at first time
+      // fetch db
       fetchCollections();
     }
 
@@ -329,7 +324,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // remove all listeners when component unmount
       socket.current?.offAny();
     };
-  }, [updateCollections, updateCollection, connected]);
+  }, [updateAllCollections, updateCollections, connected]);
 
   return (
     <Provider

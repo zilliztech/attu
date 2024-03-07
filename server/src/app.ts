@@ -18,7 +18,7 @@ import {
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middleware';
-import { CLIENT_TTL } from './utils';
+import { CLIENT_TTL, SimpleQueue } from './utils';
 import { getIp } from './utils/Network';
 import { DescribeIndexRes, MilvusClient } from './types';
 import { initWebSocket } from './socket';
@@ -34,6 +34,7 @@ export const clientCache = new LRUCache<
     address: string;
     indexCache: LRUCache<string, DescribeIndexRes>;
     database: string;
+    collectionsQueue: SimpleQueue<string>;
   }
 >({
   ttl: CLIENT_TTL,
