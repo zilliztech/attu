@@ -9,12 +9,13 @@ import {
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
 import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
-import { checkIndexBuilding, checkLoading, getDbValueFromUrl } from '@/utils';
+import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
+import { getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { LAST_TIME_DATABASE } from '@/consts';
 import { CollectionObject, CollectionFullObject } from '@server/types';
-import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
+import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
   loading: false,
@@ -85,31 +86,24 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     (collections: CollectionObject[]) => {
       const LoadingOrBuildingCollections = collections.filter(v => {
         const isLoading = checkLoading(v);
-        const isBuildingIndex = checkIndexBuilding(v);
+        const isBuildingIndex = checkIndexing(v);
 
         return isLoading || isBuildingIndex;
       });
-      // If no collection is building index or loading collection
-      // stop server cron job
-      MilvusService.triggerCron({
-        name: WS_EVENTS.COLLECTION_UPDATE,
-        type:
-          LoadingOrBuildingCollections.length > 0
-            ? WS_EVENTS_TYPE.START
-            : WS_EVENTS_TYPE.STOP,
-        payload: LoadingOrBuildingCollections.map(c => c.collection_name),
-      });
-    },
-    []
-  );
 
-  //  Websocket Callback: update all collections
-  const updateAllCollections = useCallback(
-    (collections: CollectionObject[]) => {
-      // check state
-      detectLoadingIndexing(collections);
-      // update collections
-      setCollections(collections);
+      // trigger cron if it has
+      if (LoadingOrBuildingCollections.length > 0) {
+        MilvusService.triggerCron({
+          name: WS_EVENTS.COLLECTION_UPDATE,
+          type: WS_EVENTS_TYPE.START,
+          payload: {
+            database,
+            collections: LoadingOrBuildingCollections.map(
+              c => c.collection_name
+            ),
+          },
+        });
+      }
     },
     [database]
   );
@@ -313,7 +307,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // remove all listeners
       socket.current?.offAny();
       // listen to backend collection event
-      socket.current?.on(WS_EVENTS.COLLECTIONS, updateAllCollections);
       socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
 
       // fetch db
@@ -324,7 +317,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // remove all listeners when component unmount
       socket.current?.offAny();
     };
-  }, [updateAllCollections, updateCollections, connected]);
+  }, [updateCollections, connected]);
 
   return (
     <Provider

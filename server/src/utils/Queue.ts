@@ -1,6 +1,6 @@
 export class SimpleQueue<T> {
   private arr: T[] = []; // Array to store data and maintain insertion order
-  public isObseleted: boolean = false; // Flag to indicate if execution is in progress
+  public isObseleted: boolean = false; // Flag to indicate if queue is abandoned
 
   // Method to add an item to the queue
   enqueue(item: T) {
@@ -35,7 +35,7 @@ export class SimpleQueue<T> {
   // Method to clear the queue
   stop() {
     this.arr = [];
-    this.isObseleted = true; // Reset the execution flag
+    this.isObseleted = true; // Reset the abandoned flag
   }
 
   // Method to execute each item in the queue sequentially until the queue is empty
@@ -44,7 +44,7 @@ export class SimpleQueue<T> {
     count: number = 1
   ) {
     if (this.isObseleted) {
-      return; // If execution is already in progress, return
+      return; // If abandoned flag is set, return
     }
 
     // items to process

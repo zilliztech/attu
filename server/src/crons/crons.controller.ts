@@ -10,7 +10,7 @@ export class CronsController {
   private cronsService: CronsService;
 
   constructor() {
-    this.schedulerRegistry = new SchedulerRegistry([]);
+    this.schedulerRegistry = new SchedulerRegistry(new Map());
     this.cronsService = new CronsService(
       collectionsService,
       this.schedulerRegistry

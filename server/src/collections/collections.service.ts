@@ -386,7 +386,7 @@ export class CollectionsService {
       description: collectionInfo.schema.description,
       autoID,
       id: collectionInfo.collectionID,
-      loadedPercentage: loadedPercentage,
+      loadedPercentage,
       consistency_level: collectionInfo.consistency_level,
       replicas: replicas && replicas.replicas,
       loaded: status === LOADING_STATE.LOADED,
@@ -399,7 +399,7 @@ export class CollectionsService {
     clientId: string,
     collectionName: string[] = []
   ): Promise<CollectionObject[]> {
-    let cache = clientCache.get(clientId);
+    const cache = clientCache.get(clientId);
 
     // clear collectionsQueue
     if (collectionName.length === 0) {
@@ -436,7 +436,7 @@ export class CollectionsService {
         v => v.name === collection.name
       );
 
-      const notLazy = !!loadedCollection || i < 5; //lazy is true, only load full details for the first 10 collections
+      const notLazy = !!loadedCollection || i < 5; // lazy is true, only load full details for the first 10 collections
 
       data.push(
         await this.getCollection(
@@ -450,19 +450,21 @@ export class CollectionsService {
 
     // start the queue
     if (cache.collectionsQueue.size() > 0) {
-      cache.collectionsQueue.executeNext(async (collections, q) => {
+      cache.collectionsQueue.executeNext(async (collectionsToGet, q) => {
+        // if the queue is obseleted, return
         if (q.isObseleted) {
           return;
         }
         try {
-          const res = await this.getAllCollections(clientId, collections);
           // get current socket
           const socketClient = clients.get(clientId);
+          // get collections
+          const res = await this.getAllCollections(clientId, collectionsToGet);
 
           // emit event to current client
           socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
         } catch (e) {
-          console.log('ignore queue error', e);
+          console.log('ignore queue error');
         }
       }, 5);
     }

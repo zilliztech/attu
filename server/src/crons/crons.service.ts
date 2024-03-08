@@ -1,21 +1,24 @@
 import { schedule, ScheduledTask } from 'node-cron';
 import { CollectionsService } from '../collections/collections.service';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '../utils';
+import {
+  WS_EVENTS,
+  WS_EVENTS_TYPE,
+  checkLoading,
+  checkIndexing,
+} from '../utils';
 import { clients } from '../socket';
 import { CronJobObject } from '../types';
 interface CronJob {
+  id: string;
   clientId: string; // milvus milvusClientId
-  name: string;
-  entity: ScheduledTask;
-  payload?: any;
+  task: ScheduledTask;
+  data: CronJobObject;
 }
 
-const isPayloadEqual = (a: any, b: any) => {
-  return JSON.stringify(a) === JSON.stringify(b);
-};
-
-const mergePayload = (a: string[], b: string[]) => {
-  return Array.from(new Set([...a, ...b]));
+const getId = (clientId: string, data: CronJobObject) => {
+  return `${clientId}/${data.name}/${
+    data.payload.database
+  }/[${data.payload.collections.join('/')}]`;
 };
 
 export class CronsService {
@@ -25,50 +28,22 @@ export class CronsService {
   ) {}
 
   async toggleCronJobByName(clientId: string, data: CronJobObject) {
-    const { name, type, payload } = data;
+    const { name, type } = data;
 
     // define cronJob
-    let cronJob: CronJob = this.schedulerRegistry.getCronJob(clientId, name);
-
-    // ignore multiple start event for all collections event
-    if (
-      cronJob &&
-      type === WS_EVENTS_TYPE.START &&
-      name === cronJob.name &&
-      isPayloadEqual(payload, cronJob.payload)
-    ) {
-      console.log(
-        'ignore multiple start event for all collections event',
-        data
-      );
-      return;
-    }
+    const cronJob: CronJob = this.schedulerRegistry.getCronJob(clientId, data);
 
     // if type is stop, stop cronJob
     if (cronJob && type === WS_EVENTS_TYPE.STOP) {
-      return this.schedulerRegistry.deleteCronJob(clientId, name);
+      return this.schedulerRegistry.deleteCronJob(clientId, data);
     }
 
     // switch case for different events
     switch (name) {
-      // fetch all collections(batch update)
-      case WS_EVENTS.COLLECTIONS:
-        // if no cronJob and type is start, start cronJob
-        if (type === WS_EVENTS_TYPE.START) {
-          return this.getCollections(clientId, data);
-        }
-        break;
-
-      // collection update(queue update)
+      // collection loading, indexing, update
       case WS_EVENTS.COLLECTION_UPDATE:
-        if (type === WS_EVENTS_TYPE.START && cronJob) {
-          console.log('merge payload', cronJob.payload, payload);
-          cronJob.payload = mergePayload(cronJob.payload, payload);
-          return;
-        }
-
         if (type === WS_EVENTS_TYPE.START && !cronJob) {
-          return this.getCollection(clientId, data);
+          return this.execCollectionUpdateTask(clientId, data);
         }
         break;
 
@@ -77,99 +52,70 @@ export class CronsService {
     }
   }
 
-  async getCollections(clientId: string, data: CronJobObject) {
-    // create task
-    const task = async (clientId: string, name: string) => {
-      try {
-        const currentJob: CronJob = this.schedulerRegistry.getCronJob(
-          clientId,
-          name
-        );
+  async execCollectionUpdateTask(clientId: string, data: CronJobObject) {
+    const task = async () => {
+      const currentJob: CronJob = this.schedulerRegistry.getCronJob(
+        clientId,
+        data
+      );
 
+      if (!currentJob) {
         console.log(
-          `running getCollections task, payload:`,
-          currentJob.payload
+          `running getCollection task, payload:`,
+          currentJob.data.payload
         );
-
-        const res = await this.collectionService.getAllCollections(clientId);
-        // get current socket
-        const socketClient = clients.get(clientId);
-        // emit event to current client
-        socketClient.emit(WS_EVENTS.COLLECTIONS, res);
-        return res;
-      } catch (error) {
-        // When user not connect milvus, stop cron
-        this.schedulerRegistry.deleteCronJob(clientId, data.name);
-
-        throw new Error(error);
+        return;
       }
-    };
-    this.schedulerRegistry.setCronJobEveryFiveSecond(clientId, data.name, task);
-  }
-
-  async getCollection(clientId: string, data: CronJobObject) {
-    const task = async (clientId: string, name: string) => {
       try {
-        const currentJob: CronJob = this.schedulerRegistry.getCronJob(
-          clientId,
-          name
-        );
-
-        console.log(`running getCollection task, payload:`, currentJob.payload);
-
-        const res = await this.collectionService.getAllCollections(
-          clientId,
-          currentJob.payload
+        const collections = await this.collectionService.getAllCollections(
+          currentJob.clientId,
+          currentJob.data.payload.collections
         );
         // get current socket
-        const socketClient = clients.get(clientId);
-        // emit event to current client
-        socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
-        return res;
+        const socketClient = clients.get(currentJob.clientId);
+        // emit event to current client, loading and indexing events are indetified as collection update
+        socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, collections);
+
+        // if all collections are loaded, stop cron
+        const LoadingOrBuildingCollections = collections.filter(v => {
+          const isLoading = checkLoading(v);
+          const isBuildingIndex = checkIndexing(v);
+
+          return isLoading || isBuildingIndex;
+        });
+
+        if (LoadingOrBuildingCollections.length === 0) {
+          this.schedulerRegistry.deleteCronJob(clientId, data);
+        }
       } catch (error) {
         // When user not connect milvus, stop cron
-        this.schedulerRegistry.deleteCronJob(clientId, data.name);
+        this.schedulerRegistry.deleteCronJob(clientId, data);
 
         throw new Error(error);
       }
     };
-    this.schedulerRegistry.setCronJobEveryFiveSecond(
-      clientId,
-      data.name,
-      task,
-      data.payload
-    );
+    // every 5 seconds
+    this.schedulerRegistry.setCronJob(clientId, '*/5 * * * * *', task, data);
   }
 }
 
 export class SchedulerRegistry {
-  constructor(private cronJobList: CronJob[]) {}
+  constructor(private cronJobMap: Map<string, CronJob>) {}
 
-  getCronJob(clientId: string, name: string) {
-    const target = this.cronJobList.find(
-      item => item.name === name && item.clientId === clientId
-    );
+  getCronJob(clientId: string, data: CronJobObject) {
+    const targetId = getId(clientId, data);
+
+    const target = this.cronJobMap.get(targetId);
     return target;
   }
 
-  deleteCronJob(clientId: string, name: string) {
-    const targetIndex = this.cronJobList.findIndex(
-      item => item.name === name && item.clientId === clientId
-    );
-    if (targetIndex !== -1) {
-      this.cronJobList[targetIndex].entity.stop();
-      this.cronJobList.splice(targetIndex, 1);
-    }
-  }
+  deleteCronJob(clientId: string, data: CronJobObject) {
+    const targetId = getId(clientId, data);
 
-  setCronJobEveryFiveSecond(
-    clientId: string,
-    name: string,
-    func: Function,
-    payload?: any
-  ) {
-    // The cron job will run every 5 second
-    this.setCronJob(clientId, name, '*/5 * * * * *', func, payload);
+    if (this.cronJobMap.has(targetId)) {
+      this.cronJobMap.get(targetId)?.task?.stop();
+      this.cronJobMap.delete(targetId);
+    }
   }
 
   // ┌────────────── second (optional)
@@ -184,24 +130,33 @@ export class SchedulerRegistry {
   // https://www.npmjs.com/package/node-cron
   setCronJob(
     clientId: string,
-    name: string,
     cronExpression: string,
-    func: Function,
-    payload?: any
+    func: () => void,
+    data: CronJobObject
   ) {
-    const target = this.cronJobList.find(
-      item => item.name === name && item.clientId === clientId
-    );
+    const target = this.getCronJob(clientId, data);
+
     if (target) {
-      target?.entity?.stop();
+      target?.task?.stop();
     } else {
+      // create task id
+      const id = getId(clientId, data);
+
+      // create task
       const task = schedule(cronExpression, () => {
         console.log(
-          `[cronExpression:${cronExpression}] ${name}: running a task.`
+          `[cronExpression:${cronExpression}] ${data.name} ${id}: running a task.`
         );
-        func(clientId, name);
+        func();
       });
-      this.cronJobList.push({ clientId, name, entity: task, payload });
+
+      // save task
+      this.cronJobMap.set(id, {
+        id,
+        clientId,
+        task,
+        data,
+      });
     }
   }
 }

@@ -90,5 +90,8 @@ export type PersistentSegmentObjects = PersistentSegmentInfo[];
 export type CronJobObject = {
   name: WS_EVENTS;
   type: WS_EVENTS_TYPE;
-  payload?: any;
+  payload: {
+    database: string;
+    collections: string[];
+  };
 };

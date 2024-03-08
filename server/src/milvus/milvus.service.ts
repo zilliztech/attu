@@ -99,7 +99,7 @@ export class MilvusService {
           ttl: INDEX_TTL,
           ttlAutopurge: true,
         }),
-        database: database,
+        database,
         collectionsQueue: new SimpleQueue<string>(),
       });
 

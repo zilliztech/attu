@@ -115,11 +115,6 @@ const Collections = () => {
     return filteredCollections;
   }, [search, collections]);
 
-  // update react UI data
-  const updateCollection = async (collectionName: string) => {
-    await fetchCollection(collectionName);
-  };
-
   const {
     pageSize,
     handlePageSize,
@@ -248,7 +243,7 @@ const Collections = () => {
                 defaultSelectedPartition={''}
                 onInsert={async (collectionName: string) => {
                   setTimeout(async () => {
-                    await updateCollection(collectionName);
+                    await fetchCollection(collectionName);
                   });
                   setSelectedCollections([]);
                 }}
@@ -556,7 +551,7 @@ const Collections = () => {
                     collection={row.collection_name}
                     cb={async (collectionName: string) => {
                       setTimeout(async () => {
-                        await updateCollection(collectionName);
+                        await fetchCollection(collectionName);
                       });
                     }}
                   />
