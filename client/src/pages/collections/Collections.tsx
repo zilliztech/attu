@@ -518,7 +518,11 @@ const Collections = () => {
       id: 'description',
       align: 'left',
       disablePadding: false,
-      label: collectionTrans('description'),
+      label: (
+        <span className="flex-center with-max-content">
+          {collectionTrans('description')}
+        </span>
+      ),
       formatter(v) {
         return v.description || '--';
       },
