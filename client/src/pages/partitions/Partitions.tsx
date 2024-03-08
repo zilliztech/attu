@@ -229,7 +229,7 @@ const Partitions = () => {
       align: 'left',
       disablePadding: false,
       label: (
-        <span className="flex-center">
+        <span className="flex-center with-max-content">
           {t('rowCount')}
           <CustomToolTip title={t('tooltip')}>
             <InfoIcon classes={{ root: classes.icon }} />

@@ -18,6 +18,9 @@ fieldset {
   align-items: center;
 }
 
+.with-max-content {
+  width: max-content;
+}
 .card-wrapper {
   background-color: #fff;
   border-radius: 4px;
