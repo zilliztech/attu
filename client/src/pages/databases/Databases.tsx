@@ -21,13 +21,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
     gap: theme.spacing(2),
+    maxHeight: 'calc(100% - 105px)', // header + margin
   },
-  card: {
+  tree: {
     boxShadow: 'none',
     flexBasis: theme.spacing(28),
     width: theme.spacing(28),
     flexGrow: 0,
     flexShrink: 0,
+    overflow: 'auto',
   },
   tab: {
     flexGrow: 1,
@@ -169,7 +171,7 @@ const Databases = () => {
   const uiLoading = localLoading || loading;
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
-      <section className={classes.card}>
+      <section className={classes.tree}>
         {uiLoading ? (
           `loading`
         ) : (

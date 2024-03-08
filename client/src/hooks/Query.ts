@@ -115,7 +115,7 @@ export const useQuery = (params: {
 
   // get collection info
   const prepare = async (collectionName: string) => {
-    const collection = await CollectionService.getCollectionInfo(
+    const collection = await CollectionService.getCollection(
       collectionName
     );
     setFields([

@@ -7,8 +7,8 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { authContext, rootContext } from '@/context';
-import { CollectionService, MilvusService } from '@/http';
+import { authContext, rootContext, dataContext } from '@/context';
+import { MilvusService } from '@/http';
 import { useFormValidation } from '@/hooks';
 import { formatForm, parseJson, getNode } from '@/utils';
 import { MILVUS_NODE_TYPE, MILVUS_DEPLOY_MODE } from '@/consts';
@@ -17,7 +17,6 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -38,8 +37,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const LoadCollectionDialog = (props: any) => {
+  const { loadCollection } = useContext(dataContext);
   const classes = useStyles();
-  const { collection, onLoad } = props;
+  const { collectionName, onLoad } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -99,16 +99,11 @@ const LoadCollectionDialog = (props: any) => {
     }
 
     // load collection request
-    await CollectionService.loadCollection(collection, params);
-
-    MilvusService.triggerCron({
-      name: WS_EVENTS.COLLECTION,
-      type: WS_EVENTS_TYPE.START,
-    });
+    await loadCollection(collectionName, params);
 
     // callback
     if (onLoad) {
-      await onLoad();
+      await onLoad(collectionName);
     }
     // close dialog
     handleCloseDialog();
@@ -170,7 +165,7 @@ const LoadCollectionDialog = (props: any) => {
   return (
     <DialogTemplate
       title={dialogTrans('loadTitle', {
-        type: collection,
+        type: collectionName,
       })}
       handleClose={handleCloseDialog}
       children={

@@ -7,7 +7,12 @@ import {
   CollectionObject,
   CountObject,
   StatisticsObject,
+  ResStatus,
+  DescribeIndexRes,
+  IndexObject,
 } from '@server/types';
+import { ManageRequestMethods } from '../types/Common';
+import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
 
 export class CollectionService extends BaseModel {
   static getCollections(data?: {
@@ -16,7 +21,7 @@ export class CollectionService extends BaseModel {
     return super.findAll({ path: '/collections', params: data || {} });
   }
 
-  static getCollectionInfo(collectionName: string) {
+  static getCollection(collectionName: string) {
     return super.search<CollectionFullObject>({
       path: `/collections/${collectionName}`,
       params: {},
@@ -24,22 +29,22 @@ export class CollectionService extends BaseModel {
   }
 
   static createCollection(data: any) {
-    return super.create({ path: `collections`, data });
+    return super.create<CollectionFullObject>({ path: `collections`, data });
   }
 
-  static deleteCollection(collectionName: string) {
-    return super.delete({ path: `/collections/${collectionName}` });
+  static dropCollection(collectionName: string) {
+    return super.delete<ResStatus>({ path: `/collections/${collectionName}` });
   }
 
   static loadCollection(collectionName: string, param?: LoadReplicaReq) {
-    return super.update({
+    return super.update<CollectionFullObject>({
       path: `/collections/${collectionName}/load`,
       data: param,
     });
   }
 
   static releaseCollection(collectionName: string) {
-    return super.update({
+    return super.update<CollectionFullObject>({
       path: `/collections/${collectionName}/release`,
     });
   }
@@ -48,17 +53,17 @@ export class CollectionService extends BaseModel {
     collectionName: string,
     params: { new_collection_name: string }
   ) {
-    return super.create({
+    return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}`,
       data: params,
     });
   }
 
-  static duplicate(
+  static duplicateCollection(
     collectionName: string,
     params: { new_collection_name: string }
   ) {
-    return super.create({
+    return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}/duplicate`,
       data: params,
     });
@@ -79,16 +84,50 @@ export class CollectionService extends BaseModel {
   }
 
   static createAlias(collectionName: string, params: { alias: string }) {
-    return super.create({
+    return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}/alias`,
       data: params,
     });
   }
 
   static dropAlias(collectionName: string, params: { alias: string }) {
-    return super.delete({
+    return super.delete<{ data: CollectionFullObject }>({
       path: `/collections/${collectionName}/alias/${params.alias}`,
     });
+  }
+
+  static async describeIndex(collectionName: string): Promise<IndexObject[]> {
+    const res = await super.findAll<DescribeIndexRes>({
+      path: `/collections/index`,
+      params: { collection_name: collectionName },
+    });
+    return res.index_descriptions;
+  }
+
+  static async createIndex(param: IndexCreateParam) {
+    const path = `/collections/index`;
+    const type: ManageRequestMethods = ManageRequestMethods.CREATE;
+
+    return super.create<CollectionFullObject>({
+      path,
+      data: { ...param, type },
+    });
+  }
+
+  static async dropIndex(param: IndexManageParam) {
+    const path = `/collections/index`;
+    const type: ManageRequestMethods = ManageRequestMethods.DELETE;
+
+    return super.batchDelete<{ data: CollectionFullObject }>({
+      path,
+      data: { ...param, type },
+    });
+  }
+
+  static async flush() {
+    const path = `/collections/index/flush`;
+
+    return super.query({ path, data: {} });
   }
 
   static queryData(collectionName: string, params: QueryParam) {

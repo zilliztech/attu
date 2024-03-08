@@ -9,11 +9,13 @@ import {
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
 import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
-import { checkIndexBuilding, checkLoading, getDbValueFromUrl } from '@/utils';
+import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
+import { getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { LAST_TIME_DATABASE } from '@/consts';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
+import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
   loading: false,
@@ -25,6 +27,37 @@ export const dataContext = createContext<DataContextType>({
   setDatabaseList: () => {},
   fetchDatabases: async () => {},
   fetchCollections: async () => {},
+  fetchCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  createCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  loadCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  releaseCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  renameCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  duplicateCollection: async () => {
+    return {} as CollectionFullObject;
+  },
+  dropCollection: async () => {},
+  createIndex: async () => {
+    return {} as CollectionFullObject;
+  },
+  dropIndex: async () => {
+    return {} as CollectionFullObject;
+  },
+  createAlias: async () => {
+    return {} as CollectionFullObject;
+  },
+  dropAlias: async () => {
+    return {} as CollectionFullObject;
+  },
 });
 
 const { Provider } = dataContext;
@@ -48,44 +81,199 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // socket ref
   const socket = useRef<Socket | null>(null);
 
-  // socket callback
-  const socketCallBack = useCallback(
+  // collection state test
+  const detectLoadingIndexing = useCallback(
     (collections: CollectionObject[]) => {
-      const hasLoadingOrBuildingCollection = collections.some(
-        v => checkLoading(v) || checkIndexBuilding(v)
-      );
+      const LoadingOrBuildingCollections = collections.filter(v => {
+        const isLoading = checkLoading(v);
+        const isBuildingIndex = checkIndexing(v);
 
-      setCollections(collections);
-      // If no collection is building index or loading collection
-      // stop server cron job
-      if (!hasLoadingOrBuildingCollection) {
+        return isLoading || isBuildingIndex;
+      });
+
+      // trigger cron if it has
+      if (LoadingOrBuildingCollections.length > 0) {
         MilvusService.triggerCron({
-          name: WS_EVENTS.COLLECTION,
-          type: WS_EVENTS_TYPE.STOP,
+          name: WS_EVENTS.COLLECTION_UPDATE,
+          type: WS_EVENTS_TYPE.START,
+          payload: {
+            database,
+            collections: LoadingOrBuildingCollections.map(
+              c => c.collection_name
+            ),
+          },
         });
       }
     },
     [database]
   );
 
-  // http fetch collection
+  // Websocket Callback: update single collection
+  const updateCollections = useCallback(
+    (updateCollections: CollectionFullObject[]) => {
+      // check state to see if it is loading or building index, if so, start server cron job
+      detectLoadingIndexing(updateCollections);
+      // update single collection
+      setCollections(prev => {
+        // update exsit collection
+        const newCollections = prev.map(v => {
+          const collectionToUpdate = updateCollections.find(c => c.id === v.id);
+
+          if (collectionToUpdate) {
+            return collectionToUpdate;
+          }
+
+          return v;
+        });
+
+        return newCollections;
+      });
+    },
+    [database]
+  );
+
+  // API: fetch databases
+  const fetchDatabases = async () => {
+    const res = await DatabaseService.getDatabases();
+
+    setDatabases(res.db_names);
+  };
+
+  // API:fetch collections
   const fetchCollections = async () => {
     try {
+      // set loading true
       setLoading(true);
+      // fetch collections
       const res = await CollectionService.getCollections();
+      // check state
+      detectLoadingIndexing(res);
+      // set collections
       setCollections(res);
+      // set loading false
       setLoading(false);
-    } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchDatabases = async () => {
-    const res = await DatabaseService.getDatabases();
+  // API: fetch single collection
+  const fetchCollection = async (name: string) => {
+    // fetch collections
+    const res = await CollectionService.getCollection(name);
 
-    setDatabases(res.db_names);
+    // update collection
+    updateCollections([res]);
+
+    return res;
+  };
+
+  // API: create collection
+  const createCollection = async (data: any) => {
+    // create collection
+    const newCollection = await CollectionService.createCollection(data);
+    // inset collection to state
+    setCollections(prev => [...prev, newCollection]);
+
+    return newCollection;
+  };
+
+  // API: load collection
+  const loadCollection = async (name: string, param?: any) => {
+    // load collection
+    const newCollection = await CollectionService.loadCollection(name, param);
+    // update collection
+    updateCollections([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: release collection
+  const releaseCollection = async (name: string) => {
+    // release collection
+    const newCollection = await CollectionService.releaseCollection(name);
+    // update collection
+    updateCollections([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: rename collection
+  const renameCollection = async (name: string, newName: string) => {
+    // rename collection
+    const newCollection = await CollectionService.renameCollection(name, {
+      new_collection_name: newName,
+    });
+    updateCollections([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: duplicate collection
+  const duplicateCollection = async (name: string, newName: string) => {
+    // duplicate collection
+    const newCollection = await CollectionService.duplicateCollection(name, {
+      new_collection_name: newName,
+    });
+    // inset collection to state
+    setCollections(prev => [...prev, newCollection]);
+
+    return newCollection;
+  };
+
+  // API: drop collection
+  const dropCollection = async (name: string) => {
+    // drop collection
+    const dropped = await CollectionService.dropCollection(name);
+    if (dropped.error_code === 'Success') {
+      // remove collection from state
+      setCollections(prev => prev.filter(v => v.collection_name !== name));
+    }
+  };
+
+  // API: create index
+  const createIndex = async (param: IndexCreateParam) => {
+    // create index
+    const newCollection = await CollectionService.createIndex(param);
+    // update collection
+    updateCollections([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: drop index
+  const dropIndex = async (params: IndexManageParam) => {
+    // drop index
+    const { data } = await CollectionService.dropIndex(params);
+    // update collection
+    updateCollections([data]);
+
+    return data;
+  };
+
+  // API: create alias
+  const createAlias = async (collectionName: string, alias: string) => {
+    // create alias
+    const newCollection = await CollectionService.createAlias(collectionName, {
+      alias,
+    });
+    // update collection
+    updateCollections([newCollection]);
+
+    return newCollection;
+  };
+
+  // API: drop alias
+  const dropAlias = async (collectionName: string, alias: string) => {
+    // drop alias
+    const { data } = await CollectionService.dropAlias(collectionName, {
+      alias,
+    });
+
+    // update collection
+    updateCollections([data]);
+
+    return data;
   };
 
   useEffect(() => {
@@ -101,8 +289,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         console.log('--- ws connected ---', clientId);
         setConnected(true);
       });
-
-      socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
     } else {
       socket.current?.disconnect();
       // clear collections
@@ -120,12 +306,18 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       setCollections([]);
       // remove all listeners
       socket.current?.offAny();
-      // listen to collection event
-      socket.current?.on(WS_EVENTS.COLLECTION, socketCallBack);
-      // get data
+      // listen to backend collection event
+      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
+
+      // fetch db
       fetchCollections();
     }
-  }, [socketCallBack, connected]);
+
+    return () => {
+      // remove all listeners when component unmount
+      socket.current?.offAny();
+    };
+  }, [updateCollections, connected]);
 
   return (
     <Provider
@@ -139,6 +331,17 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         setDatabaseList: setDatabases,
         fetchDatabases,
         fetchCollections,
+        fetchCollection,
+        createCollection,
+        loadCollection,
+        releaseCollection,
+        renameCollection,
+        duplicateCollection,
+        dropCollection,
+        createIndex,
+        dropIndex,
+        createAlias,
+        dropAlias,
       }}
     >
       {props.children}

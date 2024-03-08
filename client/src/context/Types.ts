@@ -1,6 +1,7 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 import { NavInfo } from '@/router/Types';
+import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;
@@ -98,4 +99,27 @@ export type DataContextType = {
   setDatabaseList: Dispatch<SetStateAction<string[]>>;
   fetchDatabases: () => Promise<void>;
   fetchCollections: () => Promise<void>;
+  fetchCollection: (name: string) => Promise<CollectionFullObject>;
+  createCollection: (data: any) => Promise<CollectionFullObject>;
+  loadCollection: (name: string, param?: any) => Promise<CollectionFullObject>;
+  releaseCollection: (name: string) => Promise<CollectionFullObject>;
+  renameCollection: (
+    name: string,
+    newName: string
+  ) => Promise<CollectionFullObject>;
+  duplicateCollection: (
+    name: string,
+    newName: string
+  ) => Promise<CollectionFullObject>;
+  dropCollection: (name: string) => Promise<void>;
+  createIndex: (param: IndexCreateParam) => Promise<CollectionFullObject>;
+  dropIndex: (params: IndexManageParam) => Promise<CollectionFullObject>;
+  createAlias: (
+    collectionName: string,
+    alias: string
+  ) => Promise<CollectionFullObject>;
+  dropAlias: (
+    collectionName: string,
+    alias: string
+  ) => Promise<CollectionFullObject>;
 };

@@ -43,8 +43,6 @@ export default class BaseModel {
     } as any;
     if (timeout) httpConfig.timeout = timeout;
     const res = await http(httpConfig);
-    // conflict with collection view data structure, status is useless, so delete here.
-    delete res.data.data.status;
     return (res.data.data || {}) as T;
   }
 
@@ -69,13 +67,13 @@ export default class BaseModel {
 
     const res = await http.delete(path, { data: data });
 
-    return res.data;
+    return res.data as T;
   }
 
-  static async batchDelete(options: updateParamsType) {
+  static async batchDelete<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.post(path, data);
-    return res.data;
+    return res.data as T;
   }
 
   static async query(options: updateParamsType) {

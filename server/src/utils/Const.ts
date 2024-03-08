@@ -12,7 +12,7 @@ export const INDEX_TTL = 1000 * 60 * 60;
 
 export enum WS_EVENTS {
   REGISTER = 'REGISTER',
-  COLLECTION = 'COLLECTION',
+  COLLECTION_UPDATE = 'COLLECTION_UPDATE',
 }
 
 export enum WS_EVENTS_TYPE {

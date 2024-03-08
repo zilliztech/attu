@@ -9,8 +9,7 @@ import {
   QuerySegmentInfo,
   PersistentSegmentInfo,
 } from '@zilliz/milvus2-sdk-node';
-
-import { LOADING_STATE } from '../utils';
+import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '../utils';
 
 export interface IndexObject extends IndexDescription {
   indexType: string;
@@ -51,7 +50,7 @@ export type CollectionFullObject = {
   description: string;
   autoID: boolean;
   id: string;
-  loadedPercentage: string;
+  loadedPercentage: number;
   consistency_level: string;
   replicas: ReplicaInfo[];
   status: LOADING_STATE;
@@ -87,3 +86,12 @@ export type StatisticsObject = {
 
 export type QuerySegmentObjects = QuerySegmentInfo[];
 export type PersistentSegmentObjects = PersistentSegmentInfo[];
+
+export type CronJobObject = {
+  name: WS_EVENTS;
+  type: WS_EVENTS_TYPE;
+  payload: {
+    database: string;
+    collections: string[];
+  };
+};

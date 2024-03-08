@@ -13,19 +13,19 @@ import {
 function App() {
   return (
     <AuthProvider>
-      <RootProvider>
-        <SystemProvider>
-          <PrometheusProvider>
-            <DataProvider>
+      <DataProvider>
+        <RootProvider>
+          <SystemProvider>
+            <PrometheusProvider>
               <NavProvider>
                 <MuiPickersUtilsProvider utils={DayjsUtils}>
                   <Router></Router>
                 </MuiPickersUtilsProvider>
               </NavProvider>
-            </DataProvider>
-          </PrometheusProvider>
-        </SystemProvider>
-      </RootProvider>
+            </PrometheusProvider>
+          </SystemProvider>
+        </RootProvider>
+      </DataProvider>
     </AuthProvider>
   );
 }

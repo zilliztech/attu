@@ -5,7 +5,7 @@ import {
   ClientConfig,
 } from '@zilliz/milvus2-sdk-node';
 import { LRUCache } from 'lru-cache';
-import { DEFAULT_MILVUS_PORT, INDEX_TTL } from '../utils';
+import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 import { DatabasesService } from '../database/databases.service';
 import { clientCache } from '../app';
@@ -99,7 +99,8 @@ export class MilvusService {
           ttl: INDEX_TTL,
           ttlAutopurge: true,
         }),
-        database: database,
+        database,
+        collectionsQueue: new SimpleQueue<string>(),
       });
 
       await this.databaseService.use(milvusClient.clientId, database);

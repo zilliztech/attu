@@ -3,7 +3,7 @@ import { SchemaObject } from '@server/types';
 
 export type StatusType = {
   status: LOADING_STATE;
-  percentage?: string;
+  percentage?: number;
 };
 
 export type StatusActionType = {
@@ -12,7 +12,7 @@ export type StatusActionType = {
   action?: Function;
   field: SchemaObject;
   collectionName: string;
-  onIndexCreate: Function;
+  onIndexCreate?: Function;
 };
 
 // @todo need rename

@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CollectionCard: FC<CollectionCardProps> = ({
-  data,
+  collection,
   onRelease,
   wrapperClass = '',
 }) => {
@@ -93,7 +93,12 @@ const CollectionCard: FC<CollectionCardProps> = ({
   const classes = useStyles();
   const { setDialog } = useContext(rootContext);
 
-  const { collection_name, status: status, loadedPercentage, replicas } = data;
+  const {
+    collection_name,
+    status: status,
+    loadedPercentage,
+    replicas,
+  } = collection;
   const navigate = useNavigate();
   // icons
   const RightArrowIcon = icons.rightArrow;
@@ -125,35 +130,27 @@ const CollectionCard: FC<CollectionCardProps> = ({
     });
   };
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await CollectionService.count(collection_name);
+      setCount(data.rowCount);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        if (status === LOADING_STATE.LOADED) {
-          const data = await CollectionService.count(collection_name);
-          setCount(data.rowCount);
-        }
-      } catch (e) {
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    let exiting = false;
-
-    if (!exiting) {
+    if (status === LOADING_STATE.LOADED) {
       fetchData();
     }
-
-    return () => {
-      exiting = true;
-    };
-  }, [status, database]);
+  }, [status]);
 
   return (
     <Card
       className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
-        data.status === LOADING_STATE.LOADING && classes.loading
+        collection.status === LOADING_STATE.LOADING && classes.loading
       }`}
     >
       <CardContent>

@@ -4,7 +4,7 @@ import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
-import { IndexService } from '@/http';
+import { CollectionService } from '@/http';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import AttuGrid from '@/components/grid/Grid';
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Collections = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
-  const { collections, database, loading, fetchCollections } =
+  const { collections, database, loading, fetchCollections, fetchCollection } =
     useContext(dataContext);
 
   const [searchParams] = useSearchParams();
@@ -102,7 +102,7 @@ const Collections = () => {
   };
 
   const clearIndexCache = useCallback(async () => {
-    await IndexService.flush();
+    await CollectionService.flush();
   }, []);
 
   const formatCollections = useMemo(() => {
@@ -143,7 +143,6 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchCollections();
                 }}
               />
             ),
@@ -208,7 +207,6 @@ const Collections = () => {
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchCollections();
                 }}
               />
             ),
@@ -243,8 +241,10 @@ const Collections = () => {
                 }
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
-                onInsert={async () => {
-                  await fetchCollections();
+                onInsert={async (collectionName: string) => {
+                  setTimeout(async () => {
+                    await fetchCollection(collectionName);
+                  });
                   setSelectedCollections([]);
                 }}
               />
@@ -272,13 +272,12 @@ const Collections = () => {
           params: {
             component: (
               <RenameCollectionDialog
-                cb={async () => {
+                cb={async (collectionName: string) => {
                   openSnackBar(
                     successTrans('rename', {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchCollections();
                   setSelectedCollections([]);
                 }}
                 collectionName={selectedCollections[0].collection_name}
@@ -309,7 +308,6 @@ const Collections = () => {
                     })
                   );
                   setSelectedCollections([]);
-                  await fetchCollections();
                 }}
                 collectionName={selectedCollections[0].collection_name}
                 collections={collections}
@@ -339,7 +337,6 @@ const Collections = () => {
                       name: collectionTrans('collection'),
                     })
                   );
-                  await fetchCollections();
                   setSelectedCollections([]);
                 }}
                 collections={selectedCollections}
@@ -361,6 +358,9 @@ const Collections = () => {
       onClick: () => {
         clearIndexCache();
         fetchCollections();
+      },
+      disabled: () => {
+        return loading;
       },
       label: btnTrans('refresh'),
     },
@@ -402,13 +402,12 @@ const Collections = () => {
       id: 'status',
       align: 'left',
       disablePadding: false,
-      sortBy: 'status',
+      sortBy: 'loadedPercentage',
       label: collectionTrans('status'),
       formatter(v) {
         return (
           <StatusAction
             status={v.status}
-            onIndexCreate={fetchCollections}
             percentage={v.loadedPercentage}
             field={v.schema}
             collectionName={v.collection_name}
@@ -420,26 +419,24 @@ const Collections = () => {
                   component:
                     v.status === LOADING_STATE.UNLOADED ? (
                       <LoadCollectionDialog
-                        collection={v.collection_name}
-                        onLoad={async () => {
+                        collectionName={v.collection_name}
+                        onLoad={async (collectionName: string) => {
                           openSnackBar(
                             successTrans('load', {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await fetchCollections();
                         }}
                       />
                     ) : (
                       <ReleaseCollectionDialog
-                        collection={v.collection_name}
-                        onRelease={async () => {
+                        collectionName={v.collection_name}
+                        onRelease={async (collectionName: string) => {
                           openSnackBar(
                             successTrans('release', {
                               name: collectionTrans('collection'),
                             })
                           );
-                          await fetchCollections();
                         }}
                       />
                     ),
@@ -472,7 +469,7 @@ const Collections = () => {
                 />
               </Tooltip>
             ) : null}
-            {v.schema.enable_dynamic_field ? (
+            {v.schema && v.schema.enable_dynamic_field ? (
               <Tooltip
                 title={collectionTrans('dynamicSchemaTooltip')}
                 placement="top"
@@ -550,7 +547,14 @@ const Collections = () => {
               type: 'custom',
               params: {
                 component: (
-                  <ImportSampleDialog collection={row.collection_name} />
+                  <ImportSampleDialog
+                    collection={row.collection_name}
+                    cb={async (collectionName: string) => {
+                      setTimeout(async () => {
+                        await fetchCollection(collectionName);
+                      });
+                    }}
+                  />
                 ),
               },
             });
@@ -580,12 +584,7 @@ const Collections = () => {
       ),
       formatter(v) {
         return (
-          <Aliases
-            aliases={v.aliases}
-            collectionName={v.collection_name}
-            onCreate={fetchCollections}
-            onDelete={fetchCollections}
-          />
+          <Aliases aliases={v.aliases} collectionName={v.collection_name} />
         );
       },
     });
@@ -610,7 +609,7 @@ const Collections = () => {
           colDefinitions={colDefinitions}
           rows={collectionList}
           rowCount={total}
-          primaryKey="collection_name"
+          primaryKey="id"
           selected={selectedCollections}
           setSelected={handleSelectChange}
           page={currentPage}

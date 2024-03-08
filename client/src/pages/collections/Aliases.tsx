@@ -1,13 +1,12 @@
 import { useContext } from 'react';
 import { Chip, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import { AliasesProps } from './Types';
 import icons from '@/components/icons/Icons';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateAliasDialog from '../dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -23,6 +22,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export default function Aliases(props: AliasesProps) {
+  const { dropAlias } = useContext(dataContext);
+
   const {
     aliases,
     collectionName,
@@ -48,8 +49,8 @@ export default function Aliases(props: AliasesProps) {
         component: (
           <CreateAliasDialog
             collectionName={collectionName}
-            cb={() => {
-              onCreate();
+            cb={async collectionName => {
+              await onCreate(collectionName);
             }}
           />
         ),
@@ -77,12 +78,10 @@ export default function Aliases(props: AliasesProps) {
     collection: string;
     alias: string;
   }) => {
-    await CollectionService.dropAlias(params.collection, {
-      alias: params.alias,
-    });
+    await dropAlias(params.collection, params.alias);
     openSnackBar(successTrans('delete', { name: collectionTrans('alias') }));
     handleCloseDialog();
-    onDelete();
+    await onDelete(collectionName);
   };
 
   const _onDelete = (alias: { collection: string; alias: string }) => {

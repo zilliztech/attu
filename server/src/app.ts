@@ -9,7 +9,6 @@ import { router as connectRouter } from './milvus';
 import { router as collectionsRouter } from './collections';
 import { router as databasesRouter } from './database';
 import { router as partitionsRouter } from './partitions';
-import { router as schemaRouter } from './schema';
 import { router as cronsRouter } from './crons';
 import { router as userRouter } from './users';
 import { router as prometheusRouter } from './prometheus';
@@ -19,7 +18,7 @@ import {
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middleware';
-import { CLIENT_TTL } from './utils';
+import { CLIENT_TTL, SimpleQueue } from './utils';
 import { getIp } from './utils/Network';
 import { DescribeIndexRes, MilvusClient } from './types';
 import { initWebSocket } from './socket';
@@ -35,6 +34,7 @@ export const clientCache = new LRUCache<
     address: string;
     indexCache: LRUCache<string, DescribeIndexRes>;
     database: string;
+    collectionsQueue: SimpleQueue<string>;
   }
 >({
   ttl: CLIENT_TTL,
@@ -48,7 +48,6 @@ router.use('/milvus', connectRouter);
 router.use('/databases', databasesRouter);
 router.use('/collections', collectionsRouter);
 router.use('/partitions', partitionsRouter);
-router.use('/schema', schemaRouter);
 router.use('/crons', cronsRouter);
 router.use('/users', userRouter);
 router.use('/prometheus', prometheusRouter);
