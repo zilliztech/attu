@@ -420,7 +420,7 @@ const Collections = () => {
                     v.status === LOADING_STATE.UNLOADED ? (
                       <LoadCollectionDialog
                         collectionName={v.collection_name}
-                        onLoad={async (collectionName: string) => {
+                        onLoad={async () => {
                           openSnackBar(
                             successTrans('load', {
                               name: collectionTrans('collection'),
@@ -431,7 +431,7 @@ const Collections = () => {
                     ) : (
                       <ReleaseCollectionDialog
                         collectionName={v.collection_name}
-                        onRelease={async (collectionName: string) => {
+                        onRelease={async () => {
                           openSnackBar(
                             successTrans('release', {
                               name: collectionTrans('collection'),
@@ -503,7 +503,7 @@ const Collections = () => {
       disablePadding: false,
       sortBy: 'rowCount',
       label: (
-        <span className="flex-center">
+        <span className="flex-center with-max-content">
           {collectionTrans('rowCount')}
           <CustomToolTip title={collectionTrans('entityCountInfo')}>
             <InfoIcon classes={{ root: classes.icon }} />
@@ -575,7 +575,7 @@ const Collections = () => {
       align: 'left',
       disablePadding: false,
       label: (
-        <span className="flex-center">
+        <span className="flex-center with-max-content">
           {collectionTrans('alias')}
           <CustomToolTip title={collectionTrans('aliasInfo')}>
             <InfoIcon classes={{ root: classes.icon }} />
