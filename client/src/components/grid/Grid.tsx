@@ -182,13 +182,13 @@ const AttuGrid: FC<AttuGridType> = props => {
     if (tableRef.current && rowHeight > 0) {
       const containerHeight: number = tableRef.current.offsetHeight;
       const hasToolbar = toolbarConfigs.length > 0;
-      const totleHeight =
+      const totalHeight =
         containerHeight -
         tableHeaderHeight -
         (showPagination ? pagerHeight : 0) -
-        (hasToolbar ? 34 : 0);
+        (hasToolbar ? 47 : 0);
 
-      const rowCount = Math.floor(totleHeight / rowHeight);
+      const rowCount = Math.floor(totalHeight / rowHeight);
 
       // fix loading mask
       setLoadingRowCount(rowCount);

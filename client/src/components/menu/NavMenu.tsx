@@ -12,7 +12,6 @@ import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import CommunityBtn from './CommunityBtn';
 
 const timeout = 150;
 const duration = `${timeout}ms`;
@@ -32,17 +31,16 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
     },
     rootCollapse: {
-      width: theme.spacing(9),
+      width: '56px',
     },
     rootExpand: {
       width: (props: any) => props.width || '100%',
     },
     nested: {
-      paddingLeft: theme.spacing(4),
+      paddingLeft: '12px',
     },
     item: {
-      marginBottom: theme.spacing(0.5),
-      paddingLeft: theme.spacing(3),
+      paddingLeft: '16px',
       boxSizing: 'content-box',
       height: theme.spacing(3),
       width: 'initial',
@@ -87,8 +85,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       height: '86px',
-      marginBottom: theme.spacing(2),
-      paddingLeft: theme.spacing(3),
+      marginBottom: theme.spacing(1),
+      paddingLeft: '16px',
 
       '& .title': {
         margin: 0,
@@ -137,12 +135,13 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: 'rotateZ(180deg)',
     },
     collapseIcon: {
-      left: 58,
+      left: 44,
     },
     version: {
       position: 'absolute',
-      left: 16,
-      bottom: (props: any) => (props.expanded ? '20px' : '70px'),
+      fontSize: '10px',
+      bottom: 10,
+      left: 12,
     },
   })
 );
@@ -248,7 +247,6 @@ const NavMenu: FC<NavMenuType> = props => {
         >
           v {versionInfo.attu}
         </Typography>
-        <CommunityBtn />
       </div>
     </List>
   );

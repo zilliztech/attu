@@ -58,10 +58,10 @@ function Index() {
   const isIndex = location.pathname === '/';
   const defaultActive = useMemo(() => {
     if (location.pathname.includes('databases')) {
-      return navTrans('databases');
+      return navTrans('database');
     }
     if (location.pathname.includes('db-admin')) {
-      return navTrans('db-admin');
+      return navTrans('dbAdmin');
     }
 
     if (location.pathname.includes('search')) {
@@ -87,7 +87,7 @@ function Index() {
     },
     {
       icon: icons.database,
-      label: navTrans('databases'),
+      label: navTrans('database'),
       onClick: () => navigate(`/databases/${database}`),
     },
     {
@@ -116,7 +116,7 @@ function Index() {
       },
       {
         icon: icons.settings,
-        label: navTrans('db-admin'),
+        label: navTrans('dbAdmin'),
         onClick: () => navigate('/db-admin'),
       }
     );

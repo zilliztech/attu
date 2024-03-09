@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(0, 1),
   },
   tab: {
-    height: theme.spacing(0.5),
     backgroundColor: theme.palette.primary.main,
   },
   tabContainer: {

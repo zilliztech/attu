@@ -483,7 +483,7 @@ const Collections = () => {
               </Tooltip>
             ) : null}
             <Tooltip
-              title={consistencyTooltipsMap[v.consistency_level]}
+              title={consistencyTooltipsMap[v.consistency_level] || ''}
               placement="top"
               arrow
             >
@@ -619,6 +619,7 @@ const Collections = () => {
           page={currentPage}
           onPageChange={handlePageChange}
           rowsPerPage={pageSize}
+          tableHeaderHeight={49}
           rowHeight={49}
           setRowsPerPage={handlePageSize}
           isLoading={loading}

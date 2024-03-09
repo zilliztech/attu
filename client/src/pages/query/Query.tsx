@@ -398,6 +398,7 @@ const Query = () => {
             isLoading={tableLoading}
             rows={queryResult.data}
             rowCount={total}
+            tableHeaderHeight={46}
             rowHeight={43}
             selected={selectedData}
             setSelected={onSelectChange}

@@ -16,7 +16,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    padding: theme.spacing(1, 0),
+    padding: theme.spacing(0, 0, 1),
     gap: theme.spacing(2),
     borderRadius: theme.spacing(0.5, 0.5, 0, 0),
 

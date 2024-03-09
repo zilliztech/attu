@@ -80,7 +80,6 @@ const StatusAction: FC<StatusActionType> = props => {
     collectionName,
     field,
     action = () => {},
-    onIndexCreate,
   } = props;
   const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');

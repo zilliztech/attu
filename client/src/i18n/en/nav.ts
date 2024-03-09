@@ -5,7 +5,7 @@ const navTrans = {
   search: 'Vector Search',
   system: 'System View',
   user: 'User',
-  dbAdmin: 'Database Management',
+  dbAdmin: 'DB Management',
   database: 'Database',
 };
 
