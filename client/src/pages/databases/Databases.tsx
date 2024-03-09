@@ -1,14 +1,11 @@
-import { useEffect, useState, useCallback, useRef, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import RouteTabList from '@/components/customTabList/RouteTabList';
-import CustomTree, {
-  CustomTreeItem,
-  TreeNodeType,
-} from '@/components/CustomTree';
+import DatabaseTree from '@/pages/databases/tree';
 import { ITab } from '@/components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
 import Schema from '../schema/Schema';
@@ -30,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 0,
     flexShrink: 0,
     overflow: 'auto',
+    boxSizing: 'border-box',
   },
   tab: {
     flexGrow: 1,
@@ -39,25 +37,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Databases = () => {
-  // UI stats
-  const [localLoading, setLoading] = useState(false);
-  const [collectionsTree, setCollectionsTree] = useState<CustomTreeItem>({
-    id: '',
-    name: '',
-    type: 'db',
-    children: [],
-  });
-  const [selectedTarget, setSelectedTarget] = useState<string[]>();
-
   // get current collection from url
+  const params = useParams();
   const {
-    databaseItem = '',
     databaseName = '',
     collectionName = '',
-    collectionItem = '',
-  } = useParams();
-  // get navigate
-  const navigate = useNavigate();
+    collectionPage = '',
+  } = params;
+
   // update navigation
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
   // get style
@@ -67,69 +54,6 @@ const Databases = () => {
 
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
-
-  // fetch data callback
-  const refresh = useCallback(async () => {
-    try {
-      // set UI loading
-      setLoading(true);
-
-      // format tree data
-      const children = collections.map(c => {
-        return {
-          id: c.collection_name,
-          name: c.collection_name,
-          type: 'collection' as TreeNodeType,
-        };
-      });
-      // update tree
-      setCollectionsTree({
-        id: database,
-        name: database,
-        expanded: children.length > 0,
-        type: 'db',
-        children: children,
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [setCollectionsTree, database, collections]);
-
-  // const onNodeToggle = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
-  //   console.log('onNodeToggle', event, nodeIds);
-  // };
-
-  const onNodeClick = (node: CustomTreeItem) => {
-    navigate(
-      node.type === 'db'
-        ? `/databases/${database}/${databaseItem || 'collections'}`
-        : `/databases/${database}/${node.id}/${collectionItem || 'data'}`
-    );
-  };
-
-  // change database should go to it's page
-  const firstRender = useRef(false);
-
-  // change database should go to it's page
-  useEffect(() => {
-    if (firstRender.current) {
-      navigate(`/databases/${database}/${databaseItem || 'collections'}`);
-    } else {
-      firstRender.current = true;
-    }
-  }, [database]);
-
-  // fetch data
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
-
-  // active default selected
-  useEffect(() => {
-    setSelectedTarget(
-      collectionName ? [collectionName] : [databaseName || database]
-    );
-  }, [collectionName, database, databaseName]);
 
   const dbTab: ITab[] = [
     {
@@ -165,21 +89,20 @@ const Databases = () => {
     },
   ];
   // get active collection tab
-  const activeColTab = collectionTabs.findIndex(t => t.path === collectionItem);
+  const activeColTab = collectionTabs.findIndex(t => t.path === collectionPage);
 
   // render
-  const uiLoading = localLoading || loading;
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
       <section className={classes.tree}>
-        {uiLoading ? (
+        {loading ? (
           `loading`
         ) : (
-          <CustomTree
+          <DatabaseTree
             key="collections"
-            data={collectionsTree}
-            defaultSelected={selectedTarget}
-            onNodeClick={onNodeClick}
+            collections={collections}
+            database={database}
+            params={params}
           />
         )}
       </section>

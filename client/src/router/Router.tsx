@@ -23,12 +23,12 @@ const RouterComponent = () => {
           <Route path="databases" element={<Databases />} />
           <Route path="databases/:databaseName" element={<Databases />} />
           <Route
-            path="databases/:databaseName/:databaseItem"
+            path="databases/:databaseName/:databasePage"
             element={<Databases />}
           />
 
           <Route
-            path="databases/:databaseName/:collectionName/:collectionItem"
+            path="databases/:databaseName/:collectionName/:collectionPage"
             element={<Databases />}
           />
 
