@@ -114,6 +114,7 @@ const Header: FC<HeaderType> = props => {
                 const database = e.target.value as string;
                 await useDatabase(database);
                 setDatabase(database);
+                navigate(`/databases/${database}`);
               }}
               options={dbOptions}
               variant="filled"
