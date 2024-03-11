@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
     gap: theme.spacing(2),
-    maxHeight: 'calc(100% - 105px)', // header + margin
   },
   tree: {
     boxShadow: 'none',
