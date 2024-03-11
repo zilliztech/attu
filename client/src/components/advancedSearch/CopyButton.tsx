@@ -54,7 +54,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
       onClick={event => handleClick(event, value || '')}
       {...others}
     >
-      {icon || <CopyIcon  />}
+      {icon || <CopyIcon />}
     </CustomIconButton>
   );
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { IconsType } from './Types';
 import { SvgIcon } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AppsIcon from '@material-ui/icons/Apps';
 import CancelIcon from '@material-ui/icons/Cancel';
 import ZillizIcon from '@/assets/icons/attu.svg?react';
@@ -62,7 +61,21 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
       ></path>
     </SvgIcon>
   ),
-  delete: (props = {}) => <DeleteIcon {...props} />,
+  delete: (props = {}) => (
+    <SvgIcon
+      width="15"
+      height="15"
+      viewBox="0 0 15 15"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5Z"
+      />
+    </SvgIcon>
+  ),
   deleteOutline: (props = {}) => (
     <SvgIcon
       width="15"
@@ -523,21 +536,21 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
     <SvgIcon
       width="15"
       height="15"
-      viewBox="0 0 1024 1024"
-      fill="red"
+      viewBox="0 0 15 15"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path
-        d="M512 42.67C272.75 42.67 85.33 126.997 85.33 234.67v554.67c0 107.669 187.41 192 426.67 192s426.67-84.331 426.67-192V234.67c0-107.669-187.41-192-426.67-192zm384 554.67c0 88-202.37 149.33-384 149.33S128 685.33 128 597.33v-107.435c67.39 46.55 211.69 89.9 384 89.9s316.61-43.35 384-107.43V597.33zm0-192c0 88-202.37 149.33-384 149.33S128 493.33 128 405.33v-86.101C196.39 383.317 340.69 426.67 512 426.67s315.61-43.35 384-107.43V405.33zM512 85.33c181.63 0 384 61.33 384 149.33s-202.37 149.33-384 149.33-384-61.33-384-149.33 202.39-149.33 384-149.33z m0 853.33c-181.63 0-384-61.33-384-149.33v-107.435C196.39 745.984 340.69 789.33 512 789.33s315.61-43.35 384-107.43V789.33c0 88-202.37 149.33-384 149.33z"
+        d="M7.28856 0.796908C7.42258 0.734364 7.57742 0.734364 7.71144 0.796908L13.7114 3.59691C13.8875 3.67906 14 3.85574 14 4.05V10.95C14 11.1443 13.8875 11.3209 13.7114 11.4031L7.71144 14.2031C7.57742 14.2656 7.42258 14.2656 7.28856 14.2031L1.28856 11.4031C1.11252 11.3209 1 11.1443 1 10.95V4.05C1 3.85574 1.11252 3.67906 1.28856 3.59691L7.28856 0.796908ZM2 4.80578L7 6.93078V12.9649L2 10.6316V4.80578ZM8 12.9649L13 10.6316V4.80578L8 6.93078V12.9649ZM7.5 6.05672L12.2719 4.02866L7.5 1.80176L2.72809 4.02866L7.5 6.05672Z"
         fill="currentColor"
         fillRule="evenodd"
         clipRule="evenodd"
-      />
+      ></path>
     </SvgIcon>
   ),
   copyExpression: (props = {}) => (
-    <svg
+    <SvgIcon
       width="15"
       height="15"
       viewBox="0 0 15 15"
@@ -551,7 +564,7 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
         fillRule="evenodd"
         clipRule="evenodd"
       ></path>
-    </svg>
+    </SvgIcon>
   ),
   source: (props = {}) => (
     <SvgIcon viewBox="0 0 24 24" {...props}>

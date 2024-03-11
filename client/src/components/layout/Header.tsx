@@ -116,7 +116,7 @@ const Header: FC<HeaderType> = props => {
                 setDatabase(database);
 
                 // if url contains databases, go to the database page
-                if (window.location.pathname.includes('databases')) {
+                if (window.location.hash.includes('databases')) {
                   navigate(`/databases/${database}`);
                 }
               }}

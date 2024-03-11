@@ -116,7 +116,9 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
     navigate(
       node.type === 'db'
         ? `/databases/${database}/${params.databasePage || 'collections'}`
-        : `/databases/${database}/${node.name}/${params.collectionPage || 'data'}`
+        : `/databases/${database}/${node.name}/${
+            params.collectionPage || 'data'
+          }`
     );
   };
 
@@ -166,7 +168,11 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       expanded={[database]}
       multiSelect={false}
       disableSelection={false}
-      selected={params.collectionName || params.databaseName}
+      selected={
+        params.collectionName
+          ? `c_${params.collectionName}`
+          : params.databaseName
+      }
       className={classes.root}
     >
       {

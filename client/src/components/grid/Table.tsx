@@ -100,6 +100,9 @@ const useStyles = makeStyles(theme => ({
     color: 'rgba(0, 0, 0, 0.6)',
   },
   copyBtn: {
+    '& svg': {
+      fontSize: '14px',
+    },
     marginLeft: theme.spacing(0.5),
   },
 }));
