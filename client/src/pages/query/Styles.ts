@@ -53,27 +53,10 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      gap: theme.spacing(2),
+      gap: theme.spacing(1),
     },
   },
   selector: {
     width: 180,
-  },
-  vectorTableCell: {
-    '& >div': {
-      maxWidth: theme.spacing(50),
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  copyBtn: {
-    padding: '4px',
-    width: '16px',
-    height: '16px',
-    position: 'relative',
-    top: '-3px',
   },
 }));

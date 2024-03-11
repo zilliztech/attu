@@ -91,7 +91,7 @@ const Segments = () => {
         });
       },
       label: btnTrans('flush'),
-      icon: 'saveAs',
+      icon: 'flush',
     },
     {
       type: 'button',

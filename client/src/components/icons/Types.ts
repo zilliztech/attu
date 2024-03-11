@@ -6,8 +6,6 @@ export type IconsType =
   | 'deleteOutline'
   | 'list'
   | 'copy'
-  | 'visible'
-  | 'invisible'
   | 'error'
   | 'clear'
   | 'app'
@@ -36,7 +34,6 @@ export type IconsType =
   | 'refresh'
   | 'filter'
   | 'copyExpression'
-  | 'alias'
   | 'datePicker'
   | 'download'
   | 'source'
@@ -45,4 +42,6 @@ export type IconsType =
   | 'uploadFile'
   | 'compact'
   | 'saveAs'
-  | 'settings';
+  | 'settings'
+  | 'avatar'
+  | 'flush';

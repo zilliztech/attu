@@ -348,7 +348,6 @@ const Query = () => {
                 disabled={!collection.loaded}
               >
                 <ResetIcon classes={{ root: 'icon' }} />
-                {btnTrans('reset')}
               </CustomButton>
               <CustomButton
                 variant="contained"

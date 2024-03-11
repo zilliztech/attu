@@ -7,7 +7,6 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { navContext, dataContext, authContext } from '@/context';
 import { MilvusService } from '@/http';
@@ -42,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.main,
       cursor: 'pointer',
       marginRight: theme.spacing(1),
+      width: '20px',
     },
     addressWrapper: {
       display: 'flex',
@@ -82,6 +82,7 @@ const Header: FC<HeaderType> = props => {
   const { t: dbTrans } = useTranslation('database');
   const BackIcon = icons.back;
   const LogoutIcon = icons.logout;
+  const Avatar = icons.avatar;
 
   const handleBack = (path: string) => {
     navigate(path);
@@ -135,10 +136,19 @@ const Header: FC<HeaderType> = props => {
           </div>
           {username && (
             <Tooltip title={username}>
-              <AccountCircleIcon classes={{ root: classes.icon }} />
+              <div>
+                <Avatar classes={{ root: classes.icon }} />
+              </div>
             </Tooltip>
           )}
-          <LogoutIcon classes={{ root: classes.icon }} onClick={handleLogout} />
+          <Tooltip title={''}>
+            <div>
+              <LogoutIcon
+                classes={{ root: classes.icon }}
+                onClick={handleLogout}
+              />
+            </div>
+          </Tooltip>
         </div>
       </div>
     </header>

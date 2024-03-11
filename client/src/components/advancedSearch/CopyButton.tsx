@@ -54,7 +54,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
       onClick={event => handleClick(event, value || '')}
       {...others}
     >
-      {icon || <CopyIcon style={{ color: 'transparent' }} />}
+      {icon || <CopyIcon  />}
     </CustomIconButton>
   );
 };
@@ -64,12 +64,7 @@ CopyButton.displayName = 'CopyButton';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {},
-    button: {
-      '& svg': {
-        width: '16px',
-        height: '16px',
-      },
-    },
+    button: {},
     tooltip: {},
   })
 );

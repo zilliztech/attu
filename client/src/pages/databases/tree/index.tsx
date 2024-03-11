@@ -37,6 +37,9 @@ const getExpanded = (nodes: DatabaseTreeItem[]) => {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
+    '& .MuiTreeItem-iconContainer': {
+      width: 'auto',
+    },
     '& .MuiTreeItem-group': {
       marginLeft: 0,
       '& .MuiTreeItem-content': {

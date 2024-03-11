@@ -506,7 +506,7 @@ const Collections = () => {
         <span className="flex-center with-max-content">
           {collectionTrans('rowCount')}
           <CustomToolTip title={collectionTrans('entityCountInfo')}>
-            <InfoIcon classes={{ root: classes.icon }} />
+            <InfoIcon width={15} classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
       ),
@@ -582,7 +582,7 @@ const Collections = () => {
         <span className="flex-center with-max-content">
           {collectionTrans('alias')}
           <CustomToolTip title={collectionTrans('aliasInfo')}>
-            <InfoIcon classes={{ root: classes.icon }} />
+            <InfoIcon width={15} classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
       ),

@@ -46,38 +46,22 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 'initial',
       color: theme.palette.attuGrey.dark,
       '&:hover': {
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#efefef',
       },
     },
     itemIcon: {
-      minWidth: '20px',
+      minWidth: '24px',
       marginRight: theme.spacing(1),
-
-      '& .icon': {
-        fill: 'transparent',
-
-        '& path': {
-          stroke: theme.palette.attuGrey.dark,
-          strokeWidth: 2,
-        },
-      },
     },
     itemText: {
       whiteSpace: 'nowrap',
     },
     active: {
-      color: '#000',
-      backgroundColor: '#e0e0e0',
+      color: '#323232',
+      backgroundColor: '#efefef',
 
       '& .icon': {
-        stroke: theme.palette.primary.main,
-
-        '& path': {
-          stroke: theme.palette.primary.main,
-        },
-      },
-      '& span': {
-        fontWeight: 'bold',
+        color: theme.palette.primary.main,
       },
     },
 
