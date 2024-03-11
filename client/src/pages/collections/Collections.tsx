@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   icon: {
-    fontSize: '20px',
+    fontSize: '14px',
     marginLeft: theme.spacing(0.5),
   },
 
@@ -91,7 +91,7 @@ const Collections = () => {
 
   const classes = useStyles();
 
-  const InfoIcon = icons.info;
+  const QuestionIcon = icons.question;
   const SourceIcon = icons.source;
 
   const consistencyTooltipsMap: Record<string, string> = {
@@ -506,7 +506,7 @@ const Collections = () => {
         <span className="flex-center with-max-content">
           {collectionTrans('rowCount')}
           <CustomToolTip title={collectionTrans('entityCountInfo')}>
-            <InfoIcon width={15} classes={{ root: classes.icon }} />
+            <QuestionIcon classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
       ),
@@ -582,7 +582,7 @@ const Collections = () => {
         <span className="flex-center with-max-content">
           {collectionTrans('alias')}
           <CustomToolTip title={collectionTrans('aliasInfo')}>
-            <InfoIcon width={15} classes={{ root: classes.icon }} />
+            <QuestionIcon classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
       ),

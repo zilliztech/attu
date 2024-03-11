@@ -125,7 +125,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
-  const InfoIcon = icons.info;
 
   const { requiredFields, optionalFields } = useMemo(
     () =>

@@ -4,8 +4,6 @@ import { CodeLanguageEnum, CodeViewData } from '@/components/code/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSwitch from '@/components/customSwitch/CustomSwitch';
 import {
-  DEFAULT_SEFMENT_FILE_SIZE,
-  DEFAULT_VECTORS,
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
   METRIC_TYPES_VALUES,
@@ -17,14 +15,8 @@ import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
 import { getCreateIndexPYCode } from '@/utils/code/Py';
 import { getCreateIndexJavaCode } from '@/utils/code/Java';
-import {
-  formatForm,
-  getMetricOptions,
-  computMilvusRecommonds,
-  formatSize,
-} from '@/utils';
+import { formatForm, getMetricOptions } from '@/utils';
 import CreateForm from './CreateForm';
-import SizingInfo from './SizingInfo';
 import { IndexType, IndexExtraParam } from './Types';
 
 const CreateIndex = (props: {
@@ -166,58 +158,6 @@ const CreateIndex = (props: {
     return form;
   }, [indexSetting, indexCreateParams, fieldType]);
 
-  // sizing info needed param
-  const sizingInfo = useMemo(() => {
-    const { index_type } = indexSetting;
-    const { nlist, m } = indexSetting;
-    const floatTypes = [
-      INDEX_TYPES_ENUM.IVF_FLAT,
-      INDEX_TYPES_ENUM.IVF_PQ,
-      INDEX_TYPES_ENUM.IVF_SQ8,
-      INDEX_TYPES_ENUM.IVF_SQ8_HYBRID,
-      INDEX_TYPES_ENUM.FLAT,
-    ];
-    const bytesTyps = [
-      INDEX_TYPES_ENUM.BIN_FLAT,
-      INDEX_TYPES_ENUM.BIN_IVF_FLAT,
-    ];
-    const supportedTypes = [...floatTypes, ...bytesTyps];
-    // check param validation
-    if (!supportedTypes.includes(index_type)) {
-      return null;
-    }
-
-    if (!nlist) {
-      return null;
-    }
-    if (index_type === INDEX_TYPES_ENUM.IVF_PQ && !m) {
-      return null;
-    }
-    // vector 100000, segment file size 1024 as default value
-    const milvusRecommends = computMilvusRecommonds(
-      DEFAULT_VECTORS,
-      dimension,
-      Number(nlist),
-      Number(m),
-      DEFAULT_SEFMENT_FILE_SIZE * 1024 * 1024
-    );
-
-    let memoryType = 'byteMemorySize';
-    let diskType = 'byteDiskSize';
-    if (floatTypes.includes(index_type)) {
-      memoryType = 'memorySize';
-      diskType = 'diskSize';
-    }
-
-    const memorySize = milvusRecommends[memoryType][index_type];
-    const diskSize = milvusRecommends[diskType][index_type];
-
-    return {
-      memory: formatSize(memorySize),
-      disk: formatSize(diskSize),
-    };
-  }, [dimension, indexSetting]);
-
   /**
    * create index code mode
    */
@@ -337,8 +277,6 @@ const CreateIndex = (props: {
           indexParams={indexCreateParams}
           indexTypeChange={onIndexTypeChange}
         />
-
-        <SizingInfo info={sizingInfo} />
       </>
     </DialogTemplate>
   );

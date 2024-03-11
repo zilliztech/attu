@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: `100%`,
   },
   icon: {
-    fontSize: '20px',
+    fontSize: '14px',
     marginLeft: theme.spacing(0.5),
   },
   highlight: {
@@ -43,7 +43,7 @@ const Partitions = () => {
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
   );
-  const InfoIcon = icons.info;
+  const QuestionIcon = icons.question;
 
   const { handleInsertDialog } = useInsertDialogHook();
 
@@ -232,7 +232,7 @@ const Partitions = () => {
         <span className="flex-center with-max-content">
           {t('rowCount')}
           <CustomToolTip title={t('tooltip')}>
-            <InfoIcon classes={{ root: classes.icon }} />
+            <QuestionIcon classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
       ),

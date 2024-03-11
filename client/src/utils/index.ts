@@ -4,6 +4,5 @@ export * from './Format';
 export * from './Insert';
 export * from './Metric';
 export * from './search';
-export * from './SizingTool';
 export * from './Sort';
 export * from './Validation';

@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   icon: {
-    fontSize: '20px',
+    fontSize: '14px',
     marginLeft: theme.spacing(0.5),
   },
 }));
@@ -160,7 +160,7 @@ const LoadCollectionDialog = (props: any) => {
     }
   };
 
-  const InfoIcon = icons.info;
+  const QuestionIcon = icons.question;
 
   return (
     <DialogTemplate
@@ -173,7 +173,7 @@ const LoadCollectionDialog = (props: any) => {
           <Typography variant="body1" component="p" className={classes.desc}>
             {collectionTrans('loadContent')}
           </Typography>
-          {enableRelica ? (
+          {!enableRelica ? (
             <>
               <FormControlLabel
                 control={
@@ -183,7 +183,7 @@ const LoadCollectionDialog = (props: any) => {
                   <CustomToolTip title={collectionTrans('replicaDes')}>
                     <>
                       {collectionTrans('enableRepica')}
-                      <InfoIcon classes={{ root: classes.icon }} />
+                      <QuestionIcon classes={{ root: classes.icon }} />
                     </>
                   </CustomToolTip>
                 }

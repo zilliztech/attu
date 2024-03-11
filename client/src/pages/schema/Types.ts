@@ -35,18 +35,3 @@ export interface IndexExtraParam {
   metric_type: string;
   params: string;
 }
-
-export interface SizingInfoParam {
-  info: {
-    memory: string;
-    disk: string;
-  } | null;
-}
-
-export enum SIZE_STATUS {
-  'B' = 1,
-  'KB' = 2,
-  'MB' = 3,
-  'GB' = 4,
-  'TB' = 5,
-}
