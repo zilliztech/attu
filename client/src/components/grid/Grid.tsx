@@ -190,8 +190,6 @@ const AttuGrid: FC<AttuGridType> = props => {
 
       const rowCount = Math.floor(totalHeight / rowHeight);
 
-      console.log('hasToolbar', hasToolbar, showPagination);
-
       // fix loading mask
       setLoadingRowCount(rowCount);
 

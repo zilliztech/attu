@@ -88,7 +88,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
   // format tree data
   const children = collections.map(c => {
     return {
-      id: c.collection_name,
+      id: `c_${c.collection_name}`,
       name: c.collection_name,
       type: 'collection' as TreeNodeType,
     };
@@ -103,8 +103,6 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
     children: children,
   };
 
-  // UI data
-  const expanded = getExpanded([tree]);
   // Icons
   const DatabaseIcon = icons.database;
   const CollectionIcon = icons.navCollection;
@@ -118,7 +116,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
     navigate(
       node.type === 'db'
         ? `/databases/${database}/${params.databasePage || 'collections'}`
-        : `/databases/${database}/${node.id}/${params.collectionPage || 'data'}`
+        : `/databases/${database}/${node.name}/${params.collectionPage || 'data'}`
     );
   };
 
@@ -165,7 +163,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
 
   return (
     <TreeView
-      expanded={expanded}
+      expanded={[database]}
       multiSelect={false}
       disableSelection={false}
       selected={params.collectionName || params.databaseName}
