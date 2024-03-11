@@ -174,6 +174,7 @@ const Roles = () => {
             {privilegeContent.entities.map((e: any) => {
               return (
                 <Chip
+                  key={`${e.object.name}-${e.grantor.privilege.name}`}
                   className={classes.chip}
                   size="small"
                   label={e.grantor.privilege.name}
