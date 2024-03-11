@@ -13,7 +13,6 @@ const getStyles = makeStyles((theme: Theme) => ({
 
     padding: theme.spacing(4),
     backgroundColor: theme.palette.attuDark.main,
-    borderRadius: 8,
     display: 'flex',
     flexDirection: 'column',
     color: '#fff',

@@ -6,7 +6,7 @@ import {
   Chip,
   Tooltip,
 } from '@material-ui/core';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
 import { FilterProps, ConditionData } from './Types';
@@ -31,6 +31,8 @@ const Filter = forwardRef((props: FilterProps, ref) => {
   const [initConditions, setInitConditions] = useState<any[]>([]);
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
   const [filterExpression, setFilterExpression] = useState('');
+
+  const FilterIcon = icons.filter;
 
   // if fields if empty array, reset all conditions
   useEffect(() => {
@@ -296,10 +298,10 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       <div className={`${classes.wrapper} ${className}`} {...others}>
         <CustomButton
           disabled={filterDisabled}
-          className={`${classes.afBtn} af-btn`}
+          className={classes.afBtn}
           onClick={handleClickOpen}
+          startIcon={<FilterIcon />}
         >
-          <FilterListIcon />
           {showTitle ? title : ''}
         </CustomButton>
         {showTooltip && initConditions.length > 0 && (

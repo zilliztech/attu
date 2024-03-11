@@ -49,7 +49,6 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
   const classes = makeStyles({
     paper: {
       minWidth: '300px',
-      borderRadius: '0px',
     },
     paperAnchorRight: {
       width: '40vw',

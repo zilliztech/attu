@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   block: {
-    borderRadius: 8,
     backgroundColor: '#fff',
   },
   dialog: {

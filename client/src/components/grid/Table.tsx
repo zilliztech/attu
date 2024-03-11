@@ -33,7 +33,6 @@ const useStyles = makeStyles(theme => ({
     },
 
     '&::-webkit-scrollbar-thumb': {
-      borderRadius: '8px',
       backgroundColor: '#eee',
     },
   },

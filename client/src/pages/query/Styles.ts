@@ -8,7 +8,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   },
   emptyCard: {
     height: '100%',
-    borderRadius: theme.spacing(0, 0, 0.5, 0.5),
     boxShadow: 'none',
   },
   toolbar: {
@@ -18,7 +17,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     backgroundColor: 'white',
     padding: theme.spacing(0, 0, 1),
     gap: theme.spacing(2),
-    borderRadius: theme.spacing(0.5, 0.5, 0, 0),
 
     '& .left': {
       display: 'flex',

@@ -10,7 +10,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     position: 'relative',
     padding: theme.spacing(3),
-    borderRadius: 8,
     backgroundColor: '#fff',
     color: '#454545',
   },

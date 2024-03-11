@@ -24,8 +24,6 @@ import {
   MILVUS_DATABASE,
 } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import GitHubIcon from '@material-ui/icons/GitHub';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -78,14 +76,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     textDecoration: 'none',
     marginRight: theme.spacing(1),
     fontWeight: 500,
-    borderRadius: 4,
     '&:hover': {
       fontWeight: 'bold',
     },
   },
   icon: {
     verticalAlign: '-5px',
-    marginRight: theme.spacing(),
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -99,6 +96,7 @@ export const AuthForm = (props: any) => {
   const { setDatabase } = useContext(dataContext);
 
   const Logo = icons.zilliz;
+  const GithubIcon = icons.github;
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
@@ -302,11 +300,7 @@ export const AuthForm = (props: any) => {
           target="_blank"
           className={classes.star}
         >
-          <SvgIcon
-            viewBox="0 0 24 24"
-            component={GitHubIcon}
-            className={classes.icon}
-          />
+          <GithubIcon className={classes.icon} />
           {btnTrans('star')}
         </a>
       </section>

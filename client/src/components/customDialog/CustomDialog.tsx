@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       minWidth: 480,
-      borderRadius: 8,
       padding: 0,
 
       backgroundColor: 'transparent',

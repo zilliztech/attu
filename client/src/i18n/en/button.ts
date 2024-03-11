@@ -32,6 +32,7 @@ const btnTrans = {
   compact: 'Compact',
   copyJson: 'Copy as JSON',
   star: 'Give me a Star',
+  applyFilter: 'Apply Filters',
 
   // tips
   loadColTooltip: 'Load Collection',

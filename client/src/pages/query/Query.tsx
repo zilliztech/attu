@@ -298,7 +298,7 @@ const Query = () => {
                 }}
                 disabled={!collection.loaded}
                 InputLabelProps={{ shrink: true }}
-                label={collectionTrans('exprPlaceHolder')}
+                label={expression ? ' ' : collectionTrans('exprPlaceHolder')}
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     // reset page
@@ -316,7 +316,7 @@ const Query = () => {
               />
               <Filter
                 ref={filterRef}
-                title="Advanced Filter"
+                title={btnTrans('advFilter')}
                 fields={collection.schema.fields.filter(
                   i =>
                     i.data_type !== DataTypeStringEnum.FloatVector &&
@@ -346,8 +346,9 @@ const Query = () => {
                 className="btn"
                 onClick={handleFilterReset}
                 disabled={!collection.loaded}
+                startIcon={<ResetIcon classes={{ root: 'icon' }} />}
               >
-                <ResetIcon classes={{ root: 'icon' }} />
+                {btnTrans('reset')}
               </CustomButton>
               <CustomButton
                 variant="contained"

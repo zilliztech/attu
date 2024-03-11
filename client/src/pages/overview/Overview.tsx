@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: 'rgb(239, 239, 239)',
     padding: theme.spacing(1, 2, 2),
     order: 1,
-    borderRadius: 8,
   },
   sysCard: {
     '& p': {

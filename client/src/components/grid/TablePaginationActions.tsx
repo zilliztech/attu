@@ -1,11 +1,6 @@
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  IconButton,
-  Typography,
-} from '@material-ui/core';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
+import CustomButton from '../customButton/CustomButton';
+import icons from '../icons/Icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TablePaginationActionsProps } from './Types';
@@ -16,7 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       flexShrink: 0,
-      marginLeft: theme.spacing(2.5),
     },
     page: {
       display: 'flex',
@@ -27,12 +21,9 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.common.white,
     },
     btn: {
-      width: '24px',
-      height: '24px',
-      border: '1px solid #c4c4c4',
-      borderRadius: '2px 0 0 2px',
-      backgroundColor: 'rgba(0,0,0,0.1)',
-      cursor: 'pointer',
+      paddingLeft: 8,
+      paddingRight: 8,
+      minWidth: '24px',
     },
   })
 );
@@ -40,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
 const TablePaginationActions = (props: TablePaginationActionsProps) => {
   const classes = useStyles();
   const { count, page, rowsPerPage, onPageChange } = props;
+
+  // icons
+  const NextIcon = icons.next;
+  const PrevIcon = icons.prev;
 
   // i18n
   const { t: commonTrans } = useTranslation();
@@ -59,25 +54,25 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
 
   return (
     <div className={classes.root}>
-      <IconButton
+      <CustomButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
         aria-label={gridTrans.prevLabel}
         className={classes.btn}
       >
-        <KeyboardArrowLeft />
-      </IconButton>
+        <PrevIcon />
+      </CustomButton>
       <Typography variant="body2" className={classes.page}>
         {page + 1}
       </Typography>
-      <IconButton
+      <CustomButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label={gridTrans.nextLabel}
         className={classes.btn}
       >
-        <KeyboardArrowRight />
-      </IconButton>
+        <NextIcon />
+      </CustomButton>
     </div>
   );
 };

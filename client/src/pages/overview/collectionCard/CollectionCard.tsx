@@ -149,7 +149,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
 
   return (
     <Card
-      className={`card-wrapper ${classes.wrapper} ${wrapperClass} ${
+      className={`${classes.wrapper} ${wrapperClass} ${
         collection.status === LOADING_STATE.LOADING && classes.loading
       }`}
     >

@@ -102,12 +102,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type inputType = {
   label: string;
-  value: string | number;
+  value: string | number | null;
   handleChange?: (value: string) => void;
   className?: string;
   inputClassName?: string;
   isReadOnly?: boolean;
-  validate?: (value: string | number) => string;
+  validate?: (value: string | number | null) => string;
   type?: 'number' | 'text';
 };
 

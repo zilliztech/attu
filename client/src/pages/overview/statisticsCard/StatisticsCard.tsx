@@ -33,7 +33,7 @@ const StatisticsCard: FC<StatisticsCardProps> = ({
   const classes = useStyles();
 
   return (
-    <Card className={`card-wrapper ${wrapperClass}`}>
+    <Card className={`${wrapperClass}`}>
       <CardContent className={`${classes.wrapper}`}>
         {data.map(item => (
           <div key={item.label}>

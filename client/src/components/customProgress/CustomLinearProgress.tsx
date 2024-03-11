@@ -24,7 +24,6 @@ const getProgressStyles = makeStyles((theme: Theme) => ({
 const BorderLinearProgress = withStyles((theme: Theme) => ({
   root: {
     height: 10,
-    borderRadius: 8,
     border: '1px solid #e9e9ed',
     minWidth: 85,
   },
@@ -32,7 +31,6 @@ const BorderLinearProgress = withStyles((theme: Theme) => ({
     backgroundColor: '#fff',
   },
   bar: {
-    borderRadius: 5,
     backgroundColor: theme.palette.primary.main,
   },
 }))(LinearProgress);

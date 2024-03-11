@@ -21,12 +21,6 @@ fieldset {
 .with-max-content {
   width: max-content;
 }
-.card-wrapper {
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.05);
-}
-
 /* used for fill remaining height of page */
 .page-wrapper {
   /* set flex basis to make child item height 100% work on Safari */

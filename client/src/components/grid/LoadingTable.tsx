@@ -6,12 +6,10 @@ const getStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     paddingTop: 0,
     backgroundColor: '#fff',
-    borderRadius: '4px',
   },
   skeleton: {
     transform: 'scale(1)',
     background: 'linear-gradient(90deg, #f0f4f9 0%, #f9f9f9 50%)',
-    borderRadius: '2px',
   },
   tr: {
     display: 'grid',

@@ -33,7 +33,6 @@ const getStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
   },
   mainView: {
-    borderRadius: '8px',
     boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     display: 'grid',
     gridTemplateColumns: '1fr auto',

@@ -18,7 +18,6 @@ function SlideTransition(props: TransitionProps) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderRadius: '4px',
       maxWidth: '50vh',
       wordBreak: 'break-all'
     },

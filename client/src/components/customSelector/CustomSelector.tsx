@@ -1,11 +1,26 @@
 import { FC } from 'react';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
 import { CustomSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
 
-/**
- *  label: We may need label lowecase or capitalize, so we cant control css inside.
- * */
+const getStyles = makeStyles((theme: Theme) => ({
+  root: {
+    '& .MuiFilledInput-underline:before': {
+      borderWidth: 1,
+    },
+    '& .MuiFilledInput-underline:after': {
+      borderWidth: 1,
+    },
+  },
+}));
+
 const CustomSelector: FC<CustomSelectorType> = props => {
   const {
     label,
@@ -20,16 +35,22 @@ const CustomSelector: FC<CustomSelectorType> = props => {
     ...others
   } = props;
   const id = generateId('selector');
+  const localClasses = getStyles();
 
   return (
-    <FormControl variant={variant} className={wrapperClass} size={size}>
+    <FormControl
+      variant={variant}
+      className={wrapperClass}
+      size={size}
+      classes={{ ...localClasses }}
+    >
       {label && (
         <InputLabel classes={{ root: labelClass }} htmlFor={id}>
           {label}
         </InputLabel>
       )}
       <Select
-        classes={classes}
+        classes={{ ...classes }}
         {...others}
         value={value}
         onChange={onChange}

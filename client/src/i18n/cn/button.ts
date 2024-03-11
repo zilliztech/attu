@@ -32,6 +32,7 @@ const btnTrans = {
   compact: '压缩(Compact)',
   copyJson: '复制为JSON',
   star: '给我一颗小星星',
+  applyFilter: '应用过滤器',
 
   // tips
   loadColTooltip: '加载Collection',

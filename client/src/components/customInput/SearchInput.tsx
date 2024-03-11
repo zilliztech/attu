@@ -11,7 +11,6 @@ const useSearchStyles = makeStyles(theme => ({
   },
   input: {
     backgroundColor: '#fff',
-    borderRadius: '4px',
     padding: theme.spacing(1),
     width: '240px',
     border: '1px solid #e9e9ed',

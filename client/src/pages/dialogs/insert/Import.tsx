@@ -58,7 +58,6 @@ const getStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
 
       border: '1px solid #e9e9ed',
-      borderRadius: '4px',
       padding: theme.spacing(1),
 
       backgroundColor: '#fff',

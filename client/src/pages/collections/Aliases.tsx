@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { AliasesProps } from './Types';
 import icons from '@/components/icons/Icons';
-import DeleteIcon from '@material-ui/icons/Delete';
 import CreateAliasDialog from '../dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 
@@ -40,6 +39,7 @@ export default function Aliases(props: AliasesProps) {
   const { t: successTrans } = useTranslation('success');
 
   const AddIcon = icons.add;
+  const DeleteIcon = icons.delete;
 
   const handleCreate = (e: React.MouseEvent) => {
     setDialog({

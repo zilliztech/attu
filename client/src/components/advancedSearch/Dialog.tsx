@@ -1,24 +1,28 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   makeStyles,
   Theme,
   createStyles,
   Typography,
-  Button,
   IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import CachedIcon from '@material-ui/icons/Cached';
+import CustomButton from '../customButton/CustomButton';
 import ConditionGroup from './ConditionGroup';
+import icons from '../icons/Icons';
 import CopyBtn from './CopyButton';
 // import DialogTemplate from '../customDialog/DialogTemplate';
 import { DialogProps } from './Types';
 
 const AdvancedDialog = (props: DialogProps) => {
+  // i18n
+  const { t: searchTrans } = useTranslation('search');
+  const { t: btnTrans } = useTranslation('btn');
+
   const {
     open = false,
     onClose,
@@ -29,12 +33,14 @@ const AdvancedDialog = (props: DialogProps) => {
     conditions: flatConditions = [],
     isLegal = false,
     expression: filterExpression = '',
-    title = 'Advanced Filter',
+    title = searchTrans('advancedFilter'),
     fields = [],
     ...others
   } = props;
   const { addCondition } = handleConditions;
   const classes = useStyles();
+  const ResetIcon = icons.refresh;
+  const CloseIcon = icons.clear;
 
   useEffect(() => {
     flatConditions.length === 0 && addCondition();
@@ -87,33 +93,34 @@ const AdvancedDialog = (props: DialogProps) => {
           </div>
         </DialogContent>
         <DialogActions className={classes.dialogActions}>
-          <Button
+          <CustomButton
             onClick={onReset}
             color="primary"
             className={classes.resetBtn}
             size="small"
+            startIcon={<ResetIcon />}
           >
-            <CachedIcon />
-            Reset
-          </Button>
+            <Typography variant="button"> {btnTrans('reset')}</Typography>
+          </CustomButton>
           <div>
-            <Button
+            <CustomButton
               autoFocus
               onClick={onCancel}
               color="primary"
               className={classes.cancelBtn}
             >
-              Cancel
-            </Button>
-            <Button
+              <Typography variant="button"> {btnTrans('cancel')}</Typography>
+            </CustomButton>
+
+            <CustomButton
               onClick={onSubmit}
               variant="contained"
               color="primary"
               className={classes.applyBtn}
               disabled={!isLegal}
             >
-              Apply Filters
-            </Button>
+              {btnTrans('applyFilter')}
+            </CustomButton>
           </div>
         </DialogActions>
       </Dialog>
@@ -184,18 +191,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     resetBtn: {},
     cancelBtn: {
-      marginRight: theme.spacing(4)
+      marginRight: theme.spacing(1),
     },
     applyBtn: {
       backgroundColor: theme.palette.primary.main,
       color: 'white',
     },
-    copyButton: {
-      borderRadius: '0',
-    },
+    copyButton: {},
     expResult: {
       background: '#F9F9F9',
-      borderRadius: '8px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -209,7 +213,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     expWrapper: {
       background: '#F9F9F9',
-      borderRadius: '8px',
       minWidth: '480px',
       minHeight: '104px',
       padding: theme.spacing(1.5),

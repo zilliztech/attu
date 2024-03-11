@@ -12,11 +12,11 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     gap: theme.spacing(0),
     width: 360,
     flexShrink: 0,
+    backgroundColor: '#fff',
+    border: '1px solid #e0e0e0',
 
     '& textarea': {
       border: `1px solid ${theme.palette.attuGrey.main}`,
-      borderRadius: theme.spacing(0.5),
-      padding: theme.spacing(0.5, 1),
       marginTop: theme.spacing(0),
       marginBottom: theme.spacing(1),
       overflow: 'scroll',
@@ -61,11 +61,13 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   },
 
   resultsWrapper: {
+    border: '1px solid #e0e0e0',
+    background: '#fff',
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 0,
-    width: 'calc(100vw - 500px)', // replace 300px with the actual width of your form
-    height: `calc(100vh - 112px)`,
+    width: '100%',
+    padding: theme.spacing(1),
   },
   toolbar: {
     display: 'flex',

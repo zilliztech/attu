@@ -358,7 +358,7 @@ const VectorSearch = () => {
 
   return (
     <section className={`page-wrapper ${classes.pageContainer}`}>
-      <Card className={classes.form}>
+      <section className={classes.form}>
         <CardContent className={classes.s1}>
           <div className="wrapper">
             <CustomSelector
@@ -458,7 +458,7 @@ const VectorSearch = () => {
             setParamsDisabled={setParamDisabled}
           />
         </CardContent>
-      </Card>
+      </section>
 
       <section className={classes.resultsWrapper}>
         <section className={classes.toolbar}>
@@ -498,14 +498,17 @@ const VectorSearch = () => {
               onClick={() => {
                 saveCsvAs(searchResult, `search_result_${selectedCollection}`);
               }}
+              startIcon={<ExportIcon classes={{ root: 'icon' }}></ExportIcon>}
             >
-              <ExportIcon classes={{ root: 'icon' }} />
               {btnTrans('export')}
             </CustomButton>
           </div>
           <div className="right">
-            <CustomButton className="btn" onClick={handleReset}>
-              <ResetIcon classes={{ root: 'icon' }} />
+            <CustomButton
+              className="btn"
+              onClick={handleReset}
+              startIcon={<ResetIcon classes={{ root: 'icon' }} />}
+            >
               {btnTrans('reset')}
             </CustomButton>
           </div>
@@ -520,7 +523,7 @@ const VectorSearch = () => {
             rowCount={total}
             primaryKey="rank"
             page={currentPage}
-            rowHeight={43}
+            rowHeight={41}
             onPageChange={handlePageChange}
             rowsPerPage={pageSize}
             setRowsPerPage={handlePageSize}

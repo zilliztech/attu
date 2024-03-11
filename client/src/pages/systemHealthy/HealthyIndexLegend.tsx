@@ -30,7 +30,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   legendIcon: {
     width: '16px',
-    borderRadius: '1px',
   },
   legendText: { marginLeft: '8px', fontWeight: 500, color: '#666' },
 }));

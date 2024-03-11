@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       color: theme.palette.common.black,
       paddingRight: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
       backgroundColor: '#fff',
       borderBottom: '1px solid #e0e0e0',
     },
@@ -29,8 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingTop: theme.spacing(1),
-      paddingLeft: theme.spacing(2),
+      paddingLeft: theme.spacing(1.5),
       flex: 1,
     },
     navigation: {
@@ -115,7 +113,11 @@ const Header: FC<HeaderType> = props => {
                 const database = e.target.value as string;
                 await useDatabase(database);
                 setDatabase(database);
-                navigate(`/databases/${database}`);
+
+                // if url contains databases, go to the database page
+                if (window.location.pathname.includes('databases')) {
+                  navigate(`/databases/${database}`);
+                }
               }}
               options={dbOptions}
               variant="filled"

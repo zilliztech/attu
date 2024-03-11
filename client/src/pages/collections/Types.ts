@@ -40,7 +40,7 @@ export type CreateFieldType =
   | 'number';
 
 export type FieldType = {
-  name: string;
+  name: string | null;
   data_type: DataTypeEnum;
   element_type?: DataTypeEnum;
   is_primary_key: boolean;

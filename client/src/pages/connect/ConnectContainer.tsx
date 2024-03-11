@@ -12,7 +12,6 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     width: '480px',
     backgroundColor: '#fff',
     boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.1)',
-    borderRadius: '8px',
     padding: theme.spacing(5, 0),
   },
 }));

@@ -16,6 +16,8 @@ const searchTrans = {
   timeTravelPrefix: '之前的数据',
   dynamicFields: '动态字段',
   collectionNotLoaded: 'Collection 没有加载',
+  advancedFilter: '高级过滤',
+  addCondition: '添加条件',
 };
 
 export default searchTrans;

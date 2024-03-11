@@ -69,7 +69,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   block: {
     border: '1px solid #f9f9f9',
-    borderRadius: theme.spacing(1),
     boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.05)',
     marginBottom: theme.spacing(3),
     padding: theme.spacing(2),

@@ -1,8 +1,10 @@
 import React, { useState, FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme, createStyles, Button } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import ConditionItem from './Condition';
-import AddIcon from '@material-ui/icons/Add';
+import icons from '../icons/Icons';
+import CustomButton from '../customButton/CustomButton';
 import {
   ConditionGroupProps,
   BinaryLogicalOpProps,
@@ -47,11 +49,18 @@ const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
 // "+ Add condition" component.
 const AddCondition: FC<AddConditionProps> = props => {
   const { className, onClick } = props;
+  const { t: searchTrans } = useTranslation('search');
+  const AddIcon = icons.add;
+
   return (
-    <Button onClick={onClick} color="primary" className={className}>
-      <AddIcon />
-      Add Condition
-    </Button>
+    <CustomButton
+      onClick={onClick}
+      color="primary"
+      className={className}
+      startIcon={<AddIcon />}
+    >
+      {searchTrans('addCondition')}
+    </CustomButton>
   );
 };
 
@@ -190,16 +199,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .op-or': {
         backgroundColor: 'unset',
         margin: '16px 0',
-      },
-
-      '& .radius-top': {
-        borderRadius: '8px 8px 0 0',
-      },
-      '& .radius-bottom': {
-        borderRadius: '0 0 8px 8px',
-      },
-      '& .radius-all': {
-        borderRadius: '8px',
       },
     },
     addBtn: {},

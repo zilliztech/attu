@@ -11,7 +11,6 @@ import { NavMenuItem, NavMenuType } from './Types';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
 import Typography from '@material-ui/core/Typography';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 const timeout = 150;
 const duration = `${timeout}ms`;
@@ -93,7 +92,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     actionIcon: {
       position: 'fixed',
-      borderRadius: '50%',
       backgroundColor: 'white',
       top: '24px',
       transition: theme.transitions.create('all', {
@@ -188,6 +186,7 @@ const NavMenu: FC<NavMenuType> = props => {
   };
 
   const Logo = icons.zilliz;
+  const ExpandIcon = icons.expand;
 
   return (
     <List
@@ -221,7 +220,7 @@ const NavMenu: FC<NavMenuType> = props => {
             [classes.collapseIcon]: !expanded,
           })}
         >
-          <ChevronRightIcon />
+          <ExpandIcon />
         </Button>
         <NestList data={data} />
         <Typography

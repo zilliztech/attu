@@ -41,16 +41,14 @@ const EmptyCard: FC<EmptyCardProps> = ({
   const classes = useStyles();
 
   return (
-    <Card
-      className={`flex-center card-wrapper ${classes.wrapper} ${wrapperClass}`}
-    >
+    <section className={`flex-center ${classes.wrapper} ${wrapperClass}`}>
       <CardContent>
         {loading && <StatusIcon type={ChildrenStatusType.CREATING} size={40} />}
         {icon}
         <Typography className={classes.text}>{text}</Typography>
         <Typography className={classes.subText}>{subText}</Typography>
       </CardContent>
-    </Card>
+    </section>
   );
 };
 

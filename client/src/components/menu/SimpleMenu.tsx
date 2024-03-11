@@ -10,7 +10,6 @@ import { makeStyles, Theme } from '@material-ui/core';
 const getStyles = makeStyles((theme: Theme) => ({
   menuPaper: {
     boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.08)',
-    borderRadius: '4px',
   },
   menuItem: {
     minWidth: (props: { minWidth: string }) => props.minWidth,
