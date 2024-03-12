@@ -22,19 +22,6 @@ const useStyles = makeStyles(theme => ({
     /* set flex basis to make child item height 100% work on Safari */
     flexBasis: 0,
     background: '#fff',
-
-    // change scrollbar style
-    '&::-webkit-scrollbar': {
-      width: '8px',
-    },
-
-    '&::-webkit-scrollbar-track': {
-      backgroundColor: '#f9f9f9',
-    },
-
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#eee',
-    },
   },
   box: {
     backgroundColor: '#fff',
