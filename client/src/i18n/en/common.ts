@@ -19,6 +19,7 @@ const commonTrans = {
     error: 'error',
     running: 'running',
     loading: 'is loaded',
+    noVectorIndex: 'No Vector Index',
   },
   grid: {
     action: 'action',

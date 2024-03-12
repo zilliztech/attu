@@ -1,7 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import icons from '@/components/icons/Icons';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
@@ -111,24 +112,38 @@ const useStyles = makeStyles((theme: Theme) => ({
     border: `1px solid ${theme.palette.primary.main}`,
     backgroundColor: theme.palette.primary.main,
   },
-  empty: {
-    border: `1px solid ${theme.palette.attuGrey.main}`,
+  unloaded: {
+    border: `1px solid ${theme.palette.primary.main}`,
     background: '#fff !important',
   },
-  unloaded: {
+  noIndex: {
     border: `1px solid ${theme.palette.attuGrey.light}`,
     backgroundColor: theme.palette.attuGrey.light,
   },
 }));
 
 const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
+  // i18n collectionTrans
+  const { t: commonTrans } = useTranslation();
+  const statusTrans = commonTrans('status');
+
+  // styles
   const classes = useStyles();
 
+  // class
   const loadClass = clcx(classes.dot, {
     [classes.loaded]: data.loaded,
     [classes.unloaded]: !data.loaded,
-    [classes.empty]: !data.schema || !data.schema.hasVectorIndex,
+    [classes.noIndex]: !data.schema || !data.schema.hasVectorIndex,
   });
+
+  //  status tooltip
+  const hasIndex = data.schema && data.schema.hasVectorIndex;
+  const loadStatus = hasIndex
+    ? data.loaded
+      ? statusTrans.loaded
+      : statusTrans.unloaded
+    : statusTrans.noVectorIndex;
 
   return (
     <div className={classes.collectionNode}>
@@ -137,7 +152,9 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
         <span className={classes.count}>({data.rowCount})</span>
       </div>
       <div className={classes.right}>
-        <div className={loadClass}></div>
+        <Tooltip title={loadStatus}>
+          <div className={loadClass}></div>
+        </Tooltip>
       </div>
     </div>
   );
