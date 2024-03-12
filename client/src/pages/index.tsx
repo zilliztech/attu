@@ -72,7 +72,7 @@ function Index() {
       return navTrans('system');
     }
 
-    if (location.pathname.includes('users')) {
+    if (location.pathname.includes('users') || location.pathname.includes('roles')) {
       return navTrans('user');
     }
 
