@@ -35,10 +35,11 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
 
   const handleInputChange = (value: string) => {
@@ -48,6 +49,12 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
   const handleConfirm = async () => {
     // duplicate
     await duplicateCollection(collectionName, form.duplicate);
+    // show success message
+    openSnackBar(
+      successTrans('duplicate', {
+        name: collectionTrans('collection'),
+      })
+    );
     // close dialog
     handleCloseDialog();
     cb && (await cb(form.duplicate));

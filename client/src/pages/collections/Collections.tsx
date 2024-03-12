@@ -82,10 +82,9 @@ const Collections = () => {
     CollectionObject[]
   >([]);
 
-  const { setDialog, openSnackBar } = useContext(rootContext);
+  const { setDialog } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: successTrans } = useTranslation('success');
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
 
@@ -135,17 +134,7 @@ const Collections = () => {
           open: true,
           type: 'custom',
           params: {
-            component: (
-              <CreateCollectionDialog
-                onCreate={async () => {
-                  openSnackBar(
-                    successTrans('create', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
-                }}
-              />
-            ),
+            component: <CreateCollectionDialog />,
           },
         });
       },
@@ -165,11 +154,6 @@ const Collections = () => {
               <LoadCollectionDialog
                 collection={selectedCollections[0].collection_name}
                 onLoad={async () => {
-                  openSnackBar(
-                    successTrans('load', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
                   setSelectedCollections([]);
                 }}
               />
@@ -201,11 +185,6 @@ const Collections = () => {
               <ReleaseCollectionDialog
                 collection={selectedCollections[0].collection_name}
                 onRelease={async () => {
-                  openSnackBar(
-                    successTrans('release', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
                   setSelectedCollections([]);
                 }}
               />
@@ -273,11 +252,6 @@ const Collections = () => {
             component: (
               <RenameCollectionDialog
                 cb={async (collectionName: string) => {
-                  openSnackBar(
-                    successTrans('rename', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
                   setSelectedCollections([]);
                 }}
                 collectionName={selectedCollections[0].collection_name}
@@ -302,11 +276,6 @@ const Collections = () => {
             component: (
               <DuplicateCollectionDialog
                 cb={async () => {
-                  openSnackBar(
-                    successTrans('duplicate', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
                   setSelectedCollections([]);
                 }}
                 collectionName={selectedCollections[0].collection_name}
@@ -332,11 +301,6 @@ const Collections = () => {
             component: (
               <DropCollectionDialog
                 onDelete={async () => {
-                  openSnackBar(
-                    successTrans('delete', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
                   setSelectedCollections([]);
                 }}
                 collections={selectedCollections}
@@ -420,24 +384,10 @@ const Collections = () => {
                     v.status === LOADING_STATE.UNLOADED ? (
                       <LoadCollectionDialog
                         collectionName={v.collection_name}
-                        onLoad={async () => {
-                          openSnackBar(
-                            successTrans('load', {
-                              name: collectionTrans('collection'),
-                            })
-                          );
-                        }}
                       />
                     ) : (
                       <ReleaseCollectionDialog
                         collectionName={v.collection_name}
-                        onRelease={async () => {
-                          openSnackBar(
-                            successTrans('release', {
-                              name: collectionTrans('collection'),
-                            })
-                          );
-                        }}
                       />
                     ),
                 },

@@ -42,9 +42,10 @@ const LoadCollectionDialog = (props: any) => {
   const { collectionName, onLoad } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const [form, setForm] = useState({
     replica: 1,
   });
@@ -100,6 +101,13 @@ const LoadCollectionDialog = (props: any) => {
 
     // load collection request
     await loadCollection(collectionName, params);
+
+    // show success message
+    openSnackBar(
+      successTrans('load', {
+        name: collectionTrans('collection'),
+      })
+    );
 
     // callback
     if (onLoad) {

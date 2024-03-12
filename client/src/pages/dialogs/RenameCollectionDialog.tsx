@@ -32,9 +32,10 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: warningTrans } = useTranslation('warning');
+  const { t: successTrans } = useTranslation('success');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
@@ -44,6 +45,11 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
 
   const handleConfirm = async () => {
     await renameCollection(collectionName, form.new_collection_name);
+    openSnackBar(
+      successTrans('rename', {
+        name: collectionTrans('collection'),
+      })
+    );
     handleCloseDialog();
     cb && (await cb(form.new_collection_name));
   };

@@ -59,9 +59,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   const { createCollection } = useContext(dataContext);
   const classes = useStyles();
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: successTrans } = useTranslation('success');
   const { t: warningTrans } = useTranslation('warning');
 
   const [form, setForm] = useState({
@@ -242,9 +243,17 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       consistency_level: consistencyLevel,
     };
 
+    // create collection
     await createCollection({
       ...param,
     });
+
+    // show success message
+    openSnackBar(
+      successTrans('create', {
+        name: collectionTrans('collection'),
+      })
+    );
 
     onCreate && onCreate();
     handleCloseDialog();

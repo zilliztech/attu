@@ -6,16 +6,24 @@ import { DropCollectionProps } from './Types';
 
 const DropCollectionDialog: FC<DropCollectionProps> = props => {
   const { collections, onDelete } = props;
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { dropCollection } = useContext(dataContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: successTrans } = useTranslation('success');
   const { t: dialogTrans } = useTranslation('dialog');
 
   const handleDelete = async () => {
     for (const item of collections) {
       await dropCollection(item.collection_name);
     }
+
+    // show success message
+    openSnackBar(
+      successTrans('delete', {
+        name: collectionTrans('collection'),
+      })
+    );
 
     handleCloseDialog();
     onDelete && (await onDelete());

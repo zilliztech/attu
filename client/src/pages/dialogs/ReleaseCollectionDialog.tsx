@@ -19,7 +19,9 @@ const ReleaseCollectionDialog = (props: any) => {
   const { collectionName, onRelease } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
-  const { handleCloseDialog } = useContext(rootContext);
+  const { t: successTrans } = useTranslation('success');
+  const { t: collectionTrans } = useTranslation('collection');
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const [disabled, setDisabled] = useState(false);
 
   // confirm action
@@ -29,6 +31,13 @@ const ReleaseCollectionDialog = (props: any) => {
     try {
       // release collection
       await releaseCollection(collectionName);
+
+      // show success message
+      openSnackBar(
+        successTrans('release', {
+          name: collectionTrans('collection'),
+        })
+      );
 
       // execute callback
       onRelease && (await onRelease(collectionName));
