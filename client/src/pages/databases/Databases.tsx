@@ -8,6 +8,7 @@ import RouteTabList from '@/components/customTabList/RouteTabList';
 import DatabaseTree from '@/pages/databases/tree';
 import { ITab } from '@/components/customTabList/Types';
 import Partitions from '../partitions/Partitions';
+import Roles from '../user/Roles';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Segments from '../segments/Segments';
@@ -53,12 +54,18 @@ const Databases = () => {
 
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: userTrans } = useTranslation('user');
 
   const dbTab: ITab[] = [
     {
       label: collectionTrans('collections'),
       component: <Collections />,
       path: `collections`,
+    },
+    {
+      label: userTrans('roles'),
+      component: <Roles />,
+      path: `roles`,
     },
   ];
   const actionDbTab = dbTab.findIndex(t => t.path === databaseName);

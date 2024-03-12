@@ -7,17 +7,11 @@ import {
 import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
-import { DatabasesService } from '../database/databases.service';
 import { clientCache } from '../app';
 import { DescribeIndexRes } from '../types';
 
 export class MilvusService {
-  private databaseService: DatabasesService;
   private DEFAULT_DATABASE = 'default';
-
-  constructor() {
-    this.databaseService = new DatabasesService();
-  }
 
   get sdkInfo() {
     return MilvusClient.sdkInfo;
@@ -91,6 +85,9 @@ export class MilvusService {
         throw new Error('Milvus is not ready yet.');
       }
 
+      // database
+      const db = database || this.DEFAULT_DATABASE;
+
       // If the server is healthy, set the active address and add the client to the cache
       clientCache.set(milvusClient.clientId, {
         milvusClient,
@@ -99,16 +96,26 @@ export class MilvusService {
           ttl: INDEX_TTL,
           ttlAutopurge: true,
         }),
-        database,
+        database: db,
         collectionsQueue: new SimpleQueue<string>(),
       });
 
-      await this.databaseService.use(milvusClient.clientId, database);
+      // test ListDatabases permission
+      try {
+        await milvusClient.use({ db_name: db });
+        await milvusClient.listDatabases();
+      } catch (e) {
+        throw new Error(
+          `You don't have permission to access the database: ${db}.`
+        );
+      }
+
+      await milvusClient.use({ db_name: db });
 
       // Return the address and the database (if it exists, otherwise return 'default')
       return {
         address,
-        database: database || this.DEFAULT_DATABASE,
+        database: db,
         clientId: milvusClient.clientId,
       };
     } catch (error) {

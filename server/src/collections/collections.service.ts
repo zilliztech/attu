@@ -342,12 +342,16 @@ export class CollectionsService {
     });
 
     // get collection statistic data
-    const collectionStatisticsRes = await this.getCollectionStatistics(
-      clientId,
-      {
+    let collectionStatisticsRes;
+
+    try {
+      collectionStatisticsRes = await this.getCollectionStatistics(clientId, {
         collection_name: collection.name,
-      }
-    );
+      });
+    } catch (e) {
+      console.log('ignore getCollectionStatistics');
+    }
+
     // extract autoID
     const autoID = collectionInfo.schema.fields.find(
       v => v.is_primary_key === true
@@ -380,7 +384,9 @@ export class CollectionsService {
     return {
       collection_name: collection.name,
       schema: collectionInfo.schema,
-      rowCount: Number(collectionStatisticsRes.data.row_count),
+      rowCount: Number(
+        (collectionStatisticsRes && collectionStatisticsRes.data.row_count) || 0
+      ),
       createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
       aliases: collectionInfo.aliases,
       description: collectionInfo.schema.description,

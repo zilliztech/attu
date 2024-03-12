@@ -278,15 +278,16 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (isAuth) {
-      // fetch db
-      fetchDatabases();
       // connect to socket server
       socket.current = io(url as string);
       // register client
       socket.current.emit(WS_EVENTS.REGISTER, clientId);
 
-      socket.current.on('connect', function () {
+      socket.current.on('connect', async () => {
         console.log('--- ws connected ---', clientId);
+        // fetch db
+        await fetchDatabases();
+        // set connected to trues
         setConnected(true);
       });
     } else {
