@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: theme.spacing(28),
     flexGrow: 0,
     flexShrink: 0,
+    height: 'calc(100vh - 96px)',
     overflow: 'auto',
     boxSizing: 'border-box',
   },

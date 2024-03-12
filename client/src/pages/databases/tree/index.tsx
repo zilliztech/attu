@@ -4,6 +4,7 @@ import icons from '@/components/icons/Icons';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
+import clcx from 'clsx';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
 
@@ -13,6 +14,7 @@ export interface DatabaseTreeItem {
   name: string;
   type: TreeNodeType;
   expanded?: boolean;
+  data?: CollectionObject;
 }
 
 interface DatabaseToolProps {
@@ -37,6 +39,7 @@ const getExpanded = (nodes: DatabaseTreeItem[]) => {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
+    fontSize: '15px',
     '& .MuiTreeItem-iconContainer': {
       width: 'auto',
     },
@@ -79,7 +82,66 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: '#888',
     },
   },
+  collectionNode: {
+    display: 'flex',
+    width: '90%',
+    justifyContent: 'space-between',
+    minHeight: '24px',
+    lineHeight: '24px',
+  },
+  right: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 20,
+  },
+  count: {
+    fontSize: '13px',
+    fontWeight: 500,
+    marginLeft: theme.spacing(0.5),
+    color: theme.palette.attuGrey.main,
+  },
+  dot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    position: 'relative',
+    top: '0',
+  },
+  loaded: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    backgroundColor: theme.palette.primary.main,
+  },
+  empty: {
+    border: `1px solid ${theme.palette.attuGrey.main}`,
+    background: '#fff !important',
+  },
+  unloaded: {
+    border: `1px solid ${theme.palette.attuGrey.light}`,
+    backgroundColor: theme.palette.attuGrey.light,
+  },
 }));
+
+const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
+  const classes = useStyles();
+
+  const loadClass = clcx(classes.dot, {
+    [classes.loaded]: data.loaded,
+    [classes.unloaded]: !data.loaded,
+    [classes.empty]: !data.schema || !data.schema.hasVectorIndex,
+  });
+
+  return (
+    <div className={classes.collectionNode}>
+      <div>
+        {data.collection_name}
+        <span className={classes.count}>({data.rowCount})</span>
+      </div>
+      <div className={classes.right}>
+        <div className={loadClass}></div>
+      </div>
+    </div>
+  );
+};
 
 const DatabaseTree: React.FC<DatabaseToolProps> = props => {
   // props
@@ -91,6 +153,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       id: `c_${c.collection_name}`,
       name: c.collection_name,
       type: 'collection' as TreeNodeType,
+      data: c,
     };
   });
 
@@ -150,7 +213,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
           key={node.id}
           nodeId={node.id}
           icon={<CollectionIcon />}
-          label={node.name}
+          label={<CollectionNode data={node.data!} />}
           className={classes.treeItem}
           onClick={event => {
             event.stopPropagation();
