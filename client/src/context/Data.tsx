@@ -172,8 +172,21 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const createCollection = async (data: any) => {
     // create collection
     const newCollection = await CollectionService.createCollection(data);
-    // inset collection to state
-    setCollections(prev => [...prev, newCollection]);
+
+    // combine new collection with old collections
+    // sort state by createdTime.
+    const newCollections = collections.concat(newCollection).sort((a, b) => {
+      if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
+        if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
+          return b.createdTime - a.createdTime;
+        }
+        return a.schema.hasVectorIndex ? -1 : 1;
+      }
+      return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
+    });
+
+    // update collection
+    setCollections(newCollections);
 
     return newCollection;
   };

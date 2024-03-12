@@ -422,10 +422,6 @@ export class CollectionsService {
 
     // data container
     const data: CollectionObject[] = [];
-    // sort by created time
-    allCollections.data.sort(
-      (a, b) => Number(b.timestamp) - Number(a.timestamp)
-    );
 
     // get target collections details
     const targetCollections = allCollections.data.filter(
@@ -474,6 +470,17 @@ export class CollectionsService {
         }
       }, 5);
     }
+
+    // sort data by loadedPercentage and has index or not, then createdTime.
+    data.sort((a, b) => {
+      if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
+        if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
+          return b.createdTime - a.createdTime;
+        }
+        return a.schema.hasVectorIndex ? -1 : 1;
+      }
+      return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
+    });
 
     // return data
     return data;
