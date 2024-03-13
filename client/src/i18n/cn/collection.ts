@@ -127,6 +127,7 @@ const collectionTrans = {
   consistencyEventuallyTooltip:
     '没有保证读写的顺序，副本最终会在没有进一步写操作的情况下收敛到相同的状态。',
   releaseCollectionFirst: '请先释放collection.',
+  noVectorIndexTooltip: '没有向量索引，请先创建一个。',
 
   clickToLoad: '点击加载collection。',
   clickToRelease: '点击释放collection。',

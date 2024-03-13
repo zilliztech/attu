@@ -42,7 +42,7 @@ const commonThemes = {
   palette: {
     primary: {
       main: '#0ACE82',
-      light: '#bfdeff',
+      light: '#65BA74',
       dark: '#08a568',
     },
     secondary: {

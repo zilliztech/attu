@@ -366,7 +366,7 @@ const Collections = () => {
           <StatusAction
             status={v.status}
             percentage={v.loadedPercentage}
-            field={v.schema}
+            schema={v.schema}
             collectionName={v.collection_name}
             action={() => {
               setDialog({

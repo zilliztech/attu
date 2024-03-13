@@ -10,7 +10,7 @@ export type StatusActionType = {
   status: LOADING_STATE;
   percentage?: string | number;
   action?: Function;
-  field: SchemaObject;
+  schema: SchemaObject;
   collectionName: string;
   onIndexCreate?: Function;
 };

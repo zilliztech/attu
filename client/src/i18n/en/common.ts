@@ -1,5 +1,3 @@
-import { partition } from "d3";
-
 const commonTrans = {
   attu: {
     admin: 'Attu',

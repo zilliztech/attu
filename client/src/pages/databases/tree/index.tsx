@@ -117,6 +117,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     border: `1px solid ${theme.palette.primary.main}`,
     background: '#fff !important',
   },
+  loading: {
+    border: `1px solid ${theme.palette.primary.light}`,
+    backgroundColor: `${theme.palette.primary.light} !important`,
+  },
   noIndex: {
     border: `1px solid ${theme.palette.attuGrey.light}`,
     backgroundColor: theme.palette.attuGrey.light,
@@ -135,6 +139,7 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   const loadClass = clcx(classes.dot, {
     [classes.loaded]: data.loaded,
     [classes.unloaded]: !data.loaded,
+    [classes.loading]: data.status === 'loading',
     [classes.noIndex]: !data.schema || !data.schema.hasVectorIndex,
   });
 

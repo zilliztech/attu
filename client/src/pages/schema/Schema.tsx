@@ -12,9 +12,13 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
-import { dataContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '../search/Utils';
+import { LOADING_STATE } from '@/consts';
+import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
+import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
+import StatusAction from '@/pages/collections/StatusAction';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -54,9 +58,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   chip: {
     marginLeft: theme.spacing(0.5),
     marginRight: theme.spacing(0.5),
+    fontSize: '12px',
+    background: 'rgba(0, 0, 0, 0.04)',
+    border: 'none',
   },
   featureChip: {
     marginLeft: 0,
+    border: 'none',
   },
   nameWrapper: {
     display: 'flex',
@@ -94,6 +102,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Schema = () => {
+  const { setDialog } = useContext(rootContext);
   const { fetchCollection, collections, loading } = useContext(dataContext);
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
@@ -118,6 +127,7 @@ const Schema = () => {
   const fields = collection?.schema?.fields || [];
 
   const KeyIcon = icons.key;
+  const EnabledIcon = icons.check;
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -237,10 +247,39 @@ const Schema = () => {
     },
   ];
 
+  // get loading state label
   return (
     <section className={classes.wrapper}>
       {collection && (
         <section className={classes.infoWrapper}>
+          <div className={classes.block}>
+            <Typography variant="h5">{collectionTrans('status')}</Typography>
+            <StatusAction
+              status={collection.status}
+              percentage={collection.loadedPercentage}
+              schema={collection.schema!}
+              collectionName={collection.collection_name}
+              action={() => {
+                setDialog({
+                  open: true,
+                  type: 'custom',
+                  params: {
+                    component:
+                      collection.status === LOADING_STATE.UNLOADED ? (
+                        <LoadCollectionDialog
+                          collectionName={collection.collection_name}
+                        />
+                      ) : (
+                        <ReleaseCollectionDialog
+                          collectionName={collection.collection_name}
+                        />
+                      ),
+                  },
+                });
+              }}
+            />
+          </div>
+
           <div className={classes.block}>
             <Typography variant="h5">
               {collectionTrans('description')}
@@ -251,22 +290,10 @@ const Schema = () => {
           </div>
 
           <div className={classes.block}>
-            <Typography variant="h5">{collectionTrans('features')}</Typography>
+            <Typography variant="h5">
+              {collectionTrans('consistency')}
+            </Typography>
             <Typography variant="h6">
-              {collection.schema && collection.schema.enable_dynamic_field ? (
-                <Tooltip
-                  title={collectionTrans('dynamicSchemaTooltip')}
-                  placement="top"
-                  arrow
-                >
-                  <Chip
-                    className={`${classes.chip} ${classes.featureChip}`}
-                    label={collectionTrans('dynamicSchema')}
-                    variant="outlined"
-                    size="small"
-                  />
-                </Tooltip>
-              ) : null}
               <Tooltip
                 title={
                   consistencyTooltipsMap[collection.consistency_level!] || ''
@@ -296,7 +323,25 @@ const Schema = () => {
       )}
 
       <section className={classes.gridWrapper}>
-        <Typography variant="h5">{collectionTrans('schema')}</Typography>
+        <Typography variant="h5">
+          {collectionTrans('schema')}
+          {collection &&
+          collection.schema &&
+          collection.schema.enable_dynamic_field ? (
+            <Tooltip
+              title={collectionTrans('dynamicSchemaTooltip')}
+              placement="top"
+              arrow
+            >
+              <Chip
+                className={`${classes.chip}`}
+                label={collectionTrans('dynamicSchema')}
+                size="small"
+                icon={<EnabledIcon />}
+              />
+            </Tooltip>
+          ) : null}
+        </Typography>
 
         <AttuGrid
           toolbarConfigs={[]}
