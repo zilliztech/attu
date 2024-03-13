@@ -404,7 +404,7 @@ const Collections = () => {
         </span>
       ),
       formatter(v) {
-        return formatNumber(Number(v.rowCount));
+        return formatNumber(v.rowCount);
       },
     },
     {

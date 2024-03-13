@@ -22,6 +22,7 @@ import {
   getVectorFieldOptions,
   cloneObj,
   generateVector,
+  formatNumber,
 } from '@/utils';
 import { LOADING_STATE, DYNAMIC_FIELD, DataTypeEnum } from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
@@ -217,11 +218,14 @@ const VectorSearch = () => {
   // fetch data
   const loadedCollections = collections.filter(
     c => c.status === LOADING_STATE.LOADED
-  );
+  ) as CollectionFullObject[];
+  // sort by rowCounts
+  loadedCollections.sort((a, b) => b.rowCount - a.rowCount);
+
   const collectionOptions: Option[] = useMemo(
     () =>
       loadedCollections.map(c => ({
-        label: c.collection_name,
+        label: `${c.collection_name}(${formatNumber(c.rowCount)})`,
         value: c.collection_name,
       })),
     [loadedCollections]
@@ -414,7 +418,7 @@ const VectorSearch = () => {
             </Typography>
           )}
           {selectedFieldDimension !== 0 ? (
-            <Button
+            <CustomButton
               className={classes.exampleBtn}
               onClick={() => {
                 const dim =
@@ -425,7 +429,7 @@ const VectorSearch = () => {
               }}
             >
               {btnTrans('example')}
-            </Button>
+            </CustomButton>
           ) : null}
           <CustomButton
             variant="contained"

@@ -6,6 +6,7 @@ import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
+import { formatNumber } from '@/utils';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
 
@@ -155,7 +156,7 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
     <div className={classes.collectionNode}>
       <div>
         {data.collection_name}
-        <span className={classes.count}>({data.rowCount})</span>
+        <span className={classes.count}>({formatNumber(data.rowCount || 0)})</span>
       </div>
       <div className={classes.right}>
         <Tooltip title={loadStatus}>

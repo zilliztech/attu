@@ -44,7 +44,7 @@ export interface DescribeIndexRes extends DescribeIndexResponse {
 export type CollectionFullObject = {
   collection_name: string;
   schema: SchemaObject;
-  rowCount: number | string;
+  rowCount: number;
   createdTime: number;
   aliases: string[];
   description: string;
