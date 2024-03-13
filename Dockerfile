@@ -1,5 +1,5 @@
 # => Building container
-FROM --platform=$BUILDPLATFORM node:18-slim as builder
+FROM --platform=$TARGETPLATFORM node:18-slim as builder
 WORKDIR /app
 COPY . .
 
@@ -19,7 +19,7 @@ ENV PORT 80
 RUN yarn build
 
 # => Copy to Final container
-FROM --platform=$BUILDPLATFORM node:18-slim
+FROM --platform=$TARGETPLATFORM node:18-slim
 WORKDIR /app
 COPY --from=builder /app/server/dist /app/dist
 COPY --from=builder /app/client/build /app/build
