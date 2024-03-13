@@ -438,7 +438,7 @@ export class CollectionsService {
         v => v.name === collection.name
       );
 
-      const notLazy = !!loadedCollection || i < 5; // lazy is true, only load full details for the first 10 collections
+      const notLazy = i <= 5; // lazy is true, only load full details for the first 10 collections
 
       data.push(
         await this.getCollection(

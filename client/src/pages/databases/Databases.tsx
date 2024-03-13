@@ -17,7 +17,6 @@ import Collections from '../collections/Collections';
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
-    gap: theme.spacing(2),
   },
   tree: {
     boxShadow: 'none',
@@ -25,13 +24,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: theme.spacing(28),
     flexGrow: 0,
     flexShrink: 0,
+    height: 'calc(100vh - 96px)',
     overflow: 'auto',
     boxSizing: 'border-box',
+    padding: theme.spacing(0, 2, 0, 0),
   },
   tab: {
     flexGrow: 1,
     flexShrink: 1,
     overflowX: 'auto',
+    padding: theme.spacing(0, 2),
   },
 }));
 
@@ -66,14 +68,14 @@ const Databases = () => {
   // collection tabs
   const collectionTabs: ITab[] = [
     {
+      label: collectionTrans('schemaTab'),
+      component: <Schema />,
+      path: `info`,
+    },
+    {
       label: collectionTrans('dataTab'),
       component: <Query />,
       path: `data`,
-    },
-    {
-      label: collectionTrans('schemaTab'),
-      component: <Schema />,
-      path: `schema`,
     },
     {
       label: collectionTrans('partitionTab'),

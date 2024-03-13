@@ -181,7 +181,7 @@ const LoadCollectionDialog = (props: any) => {
           <Typography variant="body1" component="p" className={classes.desc}>
             {collectionTrans('loadContent')}
           </Typography>
-          {!enableRelica ? (
+          {enableRelica ? (
             <>
               <FormControlLabel
                 control={

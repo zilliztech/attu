@@ -1,25 +1,55 @@
-import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  Typography,
+  Chip,
+  Tooltip,
+} from '@material-ui/core';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
-import { usePaginationHook } from '@/hooks';
 import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
-import { dataContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '../search/Utils';
+import { LOADING_STATE } from '@/consts';
+import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
+import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
+import StatusAction from '@/pages/collections/StatusAction';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
-    height: `calc(100vh - 160px)`,
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    height: `100%`,
+    overflow: 'auto',
+    '& h5': {
+      color: theme.palette.attuGrey.dark,
+      marginBottom: theme.spacing(0.5),
+      fontSize: '14px',
+      fontWeight: 400,
+    },
+  },
+  infoWrapper: {
+    marginBottom: theme.spacing(2),
+    paddingTop: theme.spacing(0.5),
+  },
+  block: {
+    '& *': {
+      fontSize: '14px',
+      lineHeight: 1.5,
+    },
+    paddingBottom: theme.spacing(2),
   },
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
   },
-  iconTitle: {
+  primaryKeyChip: {
     fontSize: '8px',
     position: 'relative',
     top: '3px',
@@ -28,6 +58,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   chip: {
     marginLeft: theme.spacing(0.5),
     marginRight: theme.spacing(0.5),
+    fontSize: '12px',
+    background: 'rgba(0, 0, 0, 0.04)',
+    border: 'none',
+  },
+  featureChip: {
+    marginLeft: 0,
+    border: 'none',
   },
   nameWrapper: {
     display: 'flex',
@@ -58,9 +95,14 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
     },
   },
+
+  gridWrapper: {
+    paddingBottom: theme.spacing(2),
+  },
 }));
 
 const Schema = () => {
+  const { setDialog } = useContext(rootContext);
   const { fetchCollection, collections, loading } = useContext(dataContext);
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
@@ -69,27 +111,23 @@ const Schema = () => {
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
 
+  const consistencyTooltipsMap: Record<string, string> = {
+    Strong: collectionTrans('consistencyStrongTooltip'),
+    Bounded: collectionTrans('consistencyBoundedTooltip'),
+    Session: collectionTrans('consistencySessionTooltip'),
+    Eventually: collectionTrans('consistencyEventuallyTooltip'),
+  };
+
   // get collection
   const collection = collections.find(
     c => c.collection_name === collectionName
   );
 
   // get fields
-  const fileds = collection?.schema?.fields || [];
+  const fields = collection?.schema?.fields || [];
 
   const KeyIcon = icons.key;
-
-  const {
-    pageSize,
-    handlePageSize,
-    currentPage,
-    handleCurrentPage,
-    total,
-    data: schemaList,
-    order,
-    orderBy,
-    handleGridSort,
-  } = usePaginationHook(fileds);
+  const EnabledIcon = icons.check;
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -102,7 +140,7 @@ const Schema = () => {
             {f.name}
             {f.is_primary_key ? (
               <div
-                className={classes.iconTitle}
+                className={classes.primaryKeyChip}
                 title={collectionTrans('idFieldName')}
               >
                 <KeyIcon classes={{ root: 'key' }} />
@@ -209,32 +247,117 @@ const Schema = () => {
     },
   ];
 
-  const handlePageChange = (e: any, page: number) => {
-    handleCurrentPage(page);
-  };
-
+  // get loading state label
   return (
     <section className={classes.wrapper}>
-      <AttuGrid
-        toolbarConfigs={[]}
-        colDefinitions={colDefinitions}
-        rows={schemaList}
-        rowCount={total}
-        primaryKey="fieldID"
-        showHoverStyle={false}
-        page={currentPage}
-        onPageChange={handlePageChange}
-        rowsPerPage={pageSize}
-        setRowsPerPage={handlePageSize}
-        isLoading={loading}
-        openCheckBox={false}
-        order={order}
-        orderBy={orderBy}
-        handleSort={handleGridSort}
-        labelDisplayedRows={getLabelDisplayedRows(
-          gridTrans[schemaList.length > 1 ? 'fields' : 'field']
-        )}
-      />
+      {collection && (
+        <section className={classes.infoWrapper}>
+          <div className={classes.block}>
+            <Typography variant="h5">{collectionTrans('status')}</Typography>
+            <StatusAction
+              status={collection.status}
+              percentage={collection.loadedPercentage}
+              schema={collection.schema!}
+              collectionName={collection.collection_name}
+              action={() => {
+                setDialog({
+                  open: true,
+                  type: 'custom',
+                  params: {
+                    component:
+                      collection.status === LOADING_STATE.UNLOADED ? (
+                        <LoadCollectionDialog
+                          collectionName={collection.collection_name}
+                        />
+                      ) : (
+                        <ReleaseCollectionDialog
+                          collectionName={collection.collection_name}
+                        />
+                      ),
+                  },
+                });
+              }}
+            />
+          </div>
+
+          <div className={classes.block}>
+            <Typography variant="h5">
+              {collectionTrans('description')}
+            </Typography>
+            <Typography variant="h6">
+              {collection?.description || '--'}
+            </Typography>
+          </div>
+
+          <div className={classes.block}>
+            <Typography variant="h5">
+              {collectionTrans('consistency')}
+            </Typography>
+            <Typography variant="h6">
+              <Tooltip
+                title={
+                  consistencyTooltipsMap[collection.consistency_level!] || ''
+                }
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={`${classes.chip} ${classes.featureChip}`}
+                  label={collection.consistency_level}
+                  variant="outlined"
+                  size="small"
+                />
+              </Tooltip>
+            </Typography>
+          </div>
+
+          <div className={classes.block}>
+            <Typography variant="h5">
+              {collectionTrans('createdTime')}
+            </Typography>
+            <Typography variant="h6">
+              {new Date(collection.createdTime).toLocaleString()}
+            </Typography>
+          </div>
+        </section>
+      )}
+
+      <section className={classes.gridWrapper}>
+        <Typography variant="h5">
+          {collectionTrans('schema')}
+          {collection &&
+          collection.schema &&
+          collection.schema.enable_dynamic_field ? (
+            <Tooltip
+              title={collectionTrans('dynamicSchemaTooltip')}
+              placement="top"
+              arrow
+            >
+              <Chip
+                className={`${classes.chip}`}
+                label={collectionTrans('dynamicSchema')}
+                size="small"
+                icon={<EnabledIcon />}
+              />
+            </Tooltip>
+          ) : null}
+        </Typography>
+
+        <AttuGrid
+          toolbarConfigs={[]}
+          colDefinitions={colDefinitions}
+          rows={fields}
+          rowCount={fields.length}
+          primaryKey="fieldID"
+          showHoverStyle={false}
+          isLoading={loading}
+          openCheckBox={false}
+          showPagination={false}
+          labelDisplayedRows={getLabelDisplayedRows(
+            gridTrans[fields.length > 1 ? 'fields' : 'field']
+          )}
+        />
+      </section>
     </section>
   );
 };

@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import icons from '@/components/icons/Icons';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
+import clcx from 'clsx';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
 
@@ -13,6 +15,7 @@ export interface DatabaseTreeItem {
   name: string;
   type: TreeNodeType;
   expanded?: boolean;
+  data?: CollectionObject;
 }
 
 interface DatabaseToolProps {
@@ -37,6 +40,7 @@ const getExpanded = (nodes: DatabaseTreeItem[]) => {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
+    fontSize: '15px',
     '& .MuiTreeItem-iconContainer': {
       width: 'auto',
     },
@@ -50,6 +54,8 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: 'none',
     },
     '& .MuiTreeItem-content': {
+      width: 'auto',
+
       '&:hover': {
         backgroundColor: 'rgba(10, 206, 130, 0.08)',
       },
@@ -79,7 +85,86 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: '#888',
     },
   },
+  collectionNode: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    minHeight: '24px',
+    lineHeight: '24px',
+  },
+  right: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 20,
+  },
+  count: {
+    fontSize: '13px',
+    fontWeight: 500,
+    marginLeft: theme.spacing(0.5),
+    color: theme.palette.attuGrey.main,
+  },
+  dot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    position: 'relative',
+    top: '0',
+  },
+  loaded: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    backgroundColor: theme.palette.primary.main,
+  },
+  unloaded: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: '#fff !important',
+  },
+  loading: {
+    border: `1px solid ${theme.palette.primary.light}`,
+    backgroundColor: `${theme.palette.primary.light} !important`,
+  },
+  noIndex: {
+    border: `1px solid ${theme.palette.attuGrey.light}`,
+    backgroundColor: theme.palette.attuGrey.light,
+  },
 }));
+
+const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
+  // i18n collectionTrans
+  const { t: commonTrans } = useTranslation();
+  const statusTrans = commonTrans('status');
+
+  // styles
+  const classes = useStyles();
+
+  // class
+  const loadClass = clcx(classes.dot, {
+    [classes.loaded]: data.loaded,
+    [classes.unloaded]: !data.loaded,
+    [classes.loading]: data.status === 'loading',
+    [classes.noIndex]: !data.schema || !data.schema.hasVectorIndex,
+  });
+
+  //  status tooltip
+  const hasIndex = data.schema && data.schema.hasVectorIndex;
+  const loadStatus = hasIndex
+    ? data.loaded
+      ? statusTrans.loaded
+      : statusTrans.unloaded
+    : statusTrans.noVectorIndex;
+
+  return (
+    <div className={classes.collectionNode}>
+      <div>
+        {data.collection_name}
+        <span className={classes.count}>({data.rowCount})</span>
+      </div>
+      <div className={classes.right}>
+        <Tooltip title={loadStatus}>
+          <div className={loadClass}></div>
+        </Tooltip>
+      </div>
+    </div>
+  );
+};
 
 const DatabaseTree: React.FC<DatabaseToolProps> = props => {
   // props
@@ -91,6 +176,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       id: `c_${c.collection_name}`,
       name: c.collection_name,
       type: 'collection' as TreeNodeType,
+      data: c,
     };
   });
 
@@ -117,7 +203,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       node.type === 'db'
         ? `/databases/${database}/${params.databasePage || 'collections'}`
         : `/databases/${database}/${node.name}/${
-            params.collectionPage || 'data'
+            params.collectionPage || 'info'
           }`
     );
   };
@@ -150,7 +236,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
           key={node.id}
           nodeId={node.id}
           icon={<CollectionIcon />}
-          label={node.name}
+          label={<CollectionNode data={node.data!} />}
           className={classes.treeItem}
           onClick={event => {
             event.stopPropagation();

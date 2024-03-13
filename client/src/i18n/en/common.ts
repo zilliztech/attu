@@ -1,5 +1,3 @@
-import { partition } from "d3";
-
 const commonTrans = {
   attu: {
     admin: 'Attu',
@@ -19,6 +17,7 @@ const commonTrans = {
     error: 'error',
     running: 'running',
     loading: 'is loaded',
+    noVectorIndex: 'No Vector Index',
   },
   grid: {
     action: 'action',

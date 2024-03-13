@@ -10,13 +10,12 @@ import {
   createStyles,
   Typography,
   useTheme,
-  Tooltip,
   Chip,
 } from '@material-ui/core';
 import { LOADING_STATE } from '@/consts';
 import StatusIcon from '@/components/status/StatusIcon';
 import icons from '@/components/icons/Icons';
-import IndexTypeElement from '@/pages/schema/IndexTypeElement';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,17 +30,22 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(0.5),
     },
     circle: {
-      backgroundColor: (props: any) => props.color,
+      width: '8px',
+      height: '8px',
       borderRadius: '50%',
-      width: '10px',
-      height: '10px',
+      backgroundColor: theme.palette.primary.main,
     },
-
-    circleUnload: {
-      backgroundColor: theme.palette.attuGrey.main,
-      borderRadius: '50%',
-      width: '10px',
-      height: '10px',
+    loaded: {
+      border: `1px solid ${theme.palette.primary.main}`,
+      backgroundColor: theme.palette.primary.main,
+    },
+    unloaded: {
+      border: `1px solid ${theme.palette.primary.main}`,
+      background: '#fff !important',
+    },
+    noIndex: {
+      border: `1px solid ${theme.palette.attuGrey.light}`,
+      backgroundColor: '#fff',
     },
 
     loading: {
@@ -78,7 +82,7 @@ const StatusAction: FC<StatusActionType> = props => {
     status,
     percentage = 0,
     collectionName,
-    field,
+    schema,
     action = () => {},
   } = props;
   const { t: commonTrans } = useTranslation();
@@ -95,7 +99,7 @@ const StatusAction: FC<StatusActionType> = props => {
       case LOADING_STATE.UNLOADED:
         return {
           label: statusTrans.unloaded,
-          icon: <div className={`${classes.circleUnload}`}></div>,
+          icon: <div className={`${classes.circle} ${classes.unloaded}`}></div>,
           tooltip: collectionTrans('clickToLoad'),
           deleteIcon: <LoadIcon />,
         };
@@ -103,7 +107,7 @@ const StatusAction: FC<StatusActionType> = props => {
       case LOADING_STATE.LOADED:
         return {
           label: statusTrans.loaded,
-          icon: <div className={classes.circle}></div>,
+          icon: <div className={`${classes.circle} ${classes.loaded}`}></div>,
           tooltip: collectionTrans('clickToRelease'),
           deleteIcon: <ReleaseIcon />,
         };
@@ -129,33 +133,33 @@ const StatusAction: FC<StatusActionType> = props => {
     }
   }, [status, statusTrans, percentage]);
 
-  // UI state
-  const collectionLoaded = status === LOADING_STATE.LOADED;
+  const noIndex = !schema.hasVectorIndex;
+  const noVectorIndexTooltip = collectionTrans('noVectorIndexTooltip');
+  const noIndexIcon = (
+    <div className={`${classes.circle} ${classes.noIndex}`}></div>
+  );
+
   return (
     <div className={classes.root}>
-      {field.hasVectorIndex && (
-        <Tooltip arrow interactive title={tooltip} placement={'top'}>
-          <Chip
-            className={classes.chip}
-            variant="outlined"
-            label={<Typography>{label}</Typography>}
-            onDelete={() => action()}
-            onClick={(e: MouseEvent<HTMLDivElement>) => {
-              e.stopPropagation();
-              action();
-            }}
-            deleteIcon={deleteIcon}
-            size="small"
-            icon={icon}
-          />
-        </Tooltip>
-      )}
-      <IndexTypeElement
-        field={field.vectorFields[0]!}
-        collectionName={collectionName}
-        disabled={collectionLoaded}
-        disabledTooltip={collectionTrans('releaseCollectionFirst')}
-      />
+      <CustomToolTip
+        title={noIndex ? noVectorIndexTooltip : tooltip}
+        placement={'top'}
+      >
+        <Chip
+          className={classes.chip}
+          variant="outlined"
+          label={<Typography>{label}</Typography>}
+          onDelete={() => action()}
+          onClick={(e: MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation();
+            action();
+          }}
+          disabled={noIndex}
+          deleteIcon={deleteIcon}
+          size="small"
+          icon={noIndex ? noIndexIcon : icon}
+        />
+      </CustomToolTip>
     </div>
   );
 };

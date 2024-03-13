@@ -46,4 +46,5 @@ export type IconsType =
   | 'prev'
   | 'expand'
   | 'github'
-  | 'question';
+  | 'question'
+  | 'check';

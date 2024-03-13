@@ -10,13 +10,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(1),
   },
   svg: {
-    color: theme.palette.primary.main,
+    color: theme.palette.primary.light,
   },
 }));
 
 const StatusIcon: FC<StatusIconType> = props => {
   const classes = useStyles();
-  const { type, className = '', size = 20 } = props;
+  const { type, className = '', size = 16 } = props;
 
   const getElement = (type: ChildrenStatusType): ReactElement => {
     switch (type) {
@@ -24,7 +24,7 @@ const StatusIcon: FC<StatusIconType> = props => {
         return (
           <CircularProgress
             size={size}
-            thickness={8}
+            thickness={4}
             classes={{ svg: classes.svg }}
           />
         );
