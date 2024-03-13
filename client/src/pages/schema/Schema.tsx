@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& h5': {
       color: theme.palette.attuGrey.dark,
       marginBottom: theme.spacing(0.5),
-      fontSize: '13px',
+      fontSize: '14px',
       fontWeight: 400,
     },
   },
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   block: {
     '& *': {
-      fontSize: '13px',
+      fontSize: '14px',
       lineHeight: 1.5,
     },
     paddingBottom: theme.spacing(2),
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
   },
-  iconTitle: {
+  primaryKeyChip: {
     fontSize: '8px',
     position: 'relative',
     top: '3px',
@@ -140,7 +140,7 @@ const Schema = () => {
             {f.name}
             {f.is_primary_key ? (
               <div
-                className={classes.iconTitle}
+                className={classes.primaryKeyChip}
                 title={collectionTrans('idFieldName')}
               >
                 <KeyIcon classes={{ root: 'key' }} />
