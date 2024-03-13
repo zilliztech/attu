@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& h3': {
       margin: 0,
       fontSize: '14px',
+      lineHeight: 1.5,
       color: theme.palette.attuGrey.dark,
     },
     '& a': {

@@ -2,20 +2,22 @@ import { FC, useMemo } from 'react';
 import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { StatisticsCardProps } from './Types';
-import { formatNumber } from '@/utils';
+import { MilvusService } from '@/http';
 import { LOADING_STATE } from '@/consts';
 import icons from '@/components/icons/Icons';
+import { CollectionObject } from '@server/types';
+import CustomButton from '@/components/customButton/CustomButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
+    position: 'relative',
     display: `flex`,
     flexDirection: `column`,
     gap: theme.spacing(1),
     backgroundColor: theme.palette.common.white,
     padding: theme.spacing(2),
     border: '1px solid #E0E0E0',
-    minWidth: 'auto',
+    minWidth: '180px',
     cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 0px 4px 0px #00000029',
@@ -42,12 +44,33 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontWeight: 'bold',
     marginBottom: theme.spacing(1),
   },
+  delIcon: {
+    color: theme.palette.attuGrey.main,
+    cursor: 'pointer',
+    position: 'absolute',
+    right: 4,
+    top: 4,
+    minWidth: 0,
+    minHeight: 0,
+    padding: theme.spacing(.5),
+    '& svg': {
+      width: 15,
+    },
+  },
 }));
 
-const StatisticsCard: FC<StatisticsCardProps> = ({
+export interface DatabaseCardProps {
+  wrapperClass?: string;
+  database: string;
+  collections: CollectionObject[];
+  setDatabase: (database: string) => void;
+}
+
+const DatabaseCard: FC<DatabaseCardProps> = ({
   collections = [],
   database = '',
   wrapperClass = '',
+  setDatabase,
 }) => {
   const { t: overviewTrans } = useTranslation('overview');
 
@@ -55,6 +78,7 @@ const StatisticsCard: FC<StatisticsCardProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const DbIcon = icons.database;
+  const DeleteIcon = icons.delete;
 
   const loadCollections = collections.filter(
     c => c.status !== LOADING_STATE.UNLOADED && typeof c.status !== 'undefined'
@@ -90,9 +114,21 @@ const StatisticsCard: FC<StatisticsCardProps> = ({
     };
   }, [overviewTrans, loadCollections]);
 
-  const onClick = () => {
+  const onClick = async () => {
+    // use database
+    await MilvusService.useDatabase({ database });
+    // set database
+    setDatabase(database);
+
     // navigate to database detail page
     navigation(`/databases/${database}`);
+  };
+
+  const onDelete = async (e: any) => {
+    e.stopPropagation();
+    alert('delete')
+    // await MilvusService.deleteDatabase({ database });
+    // setDatabase('default');
   };
 
   return (
@@ -113,10 +149,13 @@ const StatisticsCard: FC<StatisticsCardProps> = ({
               </Typography>
             </div>
           ))}
+          <CustomButton className={classes.delIcon} onClick={onDelete} >
+            <DeleteIcon />
+          </CustomButton>
         </div>
       </section>
     </section>
   );
 };
 
-export default StatisticsCard;
+export default DatabaseCard;

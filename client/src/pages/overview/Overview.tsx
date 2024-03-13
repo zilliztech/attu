@@ -6,9 +6,8 @@ import { dataContext, systemContext } from '@/context';
 import { MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import StatisticsCard from './statisticsCard/StatisticsCard';
+import DatabaseCard from './DatabaseCard';
 import SysCard from './SysCard';
-import navTrans from '@/i18n/cn/nav';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
@@ -19,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   section: {
+    width: '80%',
     marginBottom: theme.spacing(2),
   },
   cardWrapper: {
@@ -31,13 +31,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
-  const { database, databases, collections, loading } = useContext(dataContext);
+  const { database, databases, collections, loading, setDatabase } =
+    useContext(dataContext);
   const { data } = useContext(systemContext);
   const classes = useStyles();
   const { t: overviewTrans } = useTranslation('overview');
   const { t: databaseTrans } = useTranslation('database');
-
-  // database trans
 
   // calculation diff to the rootCoord create time
   const duration = useMemo(() => {
@@ -77,13 +76,41 @@ const Overview = () => {
       <section className={classes.section}>
         <Typography variant="h4">{databaseTrans('databases')}</Typography>
         <div className={classes.cardWrapper}>
-          <StatisticsCard collections={collections} database={database} />
-          <StatisticsCard collections={collections} database={database} />
-          <StatisticsCard collections={collections} database={database} />
-          <StatisticsCard collections={collections} database={database} />
-          <StatisticsCard collections={collections} database={database} />
-          <StatisticsCard collections={collections} database={database} />
-          <StatisticsCard collections={collections} database={database} />
+          <DatabaseCard
+            collections={collections}
+            database={'default'}
+            setDatabase={setDatabase}
+          />
+          <DatabaseCard
+            collections={collections}
+            database={'db1'}
+            setDatabase={setDatabase}
+          />
+          <DatabaseCard
+            collections={collections}
+            database={'db2'}
+            setDatabase={setDatabase}
+          />
+          <DatabaseCard
+            collections={collections}
+            database={database}
+            setDatabase={setDatabase}
+          />
+          <DatabaseCard
+            collections={collections}
+            database={database}
+            setDatabase={setDatabase}
+          />
+          <DatabaseCard
+            collections={collections}
+            database={database}
+            setDatabase={setDatabase}
+          />
+          <DatabaseCard
+            collections={collections}
+            database={database}
+            setDatabase={setDatabase}
+          />
         </div>
       </section>
 
@@ -94,19 +121,20 @@ const Overview = () => {
             <SysCard
               title={'Milvus Version'}
               count={data?.systemInfo?.build_version}
+              link="system"
             />
 
             <SysCard
               title={overviewTrans('deployMode')}
               count={data?.deployMode}
+              link="system"
             />
-            <SysCard title={overviewTrans('upTime')} count={duration} />
-
             <SysCard
-              title={overviewTrans('databases')}
-              count={databases?.length}
-              link="databases"
+              title={overviewTrans('upTime')}
+              count={duration}
+              link="system"
             />
+
             <SysCard
               title={overviewTrans('users')}
               count={data?.users?.length}
@@ -115,7 +143,7 @@ const Overview = () => {
             <SysCard
               title={overviewTrans('roles')}
               count={data?.roles?.length}
-              link="users?activeIndex=1"
+              link="roles"
             />
 
             {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED ? (
