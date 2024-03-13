@@ -22,7 +22,7 @@ export const useNavigationHook = (
         const navInfo: NavInfo = {
           navTitle: navTrans('overview'),
           backPath: '',
-          showDatabaseSelector: true,
+          showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;

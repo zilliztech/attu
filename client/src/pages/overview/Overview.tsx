@@ -1,159 +1,32 @@
 import { useContext, useMemo } from 'react';
-import {
-  makeStyles,
-  Theme,
-  Typography,
-  useTheme,
-  Card,
-  CardContent,
-} from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { rootContext, dataContext, systemContext } from '@/context';
-import EmptyCard from '@/components/cards/EmptyCard';
-import icons from '@/components/icons/Icons';
-import { LOADING_STATE, MILVUS_DEPLOY_MODE } from '@/consts';
+import { dataContext, systemContext } from '@/context';
+import { MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import { formatNumber } from '@/utils';
-import CollectionCard from './collectionCard/CollectionCard';
 import StatisticsCard from './statisticsCard/StatisticsCard';
+import SysCard from './SysCard';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(4),
-  },
-  collectionTitle: {
-    margin: theme.spacing(2, 0),
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  cardsWrapper: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
     gap: theme.spacing(2),
-  },
-  sysCardsWrapper: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gap: theme.spacing(2),
-  },
-  h2: {
-    fontWeight: 'bold',
-    fontSize: '22px',
-    margin: theme.spacing(1, 0, 2, 0),
   },
   dbWrapper: {
-    width: '55%',
-    order: 1,
-    padding: theme.spacing(1, 0, 0),
-  },
-  emptyCard: {
-    minHeight: '50vh',
-    color: 'transparent',
-  },
-  sysWrapper: {
-    width: '45%',
-    background: 'rgb(239, 239, 239)',
-    padding: theme.spacing(1, 2, 2),
-    order: 1,
-  },
-  sysCard: {
-    '& p': {
-      fontSize: '24px',
-      margin: 0,
-    },
-    '& h3': {
-      margin: 0,
-      fontSize: '14px',
-      color: theme.palette.attuGrey.dark,
-    },
-    '& a': {
-      textDecoration: 'none',
-      color: '#000',
-    },
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexGrow: 0,
+    gap: theme.spacing(2),
   },
 }));
-
-const SysCard = (data: {
-  title: string;
-  count: number | string;
-  des?: string;
-  link?: string;
-}) => {
-  const classes = useStyles();
-
-  const content = (
-    <>
-      <Typography component={'p'}>{data.count}</Typography>
-      <Typography component={'h3'}>{data.title}</Typography>
-      {data.des ? <Typography component={'p'}>{data.des}</Typography> : null}
-    </>
-  );
-
-  return (
-    <Card className={classes.sysCard}>
-      <CardContent>
-        {data.link ? <Link to={data.link}>{content}</Link> : content}
-      </CardContent>
-    </Card>
-  );
-};
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
   const { database, databases, collections, loading } = useContext(dataContext);
   const { data } = useContext(systemContext);
   const classes = useStyles();
-  const theme = useTheme();
   const { t: overviewTrans } = useTranslation('overview');
-  const { t: collectionTrans } = useTranslation('collection');
-  const { t: successTrans } = useTranslation('success');
-  const { openSnackBar } = useContext(rootContext);
-
-  const loadCollections = collections.filter(
-    c => c.status !== LOADING_STATE.UNLOADED && typeof c.status !== 'undefined'
-  );
-
-  const onRelease = () => {
-    openSnackBar(
-      successTrans('release', { name: collectionTrans('collection') })
-    );
-  };
-
-  const statisticsData = useMemo(() => {
-    return {
-      data: [
-        {
-          label: overviewTrans('load'),
-          value: formatNumber(loadCollections.length),
-          valueColor: '#07d197',
-        },
-        {
-          label: overviewTrans('all'),
-          value: collections.length,
-          valueColor: theme.palette.primary.main,
-        },
-        {
-          label: overviewTrans('data'),
-          value: overviewTrans('rows', {
-            number: formatNumber(
-              collections.reduce(
-                (acc, cur) => acc + Number(cur.rowCount || 0),
-                0
-              )
-            ),
-          }) as string,
-          valueColor: theme.palette.primary.dark,
-        },
-      ],
-    };
-  }, [overviewTrans, loadCollections]);
-
-  const CollectionIcon = icons.navCollection;
 
   // calculation diff to the rootCoord create time
   const duration = useMemo(() => {
@@ -191,47 +64,14 @@ const Overview = () => {
   return (
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
       <section className={classes.dbWrapper}>
-        <Typography component={'h2'} className={classes.h2}>
-          {overviewTrans('database')} {database}
-        </Typography>
-
-        <StatisticsCard data={statisticsData.data} />
-        <Typography component={'h4'} className={classes.collectionTitle}>
-          {overviewTrans('load')}
-        </Typography>
-
-        {loadCollections.length > 0 ? (
-          <div className={classes.cardsWrapper}>
-            {loadCollections.map(collection => (
-              <CollectionCard
-                key={collection.id}
-                collection={collection}
-                onRelease={onRelease}
-              />
-            ))}
-          </div>
-        ) : (
-          <EmptyCard
-            loading={loading}
-            wrapperClass={classes.emptyCard}
-            icon={!loading ? <CollectionIcon /> : undefined}
-            text={
-              loading ? overviewTrans('loading') : collectionTrans('noLoadData')
-            }
-          />
-        )}
-      </section>
-
-      {data?.systemInfo ? (
-        <section className={classes.sysWrapper}>
-          <Typography component={'h2'} className={classes.h2}>
-            {overviewTrans('sysInfo')}
-          </Typography>
-          <div className={classes.sysCardsWrapper}>
+        <StatisticsCard collections={collections} database={database} />
+        {data?.systemInfo && (
+          <>
             <SysCard
               title={'Milvus Version'}
               count={data?.systemInfo?.build_version}
             />
+
             <SysCard
               title={overviewTrans('deployMode')}
               count={data?.deployMode}
@@ -275,9 +115,9 @@ const Overview = () => {
                 />
               </>
             ) : null}
-          </div>
-        </section>
-      ) : null}
+          </>
+        )}
+      </section>
     </section>
   );
 };

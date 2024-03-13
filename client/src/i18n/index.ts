@@ -2,6 +2,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+import homeEn from './en/home';
+import homeCn from './cn/home';
 import commonCn from './cn/common';
 import commonEn from './en/common';
 import buttonEn from './en/button';
@@ -38,6 +40,7 @@ import prometheusTransCn from './cn/prometheus';
 export const resources = {
   'zh-CN': {
     translation: commonCn,
+    home: homeCn,
     btn: buttonCn,
     warning: warningCn,
     nav: navCn,
@@ -56,6 +59,7 @@ export const resources = {
   },
   en: {
     translation: commonEn,
+    home: homeEn,
     btn: buttonEn,
     warning: warningEn,
     nav: navEn,

@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logoExpand: {
       marginRight: theme.spacing(1),
-      transform: 'scale(2)',
+      transform: 'scale(1.5)',
     },
     logoCollapse: {
       transform: 'scale(1.5)',
