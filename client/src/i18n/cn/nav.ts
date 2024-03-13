@@ -1,5 +1,6 @@
 const navTrans = {
   overview: '概览',
+  welcome: '欢迎来到 Milvus！',
   collection: 'Collection',
   console: '搜索控制台',
   search: '向量搜索',

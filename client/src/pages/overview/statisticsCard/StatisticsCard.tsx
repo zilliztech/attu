@@ -64,27 +64,28 @@ const StatisticsCard: FC<StatisticsCardProps> = ({
     return {
       data: [
         {
-          label: overviewTrans('load'),
-          value: formatNumber(loadCollections.length),
-          valueColor: '#07d197',
-        },
-        {
           label: overviewTrans('all'),
           value: collections.length,
           valueColor: theme.palette.primary.main,
         },
-        {
-          label: overviewTrans('data'),
-          value: overviewTrans('rows', {
-            number: formatNumber(
-              collections.reduce(
-                (acc, cur) => acc + Number(cur.rowCount || -1),
-                0
-              )
-            ),
-          }) as string,
-          valueColor: theme.palette.primary.dark,
-        },
+        // {
+        //   label: overviewTrans('load'),
+        //   value: formatNumber(loadCollections.length),
+        //   valueColor: '#07d197',
+        // },
+
+        // {
+        //   label: overviewTrans('data'),
+        //   value: overviewTrans('rows', {
+        //     number: formatNumber(
+        //       collections.reduce(
+        //         (acc, cur) => acc + Number(cur.rowCount || -1),
+        //         0
+        //       )
+        //     ),
+        //   }) as string,
+        //   valueColor: theme.palette.primary.dark,
+        // },
       ],
     };
   }, [overviewTrans, loadCollections]);

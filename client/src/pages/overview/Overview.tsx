@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { dataContext, systemContext } from '@/context';
@@ -8,12 +8,20 @@ import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import StatisticsCard from './statisticsCard/StatisticsCard';
 import SysCard from './SysCard';
+import navTrans from '@/i18n/cn/nav';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
     gap: theme.spacing(2),
+    '& h4': {
+      marginBottom: theme.spacing(2),
+    },
   },
-  dbWrapper: {
+
+  section: {
+    marginBottom: theme.spacing(2),
+  },
+  cardWrapper: {
     display: 'flex',
     flexWrap: 'wrap',
     flexGrow: 0,
@@ -27,6 +35,9 @@ const Overview = () => {
   const { data } = useContext(systemContext);
   const classes = useStyles();
   const { t: overviewTrans } = useTranslation('overview');
+  const { t: databaseTrans } = useTranslation('database');
+
+  // database trans
 
   // calculation diff to the rootCoord create time
   const duration = useMemo(() => {
@@ -63,10 +74,23 @@ const Overview = () => {
 
   return (
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
-      <section className={classes.dbWrapper}>
-        <StatisticsCard collections={collections} database={database} />
-        {data?.systemInfo && (
-          <>
+      <section className={classes.section}>
+        <Typography variant="h4">{databaseTrans('databases')}</Typography>
+        <div className={classes.cardWrapper}>
+          <StatisticsCard collections={collections} database={database} />
+          <StatisticsCard collections={collections} database={database} />
+          <StatisticsCard collections={collections} database={database} />
+          <StatisticsCard collections={collections} database={database} />
+          <StatisticsCard collections={collections} database={database} />
+          <StatisticsCard collections={collections} database={database} />
+          <StatisticsCard collections={collections} database={database} />
+        </div>
+      </section>
+
+      {data?.systemInfo && (
+        <section className={classes.section}>
+          <Typography variant="h4">{overviewTrans('sysInfo')}</Typography>
+          <div className={classes.cardWrapper}>
             <SysCard
               title={'Milvus Version'}
               count={data?.systemInfo?.build_version}
@@ -115,9 +139,9 @@ const Overview = () => {
                 />
               </>
             ) : null}
-          </>
-        )}
-      </section>
+          </div>
+        </section>
+      )}
     </section>
   );
 };
