@@ -17,7 +17,6 @@ import Collections from '../collections/Collections';
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
-    gap: theme.spacing(2),
   },
   tree: {
     boxShadow: 'none',
@@ -28,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: 'calc(100vh - 96px)',
     overflow: 'auto',
     boxSizing: 'border-box',
+    padding: theme.spacing(0, 2, 0, 0),
   },
   tab: {
     flexGrow: 1,

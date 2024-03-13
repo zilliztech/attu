@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: 'none',
     },
     '& .MuiTreeItem-content': {
+      width: 'auto',
+
       '&:hover': {
         backgroundColor: 'rgba(10, 206, 130, 0.08)',
       },
@@ -85,7 +87,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   collectionNode: {
     display: 'flex',
-    width: '90%',
     justifyContent: 'space-between',
     minHeight: '24px',
     lineHeight: '24px',
