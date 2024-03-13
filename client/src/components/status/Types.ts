@@ -8,7 +8,7 @@ export type StatusType = {
 
 export type StatusActionType = {
   status: LOADING_STATE;
-  percentage?: string;
+  percentage?: string | number;
   action?: Function;
   field: SchemaObject;
   collectionName: string;

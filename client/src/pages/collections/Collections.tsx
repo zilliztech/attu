@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { makeStyles, Theme, Chip, Tooltip } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
@@ -92,13 +92,6 @@ const Collections = () => {
 
   const QuestionIcon = icons.question;
   const SourceIcon = icons.source;
-
-  const consistencyTooltipsMap: Record<string, string> = {
-    Strong: collectionTrans('consistencyStrongTooltip'),
-    Bounded: collectionTrans('consistencyBoundedTooltip'),
-    Session: collectionTrans('consistencySessionTooltip'),
-    Eventually: collectionTrans('consistencyEventuallyTooltip'),
-  };
 
   const clearIndexCache = useCallback(async () => {
     await CollectionService.flush();
@@ -348,7 +341,7 @@ const Collections = () => {
       formatter({ collection_name }) {
         return (
           <Link
-            to={`/databases/${database}/${collection_name}/data`}
+            to={`/databases/${database}/${collection_name}/info`}
             className={classes.link}
             title={collection_name}
           >
@@ -394,56 +387,6 @@ const Collections = () => {
               });
             }}
           />
-        );
-      },
-    },
-    {
-      id: 'collection_name',
-      align: 'left',
-      disablePadding: true,
-      notSort: true,
-      label: collectionTrans('features'),
-      formatter(v) {
-        return (
-          <>
-            {v.autoID ? (
-              <Tooltip
-                title={collectionTrans('autoIDTooltip')}
-                placement="top"
-                arrow
-              >
-                <Chip
-                  className={classes.chip}
-                  label={collectionTrans('autoID')}
-                  size="small"
-                />
-              </Tooltip>
-            ) : null}
-            {v.schema && v.schema.enable_dynamic_field ? (
-              <Tooltip
-                title={collectionTrans('dynamicSchemaTooltip')}
-                placement="top"
-                arrow
-              >
-                <Chip
-                  className={classes.chip}
-                  label={collectionTrans('dynamicSchema')}
-                  size="small"
-                />
-              </Tooltip>
-            ) : null}
-            <Tooltip
-              title={consistencyTooltipsMap[v.consistency_level] || ''}
-              placement="top"
-              arrow
-            >
-              <Chip
-                className={classes.chip}
-                label={v.consistency_level}
-                size="small"
-              />
-            </Tooltip>
-          </>
         );
       },
     },

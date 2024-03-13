@@ -19,8 +19,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     flexGrow: 1,
-    /* set flex basis to make child item height 100% work on Safari */
-    flexBasis: 0,
+    // /* set flex basis to make child item height 100% work on Safari */
+    // flexBasis: 0,
     background: '#fff',
   },
   box: {

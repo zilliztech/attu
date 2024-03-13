@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     flexShrink: 1,
     overflowX: 'auto',
+    padding: theme.spacing(0, 2),
   },
 }));
 
@@ -67,14 +68,14 @@ const Databases = () => {
   // collection tabs
   const collectionTabs: ITab[] = [
     {
+      label: collectionTrans('schemaTab'),
+      component: <Schema />,
+      path: `info`,
+    },
+    {
       label: collectionTrans('dataTab'),
       component: <Query />,
       path: `data`,
-    },
-    {
-      label: collectionTrans('schemaTab'),
-      component: <Schema />,
-      path: `schema`,
     },
     {
       label: collectionTrans('partitionTab'),
