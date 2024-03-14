@@ -117,7 +117,7 @@ const DatabaseAdminPage = () => {
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={databases.map(d => ({ name: d }))}
+        rows={databases.map(d => ({ name: d.name }))}
         rowCount={databases.length}
         primaryKey="name"
         showPagination={false}

@@ -3,10 +3,11 @@ import {
   DropDatabaseParams,
 } from '../pages/dbAdmin/Types';
 import BaseModel from './BaseModel';
+import { DatabaseObject } from '@server/types';
 
 export class DatabaseService extends BaseModel {
-  static getDatabases() {
-    return super.search<{ db_names: [] }>({
+  static listDatabases() {
+    return super.search<DatabaseObject[]>({
       path: `/databases`,
       params: {},
     });

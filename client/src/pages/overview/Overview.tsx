@@ -31,8 +31,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Overview = () => {
   useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
-  const { database, databases, collections, loading, setDatabase } =
-    useContext(dataContext);
+  const {
+    databases,
+    database,
+    collections,
+    loading,
+    setDatabase,
+    dropDatabase,
+  } = useContext(dataContext);
   const { data } = useContext(systemContext);
   const classes = useStyles();
   const { t: overviewTrans } = useTranslation('overview');
@@ -76,41 +82,20 @@ const Overview = () => {
       <section className={classes.section}>
         <Typography variant="h4">{databaseTrans('databases')}</Typography>
         <div className={classes.cardWrapper}>
-          <DatabaseCard
-            collections={collections}
-            database={'default'}
-            setDatabase={setDatabase}
-          />
-          <DatabaseCard
-            collections={collections}
-            database={'db1'}
-            setDatabase={setDatabase}
-          />
-          <DatabaseCard
-            collections={collections}
-            database={'db2'}
-            setDatabase={setDatabase}
-          />
-          <DatabaseCard
-            collections={collections}
-            database={database}
-            setDatabase={setDatabase}
-          />
-          <DatabaseCard
-            collections={collections}
-            database={database}
-            setDatabase={setDatabase}
-          />
-          <DatabaseCard
-            collections={collections}
-            database={database}
-            setDatabase={setDatabase}
-          />
-          <DatabaseCard
-            collections={collections}
-            database={database}
-            setDatabase={setDatabase}
-          />
+          {databases.map(db => {
+            // if the database is the current database, using client side collections data to avoid more requests
+            if (db.name === database) {
+              db.collections = collections.map(c => c.collection_name);
+            }
+            return (
+              <DatabaseCard
+                database={db}
+                setDatabase={setDatabase}
+                dropDatabase={dropDatabase}
+                key={db.name}
+              />
+            );
+          })}
         </div>
       </section>
 

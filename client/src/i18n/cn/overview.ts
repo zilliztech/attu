@@ -18,6 +18,7 @@ const overviewTrans = {
   dataNodes: '数据节点',
   queryNodes: '查询节点',
   indexNodes: '索引节点',
+  createdTime: '创建时间',
 };
 
 export default overviewTrans;

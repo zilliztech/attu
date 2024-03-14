@@ -1,12 +1,13 @@
-import { FC, useMemo } from 'react';
+import { FC, useContext } from 'react';
 import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MilvusService } from '@/http';
-import { LOADING_STATE } from '@/consts';
 import icons from '@/components/icons/Icons';
-import { CollectionObject } from '@server/types';
 import CustomButton from '@/components/customButton/CustomButton';
+import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import { rootContext, dataContext } from '@/context';
+import { DatabaseObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: 4,
     minWidth: 0,
     minHeight: 0,
-    padding: theme.spacing(.5),
+    padding: theme.spacing(0.5),
     '& svg': {
       width: 15,
     },
@@ -61,18 +62,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface DatabaseCardProps {
   wrapperClass?: string;
-  database: string;
-  collections: CollectionObject[];
+  database: DatabaseObject;
   setDatabase: (database: string) => void;
+  dropDatabase: (params: { db_name: string }) => Promise<void>;
 }
 
 const DatabaseCard: FC<DatabaseCardProps> = ({
-  collections = [],
-  database = '',
+  database = { name: '', collections: [], createdTime: 0 },
   wrapperClass = '',
   setDatabase,
+  dropDatabase,
 }) => {
   const { t: overviewTrans } = useTranslation('overview');
+  const { t: successTrans } = useTranslation('success');
+  const { t: dbTrans } = useTranslation('database');
+  const { t: btnTrans } = useTranslation('btn');
+  const { t: dialogTrans } = useTranslation('dialog');
+
+  const { setDialog, openSnackBar, handleCloseDialog } =
+    useContext(rootContext);
 
   const navigation = useNavigate();
   const classes = useStyles();
@@ -80,76 +88,74 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   const DbIcon = icons.database;
   const DeleteIcon = icons.delete;
 
-  const loadCollections = collections.filter(
-    c => c.status !== LOADING_STATE.UNLOADED && typeof c.status !== 'undefined'
-  );
-
-  const statisticsData = useMemo(() => {
-    return {
-      data: [
-        {
-          label: overviewTrans('all'),
-          value: collections.length,
-          valueColor: theme.palette.primary.main,
-        },
-        // {
-        //   label: overviewTrans('load'),
-        //   value: formatNumber(loadCollections.length),
-        //   valueColor: '#07d197',
-        // },
-
-        // {
-        //   label: overviewTrans('data'),
-        //   value: overviewTrans('rows', {
-        //     number: formatNumber(
-        //       collections.reduce(
-        //         (acc, cur) => acc + Number(cur.rowCount || -1),
-        //         0
-        //       )
-        //     ),
-        //   }) as string,
-        //   valueColor: theme.palette.primary.dark,
-        // },
-      ],
-    };
-  }, [overviewTrans, loadCollections]);
-
   const onClick = async () => {
     // use database
-    await MilvusService.useDatabase({ database });
+    await MilvusService.useDatabase({ database: database.name });
     // set database
-    setDatabase(database);
+    setDatabase(database.name);
 
     // navigate to database detail page
-    navigation(`/databases/${database}`);
+    navigation(`/databases/${database.name}`);
   };
 
-  const onDelete = async (e: any) => {
-    e.stopPropagation();
-    alert('delete')
-    // await MilvusService.deleteDatabase({ database });
-    // setDatabase('default');
+  const handleDelete = async () => {
+    await dropDatabase({ db_name: database.name });
+
+    openSnackBar(successTrans('delete', { name: dbTrans('database') }));
+    handleCloseDialog();
   };
 
   return (
     <section className={`${wrapperClass}`}>
       <section className={`${classes.wrapper}`} onClick={onClick}>
         <Typography variant="h3" className={classes.dbTitle}>
-          <DbIcon /> {database}
+          <DbIcon /> {database.name}
         </Typography>
         <div>
-          {statisticsData.data.map((item: any) => (
-            <div key={item.label}>
-              <Typography className={classes.label}>{item.label}</Typography>
-              <Typography
-                className={classes.value}
-                style={{ color: item.valueColor }}
-              >
-                {item.value}
-              </Typography>
-            </div>
-          ))}
-          <CustomButton className={classes.delIcon} onClick={onDelete} >
+          <div key={database.name}>
+            <Typography className={classes.label}>
+              {overviewTrans('all')}
+            </Typography>
+
+            <Typography
+              className={classes.value}
+              style={{ color: theme.palette.primary.main }}
+            >
+              {database.collections.length}
+            </Typography>
+            {database.createdTime !== -1 && (
+              <>
+                <Typography className={classes.label}>
+                  {overviewTrans('createdTime')}
+                </Typography>
+                <Typography className={classes.label}>
+                  {new Date(database.createdTime / 1000000).toLocaleString()}
+                </Typography>
+              </>
+            )}
+          </div>
+          <CustomButton
+            className={classes.delIcon}
+            onClick={(event: any) => {
+              event.stopPropagation();
+              setDialog({
+                open: true,
+                type: 'custom',
+                params: {
+                  component: (
+                    <DeleteTemplate
+                      label={btnTrans('drop')}
+                      title={dialogTrans('deleteTitle', {
+                        type: dbTrans('database'),
+                      })}
+                      text={dbTrans('deleteWarning')}
+                      handleDelete={handleDelete}
+                    />
+                  ),
+                },
+              });
+            }}
+          >
             <DeleteIcon />
           </CustomButton>
         </div>

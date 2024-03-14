@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto';
+import { DatabaseObject } from '../types';
 
 export class DatabasesController {
   private databasesService: DatabasesService;
@@ -46,13 +47,13 @@ export class DatabasesController {
   async listDatabases(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.databasesService.listDatabase(req.clientId);
-      result.db_names = result.db_names.sort((a: string, b: string) => {
-        if (a === 'default') {
+      result.sort((a: DatabaseObject, b: DatabaseObject) => {
+        if (a.name === 'default') {
           return -1; // 'default' comes before other strings
-        } else if (b === 'default') {
+        } else if (b.name === 'default') {
           return 1; // 'default' comes after other strings
         } else {
-          return a.localeCompare(b); // sort other strings alphabetically
+          return a.name.localeCompare(b.name); // sort other strings alphabetically
         }
       });
       res.send(result);

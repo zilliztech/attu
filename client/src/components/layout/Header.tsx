@@ -95,7 +95,7 @@ const Header: FC<HeaderType> = props => {
     await MilvusService.useDatabase({ database });
   };
 
-  const dbOptions = databases.map(d => ({ value: d, label: d }));
+  const dbOptions = databases.map(d => ({ value: d.name, label: d.name }));
   return (
     <header className={classes.header}>
       <div className={classes.contentWrapper}>

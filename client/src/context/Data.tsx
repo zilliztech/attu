@@ -13,7 +13,11 @@ import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
 import { getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { LAST_TIME_DATABASE } from '@/consts';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import {
+  CollectionObject,
+  CollectionFullObject,
+  DatabaseObject,
+} from '@server/types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
@@ -21,10 +25,11 @@ export const dataContext = createContext<DataContextType>({
   loading: false,
   collections: [],
   setCollections: () => {},
-  database: 'default',
+  database: '',
   setDatabase: () => {},
   databases: [],
   setDatabaseList: () => {},
+  dropDatabase: async () => {},
   fetchDatabases: async () => {},
   fetchCollections: async () => {},
   fetchCollection: async () => {
@@ -70,12 +75,12 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [database, setDatabase] = useState<string>(
+  const defaultDb =
     initialDatabase ||
-      window.localStorage.getItem(LAST_TIME_DATABASE) ||
-      'default'
-  );
-  const [databases, setDatabases] = useState<string[]>([database]);
+    window.localStorage.getItem(LAST_TIME_DATABASE) ||
+    'default';
+  const [database, setDatabase] = useState<string>(defaultDb);
+  const [databases, setDatabases] = useState<DatabaseObject[]>([]);
   // auth context
   const { isAuth, clientId } = useContext(authContext);
   // socket ref
@@ -134,9 +139,15 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: fetch databases
   const fetchDatabases = async () => {
-    const res = await DatabaseService.getDatabases();
+    const res = await DatabaseService.listDatabases();
 
-    setDatabases(res.db_names);
+    setDatabases(res);
+  };
+
+  // API: delete database
+  const dropDatabase = async (params: { db_name: string }) => {
+    await DatabaseService.dropDatabase(params);
+    await fetchDatabases();
   };
 
   // API:fetch collections
@@ -308,7 +319,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // clear collections
       setCollections([]);
       // clear database
-      setDatabases(['default']);
+      setDatabases([]);
       // set connected to false
       setConnected(false);
     }
@@ -343,6 +354,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         databases,
         setDatabase,
         setDatabaseList: setDatabases,
+        dropDatabase,
         fetchDatabases,
         fetchCollections,
         fetchCollection,

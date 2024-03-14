@@ -95,3 +95,9 @@ export type CronJobObject = {
     collections: string[];
   };
 };
+
+export type DatabaseObject = {
+  name: string;
+  createdTime: number;
+  collections: string[];
+};

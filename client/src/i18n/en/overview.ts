@@ -18,6 +18,7 @@ const overviewTrans = {
   dataNodes: 'Data Nodes',
   queryNodes: 'Query Nodes',
   indexNodes: 'Index Nodes',
+  createdTime: 'Created Time',
 };
 
 export default overviewTrans;
