@@ -58,31 +58,33 @@ const LoadCollectionDialog = (props: any) => {
   // check if it is cluster
   useEffect(() => {
     async function fetchData() {
-      const res = await MilvusService.getMetrics();
-      const parsedJson = parseJson(res);
-      // get root cord
-      const rootCoords = getNode(
-        parsedJson.workingNodes,
-        MILVUS_NODE_TYPE.ROOTCOORD
-      );
-      // get query nodes
-      const queryNodes = getNode(
-        parsedJson.workingNodes,
-        MILVUS_NODE_TYPE.QUERYNODE
-      );
+      try {
+        const res = await MilvusService.getMetrics();
+        const parsedJson = parseJson(res);
+        // get root cord
+        const rootCoords = getNode(
+          parsedJson.workingNodes,
+          MILVUS_NODE_TYPE.ROOTCOORD
+        );
+        // get query nodes
+        const queryNodes = getNode(
+          parsedJson.workingNodes,
+          MILVUS_NODE_TYPE.QUERYNODE
+        );
 
-      const rootCoord = rootCoords[0];
+        const rootCoord = rootCoords[0];
 
-      // should we show replic toggle
-      const enableRelica =
-        rootCoord.infos.system_info.deploy_mode ===
-        MILVUS_DEPLOY_MODE.DISTRIBUTED;
+        // should we show replic toggle
+        const enableRelica =
+          rootCoord.infos.system_info.deploy_mode ===
+          MILVUS_DEPLOY_MODE.DISTRIBUTED;
 
-      // only show replica toggle in distributed mode && query node > 1
-      if (enableRelica && queryNodes.length > 1 && !isManaged) {
-        setMaxQueryNode(queryNodes.length);
-        setEnableRelica(enableRelica);
-      }
+        // only show replica toggle in distributed mode && query node > 1
+        if (enableRelica && queryNodes.length > 1 && !isManaged) {
+          setMaxQueryNode(queryNodes.length);
+          setEnableRelica(enableRelica);
+        }
+      } catch (error) {}
     }
     fetchData();
   }, []);

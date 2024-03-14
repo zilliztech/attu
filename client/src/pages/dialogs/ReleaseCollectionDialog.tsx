@@ -3,6 +3,7 @@ import { Typography, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { rootContext, dataContext } from '@/context';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -11,12 +12,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const ReleaseCollectionDialog = (props: any) => {
+const ReleaseCollectionDialog = (props: {
+  collection: CollectionObject;
+  onRelease?: (collection: CollectionObject) => void;
+}) => {
   const { releaseCollection } = useContext(dataContext);
 
   const classes = useStyles();
 
-  const { collectionName, onRelease } = props;
+  const { collection, onRelease } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
@@ -30,7 +34,7 @@ const ReleaseCollectionDialog = (props: any) => {
     setDisabled(true);
     try {
       // release collection
-      await releaseCollection(collectionName);
+      await releaseCollection(collection.collection_name);
 
       // show success message
       openSnackBar(
@@ -40,7 +44,7 @@ const ReleaseCollectionDialog = (props: any) => {
       );
 
       // execute callback
-      onRelease && (await onRelease(collectionName));
+      onRelease && (await onRelease(collection));
       // enable confirm button
       setDisabled(false);
       // close dialog
@@ -54,13 +58,15 @@ const ReleaseCollectionDialog = (props: any) => {
   return (
     <DialogTemplate
       title={dialogTrans('releaseTitle', {
-        type: collectionName,
+        type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={
         <>
           <Typography variant="body1" component="p" className={classes.desc}>
-            {dialogTrans('releaseContent', { type: collectionName })}
+            {dialogTrans('releaseContent', {
+              type: collection.collection_name,
+            })}
           </Typography>
         </>
       }

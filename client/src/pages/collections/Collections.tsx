@@ -176,7 +176,7 @@ const Collections = () => {
           params: {
             component: (
               <ReleaseCollectionDialog
-                collection={selectedCollections[0].collection_name}
+                collection={selectedCollections[0]}
                 onRelease={async () => {
                   setSelectedCollections([]);
                 }}
@@ -379,9 +379,7 @@ const Collections = () => {
                         collectionName={v.collection_name}
                       />
                     ) : (
-                      <ReleaseCollectionDialog
-                        collectionName={v.collection_name}
-                      />
+                      <ReleaseCollectionDialog collection={v} />
                     ),
                 },
               });
