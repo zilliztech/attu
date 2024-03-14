@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   section: {
-    width: '80%',
+    width: '75%',
     marginBottom: theme.spacing(2),
   },
   cardWrapper: {
@@ -96,6 +96,12 @@ const Overview = () => {
               />
             );
           })}
+          <DatabaseCard
+            database={{ name: 'new', collections: [], createdTime: 0 }}
+            setDatabase={setDatabase}
+            dropDatabase={dropDatabase}
+            key={'new'}
+          />
         </div>
       </section>
 

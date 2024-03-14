@@ -29,8 +29,11 @@ export const dataContext = createContext<DataContextType>({
   setDatabase: () => {},
   databases: [],
   setDatabaseList: () => {},
+  createDatabase: async () => {},
   dropDatabase: async () => {},
-  fetchDatabases: async () => {},
+  fetchDatabases: async () => {
+    return [];
+  },
   fetchCollections: async () => {},
   fetchCollection: async () => {
     return {} as CollectionFullObject;
@@ -82,7 +85,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const [database, setDatabase] = useState<string>(defaultDb);
   const [databases, setDatabases] = useState<DatabaseObject[]>([]);
   // auth context
-  const { isAuth, clientId } = useContext(authContext);
+  const { isAuth, clientId, logout } = useContext(authContext);
   // socket ref
   const socket = useRef<Socket | null>(null);
 
@@ -139,15 +142,29 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: fetch databases
   const fetchDatabases = async () => {
-    const res = await DatabaseService.listDatabases();
+    const newDatabases = await DatabaseService.listDatabases();
 
-    setDatabases(res);
+    // if no database, logout
+    if (newDatabases.length === 0) {
+      logout();
+    }
+    setDatabases(newDatabases);
+
+    return newDatabases;
+  };
+
+  // API: create database
+  const createDatabase = async (params: { db_name: string }) => {
+    await DatabaseService.createDatabase(params);
+    await fetchDatabases();
   };
 
   // API: delete database
   const dropDatabase = async (params: { db_name: string }) => {
     await DatabaseService.dropDatabase(params);
-    await fetchDatabases();
+    const newDatabases = await fetchDatabases();
+
+    setDatabase(newDatabases[0].name);
   };
 
   // API:fetch collections
@@ -354,6 +371,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         databases,
         setDatabase,
         setDatabaseList: setDatabases,
+        createDatabase,
         dropDatabase,
         fetchDatabases,
         fetchCollections,

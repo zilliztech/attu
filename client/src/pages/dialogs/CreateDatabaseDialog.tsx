@@ -1,12 +1,13 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { CreateDatabaseProps, CreateDatabaseParams } from './Types';
+import { CreateDatabaseParams } from '@/http';
+import { dataContext, rootContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -14,17 +15,29 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({
-  handleCreate,
-  handleClose,
-}) => {
+export interface CreateDatabaseProps {
+  onCreate?: () => void;
+}
+
+const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
+  // context
+  const { createDatabase } = useContext(dataContext);
+  const { openSnackBar, handleCloseDialog } = useContext(rootContext);
+
+  // i18n
   const { t: databaseTrans } = useTranslation('database');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
+  const { t: successTrans } = useTranslation('success');
+  const { t: dbTrans } = useTranslation('database');
 
+  // UI state
   const [form, setForm] = useState<CreateDatabaseParams>({
     db_name: '',
   });
+  const [loading, setLoading] = useState(false);
+
+  // validation
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
@@ -57,8 +70,21 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({
     },
   ];
 
-  const handleCreateDatabase = () => {
-    handleCreate(form);
+  const handleCreate = async () => {
+    setLoading(true);
+    await createDatabase(form);
+    openSnackBar(successTrans('create', { name: dbTrans('database') }));
+    setLoading(false);
+
+    handleCloseDialog();
+
+    if (onCreate) {
+      onCreate();
+    }
+  };
+
+  const handleClose = () => {
+    handleCloseDialog();
   };
 
   return (
@@ -66,8 +92,8 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({
       title={databaseTrans('createTitle')}
       handleClose={handleClose}
       confirmLabel={btnTrans('create')}
-      handleConfirm={handleCreateDatabase}
-      confirmDisabled={disabled}
+      handleConfirm={handleCreate}
+      confirmDisabled={disabled || loading}
     >
       <>
         {createConfigs.map(v => (

@@ -67,7 +67,7 @@ const CreatePartition: FC<PartitionCreateProps> = ({
     };
 
     await PartitionService.managePartition(param);
-    onCreate && onCreate();
+    onCreate && onCreate(collectionName);
     handleCloseDialog();
   };
 

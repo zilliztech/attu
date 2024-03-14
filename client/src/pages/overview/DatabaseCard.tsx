@@ -6,8 +6,9 @@ import { MilvusService } from '@/http';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { rootContext, dataContext } from '@/context';
+import { rootContext } from '@/context';
 import { DatabaseObject } from '@server/types';
+import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     border: '1px solid #E0E0E0',
     minWidth: '180px',
+    minHeight: '126px',
     cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 0px 4px 0px #00000029',
@@ -58,6 +60,14 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: 15,
     },
   },
+
+  // create db
+  create: {
+    border: `1px dashed ${theme.palette.primary.main}`,
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: theme.palette.primary.main,
+  },
 }));
 
 export interface DatabaseCardProps {
@@ -87,6 +97,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   const theme = useTheme();
   const DbIcon = icons.database;
   const DeleteIcon = icons.delete;
+  const PlusIcon = icons.add;
 
   const onClick = async () => {
     // use database
@@ -104,6 +115,27 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     openSnackBar(successTrans('delete', { name: dbTrans('database') }));
     handleCloseDialog();
   };
+
+  // empty database => create new database
+  if (database.name === 'new') {
+    return (
+      <section
+        className={`${wrapperClass} ${classes.wrapper} ${classes.create}`}
+        onClick={() => {
+          setDialog({
+            open: true,
+            type: 'custom',
+            params: {
+              component: <CreateDatabaseDialog />,
+            },
+          });
+        }}
+      >
+        <PlusIcon />
+        <Typography variant="h6">{dbTrans('createTitle')}</Typography>
+      </section>
+    );
+  }
 
   return (
     <section className={`${wrapperClass}`}>
@@ -134,30 +166,33 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
               </>
             )}
           </div>
-          <CustomButton
-            className={classes.delIcon}
-            onClick={(event: any) => {
-              event.stopPropagation();
-              setDialog({
-                open: true,
-                type: 'custom',
-                params: {
-                  component: (
-                    <DeleteTemplate
-                      label={btnTrans('drop')}
-                      title={dialogTrans('deleteTitle', {
-                        type: dbTrans('database'),
-                      })}
-                      text={dbTrans('deleteWarning')}
-                      handleDelete={handleDelete}
-                    />
-                  ),
-                },
-              });
-            }}
-          >
-            <DeleteIcon />
-          </CustomButton>
+          {database.name !== 'default' && (
+            <CustomButton
+              className={classes.delIcon}
+              onClick={(event: any) => {
+                event.stopPropagation();
+                setDialog({
+                  open: true,
+                  type: 'custom',
+                  params: {
+                    component: (
+                      <DeleteTemplate
+                        label={btnTrans('drop')}
+                        title={dialogTrans('deleteTitle', {
+                          type: dbTrans('database'),
+                        })}
+                        text={dbTrans('deleteWarning')}
+                        handleDelete={handleDelete}
+                        compare={database.name}
+                      />
+                    ),
+                  },
+                });
+              }}
+            >
+              <DeleteIcon />
+            </CustomButton>
+          )}
         </div>
       </section>
     </section>
