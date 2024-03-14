@@ -9,11 +9,11 @@ RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
 # => Building Client
 WORKDIR /app/client
-RUN yarn install
+RUN yarn install --network-timeout 1000000
 RUN yarn build
 # # => Building Server
 WORKDIR /app/server
-RUN yarn install
+RUN yarn install  --network-timeout 1000000
 ENV NODE_ENV production
 ENV PORT 80
 RUN yarn build
