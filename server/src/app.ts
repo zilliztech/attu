@@ -58,8 +58,6 @@ router.get('/healthy', (req, res, next) => {
 
 // initialize a simple http server
 const server = http.createServer(app);
-// default port 3000
-const PORT = 3000;
 
 // setup middlewares
 // use cors https://expressjs.com/en/resources/middleware/cors.html
@@ -92,6 +90,9 @@ app.get('*', (request, response) => {
 app.use(ErrorMiddleware);
 // init websocket server
 initWebSocket(server);
+
+// use port 3000 unless there exists a preconfigured port
+const PORT = process.env.SERVER_PORT || 3000;
 
 // start server
 server.listen(PORT, () => {

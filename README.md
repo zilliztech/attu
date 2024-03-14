@@ -31,13 +31,15 @@ Make sure that the Attu container can access the Milvus IP address. After starti
 #### Optional Environment Variables for Running Attu Docker
 
 | Parameter        | Example              | Required | Description                             |
-| :--------------- | :------------------- | :------: | --------------------------------------- |
+|:-----------------|:---------------------| :------: |-----------------------------------------|
 | MILVUS_URL       | 192.168.0.1:19530    |  false   | Optional, Milvus server URL             |
 | ATTU_LOG_LEVEL   | info                 |  false   | Optional, sets the log level for Attu   |
 | ROOT_CERT_PATH   | /path/to/root/cert   |  false   | Optional, path to the root certificate  |
 | PRIVATE_KEY_PATH | /path/to/private/key |  false   | Optional, path to the private key       |
 | CERT_CHAIN_PATH  | /path/to/cert/chain  |  false   | Optional, path to the certificate chain |
 | SERVER_NAME      | your_server_name     |  false   | Optional, name of your server           |
+| SERVER_PORT      | Server listen port   |  false   | Optional, 3000 by default if unset      |
+
 
 > Please note that the `MILVUS_URL` should be an address that the Attu Docker container can access. Therefore, "127.0.0.1" or "localhost" will not work.
 
@@ -53,6 +55,19 @@ docker run -p 8000:3000 \
 -e PRIVATE_KEY_PATH=/app/tls/client.key \
 -e CERT_CHAIN_PATH=/app/tls/client.pem \
 -e SERVER_NAME=your_server_name \
+zilliz/attu:dev
+```
+
+#### Custom Server Port Example
+*This command lets you run the docker container with host networking, specificity a custom port for 
+the server to list on*
+
+```bash
+docker run --network host \
+-v /your-tls-file-path:/app/tls \
+-e ATTU_LOG_LEVEL=info  \
+-e SERVER_NAME=your_server_name \
+-e SERVER_PORT=8080 \
 zilliz/attu:dev
 ```
 
