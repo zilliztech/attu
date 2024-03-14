@@ -17,6 +17,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -36,10 +37,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const LoadCollectionDialog = (props: any) => {
+const LoadCollectionDialog = (props: {
+  collection: CollectionObject;
+  onLoad?: (collection: CollectionObject) => void;
+}) => {
   const { loadCollection } = useContext(dataContext);
   const classes = useStyles();
-  const { collectionName, onLoad } = props;
+  const { collection, onLoad } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: successTrans } = useTranslation('success');
@@ -102,7 +106,7 @@ const LoadCollectionDialog = (props: any) => {
     }
 
     // load collection request
-    await loadCollection(collectionName, params);
+    await loadCollection(collection.collection_name, params);
 
     // show success message
     openSnackBar(
@@ -113,7 +117,7 @@ const LoadCollectionDialog = (props: any) => {
 
     // callback
     if (onLoad) {
-      await onLoad(collectionName);
+      await onLoad(collection);
     }
     // close dialog
     handleCloseDialog();
@@ -175,7 +179,7 @@ const LoadCollectionDialog = (props: any) => {
   return (
     <DialogTemplate
       title={dialogTrans('loadTitle', {
-        type: collectionName,
+        type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={

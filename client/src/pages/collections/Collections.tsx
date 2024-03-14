@@ -145,7 +145,7 @@ const Collections = () => {
           params: {
             component: (
               <LoadCollectionDialog
-                collection={selectedCollections[0].collection_name}
+                collection={selectedCollections[0]}
                 onLoad={async () => {
                   setSelectedCollections([]);
                 }}
@@ -375,9 +375,7 @@ const Collections = () => {
                 params: {
                   component:
                     v.status === LOADING_STATE.UNLOADED ? (
-                      <LoadCollectionDialog
-                        collectionName={v.collection_name}
-                      />
+                      <LoadCollectionDialog collection={v} />
                     ) : (
                       <ReleaseCollectionDialog collection={v} />
                     ),

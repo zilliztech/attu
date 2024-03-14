@@ -266,13 +266,9 @@ const Schema = () => {
                   params: {
                     component:
                       collection.status === LOADING_STATE.UNLOADED ? (
-                        <LoadCollectionDialog
-                          collectionName={collection.collection_name}
-                        />
+                        <LoadCollectionDialog collection={collection} />
                       ) : (
-                        <ReleaseCollectionDialog
-                          collectionName={collection.collection_name}
-                        />
+                        <ReleaseCollectionDialog collection={collection} />
                       ),
                   },
                 });
