@@ -20,9 +20,9 @@ export const useNavigationHook = (
     switch (type) {
       case ALL_ROUTER_TYPES.OVERVIEW: {
         const navInfo: NavInfo = {
-          navTitle: navTrans('overview'),
+          navTitle: navTrans('welcome'),
           backPath: '',
-          showDatabaseSelector: true,
+          showDatabaseSelector: false,
         };
         setNavInfo(navInfo);
         break;

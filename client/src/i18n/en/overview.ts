@@ -1,13 +1,13 @@
 const overviewTrans = {
   load: 'Loaded Collections',
-  all: 'All Collections',
+  all: 'Collections',
   data: 'Approx Entities',
   rows: '{{number}}',
   loading: 'Loading Collections',
   sysInfo: 'System Info',
   database: 'Database',
   milvusVersion: 'Milvus Version',
-  upTime: 'Root Coordinator Up Time',
+  upTime: 'Up Time',
   deployMode: 'Deploy Mode',
   databases: 'Databases',
   users: 'Users',
@@ -18,6 +18,7 @@ const overviewTrans = {
   dataNodes: 'Data Nodes',
   queryNodes: 'Query Nodes',
   indexNodes: 'Index Nodes',
+  createdTime: 'Created Time',
 };
 
 export default overviewTrans;

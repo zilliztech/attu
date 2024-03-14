@@ -60,9 +60,6 @@ function Index() {
     if (location.pathname.includes('databases')) {
       return navTrans('database');
     }
-    if (location.pathname.includes('db-admin')) {
-      return navTrans('dbAdmin');
-    }
 
     if (location.pathname.includes('search')) {
       return navTrans('search');
@@ -72,7 +69,10 @@ function Index() {
       return navTrans('system');
     }
 
-    if (location.pathname.includes('users') || location.pathname.includes('roles')) {
+    if (
+      location.pathname.includes('users') ||
+      location.pathname.includes('roles')
+    ) {
       return navTrans('user');
     }
 
@@ -113,11 +113,6 @@ function Index() {
           isPrometheusReady ? navigate('/system_healthy') : navigate('/system'),
         iconActiveClass: 'normal',
         iconNormalClass: 'active',
-      },
-      {
-        icon: icons.settings,
-        label: navTrans('dbAdmin'),
-        onClick: () => navigate('/db-admin'),
       }
     );
   }

@@ -1,5 +1,9 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import {
+  CollectionObject,
+  CollectionFullObject,
+  DatabaseObject,
+} from '@server/types';
 import { NavInfo } from '@/router/Types';
 import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
 
@@ -91,13 +95,21 @@ export type NavContextType = {
 
 export type DataContextType = {
   loading: boolean;
+  loadingDatabases: boolean;
   collections: CollectionObject[];
   setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
   database: string;
   setDatabase: Dispatch<SetStateAction<string>>;
-  databases: string[];
-  setDatabaseList: Dispatch<SetStateAction<string[]>>;
-  fetchDatabases: () => Promise<void>;
+  databases: DatabaseObject[];
+  setDatabaseList: Dispatch<SetStateAction<DatabaseObject[]>>;
+
+  // APIs
+  // databases
+  fetchDatabases: () => Promise<DatabaseObject[]>;
+  createDatabase: (params: { db_name: string }) => Promise<void>;
+  dropDatabase: (params: { db_name: string }) => Promise<void>;
+
+  // collections
   fetchCollections: () => Promise<void>;
   fetchCollection: (name: string) => Promise<CollectionFullObject>;
   createCollection: (data: any) => Promise<CollectionFullObject>;

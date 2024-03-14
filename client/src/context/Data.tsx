@@ -13,19 +13,28 @@ import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
 import { getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { LAST_TIME_DATABASE } from '@/consts';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import {
+  CollectionObject,
+  CollectionFullObject,
+  DatabaseObject,
+} from '@server/types';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
-  loading: false,
+  loading: true,
+  loadingDatabases: true,
   collections: [],
   setCollections: () => {},
-  database: 'default',
+  database: '',
   setDatabase: () => {},
   databases: [],
   setDatabaseList: () => {},
-  fetchDatabases: async () => {},
+  createDatabase: async () => {},
+  dropDatabase: async () => {},
+  fetchDatabases: async () => {
+    return [];
+  },
   fetchCollections: async () => {},
   fetchCollection: async () => {
     return {} as CollectionFullObject;
@@ -69,15 +78,16 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [connected, setConnected] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [database, setDatabase] = useState<string>(
+  const [loading, setLoading] = useState(true);
+  const [loadingDatabases, setLoadingDatabases] = useState(true);
+  const defaultDb =
     initialDatabase ||
-      window.localStorage.getItem(LAST_TIME_DATABASE) ||
-      'default'
-  );
-  const [databases, setDatabases] = useState<string[]>([database]);
+    window.localStorage.getItem(LAST_TIME_DATABASE) ||
+    'default';
+  const [database, setDatabase] = useState<string>(defaultDb);
+  const [databases, setDatabases] = useState<DatabaseObject[]>([]);
   // auth context
-  const { isAuth, clientId } = useContext(authContext);
+  const { isAuth, clientId, logout } = useContext(authContext);
   // socket ref
   const socket = useRef<Socket | null>(null);
 
@@ -134,9 +144,31 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: fetch databases
   const fetchDatabases = async () => {
-    const res = await DatabaseService.getDatabases();
+    setLoadingDatabases(true);
+    const newDatabases = await DatabaseService.listDatabases();
+    setLoadingDatabases(false);
 
-    setDatabases(res.db_names);
+    // if no database, logout
+    if (newDatabases.length === 0) {
+      logout();
+    }
+    setDatabases(newDatabases);
+
+    return newDatabases;
+  };
+
+  // API: create database
+  const createDatabase = async (params: { db_name: string }) => {
+    await DatabaseService.createDatabase(params);
+    await fetchDatabases();
+  };
+
+  // API: delete database
+  const dropDatabase = async (params: { db_name: string }) => {
+    await DatabaseService.dropDatabase(params);
+    const newDatabases = await fetchDatabases();
+
+    setDatabase(newDatabases[0].name);
   };
 
   // API:fetch collections
@@ -308,7 +340,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // clear collections
       setCollections([]);
       // clear database
-      setDatabases(['default']);
+      setDatabases([]);
       // set connected to false
       setConnected(false);
     }
@@ -337,12 +369,15 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     <Provider
       value={{
         loading,
+        loadingDatabases,
         collections,
         setCollections,
         database,
         databases,
         setDatabase,
         setDatabaseList: setDatabases,
+        createDatabase,
+        dropDatabase,
         fetchDatabases,
         fetchCollections,
         fetchCollection,

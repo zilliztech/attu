@@ -4,7 +4,6 @@ import { authContext } from '@/context';
 import Databases from '@/pages/databases/Databases';
 import Connect from '@/pages/connect/Connect';
 import Users from '@/pages/user/Users';
-import DatabaseAdmin from '@/pages/dbAdmin/Database';
 import Index from '@/pages/index';
 import Search from '@/pages/search/VectorSearch';
 import System from '@/pages/system/SystemView';
@@ -18,7 +17,6 @@ const RouterComponent = () => {
       <Routes>
         <Route path="/" element={<Index />}>
           <Route index element={<Databases />} />
-          <Route path="db-admin" element={<DatabaseAdmin />} />
 
           <Route path="databases" element={<Databases />} />
           <Route path="databases/:databaseName" element={<Databases />} />

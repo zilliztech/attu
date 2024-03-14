@@ -2,10 +2,10 @@ import {
   CreateDatabaseRequest,
   ListDatabasesRequest,
   DropDatabasesRequest,
-  ListDatabasesResponse,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { clientCache } from '../app';
+import { DatabaseObject } from '../types';
 
 export class DatabasesService {
   async createDatabase(clientId: string, data: CreateDatabaseRequest) {
@@ -19,20 +19,25 @@ export class DatabasesService {
   async listDatabase(
     clientId: string,
     data?: ListDatabasesRequest
-  ): Promise<ListDatabasesResponse> {
+  ): Promise<DatabaseObject[]> {
     const { milvusClient, database } = clientCache.get(clientId);
 
     const res = await milvusClient.listDatabases(data);
 
     // test if the user has permission to access the database, loop through all databases
     // and check if the user has permission to access the database
-    const availableDatabases: string[] = [];
+    const availableDatabases: DatabaseObject[] = [];
 
-    for (const db of res.db_names) {
+    for (let i = 0; i < res.db_names.length; i++) {
       try {
-        await milvusClient.use({ db_name: db });
+        await milvusClient.use({ db_name: res.db_names[i] });
         await milvusClient.listDatabases(data);
-        availableDatabases.push(db);
+        const collections = await milvusClient.showCollections();
+        availableDatabases.push({
+          name: res.db_names[i],
+          collections: collections.data.map(c => c.name),
+          createdTime: (res as any).created_timestamp[i] || -1,
+        });
       } catch (e) {
         // ignore
       }
@@ -42,7 +47,7 @@ export class DatabasesService {
     await milvusClient.use({ db_name: database });
 
     throwErrorFromSDK(res.status);
-    return { ...res, db_names: availableDatabases };
+    return availableDatabases;
   }
 
   async dropDatabase(clientId: string, data: DropDatabasesRequest) {
@@ -60,7 +65,7 @@ export class DatabasesService {
   }
 
   async hasDatabase(clientId: string, data: string) {
-    const { db_names } = await this.listDatabase(clientId);
-    return db_names.indexOf(data) !== -1;
+    const dbs = await this.listDatabase(clientId);
+    return dbs.map(d => d.name).indexOf(data) !== -1;
   }
 }
