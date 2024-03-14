@@ -22,7 +22,8 @@ import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
-  loading: false,
+  loading: true,
+  loadingDatabases: true,
   collections: [],
   setCollections: () => {},
   database: '',
@@ -77,7 +78,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [connected, setConnected] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingDatabases, setLoadingDatabases] = useState(true);
   const defaultDb =
     initialDatabase ||
     window.localStorage.getItem(LAST_TIME_DATABASE) ||
@@ -142,7 +144,9 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: fetch databases
   const fetchDatabases = async () => {
+    setLoadingDatabases(true);
     const newDatabases = await DatabaseService.listDatabases();
+    setLoadingDatabases(false);
 
     // if no database, logout
     if (newDatabases.length === 0) {
@@ -365,6 +369,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     <Provider
       value={{
         loading,
+        loadingDatabases,
         collections,
         setCollections,
         database,

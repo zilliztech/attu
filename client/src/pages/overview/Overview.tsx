@@ -8,6 +8,8 @@ import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import DatabaseCard from './DatabaseCard';
 import SysCard from './SysCard';
+import StatusIcon from '@/components/status/StatusIcon';
+import { ChildrenStatusType } from '@/components/status/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
@@ -35,7 +37,7 @@ const Overview = () => {
     databases,
     database,
     collections,
-    loading,
+    loadingDatabases,
     setDatabase,
     dropDatabase,
   } = useContext(dataContext);
@@ -81,28 +83,32 @@ const Overview = () => {
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
       <section className={classes.section}>
         <Typography variant="h4">{databaseTrans('databases')}</Typography>
-        <div className={classes.cardWrapper}>
-          {databases.map(db => {
-            // if the database is the current database, using client side collections data to avoid more requests
-            if (db.name === database) {
-              db.collections = collections.map(c => c.collection_name);
-            }
-            return (
-              <DatabaseCard
-                database={db}
-                setDatabase={setDatabase}
-                dropDatabase={dropDatabase}
-                key={db.name}
-              />
-            );
-          })}
-          <DatabaseCard
-            database={{ name: 'new', collections: [], createdTime: 0 }}
-            setDatabase={setDatabase}
-            dropDatabase={dropDatabase}
-            key={'new'}
-          />
-        </div>
+        {loadingDatabases ? (
+          <StatusIcon type={ChildrenStatusType.CREATING} />
+        ) : (
+          <div className={classes.cardWrapper}>
+            {databases.map(db => {
+              // if the database is the current database, using client side collections data to avoid more requests
+              if (db.name === database) {
+                db.collections = collections.map(c => c.collection_name);
+              }
+              return (
+                <DatabaseCard
+                  database={db}
+                  setDatabase={setDatabase}
+                  dropDatabase={dropDatabase}
+                  key={db.name}
+                />
+              );
+            })}
+            <DatabaseCard
+              database={{ name: 'new', collections: [], createdTime: 0 }}
+              setDatabase={setDatabase}
+              dropDatabase={dropDatabase}
+              key={'new'}
+            />
+          </div>
+        )}
       </section>
 
       {data?.systemInfo && (

@@ -95,6 +95,7 @@ export type NavContextType = {
 
 export type DataContextType = {
   loading: boolean;
+  loadingDatabases: boolean;
   collections: CollectionObject[];
   setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
   database: string;

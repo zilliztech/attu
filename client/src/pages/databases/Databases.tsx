@@ -13,6 +13,8 @@ import Query from '../query/Query';
 import Segments from '../segments/Segments';
 import { dataContext } from '@/context';
 import Collections from '../collections/Collections';
+import StatusIcon from '@/components/status/StatusIcon';
+import { ChildrenStatusType } from '@/components/status/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -97,7 +99,7 @@ const Databases = () => {
     <section className={`page-wrapper ${classes.wrapper}`}>
       <section className={classes.tree}>
         {loading ? (
-          `loading`
+          <StatusIcon type={ChildrenStatusType.CREATING} />
         ) : (
           <DatabaseTree
             key="collections"
