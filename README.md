@@ -59,8 +59,8 @@ zilliz/attu:dev
 ```
 
 #### Custom Server Port Example
-*This command lets you run the docker container with host networking, specificity a custom port for 
-the server to list on*
+*This command lets you run the docker container with host networking, specifying a custom port for 
+the server to listen on*
 
 ```bash
 docker run --network host \
