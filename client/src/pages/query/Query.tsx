@@ -172,7 +172,7 @@ const Query = () => {
           type: 'custom',
           params: {
             component: (
-              <ImportSampleDialog collection={collectionName} cb={onDelete} />
+              <ImportSampleDialog collection={collection!} cb={onDelete} />
             ),
           },
         });

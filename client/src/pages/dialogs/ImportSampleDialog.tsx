@@ -196,7 +196,7 @@ const ImportSampleDialog: FC<{ collection: CollectionObject; cb?: Function }> =
         // don't show close icon when insert not finish
         // showCloseIcon={insertStatus !== InsertStatusEnum.loading}
       >
-        <form className={classes.selectors}>
+        <section className={classes.selectors}>
           <div className="selectorWrapper">
             <div className="description">
               <Typography variant="inherit" component="p">
@@ -242,7 +242,7 @@ const ImportSampleDialog: FC<{ collection: CollectionObject; cb?: Function }> =
               />
             </div>
           </div>
-        </form>
+        </section>
       </DialogTemplate>
     );
   };
