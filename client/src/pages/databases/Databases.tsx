@@ -11,7 +11,7 @@ import Partitions from '../partitions/Partitions';
 import Schema from '../schema/Schema';
 import Query from '../query/Query';
 import Segments from '../segments/Segments';
-import { dataContext } from '@/context';
+import { dataContext, authContext } from '@/context';
 import Collections from '../collections/Collections';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
@@ -40,6 +40,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Databases = () => {
+  // context
+  const { isManaged } = useContext(authContext);
+  const { database, collections, loading } = useContext(dataContext);
+
   // get current collection from url
   const params = useParams();
   const {
@@ -52,8 +56,6 @@ const Databases = () => {
   useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
   // get style
   const classes = useStyles();
-  // get global data
-  const { database, collections, loading } = useContext(dataContext);
 
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
@@ -84,13 +86,16 @@ const Databases = () => {
       component: <Partitions />,
       path: `partitions`,
     },
+  ];
 
-    {
+  if (!isManaged) {
+    collectionTabs.push({
       label: collectionTrans('segmentsTab'),
       component: <Segments />,
       path: `segments`,
-    },
-  ];
+    });
+  }
+
   // get active collection tab
   const activeColTab = collectionTabs.findIndex(t => t.path === collectionPage);
 
