@@ -7,7 +7,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CreateAliasProps } from './Types';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -15,11 +15,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+export interface CreateAliasProps {
+  collection: CollectionObject;
+  cb?: (collection: CollectionObject) => void;
+}
+
 const CreateAliasDialog: FC<CreateAliasProps> = props => {
   const { createAlias } = useContext(dataContext);
   const { handleCloseDialog } = useContext(rootContext);
 
-  const { cb, collectionName } = props;
+  const { cb, collection } = props;
   const [form, setForm] = useState({
     alias: '',
   });
@@ -43,9 +48,9 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await createAlias(collectionName, form.alias);
+    await createAlias(collection.collection_name, form.alias);
     handleCloseDialog();
-    cb && (await cb(collectionName));
+    cb && (await cb(collection));
   };
 
   const aliasInputConfig: ITextfieldConfig = {
@@ -72,7 +77,7 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   return (
     <DialogTemplate
       title={dialogTrans('createAlias', {
-        type: collectionName,
+        type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={

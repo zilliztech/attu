@@ -7,7 +7,7 @@ import { useFormValidation } from '@/hooks';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { RenameCollectionProps } from './Types';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -15,10 +15,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+export interface RenameCollectionProps {
+  collection: CollectionObject;
+  cb?: (collectionName: string) => void;
+}
+
 const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   const { renameCollection } = useContext(dataContext);
 
-  const { collectionName, cb } = props;
+  const { collection, cb } = props;
   const [form, setForm] = useState({
     new_collection_name: '',
   });
@@ -44,7 +49,10 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await renameCollection(collectionName, form.new_collection_name);
+    await renameCollection(
+      collection.collection_name,
+      form.new_collection_name
+    );
     openSnackBar(
       successTrans('rename', {
         name: collectionTrans('collection'),
@@ -78,7 +86,7 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   return (
     <DialogTemplate
       title={dialogTrans('renameTitle', {
-        type: collectionName,
+        type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={

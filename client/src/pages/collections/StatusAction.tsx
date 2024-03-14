@@ -78,13 +78,7 @@ const StatusAction: FC<StatusActionType> = props => {
   const ReleaseIcon = icons.remove;
   const LoadIcon = icons.addOutline;
 
-  const {
-    status,
-    percentage = 0,
-    collectionName,
-    schema,
-    action = () => {},
-  } = props;
+  const { status, percentage = 0, schema, action = () => {} } = props;
   const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');
 

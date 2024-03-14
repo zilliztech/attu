@@ -80,13 +80,6 @@ export interface DeleteEntitiesReq {
   partition_name?: string;
 }
 
-export interface AliasesProps {
-  aliases: string[];
-  collectionName: string;
-  onCreate?: Function;
-  onDelete?: Function;
-}
-
 export interface LoadReplicaReq {
   replica_number: number;
 }

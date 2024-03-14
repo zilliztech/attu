@@ -19,7 +19,7 @@ import LoadCollectionDialog from '../dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '../dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '../dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '../dialogs/RenameCollectionDialog';
-import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDailog';
+import DuplicateCollectionDialog from '../dialogs/DuplicateCollectionDialog';
 import InsertDialog from '../dialogs/insert/Dialog';
 import ImportSampleDialog from '../dialogs/ImportSampleDialog';
 import { getLabelDisplayedRows } from '../search/Utils';
@@ -214,9 +214,7 @@ const Collections = () => {
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
                 onInsert={async (collectionName: string) => {
-                  setTimeout(async () => {
-                    await fetchCollection(collectionName);
-                  });
+                  await fetchCollection(collectionName);
                   setSelectedCollections([]);
                 }}
               />
@@ -244,10 +242,10 @@ const Collections = () => {
           params: {
             component: (
               <RenameCollectionDialog
-                cb={async (collectionName: string) => {
+                cb={async () => {
                   setSelectedCollections([]);
                 }}
-                collectionName={selectedCollections[0].collection_name}
+                collection={selectedCollections[0]}
               />
             ),
           },
@@ -271,7 +269,7 @@ const Collections = () => {
                 cb={async () => {
                   setSelectedCollections([]);
                 }}
-                collectionName={selectedCollections[0].collection_name}
+                collection={selectedCollections[0]}
                 collections={collections}
               />
             ),
@@ -367,7 +365,6 @@ const Collections = () => {
             status={v.status}
             percentage={v.loadedPercentage}
             schema={v.schema}
-            collectionName={v.collection_name}
             action={() => {
               setDialog({
                 open: true,
@@ -476,9 +473,7 @@ const Collections = () => {
         </span>
       ),
       formatter(v) {
-        return (
-          <Aliases aliases={v.aliases} collectionName={v.collection_name} />
-        );
+        return <Aliases aliases={v.aliases} collection={v} />;
       },
     });
   }

@@ -9,6 +9,7 @@ import { InsertStatusEnum } from './insert/Types';
 import { DataService } from '@/http';
 import { LoadSampleParam } from './Types';
 import icons from '@/components/icons/Icons';
+import { CollectionObject } from '@server/types';
 
 const DownloadIcon = icons.download;
 
@@ -76,160 +77,174 @@ const sizeOptions = [
   },
 ];
 
-const ImportSampleDialog: FC<{ collection: string; cb?: Function }> = props => {
-  const classes = getStyles();
-  const { collection } = props;
-  const [size, setSize] = useState<string>(sizeOptions[0].value);
-  const [csvFileName, setCsvFileName] = useState<string>(
-    `${collection}.sample.${size}.csv`
-  );
-  const [jsonFileName, setJsonFileName] = useState<string>(
-    `${collection}.sample.${size}.json`
-  );
-  const [insertStatus, setInsertStatus] = useState<InsertStatusEnum>(
-    InsertStatusEnum.init
-  );
+const ImportSampleDialog: FC<{ collection: CollectionObject; cb?: Function }> =
+  props => {
+    const classes = getStyles();
+    const { collection } = props;
+    const [size, setSize] = useState<string>(sizeOptions[0].value);
+    const [csvFileName, setCsvFileName] = useState<string>(
+      `${collection}.sample.${size}.csv`
+    );
+    const [jsonFileName, setJsonFileName] = useState<string>(
+      `${collection}.sample.${size}.json`
+    );
+    const [insertStatus, setInsertStatus] = useState<InsertStatusEnum>(
+      InsertStatusEnum.init
+    );
 
-  const { t: insertTrans } = useTranslation('insert');
-  const { t: btnTrans } = useTranslation('btn');
-  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
-  // selected collection name
+    const { t: insertTrans } = useTranslation('insert');
+    const { t: btnTrans } = useTranslation('btn');
+    const { handleCloseDialog, openSnackBar } = useContext(rootContext);
+    // selected collection name
 
-  const handleImportSample = async (
-    collectionName: string,
-    size: string,
-    download: boolean = false,
-    format: 'csv' | 'json' = 'csv'
-  ): Promise<{ result: string | boolean; msg: string }> => {
-    const param: LoadSampleParam = {
-      collection_name: collectionName,
-      size: size,
-      download,
-      format: format,
+    const handleImportSample = async (
+      collectionName: string,
+      size: string,
+      download: boolean = false,
+      format: 'csv' | 'json' = 'csv'
+    ): Promise<{ result: string | boolean; msg: string }> => {
+      const param: LoadSampleParam = {
+        collection_name: collectionName,
+        size: size,
+        download,
+        format: format,
+      };
+      try {
+        const res = await DataService.importSample(collectionName, param);
+        if (download) {
+          const fileName = format === 'csv' ? csvFileName : jsonFileName;
+          const type =
+            format === 'csv' ? 'text/csv;charset=utf-8;' : 'application/json';
+          const blob = new Blob([res.sampleFile], { type });
+          saveAs(blob, fileName);
+          return { result: res.sampleFile, msg: '' };
+        }
+        await DataService.flush(collectionName);
+        if (props.cb) {
+          await props.cb(collectionName);
+        }
+        return { result: true, msg: '' };
+      } catch (err: any) {
+        const {
+          response: {
+            data: { message },
+          },
+        } = err;
+        return { result: false, msg: message || '' };
+      }
     };
-    try {
-      const res = await DataService.importSample(collectionName, param);
-      if (download) {
-        const fileName = format === 'csv' ? csvFileName : jsonFileName;
-        const type =
-          format === 'csv' ? 'text/csv;charset=utf-8;' : 'application/json';
-        const blob = new Blob([res.sampleFile], { type });
-        saveAs(blob, fileName);
-        return { result: res.sampleFile, msg: '' };
+
+    const onDownloadCSVClicked = async () => {
+      return await handleImportSample(
+        collection.collection_name,
+        size,
+        true,
+        'csv'
+      );
+    };
+
+    const onDownloadJSONClicked = async () => {
+      return await handleImportSample(
+        collection.collection_name,
+        size,
+        true,
+        'json'
+      );
+    };
+
+    const importData = async () => {
+      if (insertStatus === InsertStatusEnum.success) {
+        handleCloseDialog();
+        return;
       }
-      await DataService.flush(collectionName);
-      if (props.cb) {
-        await props.cb(collectionName);
+      // start loading
+      setInsertStatus(InsertStatusEnum.loading);
+      const { result, msg } = await handleImportSample(
+        collection.collection_name,
+        size
+      );
+
+      if (!result) {
+        openSnackBar(msg, 'error');
+        setInsertStatus(InsertStatusEnum.init);
+        return;
       }
-      return { result: true, msg: '' };
-    } catch (err: any) {
-      const {
-        response: {
-          data: { message },
-        },
-      } = err;
-      return { result: false, msg: message || '' };
-    }
-  };
-
-  const onDownloadCSVClicked = async () => {
-    return await handleImportSample(collection, size, true, 'csv');
-  };
-
-  const onDownloadJSONClicked = async () => {
-    return await handleImportSample(collection, size, true, 'json');
-  };
-
-  const importData = async () => {
-    if (insertStatus === InsertStatusEnum.success) {
+      setInsertStatus(InsertStatusEnum.success);
+      // hide dialog
       handleCloseDialog();
-      return;
-    }
-    // start loading
-    setInsertStatus(InsertStatusEnum.loading);
-    const { result, msg } = await handleImportSample(collection, size);
+    };
 
-    if (!result) {
-      openSnackBar(msg, 'error');
-      setInsertStatus(InsertStatusEnum.init);
-      return;
-    }
-    setInsertStatus(InsertStatusEnum.success);
-    // hide dialog
-    handleCloseDialog();
+    return (
+      <DialogTemplate
+        title={insertTrans('importSampleData', {
+          collection,
+        })}
+        handleClose={handleCloseDialog}
+        confirmLabel={
+          insertStatus === InsertStatusEnum.init
+            ? btnTrans('import')
+            : insertStatus === InsertStatusEnum.loading
+            ? btnTrans('importing')
+            : insertStatus === InsertStatusEnum.success
+            ? btnTrans('done')
+            : insertStatus
+        }
+        handleConfirm={importData}
+        confirmDisabled={insertStatus === InsertStatusEnum.loading}
+        showActions={true}
+        showCancel={false}
+        // don't show close icon when insert not finish
+        // showCloseIcon={insertStatus !== InsertStatusEnum.loading}
+      >
+        <form className={classes.selectors}>
+          <div className="selectorWrapper">
+            <div className="description">
+              <Typography variant="inherit" component="p">
+                {insertTrans('importSampleDataDesc')}
+              </Typography>
+            </div>
+
+            <div className="actions">
+              <CustomSelector
+                label={insertTrans('sampleDataSize')}
+                options={sizeOptions}
+                wrapperClass="selector"
+                labelClass="selectLabel"
+                value={size}
+                variant="filled"
+                onChange={(e: { target: { value: unknown } }) => {
+                  const size = e.target.value;
+                  setSize(size as string);
+                  setCsvFileName(`${collection}.sample.${size}.csv`);
+                  setJsonFileName(`${collection}.sample.${size}.json`);
+                }}
+              />
+            </div>
+
+            <div className="download-actions">
+              <Chip
+                className={classes.downloadBtn}
+                icon={<DownloadIcon />}
+                label={csvFileName}
+                title={csvFileName}
+                variant="outlined"
+                size="small"
+                onClick={onDownloadCSVClicked}
+              />
+              <Chip
+                className={classes.downloadBtn}
+                icon={<DownloadIcon />}
+                label={jsonFileName}
+                title={jsonFileName}
+                variant="outlined"
+                size="small"
+                onClick={onDownloadJSONClicked}
+              />
+            </div>
+          </div>
+        </form>
+      </DialogTemplate>
+    );
   };
-
-  return (
-    <DialogTemplate
-      title={insertTrans('importSampleData', {
-        collection,
-      })}
-      handleClose={handleCloseDialog}
-      confirmLabel={
-        insertStatus === InsertStatusEnum.init
-          ? btnTrans('import')
-          : insertStatus === InsertStatusEnum.loading
-          ? btnTrans('importing')
-          : insertStatus === InsertStatusEnum.success
-          ? btnTrans('done')
-          : insertStatus
-      }
-      handleConfirm={importData}
-      confirmDisabled={insertStatus === InsertStatusEnum.loading}
-      showActions={true}
-      showCancel={false}
-      // don't show close icon when insert not finish
-      // showCloseIcon={insertStatus !== InsertStatusEnum.loading}
-    >
-      <form className={classes.selectors}>
-        <div className="selectorWrapper">
-          <div className="description">
-            <Typography variant="inherit" component="p">
-              {insertTrans('importSampleDataDesc')}
-            </Typography>
-          </div>
-
-          <div className="actions">
-            <CustomSelector
-              label={insertTrans('sampleDataSize')}
-              options={sizeOptions}
-              wrapperClass="selector"
-              labelClass="selectLabel"
-              value={size}
-              variant="filled"
-              onChange={(e: { target: { value: unknown } }) => {
-                const size = e.target.value;
-                setSize(size as string);
-                setCsvFileName(`${collection}.sample.${size}.csv`);
-                setJsonFileName(`${collection}.sample.${size}.json`);
-              }}
-            />
-          </div>
-
-          <div className="download-actions">
-            <Chip
-              className={classes.downloadBtn}
-              icon={<DownloadIcon />}
-              label={csvFileName}
-              title={csvFileName}
-              variant="outlined"
-              size="small"
-              onClick={onDownloadCSVClicked}
-            />
-            <Chip
-              className={classes.downloadBtn}
-              icon={<DownloadIcon />}
-              label={jsonFileName}
-              title={jsonFileName}
-              variant="outlined"
-              size="small"
-              onClick={onDownloadJSONClicked}
-            />
-          </div>
-        </div>
-      </form>
-    </DialogTemplate>
-  );
-};
 
 export default ImportSampleDialog;

@@ -24,24 +24,6 @@ interface CollectionDialogBaseProps {
 export interface CompactDialogProps extends CollectionDialogBaseProps {}
 export interface FlushDialogProps extends CollectionDialogBaseProps {}
 
-export interface CreateAliasProps {
-  collectionName: string;
-  cb?: (collectionName: string) => void;
-}
-
-export interface EmptyDataProps {
-  collectionName: string;
-  cb?: () => void;
-}
-
-export interface DuplicateCollectionDialogProps extends CreateAliasProps {
-  collections: CollectionObject[];
-}
-
-export interface RenameCollectionProps {
-  collectionName: string;
-  cb?: (collectionName: string) => void;
-}
 export interface LoadSampleParam {
   collection_name: string;
   // e.g. [{vector: [1,2,3], age: 10}]

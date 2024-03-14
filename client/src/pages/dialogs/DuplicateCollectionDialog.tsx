@@ -7,7 +7,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { DuplicateCollectionDialogProps } from './Types';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -18,12 +18,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+export interface DuplicateCollectionDialogProps {
+  collection: CollectionObject;
+  collections: CollectionObject[];
+  cb?: (collectionName: string) => void;
+}
+
 const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
   const { duplicateCollection } = useContext(dataContext);
 
-  const { cb, collectionName, collections } = props;
+  const { cb, collection, collections } = props;
   const [form, setForm] = useState({
-    duplicate: `${collectionName}_duplicate`,
+    duplicate: `${collection.collection_name}_duplicate`,
   });
 
   const classes = useStyles();
@@ -48,7 +54,7 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   const handleConfirm = async () => {
     // duplicate
-    await duplicateCollection(collectionName, form.duplicate);
+    await duplicateCollection(collection.collection_name, form.duplicate);
     // show success message
     openSnackBar(
       successTrans('duplicate', {
@@ -97,7 +103,7 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
     <DialogTemplate
       dialogClass={classes.wrapper}
       title={dialogTrans('duplicateTitle', {
-        type: collectionName,
+        type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={

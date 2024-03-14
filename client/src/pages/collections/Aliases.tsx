@@ -2,10 +2,10 @@ import { useContext } from 'react';
 import { Chip, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
-import { AliasesProps } from './Types';
 import icons from '@/components/icons/Icons';
 import CreateAliasDialog from '../dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -20,12 +20,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+export interface AliasesProps {
+  aliases: string[];
+  collection: CollectionObject;
+  onCreate?: Function;
+  onDelete?: Function;
+}
+
 export default function Aliases(props: AliasesProps) {
   const { dropAlias } = useContext(dataContext);
 
   const {
     aliases,
-    collectionName,
+    collection,
     onCreate = () => {},
     onDelete = () => {},
   } = props;
@@ -48,7 +55,7 @@ export default function Aliases(props: AliasesProps) {
       params: {
         component: (
           <CreateAliasDialog
-            collectionName={collectionName}
+            collection={collection}
             cb={async collectionName => {
               await onCreate(collectionName);
             }}
@@ -75,16 +82,19 @@ export default function Aliases(props: AliasesProps) {
   }
 
   const handleDelete = async (params: {
-    collection: string;
+    collection: CollectionObject;
     alias: string;
   }) => {
-    await dropAlias(params.collection, params.alias);
+    await dropAlias(params.collection.collection_name, params.alias);
     openSnackBar(successTrans('delete', { name: collectionTrans('alias') }));
     handleCloseDialog();
-    await onDelete(collectionName);
+    await onDelete(collection.collection_name);
   };
 
-  const _onDelete = (alias: { collection: string; alias: string }) => {
+  const _onDelete = (alias: {
+    collection: CollectionObject;
+    alias: string;
+  }) => {
     setDialog({
       open: true,
       type: 'custom',
@@ -116,7 +126,7 @@ export default function Aliases(props: AliasesProps) {
             e.stopPropagation();
           }}
           onDelete={() => {
-            _onDelete({ collection: collectionName, alias: a });
+            _onDelete({ collection: collection, alias: a });
           }}
         />
       ))}

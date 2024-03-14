@@ -201,7 +201,7 @@ const Query = () => {
                   );
                   await onDelete();
                 }}
-                collectionName={collectionName}
+                collection={collection!}
               />
             ),
           },

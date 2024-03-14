@@ -11,7 +11,6 @@ export type StatusActionType = {
   percentage?: string | number;
   action?: Function;
   schema: SchemaObject;
-  collectionName: string;
   onIndexCreate?: Function;
 };
 

@@ -258,7 +258,6 @@ const Schema = () => {
               status={collection.status}
               percentage={collection.loadedPercentage}
               schema={collection.schema!}
-              collectionName={collection.collection_name}
               action={() => {
                 setDialog({
                   open: true,
