@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import icons from '@/components/icons/Icons';
-import { makeStyles, Theme, Tooltip } from '@material-ui/core';
+import { makeStyles, Theme, Tooltip, Typography } from '@material-ui/core';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiTreeItem-group': {
       marginLeft: 0,
       '& .MuiTreeItem-content': {
-        padding: '0 0 0 16px',
+        padding: '0 0 0 8px',
       },
     },
     '& .MuiTreeItem-label:hover': {
@@ -87,15 +87,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   collectionNode: {
-    display: 'flex',
-    justifyContent: 'space-between',
     minHeight: '24px',
     lineHeight: '24px',
+    position: 'relative',
   },
-  right: {
+  collectionName: {
     display: 'flex',
     alignItems: 'center',
-    width: 20,
+    width: 'calc(100% - 50px)',
   },
   count: {
     fontSize: '13px',
@@ -107,8 +106,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '8px',
     height: '8px',
     borderRadius: '50%',
-    position: 'relative',
-    top: '0',
+    position: 'absolute',
+    left: 160,
+    top: 8,
+    zIndex: 1,
   },
   loaded: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -154,15 +155,17 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
 
   return (
     <div className={classes.collectionNode}>
-      <div>
-        {data.collection_name}
-        <span className={classes.count}>({formatNumber(data.rowCount || 0)})</span>
-      </div>
-      <div className={classes.right}>
-        <Tooltip title={loadStatus}>
-          <div className={loadClass}></div>
+      <div className={classes.collectionName}>
+        <Tooltip title={data.collection_name}>
+          <Typography noWrap>{data.collection_name}</Typography>
         </Tooltip>
+        <span className={classes.count}>
+          ({formatNumber(data.rowCount || 0)})
+        </span>
       </div>
+      <Tooltip title={loadStatus}>
+        <div className={loadClass}></div>
+      </Tooltip>
     </div>
   );
 };

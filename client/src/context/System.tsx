@@ -50,7 +50,7 @@ export const SystemProvider = (props: { children: React.ReactNode }) => {
 
       // get system config
       const systemConfig = getSystemConfigs(parsedJson.workingNodes);
-      const deployMode = rootCoord.infos.system_info.deploy_mode;
+      const deployMode = rootCoord.infos.system_info?.deploy_mode;
       const systemInfo = rootCoord.infos.system_info;
 
       const data = {

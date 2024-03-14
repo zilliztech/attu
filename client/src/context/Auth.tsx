@@ -35,6 +35,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
 
   useEffect(() => {
     document.title = address ? `${address} - Attu` : 'Attu';
+    return () => {
+      document.title = 'Attu';
+    }
   }, [address, username]);
 
   const logout = () => {
@@ -60,7 +63,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         setIsAuth,
         setClientId,
         logout,
-        isManaged: address.includes('vectordb.zillizcloud.com'),
+        isManaged: address.includes('zilliz'),
       }}
     >
       {props.children}

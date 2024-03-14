@@ -1,4 +1,6 @@
 export type IconsType =
+  | 'zilliz'
+  | 'attu'
   | 'search'
   | 'add'
   | 'addOutline'
@@ -9,7 +11,6 @@ export type IconsType =
   | 'error'
   | 'clear'
   | 'app'
-  | 'zilliz'
   | 'navOverview'
   | 'navCollection'
   | 'navConsole'

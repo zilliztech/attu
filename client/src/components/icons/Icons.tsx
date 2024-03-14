@@ -3,7 +3,7 @@ import { IconsType } from './Types';
 import { SvgIcon } from '@material-ui/core';
 import AppsIcon from '@material-ui/icons/Apps';
 import CancelIcon from '@material-ui/icons/Cancel';
-import ZillizIcon from '@/assets/icons/attu.svg?react';
+import AttuIcon from '@/assets/icons/attu.svg?react';
 import ConsoleIcon from '@/assets/icons/console.svg?react';
 import KeyIcon from '@/assets/icons/key.svg?react';
 import SearchEmptyIcon from '@/assets/icons/search.svg?react';
@@ -316,8 +316,40 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
     </SvgIcon>
   ),
 
+  attu: (props = {}) => (
+    <SvgIcon viewBox="0 0 36 36" component={AttuIcon} {...props} />
+  ),
   zilliz: (props = {}) => (
-    <SvgIcon viewBox="0 0 36 36" component={ZillizIcon} {...props} />
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 400 400"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M187.5 271.942V400H212.5V246.651L278.978 361.793C286.5 358.114 293.728 353.926 300.617 349.274L227.846 223.23L307.986 252.399C311.602 244.961 314.472 237.093 316.499 228.893L271.46 212.5H400V187.5H246.65L361.793 121.022C358.114 113.499 353.926 106.271 349.274 99.3824L223.977 171.723L252.899 92.2593C245.477 88.6082 237.622 85.7015 229.433 83.6365L212.5 130.16V0H187.5V153.349L121.022 38.2061C113.5 41.8851 106.271 46.0732 99.3827 50.7256L171.852 176.245L92.1862 147.25C88.5455 154.677 85.6496 162.535 83.5959 170.727L129.678 187.5H0V212.5H153.349L38.2063 278.977C41.8852 286.5 46.0734 293.728 50.7258 300.617L176.992 227.717L147.75 308.058C155.193 311.664 163.065 314.523 171.268 316.539L187.5 271.942Z"
+        fill="url(#paint0_linear_3354_2834)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_3354_2834"
+          x1="85"
+          y1="42.5"
+          x2="292"
+          y2="378"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#E88DEA" />
+          <stop offset="0.187967" stopColor="#9D41FF" />
+          <stop offset="0.531725" stopColor="#2858FF" />
+          <stop offset="0.844232" stopColor="#29B8FF" />
+          <stop offset="1" stopColor="#3DCBF9" />
+        </linearGradient>
+      </defs>
+    </svg>
   ),
   refresh: (props = {}) => (
     <svg

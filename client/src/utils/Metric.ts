@@ -36,10 +36,10 @@ export const parseJson = (jsonData: any) => {
       childNodes.push(node);
     }
 
-    const info = node.infos.hardware_infos;
-    system.memory += info.memory;
+    const info = node.infos.hardware_infos || {};
+    system.memory += info.memory || 0;
     system.memoryUsage += info.memory_usage;
-    system.disk += info.disk;
+    system.disk += info.disk || 0;
     system.diskUsage += info.disk_usage;
   });
   return { nodes, childNodes, system, workingNodes, allNodes };

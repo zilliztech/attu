@@ -143,10 +143,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   );
 
   // API: fetch databases
-  const fetchDatabases = async () => {
-    setLoadingDatabases(true);
+  const fetchDatabases = async (updateLoading?: boolean) => {
+    updateLoading && setLoadingDatabases(true);
     const newDatabases = await DatabaseService.listDatabases();
-    setLoadingDatabases(false);
+    updateLoading && setLoadingDatabases(false);
 
     // if no database, logout
     if (newDatabases.length === 0) {
@@ -331,7 +331,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       socket.current.on('connect', async () => {
         console.log('--- ws connected ---', clientId);
         // fetch db
-        await fetchDatabases();
+        await fetchDatabases(true);
         // set connected to trues
         setConnected(true);
       });

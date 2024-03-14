@@ -185,7 +185,7 @@ const NavMenu: FC<NavMenuType> = props => {
     );
   };
 
-  const Logo = icons.zilliz;
+  const Logo = icons.attu;
   const ExpandIcon = icons.expand;
 
   return (

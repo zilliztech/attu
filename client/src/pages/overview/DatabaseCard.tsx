@@ -6,7 +6,7 @@ import { MilvusService } from '@/http';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { rootContext } from '@/context';
+import { rootContext, authContext } from '@/context';
 import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 
@@ -83,14 +83,17 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   setDatabase,
   dropDatabase,
 }) => {
+  // context
+  const { isManaged } = useContext(authContext);
+  const { setDialog, openSnackBar, handleCloseDialog } =
+    useContext(rootContext);
+
+  // i18n
   const { t: overviewTrans } = useTranslation('overview');
   const { t: successTrans } = useTranslation('success');
   const { t: dbTrans } = useTranslation('database');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
-
-  const { setDialog, openSnackBar, handleCloseDialog } =
-    useContext(rootContext);
 
   const navigation = useNavigate();
   const classes = useStyles();
@@ -98,6 +101,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   const DbIcon = icons.database;
   const DeleteIcon = icons.delete;
   const PlusIcon = icons.add;
+  const ZillizIcon = icons.zilliz;
 
   const onClick = async () => {
     // use database
@@ -141,7 +145,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     <section className={`${wrapperClass}`}>
       <section className={`${classes.wrapper}`} onClick={onClick}>
         <Typography variant="h3" className={classes.dbTitle}>
-          <DbIcon /> {database.name}
+          {isManaged ? <ZillizIcon /> : <DbIcon />} {database.name}
         </Typography>
         <div>
           <div key={database.name}>
