@@ -438,7 +438,7 @@ const Collections = () => {
               params: {
                 component: (
                   <ImportSampleDialog
-                    collection={row.collection_name}
+                    collection={row}
                     cb={async (collectionName: string) => {
                       setTimeout(async () => {
                         await fetchCollection(collectionName);
