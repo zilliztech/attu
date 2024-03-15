@@ -15,6 +15,8 @@ import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
+import icons from '@/components/icons/Icons';
+import CustomButton from '@/components/customButton/CustomButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -37,12 +39,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowX: 'auto',
     padding: theme.spacing(0, 2),
   },
+  refreshBtn: {
+    minWidth: 0,
+    marginLeft: 4,
+    color: theme.palette.attuGrey.main,
+  },
 }));
 
 const Databases = () => {
   // context
   const { isManaged } = useContext(authContext);
-  const { database, collections, loading } = useContext(dataContext);
+  const { database, collections, loading, fetchCollection } =
+    useContext(dataContext);
 
   // get current collection from url
   const params = useParams();
@@ -52,10 +60,27 @@ const Databases = () => {
     collectionPage = '',
   } = params;
 
-  // update navigation
-  useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
+  // icons
+  const RefreshIcon = icons.refresh;
+
+  // refresh collection
+  const refreshCollection = async () => {
+    await fetchCollection(collectionName);
+  };
+
   // get style
   const classes = useStyles();
+
+  // update navigation
+  useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
+    collectionName,
+    databaseName,
+    extra: (
+      <CustomButton onClick={refreshCollection} className={classes.refreshBtn}>
+        <RefreshIcon />
+      </CustomButton>
+    ),
+  });
 
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
