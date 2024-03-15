@@ -43,7 +43,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   uploadWrapper: {
     marginTop: theme.spacing(3),
     padding: theme.spacing(1),
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f4f4f4',
 
     '& .text': {
       color: theme.palette.attuGrey.dark,

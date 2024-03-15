@@ -11,7 +11,7 @@ const buttonStyle = makeStyles(theme => ({
     padding: theme.spacing(1),
 
     '&:hover': {
-      backgroundColor: '#f0f0f0',
+      backgroundColor: '#f4f4f4',
     },
   },
   containedBtn: {

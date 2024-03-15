@@ -199,7 +199,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     copyButton: {},
     expResult: {
-      background: '#f0f0f0',
+      background: '#f4f4f4',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -212,7 +212,7 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: '24px',
     },
     expWrapper: {
-      background: '#f0f0f0',
+      background: '#f4f4f4',
       minWidth: '480px',
       minHeight: '104px',
       padding: theme.spacing(1.5),

@@ -179,13 +179,13 @@ export const theme = createMuiTheme({
     },
     MuiFilledInput: {
       root: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#f4f4f4',
         borderRadius: 0,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
 
         '&:hover': {
-          backgroundColor: '#f0f0f0',
+          backgroundColor: '#f4f4f4',
         },
       },
       underline: {

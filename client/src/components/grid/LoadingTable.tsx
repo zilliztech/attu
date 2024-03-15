@@ -9,7 +9,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   skeleton: {
     transform: 'scale(1)',
-    background: 'linear-gradient(90deg, #f0f4f9 0%, #f0f0f0 50%)',
+    background: 'linear-gradient(90deg, #f0f4f9 0%, #f4f4f4 50%)',
   },
   tr: {
     display: 'grid',
