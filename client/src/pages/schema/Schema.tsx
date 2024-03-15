@@ -19,6 +19,7 @@ import { LOADING_STATE } from '@/consts';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 import StatusAction from '@/pages/collections/StatusAction';
+import CustomButton from '@/components/customButton/CustomButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -76,6 +77,17 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginLeft: theme.spacing(0.5),
     },
   },
+  refreshBtn: {
+    color: theme.palette.attuGrey.main,
+    cursor: 'pointer',
+    minWidth: 0,
+    minHeight: 0,
+    padding: theme.spacing(0.5),
+    alignSelf: 'center',
+    '& svg': {
+      width: 15,
+    },
+  },
 
   paramWrapper: {
     // set min width to prevent other table cell stretching
@@ -128,6 +140,12 @@ const Schema = () => {
 
   const KeyIcon = icons.key;
   const EnabledIcon = icons.check;
+  const RefreshIcon = icons.refresh;
+
+  // refresh collection
+  const refreshCollection = async () => {
+    await fetchCollection(collectionName);
+  };
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -273,6 +291,16 @@ const Schema = () => {
                 });
               }}
             />
+          </div>
+
+          <div className={classes.block}>
+            <Typography variant="h5">
+              {collectionTrans('rowCount')}
+              <CustomButton className={classes.refreshBtn} onClick={refreshCollection}>
+                <RefreshIcon />
+              </CustomButton>
+            </Typography>
+            <Typography variant="h6">{collection?.rowCount || '--'}</Typography>
           </div>
 
           <div className={classes.block}>
