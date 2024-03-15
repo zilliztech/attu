@@ -83,10 +83,10 @@ const ImportSampleDialog: FC<{ collection: CollectionObject; cb?: Function }> =
     const { collection } = props;
     const [size, setSize] = useState<string>(sizeOptions[0].value);
     const [csvFileName, setCsvFileName] = useState<string>(
-      `${collection}.sample.${size}.csv`
+      `${collection.collection_name}.sample.${size}.csv`
     );
     const [jsonFileName, setJsonFileName] = useState<string>(
-      `${collection}.sample.${size}.json`
+      `${collection.collection_name}.sample.${size}.json`
     );
     const [insertStatus, setInsertStatus] = useState<InsertStatusEnum>(
       InsertStatusEnum.init
@@ -215,8 +215,12 @@ const ImportSampleDialog: FC<{ collection: CollectionObject; cb?: Function }> =
                 onChange={(e: { target: { value: unknown } }) => {
                   const size = e.target.value;
                   setSize(size as string);
-                  setCsvFileName(`${collection}.sample.${size}.csv`);
-                  setJsonFileName(`${collection}.sample.${size}.json`);
+                  setCsvFileName(
+                    `${collection.collection_name}.sample.${size}.csv`
+                  );
+                  setJsonFileName(
+                    `${collection.collection_name}.sample.${size}.json`
+                  );
                 }}
               />
             </div>

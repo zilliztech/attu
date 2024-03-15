@@ -71,7 +71,7 @@ const Uploader: FC<UploaderProps> = ({
   };
 
   return (
-    <form>
+    <section>
       <CustomButton
         variant="contained"
         className={`${classes.btn} ${btnClass}`}
@@ -88,7 +88,7 @@ const Uploader: FC<UploaderProps> = ({
         accept={accept}
         style={{ display: 'none' }}
       />
-    </form>
+    </section>
   );
 };
 
