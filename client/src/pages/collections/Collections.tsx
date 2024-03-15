@@ -311,8 +311,14 @@ const Collections = () => {
       type: 'button',
       btnVariant: 'text',
       onClick: () => {
-        clearIndexCache();
-        fetchCollections();
+        if (selectedCollections.length > 0) {
+          for (const collection of selectedCollections) {
+            fetchCollection(collection.collection_name);
+          }
+        } else {
+          clearIndexCache();
+          fetchCollections();
+        }
       },
       disabled: () => {
         return loading;
