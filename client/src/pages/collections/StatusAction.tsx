@@ -127,7 +127,7 @@ const StatusAction: FC<StatusActionType> = props => {
     }
   }, [status, statusTrans, percentage]);
 
-  const noIndex = !schema.hasVectorIndex;
+  const noIndex = schema && !schema.hasVectorIndex;
   const noVectorIndexTooltip = collectionTrans('noVectorIndexTooltip');
   const noIndexIcon = (
     <div className={`${classes.circle} ${classes.noIndex}`}></div>
