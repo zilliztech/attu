@@ -95,7 +95,7 @@ export const AuthForm = (props: any) => {
     useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
-  const Logo = icons.zilliz;
+  const Logo = icons.attu;
   const GithubIcon = icons.github;
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
