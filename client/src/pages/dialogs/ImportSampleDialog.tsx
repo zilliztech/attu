@@ -177,7 +177,7 @@ const ImportSampleDialog: FC<{ collection: CollectionObject; cb?: Function }> =
     return (
       <DialogTemplate
         title={insertTrans('importSampleData', {
-          collection,
+          collection: collection.collection_name,
         })}
         handleClose={handleCloseDialog}
         confirmLabel={
