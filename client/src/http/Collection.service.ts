@@ -1,5 +1,5 @@
-import { LoadReplicaReq } from '@/pages/collections/Types';
-import { QueryParam } from '@/pages/query/Types';
+import { LoadReplicaReq } from '@/pages/databases/collections/Types';
+import { QueryParam } from '@/pages/databases/collections/data/Types';
 import BaseModel from './BaseModel';
 import {
   ShowCollectionsType,
@@ -12,7 +12,7 @@ import {
   IndexObject,
 } from '@server/types';
 import { ManageRequestMethods } from '../types/Common';
-import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
+import { IndexCreateParam, IndexManageParam } from '@/pages/databases/collections/overview/Types';
 
 export class CollectionService extends BaseModel {
   static getCollections(data?: {

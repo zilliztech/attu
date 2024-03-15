@@ -1,4 +1,4 @@
-import { PartitionManageParam, PartitionParam } from '@/pages/partitions/Types';
+import { PartitionManageParam, PartitionParam } from '@/pages/databases/collections/partitions/Types';
 import BaseModel from './BaseModel';
 import { PartitionData } from '@server/types';
 

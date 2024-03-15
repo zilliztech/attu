@@ -4,7 +4,7 @@ import {
   DEFAULT_PROMETHEUS_PORT,
   DataTypeEnum,
 } from '@/consts';
-import { CreateFieldType, CreateField } from '@/pages/collections/Types';
+import { CreateFieldType, CreateField } from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
 
 /**

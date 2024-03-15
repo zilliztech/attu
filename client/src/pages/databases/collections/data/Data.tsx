@@ -13,8 +13,8 @@ import { ToolBarConfig } from '@/components/grid/Types';
 import Filter from '@/components/advancedSearch';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
-import InsertDialog from '../dialogs/insert/Dialog';
-import { getLabelDisplayedRows } from '../search/Utils';
+import InsertDialog from '../../../dialogs/insert/Dialog';
+import { getLabelDisplayedRows } from '../../../search/Utils';
 import { getQueryStyles } from './Styles';
 import {
   DYNAMIC_FIELD,
@@ -23,11 +23,11 @@ import {
   ConsistencyLevelEnum,
 } from '@/consts';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import EmptyDataDialog from '../dialogs/EmptyDataDialog';
-import ImportSampleDialog from '../dialogs/ImportSampleDialog';
+import EmptyDataDialog from '../../../dialogs/EmptyDataDialog';
+import ImportSampleDialog from '../../../dialogs/ImportSampleDialog';
 import { detectItemType } from '@/utils';
 
-const Query = () => {
+const Data = () => {
   // get collection name from url
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   // UI state
@@ -420,4 +420,4 @@ const Query = () => {
   );
 };
 
-export default Query;
+export default Data;

@@ -9,7 +9,7 @@ import {
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
 import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
-import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
+import { IndexCreateParam, IndexManageParam } from '@/pages/databases/collections/overview/Types';
 import { getDbValueFromUrl } from '@/utils';
 import { DataContextType } from './Types';
 import { LAST_TIME_DATABASE } from '@/consts';

@@ -6,7 +6,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { Option } from '@/components/customSelector/Types';
 import { m_OPTIONS } from '@/consts';
-import { FormHelperType } from '../../types/Common';
+import { FormHelperType } from '../../../../types/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
