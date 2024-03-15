@@ -75,8 +75,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const StatusAction: FC<StatusActionType> = props => {
   const theme = useTheme();
   const classes = useStyles({ color: theme.palette.primary.main });
-  const ReleaseIcon = icons.remove;
-  const LoadIcon = icons.addOutline;
+  const ReleaseIcon = icons.release;
+  const LoadIcon = icons.load;
 
   const { status, percentage = 0, schema, action = () => {} } = props;
   const { t: commonTrans } = useTranslation();
