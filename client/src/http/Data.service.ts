@@ -1,5 +1,5 @@
 import { LoadSampleParam } from '@/pages/dialogs/Types';
-import { InsertDataParam, DeleteEntitiesReq } from '@/pages/collections/Types';
+import { InsertDataParam, DeleteEntitiesReq } from '@/pages/databases/collections/Types';
 import { VectorSearchParam } from '@/types/SearchTypes';
 import BaseModel from './BaseModel';
 

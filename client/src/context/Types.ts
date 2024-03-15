@@ -5,7 +5,7 @@ import {
   DatabaseObject,
 } from '@server/types';
 import { NavInfo } from '@/router/Types';
-import { IndexCreateParam, IndexManageParam } from '@/pages/schema/Types';
+import { IndexCreateParam, IndexManageParam } from '@/pages/databases/collections/overview/Types';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;

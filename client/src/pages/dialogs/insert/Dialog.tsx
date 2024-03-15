@@ -25,7 +25,7 @@ import {
   InsertStatusEnum,
   InsertStepperEnum,
 } from './Types';
-import { InsertDataParam } from '@/pages/collections/Types';
+import { InsertDataParam } from '@/pages/databases/collections/Types';
 import { DataService } from '@/http';
 
 const getStyles = makeStyles((theme: Theme) => ({

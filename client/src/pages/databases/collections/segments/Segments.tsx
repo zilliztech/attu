@@ -10,9 +10,9 @@ import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import CompactDialog from '@/pages/dialogs/CompactDialog';
 import FlushDialog from '@/pages/dialogs/FlushDialog';
-import { getQueryStyles } from '../query/Styles';
+import { getQueryStyles } from '../data/Styles';
 import { Segment } from './Types';
-import { getLabelDisplayedRows } from '../search/Utils';
+import { getLabelDisplayedRows } from '../../../search/Utils';
 
 const Segments = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();

@@ -14,11 +14,11 @@ import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
 import { rootContext, dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
-import { getLabelDisplayedRows } from '../search/Utils';
+import { getLabelDisplayedRows } from '../../../search/Utils';
 import { LOADING_STATE } from '@/consts';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
-import StatusAction from '@/pages/collections/StatusAction';
+import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomButton from '@/components/customButton/CustomButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Schema = () => {
+const Overview = () => {
   const { setDialog } = useContext(rootContext);
   const { fetchCollection, collections, loading } = useContext(dataContext);
   const { collectionName = '' } = useParams<{ collectionName: string }>();
@@ -385,4 +385,4 @@ const Schema = () => {
   );
 };
 
-export default Schema;
+export default Overview;

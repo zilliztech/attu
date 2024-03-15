@@ -9,7 +9,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { PartitionService } from '@/http';
 import { PartitionCreateProps } from './Types';
-import { PartitionManageParam } from '../partitions/Types';
+import { PartitionManageParam } from '../databases/collections/partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({

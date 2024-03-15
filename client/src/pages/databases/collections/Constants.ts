@@ -1,4 +1,4 @@
-import { LabelValuePair } from '../../types/Common';
+import { LabelValuePair } from '../../../types/Common';
 import { DataTypeEnum, ConsistencyLevelEnum } from '@/consts';
 
 export const CONSISTENCY_LEVEL_OPTIONS: LabelValuePair[] = [

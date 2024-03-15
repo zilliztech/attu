@@ -14,13 +14,13 @@ import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
 import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
-import CreateFields from '../collections/CreateFields';
+import CreateFields from '../databases/collections/CreateFields';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
   CreateField,
-} from '../collections/Types';
-import { CONSISTENCY_LEVEL_OPTIONS } from '../collections/Constants';
+} from '../databases/collections/Types';
+import { CONSISTENCY_LEVEL_OPTIONS } from '../databases/collections/Constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
   fieldset: {

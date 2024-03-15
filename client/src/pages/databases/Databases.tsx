@@ -7,12 +7,12 @@ import { ALL_ROUTER_TYPES } from '@/router/Types';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import DatabaseTree from '@/pages/databases/tree';
 import { ITab } from '@/components/customTabList/Types';
-import Partitions from '../partitions/Partitions';
-import Schema from '../schema/Schema';
-import Query from '../query/Query';
-import Segments from '../segments/Segments';
+import Partitions from './collections/partitions/Partitions';
+import Overview from './collections/overview/Overview';
+import Data from './collections/data/Data';
+import Segments from './collections/segments/Segments';
 import { dataContext, authContext } from '@/context';
-import Collections from '../collections/Collections';
+import Collections from './collections/Collections';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ChildrenStatusType } from '@/components/status/Types';
 
@@ -73,12 +73,12 @@ const Databases = () => {
   const collectionTabs: ITab[] = [
     {
       label: collectionTrans('schemaTab'),
-      component: <Schema />,
+      component: <Overview />,
       path: `info`,
     },
     {
       label: collectionTrans('dataTab'),
-      component: <Query />,
+      component: <Data />,
       path: `data`,
     },
     {
