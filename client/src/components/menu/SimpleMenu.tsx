@@ -16,7 +16,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1),
 
     '&:hover': {
-      backgroundColor: '#f9f9f9',
+      backgroundColor: '#f0f0f0',
     },
   },
 }));

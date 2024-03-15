@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       fontSize: '14px',
     },
   },
+  generalInfo: {
+    gap: 8,
+  },
+
   input: {
     width: '100%',
   },
@@ -51,9 +55,12 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginLeft: 0,
     },
   },
-  dialog: {
-    minWidth: '100%',
+  consistencySelect: {
+    '& .MuiSelect-filled': {
+      padding: 12,
+    },
   },
+  dialog: {},
 }));
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
@@ -271,7 +278,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       dialogClass={classes.dialog}
     >
       <>
-        <fieldset className={classes.fieldset}>
+        <fieldset className={`${classes.fieldset} ${classes.generalInfo}`}>
           {generalInfoConfigs.map(config => (
             <CustomInput
               key={config.key}
@@ -296,7 +303,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         <fieldset className={classes.fieldset}>
           <FormControlLabel
             checked={form.enableDynamicField}
-            control={<Checkbox />}
+            control={<Checkbox size="small" />}
             onChange={changeEnableDynamicField}
             label={collectionTrans('enableDynamicSchema')}
           />
@@ -305,13 +312,12 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         <fieldset className={classes.fieldset}>
           <legend>{collectionTrans('consistency')}</legend>
           <CustomSelector
-            wrapperClass={classes.select}
+            wrapperClass={`${classes.select} ${classes.consistencySelect}`}
             size="small"
             options={CONSISTENCY_LEVEL_OPTIONS}
             onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
               setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
-            hiddenlabel={'true'}
             value={consistencyLevel}
             variant="filled"
           />

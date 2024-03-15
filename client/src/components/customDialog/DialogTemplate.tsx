@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: '#fff',
   },
   dialog: {
-    minWidth: 480,
+    minWidth: 540,
   },
   codeWrapper: {
-    width: (props: { showCode: boolean }) => (props.showCode ? 480 : 0),
+    width: (props: { showCode: boolean }) => (props.showCode ? 540 : 0),
     transition: 'width 0.2s',
   },
   code: {

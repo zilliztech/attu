@@ -17,7 +17,7 @@ import { rootContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    maxWidth: '480px',
+    maxWidth: 540,
     backgroundColor: '#fff',
   },
   info: {

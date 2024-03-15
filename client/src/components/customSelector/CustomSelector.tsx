@@ -1,25 +1,7 @@
 import { FC } from 'react';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { CustomSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  root: {
-    '& .MuiFilledInput-underline:before': {
-      borderWidth: 1,
-    },
-    '& .MuiFilledInput-underline:after': {
-      borderWidth: 1,
-    },
-  },
-}));
 
 const CustomSelector: FC<CustomSelectorType> = props => {
   const {
@@ -35,15 +17,9 @@ const CustomSelector: FC<CustomSelectorType> = props => {
     ...others
   } = props;
   const id = generateId('selector');
-  const localClasses = getStyles();
 
   return (
-    <FormControl
-      variant={variant}
-      className={wrapperClass}
-      size={size}
-      classes={{ ...localClasses }}
-    >
+    <FormControl variant={variant} className={wrapperClass} size={size}>
       {label && (
         <InputLabel classes={{ root: labelClass }} htmlFor={id}>
           {label}

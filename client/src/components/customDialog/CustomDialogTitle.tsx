@@ -13,7 +13,7 @@ const getStyles = makeStyles(() => ({
   title: {
     fontWeight: 500,
     wordBreak: 'break-all',
-    maxWidth: 500,
+    maxWidth: 540,
   },
   icon: {
     fontSize: '24px',

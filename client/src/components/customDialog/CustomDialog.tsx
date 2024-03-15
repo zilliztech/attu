@@ -16,14 +16,14 @@ import CustomDialogTitle from './CustomDialogTitle';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      minWidth: 480,
+      minWidth: 540,
       padding: 0,
-
+      borderRadius: 0,
       backgroundColor: 'transparent',
     },
     noticePaper: {
       backgroundColor: '#fff',
-      maxWidth: 480,
+      maxWidth: 540,
     },
     paperSm: {
       maxWidth: '80%',

@@ -25,7 +25,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       flex: 1,
       padding: theme.spacing(0, 0, 0, 2),
       fontSize: theme.spacing(2),
-      backgroundColor: '#F9F9F9',
+      backgroundColor: '#f0f0f0',
 
       '& .expression': {
         display: 'flex',
@@ -33,13 +33,13 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
         flex: 1,
         alignItems: 'center',
         padding: theme.spacing(0, 1.5),
-        backgroundColor: '#F9F9F9',
+        backgroundColor: '#f0f0f0',
       },
       '& .textarea': {
         width: '100%',
         '& .MuiInput-underline:before': {
           borderWidth: 1,
-          borderColor: '#F9F9F9',
+          borderColor: '#f0f0f0',
         },
         '& .MuiInput-underline:after': {
           borderWidth: 1,

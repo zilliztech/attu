@@ -47,7 +47,7 @@ const commonThemes = {
     },
     secondary: {
       light: '#82d3ba',
-      main: '#31b78d',
+      main: '#0ACE82',
       dark: '#279371',
     },
     error: {
@@ -143,6 +143,7 @@ export const theme = createMuiTheme({
       root: {
         textTransform: 'initial',
         fontWeight: 'bold',
+        borderRadius: 0,
       },
       text: {
         '&:hover': {
@@ -171,13 +172,28 @@ export const theme = createMuiTheme({
         marginLeft: 0,
       },
     },
+    MuiTextField: {
+      root: {
+        borderRadius: 0,
+      },
+    },
     MuiFilledInput: {
       root: {
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#f0f0f0',
+        borderRadius: 0,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
 
         '&:hover': {
-          backgroundColor: '#f9f9f9',
+          backgroundColor: '#f0f0f0',
         },
+      },
+      underline: {
+        '&:before': {
+          borderBottom: 'none',
+        },
+        borderWidth: 1,
+        borderColor: 'transparent',
       },
     },
 
