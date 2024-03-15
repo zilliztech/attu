@@ -112,60 +112,62 @@ const Overview = () => {
       </section>
 
       {data?.systemInfo && (
-        <section className={classes.section}>
-          <Typography variant="h4">{overviewTrans('sysInfo')}</Typography>
-          <div className={classes.cardWrapper}>
-            <SysCard
-              title={'Milvus Version'}
-              count={data?.systemInfo?.build_version}
-              link="system"
-            />
+        <>
+          <section className={classes.section}>
+            <Typography variant="h4">{overviewTrans('sysInfo')}</Typography>
+            <div className={classes.cardWrapper}>
+              <SysCard
+                title={'Milvus Version'}
+                count={data?.systemInfo?.build_version}
+                link="system"
+              />
 
-            <SysCard
-              title={overviewTrans('deployMode')}
-              count={data?.deployMode}
-              link="system"
-            />
-            <SysCard
-              title={overviewTrans('upTime')}
-              count={duration}
-              link="system"
-            />
+              <SysCard
+                title={overviewTrans('deployMode')}
+                count={data?.deployMode}
+                link="system"
+              />
+              <SysCard
+                title={overviewTrans('upTime')}
+                count={duration}
+                link="system"
+              />
 
-            <SysCard
-              title={overviewTrans('users')}
-              count={data?.users?.length}
-              link="users"
-            />
-            <SysCard
-              title={overviewTrans('roles')}
-              count={data?.roles?.length}
-              link="roles"
-            />
+              <SysCard
+                title={overviewTrans('users')}
+                count={data?.users?.length}
+                link="users"
+              />
+              <SysCard
+                title={overviewTrans('roles')}
+                count={data?.roles?.length}
+                link="roles"
+              />
+            </div>
+          </section>
 
-            {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED ? (
-              <>
+          {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED && (
+            <section className={classes.section}>
+              <div className={classes.cardWrapper}>
                 <SysCard
                   title={overviewTrans('dataNodes')}
                   count={data?.dataNodes?.length}
                   link="system"
                 />
-
-                <SysCard
-                  title={overviewTrans('queryNodes')}
-                  count={data?.queryNodes?.length}
-                  link="system"
-                />
-
                 <SysCard
                   title={overviewTrans('indexNodes')}
                   count={data?.indexNodes?.length}
                   link="system"
                 />
-              </>
-            ) : null}
-          </div>
-        </section>
+                <SysCard
+                  title={overviewTrans('queryNodes')}
+                  count={data?.queryNodes?.length}
+                  link="system"
+                />
+              </div>
+            </section>
+          )}
+        </>
       )}
     </section>
   );
