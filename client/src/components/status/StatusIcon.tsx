@@ -1,6 +1,17 @@
 import { CircularProgress, makeStyles, Theme } from '@material-ui/core';
 import { FC, ReactElement } from 'react';
-import { ChildrenStatusType, StatusIconType } from './Types';
+
+export enum LoadingType {
+  CREATING = 'creating',
+  FINISH = 'finish',
+  ERROR = 'error',
+}
+
+export type StatusIconType = {
+  type: LoadingType;
+  className?: string;
+  size?: number;
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -18,7 +29,7 @@ const StatusIcon: FC<StatusIconType> = props => {
   const classes = useStyles();
   const { type, className = '', size = 16 } = props;
 
-  const getElement = (type: ChildrenStatusType): ReactElement => {
+  const getElement = (type: LoadingType): ReactElement => {
     switch (type) {
       case 'creating':
         return (

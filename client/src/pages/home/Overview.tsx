@@ -8,8 +8,7 @@ import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import DatabaseCard from './DatabaseCard';
 import SysCard from './SysCard';
-import StatusIcon from '@/components/status/StatusIcon';
-import { ChildrenStatusType } from '@/components/status/Types';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {
@@ -84,7 +83,7 @@ const Overview = () => {
       <section className={classes.section}>
         <Typography variant="h4">{databaseTrans('databases')}</Typography>
         {loadingDatabases ? (
-          <StatusIcon type={ChildrenStatusType.CREATING} />
+          <StatusIcon type={LoadingType.CREATING} />
         ) : (
           <div className={classes.cardWrapper}>
             {databases.map(db => {

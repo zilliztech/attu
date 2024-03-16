@@ -1,8 +1,5 @@
 import { FC, useMemo, MouseEvent } from 'react';
-import {
-  ChildrenStatusType,
-  StatusActionType,
-} from '@/components/status/Types';
+import { StatusActionType } from '@/components/status/Types';
 import { useTranslation } from 'react-i18next';
 import {
   makeStyles,
@@ -13,7 +10,7 @@ import {
   Chip,
 } from '@material-ui/core';
 import { LOADING_STATE } from '@/consts';
-import StatusIcon from '@/components/status/StatusIcon';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 
@@ -111,7 +108,7 @@ const StatusAction: FC<StatusActionType> = props => {
           tooltip: collectionTrans('collectionIsLoading'),
           icon: (
             <StatusIcon
-              type={ChildrenStatusType.CREATING}
+              type={LoadingType.CREATING}
               className={classes.loading}
             />
           ),

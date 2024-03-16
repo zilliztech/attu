@@ -13,10 +13,8 @@ import Data from './collections/data/Data';
 import Segments from './collections/segments/Segments';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
-import StatusIcon from '@/components/status/StatusIcon';
-import { ChildrenStatusType } from '@/components/status/Types';
-import icons from '@/components/icons/Icons';
-import CustomButton from '@/components/customButton/CustomButton';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import RefreshButton from './RefreshButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -39,11 +37,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowX: 'auto',
     padding: theme.spacing(0, 2),
   },
-  refreshBtn: {
-    minWidth: 0,
-    marginLeft: 4,
-    color: theme.palette.attuGrey.main,
-  },
 }));
 
 const Databases = () => {
@@ -60,9 +53,6 @@ const Databases = () => {
     collectionPage = '',
   } = params;
 
-  // icons
-  const RefreshIcon = icons.refresh;
-
   // refresh collection
   const refreshCollection = async () => {
     await fetchCollection(collectionName);
@@ -75,11 +65,7 @@ const Databases = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
     collectionName,
     databaseName,
-    extra: (
-      <CustomButton onClick={refreshCollection} className={classes.refreshBtn}>
-        <RefreshIcon />
-      </CustomButton>
-    ),
+    extra: <RefreshButton onClick={refreshCollection} />,
   });
 
   // i18n
@@ -129,7 +115,7 @@ const Databases = () => {
     <section className={`page-wrapper ${classes.wrapper}`}>
       <section className={classes.tree}>
         {loading ? (
-          <StatusIcon type={ChildrenStatusType.CREATING} />
+          <StatusIcon type={LoadingType.CREATING} />
         ) : (
           <DatabaseTree
             key="collections"

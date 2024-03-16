@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { ChildrenStatusType, StatusType } from './Types';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { useTranslation } from 'react-i18next';
 import {
   makeStyles,
@@ -9,7 +9,11 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { LOADING_STATE } from '@/consts';
-import StatusIcon from './StatusIcon';
+
+export type StatusType = {
+  status: LOADING_STATE;
+  percentage?: number;
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,10 +95,7 @@ const Status: FC<StatusType> = props => {
         <div className={classes.circle}></div>
       )}
       {status === LOADING_STATE.LOADING && (
-        <StatusIcon
-          type={ChildrenStatusType.CREATING}
-          className={classes.loading}
-        />
+        <StatusIcon type={LoadingType.CREATING} className={classes.loading} />
       )}
 
       <Typography variant="body2" className={classes.label}>

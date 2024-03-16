@@ -6,8 +6,7 @@ import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
 import { rootContext, dataContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import StatusIcon from '@/components/status/StatusIcon';
-import { ChildrenStatusType } from '@/components/status/Types';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { IndexState } from '@/types/Milvus';
 import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndex from './Create';
@@ -169,7 +168,7 @@ const IndexTypeElement: FC<{
     switch (field.index.indexType) {
       default: {
         if (field.index.state === IndexState.InProgress) {
-          return <StatusIcon type={ChildrenStatusType.CREATING} />;
+          return <StatusIcon type={LoadingType.CREATING} />;
         }
 
         const chipComp = () => (

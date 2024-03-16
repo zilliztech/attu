@@ -1,13 +1,6 @@
 import { FC } from 'react';
-import {
-  makeStyles,
-  Theme,
-  Typography,
-  Card,
-  CardContent,
-} from '@material-ui/core';
-import StatusIcon from '../status/StatusIcon';
-import { ChildrenStatusType } from '../status/Types';
+import { makeStyles, Theme, Typography, CardContent } from '@material-ui/core';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { EmptyCardProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,7 +36,7 @@ const EmptyCard: FC<EmptyCardProps> = ({
   return (
     <section className={`flex-center ${classes.wrapper} ${wrapperClass}`}>
       <CardContent>
-        {loading && <StatusIcon type={ChildrenStatusType.CREATING} size={40} />}
+        {loading && <StatusIcon type={LoadingType.CREATING} size={40} />}
         {icon}
         <Typography className={classes.text}>{text}</Typography>
         <Typography className={classes.subText}>{subText}</Typography>

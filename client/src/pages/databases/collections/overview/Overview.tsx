@@ -289,7 +289,7 @@ const Overview = () => {
                 <QuestionIcon classes={{ root: classes.questionIcon }} />
               </CustomToolTip>
             </Typography>
-            <Typography variant="h6">{collection?.rowCount || '--'}</Typography>
+            <Typography variant="h6">{collection?.rowCount || '0'}</Typography>
           </div>
 
           <div className={classes.block}>
