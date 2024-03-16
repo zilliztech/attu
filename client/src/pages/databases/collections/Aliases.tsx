@@ -3,7 +3,7 @@ import { Chip, IconButton, makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import icons from '@/components/icons/Icons';
-import CreateAliasDialog from '../../dialogs/CreateAliasDialog';
+import CreateAliasDialog from '@/pages/dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { CollectionObject } from '@server/types';
 

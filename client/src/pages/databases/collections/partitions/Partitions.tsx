@@ -10,12 +10,12 @@ import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
 import { CollectionService, PartitionService } from '@/http';
-import InsertContainer from '../../../dialogs/insert/Dialog';
-import CreatePartitionDialog from '../../../dialogs/CreatePartitionDialog';
-import DropPartitionDialog from '../../../dialogs/DropPartitionDialog';
+import InsertContainer from '@/pages/dialogs/insert/Dialog';
+import CreatePartitionDialog from '@/pages/dialogs/CreatePartitionDialog';
+import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
 import { PartitionData } from '@server/types';
 import { formatNumber } from '@/utils';
-import { getLabelDisplayedRows } from '../../../search/Utils';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

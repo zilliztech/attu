@@ -10,8 +10,8 @@ import warningCn from './cn/warning';
 import warningEn from './en/warning';
 import navCn from './cn/nav';
 import navEn from './en/nav';
-import overviewCn from './cn/overview';
-import overviewEn from './en/overview';
+import homeCn from './cn/home';
+import homeEn from './en/home';
 import collectionCn from './cn/collection';
 import collectionEn from './en/collection';
 import dialogCn from './cn/dialog';
@@ -41,7 +41,7 @@ export const resources = {
     btn: buttonCn,
     warning: warningCn,
     nav: navCn,
-    overview: overviewCn,
+    home: homeCn,
     collection: collectionCn,
     dialog: dialogCn,
     partition: partitionCn,
@@ -59,7 +59,7 @@ export const resources = {
     btn: buttonEn,
     warning: warningEn,
     nav: navEn,
-    overview: overviewEn,
+    home: homeEn,
     collection: collectionEn,
     dialog: dialogEn,
     partition: partitionEn,

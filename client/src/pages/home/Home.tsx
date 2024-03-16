@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Overview = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.OVERVIEW);
+const Home = () => {
+  useNavigationHook(ALL_ROUTER_TYPES.HOME);
   const {
     databases,
     database,
@@ -42,7 +42,7 @@ const Overview = () => {
   } = useContext(dataContext);
   const { data } = useContext(systemContext);
   const classes = useStyles();
-  const { t: overviewTrans } = useTranslation('overview');
+  const { t: homeTrans } = useTranslation('home');
   const { t: databaseTrans } = useTranslation('database');
 
   // calculation diff to the rootCoord create time
@@ -69,10 +69,10 @@ const Overview = () => {
       const withinOneDay = hourDiff < 24;
       duration = withinOneHour ? minDiff : withinOneDay ? hourDiff : dayDiff;
       unit = withinOneHour
-        ? overviewTrans('minutes')
+        ? homeTrans('minutes')
         : withinOneDay
-        ? overviewTrans('hours')
-        : overviewTrans('day');
+        ? homeTrans('hours')
+        : homeTrans('day');
     }
 
     return `${duration.toFixed(2)} ${unit}`;
@@ -113,7 +113,7 @@ const Overview = () => {
       {data?.systemInfo && (
         <>
           <section className={classes.section}>
-            <Typography variant="h4">{overviewTrans('sysInfo')}</Typography>
+            <Typography variant="h4">{homeTrans('sysInfo')}</Typography>
             <div className={classes.cardWrapper}>
               <SysCard
                 title={'Milvus Version'}
@@ -122,23 +122,23 @@ const Overview = () => {
               />
 
               <SysCard
-                title={overviewTrans('deployMode')}
+                title={homeTrans('deployMode')}
                 count={data?.deployMode}
                 link="system"
               />
               <SysCard
-                title={overviewTrans('upTime')}
+                title={homeTrans('upTime')}
                 count={duration}
                 link="system"
               />
 
               <SysCard
-                title={overviewTrans('users')}
+                title={homeTrans('users')}
                 count={data?.users?.length}
                 link="users"
               />
               <SysCard
-                title={overviewTrans('roles')}
+                title={homeTrans('roles')}
                 count={data?.roles?.length}
                 link="roles"
               />
@@ -149,17 +149,17 @@ const Overview = () => {
             <section className={classes.section}>
               <div className={classes.cardWrapper}>
                 <SysCard
-                  title={overviewTrans('dataNodes')}
+                  title={homeTrans('dataNodes')}
                   count={data?.dataNodes?.length}
                   link="system"
                 />
                 <SysCard
-                  title={overviewTrans('indexNodes')}
+                  title={homeTrans('indexNodes')}
                   count={data?.indexNodes?.length}
                   link="system"
                 />
                 <SysCard
-                  title={overviewTrans('queryNodes')}
+                  title={homeTrans('queryNodes')}
                   count={data?.queryNodes?.length}
                   link="system"
                 />
@@ -172,4 +172,4 @@ const Overview = () => {
   );
 };
 
-export default Overview;
+export default Home;

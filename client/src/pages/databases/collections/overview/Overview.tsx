@@ -14,7 +14,7 @@ import icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
 import { rootContext, dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
-import { getLabelDisplayedRows } from '../../../search/Utils';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { LOADING_STATE } from '@/consts';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';

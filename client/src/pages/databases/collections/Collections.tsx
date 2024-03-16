@@ -13,15 +13,15 @@ import icons from '@/components/icons/Icons';
 import EmptyCard from '@/components/cards/EmptyCard';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import CreateCollectionDialog from '../../dialogs/CreateCollectionDialog';
-import LoadCollectionDialog from '../../dialogs/LoadCollectionDialog';
-import ReleaseCollectionDialog from '../../dialogs/ReleaseCollectionDialog';
-import DropCollectionDialog from '../../dialogs/DropCollectionDialog';
-import RenameCollectionDialog from '../../dialogs/RenameCollectionDialog';
-import DuplicateCollectionDialog from '../../dialogs/DuplicateCollectionDialog';
-import InsertDialog from '../../dialogs/insert/Dialog';
-import ImportSampleDialog from '../../dialogs/ImportSampleDialog';
-import { getLabelDisplayedRows } from '../../search/Utils';
+import CreateCollectionDialog from '@/pages/dialogs/CreateCollectionDialog';
+import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
+import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
+import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
+import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
+import DuplicateCollectionDialog from '@/pages/dialogs/DuplicateCollectionDialog';
+import InsertDialog from '@/pages/dialogs/insert/Dialog';
+import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
@@ -343,7 +343,7 @@ const Collections = () => {
       formatter({ collection_name }) {
         return (
           <Link
-            to={`/databases/${database}/${collection_name}/info`}
+            to={`/databases/${database}/${collection_name}/overview`}
             className={classes.link}
             title={collection_name}
           >

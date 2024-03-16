@@ -85,7 +85,7 @@ const Databases = () => {
     {
       label: collectionTrans('schemaTab'),
       component: <Overview />,
-      path: `info`,
+      path: `overview`,
     },
     {
       label: collectionTrans('dataTab'),

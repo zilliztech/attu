@@ -1,6 +1,6 @@
 export enum ALL_ROUTER_TYPES {
   // '/'
-  OVERVIEW = 'overview',
+  HOME = 'home',
   // '/collections'
   COLLECTIONS = 'collections',
   // '/collections/:collectionId'

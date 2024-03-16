@@ -13,7 +13,7 @@ import {
   prometheusContext,
   dataContext,
 } from '@/context';
-import Overview from '@/pages/home/Overview';
+import Overview from '@/pages/home/Home';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
