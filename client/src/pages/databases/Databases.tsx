@@ -9,7 +9,7 @@ import DatabaseTree from '@/pages/databases/tree';
 import { ITab } from '@/components/customTabList/Types';
 import Partitions from './collections/partitions/Partitions';
 import Overview from './collections/overview/Overview';
-import Data from './collections/data/Data';
+import Data from './collections/data/CollectionData';
 import Segments from './collections/segments/Segments';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
