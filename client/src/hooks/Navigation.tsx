@@ -6,14 +6,21 @@ import { ALL_ROUTER_TYPES, NavInfo } from '@/router/Types';
 export const useNavigationHook = (
   type: ALL_ROUTER_TYPES,
   extraParam?: {
+    databaseName?: string;
     collectionName?: string;
     title?: string;
+    extra?: React.ReactNode;
   }
 ) => {
   const { t: navTrans } = useTranslation('nav');
   const { setNavInfo } = useContext(navContext);
-  const { collectionName = '', title = 'PLUGIN TITLE' } = extraParam || {
+  const {
+    databaseName = '',
+    collectionName = '',
+    extra,
+  } = extraParam || {
     collectionName: '',
+    databaseName: '',
   };
 
   useEffect(() => {
@@ -27,30 +34,17 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
-      case ALL_ROUTER_TYPES.DB_ADMIN: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('dbAdmin'),
-          backPath: '',
-          showDatabaseSelector: false,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
       case ALL_ROUTER_TYPES.DATABASES: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('database'),
-          backPath: '',
-          showDatabaseSelector: true,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.COLLECTION_DETAIL: {
         const navInfo: NavInfo = {
           navTitle: collectionName,
           backPath: '',
           showDatabaseSelector: true,
         };
+
+        if (collectionName) {
+          navInfo.extra = extra;
+        }
+
         setNavInfo(navInfo);
         break;
       }
@@ -84,5 +78,5 @@ export const useNavigationHook = (
       default:
         break;
     }
-  }, [type, navTrans, setNavInfo, collectionName, title]);
+  }, [type, navTrans, setNavInfo, databaseName, collectionName]);
 };

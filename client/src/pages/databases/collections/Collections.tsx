@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
 import { CollectionService } from '@/http';
-import { useNavigationHook, usePaginationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
@@ -69,7 +68,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Collections = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.COLLECTIONS);
   const { isManaged } = useContext(authContext);
   const { collections, database, loading, fetchCollections, fetchCollection } =
     useContext(dataContext);

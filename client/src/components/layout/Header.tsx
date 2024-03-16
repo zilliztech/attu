@@ -12,7 +12,6 @@ import { navContext, dataContext, authContext } from '@/context';
 import { MilvusService } from '@/http';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '../icons/Icons';
-import { HeaderType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header: FC<HeaderType> = props => {
+const Header: FC = () => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
   const { database, databases, setDatabase, loading } = useContext(dataContext);
@@ -130,6 +129,7 @@ const Header: FC<HeaderType> = props => {
           <Typography variant="h5" color="textPrimary">
             {navInfo.navTitle}
           </Typography>
+          {navInfo.extra}
         </div>
 
         <div className={classes.addressWrapper}>

@@ -19,7 +19,7 @@ import { LOADING_STATE } from '@/consts';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 import StatusAction from '@/pages/databases/collections/StatusAction';
-import CustomButton from '@/components/customButton/CustomButton';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -50,6 +50,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
   },
+  questionIcon: {
+    position: 'relative',
+    top: '2px',
+    right: '-2px',
+  },
   primaryKeyChip: {
     fontSize: '8px',
     position: 'relative',
@@ -75,17 +80,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '16px',
       height: '16px',
       marginLeft: theme.spacing(0.5),
-    },
-  },
-  refreshBtn: {
-    color: theme.palette.attuGrey.main,
-    cursor: 'pointer',
-    minWidth: 0,
-    minHeight: 0,
-    padding: theme.spacing(0.5),
-    alignSelf: 'center',
-    '& svg': {
-      width: 15,
     },
   },
 
@@ -140,12 +134,7 @@ const Overview = () => {
 
   const KeyIcon = icons.key;
   const EnabledIcon = icons.check;
-  const RefreshIcon = icons.refresh;
-
-  // refresh collection
-  const refreshCollection = async () => {
-    await fetchCollection(collectionName);
-  };
+  const QuestionIcon = icons.question;
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -296,11 +285,11 @@ const Overview = () => {
           <div className={classes.block}>
             <Typography variant="h5">
               {collectionTrans('rowCount')}
-              <CustomButton className={classes.refreshBtn} onClick={refreshCollection}>
-                <RefreshIcon />
-              </CustomButton>
+              <CustomToolTip title={collectionTrans('entityCountInfo')}>
+                <QuestionIcon classes={{ root: classes.questionIcon }} />
+              </CustomToolTip>
             </Typography>
-            <Typography variant="h6">{collection?.rowCount || '--'}</Typography>
+            <Typography variant="h6">{collection?.rowCount || '0'}</Typography>
           </div>
 
           <div className={classes.block}>

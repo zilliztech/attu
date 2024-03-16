@@ -13,8 +13,8 @@ import Data from './collections/data/Data';
 import Segments from './collections/segments/Segments';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
-import StatusIcon from '@/components/status/StatusIcon';
-import { ChildrenStatusType } from '@/components/status/Types';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import RefreshButton from './RefreshButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Databases = () => {
   // context
   const { isManaged } = useContext(authContext);
-  const { database, collections, loading } = useContext(dataContext);
+  const { database, collections, loading, fetchCollection } =
+    useContext(dataContext);
 
   // get current collection from url
   const params = useParams();
@@ -52,10 +53,20 @@ const Databases = () => {
     collectionPage = '',
   } = params;
 
-  // update navigation
-  useNavigationHook(ALL_ROUTER_TYPES.COLLECTION_DETAIL, { collectionName });
+  // refresh collection
+  const refreshCollection = async () => {
+    await fetchCollection(collectionName);
+  };
+
   // get style
   const classes = useStyles();
+
+  // update navigation
+  useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
+    collectionName,
+    databaseName,
+    extra: <RefreshButton onClick={refreshCollection} />,
+  });
 
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
@@ -104,7 +115,7 @@ const Databases = () => {
     <section className={`page-wrapper ${classes.wrapper}`}>
       <section className={classes.tree}>
         {loading ? (
-          <StatusIcon type={ChildrenStatusType.CREATING} />
+          <StatusIcon type={LoadingType.CREATING} />
         ) : (
           <DatabaseTree
             key="collections"

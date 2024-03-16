@@ -1,4 +1,3 @@
-import { ChildrenStatusType } from '@/components/status/Types';
 import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
 import { CollectionObject } from '@server/types';
 

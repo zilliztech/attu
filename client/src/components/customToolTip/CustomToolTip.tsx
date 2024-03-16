@@ -20,7 +20,7 @@ const CustomToolTip: FC<CustomToolTipType> = props => {
       placement={placement}
       arrow
     >
-      <span className="flex-center">{children}</span>
+      <span>{children}</span>
     </Tooltip>
   );
 };
