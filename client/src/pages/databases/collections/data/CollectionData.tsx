@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { TextField, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import { rootContext } from '@/context';
 import { DataService } from '@/http';
 import { useQuery } from '@/hooks';
@@ -26,14 +25,40 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import { detectItemType } from '@/utils';
+import { CollectionObject, CollectionFullObject } from '@server/types';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 
-const Data = () => {
-  // get collection name from url
-  const { collectionName = '' } = useParams<{ collectionName: string }>();
+export interface CollectionDataProps {
+  collectionName: string;
+  collections: CollectionObject[];
+}
+
+const CollectionData = (props: CollectionDataProps) => {
+  // props
+  const { collections } = props;
+  const collection = collections.find(
+    i => i.collection_name === props.collectionName
+  ) as CollectionFullObject;
+
+  // collection is not found or collection full object is not ready
+  if (!collection || !collection.consistency_level) {
+    return <StatusIcon type={LoadingType.CREATING} />;
+  }
+
   // UI state
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const [expression, setExpression] = useState<string>('');
+  const [consistencyLevel, setConsistencyLevel] = useState<string>(
+    collection.consistency_level
+  );
+
+  // collection fields, combine static and dynamic fields
+  const fields = [
+    ...collection.schema.fields,
+    ...collection.schema.dynamicFields,
+  ];
+
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -89,7 +114,7 @@ const Data = () => {
   };
   const handleDelete = async () => {
     // call delete api
-    await DataService.deleteEntities(collectionName, {
+    await DataService.deleteEntities(collection.collection_name, {
       expr: `${collection!.schema.primaryField.name} in [${selectedData
         .map(v =>
           collection!.schema.primaryField.data_type ===
@@ -107,23 +132,20 @@ const Data = () => {
 
   // Query hook
   const {
-    collection,
-    fields,
     currentPage,
     total,
     pageSize,
     expr,
     queryResult,
     setPageSize,
-    consistencyLevel,
-    setConsistencyLevel,
     setCurrentPage,
     setExpr,
     query,
     reset,
     count,
   } = useQuery({
-    collectionName,
+    collection,
+    fields,
     onQueryStart: (expr: string = '') => {
       setTableLoading(true);
       if (expr === '') {
@@ -152,7 +174,7 @@ const Data = () => {
           params: {
             component: (
               <InsertDialog
-                defaultSelectedCollection={collectionName}
+                defaultSelectedCollection={collection.collection_name}
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
                 collections={[collection!]}
@@ -215,7 +237,7 @@ const Data = () => {
       type: 'button',
       btnVariant: 'text',
       onClick: () => {
-        saveCsvAs(selectedData, `${collectionName}.query.csv`);
+        saveCsvAs(selectedData, `${collection.collection_name}.query.csv`);
       },
       label: btnTrans('export'),
       icon: 'download',
@@ -420,4 +442,4 @@ const Data = () => {
   );
 };
 
-export default Data;
+export default CollectionData;

@@ -84,7 +84,8 @@ const collectionTrans = {
 
   // collection tabs
   partitionTab: 'Partitions',
-  schemaTab: 'Overview',
+  overviewTab: 'Overview',
+  schemaTab: 'Schema',
   dataTab: 'Data',
   previewTab: 'Data Preview',
   segmentsTab: 'Segments',

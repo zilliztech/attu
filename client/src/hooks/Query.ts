@@ -4,15 +4,24 @@ import { CollectionService } from '@/http';
 import { CollectionFullObject, FieldObject } from '@server/types';
 
 export const useQuery = (params: {
+  collection: CollectionFullObject;
+  fields: FieldObject[];
+  consistencyLevel?: string;
   onQueryStart: Function;
   onQueryEnd?: Function;
   onQueryFinally?: Function;
-  collectionName: string;
 }) => {
-  // state
-  const [collection, setCollection] = useState<CollectionFullObject>();
-  const [fields, setFields] = useState<FieldObject[]>([]);
-  const [consistencyLevel, setConsistencyLevel] = useState<string>('Bounded');
+  // params
+  const {
+    collection,
+    fields,
+    onQueryStart,
+    onQueryEnd,
+    onQueryFinally,
+    consistencyLevel,
+  } = params;
+
+  // states
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
@@ -62,7 +71,7 @@ export const useQuery = (params: {
   ) => {
     const _expr = getPageExpr(page);
     // console.log('query expr', _expr);
-    params.onQueryStart(_expr);
+    onQueryStart(_expr);
 
     try {
       const queryParams = {
@@ -77,7 +86,7 @@ export const useQuery = (params: {
       lastQuery.current = queryParams;
       // execute query
       const res = await CollectionService.queryData(
-        params.collectionName,
+        collection.collection_name,
         queryParams
       );
 
@@ -105,30 +114,17 @@ export const useQuery = (params: {
       // update query result
       setQueryResult(res);
 
-      params.onQueryEnd?.(res);
+      onQueryEnd?.(res);
     } catch (e: any) {
       reset();
     } finally {
-      params.onQueryFinally?.();
+      onQueryFinally?.();
     }
-  };
-
-  // get collection info
-  const prepare = async (collectionName: string) => {
-    const collection = await CollectionService.getCollection(
-      collectionName
-    );
-    setFields([
-      ...collection.schema.fields,
-      ...collection.schema.dynamicFields,
-    ]);
-    setConsistencyLevel(collection.consistency_level);
-    setCollection(collection);
   };
 
   const count = async (consistency_level = consistencyLevel) => {
     const count = 'count(*)';
-    const res = await CollectionService.queryData(params.collectionName, {
+    const res = await CollectionService.queryData(collection.collection_name, {
       expr: expr,
       output_fields: [count],
       consistency_level,
@@ -143,14 +139,6 @@ export const useQuery = (params: {
     setQueryResult({ data: [], latency: 0 });
     pageCache.current.clear();
   };
-
-  // Get fields at first or collection name changed.
-  useEffect(() => {
-    // reset
-    reset();
-    // get collection info
-    params.collectionName && prepare(params.collectionName);
-  }, [params.collectionName]);
 
   // query if expr is changed
   useEffect(() => {
@@ -179,20 +167,12 @@ export const useQuery = (params: {
   }, [collection]);
 
   return {
-    // collection info(primaryKey, consistency level, fields)
-    collection,
-    // fields,
-    fields,
     // total query count
     total,
     // page size
     pageSize,
     // update page size
     setPageSize,
-    // consistency level
-    consistencyLevel,
-    // update consistency level
-    setConsistencyLevel,
     // current page
     currentPage,
     // query current data page

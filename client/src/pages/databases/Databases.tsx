@@ -15,6 +15,7 @@ import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import RefreshButton from './RefreshButton';
+import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -39,9 +40,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+// Databases page(tree and tabs)
 const Databases = () => {
   // context
-  const { isManaged } = useContext(authContext);
   const { database, collections, loading, fetchCollection } =
     useContext(dataContext);
 
@@ -53,11 +54,6 @@ const Databases = () => {
     collectionPage = '',
   } = params;
 
-  // refresh collection
-  const refreshCollection = async () => {
-    await fetchCollection(collectionName);
-  };
-
   // get style
   const classes = useStyles();
 
@@ -65,50 +61,14 @@ const Databases = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
     collectionName,
     databaseName,
-    extra: <RefreshButton onClick={refreshCollection} />,
+    extra: (
+      <RefreshButton
+        onClick={async () => {
+          await fetchCollection(collectionName);
+        }}
+      />
+    ),
   });
-
-  // i18n
-  const { t: collectionTrans } = useTranslation('collection');
-
-  const dbTab: ITab[] = [
-    {
-      label: collectionTrans('collections'),
-      component: <Collections />,
-      path: `collections`,
-    },
-  ];
-  const actionDbTab = dbTab.findIndex(t => t.path === databaseName);
-
-  // collection tabs
-  const collectionTabs: ITab[] = [
-    {
-      label: collectionTrans('schemaTab'),
-      component: <Overview />,
-      path: `overview`,
-    },
-    {
-      label: collectionTrans('dataTab'),
-      component: <Data />,
-      path: `data`,
-    },
-    {
-      label: collectionTrans('partitionTab'),
-      component: <Partitions />,
-      path: `partitions`,
-    },
-  ];
-
-  if (!isManaged) {
-    collectionTabs.push({
-      label: collectionTrans('segmentsTab'),
-      component: <Segments />,
-      path: `segments`,
-    });
-  }
-
-  // get active collection tab
-  const activeColTab = collectionTabs.findIndex(t => t.path === collectionPage);
 
   // render
   return (
@@ -126,20 +86,96 @@ const Databases = () => {
         )}
       </section>
       {!collectionName && (
-        <RouteTabList
-          tabs={dbTab}
-          wrapperClass={classes.tab}
-          activeIndex={actionDbTab !== -1 ? actionDbTab : 0}
-        />
+        <DatabasesTab databaseName={databaseName} tabClass={classes.tab} />
       )}
       {collectionName && (
-        <RouteTabList
-          tabs={collectionTabs}
-          wrapperClass={classes.tab}
-          activeIndex={activeColTab !== -1 ? activeColTab : 0}
+        <CollectionTabs
+          collectionPage={collectionPage}
+          collectionName={collectionName}
+          tabClass={classes.tab}
+          collections={collections}
         />
       )}
     </section>
+  );
+};
+
+// Database tab pages
+const DatabasesTab = (props: {
+  databaseName: string;
+  tabClass: string; // tab class
+}) => {
+  const { databaseName, tabClass } = props;
+  const { t: collectionTrans } = useTranslation('collection');
+
+  const dbTab: ITab[] = [
+    {
+      label: collectionTrans('collections'),
+      component: <Collections />,
+      path: `collections`,
+    },
+  ];
+  const actionDbTab = dbTab.findIndex(t => t.path === databaseName);
+  return (
+    <RouteTabList
+      tabs={dbTab}
+      wrapperClass={tabClass}
+      activeIndex={actionDbTab !== -1 ? actionDbTab : 0}
+    />
+  );
+};
+
+// Collection tab pages
+const CollectionTabs = (props: {
+  collectionPage: string; // current collection page
+  collectionName: string; // current collection name
+  tabClass: string; // tab class
+  collections: CollectionObject[]; // collections
+}) => {
+  // props
+  const { collectionPage, collectionName, tabClass, collections } = props;
+  // context
+  const { isManaged } = useContext(authContext);
+  // i18n
+  const { t: collectionTrans } = useTranslation('collection');
+  // collection tabs
+  const collectionTabs: ITab[] = [
+    {
+      label: collectionTrans('overviewTab'),
+      component: <Overview />,
+      path: `overview`,
+    },
+    {
+      label: collectionTrans('dataTab'),
+      component: (
+        <Data collections={collections} collectionName={collectionName} />
+      ),
+      path: `data`,
+    },
+    {
+      label: collectionTrans('partitionTab'),
+      component: <Partitions />,
+      path: `partitions`,
+    },
+  ];
+
+  // get active collection tab
+  const activeColTab = collectionTabs.findIndex(t => t.path === collectionPage);
+
+  if (!isManaged) {
+    collectionTabs.push({
+      label: collectionTrans('segmentsTab'),
+      component: <Segments />,
+      path: `segments`,
+    });
+  }
+
+  return (
+    <RouteTabList
+      tabs={collectionTabs}
+      wrapperClass={tabClass}
+      activeIndex={activeColTab !== -1 ? activeColTab : 0}
+    />
   );
 };
 
