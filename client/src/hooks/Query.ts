@@ -6,7 +6,7 @@ import { CollectionFullObject, FieldObject } from '@server/types';
 export const useQuery = (params: {
   collection: CollectionFullObject;
   fields: FieldObject[];
-  consistencyLevel?: string;
+  consistencyLevel: string;
   onQueryStart: Function;
   onQueryEnd?: Function;
   onQueryFinally?: Function;
@@ -18,7 +18,7 @@ export const useQuery = (params: {
     onQueryStart,
     onQueryEnd,
     onQueryFinally,
-    consistencyLevel,
+    consistencyLevel
   } = params;
 
   // states
@@ -159,6 +159,9 @@ export const useQuery = (params: {
       // console.info('[skip running query]: no key yet');
       return;
     }
+
+    // reset
+    reset();
 
     // get count;
     count();

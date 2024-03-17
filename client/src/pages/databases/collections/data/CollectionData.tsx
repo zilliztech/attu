@@ -99,7 +99,7 @@ const CollectionData = (props: CollectionDataProps) => {
   };
   const handlePageChange = async (e: any, page: number) => {
     // do the query
-    await query(page);
+    await query(page, consistencyLevel);
     // update page number
     setCurrentPage(page);
   };
@@ -145,6 +145,7 @@ const CollectionData = (props: CollectionDataProps) => {
     count,
   } = useQuery({
     collection,
+    consistencyLevel,
     fields,
     onQueryStart: (expr: string = '') => {
       setTableLoading(true);
