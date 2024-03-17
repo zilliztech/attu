@@ -18,7 +18,7 @@ export const useQuery = (params: {
     onQueryStart,
     onQueryEnd,
     onQueryFinally,
-    consistencyLevel
+    consistencyLevel,
   } = params;
 
   // states
@@ -27,7 +27,6 @@ export const useQuery = (params: {
   const [total, setTotal] = useState<number>(0);
   const [expr, setExpr] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>({ data: [], latency: 0 });
-  const lastQuery = useRef<any>();
 
   // build local cache for pk ids
   const pageCache = useRef(new Map());
@@ -70,7 +69,7 @@ export const useQuery = (params: {
     consistency_level = consistencyLevel
   ) => {
     const _expr = getPageExpr(page);
-    // console.log('query expr', _expr);
+
     onQueryStart(_expr);
 
     try {
@@ -82,8 +81,6 @@ export const useQuery = (params: {
         // travel_timestamp: timeTravelInfo.timestamp,
       };
 
-      // cache last query
-      lastQuery.current = queryParams;
       // execute query
       const res = await CollectionService.queryData(
         collection.collection_name,
@@ -128,7 +125,6 @@ export const useQuery = (params: {
       expr: expr,
       output_fields: [count],
       consistency_level,
-      // travel_timestamp: timeTravelInfo.timestamp,
     });
     setTotal(Number(res.data[0][count]));
   };
@@ -151,23 +147,7 @@ export const useQuery = (params: {
     count();
     // do the query
     query();
-  }, [expr, pageSize]);
-
-  // query if collection is changed
-  useEffect(() => {
-    if (!collection || !collection.loaded) {
-      // console.info('[skip running query]: no key yet');
-      return;
-    }
-
-    // reset
-    reset();
-
-    // get count;
-    count();
-    // do the query
-    query();
-  }, [collection]);
+  }, [expr, pageSize, collection]);
 
   return {
     // total query count
