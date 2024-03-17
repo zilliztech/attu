@@ -1,4 +1,4 @@
-const overviewTrans = {
+const homeTrans = {
   load: '已加载的Collection',
   all: '所有Collection',
   data: '大约的Entity数量',
@@ -21,4 +21,4 @@ const overviewTrans = {
   createdTime: '创建时间',
 };
 
-export default overviewTrans;
+export default homeTrans;

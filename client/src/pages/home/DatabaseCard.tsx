@@ -89,7 +89,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     useContext(rootContext);
 
   // i18n
-  const { t: overviewTrans } = useTranslation('overview');
+  const { t: homeTrans } = useTranslation('home');
   const { t: successTrans } = useTranslation('success');
   const { t: dbTrans } = useTranslation('database');
   const { t: btnTrans } = useTranslation('btn');
@@ -150,7 +150,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
         <div>
           <div key={database.name}>
             <Typography className={classes.label}>
-              {overviewTrans('all')}
+              {homeTrans('all')}
             </Typography>
 
             <Typography
@@ -162,7 +162,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
             {database.createdTime !== -1 && (
               <>
                 <Typography className={classes.label}>
-                  {overviewTrans('createdTime')}
+                  {homeTrans('createdTime')}
                 </Typography>
                 <Typography className={classes.label}>
                   {new Date(database.createdTime / 1000000).toLocaleString()}

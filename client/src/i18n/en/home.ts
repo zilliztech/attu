@@ -1,4 +1,4 @@
-const overviewTrans = {
+const homeTrans = {
   load: 'Loaded Collections',
   all: 'Collections',
   data: 'Approx Entities',
@@ -21,4 +21,4 @@ const overviewTrans = {
   createdTime: 'Created Time',
 };
 
-export default overviewTrans;
+export default homeTrans;
