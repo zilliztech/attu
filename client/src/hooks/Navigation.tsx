@@ -25,7 +25,7 @@ export const useNavigationHook = (
 
   useEffect(() => {
     switch (type) {
-      case ALL_ROUTER_TYPES.OVERVIEW: {
+      case ALL_ROUTER_TYPES.HOME: {
         const navInfo: NavInfo = {
           navTitle: navTrans('welcome'),
           backPath: '',
