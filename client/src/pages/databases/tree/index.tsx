@@ -94,7 +94,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   collectionName: {
     display: 'flex',
     alignItems: 'center',
-    width: 'calc(100% - 50px)',
+    width: 'calc(100% - 45px)',
+  },
+  dbName: {
+    width: 'calc(100% - 30px)',
   },
   count: {
     fontSize: '13px',
@@ -269,7 +272,13 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
         <TreeItem
           key={tree.id}
           nodeId={tree.id}
-          label={tree.name}
+          label={
+            <Tooltip title={tree.name}>
+              <Typography noWrap className={classes.dbName}>
+                {tree.name}
+              </Typography>
+            </Tooltip>
+          }
           className={classes.treeItem}
           icon={<DatabaseIcon />}
           onClick={event => {

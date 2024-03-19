@@ -9,6 +9,7 @@ import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, authContext } from '@/context';
 import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -19,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.common.white,
     padding: theme.spacing(2),
     border: '1px solid #E0E0E0',
-    minWidth: '180px',
-    minHeight: '126px',
+    minWidth: '168px',
+    minHeight: '168px',
     cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 0px 4px 0px #00000029',
@@ -35,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& svg': {
       verticalAlign: '-3px',
     },
+    maxWidth: '168px',
+    wordBreak: 'break-all',
   },
   label: {
     fontSize: '12px',
@@ -55,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: 4,
     minWidth: 0,
     minHeight: 0,
-    padding: theme.spacing(0.5),
+    padding: theme.spacing(0),
     '& svg': {
       width: 15,
     },
@@ -144,9 +147,13 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   return (
     <section className={`${wrapperClass}`}>
       <section className={`${classes.wrapper}`} onClick={onClick}>
-        <Typography variant="h3" className={classes.dbTitle}>
-          {isManaged ? <ZillizIcon /> : <DbIcon />} {database.name}
-        </Typography>
+        <>
+          {isManaged ? <ZillizIcon /> : <DbIcon />}
+
+          <Typography variant="h3" className={classes.dbTitle}>
+            {database.name}
+          </Typography>
+        </>
         <div>
           <div key={database.name}>
             <Typography className={classes.label}>
@@ -194,7 +201,11 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
                 });
               }}
             >
-              <DeleteIcon />
+              <CustomToolTip
+                title={`${btnTrans('drop')} ${dbTrans('database')}`}
+              >
+                <DeleteIcon />
+              </CustomToolTip>
             </CustomButton>
           )}
         </div>
