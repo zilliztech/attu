@@ -66,8 +66,8 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 0,
-    width: '100%',
-    padding: theme.spacing(1),
+    width: `calc(100% - 396px)`,
+    padding: theme.spacing(1, 2),
   },
   toolbar: {
     display: 'flex',
@@ -79,7 +79,6 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
 
       '& .text': {
-        color: theme.palette.attuGrey.main,
       },
     },
     '& .right': {
