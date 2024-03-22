@@ -2,17 +2,8 @@ import { useState, MouseEvent } from 'react';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 
-import { IconButtonProps, makeStyles, Theme } from '@material-ui/core';
+import { IconButtonProps } from '@material-ui/core';
 import icons from '@/components/icons/Icons';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  rotatingRefreshButton: {
-    ' & svg': {
-      color: theme.palette.primary.main,
-    },
-    marginLeft: 4,
-  },
-}));
 
 const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
   // props
@@ -22,7 +13,6 @@ const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
 
   // icon
   const RefreshIcon = icons.refresh;
-  const classes = useStyles();
 
   const onBtnClicked = async (event: MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
@@ -36,7 +26,7 @@ const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
 
   return (
     <CustomIconButton
-      className={classes.rotatingRefreshButton}
+      className={props.className}
       {...otherProps}
       onClick={onBtnClicked}
       style={{}}

@@ -15,6 +15,7 @@ import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import RefreshButton from './RefreshButton';
+import CopyButton from '@/components/advancedSearch/CopyButton';
 import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -37,6 +38,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexShrink: 1,
     overflowX: 'auto',
     padding: theme.spacing(0, 2),
+  },
+  headerIcon: {
+    marginLeft: theme.spacing(0.5),
+    '& svg': {
+      fontSize: 15,
+      color: theme.palette.primary.main,
+    },
   },
 }));
 
@@ -62,11 +70,19 @@ const Databases = () => {
     collectionName,
     databaseName,
     extra: (
-      <RefreshButton
-        onClick={async () => {
-          await fetchCollection(collectionName);
-        }}
-      />
+      <>
+        <CopyButton
+          label=""
+          value={collectionName}
+          className={classes.headerIcon}
+        />
+        <RefreshButton
+          className={classes.headerIcon}
+          onClick={async () => {
+            await fetchCollection(collectionName);
+          }}
+        />
+      </>
     ),
   });
 

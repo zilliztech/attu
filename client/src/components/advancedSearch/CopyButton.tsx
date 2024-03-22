@@ -34,8 +34,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {
     event.stopPropagation();
 
-    // for non-string or number value, convert to string
-    if (typeof v !== 'string' || typeof v !== 'number') {
+    if (typeof v === 'object' ) {
       v = JSON.stringify(v);
     }
 
