@@ -65,6 +65,7 @@ const ConnectContainer = () => {
   const classes = getContainerStyles();
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
+  const { t: btnTrans } = useTranslation('btn');
 
   useEffect(() => {
     MilvusService.getVersion().then((res: any) => {
@@ -88,11 +89,22 @@ const ConnectContainer = () => {
 
           <div className={classes.links}>
             <CustomButton
-              startIcon={<Icons.github />}
+              startIcon={<Icons.star />}
               fullWidth={true}
               variant="outlined"
               onClick={() =>
                 window.open('https://github.com/zilliztech/attu', '_blank')
+              }
+            >
+              {btnTrans('star')}
+            </CustomButton>
+
+            <CustomButton
+              startIcon={<Icons.github />}
+              fullWidth={true}
+              variant="outlined"
+              onClick={() =>
+                window.open('https://github.com/zilliztech/attu/issues', '_blank')
               }
             >
               {attuTrans.fileIssue}

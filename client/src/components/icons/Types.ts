@@ -49,4 +49,5 @@ export type IconsType =
   | 'github'
   | 'question'
   | 'check'
-  | 'discord';
+  | 'discord'
+  | 'star';

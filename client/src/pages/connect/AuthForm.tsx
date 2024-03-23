@@ -3,7 +3,6 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
-import icons from '@/components/icons/Icons';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
@@ -82,7 +81,6 @@ export const AuthForm = (props: any) => {
     useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
-  const GithubIcon = icons.github;
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
@@ -279,15 +277,6 @@ export const AuthForm = (props: any) => {
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans('connect')}
         </CustomButton>
-
-        <a
-          href="https://github.com/zilliztech/attu"
-          target="_blank"
-          className={classes.star}
-        >
-          <GithubIcon className={classes.icon} />
-          {btnTrans('star')}
-        </a>
       </section>
     </form>
   );
