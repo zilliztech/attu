@@ -2,6 +2,9 @@ const commonTrans = {
   attu: {
     admin: 'Attu',
     address: 'Milvus Address',
+    fileIssue: 'File Issue',
+    discord: 'Discord',
+    connectTitle: 'Connect to Milvus Server',
     unAuth: 'Username or password is not correct',
     username: 'Username',
     password: 'Password',

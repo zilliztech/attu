@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
 import { AuthForm } from './AuthForm';
 import CustomButton from '@/components/customButton/CustomButton';
+import { MilvusService } from '@/http';
 
 const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -38,7 +40,7 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
   },
 
   attu: {
-    width: 260,
+    width: 299,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -47,7 +49,7 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     backgroundColor: '#f5f5f5',
   },
   form: {
-    width: 500,
+    width: 481,
     padding: theme.spacing(5, 0),
   },
   sub: {
@@ -59,9 +61,16 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
 
 // used for user connect process
 const ConnectContainer = () => {
+  const [version, setVersion] = useState('');
   const classes = getContainerStyles();
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
+
+  useEffect(() => {
+    MilvusService.getVersion().then((res: any) => {
+      setVersion(res.attu);
+    });
+  }, []);
 
   return (
     <main className={`flex-center ${classes.wrapper}`}>
@@ -71,9 +80,11 @@ const ConnectContainer = () => {
           <Typography variant="h2" className="title">
             {attuTrans.admin}
           </Typography>
-          <Typography component="sub" className={classes.sub}>
-            {attuTrans.version} v2.4.0 beta
-          </Typography>
+          {version && (
+            <Typography component="sub" className={classes.sub}>
+              {attuTrans.version} {version}
+            </Typography>
+          )}
 
           <div className={classes.links}>
             <CustomButton
@@ -84,7 +95,7 @@ const ConnectContainer = () => {
                 window.open('https://github.com/zilliztech/attu', '_blank')
               }
             >
-              File an issue
+              {attuTrans.fileIssue}
             </CustomButton>
 
             <CustomButton
@@ -93,7 +104,7 @@ const ConnectContainer = () => {
               onClick={() => window.open('https://milvus.io/discord', '_blank')}
               fullWidth={true}
             >
-              Discord
+              {attuTrans.discord}
             </CustomButton>
           </div>
         </section>

@@ -246,7 +246,7 @@ export const AuthForm = (props: any) => {
       <section className={classes.wrapper}>
         <div className={classes.titleWrapper}>
           <Typography variant="h4" component="h4">
-            Connect to Milvus Server
+            {attuTrans.connectTitle}
           </Typography>
         </div>
         {inputConfigs.map(v => (
