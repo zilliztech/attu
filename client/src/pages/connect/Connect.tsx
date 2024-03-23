@@ -12,9 +12,7 @@ const Connect = () => {
     <>
       {isAuth && <Navigate to="/" replace={true} />}
       <GlobalEffect>
-        <ConnectContainer>
-          <AuthForm />
-        </ConnectContainer>
+        <ConnectContainer />
       </GlobalEffect>
     </>
   );

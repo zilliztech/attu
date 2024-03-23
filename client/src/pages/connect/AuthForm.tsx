@@ -34,22 +34,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
   },
   titleWrapper: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(3),
-    margin: '0 auto',
-    flexDirection: 'column',
-    '& .title': {
-      margin: 0,
-      color: '#323232',
-      fontWeight: 'bold',
-    },
-  },
-  logo: {
-    width: '42px',
-    height: 'auto',
-    marginBottom: theme.spacing(1),
-    display: 'block',
+    textAlign: 'left',
+    alignSelf: 'flex-start',
+    padding: theme.spacing(3, 0),
   },
   input: {
     margin: theme.spacing(0.5, 0, 0),
@@ -95,7 +82,6 @@ export const AuthForm = (props: any) => {
     useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
-  const Logo = icons.attu;
   const GithubIcon = icons.github;
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
@@ -259,9 +245,8 @@ export const AuthForm = (props: any) => {
     <form onSubmit={handleConnect}>
       <section className={classes.wrapper}>
         <div className={classes.titleWrapper}>
-          <Logo classes={{ root: classes.logo }} />
-          <Typography variant="h2" className="title">
-            {attuTrans.admin}
+          <Typography variant="h4" component="h4">
+            Connect to Milvus Server
           </Typography>
         </div>
         {inputConfigs.map(v => (

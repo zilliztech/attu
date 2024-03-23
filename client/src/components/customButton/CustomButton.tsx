@@ -7,7 +7,6 @@ const buttonStyle = makeStyles(theme => ({
     fontWeight: 'bold',
   },
   textBtn: {
-    color: theme.palette.primary.main,
     padding: theme.spacing(1),
 
     '&:hover': {
