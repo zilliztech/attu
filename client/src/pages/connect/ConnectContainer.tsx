@@ -17,13 +17,13 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     backgroundColor: '#fff',
     border: '1px solid #E0E0E0',
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+    minHeight: 644,
   },
   logo: {
     width: 64,
     height: 'auto',
     marginBottom: theme.spacing(1),
     display: 'block',
-    marginTop: 140,
   },
 
   links: {
@@ -43,9 +43,7 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     width: 299,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     padding: theme.spacing(0, 3),
-    position: 'relative',
     backgroundColor: '#f5f5f5',
   },
   form: {
@@ -76,7 +74,7 @@ const ConnectContainer = () => {
   return (
     <main className={`flex-center ${classes.wrapper}`}>
       <section className={classes.box}>
-        <section className={classes.attu}>
+        <section className={`flex-center ${classes.attu}`}>
           <Icons.attu classes={{ root: classes.logo }} />
           <Typography variant="h2" className="title">
             {attuTrans.admin}
@@ -104,7 +102,10 @@ const ConnectContainer = () => {
               fullWidth={true}
               variant="outlined"
               onClick={() =>
-                window.open('https://github.com/zilliztech/attu/issues', '_blank')
+                window.open(
+                  'https://github.com/zilliztech/attu/issues',
+                  '_blank'
+                )
               }
             >
               {attuTrans.fileIssue}

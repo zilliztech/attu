@@ -1,6 +1,8 @@
 export const SESSION = 'CLOUD_SESSION';
 export const MILVUS_CLIENT_ID = 'milvus-client-id';
 export const LOGIN_USERNAME = 'login-username';
+
+export const LOCAL_HISTORY = 'local-history';
 export const LAST_TIME_ADDRESS = 'last-time-address';
 export const LAST_TIME_DATABASE = 'last-time-database';
 

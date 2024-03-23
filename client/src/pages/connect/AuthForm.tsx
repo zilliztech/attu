@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   input: {
     margin: theme.spacing(0.5, 0, 0),
   },
-  sslWrapper: {
+  toggle: {
     display: 'flex',
     width: '100%',
     justifyContent: 'flex-start',
@@ -73,146 +73,99 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export const AuthForm = (props: any) => {
-  const navigate = useNavigate();
+  // styles
   const classes = useStyles();
 
+  // context
   const { openSnackBar } = useContext(rootContext);
   const { setAddress, setUsername, setIsAuth, setClientId } =
     useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
+  // i18n
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
   const { t: dbTrans } = useTranslation('database');
+  // hooks
+  const navigate = useNavigate();
 
+  // UI states
   const [form, setForm] = useState({
     address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
     username: '',
     password: '',
+    token: '',
     database:
       window.localStorage.getItem(LAST_TIME_DATABASE) || MILVUS_DATABASE,
-    ssl: false,
   });
+  const [withPass, setWithPass] = useState(false);
+
+  // form validation
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
+  // handle input change
   const handleInputChange = (
-    key: 'address' | 'username' | 'password' | 'database' | 'ssl',
+    key: 'address' | 'username' | 'password' | 'database' | 'token',
     value: string | boolean
   ) => {
     setForm(v => ({ ...v, [key]: value }));
   };
 
-  const inputConfigs: ITextfieldConfig[] = useMemo(() => {
-    const noAuthConfigs: ITextfieldConfig[] = [
-      {
-        label: attuTrans.address,
-        key: 'address',
-        onChange: (val: string) => handleInputChange('address', val),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.address,
-        fullWidth: true,
-        validations: [
-          {
-            rule: 'require',
-            errorText: warningTrans('required', { name: attuTrans.address }),
-          },
-        ],
-        defaultValue: form.address,
-      },
-    ];
-    return [
-      ...noAuthConfigs,
-      {
-        label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
-        key: 'database',
-        onChange: (value: string) => handleInputChange('database', value),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: dbTrans('database'),
-        fullWidth: true,
-        defaultValue: form.database,
-      },
-      {
-        label: `Milvus ${attuTrans.username} ${attuTrans.optional}`,
-        key: 'username',
-        onChange: (value: string) => handleInputChange('username', value),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.username,
-        fullWidth: true,
-        defaultValue: form.username,
-      },
-      {
-        label: `Milvus ${attuTrans.password} ${attuTrans.optional}`,
-        key: 'password',
-        onChange: (value: string) => handleInputChange('password', value),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.password,
-        fullWidth: true,
-        type: 'password',
+  // const {
+  //   withPrometheus,
+  //   setWithPrometheus,
+  //   prometheusAddress,
+  //   prometheusInstance,
+  //   prometheusNamespace,
+  //   setPrometheusAddress,
+  //   setPrometheusInstance,
+  //   setPrometheusNamespace,
+  // } = useContext(prometheusContext);
 
-        defaultValue: form.username,
-      },
-    ];
-  }, [form, attuTrans, warningTrans, classes.input]);
+  // const prometheusConfigs: ITextfieldConfig[] = useMemo(
+  //   () => [
+  //     {
+  //       label: `${attuTrans.prometheusAddress}`,
+  //       key: 'prometheus_address',
+  //       onChange: setPrometheusAddress,
+  //       variant: 'filled',
+  //       className: classes.input,
+  //       placeholder: attuTrans.prometheusAddress,
+  //       fullWidth: true,
 
-  const {
-    withPrometheus,
-    setWithPrometheus,
-    prometheusAddress,
-    prometheusInstance,
-    prometheusNamespace,
-    setPrometheusAddress,
-    setPrometheusInstance,
-    setPrometheusNamespace,
-  } = useContext(prometheusContext);
+  //       defaultValue: prometheusAddress,
+  //     },
+  //     {
+  //       label: `${attuTrans.prometheusNamespace}`,
+  //       key: 'prometheus_namespace',
+  //       onChange: setPrometheusNamespace,
+  //       variant: 'filled',
+  //       className: classes.input,
+  //       placeholder: attuTrans.prometheusNamespace,
+  //       fullWidth: true,
 
-  const prometheusConfigs: ITextfieldConfig[] = useMemo(
-    () => [
-      {
-        label: `${attuTrans.prometheusAddress}`,
-        key: 'prometheus_address',
-        onChange: setPrometheusAddress,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusAddress,
-        fullWidth: true,
+  //       defaultValue: prometheusNamespace,
+  //     },
+  //     {
+  //       label: `${attuTrans.prometheusInstance}`,
+  //       key: 'prometheus_instance',
+  //       onChange: setPrometheusInstance,
+  //       variant: 'filled',
+  //       className: classes.input,
+  //       placeholder: attuTrans.prometheusInstance,
+  //       fullWidth: true,
 
-        defaultValue: prometheusAddress,
-      },
-      {
-        label: `${attuTrans.prometheusNamespace}`,
-        key: 'prometheus_namespace',
-        onChange: setPrometheusNamespace,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusNamespace,
-        fullWidth: true,
-
-        defaultValue: prometheusNamespace,
-      },
-      {
-        label: `${attuTrans.prometheusInstance}`,
-        key: 'prometheus_instance',
-        onChange: setPrometheusInstance,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusInstance,
-        fullWidth: true,
-
-        defaultValue: prometheusInstance,
-      },
-    ],
-    []
-  );
+  //       defaultValue: prometheusInstance,
+  //     },
+  //   ],
+  //   []
+  // );
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -247,16 +200,122 @@ export const AuthForm = (props: any) => {
             {attuTrans.connectTitle}
           </Typography>
         </div>
-        {inputConfigs.map(v => (
-          <CustomInput
-            type="text"
-            textConfig={v}
-            checkValid={checkIsValid}
-            validInfo={validation}
-            key={v.label}
+        {/* address  */}
+        <CustomInput
+          type="text"
+          textConfig={{
+            label: attuTrans.address,
+            key: 'address',
+            onChange: (val: string) => handleInputChange('address', val),
+            variant: 'filled',
+            className: classes.input,
+            placeholder: attuTrans.address,
+            fullWidth: true,
+            validations: [
+              {
+                rule: 'require',
+                errorText: warningTrans('required', {
+                  name: attuTrans.address,
+                }),
+              },
+            ],
+            defaultValue: form.address,
+          }}
+          checkValid={checkIsValid}
+          validInfo={validation}
+          key={attuTrans.address}
+        />
+        {/* db  */}
+        <CustomInput
+          type="text"
+          textConfig={{
+            label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
+            key: 'database',
+            onChange: (value: string) => handleInputChange('database', value),
+            variant: 'filled',
+            className: classes.input,
+            placeholder: dbTrans('database'),
+            fullWidth: true,
+            defaultValue: form.database,
+          }}
+          checkValid={checkIsValid}
+          validInfo={validation}
+          key={attuTrans.address}
+        />
+
+        {/* ssl toggle  */}
+        <div className={classes.toggle}>
+          <CustomRadio
+            defaultChecked={withPass}
+            label={attuTrans.authentication}
+            handleChange={setWithPass}
           />
-        ))}
-        <div className={classes.sslWrapper}>
+        </div>
+
+        {/* token  */}
+        {withPass && (
+          <>
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: `${attuTrans.token} ${attuTrans.optional} `,
+                key: 'token',
+                onChange: (val: string) => handleInputChange('token', val),
+                variant: 'filled',
+                className: classes.input,
+                placeholder: attuTrans.token,
+                fullWidth: true,
+                defaultValue: form.token,
+                type: 'password',
+              }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={attuTrans.address}
+            />
+
+            {/* user  */}
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: `${attuTrans.username} ${attuTrans.optional}`,
+                key: 'username',
+                onChange: (value: string) =>
+                  handleInputChange('username', value),
+                variant: 'filled',
+                className: classes.input,
+                placeholder: attuTrans.username,
+                fullWidth: true,
+                defaultValue: form.username,
+              }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={attuTrans.address}
+            />
+
+            {/* pass  */}
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: `${attuTrans.password} ${attuTrans.optional}`,
+                key: 'password',
+                onChange: (value: string) =>
+                  handleInputChange('password', value),
+                variant: 'filled',
+                className: classes.input,
+                placeholder: attuTrans.password,
+                fullWidth: true,
+                type: 'password',
+
+                defaultValue: form.username,
+              }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={attuTrans.address}
+            />
+          </>
+        )}
+
+        {/* <div className={classes.toggle}>
           <CustomRadio
             defaultChecked={withPrometheus}
             label={attuTrans.prometheus}
@@ -272,7 +331,7 @@ export const AuthForm = (props: any) => {
               validInfo={validation}
               key={v.label}
             />
-          ))}
+          ))} */}
 
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans('connect')}
