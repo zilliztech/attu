@@ -25,6 +25,7 @@ export class MilvusService {
 
   async connectMilvus(data: {
     address: string;
+    token?: string;
     username?: string;
     password?: string;
     database?: string;
@@ -32,6 +33,7 @@ export class MilvusService {
     // Destructure the data object to get the connection details
     const {
       address,
+      token,
       username,
       password,
       database = this.DEFAULT_DATABASE,
@@ -41,32 +43,33 @@ export class MilvusService {
 
     try {
       // Create a new Milvus client with the provided connection details
-      const clientOptions: ClientConfig = {
+      const clientConfig: ClientConfig = {
         address: milvusAddress,
+        token,
         username,
         password,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
       };
 
       if (process.env.ROOT_CERT_PATH) {
-        clientOptions.tls = {
+        clientConfig.tls = {
           rootCertPath: process.env.ROOT_CERT_PATH,
         };
 
         if (process.env.PRIVATE_KEY_PATH) {
-          clientOptions.tls.privateKeyPath = process.env.PRIVATE_KEY_PATH;
+          clientConfig.tls.privateKeyPath = process.env.PRIVATE_KEY_PATH;
         }
 
         if (process.env.CERT_CHAIN_PATH) {
-          clientOptions.tls.certChainPath = process.env.CERT_CHAIN_PATH;
+          clientConfig.tls.certChainPath = process.env.CERT_CHAIN_PATH;
         }
 
         if (process.env.SERVER_NAME) {
-          clientOptions.tls.serverName = process.env.SERVER_NAME;
+          clientConfig.tls.serverName = process.env.SERVER_NAME;
         }
       }
       // create the client
-      const milvusClient: MilvusClient = new MilvusClient(clientOptions);
+      const milvusClient: MilvusClient = new MilvusClient(clientConfig);
 
       try {
         // Attempt to connect to the Milvus server

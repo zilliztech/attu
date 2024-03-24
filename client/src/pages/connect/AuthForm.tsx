@@ -169,6 +169,8 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log('xx', form);
+
     const result = await MilvusService.connect(form);
 
     setIsAuth(true);
@@ -191,6 +193,10 @@ export const AuthForm = (props: any) => {
   const btnDisabled = useMemo(() => {
     return form.address.trim().length === 0;
   }, [form.address]);
+
+  const handleEnableAuth = (val: boolean) => {
+    setWithPass(val);
+  };
 
   return (
     <form onSubmit={handleConnect}>
@@ -240,15 +246,15 @@ export const AuthForm = (props: any) => {
           }}
           checkValid={checkIsValid}
           validInfo={validation}
-          key={attuTrans.address}
+          key={attuTrans.database}
         />
 
-        {/* ssl toggle  */}
+        {/* toggle auth */}
         <div className={classes.toggle}>
           <CustomRadio
-            defaultChecked={withPass}
+            checked={withPass}
             label={attuTrans.authentication}
-            handleChange={setWithPass}
+            handleChange={handleEnableAuth}
           />
         </div>
 
@@ -266,11 +272,10 @@ export const AuthForm = (props: any) => {
                 placeholder: attuTrans.token,
                 fullWidth: true,
                 defaultValue: form.token,
-                type: 'password',
               }}
               checkValid={checkIsValid}
               validInfo={validation}
-              key={attuTrans.address}
+              key={attuTrans.token}
             />
 
             {/* user  */}
@@ -289,7 +294,7 @@ export const AuthForm = (props: any) => {
               }}
               checkValid={checkIsValid}
               validInfo={validation}
-              key={attuTrans.address}
+              key={attuTrans.username}
             />
 
             {/* pass  */}
@@ -310,7 +315,7 @@ export const AuthForm = (props: any) => {
               }}
               checkValid={checkIsValid}
               validInfo={validation}
-              key={attuTrans.address}
+              key={attuTrans.password}
             />
           </>
         )}
