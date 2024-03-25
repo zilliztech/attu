@@ -368,21 +368,7 @@ const Collections = () => {
           <StatusAction
             status={v.status}
             percentage={v.loadedPercentage}
-            schema={v.schema}
-            action={() => {
-              setDialog({
-                open: true,
-                type: 'custom',
-                params: {
-                  component:
-                    v.status === LOADING_STATE.UNLOADED ? (
-                      <LoadCollectionDialog collection={v} />
-                    ) : (
-                      <ReleaseCollectionDialog collection={v} />
-                    ),
-                },
-              });
-            }}
+            collection={v}
           />
         );
       },

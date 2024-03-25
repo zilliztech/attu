@@ -133,6 +133,7 @@ const collectionTrans = {
   clickToLoad: '点击加载collection。',
   clickToRelease: '点击释放collection。',
   clickToSearch: '点击执行向量搜索。',
+  clickToCreateVectorIndex: '点击创建向量索引。',
   collectionIsLoading: 'colleciton正在加载...',
 };
 

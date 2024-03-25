@@ -12,14 +12,12 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
-import { rootContext, dataContext } from '@/context';
+import { dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import { LOADING_STATE } from '@/consts';
-import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
-import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import { FieldObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -118,7 +116,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Overview = () => {
-  const { setDialog } = useContext(rootContext);
   const { fetchCollection, collections, loading } = useContext(dataContext);
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
@@ -281,21 +278,21 @@ const Overview = () => {
               <StatusAction
                 status={collection.status}
                 percentage={collection.loadedPercentage}
-                schema={collection.schema!}
-                action={() => {
-                  setDialog({
-                    open: true,
-                    type: 'custom',
-                    params: {
-                      component:
-                        collection.status === LOADING_STATE.UNLOADED ? (
-                          <LoadCollectionDialog collection={collection} />
-                        ) : (
-                          <ReleaseCollectionDialog collection={collection} />
-                        ),
-                    },
-                  });
-                }}
+                collection={collection}
+                showExtraAction={true}
+                createIndexElement={
+                  <IndexTypeElement
+                    field={
+                      (collection.schema &&
+                        collection.schema.vectorFields[0]) ||
+                      ({} as FieldObject)
+                    }
+                    collectionName={collectionName}
+                    cb={async () => {
+                      await fetchCollection(collectionName);
+                    }}
+                  />
+                }
               />
             </div>
           </section>

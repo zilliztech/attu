@@ -131,6 +131,7 @@ const collectionTrans = {
   clickToLoad: 'Click to load the collection.',
   clickToRelease: 'Click to release the collection.',
   clickToSearch: 'Click to execute vector search.',
+  clickToCreateVectorIndex: 'Click to create an vector index.',
   collectionIsLoading: 'The collection is loading...',
 };
 

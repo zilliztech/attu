@@ -1,4 +1,4 @@
-import { FC, useMemo, MouseEvent } from 'react';
+import { FC, useMemo, MouseEvent, useContext } from 'react';
 import { StatusActionType } from '@/components/status/Types';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,12 +9,15 @@ import {
   useTheme,
   Chip,
 } from '@material-ui/core';
+import { rootContext } from '@/context';
 import { LOADING_STATE } from '@/consts';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomButton from '@/components/customButton/CustomButton';
 import { useNavigate } from 'react-router-dom';
+import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
+import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,12 +80,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const StatusAction: FC<StatusActionType> = props => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { setDialog } = useContext(rootContext);
 
   const classes = useStyles({ color: theme.palette.primary.main });
   const ReleaseIcon = Icons.release;
   const LoadIcon = Icons.load;
 
-  const { status, percentage = 0, schema, action = () => {} } = props;
+  const { status, percentage = 0, collection, action = () => {} } = props;
   const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -132,7 +136,7 @@ const StatusAction: FC<StatusActionType> = props => {
     }
   }, [status, statusTrans, percentage]);
 
-  const noIndex = schema && !schema.hasVectorIndex;
+  const noIndex = collection.schema && !collection.schema.hasVectorIndex;
   const noVectorIndexTooltip = collectionTrans('noVectorIndexTooltip');
   const noIndexIcon = (
     <div className={`${classes.circle} ${classes.noIndex}`}></div>
@@ -151,7 +155,18 @@ const StatusAction: FC<StatusActionType> = props => {
           onDelete={() => action()}
           onClick={(e: MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
-            action();
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component:
+                  collection.status === LOADING_STATE.UNLOADED ? (
+                    <LoadCollectionDialog collection={collection} />
+                  ) : (
+                    <ReleaseCollectionDialog collection={collection} />
+                  ),
+              },
+            });
           }}
           disabled={noIndex}
           deleteIcon={deleteIcon}
@@ -159,20 +174,29 @@ const StatusAction: FC<StatusActionType> = props => {
           icon={noIndex ? noIndexIcon : icon}
         />
       </CustomToolTip>
-      {status === LOADING_STATE.LOADED && (
-        <CustomButton
-          startIcon={<Icons.navSearch />}
-          className={classes.extraBtn}
-          tooltip={collectionTrans('clickToSearch')}
-          onClick={() => {
-            navigate({
-              pathname: '/search',
-              search: `?collectionName=${schema.name}`,
-            });
-          }}
-        >
-          {btnTrans('vectorSearch')}
-        </CustomButton>
+
+      {props.showExtraAction && collection.schema && (
+        <>
+          {status === LOADING_STATE.LOADED && (
+            <CustomButton
+              startIcon={<Icons.navSearch />}
+              className={classes.extraBtn}
+              tooltip={collectionTrans('clickToSearch')}
+              onClick={() => {
+                navigate({
+                  pathname: '/search',
+                  search: `?collectionName=${collection.schema.name}`,
+                });
+              }}
+            >
+              {btnTrans('vectorSearch')}
+            </CustomButton>
+          )}
+
+          {collection.schema &&
+            !collection.schema.hasVectorIndex &&
+            props.createIndexElement}
+        </>
       )}
     </div>
   );

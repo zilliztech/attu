@@ -33,6 +33,7 @@ const btnTrans = {
   copyJson: '复制为JSON',
   star: '给我一颗小星星',
   applyFilter: '应用过滤器',
+  createIndex: '创建索引',
 
   // tips
   loadColTooltip: '加载Collection',

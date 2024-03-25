@@ -33,6 +33,7 @@ const btnTrans = {
   copyJson: 'Copy as JSON',
   star: 'Give me a Star',
   applyFilter: 'Apply Filters',
+  createIndex: 'Create Index',
 
   // tips
   loadColTooltip: 'Load Collection',

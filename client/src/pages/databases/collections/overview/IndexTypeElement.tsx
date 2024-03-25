@@ -4,13 +4,14 @@ import Chip from '@material-ui/core/Chip';
 import { makeStyles, Theme, Tooltip } from '@material-ui/core';
 import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
 import { rootContext, dataContext } from '@/context';
-import icons from '@/components/icons/Icons';
+import Icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { IndexState } from '@/types/Milvus';
 import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndex from './Create';
 import { FieldObject } from '@server/types';
+import CustomButton from '@/components/customButton/CustomButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     whiteSpace: 'nowrap',
     color: theme.palette.primary.main,
-
+    height: 24,
     '&:hover': {
       cursor: 'pointer',
     },
@@ -68,15 +69,13 @@ const IndexTypeElement: FC<{
   const classes = useStyles();
   // set empty string as default status
   const { t: indexTrans } = useTranslation('index');
-  const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
+  const { t: collectionTrans } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
 
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
-
-  const AddIcon = icons.add;
-  const DeleteIcon = icons.delete;
 
   const requestCreateIndex = async (
     params: IndexExtraParam,
@@ -95,7 +94,7 @@ const IndexTypeElement: FC<{
     cb && (await cb(collectionName));
   };
 
-  const handleCreate = (e: MouseEvent<HTMLDivElement>) => {
+  const handleCreate = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
     setDialog({
@@ -158,10 +157,14 @@ const IndexTypeElement: FC<{
 
     if (!field.index) {
       return (
-        <div role="button" onClick={handleCreate} className={`${classes.btn}`}>
-          <AddIcon classes={{ root: classes.addIcon }} />
-          {indexTrans('create')}
-        </div>
+        <CustomButton
+          startIcon={<Icons.add />}
+          className={classes.btn}
+          tooltip={collectionTrans('clickToCreateVectorIndex')}
+          onClick={e => handleCreate(e)}
+        >
+          {btnTrans('createIndex')}
+        </CustomButton>
       );
     }
     // indexType example: FLAT
@@ -175,7 +178,7 @@ const IndexTypeElement: FC<{
           <Chip
             label={field.index.indexType}
             classes={{ root: classes.chip, label: classes.chipLabel }}
-            deleteIcon={<DeleteIcon classes={{ root: 'icon' }} />}
+            deleteIcon={<Icons.delete classes={{ root: 'icon' }} />}
             onDelete={handleDelete}
             disabled={disabled}
             onClick={(e: MouseEvent<HTMLDivElement>) => {

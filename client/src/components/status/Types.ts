@@ -1,12 +1,13 @@
 import { LOADING_STATE } from '@/consts';
-import { SchemaObject } from '@server/types';
+import { CollectionObject } from '@server/types';
+import React from 'react';
 
 export type StatusActionType = {
   status: LOADING_STATE;
   percentage?: string | number;
   action?: Function;
-  schema: SchemaObject;
   onIndexCreate?: Function;
+  showExtraAction?: boolean;
+  collection: CollectionObject;
+  createIndexElement?: React.ReactNode;
 };
-
-// @todo need rename
