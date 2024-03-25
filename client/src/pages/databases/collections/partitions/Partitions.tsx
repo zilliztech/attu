@@ -6,7 +6,7 @@ import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook, useInsertDialogHook } from '@/hooks';
-import icons from '@/components/icons/Icons';
+import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
 import { CollectionService, PartitionService } from '@/http';
@@ -43,7 +43,6 @@ const Partitions = () => {
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
   );
-  const QuestionIcon = icons.question;
 
   const { handleInsertDialog } = useInsertDialogHook();
 
@@ -51,10 +50,6 @@ const Partitions = () => {
     []
   );
   const [partitions, setPartitions] = useState<PartitionData[]>([]);
-  const [searchedPartitions, setSearchedPartitions] = useState<PartitionData[]>(
-    []
-  );
-
   const [loading, setLoading] = useState<boolean>(true);
   const { setDialog, openSnackBar } = useContext(rootContext);
 
@@ -77,14 +72,9 @@ const Partitions = () => {
     fetchPartitions(collectionName);
   }, [collectionName]);
 
-  // search
-  useEffect(() => {
-    const list = search
-      ? partitions.filter(p => p.name.includes(search))
-      : partitions;
-
-    setSearchedPartitions(list);
-  }, [search, partitions]);
+  const list = search
+    ? partitions.filter(p => p.name.includes(search))
+    : partitions;
 
   const {
     pageSize,
@@ -96,7 +86,7 @@ const Partitions = () => {
     order,
     orderBy,
     handleGridSort,
-  } = usePaginationHook(searchedPartitions);
+  } = usePaginationHook(list);
 
   // on delete
   const onDelete = () => {
@@ -232,7 +222,7 @@ const Partitions = () => {
         <span className="flex-center with-max-content">
           {t('rowCount')}
           <CustomToolTip title={t('tooltip')}>
-            <QuestionIcon classes={{ root: classes.icon }} />
+            <Icons.question classes={{ root: classes.icon }} />
           </CustomToolTip>
         </span>
       ),

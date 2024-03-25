@@ -88,8 +88,16 @@ const SearchInput: FC<SearchType> = props => {
   };
 
   useEffect(() => {
-    searchParams[searchValue ? 'set' : 'delete']('search', searchValue);
-    setSearchParams(searchParams);
+    const searchV = searchParams.get('search');
+    console.log('searchV', searchV);
+    console.log('searchValue', searchValue);
+    if (searchValue === '') {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('search');
+      setSearchParams(newSearchParams);
+    } else if (searchValue !== searchV) {
+      setSearchParams({ search: searchValue });
+    }
     handleSearch(searchValue);
   }, [searchValue]);
 
