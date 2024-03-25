@@ -39,6 +39,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
     paddingTop: theme.spacing(0.5),
   },
+  horizonalBlock: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& >div': {
+      marginRight: theme.spacing(2),
+    },
+  },
   block: {
     '& *': {
       fontSize: '14px',
@@ -49,6 +56,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {
     fontSize: '20px',
     marginLeft: theme.spacing(0.5),
+  },
+  extraBtn: {
+    height: 24,
   },
   questionIcon: {
     position: 'relative',
@@ -256,27 +266,39 @@ const Overview = () => {
       {collection && (
         <section className={classes.infoWrapper}>
           <div className={classes.block}>
-            <Typography variant="h5">{collectionTrans('status')}</Typography>
-            <StatusAction
-              status={collection.status}
-              percentage={collection.loadedPercentage}
-              schema={collection.schema!}
-              action={() => {
-                setDialog({
-                  open: true,
-                  type: 'custom',
-                  params: {
-                    component:
-                      collection.status === LOADING_STATE.UNLOADED ? (
-                        <LoadCollectionDialog collection={collection} />
-                      ) : (
-                        <ReleaseCollectionDialog collection={collection} />
-                      ),
-                  },
-                });
-              }}
-            />
+            <Typography variant="h5">
+              {collectionTrans('description')}
+            </Typography>
+            <Typography variant="h6">
+              {collection?.description || '--'}
+            </Typography>
           </div>
+
+          <section className={classes.horizonalBlock}>
+            <div className={classes.block}>
+              <Typography variant="h5">{collectionTrans('status')}</Typography>
+
+              <StatusAction
+                status={collection.status}
+                percentage={collection.loadedPercentage}
+                schema={collection.schema!}
+                action={() => {
+                  setDialog({
+                    open: true,
+                    type: 'custom',
+                    params: {
+                      component:
+                        collection.status === LOADING_STATE.UNLOADED ? (
+                          <LoadCollectionDialog collection={collection} />
+                        ) : (
+                          <ReleaseCollectionDialog collection={collection} />
+                        ),
+                    },
+                  });
+                }}
+              />
+            </div>
+          </section>
 
           <div className={classes.block}>
             <Typography variant="h5">
@@ -290,10 +312,10 @@ const Overview = () => {
 
           <div className={classes.block}>
             <Typography variant="h5">
-              {collectionTrans('description')}
+              {collectionTrans('createdTime')}
             </Typography>
             <Typography variant="h6">
-              {collection?.description || '--'}
+              {new Date(collection.createdTime).toLocaleString()}
             </Typography>
           </div>
 
@@ -319,15 +341,6 @@ const Overview = () => {
                   size="small"
                 />
               </Tooltip>
-            </Typography>
-          </div>
-
-          <div className={classes.block}>
-            <Typography variant="h5">
-              {collectionTrans('createdTime')}
-            </Typography>
-            <Typography variant="h6">
-              {new Date(collection.createdTime).toLocaleString()}
             </Typography>
           </div>
         </section>

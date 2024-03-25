@@ -132,6 +132,7 @@ const collectionTrans = {
 
   clickToLoad: '点击加载collection。',
   clickToRelease: '点击释放collection。',
+  clickToSearch: '点击执行向量搜索。',
   collectionIsLoading: 'colleciton正在加载...',
 };
 

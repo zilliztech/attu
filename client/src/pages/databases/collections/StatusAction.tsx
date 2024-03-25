@@ -11,8 +11,10 @@ import {
 } from '@material-ui/core';
 import { LOADING_STATE } from '@/consts';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import icons from '@/components/icons/Icons';
+import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import CustomButton from '@/components/customButton/CustomButton';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,6 +56,9 @@ const useStyles = makeStyles((theme: Theme) =>
     flash: {
       animation: '$bgColorChange 1.5s infinite',
     },
+    extraBtn: {
+      height: 24,
+    },
 
     '@keyframes bgColorChange': {
       '0%': {
@@ -71,13 +76,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StatusAction: FC<StatusActionType> = props => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
   const classes = useStyles({ color: theme.palette.primary.main });
-  const ReleaseIcon = icons.release;
-  const LoadIcon = icons.load;
+  const ReleaseIcon = Icons.release;
+  const LoadIcon = Icons.load;
 
   const { status, percentage = 0, schema, action = () => {} } = props;
   const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: btnTrans } = useTranslation('btn');
 
   const statusTrans = commonTrans('status');
   const {
@@ -151,6 +159,21 @@ const StatusAction: FC<StatusActionType> = props => {
           icon={noIndex ? noIndexIcon : icon}
         />
       </CustomToolTip>
+      {status === LOADING_STATE.LOADED && (
+        <CustomButton
+          startIcon={<Icons.navSearch />}
+          className={classes.extraBtn}
+          tooltip={collectionTrans('clickToSearch')}
+          onClick={() => {
+            navigate({
+              pathname: '/search',
+              search: `?collectionName=${schema.name}`,
+            });
+          }}
+        >
+          {btnTrans('vectorSearch')}
+        </CustomButton>
+      )}
     </div>
   );
 };

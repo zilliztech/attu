@@ -130,6 +130,7 @@ const collectionTrans = {
 
   clickToLoad: 'Click to load the collection.',
   clickToRelease: 'Click to release the collection.',
+  clickToSearch: 'Click to execute vector search.',
   collectionIsLoading: 'The collection is loading...',
 };
 
