@@ -5,12 +5,18 @@ type numberObj = {
 export const descendingComparator = (
   a: numberObj,
   b: numberObj,
-  orderBy: React.ReactText
+  orderBy: string
 ) => {
-  if (b[orderBy] < a[orderBy]) {
+  // need to round the value to avoid floating point error
+  const roundValue = (value: number) => Math.round(value * 1e12) / 1e12;
+
+  const aValue = roundValue(a[orderBy]);
+  const bValue = roundValue(b[orderBy]);
+
+  if (bValue < aValue) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (bValue > aValue) {
     return 1;
   }
   return 0;
