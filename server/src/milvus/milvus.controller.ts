@@ -53,7 +53,6 @@ export class MilvusController {
 
       res.send(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

@@ -7,7 +7,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import { MILVUS_CLIENT_ID, MILVUS_URL, MILVUS_DATABASE } from '@/consts';
+import { MILVUS_CLIENT_ID } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -78,7 +78,7 @@ export const AuthForm = (props: any) => {
   const navigate = useNavigate();
 
   // UI states
-  const [withPass, setWithPass] = useState(false);
+  const [withPass, setWithPass] = useState(authReq.username.length > 0);
 
   // form validation
   const checkedForm = useMemo(() => {
@@ -289,8 +289,7 @@ export const AuthForm = (props: any) => {
                 placeholder: attuTrans.password,
                 fullWidth: true,
                 type: 'password',
-
-                defaultValue: authReq.username,
+                defaultValue: authReq.password,
               }}
               checkValid={checkIsValid}
               validInfo={validation}

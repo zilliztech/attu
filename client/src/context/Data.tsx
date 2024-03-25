@@ -9,10 +9,11 @@ import {
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
 import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
-import { IndexCreateParam, IndexManageParam } from '@/pages/databases/collections/overview/Types';
-import { getDbValueFromUrl } from '@/utils';
+import {
+  IndexCreateParam,
+  IndexManageParam,
+} from '@/pages/databases/collections/overview/Types';
 import { DataContextType } from './Types';
-import { LAST_TIME_DATABASE } from '@/consts';
 import {
   CollectionObject,
   CollectionFullObject,
@@ -72,22 +73,17 @@ export const dataContext = createContext<DataContextType>({
 const { Provider } = dataContext;
 
 export const DataProvider = (props: { children: React.ReactNode }) => {
-  // get database name from url
-  const currentUrl = window.location.href;
-  const initialDatabase = getDbValueFromUrl(currentUrl);
+  // auth context
+  const { authReq, isAuth, clientId, logout } = useContext(authContext);
+
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingDatabases, setLoadingDatabases] = useState(true);
-  const defaultDb =
-    initialDatabase ||
-    window.localStorage.getItem(LAST_TIME_DATABASE) ||
-    'default';
-  const [database, setDatabase] = useState<string>(defaultDb);
+  const [database, setDatabase] = useState<string>(authReq.database);
+
   const [databases, setDatabases] = useState<DatabaseObject[]>([]);
-  // auth context
-  const { isAuth, clientId, logout } = useContext(authContext);
   // socket ref
   const socket = useRef<Socket | null>(null);
 
@@ -323,6 +319,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (isAuth) {
+      // update database get from auth
+      setDatabase(authReq.database);
       // connect to socket server
       socket.current = io(url as string);
       // register client
@@ -344,7 +342,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // set connected to false
       setConnected(false);
     }
-  }, [isAuth]);
+  }, [isAuth, authReq]);
 
   useEffect(() => {
     if (connected) {

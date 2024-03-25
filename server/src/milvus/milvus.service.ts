@@ -25,13 +25,7 @@ export class MilvusService {
 
   async connectMilvus(data: AuthReq): Promise<AuthObject> {
     // Destructure the data object to get the connection details
-    const {
-      address,
-      token,
-      username,
-      password,
-      database = this.DEFAULT_DATABASE,
-    } = data;
+    const { address, token, username, password, database } = data;
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
@@ -112,6 +106,7 @@ export class MilvusService {
       // Return the address and the database (if it exists, otherwise return 'default')
       return {
         clientId: milvusClient.clientId,
+        database: db,
       };
     } catch (error) {
       // If any error occurs, clear the cache and throw the error

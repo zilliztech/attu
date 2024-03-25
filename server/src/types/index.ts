@@ -19,4 +19,5 @@ export type AuthReq = {
 
 export type AuthObject = {
   clientId: string;
+  database: string;
 };
