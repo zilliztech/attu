@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MilvusService } from '@/http';
 import icons from '@/components/icons/Icons';
@@ -98,7 +98,9 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
 
-  const navigation = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const classes = useStyles();
   const theme = useTheme();
   const DbIcon = icons.database;
@@ -113,7 +115,12 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     setDatabase(database.name);
 
     // navigate to database detail page
-    navigation(`/databases/${database.name}`);
+    const targetPath = `/databases/${database.name}`;
+
+    navigate(targetPath);
+
+    // Add the new location to the history
+    window.history.pushState({}, '', location.pathname + location.hash);
   };
 
   const handleDelete = async () => {

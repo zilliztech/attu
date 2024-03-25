@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useContext } from 'react';
 import { authContext } from '@/context';
 import Databases from '@/pages/databases/Databases';
@@ -16,8 +16,6 @@ const RouterComponent = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Index />}>
-          <Route index element={<Databases />} />
-
           <Route path="databases" element={<Databases />} />
           <Route path="databases/:databaseName" element={<Databases />} />
           <Route

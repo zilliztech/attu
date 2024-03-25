@@ -63,18 +63,16 @@ const a11yProps = (index: number) => {
 const RouteTabList: FC<ITabListProps> = props => {
   const { tabs, activeIndex = 0, wrapperClass = '' } = props;
   const classes = useStyles();
-  const [value, setValue] = useState<number>(activeIndex);
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleChange = (event: any, newValue: any) => {
-    setValue(newValue);
     const newPath =
       location.pathname.split('/').slice(0, -1).join('/') +
       '/' +
       tabs[newValue].path;
 
-    navigate(`${newPath}`);
+    navigate(newPath);
   };
 
   return (
@@ -86,7 +84,7 @@ const RouteTabList: FC<ITabListProps> = props => {
         }}
         // if not provide this property, Material will add single span element by default
         TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
-        value={value}
+        value={activeIndex}
         onChange={handleChange}
         aria-label="tabs"
       >
@@ -104,7 +102,7 @@ const RouteTabList: FC<ITabListProps> = props => {
       {tabs.map((tab, index) => (
         <TabPanel
           key={tab.label}
-          value={value}
+          value={activeIndex}
           index={index}
           className={classes.tabPanel}
         >
