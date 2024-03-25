@@ -15,6 +15,8 @@ const commonTrans = {
     prometheusAddress: 'Prometheus Address',
     prometheusInstance: 'Prometheus Instance',
     prometheusNamespace: 'Prometheus Namespace',
+    connectionTip:
+      'Self-hosted Milvus or Zilliz Cloud Dedicated cluster are supported.',
   },
   status: {
     loaded: 'loaded',

@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
 import { MILVUS_CLIENT_ID } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
+import Icons from '@/components/icons/Icons';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -22,6 +24,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     textAlign: 'left',
     alignSelf: 'flex-start',
     padding: theme.spacing(3, 0),
+    '& svg': {
+      fontSize: 15,
+      marginLeft: theme.spacing(0.5),
+    },
   },
   input: {
     margin: theme.spacing(0.5, 0, 0),
@@ -183,6 +189,9 @@ export const AuthForm = (props: any) => {
         <div className={classes.titleWrapper}>
           <Typography variant="h4" component="h4">
             {attuTrans.connectTitle}
+            <CustomToolTip title={attuTrans.connectionTip}>
+              <Icons.info />
+            </CustomToolTip>
           </Typography>
         </div>
         {/* address  */}
