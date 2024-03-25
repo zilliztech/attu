@@ -3,10 +3,11 @@ import { FormGroup, FormControlLabel, Switch } from '@material-ui/core';
 
 export const CustomRadio = (props: {
   label: string;
-  defaultChecked?: boolean;
+  checked?: boolean;
   handleChange: (checked: boolean) => void;
 }) => {
-  const { label, defaultChecked = false, handleChange } = props;
+  const { label, checked, handleChange } = props;
+
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
@@ -17,11 +18,7 @@ export const CustomRadio = (props: {
     <FormGroup>
       <FormControlLabel
         control={
-          <Switch
-            defaultChecked={defaultChecked}
-            onChange={onChange}
-            color="primary"
-          />
+          <Switch checked={checked} onChange={onChange} color="primary" />
         }
         label={label}
       />

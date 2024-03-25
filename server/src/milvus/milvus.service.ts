@@ -8,7 +8,7 @@ import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 import { clientCache } from '../app';
-import { DescribeIndexRes } from '../types';
+import { DescribeIndexRes, AuthReq, AuthObject } from '../types';
 
 export class MilvusService {
   private DEFAULT_DATABASE = 'default';
@@ -23,50 +23,41 @@ export class MilvusService {
     return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
   }
 
-  async connectMilvus(data: {
-    address: string;
-    username?: string;
-    password?: string;
-    database?: string;
-  }) {
+  async connectMilvus(data: AuthReq): Promise<AuthObject> {
     // Destructure the data object to get the connection details
-    const {
-      address,
-      username,
-      password,
-      database = this.DEFAULT_DATABASE,
-    } = data;
+    const { address, token, username, password, database } = data;
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
     try {
       // Create a new Milvus client with the provided connection details
-      const clientOptions: ClientConfig = {
+      const clientConfig: ClientConfig = {
         address: milvusAddress,
+        token,
         username,
         password,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
       };
 
       if (process.env.ROOT_CERT_PATH) {
-        clientOptions.tls = {
+        clientConfig.tls = {
           rootCertPath: process.env.ROOT_CERT_PATH,
         };
 
         if (process.env.PRIVATE_KEY_PATH) {
-          clientOptions.tls.privateKeyPath = process.env.PRIVATE_KEY_PATH;
+          clientConfig.tls.privateKeyPath = process.env.PRIVATE_KEY_PATH;
         }
 
         if (process.env.CERT_CHAIN_PATH) {
-          clientOptions.tls.certChainPath = process.env.CERT_CHAIN_PATH;
+          clientConfig.tls.certChainPath = process.env.CERT_CHAIN_PATH;
         }
 
         if (process.env.SERVER_NAME) {
-          clientOptions.tls.serverName = process.env.SERVER_NAME;
+          clientConfig.tls.serverName = process.env.SERVER_NAME;
         }
       }
       // create the client
-      const milvusClient: MilvusClient = new MilvusClient(clientOptions);
+      const milvusClient: MilvusClient = new MilvusClient(clientConfig);
 
       try {
         // Attempt to connect to the Milvus server
@@ -114,9 +105,8 @@ export class MilvusService {
 
       // Return the address and the database (if it exists, otherwise return 'default')
       return {
-        address,
-        database: db,
         clientId: milvusClient.clientId,
+        database: db,
       };
     } catch (error) {
       // If any error occurs, clear the cache and throw the error

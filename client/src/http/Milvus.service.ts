@@ -1,18 +1,13 @@
 import BaseModel from './BaseModel';
 import { CronJobObject } from '@server/types';
+import { AuthReq, AuthObject } from '@server/types';
 
 export class MilvusService extends BaseModel {
-  static connect(data: {
-    address: string;
-    username?: string;
-    password?: string;
-    database?: string;
-  }) {
-    return super.create({ path: '/milvus/connect', data }) as Promise<{
-      address: string;
-      database: string;
-      clientId: string;
-    }>;
+  static connect(data: AuthReq) {
+    return super.create({
+      path: '/milvus/connect',
+      data,
+    }) as Promise<AuthObject>;
   }
 
   static closeConnection() {

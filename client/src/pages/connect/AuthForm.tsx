@@ -3,26 +3,11 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
-import icons from '@/components/icons/Icons';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { MilvusService } from '@/http';
 import { useNavigate } from 'react-router-dom';
-import {
-  rootContext,
-  authContext,
-  prometheusContext,
-  dataContext,
-} from '@/context';
-import {
-  MILVUS_CLIENT_ID,
-  LOGIN_USERNAME,
-  LAST_TIME_ADDRESS,
-  MILVUS_URL,
-  LAST_TIME_DATABASE,
-  MILVUS_DATABASE,
-} from '@/consts';
+import { rootContext, authContext, dataContext } from '@/context';
+import { MILVUS_CLIENT_ID } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -34,27 +19,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
   },
   titleWrapper: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(3),
-    margin: '0 auto',
-    flexDirection: 'column',
-    '& .title': {
-      margin: 0,
-      color: '#323232',
-      fontWeight: 'bold',
-    },
-  },
-  logo: {
-    width: '42px',
-    height: 'auto',
-    marginBottom: theme.spacing(1),
-    display: 'block',
+    textAlign: 'left',
+    alignSelf: 'flex-start',
+    padding: theme.spacing(3, 0),
   },
   input: {
     margin: theme.spacing(0.5, 0, 0),
   },
-  sslWrapper: {
+  toggle: {
     display: 'flex',
     width: '100%',
     justifyContent: 'flex-start',
@@ -87,193 +59,246 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export const AuthForm = (props: any) => {
-  const navigate = useNavigate();
+  // styles
   const classes = useStyles();
 
+  // context
   const { openSnackBar } = useContext(rootContext);
-  const { setAddress, setUsername, setIsAuth, setClientId } =
-    useContext(authContext);
+  const { authReq, setAuthReq, login } = useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
-  const Logo = icons.attu;
-  const GithubIcon = icons.github;
+  // i18n
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
   const { t: dbTrans } = useTranslation('database');
+  // hooks
+  const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
-    username: '',
-    password: '',
-    database:
-      window.localStorage.getItem(LAST_TIME_DATABASE) || MILVUS_DATABASE,
-    ssl: false,
-  });
+  // UI states
+  const [withPass, setWithPass] = useState(authReq.username.length > 0);
+
+  // form validation
   const checkedForm = useMemo(() => {
-    return formatForm(form);
-  }, [form]);
+    return formatForm(authReq);
+  }, [authReq]);
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
+  // handle input change
   const handleInputChange = (
-    key: 'address' | 'username' | 'password' | 'database' | 'ssl',
+    key: 'address' | 'username' | 'password' | 'database' | 'token',
     value: string | boolean
   ) => {
-    setForm(v => ({ ...v, [key]: value }));
+    setAuthReq(v => ({ ...v, [key]: value }));
   };
 
-  const inputConfigs: ITextfieldConfig[] = useMemo(() => {
-    const noAuthConfigs: ITextfieldConfig[] = [
-      {
-        label: attuTrans.address,
-        key: 'address',
-        onChange: (val: string) => handleInputChange('address', val),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.address,
-        fullWidth: true,
-        validations: [
-          {
-            rule: 'require',
-            errorText: warningTrans('required', { name: attuTrans.address }),
-          },
-        ],
-        defaultValue: form.address,
-      },
-    ];
-    return [
-      ...noAuthConfigs,
-      {
-        label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
-        key: 'database',
-        onChange: (value: string) => handleInputChange('database', value),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: dbTrans('database'),
-        fullWidth: true,
-        defaultValue: form.database,
-      },
-      {
-        label: `Milvus ${attuTrans.username} ${attuTrans.optional}`,
-        key: 'username',
-        onChange: (value: string) => handleInputChange('username', value),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.username,
-        fullWidth: true,
-        defaultValue: form.username,
-      },
-      {
-        label: `Milvus ${attuTrans.password} ${attuTrans.optional}`,
-        key: 'password',
-        onChange: (value: string) => handleInputChange('password', value),
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.password,
-        fullWidth: true,
-        type: 'password',
+  // const {
+  //   withPrometheus,
+  //   setWithPrometheus,
+  //   prometheusAddress,
+  //   prometheusInstance,
+  //   prometheusNamespace,
+  //   setPrometheusAddress,
+  //   setPrometheusInstance,
+  //   setPrometheusNamespace,
+  // } = useContext(prometheusContext);
 
-        defaultValue: form.username,
-      },
-    ];
-  }, [form, attuTrans, warningTrans, classes.input]);
+  // const prometheusConfigs: ITextfieldConfig[] = useMemo(
+  //   () => [
+  //     {
+  //       label: `${attuTrans.prometheusAddress}`,
+  //       key: 'prometheus_address',
+  //       onChange: setPrometheusAddress,
+  //       variant: 'filled',
+  //       className: classes.input,
+  //       placeholder: attuTrans.prometheusAddress,
+  //       fullWidth: true,
 
-  const {
-    withPrometheus,
-    setWithPrometheus,
-    prometheusAddress,
-    prometheusInstance,
-    prometheusNamespace,
-    setPrometheusAddress,
-    setPrometheusInstance,
-    setPrometheusNamespace,
-  } = useContext(prometheusContext);
+  //       defaultValue: prometheusAddress,
+  //     },
+  //     {
+  //       label: `${attuTrans.prometheusNamespace}`,
+  //       key: 'prometheus_namespace',
+  //       onChange: setPrometheusNamespace,
+  //       variant: 'filled',
+  //       className: classes.input,
+  //       placeholder: attuTrans.prometheusNamespace,
+  //       fullWidth: true,
 
-  const prometheusConfigs: ITextfieldConfig[] = useMemo(
-    () => [
-      {
-        label: `${attuTrans.prometheusAddress}`,
-        key: 'prometheus_address',
-        onChange: setPrometheusAddress,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusAddress,
-        fullWidth: true,
+  //       defaultValue: prometheusNamespace,
+  //     },
+  //     {
+  //       label: `${attuTrans.prometheusInstance}`,
+  //       key: 'prometheus_instance',
+  //       onChange: setPrometheusInstance,
+  //       variant: 'filled',
+  //       className: classes.input,
+  //       placeholder: attuTrans.prometheusInstance,
+  //       fullWidth: true,
 
-        defaultValue: prometheusAddress,
-      },
-      {
-        label: `${attuTrans.prometheusNamespace}`,
-        key: 'prometheus_namespace',
-        onChange: setPrometheusNamespace,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusNamespace,
-        fullWidth: true,
-
-        defaultValue: prometheusNamespace,
-      },
-      {
-        label: `${attuTrans.prometheusInstance}`,
-        key: 'prometheus_instance',
-        onChange: setPrometheusInstance,
-        variant: 'filled',
-        className: classes.input,
-        placeholder: attuTrans.prometheusInstance,
-        fullWidth: true,
-
-        defaultValue: prometheusInstance,
-      },
-    ],
-    []
-  );
+  //       defaultValue: prometheusInstance,
+  //     },
+  //   ],
+  //   []
+  // );
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
-    const result = await MilvusService.connect(form);
 
-    setIsAuth(true);
-    setClientId(result.clientId);
-    setAddress(form.address);
-    setUsername(form.username);
-    setDatabase(result.database);
+    try {
+      // login
+      const result = await login(authReq);
 
-    openSnackBar(successTrans('connect'));
-    window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
-    window.localStorage.setItem(LOGIN_USERNAME, form.username);
-    // store address for next time using
-    window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);
-    window.localStorage.setItem(LAST_TIME_DATABASE, result.database);
+      // set database
+      setDatabase(authReq.database);
+      // success message
+      openSnackBar(successTrans('connect'));
+      // save clientId to local storage
+      window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
 
-    // redirect to homepage
-    navigate('/');
+      // redirect to homepage
+      navigate('/');
+    } catch (error: any) {
+      // if not authorized, show auth inputs
+      if (error.response.data.message.includes('UNAUTHENTICATED')) {
+        handleEnableAuth(true);
+      }
+    }
   };
 
   const btnDisabled = useMemo(() => {
-    return form.address.trim().length === 0;
-  }, [form.address]);
+    return authReq.address.trim().length === 0;
+  }, [authReq.address]);
+
+  // handle auth toggle
+  const handleEnableAuth = (val: boolean) => {
+    setWithPass(val);
+  };
 
   return (
     <form onSubmit={handleConnect}>
       <section className={classes.wrapper}>
         <div className={classes.titleWrapper}>
-          <Logo classes={{ root: classes.logo }} />
-          <Typography variant="h2" className="title">
-            {attuTrans.admin}
+          <Typography variant="h4" component="h4">
+            {attuTrans.connectTitle}
           </Typography>
         </div>
-        {inputConfigs.map(v => (
-          <CustomInput
-            type="text"
-            textConfig={v}
-            checkValid={checkIsValid}
-            validInfo={validation}
-            key={v.label}
+        {/* address  */}
+        <CustomInput
+          type="text"
+          textConfig={{
+            label: attuTrans.address,
+            key: 'address',
+            onChange: (val: string) => handleInputChange('address', val),
+            variant: 'filled',
+            className: classes.input,
+            placeholder: attuTrans.address,
+            fullWidth: true,
+            validations: [
+              {
+                rule: 'require',
+                errorText: warningTrans('required', {
+                  name: attuTrans.address,
+                }),
+              },
+            ],
+            defaultValue: authReq.address,
+          }}
+          checkValid={checkIsValid}
+          validInfo={validation}
+          key={attuTrans.address}
+        />
+        {/* db  */}
+        <CustomInput
+          type="text"
+          textConfig={{
+            label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
+            key: 'database',
+            onChange: (value: string) => handleInputChange('database', value),
+            variant: 'filled',
+            className: classes.input,
+            placeholder: dbTrans('database'),
+            fullWidth: true,
+            defaultValue: authReq.database,
+          }}
+          checkValid={checkIsValid}
+          validInfo={validation}
+          key={attuTrans.database}
+        />
+
+        {/* toggle auth */}
+        <div className={classes.toggle}>
+          <CustomRadio
+            checked={withPass}
+            label={attuTrans.authentication}
+            handleChange={handleEnableAuth}
           />
-        ))}
-        <div className={classes.sslWrapper}>
+        </div>
+
+        {/* token  */}
+        {withPass && (
+          <>
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: `${attuTrans.token} ${attuTrans.optional} `,
+                key: 'token',
+                onChange: (val: string) => handleInputChange('token', val),
+                variant: 'filled',
+                className: classes.input,
+                placeholder: attuTrans.token,
+                fullWidth: true,
+                defaultValue: authReq.token,
+              }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={attuTrans.token}
+            />
+
+            {/* user  */}
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: `${attuTrans.username} ${attuTrans.optional}`,
+                key: 'username',
+                onChange: (value: string) =>
+                  handleInputChange('username', value),
+                variant: 'filled',
+                className: classes.input,
+                placeholder: attuTrans.username,
+                fullWidth: true,
+                defaultValue: authReq.username,
+              }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={attuTrans.username}
+            />
+
+            {/* pass  */}
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: `${attuTrans.password} ${attuTrans.optional}`,
+                key: 'password',
+                onChange: (value: string) =>
+                  handleInputChange('password', value),
+                variant: 'filled',
+                className: classes.input,
+                placeholder: attuTrans.password,
+                fullWidth: true,
+                type: 'password',
+                defaultValue: authReq.password,
+              }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+              key={attuTrans.password}
+            />
+          </>
+        )}
+
+        {/* <div className={classes.toggle}>
           <CustomRadio
             defaultChecked={withPrometheus}
             label={attuTrans.prometheus}
@@ -289,20 +314,11 @@ export const AuthForm = (props: any) => {
               validInfo={validation}
               key={v.label}
             />
-          ))}
+          ))} */}
 
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans('connect')}
         </CustomButton>
-
-        <a
-          href="https://github.com/zilliztech/attu"
-          target="_blank"
-          className={classes.star}
-        >
-          <GithubIcon className={classes.icon} />
-          {btnTrans('star')}
-        </a>
       </section>
     </form>
   );

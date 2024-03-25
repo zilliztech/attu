@@ -283,11 +283,3 @@ export const checkIndexBuilding = (v: CollectionObject): boolean => {
       v.schema?.fields.some(field => field.index?.state === 'InProgress')
   );
 };
-
-// get database name from url
-export const getDbValueFromUrl = (currentUrl: string) => {
-  const url = new URL(currentUrl);
-  const pathname = url.hash;
-  const match = pathname.match(/\/databases\/([^/]+)/);
-  return match ? match[1] : null;
-};

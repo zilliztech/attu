@@ -24,10 +24,10 @@ export const ReqHeaderMiddleware = (
   const milvusClientId = (req.headers[MILVUS_CLIENT_ID] as string) || '';
   req.clientId = req.headers[MILVUS_CLIENT_ID] as string;
 
-  const CONNECT_URL = `/api/v1/milvus/connect`;
+  const bypassURLs = [`/api/v1/milvus/connect`, `/api/v1/milvus/version`];
 
   if (
-    req.url !== CONNECT_URL &&
+    bypassURLs.indexOf(req.url) === -1 &&
     milvusClientId &&
     !clientCache.get(milvusClientId)
   ) {

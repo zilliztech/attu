@@ -2,6 +2,11 @@ const commonTrans = {
   attu: {
     admin: 'Attu',
     address: 'Milvus地址',
+    fileIssue: '提交问题',
+    discord: 'Discord',
+    token: 'token',
+    authentication: '认证',
+    connectTitle: '连接到Milvus服务器',
     unAuth: '用户名或密码不正确',
     username: '用户名',
     password: '密码',
