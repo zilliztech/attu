@@ -118,9 +118,6 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     const targetPath = `/databases/${database.name}`;
 
     navigate(targetPath);
-
-    // Add the new location to the history
-    window.history.pushState({}, '', location.pathname + location.hash);
   };
 
   const handleDelete = async () => {
