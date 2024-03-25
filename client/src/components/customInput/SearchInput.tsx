@@ -1,7 +1,6 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -76,7 +75,6 @@ const useSearchStyles = makeStyles(theme => ({
 
 const SearchInput: FC<SearchType> = props => {
   const { searchText = '', onClear = () => {}, onSearch = () => {} } = props;
-  const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState<string>(searchText || '');
   const searched = useMemo(() => searchValue !== '', [searchValue]);
   const classes = useSearchStyles({ searched });
@@ -88,17 +86,25 @@ const SearchInput: FC<SearchType> = props => {
   };
 
   useEffect(() => {
-    const searchV = searchParams.get('search');
-    console.log('searchV', searchV);
-    console.log('searchValue', searchValue);
-    if (searchValue === '') {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.delete('search');
-      setSearchParams(newSearchParams);
-    } else if (searchValue !== searchV) {
-      setSearchParams({ search: searchValue });
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const searchV = urlSearchParams.get('search');
+
+    if (searchValue !== searchV) {
+      if (searchValue === '') {
+        urlSearchParams.delete('search');
+      } else {
+        urlSearchParams.set('search', searchValue);
+      }
+
+      const queryString = urlSearchParams.toString();
+      const newUrl = `${window.location.pathname}${
+        queryString ? '?' + queryString : ''
+      }`;
+
+      window.history.replaceState(null, '', newUrl);
+
+      handleSearch(searchValue);
     }
-    handleSearch(searchValue);
   }, [searchValue]);
 
   return (
