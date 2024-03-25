@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
-import icons from '@/components/icons/Icons';
+import Icons from '@/components/icons/Icons';
 import { formatFieldType } from '@/utils';
 import { rootContext, dataContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
@@ -132,10 +132,6 @@ const Overview = () => {
   // get fields
   const fields = collection?.schema?.fields || [];
 
-  const KeyIcon = icons.key;
-  const EnabledIcon = icons.check;
-  const QuestionIcon = icons.question;
-
   const colDefinitions: ColDefinitionsType[] = [
     {
       id: 'name',
@@ -150,7 +146,7 @@ const Overview = () => {
                 className={classes.primaryKeyChip}
                 title={collectionTrans('idFieldName')}
               >
-                <KeyIcon classes={{ root: 'key' }} />
+                <Icons.key classes={{ root: 'key' }} />
               </div>
             ) : null}
             {f.is_partition_key ? (
@@ -286,7 +282,7 @@ const Overview = () => {
             <Typography variant="h5">
               {collectionTrans('rowCount')}
               <CustomToolTip title={collectionTrans('entityCountInfo')}>
-                <QuestionIcon classes={{ root: classes.questionIcon }} />
+                <Icons.question classes={{ root: classes.questionIcon }} />
               </CustomToolTip>
             </Typography>
             <Typography variant="h6">{collection?.rowCount || '0'}</Typography>
@@ -304,6 +300,9 @@ const Overview = () => {
           <div className={classes.block}>
             <Typography variant="h5">
               {collectionTrans('consistency')}
+              <CustomToolTip title={collectionTrans('consistencyLevelInfo')}>
+                <Icons.question classes={{ root: classes.questionIcon }} />
+              </CustomToolTip>
             </Typography>
             <Typography variant="h6">
               <Tooltip
@@ -349,7 +348,7 @@ const Overview = () => {
                 className={`${classes.chip}`}
                 label={collectionTrans('dynamicSchema')}
                 size="small"
-                icon={<EnabledIcon />}
+                icon={<Icons.check />}
               />
             </Tooltip>
           ) : null}
