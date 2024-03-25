@@ -3,9 +3,14 @@ import {
   CollectionObject,
   CollectionFullObject,
   DatabaseObject,
+  AuthReq,
 } from '@server/types';
 import { NavInfo } from '@/router/Types';
-import { IndexCreateParam, IndexManageParam } from '@/pages/databases/collections/overview/Types';
+import {
+  IndexCreateParam,
+  IndexManageParam,
+} from '@/pages/databases/collections/overview/Types';
+import { AuthObject } from '@server/types';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;
@@ -60,16 +65,13 @@ export type OpenSnackBarType = (
 ) => void;
 
 export type AuthContextType = {
-  isAuth: boolean;
+  authReq: AuthReq;
+  setAuthReq: Dispatch<SetStateAction<AuthReq>>;
   clientId: string;
-  address: string;
-  username: string;
   isManaged: boolean;
-  logout: Function;
-  setAddress: Dispatch<SetStateAction<string>>;
-  setUsername: Dispatch<SetStateAction<string>>;
-  setIsAuth: Dispatch<SetStateAction<boolean>>;
-  setClientId: Dispatch<SetStateAction<string>>;
+  isAuth: boolean;
+  logout: () => void;
+  login: (params: AuthReq) => Promise<AuthObject>;
 };
 
 export type SystemContextType = {

@@ -1,69 +1,75 @@
 import { createContext, useEffect, useState } from 'react';
-import { MILVUS_CLIENT_ID, LOGIN_USERNAME, LAST_TIME_ADDRESS } from '@/consts';
 import { AuthContextType } from './Types';
+import { MilvusService } from '@/http';
+import { AuthReq } from '@server/types';
+import { MILVUS_CLIENT_ID, MILVUS_URL, MILVUS_DATABASE } from '@/consts';
 
 export const authContext = createContext<AuthContextType>({
-  isAuth: false,
   clientId: '',
-  address: '',
-  username: '',
+  authReq: {
+    username: '',
+    password: '',
+    address: '',
+    token: '',
+    database: '',
+  },
+  setAuthReq: () => {},
   isManaged: false,
+  isAuth: false,
+  login: async () => {
+    return { clientId: '' };
+  },
   logout: () => {},
-  setAddress: () => {},
-  setUsername: () => {},
-  setIsAuth: () => {},
-  setClientId: () => {},
 });
 
 const { Provider } = authContext;
 export const AuthProvider = (props: { children: React.ReactNode }) => {
-  // get milvus address from local storage
-  const [address, setAddress] = useState<string>(
-    window.localStorage.getItem(LAST_TIME_ADDRESS) || ''
-  );
-  // get login username from local storage
-  const [username, setUsername] = useState<string>(
-    window.localStorage.getItem(LOGIN_USERNAME) || ''
-  );
+  const [authReq, setAuthReq] = useState<AuthReq>({
+    username: '',
+    password: '',
+    address: '' || MILVUS_URL,
+    token: '',
+    database: '' || MILVUS_DATABASE,
+  });
 
-  // get milvus address from local storage
-  const [clientId, setClientId] = useState<string>(
-    window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
-  );
-  const [isAuth, setIsAuth] = useState<boolean>(clientId !== '');
-  // const isAuth = useMemo(() => !!address, [address]);
+  const [clientId, setClientId] = useState<string>('');
 
   useEffect(() => {
-    document.title = address ? `${address} - Attu` : 'Attu';
+    document.title = authReq.address ? `${authReq.address} - Attu` : 'Attu';
     return () => {
       document.title = 'Attu';
-    }
-  }, [address, username]);
+    };
+  }, [authReq.address]);
 
+  const login = async (params: AuthReq) => {
+    setAuthReq(params);
+    const res = await MilvusService.connect(params);
+    setClientId(res.clientId);
+
+    return res;
+  };
   const logout = () => {
-    // remove user data from local storage
-    window.localStorage.removeItem(MILVUS_CLIENT_ID);
-    window.localStorage.removeItem(LOGIN_USERNAME);
-
     // update state
-    setAddress('');
-    setUsername('');
-    setIsAuth(false);
+    setAuthReq({
+      ...authReq,
+      username: '',
+      password: '',
+      token: '',
+    });
+    setClientId('');
+    window.localStorage.removeItem(MILVUS_CLIENT_ID);
   };
 
   return (
     <Provider
       value={{
-        isAuth,
-        clientId,
-        address,
-        username,
-        setAddress,
-        setUsername,
-        setIsAuth,
-        setClientId,
+        authReq,
+        setAuthReq,
+        login,
         logout,
-        isManaged: address.includes('zilliz'),
+        clientId,
+        isAuth: !!clientId,
+        isManaged: authReq.address.includes('zilliz'),
       }}
     >
       {props.children}

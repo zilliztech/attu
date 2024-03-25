@@ -8,7 +8,7 @@ import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
 import { connectivityState } from '@grpc/grpc-js';
 import { clientCache } from '../app';
-import { DescribeIndexRes } from '../types';
+import { DescribeIndexRes, AuthReq, AuthObject } from '../types';
 
 export class MilvusService {
   private DEFAULT_DATABASE = 'default';
@@ -23,13 +23,7 @@ export class MilvusService {
     return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
   }
 
-  async connectMilvus(data: {
-    address: string;
-    token?: string;
-    username?: string;
-    password?: string;
-    database?: string;
-  }) {
+  async connectMilvus(data: AuthReq): Promise<AuthObject> {
     // Destructure the data object to get the connection details
     const {
       address,
@@ -117,8 +111,6 @@ export class MilvusService {
 
       // Return the address and the database (if it exists, otherwise return 'default')
       return {
-        address,
-        database: db,
         clientId: milvusClient.clientId,
       };
     } catch (error) {

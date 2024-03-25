@@ -72,7 +72,8 @@ const Header: FC = () => {
   const classes = useStyles();
   const { navInfo } = useContext(navContext);
   const { database, databases, setDatabase, loading } = useContext(dataContext);
-  const { address, username, logout } = useContext(authContext);
+  const { authReq, logout } = useContext(authContext);
+  const { address, username } = authReq;
   const navigate = useNavigate();
 
   const { t: commonTrans } = useTranslation();

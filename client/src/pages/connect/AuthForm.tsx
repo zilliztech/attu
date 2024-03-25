@@ -3,25 +3,11 @@ import { makeStyles, Theme, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { MilvusService } from '@/http';
 import { useNavigate } from 'react-router-dom';
-import {
-  rootContext,
-  authContext,
-  prometheusContext,
-  dataContext,
-} from '@/context';
-import {
-  MILVUS_CLIENT_ID,
-  LOGIN_USERNAME,
-  LAST_TIME_ADDRESS,
-  MILVUS_URL,
-  LAST_TIME_DATABASE,
-  MILVUS_DATABASE,
-} from '@/consts';
+import { rootContext, authContext, dataContext } from '@/context';
+import { MILVUS_CLIENT_ID, MILVUS_URL, MILVUS_DATABASE } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -78,8 +64,7 @@ export const AuthForm = (props: any) => {
 
   // context
   const { openSnackBar } = useContext(rootContext);
-  const { setAddress, setUsername, setIsAuth, setClientId } =
-    useContext(authContext);
+  const { authReq, setAuthReq, login } = useContext(authContext);
   const { setDatabase } = useContext(dataContext);
 
   // i18n
@@ -93,20 +78,12 @@ export const AuthForm = (props: any) => {
   const navigate = useNavigate();
 
   // UI states
-  const [form, setForm] = useState({
-    address: window.localStorage.getItem(LAST_TIME_ADDRESS) || MILVUS_URL,
-    username: '',
-    password: '',
-    token: '',
-    database:
-      window.localStorage.getItem(LAST_TIME_DATABASE) || MILVUS_DATABASE,
-  });
   const [withPass, setWithPass] = useState(false);
 
   // form validation
   const checkedForm = useMemo(() => {
-    return formatForm(form);
-  }, [form]);
+    return formatForm(authReq);
+  }, [authReq]);
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
   // handle input change
@@ -114,7 +91,7 @@ export const AuthForm = (props: any) => {
     key: 'address' | 'username' | 'password' | 'database' | 'token',
     value: string | boolean
   ) => {
-    setForm(v => ({ ...v, [key]: value }));
+    setAuthReq(v => ({ ...v, [key]: value }));
   };
 
   // const {
@@ -169,31 +146,33 @@ export const AuthForm = (props: any) => {
 
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('xx', form);
 
-    const result = await MilvusService.connect(form);
+    try {
+      // login
+      const result = await login(authReq);
 
-    setIsAuth(true);
-    setClientId(result.clientId);
-    setAddress(form.address);
-    setUsername(form.username);
-    setDatabase(result.database);
+      // set database
+      setDatabase(authReq.database);
+      // success message
+      openSnackBar(successTrans('connect'));
+      // save clientId to local storage
+      window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
 
-    openSnackBar(successTrans('connect'));
-    window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
-    window.localStorage.setItem(LOGIN_USERNAME, form.username);
-    // store address for next time using
-    window.localStorage.setItem(LAST_TIME_ADDRESS, form.address);
-    window.localStorage.setItem(LAST_TIME_DATABASE, result.database);
-
-    // redirect to homepage
-    navigate('/');
+      // redirect to homepage
+      navigate('/');
+    } catch (error: any) {
+      // if not authorized, show auth inputs
+      if (error.response.data.message.includes('UNAUTHENTICATED')) {
+        handleEnableAuth(true);
+      }
+    }
   };
 
   const btnDisabled = useMemo(() => {
-    return form.address.trim().length === 0;
-  }, [form.address]);
+    return authReq.address.trim().length === 0;
+  }, [authReq.address]);
 
+  // handle auth toggle
   const handleEnableAuth = (val: boolean) => {
     setWithPass(val);
   };
@@ -225,7 +204,7 @@ export const AuthForm = (props: any) => {
                 }),
               },
             ],
-            defaultValue: form.address,
+            defaultValue: authReq.address,
           }}
           checkValid={checkIsValid}
           validInfo={validation}
@@ -242,7 +221,7 @@ export const AuthForm = (props: any) => {
             className: classes.input,
             placeholder: dbTrans('database'),
             fullWidth: true,
-            defaultValue: form.database,
+            defaultValue: authReq.database,
           }}
           checkValid={checkIsValid}
           validInfo={validation}
@@ -271,7 +250,7 @@ export const AuthForm = (props: any) => {
                 className: classes.input,
                 placeholder: attuTrans.token,
                 fullWidth: true,
-                defaultValue: form.token,
+                defaultValue: authReq.token,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
@@ -290,7 +269,7 @@ export const AuthForm = (props: any) => {
                 className: classes.input,
                 placeholder: attuTrans.username,
                 fullWidth: true,
-                defaultValue: form.username,
+                defaultValue: authReq.username,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
@@ -311,7 +290,7 @@ export const AuthForm = (props: any) => {
                 fullWidth: true,
                 type: 'password',
 
-                defaultValue: form.username,
+                defaultValue: authReq.username,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
