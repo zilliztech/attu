@@ -60,7 +60,6 @@ export class CronsService {
       );
 
       if (!currentJob) {
-        console.log(`running getCollection task, payload:`, currentJob.data);
         return;
       }
       try {
