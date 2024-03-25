@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useContext } from 'react';
 import { authContext } from '@/context';
 import Databases from '@/pages/databases/Databases';

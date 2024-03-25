@@ -86,26 +86,24 @@ const SearchInput: FC<SearchType> = props => {
   };
 
   useEffect(() => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const searchV = urlSearchParams.get('search');
-
-    if (searchValue !== searchV) {
-      if (searchValue === '') {
-        urlSearchParams.delete('search');
-      } else {
-        urlSearchParams.set('search', searchValue);
-      }
-
-      const queryString = urlSearchParams.toString();
-      const newUrl = `${window.location.pathname}${
-        queryString ? '?' + queryString : ''
-      }`;
-
-      window.history.replaceState(null, '', newUrl);
-
-      handleSearch(searchValue);
+    let hashPart = window.location.hash.substring(1);
+    if (!hashPart) {
+      return; // 如果哈希部分为空，则不进行后续操作
     }
+  
+    if (searchValue !== '') {
+      hashPart = `${hashPart}&search=${encodeURIComponent(searchValue)}`;
+    }
+  
+    const newUrl = `${window.location.pathname}#${hashPart}`;
+  
+    console.log('new url', newUrl);
+  
+    window.history.replaceState(null, '', newUrl);
+  
+    handleSearch(searchValue);
   }, [searchValue]);
+  
 
   return (
     <div className={classes.wrapper}>
