@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
-import { Typography, Button, Card, CardContent } from '@material-ui/core';
+import { Typography, CardContent } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -92,7 +92,7 @@ const VectorSearch = () => {
       return [];
     }
 
-    const fields = s.schema.fields || [];
+    const fields = (s.schema && s.schema.fields) || [];
 
     // vector field can't be output fields
     const invalidTypes = ['BinaryVector', 'FloatVector'];
@@ -236,7 +236,10 @@ const VectorSearch = () => {
       const col = collections.find(c => c.collection_name === collectionName);
 
       // only vector type fields can be select
-      const fieldOptions = getVectorFieldOptions(col?.schema.vectorFields!);
+      const fieldOptions =
+        col && col.schema
+          ? getVectorFieldOptions(col?.schema.vectorFields!)
+          : [];
       setFieldOptions(fieldOptions);
       if (fieldOptions.length > 0) {
         // set first option value as default field value
@@ -379,6 +382,9 @@ const VectorSearch = () => {
                 // every time selected collection changed, reset field
                 setSelectedField('');
                 setSearchResult([]);
+                // update location search
+                const search = `/#/search?collectionName=${collection}`;
+                window.history.pushState({}, '', search);
               }}
             />
             <CustomSelector
