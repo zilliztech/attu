@@ -175,9 +175,6 @@ const CollectionTabs = (props: {
     },
   ];
 
-  // get active collection tab
-  const activeColTab = collectionTabs.findIndex(t => t.path === collectionPage);
-
   if (!isManaged) {
     collectionTabs.push({
       label: collectionTrans('segmentsTab'),
@@ -185,6 +182,9 @@ const CollectionTabs = (props: {
       path: `segments`,
     });
   }
+
+  // get active collection tab
+  const activeColTab = collectionTabs.findIndex(t => t.path === collectionPage);
 
   return (
     <RouteTabList
