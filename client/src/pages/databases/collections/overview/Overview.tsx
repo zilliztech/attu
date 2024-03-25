@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: `100%`,
     overflow: 'auto',
     '& h5': {
-      color: theme.palette.attuGrey.dark,
+      color: theme.palette.text.secondary,
       marginBottom: theme.spacing(0.5),
-      fontSize: '14px',
+      fontSize: 13,
       fontWeight: 400,
     },
   },
