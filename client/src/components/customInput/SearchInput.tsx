@@ -87,23 +87,21 @@ const SearchInput: FC<SearchType> = props => {
 
   useEffect(() => {
     let hashPart = window.location.hash.substring(1);
-    if (!hashPart) {
-      return; // 如果哈希部分为空，则不进行后续操作
-    }
-  
-    if (searchValue !== '') {
-      hashPart = `${hashPart}&search=${encodeURIComponent(searchValue)}`;
-    }
-  
+    // remove search part from hash part, include the '?'
+    hashPart = hashPart.replace(/(\?search=)[^&]+(&?)/, '$2');
+
+    let searchPart = !searchValue
+      ? ''
+      : `?search=${encodeURIComponent(searchValue)}`;
+
+    hashPart = `${hashPart}${searchPart}`;
+
     const newUrl = `${window.location.pathname}#${hashPart}`;
-  
-    console.log('new url', newUrl);
-  
+
     window.history.replaceState(null, '', newUrl);
-  
+
     handleSearch(searchValue);
   }, [searchValue]);
-  
 
   return (
     <div className={classes.wrapper}>
