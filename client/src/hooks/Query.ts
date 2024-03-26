@@ -24,7 +24,7 @@ export const useQuery = (params: {
   // states
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
+  const [total, setTotal] = useState<number>(collection.rowCount);
   const [expr, setExpr] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>({ data: [], latency: 0 });
 
@@ -68,6 +68,7 @@ export const useQuery = (params: {
     page: number = currentPage,
     consistency_level = consistencyLevel
   ) => {
+    if (!collection || !collection.loaded) return;
     const _expr = getPageExpr(page);
 
     onQueryStart(_expr);
@@ -120,6 +121,10 @@ export const useQuery = (params: {
   };
 
   const count = async (consistency_level = consistencyLevel) => {
+    if (!collection || !collection.loaded) {
+      setTotal(collection.rowCount);
+      return;
+    }
     const count = 'count(*)';
     const res = await CollectionService.queryData(collection.collection_name, {
       expr: expr,
@@ -140,6 +145,7 @@ export const useQuery = (params: {
   useEffect(() => {
     if (!collection || !collection.loaded) {
       setQueryResult({ data: [], latency: 0 });
+      setTotal(collection.rowCount);
       // console.info('[skip running query]: no key yet');
       return;
     } // reset
@@ -148,7 +154,7 @@ export const useQuery = (params: {
     count();
     // do the query
     query();
-  }, [expr, pageSize, collection]);
+  }, [expr, pageSize, collection.collection_name]);
 
   return {
     // total query count

@@ -430,9 +430,7 @@ const Collections = () => {
                   <ImportSampleDialog
                     collection={row}
                     cb={async (collectionName: string) => {
-                      setTimeout(async () => {
-                        await fetchCollection(collectionName);
-                      });
+                      await fetchCollection(collectionName);
                     }}
                   />
                 ),

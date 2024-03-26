@@ -337,8 +337,6 @@ export class CollectionController {
     try {
       const limit = parseInt(resultLimit, 10);
       const page = isNaN(resultPage) ? 0 : parseInt(resultPage, 10);
-      // TODO: add page and limit to node SDK
-      // Here may raise "Error: 8 RESOURCE_EXHAUSTED: Received message larger than max"
       const result = await this.collectionsService.query(req.clientId, {
         collection_name: name,
         ...data,
@@ -346,10 +344,6 @@ export class CollectionController {
 
       // const queryResultList = result.data;
       const queryResultLength = result.data.length;
-      // const startNum = page * limit;
-      // const endNum = (page + 1) * limit;
-      // const slicedResult = queryResultList.slice(startNum, endNum);
-      // result.data = slicedResult;
       res.send({ ...result, limit, page, total: queryResultLength });
     } catch (error) {
       next(error);

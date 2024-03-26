@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { TextField, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context';
+import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
 import { useQuery } from '@/hooks';
 import { saveCsvAs } from '@/utils';
@@ -62,6 +62,7 @@ const CollectionData = (props: CollectionDataProps) => {
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
+  const { fetchCollection } = useContext(dataContext);
   // icons
   const ResetIcon = icons.refresh;
   // translations
@@ -159,6 +160,10 @@ const CollectionData = (props: CollectionDataProps) => {
     },
   });
 
+  const onInsert = async (collectionName: string) => {
+    await fetchCollection(collectionName);
+  };
+
   // Toolbar settings
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -179,7 +184,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 // user can't select partition on collection page, so default value is ''
                 defaultSelectedPartition={''}
                 collections={[collection!]}
-                onInsert={() => {}}
+                onInsert={onInsert}
               />
             ),
           },
@@ -195,7 +200,13 @@ const CollectionData = (props: CollectionDataProps) => {
           type: 'custom',
           params: {
             component: (
-              <ImportSampleDialog collection={collection!} cb={onDelete} />
+              <ImportSampleDialog
+                collection={collection!}
+                cb={async () => {
+                  await onInsert(collection.collection_name);
+                  await onDelete();
+                }}
+              />
             ),
           },
         });

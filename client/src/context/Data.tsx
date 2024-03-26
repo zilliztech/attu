@@ -98,7 +98,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         return isLoading || isBuildingIndex;
       });
 
-      // trigger cron if it has
+      // trigger cron if it has to
       if (LoadingOrBuildingCollections.length > 0) {
         MilvusService.triggerCron({
           name: WS_EVENTS.COLLECTION_UPDATE,

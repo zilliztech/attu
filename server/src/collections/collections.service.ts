@@ -342,12 +342,13 @@ export class CollectionsService {
     });
 
     // get collection statistic data
-    let collectionStatisticsRes;
+    let count: number;
 
     try {
-      collectionStatisticsRes = await this.getCollectionStatistics(clientId, {
+      const res = await this.count(clientId, {
         collection_name: collection.name,
       });
+      count = res.rowCount;
     } catch (e) {
       console.log('ignore getCollectionStatistics');
     }
@@ -384,9 +385,7 @@ export class CollectionsService {
     return {
       collection_name: collection.name,
       schema: collectionInfo.schema,
-      rowCount: Number(
-        (collectionStatisticsRes && collectionStatisticsRes.data.row_count) || 0
-      ),
+      rowCount: Number(count || 0),
       createdTime: parseInt(collectionInfo.created_utc_timestamp, 10),
       aliases: collectionInfo.aliases,
       description: collectionInfo.schema.description,
