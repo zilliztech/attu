@@ -7,6 +7,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      TAG_NAME: ${{ github.ref }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
@@ -31,6 +33,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          tags: zilliz/attu:${GITHUB_REF#refs/tags/},zilliz/attu:latest
-          build-args: VERSION=${GITHUB_REF#refs/tags/}
+          tags: |
+            zilliz/attu:${TAG_NAME#refs/tags/},zilliz/attu:latest
+          build-args: VERSION=${TAG_NAME#refs/tags/}
           push: true

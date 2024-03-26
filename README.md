@@ -1,10 +1,11 @@
 # Attu
+
 [![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://img.shields.io/docker/pulls/zilliz/attu)
 
 Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
 
-<img src="./.github/images/data_preview.png" width="800" alt="attu data view" />
+<img src="./.github/images/screenshot.png" width="800" alt="attu data view" />
 
 ## Installation Guides
 
@@ -14,7 +15,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                         |
 | -------------- | ---------------------------------------------------------------- |
-| 2.3.x          | [v2.3.8](https://github.com/zilliztech/attu/releases/tag/v2.3.8) |
+| 2.3.x          | [v2.3.9](https://github.com/zilliztech/attu/releases/tag/v2.3.9) |
 | 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
 | 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
 
@@ -23,7 +24,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.8
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.9
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
@@ -31,7 +32,7 @@ Make sure that the Attu container can access the Milvus IP address. After starti
 #### Optional Environment Variables for Running Attu Docker
 
 | Parameter        | Example              | Required | Description                             |
-|:-----------------|:---------------------| :------: |-----------------------------------------|
+| :--------------- | :------------------- | :------: | --------------------------------------- |
 | MILVUS_URL       | 192.168.0.1:19530    |  false   | Optional, Milvus server URL             |
 | ATTU_LOG_LEVEL   | info                 |  false   | Optional, sets the log level for Attu   |
 | ROOT_CERT_PATH   | /path/to/root/cert   |  false   | Optional, path to the root certificate  |
@@ -39,7 +40,6 @@ Make sure that the Attu container can access the Milvus IP address. After starti
 | CERT_CHAIN_PATH  | /path/to/cert/chain  |  false   | Optional, path to the certificate chain |
 | SERVER_NAME      | your_server_name     |  false   | Optional, name of your server           |
 | SERVER_PORT      | Server listen port   |  false   | Optional, 3000 by default if unset      |
-
 
 > Please note that the `MILVUS_URL` should be an address that the Attu Docker container can access. Therefore, "127.0.0.1" or "localhost" will not work.
 
@@ -59,8 +59,9 @@ zilliz/attu:dev
 ```
 
 #### Custom Server Port Example
-*This command lets you run the docker container with host networking, specifying a custom port for 
-the server to listen on*
+
+_This command lets you run the docker container with host networking, specifying a custom port for
+the server to listen on_
 
 ```bash
 docker run --network host \
@@ -95,11 +96,13 @@ If you prefer to use a desktop application, you can download the [desktop versio
 
 ## More Screenshots
 
-<img src="./.github/images/screenshot.png" alt="attu" width="800" alt="attu" />
-<img src="./.github/images/collections.png" alt="attu" width="800" alt="attu" />
-<img src="./.github/images/create_collection.png" width="800" alt="attu" />
-<img src="./.github/images/create_index.png" width="800" alt="attu" />
-<img src="./.github/images/vector_search.png" width="800" alt="attu" />
+| Data view                                                                         | collection tree                                                                  |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| <img src="./.github/images/data_preview.png" alt="attu" width="800" alt="attu" /> | <img src="./.github/images/collections.png" alt="attu" width="800" alt="attu" /> |
+
+| create collection                                                           | vector search                                                           |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <img src="./.github/images/create_collection.png" width="800" alt="attu" /> | <img src="./.github/images/vector_search.png" width="800" alt="attu" /> |
 
 ## ✨ Contributing Code
 
@@ -148,6 +151,4 @@ Here are some helpful resources to get you started with Milvus:
 
 💬 Join our vibrant community on the Milvus Discord where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
 
-  <a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
-
-
+<a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
