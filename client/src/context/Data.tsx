@@ -74,7 +74,8 @@ const { Provider } = dataContext;
 
 export const DataProvider = (props: { children: React.ReactNode }) => {
   // auth context
-  const { authReq, isAuth, clientId, logout } = useContext(authContext);
+  const { authReq, isAuth, clientId, logout, setAuthReq } =
+    useContext(authContext);
 
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
@@ -342,7 +343,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // set connected to false
       setConnected(false);
     }
-  }, [isAuth, authReq]);
+  }, [isAuth]);
 
   useEffect(() => {
     if (connected) {
@@ -362,6 +363,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       socket.current?.offAny();
     };
   }, [updateCollections, connected]);
+
+  useEffect(() => {
+    setAuthReq({ ...authReq, database });
+  }, [database]);
 
   return (
     <Provider
