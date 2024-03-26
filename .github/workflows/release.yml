@@ -7,8 +7,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_TAG: ${{ github.event.release.tag_name }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node.js
@@ -34,6 +32,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           tags: |
-            zilliz/attu:${DOCKER_TAG},zilliz/attu:latest
-          build-args: VERSION=${DOCKER_TAG}
+            zilliz/attu:${{ github.event.release.tag_name }},zilliz/attu:latest
+          build-args: VERSION=${{ github.event.release.tag_name }}
           push: true
