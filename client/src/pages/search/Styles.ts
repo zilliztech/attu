@@ -67,7 +67,6 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     flexGrow: 0,
     width: `calc(100% - 396px)`,
-    height: `calc(100vh - 108px)`,
     padding: theme.spacing(1, 2),
   },
   toolbar: {

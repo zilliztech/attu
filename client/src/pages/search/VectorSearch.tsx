@@ -247,7 +247,9 @@ const VectorSearch = () => {
         setSelectedField(defaultFieldValue as string);
       }
 
-      setFilterFields(col?.schema.scalarFields!);
+      if(col?.schema) {
+        setFilterFields(col?.schema.scalarFields!);
+      }
     },
     [collections]
   );

@@ -211,7 +211,7 @@ const AttuGrid: FC<AttuGridType> = props => {
       window.removeEventListener('resize', calculateRowCountAndPageSize);
       clearTimeout(timer);
     };
-  }, [tableHeaderHeight, rowHeight, setRowsPerPage]);
+  }, [tableHeaderHeight, rowHeight]);
 
   return (
     <Grid
