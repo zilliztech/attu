@@ -16,8 +16,6 @@ const RouterComponent = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Index />}>
-          <Route index element={<Databases />} />
-
           <Route path="databases" element={<Databases />} />
           <Route path="databases/:databaseName" element={<Databases />} />
           <Route

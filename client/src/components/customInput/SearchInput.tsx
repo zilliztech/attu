@@ -1,7 +1,6 @@
 import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
@@ -76,7 +75,6 @@ const useSearchStyles = makeStyles(theme => ({
 
 const SearchInput: FC<SearchType> = props => {
   const { searchText = '', onClear = () => {}, onSearch = () => {} } = props;
-  const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState<string>(searchText || '');
   const searched = useMemo(() => searchValue !== '', [searchValue]);
   const classes = useSearchStyles({ searched });
@@ -88,8 +86,20 @@ const SearchInput: FC<SearchType> = props => {
   };
 
   useEffect(() => {
-    searchParams[searchValue ? 'set' : 'delete']('search', searchValue);
-    setSearchParams(searchParams);
+    let hashPart = window.location.hash.substring(1);
+    // remove search part from hash part, include the '?'
+    hashPart = hashPart.replace(/(\?search=)[^&]+(&?)/, '$2');
+
+    let searchPart = !searchValue
+      ? ''
+      : `?search=${encodeURIComponent(searchValue)}`;
+
+    hashPart = `${hashPart}${searchPart}`;
+
+    const newUrl = `${window.location.pathname}#${hashPart}`;
+
+    window.history.replaceState(null, '', newUrl);
+
     handleSearch(searchValue);
   }, [searchValue]);
 
