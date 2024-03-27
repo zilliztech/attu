@@ -58,6 +58,7 @@ const LoadCollectionDialog = (props: {
   const [enableRelica, setEnableRelica] = useState(false);
   const [replicaToggle, setReplicaToggle] = useState(false);
   const [maxQueryNode, setMaxQueryNode] = useState(1);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   // check if it is cluster
   useEffect(() => {
@@ -105,22 +106,28 @@ const LoadCollectionDialog = (props: {
       params = { replica_number: Number(form.replica) };
     }
 
-    // load collection request
-    await loadCollection(collection.collection_name, params);
+    try {
+      setBtnDisabled(true);
+      // load collection request
+      await loadCollection(collection.collection_name, params);
 
-    // show success message
-    openSnackBar(
-      successTrans('load', {
-        name: collectionTrans('collection'),
-      })
-    );
+      // show success message
+      openSnackBar(
+        successTrans('load', {
+          name: collectionTrans('collection'),
+        })
+      );
 
-    // callback
-    if (onLoad) {
-      await onLoad(collection);
+      // callback
+      if (onLoad) {
+        await onLoad(collection);
+      }
+      // close dialog
+      handleCloseDialog();
+    } catch (error) {
+    } finally {
+      setBtnDisabled(false);
     }
-    // close dialog
-    handleCloseDialog();
   };
 
   // validator
@@ -219,7 +226,7 @@ const LoadCollectionDialog = (props: {
       }
       confirmLabel={btnTrans('load')}
       handleConfirm={handleConfirm}
-      confirmDisabled={replicaToggle ? disabled : false}
+      confirmDisabled={replicaToggle ? disabled || btnDisabled : btnDisabled}
     />
   );
 };
