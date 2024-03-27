@@ -115,8 +115,8 @@ export type DataContextType = {
   fetchCollections: () => Promise<void>;
   fetchCollection: (name: string) => Promise<CollectionFullObject>;
   createCollection: (data: any) => Promise<CollectionFullObject>;
-  loadCollection: (name: string, param?: any) => Promise<CollectionFullObject>;
-  releaseCollection: (name: string) => Promise<CollectionFullObject>;
+  loadCollection: (name: string, param?: any) => Promise<void>;
+  releaseCollection: (name: string) => Promise<void>;
   renameCollection: (
     name: string,
     newName: string
