@@ -173,11 +173,7 @@ export class CollectionsService {
     const res = await milvusClient.loadCollection(data);
     throwErrorFromSDK(res);
 
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
-
-    return newCollection[0];
+    return data.collection_name;
   }
 
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
@@ -185,11 +181,10 @@ export class CollectionsService {
     const res = await milvusClient.releaseCollection(data);
     throwErrorFromSDK(res);
 
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
+    // emit update to client
+    this.updateCollectionsDetails(clientId, [data.collection_name]);
 
-    return newCollection[0];
+    return data.collection_name;
   }
 
   async getCollectionStatistics(
@@ -379,8 +374,8 @@ export class CollectionsService {
       loadedPercentage === -1
         ? LOADING_STATE.UNLOADED
         : loadedPercentage === 100
-        ? LOADING_STATE.LOADED
-        : LOADING_STATE.LOADING;
+          ? LOADING_STATE.LOADED
+          : LOADING_STATE.LOADING;
 
     return {
       collection_name: collection.name,
@@ -456,17 +451,7 @@ export class CollectionsService {
         if (q.isObseleted) {
           return;
         }
-        try {
-          // get current socket
-          const socketClient = clients.get(clientId);
-          // get collections
-          const res = await this.getAllCollections(clientId, collectionsToGet);
-
-          // emit event to current client
-          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
-        } catch (e) {
-          console.log('ignore queue error');
-        }
+        await this.updateCollectionsDetails(clientId, collectionsToGet);
       }, 5);
     }
 
@@ -483,6 +468,22 @@ export class CollectionsService {
 
     // return data
     return data;
+  }
+
+  // update collections details
+  // send new info to the client
+  async updateCollectionsDetails(clientId: string, collections: string[]) {
+    try {
+      // get current socket
+      const socketClient = clients.get(clientId);
+      // get collections
+      const res = await this.getAllCollections(clientId, collections);
+
+      // emit event to current client
+      socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
+    } catch (e) {
+      console.log('ignore queue error');
+    }
   }
 
   async getLoadedCollections(clientId: string) {

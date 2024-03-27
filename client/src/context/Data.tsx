@@ -19,7 +19,7 @@ import {
   CollectionFullObject,
   DatabaseObject,
 } from '@server/types';
-import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
+import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
@@ -43,12 +43,8 @@ export const dataContext = createContext<DataContextType>({
   createCollection: async () => {
     return {} as CollectionFullObject;
   },
-  loadCollection: async () => {
-    return {} as CollectionFullObject;
-  },
-  releaseCollection: async () => {
-    return {} as CollectionFullObject;
-  },
+  loadCollection: async () => {},
+  releaseCollection: async () => {},
   renameCollection: async () => {
     return {} as CollectionFullObject;
   },
@@ -223,21 +219,27 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // API: load collection
   const loadCollection = async (name: string, param?: any) => {
     // load collection
-    const newCollection = await CollectionService.loadCollection(name, param);
-    // update collection
-    updateCollections([newCollection]);
+    await CollectionService.loadCollection(name, param);
 
-    return newCollection;
+    // find the collection in the collections
+    const collection = collections.find(
+      v => v.collection_name === name
+    ) as CollectionFullObject;
+    // update collection infomation
+    if (collection) {
+      collection.loadedPercentage = 0;
+      collection.loaded = false;
+      collection.status = LOADING_STATE.LOADING;
+    }
+
+    // update collection, and trigger cron job
+    updateCollections([collection]);
   };
 
   // API: release collection
   const releaseCollection = async (name: string) => {
     // release collection
-    const newCollection = await CollectionService.releaseCollection(name);
-    // update collection
-    updateCollections([newCollection]);
-
-    return newCollection;
+    await CollectionService.releaseCollection(name);
   };
 
   // API: rename collection

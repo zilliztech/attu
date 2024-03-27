@@ -39,14 +39,14 @@ export class CollectionService extends BaseModel {
   }
 
   static loadCollection(collectionName: string, param?: LoadReplicaReq) {
-    return super.update<CollectionFullObject>({
+    return super.update<string>({
       path: `/collections/${collectionName}/load`,
       data: param,
     });
   }
 
   static releaseCollection(collectionName: string) {
-    return super.update<CollectionFullObject>({
+    return super.update<string>({
       path: `/collections/${collectionName}/release`,
     });
   }
