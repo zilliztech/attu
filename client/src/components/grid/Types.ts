@@ -57,7 +57,7 @@ export type TableHeadType = {
   numSelected: number;
   rowCount: number;
   colDefinitions: ColDefinitionsType[];
-  handleSort?: (e: any, p: string) => void;
+  handleSort?: (e: any, p: string, col?: ColDefinitionsType) => void;
   openCheckBox?: boolean;
   disableSelect?: boolean;
 };

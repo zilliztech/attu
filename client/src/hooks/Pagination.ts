@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { stableSort, getComparator } from '../utils/Sort';
+import { ColDefinitionsType } from '../components/grid/Types';
 
 export const usePaginationHook = (list: any[]) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -9,6 +10,7 @@ export const usePaginationHook = (list: any[]) => {
 
   const total = list.length;
   const { data, offset } = useMemo(() => {
+    console.log('data', list);
     const offset = pageSize * currentPage;
     // only when user click sort, orderBy will have value
     const sortList = orderBy
@@ -28,7 +30,12 @@ export const usePaginationHook = (list: any[]) => {
   const handlePageSize = (size: number) => {
     setPageSize(size);
   };
-  const handleGridSort = (e: any, property: string) => {
+  const handleGridSort = (
+    e: any,
+    property: string,
+    col?: ColDefinitionsType
+  ) => {
+    console.log('sort', col);
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
