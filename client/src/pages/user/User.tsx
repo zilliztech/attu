@@ -13,7 +13,7 @@ import {
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context';
-import { useNavigationHook } from '@/hooks';
+import { useNavigationHook, usePaginationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './CreateUser';
 import UpdateUserRole from './UpdateUserRole';
@@ -58,6 +58,18 @@ const Users = () => {
       })
     );
   };
+
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data: result,
+    order,
+    orderBy,
+    handleGridSort,
+  } = usePaginationHook(users || []);
 
   const handleCreate = async (data: CreateUserParams) => {
     await UserService.createUser(data);
@@ -235,25 +247,29 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  const handlePageChange = (e: any, page: number) => {
+    handleCurrentPage(page);
+  };
+
   return (
     <div className={classes.wrapper}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={users}
-        rowCount={users.length}
+        rows={result}
+        rowCount={total}
         primaryKey="name"
-        showPagination={false}
+        showPagination={true}
         selected={selectedUser}
         setSelected={handleSelectChange}
-        // page={currentPage}
-        // onPageChange={handlePageChange}
-        // rowsPerPage={pageSize}
-        // setRowsPerPage={handlePageSize}
+        page={currentPage}
+        onPageChange={handlePageChange}
+        rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
         // isLoading={loading}
-        // order={order}
-        // orderBy={orderBy}
-        // handleSort={handleGridSort}
+        order={order}
+        orderBy={orderBy}
+        handleSort={handleGridSort}
       />
     </div>
   );
