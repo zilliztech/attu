@@ -197,6 +197,16 @@ export const theme = createMuiTheme({
       },
     },
 
+    MuiInput: {
+      underline: {
+        '&:hover:not(.Mui-disabled):before': {
+          borderWidth: 1,
+        },
+        borderWidth: 1,
+        borderColor: 'transparent',
+      },
+    },
+
     // Date time picker theme overrides
     MuiPickersToolbar: {
       toolbar: {

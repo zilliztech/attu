@@ -67,28 +67,28 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     flexGrow: 0,
     width: `calc(100% - 396px)`,
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(1),
   },
   toolbar: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    background: '#fff',
+    paddingBottom: theme.spacing(1),
+    '& .icon': {
+      fontSize: '16px',
+    },
 
     '& .left': {
       display: 'flex',
       alignItems: 'center',
 
-      '& .text': {
-      },
-    },
-    '& .right': {
-      '& .btn': {
+      '& .text': { fontSize: 12, minWidth: '92px' },
+      '& .MuiButton-root': {
         marginRight: theme.spacing(1),
       },
-      '& .icon': {
-        fontSize: '16px',
-      },
     },
+    '& .right': {},
   },
   menuLabel: {
     minWidth: '108px',
@@ -115,5 +115,15 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   vectorTableCell: {
     display: 'flex',
     whiteSpace: 'nowrap',
+  },
+
+  filterExpressionInput: {
+    width: '33vw',
+    '& .MuiInput-underline:before': {
+      borderWidth: 1,
+    },
+    '& .MuiInput-underline:after': {
+      borderWidth: 1,
+    },
   },
 }));

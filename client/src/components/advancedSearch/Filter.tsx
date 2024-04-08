@@ -90,7 +90,7 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       let n = name;
 
       // if type is json, format json expression
-      if (data.field.type === 'JSON') {
+      if (data.field.data_type === 'JSON') {
         n = `${name}["${jsonKey}"]`;
       }
 
