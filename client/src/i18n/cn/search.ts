@@ -18,6 +18,8 @@ const searchTrans = {
   collectionNotLoaded: 'Collection 没有加载',
   advancedFilter: '高级过滤',
   addCondition: '添加条件',
+  filterExpr: '过滤表达式',
+  exprHelper: '表达式助手',
 };
 
 export default searchTrans;

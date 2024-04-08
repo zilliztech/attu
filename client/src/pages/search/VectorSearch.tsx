@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
-import { Typography, CardContent } from '@material-ui/core';
+import { Typography, CardContent, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -247,7 +247,7 @@ const VectorSearch = () => {
         setSelectedField(defaultFieldValue as string);
       }
 
-      if(col?.schema) {
+      if (col?.schema) {
         setFilterFields(col?.schema.scalarFields!);
       }
     },
@@ -425,6 +425,7 @@ const VectorSearch = () => {
               })}
             </Typography>
           )}
+
           {selectedFieldDimension !== 0 ? (
             <CustomButton
               className={classes.exampleBtn}
@@ -498,11 +499,29 @@ const VectorSearch = () => {
               menuItemWidth="108px"
             />
 
+            <TextField
+              className={classes.filterExpressionInput}
+              value={expression}
+              onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                setExpression(e.target.value as string);
+              }}
+              disabled={selectedField === '' || selectedCollection === ''}
+              InputLabelProps={{ shrink: true }}
+              placeholder={searchTrans('filterExpr')}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  handleAdvancedFilterChange(expression);
+                  e.preventDefault();
+                }
+              }}
+            />
+
             <Filter
-              title="Advanced Filter"
+              title={searchTrans('exprHelper')}
               fields={filterFields}
               filterDisabled={selectedField === '' || selectedCollection === ''}
               onSubmit={handleAdvancedFilterChange}
+              showTooltip={false}
             />
             <CustomButton
               className="btn"

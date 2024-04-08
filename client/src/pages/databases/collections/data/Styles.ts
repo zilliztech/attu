@@ -37,13 +37,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       },
       '& .textarea': {
         width: '100%',
-        '& .MuiInput-underline:before': {
-          borderWidth: 1,
-          borderColor: '#f4f4f4',
-        },
-        '& .MuiInput-underline:after': {
-          borderWidth: 1,
-        },
       },
     },
 

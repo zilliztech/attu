@@ -320,12 +320,6 @@ const CollectionData = (props: CollectionDataProps) => {
             <div className="left">
               <TextField
                 className="textarea"
-                InputProps={{
-                  classes: {
-                    root: 'textfield',
-                    multiline: 'multiline',
-                  },
-                }}
                 value={expression}
                 onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                   setExpression(e.target.value as string);
