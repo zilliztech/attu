@@ -11,6 +11,8 @@ export type ColorType = 'default' | 'inherit' | 'primary' | 'secondary';
 
 export type SortDirection = 'asc' | 'desc';
 
+export type SortType = 'string' | 'number';
+
 /**
  * selected: selected data in table checkbox
  */
@@ -57,7 +59,7 @@ export type TableHeadType = {
   numSelected: number;
   rowCount: number;
   colDefinitions: ColDefinitionsType[];
-  handleSort?: (e: any, p: string) => void;
+  handleSort?: (e: any, p: string, col?: ColDefinitionsType) => void;
   openCheckBox?: boolean;
   disableSelect?: boolean;
 };
@@ -106,6 +108,7 @@ export type ColDefinitionsType = {
   notSort?: boolean;
   // custom sort rule property, default is row id
   sortBy?: string;
+  sortType?: 'string' | 'number';
   onClick?: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     data?: any

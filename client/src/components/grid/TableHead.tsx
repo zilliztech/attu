@@ -51,7 +51,12 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
   } = props;
   const classes = useStyles();
   const createSortHandler = (property: string) => (event: React.MouseEvent) => {
-    handleSort && handleSort(event, property);
+    handleSort &&
+      handleSort(
+        event,
+        property,
+        colDefinitions.find(c => c.id === property)
+      );
   };
 
   return (

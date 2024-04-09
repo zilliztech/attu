@@ -1,8 +1,14 @@
+import { SortType } from '@/components/grid/Types';
+
 type numberObj = {
   [x: string]: number;
 };
 
-export const descendingComparator = (
+type stringObj = {
+  [x: string]: string;
+};
+
+export const descendingNumberComparator = (
   a: numberObj,
   b: numberObj,
   orderBy: string
@@ -22,15 +28,47 @@ export const descendingComparator = (
   return 0;
 };
 
-export const getComparator = (order: string, orderBy: string) => {
-  return order === 'desc'
-    ? (a: numberObj, b: numberObj) => descendingComparator(a, b, orderBy)
-    : (a: numberObj, b: numberObj) => -descendingComparator(a, b, orderBy);
+export const descendingStringComparator = (
+  a: stringObj,
+  b: stringObj,
+  orderBy: string
+) => {
+  const aValue = a[orderBy].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+  const bValue = b[orderBy].toLowerCase(); // Convert to lowercase for case-insensitive comparison
+
+  if (bValue < aValue) {
+    return -1;
+  }
+  if (bValue > aValue) {
+    return 1;
+  }
+  return 0;
+};
+
+export const getComparator = (
+  order: string,
+  orderBy: string,
+  sortType: SortType = 'number'
+) => {
+  switch (sortType) {
+    case 'string':
+      return order === 'desc'
+        ? (a: stringObj, b: stringObj) =>
+            descendingStringComparator(a, b, orderBy)
+        : (a: stringObj, b: stringObj) =>
+            -descendingStringComparator(a, b, orderBy);
+    default:
+      return order === 'desc'
+        ? (a: numberObj, b: numberObj) =>
+            descendingNumberComparator(a, b, orderBy)
+        : (a: numberObj, b: numberObj) =>
+            -descendingNumberComparator(a, b, orderBy);
+  }
 };
 
 export const stableSort = (
   array: any[],
-  comparator: { (a: numberObj, b: numberObj): number }
+  comparator: ReturnType<typeof getComparator>,
 ) => {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {

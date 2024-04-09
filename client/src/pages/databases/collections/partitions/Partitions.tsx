@@ -192,9 +192,10 @@ const Partitions = () => {
   const colDefinitions: ColDefinitionsType[] = [
     {
       id: 'name',
+      sortType: 'string',
       align: 'left',
       disablePadding: true,
-      sortBy: 'collectionName',
+      sortBy: 'name',
       formatter({ name }) {
         const newName = name === '_default' ? 'Default partition' : name;
         return (

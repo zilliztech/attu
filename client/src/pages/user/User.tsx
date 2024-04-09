@@ -200,12 +200,14 @@ const Users = () => {
     {
       id: 'name',
       align: 'left',
+      sortType: 'string',
       disablePadding: false,
       label: userTrans('user'),
     },
     {
       id: 'role',
       align: 'left',
+      sortType: 'string',
       disablePadding: false,
       label: userTrans('role'),
     },

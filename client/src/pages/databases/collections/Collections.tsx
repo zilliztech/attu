@@ -340,6 +340,7 @@ const Collections = () => {
       align: 'left',
       disablePadding: true,
       sortBy: 'collection_name',
+      sortType: 'string',
       formatter({ collection_name }) {
         return (
           <Link
