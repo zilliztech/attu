@@ -99,7 +99,6 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   const { t: dialogTrans } = useTranslation('dialog');
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const classes = useStyles();
   const theme = useTheme();
@@ -124,6 +123,10 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     await dropDatabase({ db_name: database.name });
 
     openSnackBar(successTrans('delete', { name: dbTrans('database') }));
+
+    // use database
+    await MilvusService.useDatabase({ database: 'default' });
+
     handleCloseDialog();
   };
 
