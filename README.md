@@ -88,6 +88,11 @@ Make sure that the Attu pod can access the Milvus service. In the example provid
 
 If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
 
+### Build Docker Image Locally
+
+- Dev: `yarn run build:dev`
+- Release: `yarn run build:release`
+
 ## FAQ
 
 - I can't log into the system
