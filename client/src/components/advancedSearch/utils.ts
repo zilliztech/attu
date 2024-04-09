@@ -20,6 +20,7 @@ export const formatValue = (value: string, type: string, operator: string) => {
           conditionValue = `[${value}]`;
           break;
         case 'JSON_CONTAINS':
+        case 'ARRAY_CONTAINS':
           conditionValue = `${value}`;
           break;
         default:
@@ -82,6 +83,9 @@ export const checkValue = (data: any): boolean => {
         type: type,
         operator: data.operator,
       });
+      break;
+    case DataTypeStringEnum.Array:
+      isLegal = data.value !== '';
       break;
     default:
       isLegal = false;
