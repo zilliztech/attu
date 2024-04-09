@@ -1,11 +1,11 @@
 # Attu
 
 [![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
-[![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://img.shields.io/docker/pulls/zilliz/attu)
+[![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
 
 Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
 
-<img src="./.github/images/screenshot.png" width="800" alt="attu data view" />
+<img src="./.github/images/screenshot.png" width="800" alt="attu home view" />
 
 ## Installation Guides
 
@@ -13,18 +13,18 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 ### Compatibility
 
-| Milvus Version | Recommended Attu Version                                         |
-| -------------- | ---------------------------------------------------------------- |
-| 2.3.x          | [v2.3.9](https://github.com/zilliztech/attu/releases/tag/v2.3.9) |
-| 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
-| 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
+| Milvus Version | Recommended Attu Version                                           |
+| -------------- | ------------------------------------------------------------------ |
+| 2.3.x          | [v2.3.10](https://github.com/zilliztech/attu/releases/tag/v2.3.10) |
+| 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
+| 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2)   |
 
 ### Running Attu from Docker
 
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.9
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.3.10
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
