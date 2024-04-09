@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: |
             zilliz/attu:${{ github.event.release.tag_name }},zilliz/attu:latest
           build-args: VERSION=${{ github.event.release.tag_name }}

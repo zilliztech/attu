@@ -11,6 +11,11 @@
       "{name: 'beta', prerelease: true}"
     ]
   },
+  "scripts": {
+    "build:ci": "scripts/build-ci.sh",
+    "build:dev": "scripts/build-dev.sh",
+    "build:release": "scripts/build-release.sh"
+  },
   "private": true,
   "dependencies": {
     "react-router-dom": "^6.20.0"
