@@ -8,7 +8,8 @@ source scripts/prepare.sh
 
 command docker buildx build \
   --platform linux/arm64,linux/amd64 \
-  --tag zilliz/attu:${TAG_NAME},zilliz/attu:latest \
+  --tag zilliz/attu:${TAG_NAME} \
+  --tag zilliz/attu:latest \
   --build-arg VERSION=${TAG_NAME} \
   --file Dockerfile --push .
 
