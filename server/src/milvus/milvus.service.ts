@@ -3,10 +3,10 @@ import {
   FlushReq,
   GetMetricsResponse,
   ClientConfig,
+  CONNECT_STATUS,
 } from '@zilliz/milvus2-sdk-node';
 import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
-import { connectivityState } from '@grpc/grpc-js';
 import { clientCache } from '../app';
 import { DescribeIndexRes, AuthReq, AuthObject } from '../types';
 
@@ -131,10 +131,10 @@ export class MilvusService {
     return res;
   }
 
-  closeConnection(clientId: string): connectivityState {
+  async closeConnection(clientId: string): Promise<CONNECT_STATUS> {
     const { milvusClient } = clientCache.get(clientId);
 
-    const res = milvusClient.closeConnection();
+    const res = await milvusClient.closeConnection();
     // clear cache on disconnect
     clientCache.delete(milvusClient.clientId);
 

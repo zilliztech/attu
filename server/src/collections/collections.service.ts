@@ -25,6 +25,7 @@ import {
   CreateIndexReq,
   DescribeIndexReq,
   DropIndexReq,
+  DataType,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -142,6 +143,9 @@ export class CollectionsService {
             maxCapacity: -1,
             maxLength: -1,
             autoID: false,
+            fieldID: '',
+            state: '',
+            dataType: DataType.JSON,
           },
         ]
       : [];
