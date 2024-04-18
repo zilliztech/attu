@@ -24,7 +24,7 @@ import {
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
 import { CreateFieldsProps, CreateFieldType, FieldType } from './Types';
-import { DataTypeEnum } from '@/consts';
+import { DataTypeEnum, vectorTypes } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,
   DEFAULT_ATTU_MAX_CAPACITY,
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '170px',
   },
   select: {
-    width: '140px',
+    width: '180px',
     marginTop: '-20px',
 
     '&:first-child': {
@@ -242,8 +242,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
     label?: string,
     className?: string
   ) => {
+    const defaultLabal = collectionTrans(
+      vectorTypes.includes(field.data_type) ? 'vectorFieldName' : 'fieldName'
+    );
+
     return getInput({
-      label: label || collectionTrans('fieldName'),
+      label: label || defaultLabal,
       value: field.name,
       className: className || classes.fieldInput,
       handleChange: (value: string) => {
@@ -276,6 +280,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateDimension = (field: FieldType) => {
+    // sparse dont support dimension
+    if (field.data_type === DataTypeEnum.SparseFloatVector) {
+      return null;
+    }
     const validateDimension = (value: string) => {
       const isPositive = getCheckResult({
         value,
@@ -456,10 +464,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
       // remove dimension, if not vector
       if (
-        updatedField.data_type !== DataTypeEnum.FloatVector &&
-        updatedField.data_type !== DataTypeEnum.BinaryVector
+        !vectorTypes.includes(updatedField.data_type) ||
+        updatedField.data_type === DataTypeEnum.SparseFloatVector
       ) {
         delete updatedField.dimension;
+      } else {
+        // add dimension if not exist
+        updatedField.dimension = Number(
+          updatedField.dimension || DEFAULT_ATTU_DIM
+        );
       }
 
       return updatedField;
@@ -551,18 +564,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ): ReactElement => {
     return (
       <div className={`${classes.rowWrapper}`}>
-        {generateFieldName(field, collectionTrans('vectorFieldName'))}
-
+        {generateFieldName(field)}
         {getSelector(
           'vector',
           `${collectionTrans('vectorType')} `,
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
-        {generateDesc(field)}
-
         {generateDimension(field)}
-
+        {generateDesc(field)}
         <IconButton
           onClick={() => handleAddNewField(index)}
           classes={{ root: classes.iconBtn }}
@@ -643,12 +653,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateVectorRow = (field: FieldType) => {
+  const generateVectorRow = (field: FieldType, index: number) => {
     return (
       <div className={`${classes.rowWrapper}`}>
-        <IconButton classes={{ root: classes.iconBtn }} aria-label="delete">
-          <RemoveIcon />
-        </IconButton>
         {generateFieldName(field)}
         {getSelector(
           'all',
@@ -656,9 +663,29 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, 'data_type', value)
         )}
-        {generateDimension(field)}
 
+        {generateDimension(field)}
         {generateDesc(field)}
+
+        <IconButton
+          onClick={() => {
+            handleAddNewField(index);
+          }}
+          classes={{ root: classes.iconBtn }}
+          aria-label="add"
+        >
+          <AddIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => {
+            const id = field.id || '';
+            handleRemoveField(id);
+          }}
+          classes={{ root: classes.iconBtn }}
+          aria-label="delete"
+        >
+          <RemoveIcon />
+        </IconButton>
       </div>
     );
   };
@@ -683,7 +710,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ) => {
     // optional type is vector or number
     if (field.createType === 'vector') {
-      return generateVectorRow(field);
+      return generateVectorRow(field, index);
     }
 
     // use number as default createType
