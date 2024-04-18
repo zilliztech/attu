@@ -13,7 +13,12 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, TypeEnum } from '@/utils';
-import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
+import {
+  DataTypeEnum,
+  ConsistencyLevelEnum,
+  DEFAULT_ATTU_DIM,
+  vectorTypes,
+} from '@/consts';
 import CreateFields from '../databases/collections/CreateFields';
 import {
   CollectionCreateParam,
@@ -49,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   select: {
-    width: '160px',
+    width: '170px',
 
     '&:first-child': {
       marginLeft: 0,
@@ -201,7 +206,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   ];
 
   const handleCreateCollection = async () => {
-    const vectorType = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
@@ -229,7 +233,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
         v.is_primary_key && (data.autoID = form.autoID);
 
-        return vectorType.includes(v.data_type)
+        const param = vectorTypes.includes(v.data_type)
           ? {
               ...data,
               type_params: {
@@ -246,6 +250,13 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
               },
             }
           : { ...data };
+
+        // delete sparse vector dime
+        if (param.data_type === DataTypeEnum.SparseFloatVector) {
+          delete param.type_params!.dim;
+        }
+
+        return param;
       }),
       consistency_level: consistencyLevel,
     };

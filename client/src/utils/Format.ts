@@ -3,8 +3,12 @@ import {
   DEFAULT_MILVUS_PORT,
   DEFAULT_PROMETHEUS_PORT,
   DataTypeEnum,
+  vectorTypes,
 } from '@/consts';
-import { CreateFieldType, CreateField } from '@/pages/databases/collections/Types';
+import {
+  CreateFieldType,
+  CreateField,
+} from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
 
 /**
@@ -104,7 +108,6 @@ export const getCreateFieldType = (config: CreateField): CreateFieldType => {
     return 'defaultVector';
   }
 
-  const vectorTypes = [DataTypeEnum.BinaryVector, DataTypeEnum.FloatVector];
   if (vectorTypes.includes(config.data_type)) {
     return 'vector';
   }

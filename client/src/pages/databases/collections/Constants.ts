@@ -29,10 +29,22 @@ export const VECTOR_FIELDS_OPTIONS: LabelValuePair[] = [
     label: 'Float Vector',
     value: DataTypeEnum.FloatVector,
   },
+  {
+    label: 'Float16 Vector',
+    value: DataTypeEnum.Float16Vector,
+  },
+  {
+    label: 'BFloat16 Vector',
+    value: DataTypeEnum.BFloat16Vector,
+  },
+  {
+    label: 'Sparse Vector',
+    value: DataTypeEnum.SparseFloatVector,
+  },
 ];
 
 export const ALL_OPTIONS: LabelValuePair[] = [
-  // ...VECTOR_FIELDS_OPTIONS,
+  ...VECTOR_FIELDS_OPTIONS,
   {
     label: 'Int8',
     value: DataTypeEnum.Int8,

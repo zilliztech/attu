@@ -19,8 +19,19 @@ export enum DataTypeEnum {
   JSON = 23,
   BinaryVector = 100,
   FloatVector = 101,
+  Float16Vector = 102,
+  SparseFloatVector = 104,
+  BFloat16Vector = 103,
   Array = 22,
 }
+
+export const vectorTypes = [
+  DataTypeEnum.BinaryVector,
+  DataTypeEnum.FloatVector,
+  DataTypeEnum.BFloat16Vector,
+  DataTypeEnum.Float16Vector,
+  DataTypeEnum.SparseFloatVector,
+];
 
 export enum INDEX_TYPES_ENUM {
   AUTOINDEX = 'AUTOINDEX',
