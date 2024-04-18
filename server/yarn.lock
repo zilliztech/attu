@@ -947,6 +947,11 @@
     lodash "^4.17.15"
     tmp-promise "^3.0.2"
 
+"@petamoriken/float16@^3.8.6":
+  version "3.8.6"
+  resolved "https://registry.yarnpkg.com/@petamoriken/float16/-/float16-3.8.6.tgz#580701cb97a510882342333d31c7cbfd9e14b4f4"
+  integrity sha512-GNJhABTtcmt9al/nqdJPycwFD46ww2+q2zwZzTjY0dFFwUAFRw9zszvEr9osyJRd9krRGy6hUDopWUg9fX7VVw==
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
@@ -1380,13 +1385,14 @@
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.9.tgz#b6ef7457e826be8049667ae673eda7876eb049be"
   integrity sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA==
 
-"@zilliz/milvus2-sdk-node@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.4.0.tgz#ca0bba82cbd6fec698a13f21973bbb766189adaa"
-  integrity sha512-5RR360UoZBT//6vT9S1YtbFrpDWhxaYdFCQPt5AumaAWEQUpJ2k95VfMyJQJQkjkW7e25TBU0zMvhYOUlXTHPQ==
+"@zilliz/milvus2-sdk-node@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.4.1.tgz#3e0292d14c894081e38f07e4c502bc3f17763cc1"
+  integrity sha512-j3vbMvaQyjnUhDA+Nk6AmEKroGJiA6qTW6lVkLMGYsPQd2WzDXjbEM4YCLUcfyh8xsngAzKFkPmM4YIpI3BdQQ==
   dependencies:
     "@grpc/grpc-js" "^1.10.1"
     "@grpc/proto-loader" "^0.7.10"
+    "@petamoriken/float16" "^3.8.6"
     dayjs "^1.11.7"
     generic-pool "^3.9.0"
     lru-cache "^9.1.2"
