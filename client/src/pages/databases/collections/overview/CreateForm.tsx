@@ -112,6 +112,13 @@ const CreateForm = (
     );
     const knng = generateNumberConfig('knng', 'knng', 5, 300);
 
+    const drop_ratio_build = generateNumberConfig(
+      'drop_ratio_build',
+      'drop_ratio_build',
+      0,
+      1
+    );
+
     if (indexParams.includes('nlist')) {
       result.push(nlist);
     }
@@ -146,6 +153,10 @@ const CreateForm = (
 
     if (indexParams.includes('knng')) {
       result.push(knng);
+    }
+
+    if (indexParams.includes('drop_ratio_build')) {
+      result.push(drop_ratio_build);
     }
 
     return result;

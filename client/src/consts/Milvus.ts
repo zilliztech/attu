@@ -47,6 +47,9 @@ export enum INDEX_TYPES_ENUM {
   BIN_FLAT = 'BIN_FLAT',
   SORT = 'STL_SORT',
   MARISA_TRIE = 'Trie',
+  // sparse
+  SPARSE_INVERTED_INDEX = 'SPARSE_INVERTED_INDEX',
+  SPARSE_WAND = 'SPARSE_WAND',
 }
 
 export enum METRIC_TYPES_VALUES {
@@ -114,7 +117,8 @@ export type searchKeywordsType =
   | 'level'
   | 'search_list'
   | 'radius'
-  | 'range_filter';
+  | 'range_filter'
+  | 'drop_ratio_search';
 
 export type indexConfigType = {
   [x: string]: {
@@ -161,6 +165,14 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: [],
     search: ['search_list'],
   },
+  SPARSE_WAND: {
+    create: ['drop_ratio_build'],
+    search: ['drop_ratio_search'],
+  },
+  SPARSE_INVERTED_INDEX: {
+    create: ['drop_ratio_build'],
+    search: ['drop_ratio_search'],
+  },
 };
 
 export const BINARY_INDEX_CONFIG: indexConfigType = {
@@ -175,9 +187,21 @@ export const BINARY_INDEX_CONFIG: indexConfigType = {
   },
 };
 
+export const SPARSE_INDEX_CONFIG: indexConfigType = {
+  SPARSE_INVERTED_INDEX: {
+    create: ['drop_ratio_build'],
+    search: ['drop_ratio_search'],
+  },
+  SPARSE_WAND: {
+    create: ['drop_ratio_build'],
+    search: ['drop_ratio_search'],
+  },
+};
+
 export const INDEX_CONFIG: indexConfigType = {
   ...FLOAT_INDEX_CONFIG,
   ...BINARY_INDEX_CONFIG,
+  ...SPARSE_INDEX_CONFIG,
 };
 
 export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
@@ -199,49 +223,14 @@ export const INDEX_OPTIONS_MAP = {
     label: v,
     value: v,
   })),
+  [DataTypeEnum.SparseFloatVector]: Object.keys(SPARSE_INDEX_CONFIG).map(v => ({
+    label: v,
+    value: v,
+  })),
   [DataTypeEnum.VarChar]: [
     {
       label: 'marisa-trie',
       value: INDEX_TYPES_ENUM.MARISA_TRIE,
-    },
-  ],
-};
-
-export const METRIC_OPTIONS_MAP = {
-  [DataTypeEnum.FloatVector]: [
-    {
-      value: METRIC_TYPES_VALUES.L2,
-      label: METRIC_TYPES_VALUES.L2,
-    },
-    {
-      value: METRIC_TYPES_VALUES.IP,
-      label: METRIC_TYPES_VALUES.IP,
-    },
-    {
-      value: METRIC_TYPES_VALUES.COSINE,
-      label: METRIC_TYPES_VALUES.COSINE,
-    },
-  ],
-  [DataTypeEnum.BinaryVector]: [
-    {
-      value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-      label: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-    },
-    {
-      value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-      label: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-    },
-    {
-      value: METRIC_TYPES_VALUES.HAMMING,
-      label: METRIC_TYPES_VALUES.HAMMING,
-    },
-    {
-      value: METRIC_TYPES_VALUES.JACCARD,
-      label: METRIC_TYPES_VALUES.JACCARD,
-    },
-    {
-      value: METRIC_TYPES_VALUES.TANIMOTO,
-      label: METRIC_TYPES_VALUES.TANIMOTO,
     },
   ],
 };
@@ -337,6 +326,7 @@ export enum DataTypeStringEnum {
   JSON = 'JSON',
   BinaryVector = 'BinaryVector',
   FloatVector = 'FloatVector',
+  SparseFloatVector = 'SparseFloatVector',
   Array = 'Array',
   None = 'None',
 }
