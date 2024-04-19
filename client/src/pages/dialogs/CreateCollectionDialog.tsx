@@ -17,7 +17,7 @@ import {
   DataTypeEnum,
   ConsistencyLevelEnum,
   DEFAULT_ATTU_DIM,
-  vectorTypes,
+  VectorTypes,
 } from '@/consts';
 import CreateFields from '../databases/collections/CreateFields';
 import {
@@ -233,7 +233,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
         v.is_primary_key && (data.autoID = form.autoID);
 
-        const param = vectorTypes.includes(v.data_type)
+        const param = VectorTypes.includes(v.data_type)
           ? {
               ...data,
               type_params: {

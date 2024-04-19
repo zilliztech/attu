@@ -24,7 +24,7 @@ import {
   VECTOR_FIELDS_OPTIONS,
 } from './Constants';
 import { CreateFieldsProps, CreateFieldType, FieldType } from './Types';
-import { DataTypeEnum, vectorTypes } from '@/consts';
+import { DataTypeEnum, VectorTypes } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,
   DEFAULT_ATTU_MAX_CAPACITY,
@@ -243,7 +243,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     className?: string
   ) => {
     const defaultLabal = collectionTrans(
-      vectorTypes.includes(field.data_type) ? 'vectorFieldName' : 'fieldName'
+      VectorTypes.includes(field.data_type) ? 'vectorFieldName' : 'fieldName'
     );
 
     return getInput({
@@ -464,7 +464,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
       // remove dimension, if not vector
       if (
-        !vectorTypes.includes(updatedField.data_type) ||
+        !VectorTypes.includes(updatedField.data_type) ||
         updatedField.data_type === DataTypeEnum.SparseFloatVector
       ) {
         delete updatedField.dimension;

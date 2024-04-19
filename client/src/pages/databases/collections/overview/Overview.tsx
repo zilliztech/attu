@@ -257,6 +257,28 @@ const Overview = () => {
     },
   ];
 
+
+  // only show create index element when there is only one vector field
+  let CreateIndexElement = null;
+  if (
+    collection &&
+    collection.schema &&
+    collection.schema.vectorFields.length === 1
+  ) {
+    CreateIndexElement = (
+      <IndexTypeElement
+        field={
+          (collection.schema && collection.schema.vectorFields[0]) ||
+          ({} as FieldObject)
+        }
+        collectionName={collectionName}
+        cb={async () => {
+          await fetchCollection(collectionName);
+        }}
+      />
+    );
+  }
+
   // get loading state label
   return (
     <section className={classes.wrapper}>
@@ -280,19 +302,7 @@ const Overview = () => {
                 percentage={collection.loadedPercentage}
                 collection={collection}
                 showExtraAction={true}
-                createIndexElement={
-                  <IndexTypeElement
-                    field={
-                      (collection.schema &&
-                        collection.schema.vectorFields[0]) ||
-                      ({} as FieldObject)
-                    }
-                    collectionName={collectionName}
-                    cb={async () => {
-                      await fetchCollection(collectionName);
-                    }}
-                  />
-                }
+                createIndexElement={CreateIndexElement}
               />
             </div>
           </section>

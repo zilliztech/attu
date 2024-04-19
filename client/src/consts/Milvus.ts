@@ -25,7 +25,7 @@ export enum DataTypeEnum {
   Array = 22,
 }
 
-export const vectorTypes = [
+export const VectorTypes = [
   DataTypeEnum.BinaryVector,
   DataTypeEnum.FloatVector,
   DataTypeEnum.BFloat16Vector,
