@@ -24,7 +24,12 @@ import {
   generateVector,
   formatNumber,
 } from '@/utils';
-import { LOADING_STATE, DYNAMIC_FIELD, DataTypeEnum } from '@/consts';
+import {
+  LOADING_STATE,
+  DYNAMIC_FIELD,
+  DataTypeEnum,
+  DataTypeStringEnum,
+} from '@/consts';
 import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
@@ -95,7 +100,7 @@ const VectorSearch = () => {
     const fields = (s.schema && s.schema.fields) || [];
 
     // vector field can't be output fields
-    const invalidTypes = ['BinaryVector', 'FloatVector'];
+    const invalidTypes = ['BinaryVector', 'FloatVector', 'SparseFloatVector'];
     const nonVectorFields = fields.filter(
       field => !invalidTypes.includes(field.data_type)
     );
@@ -180,7 +185,11 @@ const VectorSearch = () => {
    */
   const vectorValueValid = useMemo(() => {
     // if user hasn't input value or not select field, don't trigger validation check
-    if (vectors === '' || selectedFieldDimension === 0) {
+    if (
+      vectors === '' ||
+      selectedFieldDimension === 0 ||
+      fieldType === DataTypeEnum.SparseFloatVector
+    ) {
       return true;
     }
     const dim =
@@ -360,9 +369,19 @@ const VectorSearch = () => {
     setVectors(value);
   };
 
-  const fillWithExampleVector = (selectedFieldDimension: number) => {
-    const v = generateVector(selectedFieldDimension);
-    setVectors(`[${v}]`);
+  const fillWithExampleVector = (
+    selectedFieldDimension: number,
+    field: FieldObject
+  ) => {
+    const isSparse = field.data_type === DataTypeStringEnum.SparseFloatVector;
+    if (isSparse) {
+      setVectors(
+        JSON.stringify({ [Math.floor(Math.random() * 10)]: Math.random() })
+      );
+    } else {
+      const v = generateVector(selectedFieldDimension);
+      setVectors(`[${v}]`);
+    }
   };
 
   return (
@@ -434,7 +453,10 @@ const VectorSearch = () => {
                   fieldType === DataTypeEnum.BinaryVector
                     ? selectedFieldDimension / 8
                     : selectedFieldDimension;
-                fillWithExampleVector(dim);
+                fillWithExampleVector(
+                  dim,
+                  fieldOptions.find(f => f.value === selectedField)!.field
+                );
               }}
             >
               {btnTrans('example')}

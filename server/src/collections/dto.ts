@@ -20,6 +20,7 @@ import {
 enum VectorTypes {
   Binary = DataType.BinaryVector,
   Float = DataType.FloatVector,
+  SparseFloatVector = DataType.SparseFloatVector,
 }
 
 export class CreateCollectionDto {
