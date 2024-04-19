@@ -276,6 +276,17 @@ const SearchParams: FC<SearchParamsProps> = ({
             handleInputChange('search_list', value);
           },
         },
+        drop_ratio_search: {
+          label: 'drop_ratio_search',
+          key: 'drop_ratio_search',
+          value: searchParamsForm['drop_ratio_search'] || '',
+          min: 0,
+          max: 1,
+          isInt: false,
+          handleChange: value => {
+            handleInputChange('drop_ratio_search', value);
+          },
+        },
       };
 
       const param = configParamMap[paramKey];

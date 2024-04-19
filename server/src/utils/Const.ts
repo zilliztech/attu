@@ -160,7 +160,7 @@ export const DYNAMIC_FIELD = `$meta`;
 export const VectorTypes = [
   'BinaryVector',
   'FloatVector',
-  'SpaseFloatVector',
+  'SparseFloatVector',
   'Float16Vector',
   'BFloat16Vector',
 ];
