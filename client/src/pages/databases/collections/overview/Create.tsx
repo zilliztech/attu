@@ -10,6 +10,7 @@ import {
   INDEX_TYPES_ENUM,
   DataTypeEnum,
   DataTypeStringEnum,
+  vectorTypes,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
@@ -22,6 +23,7 @@ import { IndexType, IndexExtraParam } from './Types';
 const CreateIndex = (props: {
   collectionName: string;
   fieldType: DataTypeStringEnum;
+  dataType: DataTypeEnum;
   handleCreate: (params: IndexExtraParam, index_name: string) => void;
   handleCancel: () => void;
 
@@ -36,6 +38,7 @@ const CreateIndex = (props: {
     handleCreate,
     handleCancel,
     fieldName,
+    dataType,
     dimension,
   } = props;
 
@@ -50,6 +53,8 @@ const CreateIndex = (props: {
         return INDEX_TYPES_ENUM.BIN_IVF_FLAT;
       case DataTypeStringEnum.FloatVector:
         return INDEX_TYPES_ENUM.AUTOINDEX;
+      case DataTypeStringEnum.SparseFloatVector:
+        return INDEX_TYPES_ENUM.SPARSE_WAND;
       case DataTypeStringEnum.VarChar:
         return INDEX_TYPES_ENUM.MARISA_TRIE;
       case DataTypeStringEnum.Int8:
@@ -67,7 +72,8 @@ const CreateIndex = (props: {
       case DataTypeStringEnum.BinaryVector:
         return METRIC_TYPES_VALUES.HAMMING;
       case DataTypeStringEnum.FloatVector:
-        return METRIC_TYPES_VALUES.L2;
+      case DataTypeStringEnum.SparseFloatVector:
+        return METRIC_TYPES_VALUES.IP;
       default:
         return '';
     }
@@ -103,12 +109,8 @@ const CreateIndex = (props: {
   }, [indexSetting.index_type]);
 
   const metricOptions = useMemo(() => {
-    const vectorType = [
-      DataTypeStringEnum.BinaryVector,
-      DataTypeStringEnum.FloatVector,
-    ];
-    return vectorType.includes(fieldType)
-      ? getMetricOptions(indexSetting.index_type, fieldType)
+    return vectorTypes.includes(dataType)
+      ? getMetricOptions(indexSetting.index_type, dataType)
       : [];
   }, [indexSetting.index_type, fieldType]);
 
@@ -135,6 +137,8 @@ const CreateIndex = (props: {
         return INDEX_OPTIONS_MAP[DataTypeEnum.BinaryVector];
       case DataTypeStringEnum.FloatVector:
         return INDEX_OPTIONS_MAP[DataTypeEnum.FloatVector];
+      case DataTypeStringEnum.SparseFloatVector:
+        return INDEX_OPTIONS_MAP[DataTypeEnum.SparseFloatVector];
       case DataTypeStringEnum.VarChar:
         return INDEX_OPTIONS_MAP[DataTypeEnum.VarChar];
 
@@ -144,10 +148,7 @@ const CreateIndex = (props: {
   }, [fieldType]);
 
   const checkedForm = useMemo(() => {
-    if (
-      fieldType !== DataTypeStringEnum.BinaryVector &&
-      fieldType !== DataTypeStringEnum.FloatVector
-    ) {
+    if (!vectorTypes.includes(dataType)) {
       return [];
     }
     const paramsForm: any = { metric_type: indexSetting.metric_type };
@@ -162,11 +163,7 @@ const CreateIndex = (props: {
    * create index code mode
    */
   const codeBlockData: CodeViewData[] = useMemo(() => {
-    const vectorTypes = [
-      DataTypeStringEnum.BinaryVector,
-      DataTypeStringEnum.FloatVector,
-    ];
-    const isScalarField = !vectorTypes.includes(fieldType);
+    const isScalarField = !vectorTypes.includes(dataType);
     const getCodeParams = {
       collectionName,
       fieldName,
@@ -222,6 +219,7 @@ const CreateIndex = (props: {
       candidate_pool_size: '',
       search_length: '',
       knng: '',
+      drop_ratio_build: '',
     }));
   }, [indexCreateParams, setDisabled, defaultMetricType]);
 

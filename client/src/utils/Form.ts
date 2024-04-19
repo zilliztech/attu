@@ -1,5 +1,9 @@
 import { Option } from '@/components/customSelector/Types';
-import { METRIC_TYPES_VALUES, DataTypeStringEnum } from '@/consts';
+import {
+  METRIC_TYPES_VALUES,
+  DataTypeStringEnum,
+  DataTypeEnum,
+} from '@/consts';
 import { IForm } from '@/hooks';
 import { IndexType } from '@/pages/databases/collections/overview/Types';
 
@@ -21,7 +25,7 @@ export const formatForm = (info: IInfo): IForm[] => {
 
 export const getMetricOptions = (
   indexType: IndexType,
-  fieldType: DataTypeStringEnum
+  fieldType: DataTypeEnum
 ): Option[] => {
   const baseFloatOptions = [
     {
@@ -53,27 +57,35 @@ export const getMetricOptions = (
     },
   ];
 
-  const type = fieldType === 'FloatVector' ? 'ALL' : indexType;
-
-  const baseOptionsMap: { [key: string]: any } = {
-    BinaryVector: {
-      BIN_FLAT: [
-        ...baseBinaryOptions,
+  switch (fieldType) {
+    case DataTypeEnum.FloatVector:
+    case DataTypeEnum.SparseFloatVector:
+      return [
         {
-          value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-          label: 'SUBSTRUCTURE',
+          value: METRIC_TYPES_VALUES.IP,
+          label: 'IP',
         },
-        {
-          value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-          label: 'SUPERSTRUCTURE',
-        },
-      ],
-      BIN_IVF_FLAT: baseBinaryOptions,
-    },
-    FloatVector: {
-      ALL: baseFloatOptions,
-    },
-  };
-
-  return baseOptionsMap[fieldType][type];
+      ];
+    case DataTypeEnum.BinaryVector:
+      switch (indexType) {
+        case 'BIN_FLAT':
+          return [
+            ...baseBinaryOptions,
+            {
+              value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
+              label: 'SUBSTRUCTURE',
+            },
+            {
+              value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
+              label: 'SUPERSTRUCTURE',
+            },
+          ];
+        case 'BIN_IVF_FLAT':
+          return baseBinaryOptions;
+        default:
+          return baseBinaryOptions;
+      }
+    default:
+      return [];
+  }
 };
