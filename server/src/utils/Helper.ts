@@ -32,6 +32,15 @@ export const makeFloat = (allowNegative: boolean = true) => {
   return allowNegative && Math.random() < 0.5 ? -value : value;
 };
 
+export const makeRandomSparse = (dim: number) => {
+  const nonZeroCount = Math.floor(Math.random() * dim!) || 4;
+  const sparseObject: { [key: number]: number } = {};
+  for (let i = 0; i < nonZeroCount; i++) {
+    sparseObject[Math.floor(Math.random() * dim!)] = Math.random();
+  }
+  return sparseObject;
+};
+
 export const genDataByType = (field: FieldSchema): any => {
   const { data_type, type_params, element_type } = field;
   switch (data_type) {
@@ -54,6 +63,8 @@ export const genDataByType = (field: FieldSchema): any => {
         length:
           Number(type_params[0].value) / (data_type === 'BinaryVector' ? 8 : 1),
       }).map(makeFloat);
+    case 'SparseFloatVector':
+      return makeRandomSparse(16);
     case 'VarChar':
       return makeRandomId(Number(findKeyValue(type_params, 'max_length')));
     case 'JSON':
