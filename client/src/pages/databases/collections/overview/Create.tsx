@@ -39,7 +39,6 @@ const CreateIndex = (props: {
     handleCancel,
     fieldName,
     dataType,
-    dimension,
   } = props;
 
   const { t: indexTrans } = useTranslation('index');
@@ -64,9 +63,9 @@ const CreateIndex = (props: {
       case DataTypeStringEnum.Int16:
       case DataTypeStringEnum.Int32:
       case DataTypeStringEnum.Int64:
-        return INDEX_TYPES_ENUM.SORT;
+        return INDEX_TYPES_ENUM.INVERTED;
       default:
-        return INDEX_TYPES_ENUM.SORT;
+        return INDEX_TYPES_ENUM.INVERTED;
     }
   }, [fieldType]);
 
@@ -151,7 +150,10 @@ const CreateIndex = (props: {
         return INDEX_OPTIONS_MAP[DataTypeEnum.VarChar];
 
       default:
-        return [{ label: 'STL sort', value: INDEX_TYPES_ENUM.SORT }];
+        return [
+          { label: 'INVERTED', value: INDEX_TYPES_ENUM.INVERTED },
+          { label: 'STL sort', value: INDEX_TYPES_ENUM.SORT },
+        ];
     }
   }, [fieldType]);
 
