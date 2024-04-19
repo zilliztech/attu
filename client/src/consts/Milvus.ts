@@ -50,6 +50,8 @@ export enum INDEX_TYPES_ENUM {
   // sparse
   SPARSE_INVERTED_INDEX = 'SPARSE_INVERTED_INDEX',
   SPARSE_WAND = 'SPARSE_WAND',
+  // inverted
+  INVERTED = 'INVERTED',
 }
 
 export enum METRIC_TYPES_VALUES {

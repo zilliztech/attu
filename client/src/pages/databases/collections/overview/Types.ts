@@ -19,7 +19,8 @@ export type IndexType =
   | INDEX_TYPES_ENUM.SORT
   | INDEX_TYPES_ENUM.AUTOINDEX
   | INDEX_TYPES_ENUM.SPARSE_INVERTED_INDEX
-  | INDEX_TYPES_ENUM.SPARSE_WAND;
+  | INDEX_TYPES_ENUM.SPARSE_WAND
+  | INDEX_TYPES_ENUM.INVERTED;
 
 export interface IndexManageParam {
   collection_name: string;
