@@ -2,8 +2,7 @@ import {
   BYTE_UNITS,
   DEFAULT_MILVUS_PORT,
   DEFAULT_PROMETHEUS_PORT,
-  DataTypeEnum,
-  vectorTypes,
+  VectorTypes,
 } from '@/consts';
 import {
   CreateFieldType,
@@ -108,7 +107,7 @@ export const getCreateFieldType = (config: CreateField): CreateFieldType => {
     return 'defaultVector';
   }
 
-  if (vectorTypes.includes(config.data_type)) {
+  if (VectorTypes.includes(config.data_type)) {
     return 'vector';
   }
 

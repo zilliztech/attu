@@ -127,8 +127,8 @@ const collectionTrans = {
     '它确保在同一会话中所有数据写入可以立即在读取中感知。',
   consistencyEventuallyTooltip:
     '没有保证读写的顺序，副本最终会在没有进一步写操作的情况下收敛到相同的状态。',
-  releaseCollectionFirst: '请先释放collection.',
-  noVectorIndexTooltip: '没有向量索引，请先创建一个。',
+  releaseCollectionFirst: '请先释放collection。',
+  noVectorIndexTooltip: '请保证所有向量列都有索引。',
 
   clickToLoad: '点击加载collection。',
   clickToRelease: '点击释放collection。',

@@ -10,7 +10,7 @@ import {
   INDEX_TYPES_ENUM,
   DataTypeEnum,
   DataTypeStringEnum,
-  vectorTypes,
+  VectorTypes,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
@@ -115,7 +115,7 @@ const CreateIndex = (props: {
   }, [indexSetting.index_type]);
 
   const metricOptions = useMemo(() => {
-    return vectorTypes.includes(dataType)
+    return VectorTypes.includes(dataType)
       ? getMetricOptions(indexSetting.index_type, dataType)
       : [];
   }, [indexSetting.index_type, fieldType]);
@@ -156,7 +156,7 @@ const CreateIndex = (props: {
   }, [fieldType]);
 
   const checkedForm = useMemo(() => {
-    if (!vectorTypes.includes(dataType)) {
+    if (!VectorTypes.includes(dataType)) {
       return [];
     }
     const paramsForm: any = { metric_type: indexSetting.metric_type };
@@ -171,7 +171,7 @@ const CreateIndex = (props: {
    * create index code mode
    */
   const codeBlockData: CodeViewData[] = useMemo(() => {
-    const isScalarField = !vectorTypes.includes(dataType);
+    const isScalarField = !VectorTypes.includes(dataType);
     const getCodeParams = {
       collectionName,
       fieldName,

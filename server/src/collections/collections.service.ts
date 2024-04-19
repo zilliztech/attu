@@ -39,6 +39,7 @@ import {
   DYNAMIC_FIELD,
   SimpleQueue,
   MIN_INT64,
+  VectorTypes,
 } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import {
@@ -112,10 +113,7 @@ export class CollectionsService {
         ) || -1;
 
       // classify fields
-      if (
-        field.data_type === 'BinaryVector' ||
-        field.data_type === 'FloatVector'
-      ) {
+      if (VectorTypes.includes(field.data_type)) {
         vectorFields.push(field);
       } else {
         scalarFields.push(field);
@@ -127,7 +125,7 @@ export class CollectionsService {
     });
 
     // add extra data to schema
-    res.schema.hasVectorIndex = vectorFields.some(v => v.index);
+    res.schema.hasVectorIndex = vectorFields.every(v => v.index);
     res.schema.scalarFields = scalarFields;
     res.schema.vectorFields = vectorFields;
     res.schema.dynamicFields = res.schema.enable_dynamic_field
