@@ -326,6 +326,8 @@ export enum DataTypeStringEnum {
   JSON = 'JSON',
   BinaryVector = 'BinaryVector',
   FloatVector = 'FloatVector',
+  Float16Vector = 'Float16Vector',
+  BFloat16Vector = 'BFloat16Vector',
   SparseFloatVector = 'SparseFloatVector',
   Array = 'Array',
   None = 'None',

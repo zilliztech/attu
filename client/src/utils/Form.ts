@@ -59,6 +59,9 @@ export const getMetricOptions = (
 
   switch (fieldType) {
     case DataTypeEnum.FloatVector:
+    case DataTypeEnum.Float16Vector:
+    case DataTypeEnum.BFloat16Vector:
+      return baseFloatOptions;
     case DataTypeEnum.SparseFloatVector:
       return [
         {

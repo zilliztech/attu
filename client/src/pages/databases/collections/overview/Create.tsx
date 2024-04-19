@@ -47,11 +47,14 @@ const CreateIndex = (props: {
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
 
+  // https://milvus.io/docs/index.md#In-memory-Index
   const defaultIndexType = useMemo(() => {
     switch (fieldType) {
       case DataTypeStringEnum.BinaryVector:
         return INDEX_TYPES_ENUM.BIN_IVF_FLAT;
       case DataTypeStringEnum.FloatVector:
+      case DataTypeStringEnum.Float16Vector:
+      case DataTypeStringEnum.BFloat16Vector:
         return INDEX_TYPES_ENUM.AUTOINDEX;
       case DataTypeStringEnum.SparseFloatVector:
         return INDEX_TYPES_ENUM.SPARSE_WAND;
@@ -72,6 +75,9 @@ const CreateIndex = (props: {
       case DataTypeStringEnum.BinaryVector:
         return METRIC_TYPES_VALUES.HAMMING;
       case DataTypeStringEnum.FloatVector:
+      case DataTypeStringEnum.Float16Vector:
+      case DataTypeStringEnum.BFloat16Vector:
+        return METRIC_TYPES_VALUES.COSINE;
       case DataTypeStringEnum.SparseFloatVector:
         return METRIC_TYPES_VALUES.IP;
       default:
@@ -136,6 +142,8 @@ const CreateIndex = (props: {
       case DataTypeStringEnum.BinaryVector:
         return INDEX_OPTIONS_MAP[DataTypeEnum.BinaryVector];
       case DataTypeStringEnum.FloatVector:
+      case DataTypeStringEnum.Float16Vector:
+      case DataTypeStringEnum.BFloat16Vector:
         return INDEX_OPTIONS_MAP[DataTypeEnum.FloatVector];
       case DataTypeStringEnum.SparseFloatVector:
         return INDEX_OPTIONS_MAP[DataTypeEnum.SparseFloatVector];
