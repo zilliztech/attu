@@ -7,7 +7,8 @@
     "no-console": false,
     "max-classes-per-file": false,
     "variable-name": [false, "allow-leading-underscore"],
-    "prefer-for-of": false
+    "prefer-for-of": false,
+    "no-shadowed-variable": false
   },
   "rulesDirectory": []
 }
