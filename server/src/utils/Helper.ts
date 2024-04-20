@@ -58,6 +58,8 @@ export const genDataByType = (field: FieldSchema): any => {
     case 'Double':
       return makeFloat();
     case 'FloatVector':
+    case 'Float16Vector':
+    case 'BFloat16Vector':
     case 'BinaryVector':
       return Array.from({
         length:
