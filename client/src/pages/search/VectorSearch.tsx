@@ -100,7 +100,13 @@ const VectorSearch = () => {
     const fields = (s.schema && s.schema.fields) || [];
 
     // vector field can't be output fields
-    const invalidTypes = ['BinaryVector', 'FloatVector', 'SparseFloatVector'];
+    const invalidTypes = [
+      'BinaryVector',
+      'FloatVector',
+      'Float16Vector',
+      'BFloat16Vector',
+      'SparseFloatVector',
+    ];
     const nonVectorFields = fields.filter(
       field => !invalidTypes.includes(field.data_type)
     );

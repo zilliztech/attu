@@ -21,6 +21,8 @@ enum VectorTypes {
   Binary = DataType.BinaryVector,
   Float = DataType.FloatVector,
   SparseFloatVector = DataType.SparseFloatVector,
+  Float16Vector = DataType.Float16Vector,
+  BFloat16Vector = DataType.BFloat16Vector,
 }
 
 export class CreateCollectionDto {
@@ -99,7 +101,7 @@ export class VectorSearchDto {
   @IsEnum(VectorTypes, {
     message: ({ value }) => `Wrong vector type, ${value}`,
   })
-  vector_type: DataType.BinaryVector | DataType.FloatVector;
+  vector_type: VectorTypes;
 }
 
 export class CreateAliasDto {
