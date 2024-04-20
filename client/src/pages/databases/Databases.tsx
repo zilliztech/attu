@@ -11,6 +11,7 @@ import Partitions from './collections/partitions/Partitions';
 import Overview from './collections/overview/Overview';
 import Data from './collections/data/CollectionData';
 import Segments from './collections/segments/Segments';
+import Search from './collections/search/Search';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
@@ -160,6 +161,13 @@ const CollectionTabs = (props: {
       label: collectionTrans('overviewTab'),
       component: <Overview />,
       path: `overview`,
+    },
+    {
+      label: collectionTrans('searchTab'),
+      component: (
+        <Search collections={collections} collectionName={collectionName} />
+      ),
+      path: `search`,
     },
     {
       label: collectionTrans('dataTab'),
