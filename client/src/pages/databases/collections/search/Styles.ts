@@ -1,53 +1,96 @@
 import { makeStyles, Theme } from '@material-ui/core';
+import { Height, Opacity } from '@material-ui/icons';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    overflow: 'auto',
   },
-  emptyCard: {
-    height: '100%',
-    boxShadow: 'none',
-  },
-  toolbar: {
+
+  inputArea: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: theme.spacing(0, 0, 1),
-    gap: theme.spacing(2),
+    flexDirection: 'row',
+    width: '100%',
+    overflow: 'auto',
+    padding: 0,
+  },
 
-    '& .left': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      flex: 1,
-      padding: theme.spacing(0, 0, 0, 2),
-      fontSize: theme.spacing(2),
-      backgroundColor: '#f4f4f4',
+  accordions: {
+    display: 'flex',
+    width: '240px',
+    flexDirection: 'column',
+    flexShrink: 0,
+    padding: '0 8px 8px 0',
+    borderRadius: '0',
+    height: 'calc(100vh - 164px)',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    '& .MuiAccordion-root.Mui-expanded': {
+      margin: 0,
+    },
+    '& .MuiAccordion-root.Mui-expanded:before': {
+      opacity: 1,
+    },
+  },
 
-      '& .expression': {
-        display: 'flex',
-        justifyContent: 'space-between',
-        flex: 1,
-        alignItems: 'center',
-        padding: theme.spacing(0, 1.5),
-        backgroundColor: '#f4f4f4',
+  accordion: {
+    border: 'none',
+    borderRadius: 0,
+    boxShadow: 'none',
+    padding: '0 0 0 0',
+
+    // borderBottom: `1px solid ${theme.palette.divider}`,
+    '& .MuiAccordionSummary-root': {
+      minHeight: '48px',
+      padding: '0 8px',
+      '& .MuiAccordionSummary-expandIcon': {
+        padding: 4,
       },
-      '& .textarea': {
+    },
+    '& .MuiAccordionSummary-content.Mui-expanded': {
+      margin: 0,
+    },
+  },
+  accordionDetail: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '0',
+    '& .textarea': {
+      height: '100px',
+      marginBottom: '8px',
+    },
+    '& .paramsWrapper': {
+      '& .MuiFormControl-root': {
         width: '100%',
       },
     },
-
-    '& .right': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      gap: theme.spacing(1),
+  },
+  heading: {
+    flexShrink: 0,
+  },
+  checkbox: {
+    '& .MuiCheckbox-root': {
+      padding: 0,
+      marginRight: 4,
     },
   },
-  selector: {
-    width: 180,
+  secondaryHeading: {
+    color: theme.palette.text.secondary,
+    fontSize: '13px',
+    lineHeight: '20px',
+  },
+
+  searchControls: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 200,
+    padding: '0 8px',
+    height: 'calc(100vh - 156px)',
+    borderRight: `1px solid ${theme.palette.divider}`,
+
+    '& .selector': {
+      marginBottom: '8px',
+    },
   },
 }));

@@ -1,5 +1,14 @@
-import { useState, useEffect, useRef, useContext } from 'react';
-import { TextField, Typography } from '@material-ui/core';
+import { useState, useEffect, useRef, useContext, ChangeEvent } from 'react';
+import {
+  TextField,
+  Typography,
+  CardContent,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  FormControlLabel,
+  Checkbox,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
@@ -16,11 +25,16 @@ import {
   DataTypeStringEnum,
   CONSISTENCY_LEVEL_OPTIONS,
   ConsistencyLevelEnum,
+  TOP_K_OPTIONS,
 } from '@/consts';
+
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { detectItemType } from '@/utils';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { formatFieldType } from '@/utils';
+import SearchParams from '../../../search/SearchParams';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -69,8 +83,110 @@ const Search = (props: CollectionDataProps) => {
   const gridTrans = commonTrans('grid');
   // classes
   const classes = getQueryStyles();
+  const [expanded, setExpanded] = useState<string | false>(false);
 
-  return <div className={classes.root}>{collection && <div>search</div>}</div>;
+  const handleChange =
+    (panel: string) => (event: ChangeEvent<{}>, expanded: boolean) => {
+      setExpanded(expanded ? panel : false);
+    };
+
+  return (
+    <div className={classes.root}>
+      {collection && (
+        <div className={classes.inputArea}>
+          <div className={classes.accordions}>
+            {collection.schema.vectorFields.map((field, index) => {
+              return (
+                <Accordion
+                  key={`${collection.collection_name}-${field.name}`}
+                  expanded={expanded === field.name}
+                  onChange={handleChange(field.name)}
+                  className={classes.accordion}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`${field.name}-content`}
+                    id={`${field.name}-header`}
+                  >
+                    <FormControlLabel
+                      aria-label="Acknowledge"
+                      onClick={event => event.stopPropagation()}
+                      onFocus={event => event.stopPropagation()}
+                      control={<Checkbox size="small" />}
+                      label={field.name} //  formatFieldType(field)
+                      className={classes.checkbox}
+                    />
+                    <Typography className={classes.secondaryHeading}>
+                      {formatFieldType(field)}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails className={classes.accordionDetail}>
+                    <textarea
+                      className="textarea"
+                      placeholder={searchTrans('vectorPlaceholder')}
+                      value={''}
+                      onChange={(
+                        e: React.ChangeEvent<{ value: unknown }>
+                      ) => {}}
+                    ></textarea>
+                    <Typography className="text">
+                      {searchTrans('thirdTip')}
+                    </Typography>
+                    <SearchParams
+                      wrapperClass="paramsWrapper"
+                      consistency_level={'Strong'}
+                      handleConsistencyChange={(level: string) => {}}
+                      indexType={field.index.indexType}
+                      indexParams={field.index_params}
+                      searchParamsForm={{}}
+                      handleFormChange={() => {}}
+                      topK={5}
+                      setParamsDisabled={() => {
+                        return false;
+                      }}
+                    />
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
+          </div>
+
+          <div className={classes.searchControls}>
+            <CustomSelector
+              options={TOP_K_OPTIONS}
+              value={50}
+              label={collectionTrans('topK')}
+              wrapperClass="selector"
+              variant="filled"
+              onChange={(e: { target: { value: unknown } }) => {}}
+            />
+
+            <CustomSelector
+              options={CONSISTENCY_LEVEL_OPTIONS}
+              value={consistencyLevel || ConsistencyLevelEnum.Bounded}
+              label={collectionTrans('consistencyLevel')}
+              wrapperClass="selector"
+              variant="filled"
+              onChange={(e: { target: { value: unknown } }) => {
+                const consistency = e.target.value as string;
+              }}
+            />
+
+            <CustomButton>{btnTrans('example')}</CustomButton>
+
+            <CustomButton
+              variant="contained"
+              size="small"
+              disabled={false}
+              onClick={() => {}}
+            >
+              {btnTrans('search')}
+            </CustomButton>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Search;

@@ -1,3 +1,5 @@
+import { lab } from 'd3';
+
 export const MILVUS_URL =
   ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';
 
@@ -295,6 +297,11 @@ export enum ConsistencyLevelEnum {
   Eventually = 'Eventually',
   Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
 }
+
+export const TOP_K_OPTIONS = [50, 100, 150, 200, 250].map(v => ({
+  value: v,
+  label: String(v),
+}));
 
 export const CONSISTENCY_LEVEL_OPTIONS = [
   {

@@ -3,14 +3,11 @@ import { FC, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import CustomSelector from '@/components/customSelector/CustomSelector';
 import {
   DEFAULT_NLIST_VALUE,
   DEFAULT_SEARCH_PARAM_VALUE_MAP,
   INDEX_CONFIG,
   searchKeywordsType,
-  CONSISTENCY_LEVEL_OPTIONS,
-  ConsistencyLevelEnum,
 } from '@/consts';
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
@@ -39,13 +36,10 @@ const SearchParams: FC<SearchParamsProps> = ({
   indexParams,
   searchParamsForm,
   handleFormChange,
-  handleConsistencyChange,
-  consistency_level,
   topK,
   setParamsDisabled,
   wrapperClass = '',
 }) => {
-  const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
   const classes = getStyles();
 
@@ -65,11 +59,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         );
     }
 
-    const commonParams: searchKeywordsType[] = [
-      'radius',
-      'range_filter',
-      'round_decimal',
-    ];
+    const commonParams: searchKeywordsType[] = ['radius', 'range_filter'];
     return indexType !== '' && isSupportedType
       ? [...INDEX_CONFIG[indexType].search, ...commonParams]
       : commonParams;
@@ -328,7 +318,7 @@ const SearchParams: FC<SearchParamsProps> = ({
   return (
     <div className={wrapperClass}>
       {/* consistency level */}
-      <CustomSelector
+      {/* <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
         value={consistency_level || ConsistencyLevelEnum.Bounded}
         label={collectionTrans('consistencyLevel')}
@@ -338,7 +328,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           const consistency = e.target.value as string;
           handleConsistencyChange(consistency);
         }}
-      />
+      /> */}
       <div className={classes.inlineInputWrapper}>
         {/* dynamic params, now every type only has one param except metric type */}
         {searchParams.map(param => (
