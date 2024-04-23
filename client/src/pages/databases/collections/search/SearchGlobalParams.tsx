@@ -19,8 +19,6 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
   // props
   const { searchParamsForm, handleFormChange } = props;
 
-  console.log(searchParamsForm);
-
   // UI functions
   const handleInputChange = useCallback(
     (key: string, value: number | string) => {

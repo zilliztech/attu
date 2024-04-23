@@ -32,9 +32,9 @@ export interface CollectionDataProps {
 
 const Search = (props: CollectionDataProps) => {
   // props
-  const { collections } = props;
+  const { collections, collectionName } = props;
   const collection = collections.find(
-    i => i.collection_name === props.collectionName
+    i => i.collection_name === collectionName
   ) as CollectionFullObject;
 
   // collection is not found or collection full object is not ready
@@ -42,14 +42,40 @@ const Search = (props: CollectionDataProps) => {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
 
+  // Initialize searchParams
+  const initialSearchParams = collection.schema
+    ? collection.schema.vectorFields.map(v => ({
+        anns_field: v.name,
+        data: [],
+        params: {},
+      }))
+    : [];
+
   // UI state
   const [tableLoading, setTableLoading] = useState<boolean>();
-  const [selectedData, setSelectedData] = useState<any[]>([]);
+  const [searchParams, setSearchParams] = useState<any>(initialSearchParams);
+
+  // Update searchParams when collectionName changes
+  useEffect(() => {
+    if (collection.schema) {
+      const newSearchParams = collection.schema.vectorFields.map(v => ({
+        anns_field: v.name,
+        data: [],
+        params: {},
+      }));
+      setSearchParams(newSearchParams);
+    }
+  }, [collectionName, collection.schema]);
+
+  // it should be still loading if anns field is not equal to collection's field
+  if (JSON.stringify(searchParams.map((s:any) => s.anns_field)) !== JSON.stringify(collection.schema.vectorFields.map((v:any) => v.name))) {
+    return <StatusIcon type={LoadingType.CREATING} />;
+  }
 
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
-  const { fetchCollection } = useContext(dataContext);
+
   // icons
   const ResetIcon = icons.refresh;
   // translations
@@ -65,13 +91,25 @@ const Search = (props: CollectionDataProps) => {
   const classes = getQueryStyles();
   const [expanded, setExpanded] = useState<string | false>(false);
 
-  const handleChange =
+  // UI functions
+  const handleExpand =
     (panel: string) => (event: ChangeEvent<{}>, expanded: boolean) => {
       setExpanded(expanded ? panel : false);
     };
 
-  const handleFormChange = (form: { [key in string]: number | string }) => {
-    console.log('form', form);
+  const handleFormChange = (
+    form: { [key in string]: number | string },
+    key: string = 'param'
+  ) => {
+    const findIndex = searchParams.findIndex(
+      (s: any) => s.anns_field === form.anns_field
+    );
+
+    // compare the form with the searchParams
+    if (searchParams[findIndex]) {
+      searchParams[findIndex][key] = form[key];
+      setSearchParams([...searchParams]);
+    }
   };
 
   return (
@@ -80,11 +118,23 @@ const Search = (props: CollectionDataProps) => {
         <div className={classes.inputArea}>
           <div className={classes.accordions}>
             {collection.schema.vectorFields.map(field => {
+              // get search param for the field
+              const localSearchParams = searchParams.find(
+                (s: any) => s.anns_field === field.name
+              );
+
+              console.log(
+                'localSearchParams',
+                searchParams,
+                localSearchParams,
+                field.name
+              );
+
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
                   expanded={expanded === field.name}
-                  onChange={handleChange(field.name)}
+                  onChange={handleExpand(field.name)}
                   className={classes.accordion}
                 >
                   <AccordionSummary
@@ -108,10 +158,11 @@ const Search = (props: CollectionDataProps) => {
                     <textarea
                       className="textarea"
                       placeholder={searchTrans('vectorPlaceholder')}
-                      value={''}
-                      onChange={(
-                        e: React.ChangeEvent<{ value: unknown }>
-                      ) => {}}
+                      value={localSearchParams.data}
+                      onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                        localSearchParams.data = e.target.value;
+                        handleFormChange(localSearchParams, 'data');
+                      }}
                     ></textarea>
                     <Typography className="text">
                       {searchTrans('thirdTip')}
@@ -123,7 +174,7 @@ const Search = (props: CollectionDataProps) => {
                       handleConsistencyChange={(level: string) => {}}
                       indexType={field.index.indexType}
                       indexParams={field.index_params}
-                      searchParamsForm={{}}
+                      searchParamsForm={localSearchParams}
                       handleFormChange={handleFormChange}
                       topK={5}
                       setParamsDisabled={() => {
