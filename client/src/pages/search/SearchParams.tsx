@@ -32,8 +32,8 @@ const getStyles = makeStyles((theme: Theme) => ({
 }));
 
 const SearchParams: FC<SearchParamsProps> = ({
-  indexType,
-  indexParams,
+  indexType = '',
+  indexParams = [],
   searchParamsForm,
   handleFormChange,
   topK,
@@ -59,9 +59,13 @@ const SearchParams: FC<SearchParamsProps> = ({
         );
     }
 
-    const commonParams: searchKeywordsType[] = ['radius', 'range_filter'];
+    const commonParams: searchKeywordsType[] = [
+      'filter',
+      'radius',
+      'range_filter',
+    ];
     return indexType !== '' && isSupportedType
-      ? [...INDEX_CONFIG[indexType].search, ...commonParams]
+      ? [...INDEX_CONFIG[indexType!].search, ...commonParams]
       : commonParams;
   }, [indexType, openSnackBar, warningTrans]);
 
@@ -71,7 +75,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       if (value === '') {
         delete form[key];
       } else {
-        form = { ...searchParamsForm, [key]: Number(value) };
+        form = { ...searchParamsForm, [key]: value };
       }
 
       handleFormChange(form);
@@ -82,7 +86,7 @@ const SearchParams: FC<SearchParamsProps> = ({
   /**
    * function to transfer search params to CustomInput need config type
    */
-  const getNumberInputConfig = useCallback(
+  const getInputConfig = useCallback(
     (params: SearchParamInputConfig): ITextfieldConfig => {
       const {
         label,
@@ -107,7 +111,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         },
         className: classes.inlineInput,
         variant: 'filled',
-        type: 'number',
+        type: isInt ? 'number' : 'text',
         value,
         validations: [],
       };
@@ -159,6 +163,17 @@ const SearchParams: FC<SearchParamsProps> = ({
       const configParamMap: {
         [key in searchKeywordsType]: SearchParamInputConfig;
       } = {
+        filter: {
+          label: 'filter',
+          key: 'filter',
+          value: searchParamsForm['filter'] || '',
+          isInt: false,
+          required: false,
+          handleChange: value => {
+            handleInputChange('filter', value);
+          },
+          className: classes.inlineInput,
+        },
         round_decimal: {
           label: 'round',
           key: 'round_decimal',
@@ -168,7 +183,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           isInt: true,
           required: false,
           handleChange: value => {
-            handleInputChange('round_decimal', value);
+            handleInputChange('round_decimal', Number(value));
           },
           className: classes.inlineInput,
         },
@@ -180,7 +195,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: nlist,
           isInt: true,
           handleChange: value => {
-            handleInputChange('nprobe', value);
+            handleInputChange('nprobe', Number(value));
           },
           className: classes.inlineInput,
         },
@@ -193,7 +208,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           isInt: false,
           required: false,
           handleChange: value => {
-            handleInputChange('radius', value);
+            handleInputChange('radius', Number(value));
           },
           className: classes.inlineInput,
         },
@@ -206,7 +221,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           isInt: false,
           required: false,
           handleChange: value => {
-            handleInputChange('range_filter', value);
+            handleInputChange('range_filter', Number(value));
           },
           className: classes.inlineInput,
         },
@@ -218,30 +233,31 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 32768,
           isInt: true,
           handleChange: value => {
-            handleInputChange('ef', value);
+            handleInputChange('ef', Number(value));
           },
         },
         level: {
           label: 'level',
           key: 'level',
-          value: searchParamsForm['level'] || '',
+          value: searchParamsForm['level'] || 1,
           min: 1,
           max: 3,
           isInt: true,
+          required: false,
           handleChange: value => {
-            handleInputChange('level', value);
+            handleInputChange('level', Number(value));
           },
         },
         search_k: {
           label: 'search_k',
           key: 'search_k',
-          value: searchParamsForm['search_k'] || '',
+          value: searchParamsForm['search_k'] || topK,
           min: topK,
           // n * n_trees can be infinity
           max: Infinity,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_k', value);
+            handleInputChange('search_k', Number(value));
           },
         },
         search_length: {
@@ -252,7 +268,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 300,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_length', value);
+            handleInputChange('search_length', Number(value));
           },
         },
         search_list: {
@@ -263,7 +279,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 65535,
           isInt: true,
           handleChange: value => {
-            handleInputChange('search_list', value);
+            handleInputChange('search_list', Number(value));
           },
         },
         drop_ratio_search: {
@@ -274,20 +290,20 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 1,
           isInt: false,
           handleChange: value => {
-            handleInputChange('drop_ratio_search', value);
+            handleInputChange('drop_ratio_search', Number(value));
           },
         },
       };
 
       const param = configParamMap[paramKey];
-      return getNumberInputConfig(param);
+      return getInputConfig(param);
     },
     [
       indexParams,
       searchParamsForm,
       classes.inlineInput,
       topK,
-      getNumberInputConfig,
+      getInputConfig,
       handleInputChange,
     ]
   );
@@ -317,18 +333,6 @@ const SearchParams: FC<SearchParamsProps> = ({
 
   return (
     <div className={wrapperClass}>
-      {/* consistency level */}
-      {/* <CustomSelector
-        options={CONSISTENCY_LEVEL_OPTIONS}
-        value={consistency_level || ConsistencyLevelEnum.Bounded}
-        label={collectionTrans('consistencyLevel')}
-        wrapperClass={classes.selector}
-        variant="filled"
-        onChange={(e: { target: { value: unknown } }) => {
-          const consistency = e.target.value as string;
-          handleConsistencyChange(consistency);
-        }}
-      /> */}
       <div className={classes.inlineInputWrapper}>
         {/* dynamic params, now every type only has one param except metric type */}
         {searchParams.map(param => (
@@ -346,16 +350,3 @@ const SearchParams: FC<SearchParamsProps> = ({
 };
 
 export default SearchParams;
-
-// <CustomSelector
-// options={metricOptions}
-// value={metricType}
-// label={indexTrans('metric')}
-// wrapperClass={classes.selector}
-// variant="filled"
-// disabled={true}
-// onChange={(e: { target: { value: unknown } }) => {
-//   const metricType = e.target.value as string;
-//   handleMetricTypeChange(metricType);
-// }}
-// />

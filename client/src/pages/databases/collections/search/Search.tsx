@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, useContext, ChangeEvent } from 'react';
 import {
-  TextField,
   Typography,
-  CardContent,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -12,24 +10,15 @@ import {
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
-import { useQuery } from '@/hooks';
 import icons from '@/components/icons/Icons';
-import CustomButton from '@/components/customButton/CustomButton';
+import { ITextfieldConfig } from '@/components/customInput/Types';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
-import {
-  DYNAMIC_FIELD,
-  DataTypeStringEnum,
-  CONSISTENCY_LEVEL_OPTIONS,
-  ConsistencyLevelEnum,
-  TOP_K_OPTIONS,
-} from '@/consts';
 
-import CustomSelector from '@/components/customSelector/CustomSelector';
-import { detectItemType } from '@/utils';
+import SearchGlobalParams from './SearchGlobalParams';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -56,16 +45,6 @@ const Search = (props: CollectionDataProps) => {
   // UI state
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
-  const [expression, setExpression] = useState<string>('');
-  const [consistencyLevel, setConsistencyLevel] = useState<string>(
-    collection.consistency_level
-  );
-
-  // collection fields, combine static and dynamic fields
-  const fields = [
-    ...collection.schema.fields,
-    ...collection.schema.dynamicFields,
-  ];
 
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
@@ -76,6 +55,7 @@ const Search = (props: CollectionDataProps) => {
   // translations
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
+  const { t: warningTrans } = useTranslation('warning');
   const { t: searchTrans } = useTranslation('search');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -90,12 +70,16 @@ const Search = (props: CollectionDataProps) => {
       setExpanded(expanded ? panel : false);
     };
 
+  const handleFormChange = (form: { [key in string]: number | string }) => {
+    console.log('form', form);
+  };
+
   return (
     <div className={classes.root}>
       {collection && (
         <div className={classes.inputArea}>
           <div className={classes.accordions}>
-            {collection.schema.vectorFields.map((field, index) => {
+            {collection.schema.vectorFields.map(field => {
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -132,6 +116,7 @@ const Search = (props: CollectionDataProps) => {
                     <Typography className="text">
                       {searchTrans('thirdTip')}
                     </Typography>
+
                     <SearchParams
                       wrapperClass="paramsWrapper"
                       consistency_level={'Strong'}
@@ -139,7 +124,7 @@ const Search = (props: CollectionDataProps) => {
                       indexType={field.index.indexType}
                       indexParams={field.index_params}
                       searchParamsForm={{}}
-                      handleFormChange={() => {}}
+                      handleFormChange={handleFormChange}
                       topK={5}
                       setParamsDisabled={() => {
                         return false;
@@ -151,38 +136,13 @@ const Search = (props: CollectionDataProps) => {
             })}
           </div>
 
-          <div className={classes.searchControls}>
-            <CustomSelector
-              options={TOP_K_OPTIONS}
-              value={50}
-              label={collectionTrans('topK')}
-              wrapperClass="selector"
-              variant="filled"
-              onChange={(e: { target: { value: unknown } }) => {}}
-            />
-
-            <CustomSelector
-              options={CONSISTENCY_LEVEL_OPTIONS}
-              value={consistencyLevel || ConsistencyLevelEnum.Bounded}
-              label={collectionTrans('consistencyLevel')}
-              wrapperClass="selector"
-              variant="filled"
-              onChange={(e: { target: { value: unknown } }) => {
-                const consistency = e.target.value as string;
-              }}
-            />
-
-            <CustomButton>{btnTrans('example')}</CustomButton>
-
-            <CustomButton
-              variant="contained"
-              size="small"
-              disabled={false}
-              onClick={() => {}}
-            >
-              {btnTrans('search')}
-            </CustomButton>
-          </div>
+          <SearchGlobalParams
+            searchParamsForm={{
+              topK: 50,
+              consistency_level: collection.consistency_level,
+            }}
+            handleFormChange={handleFormChange}
+          />
         </div>
       )}
     </div>

@@ -122,7 +122,8 @@ export type searchKeywordsType =
   | 'search_list'
   | 'radius'
   | 'range_filter'
-  | 'drop_ratio_search';
+  | 'drop_ratio_search'
+  | 'filter';
 
 export type indexConfigType = {
   [x: string]: {
