@@ -1,5 +1,5 @@
 const dialogTrans = {
-  deleteTipAction: '类型',
+  deleteTipAction: '输入',
   deleteTipPurpose: '以确认。',
   deleteTitle: `删除 {{type}}`,
   renameTitle: `重命名 {{type}}`,
