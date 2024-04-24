@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
@@ -17,7 +17,7 @@ import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -151,10 +151,34 @@ const CollectionTabs = (props: {
 }) => {
   // props
   const { collectionPage, collectionName, tabClass, collections } = props;
+
+  const collection = collections.find(
+    i => i.collection_name === collectionName
+  ) as CollectionFullObject;
+
+  // UI state
+  const [searchParams, setSearchParams] = useState([]);
+
+  useEffect(() => {
+    // Initialize searchParams
+    const initSearchParams =
+      collection && collection.schema
+        ? collection.schema.vectorFields.map(v => ({
+            anns_field: v.name,
+            data: [],
+            params: {},
+          }))
+        : ([] as any);
+    console.log('initSearchParams', initSearchParams);
+
+    setSearchParams(initSearchParams);
+  }, [collectionName, collection && JSON.stringify(collection.schema)]);
+
   // context
   const { isManaged } = useContext(authContext);
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
+
   // collection tabs
   const collectionTabs: ITab[] = [
     {
@@ -165,7 +189,12 @@ const CollectionTabs = (props: {
     {
       label: collectionTrans('searchTab'),
       component: (
-        <Search collections={collections} collectionName={collectionName} />
+        <Search
+          collections={collections}
+          collectionName={collectionName}
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+        />
       ),
       path: `search`,
     },

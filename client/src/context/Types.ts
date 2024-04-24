@@ -104,6 +104,7 @@ export type DataContextType = {
   setDatabase: Dispatch<SetStateAction<string>>;
   databases: DatabaseObject[];
   setDatabaseList: Dispatch<SetStateAction<DatabaseObject[]>>;
+  // search UI state
 
   // APIs
   // databases

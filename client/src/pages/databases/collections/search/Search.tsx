@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
 import icons from '@/components/icons/Icons';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
 import CustomToolBar from '@/components/grid/ToolBar';
@@ -28,50 +27,19 @@ import SearchParams from '../../../search/SearchParams';
 export interface CollectionDataProps {
   collectionName: string;
   collections: CollectionObject[];
+  searchParams: any;
+  setSearchParams: any;
 }
 
 const Search = (props: CollectionDataProps) => {
   // props
-  const { collections, collectionName } = props;
+  const { collections, collectionName, searchParams, setSearchParams } = props;
   const collection = collections.find(
     i => i.collection_name === collectionName
   ) as CollectionFullObject;
 
-  // collection is not found or collection full object is not ready
-  if (!collection || !collection.consistency_level) {
-    return <StatusIcon type={LoadingType.CREATING} />;
-  }
-
-  // Initialize searchParams
-  const initialSearchParams = collection.schema
-    ? collection.schema.vectorFields.map(v => ({
-        anns_field: v.name,
-        data: [],
-        params: {},
-      }))
-    : [];
-
   // UI state
   const [tableLoading, setTableLoading] = useState<boolean>();
-  const [searchParams, setSearchParams] = useState<any>(initialSearchParams);
-
-  // Update searchParams when collectionName changes
-  useEffect(() => {
-    if (collection.schema) {
-      const newSearchParams = collection.schema.vectorFields.map(v => ({
-        anns_field: v.name,
-        data: [],
-        params: {},
-      }));
-      setSearchParams(newSearchParams);
-    }
-  }, [collectionName, collection.schema]);
-
-  // it should be still loading if anns field is not equal to collection's field
-  if (JSON.stringify(searchParams.map((s:any) => s.anns_field)) !== JSON.stringify(collection.schema.vectorFields.map((v:any) => v.name))) {
-    return <StatusIcon type={LoadingType.CREATING} />;
-  }
-
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -108,9 +76,13 @@ const Search = (props: CollectionDataProps) => {
     // compare the form with the searchParams
     if (searchParams[findIndex]) {
       searchParams[findIndex][key] = form[key];
-      setSearchParams([...searchParams]);
     }
   };
+
+  // collection is not found or collection full object is not ready
+  if (searchParams.length === 0) {
+    return <StatusIcon type={LoadingType.CREATING} />;
+  }
 
   return (
     <div className={classes.root}>
