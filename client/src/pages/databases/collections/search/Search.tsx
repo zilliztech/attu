@@ -18,7 +18,11 @@ import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
 
 import SearchGlobalParams from './SearchGlobalParams';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import {
+  CollectionObject,
+  CollectionFullObject,
+  FieldObject,
+} from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { formatFieldType } from '@/utils';
@@ -69,13 +73,14 @@ const Search = (props: CollectionDataProps) => {
     form: { [key in string]: number | string },
     key: string = 'param'
   ) => {
-    const findIndex = searchParams.findIndex(
+    const findIndex = searchParams.searchParams.findIndex(
       (s: any) => s.anns_field === form.anns_field
     );
 
     // compare the form with the searchParams
-    if (searchParams[findIndex]) {
-      searchParams[findIndex][key] = form[key];
+    if (searchParams.searchParams[findIndex]) {
+      searchParams.searchParams[findIndex][key] = form[key];
+      setSearchParams({ ...searchParams });
     }
   };
 
@@ -89,19 +94,8 @@ const Search = (props: CollectionDataProps) => {
       {collection && (
         <div className={classes.inputArea}>
           <div className={classes.accordions}>
-            {collection.schema.vectorFields.map(field => {
-              // get search param for the field
-              const localSearchParams = searchParams.find(
-                (s: any) => s.anns_field === field.name
-              );
-
-              console.log(
-                'localSearchParams',
-                searchParams,
-                localSearchParams,
-                field.name
-              );
-
+            {searchParams.searchParams.map((s: any) => {
+              const field = s.field;
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -130,10 +124,10 @@ const Search = (props: CollectionDataProps) => {
                     <textarea
                       className="textarea"
                       placeholder={searchTrans('vectorPlaceholder')}
-                      value={localSearchParams.data}
+                      value={s.data}
                       onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                        localSearchParams.data = e.target.value;
-                        handleFormChange(localSearchParams, 'data');
+                        s.data = e.target.value;
+                        handleFormChange(s, 'data');
                       }}
                     ></textarea>
                     <Typography className="text">
@@ -146,9 +140,9 @@ const Search = (props: CollectionDataProps) => {
                       handleConsistencyChange={(level: string) => {}}
                       indexType={field.index.indexType}
                       indexParams={field.index_params}
-                      searchParamsForm={localSearchParams}
+                      searchParamsForm={s.params}
                       handleFormChange={handleFormChange}
-                      topK={5}
+                      topK={searchParams.globalParams.topK}
                       setParamsDisabled={() => {
                         return false;
                       }}
@@ -160,10 +154,7 @@ const Search = (props: CollectionDataProps) => {
           </div>
 
           <SearchGlobalParams
-            searchParamsForm={{
-              topK: 50,
-              consistency_level: collection.consistency_level,
-            }}
+            searchParamsForm={searchParams.globalParams}
             handleFormChange={handleFormChange}
           />
         </div>

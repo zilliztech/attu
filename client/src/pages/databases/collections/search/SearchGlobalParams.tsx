@@ -70,7 +70,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     <div className={classes.searchControls}>
       <CustomSelector
         options={TOP_K_OPTIONS}
-        value={searchParamsForm.topK}
+        value={searchParamsForm.topK as string}
         label={collectionTrans('topK')}
         wrapperClass="selector"
         variant="filled"

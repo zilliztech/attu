@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
@@ -15,9 +15,14 @@ import Search from './collections/search/Search';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import { ConsistencyLevelEnum } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import {
+  CollectionObject,
+  CollectionFullObject,
+  FieldObject,
+} from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -157,7 +162,31 @@ const CollectionTabs = (props: {
   ) as CollectionFullObject;
 
   // UI state
-  const [searchParams, setSearchParams] = useState([]);
+  const [searchParams, setSearchParams] = useState<{
+    field: FieldObject;
+    searchParams: {
+      anns_field: string;
+      params: Record<string, any>;
+      data: any[];
+    }[];
+    globalParams: {
+      topK: number;
+      consistency_level: string;
+    };
+  }>({
+    searchParams: [
+      {
+        anns_field: '',
+        data: [] as any[],
+        params: {},
+      },
+    ],
+    globalParams: {
+      topK: 50,
+      consistency_level: ConsistencyLevelEnum.Bounded,
+    },
+    field: {} as FieldObject,
+  });
 
   useEffect(() => {
     // Initialize searchParams
@@ -167,11 +196,13 @@ const CollectionTabs = (props: {
             anns_field: v.name,
             data: [],
             params: {},
+            field: v,
           }))
         : ([] as any);
-    console.log('initSearchParams', initSearchParams);
 
-    setSearchParams(initSearchParams);
+    searchParams.searchParams = initSearchParams;
+
+    setSearchParams({ ...searchParams });
   }, [collectionName, collection && JSON.stringify(collection.schema)]);
 
   // context

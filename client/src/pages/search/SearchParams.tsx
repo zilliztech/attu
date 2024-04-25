@@ -79,6 +79,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       }
 
       handleFormChange(form);
+      console.log(form, key ,value)
     },
     [handleFormChange, searchParamsForm]
   );
