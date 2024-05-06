@@ -18,20 +18,21 @@ import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
 
 import SearchGlobalParams from './SearchGlobalParams';
-import {
-  CollectionObject,
-  CollectionFullObject,
-  FieldObject,
-} from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { formatFieldType } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
+import {
+  SearchParams as SearchParamsType,
+  SearchSingleParams,
+} from '../../types';
+import { cloneObj } from '@/utils';
 
 export interface CollectionDataProps {
   collectionName: string;
   collections: CollectionObject[];
-  searchParams: any;
+  searchParams: SearchParamsType;
   setSearchParams: any;
 }
 
@@ -69,23 +70,24 @@ const Search = (props: CollectionDataProps) => {
       setExpanded(expanded ? panel : false);
     };
 
-  const handleFormChange = (
-    form: { [key in string]: number | string },
-    key: string = 'param'
-  ) => {
-    const findIndex = searchParams.searchParams.findIndex(
+  const handleFormChange = (form: SearchSingleParams) => {
+    const s = cloneObj(searchParams);
+    const findIndex = s.searchParams.findIndex(
       (s: any) => s.anns_field === form.anns_field
     );
 
-    // compare the form with the searchParams
-    if (searchParams.searchParams[findIndex]) {
-      searchParams.searchParams[findIndex][key] = form[key];
-      setSearchParams({ ...searchParams });
+    // update the searchParams
+    if (findIndex !== -1) {
+      console.log('update the searchParams', form);
+      s.searchParams[findIndex] = form;
+
+      // compare the form with the searchParams
+      setSearchParams({ ...s });
     }
   };
 
   // collection is not found or collection full object is not ready
-  if (searchParams.length === 0) {
+  if (searchParams && searchParams.searchParams.length === 0) {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
 
@@ -94,7 +96,7 @@ const Search = (props: CollectionDataProps) => {
       {collection && (
         <div className={classes.inputArea}>
           <div className={classes.accordions}>
-            {searchParams.searchParams.map((s: any) => {
+            {searchParams.searchParams.map((s: any, index: number) => {
               const field = s.field;
               return (
                 <Accordion
@@ -126,8 +128,10 @@ const Search = (props: CollectionDataProps) => {
                       placeholder={searchTrans('vectorPlaceholder')}
                       value={s.data}
                       onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                        s.data = e.target.value;
-                        handleFormChange(s, 'data');
+                        if (s.data !== e.target.value) {
+                          s.data = e.target.value;
+                          handleFormChange(s);
+                        }
                       }}
                     ></textarea>
                     <Typography className="text">
@@ -141,7 +145,20 @@ const Search = (props: CollectionDataProps) => {
                       indexType={field.index.indexType}
                       indexParams={field.index_params}
                       searchParamsForm={s.params}
-                      handleFormChange={handleFormChange}
+                      handleFormChange={(
+                        params: { [key in string]: number | string }
+                      ) => {
+                        if (
+                          JSON.stringify(s.params) !== JSON.stringify(params)
+                        ) {
+                          const s = cloneObj(searchParams);
+                          // update the searchParams
+                          s.searchParams[index] = params;
+
+                          // compare the form with the searchParams
+                          setSearchParams({ ...s });
+                        }
+                      }}
                       topK={searchParams.globalParams.topK}
                       setParamsDisabled={() => {
                         return false;
@@ -155,7 +172,10 @@ const Search = (props: CollectionDataProps) => {
 
           <SearchGlobalParams
             searchParamsForm={searchParams.globalParams}
-            handleFormChange={handleFormChange}
+            handleFormChange={(params: any) => {
+              searchParams.globalParams = params;
+              setSearchParams({ ...searchParams });
+            }}
           />
         </div>
       )}

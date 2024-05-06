@@ -18,6 +18,7 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { ConsistencyLevelEnum } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
+import { SearchParams } from './types';
 import {
   CollectionObject,
   CollectionFullObject,
@@ -162,18 +163,7 @@ const CollectionTabs = (props: {
   ) as CollectionFullObject;
 
   // UI state
-  const [searchParams, setSearchParams] = useState<{
-    field: FieldObject;
-    searchParams: {
-      anns_field: string;
-      params: Record<string, any>;
-      data: any[];
-    }[];
-    globalParams: {
-      topK: number;
-      consistency_level: string;
-    };
-  }>({
+  const [searchParams, setSearchParams] = useState<SearchParams>({
     searchParams: [
       {
         anns_field: '',
