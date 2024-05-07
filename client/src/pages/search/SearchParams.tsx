@@ -79,7 +79,6 @@ const SearchParams: FC<SearchParamsProps> = ({
       }
 
       handleFormChange(form);
-      console.log(form, key ,value)
     },
     [handleFormChange, searchParamsForm]
   );
@@ -97,6 +96,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         value,
         handleChange,
         isInt = true,
+        type = 'number',
         required = true,
       } = params;
 
@@ -112,7 +112,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         },
         className: classes.inlineInput,
         variant: 'filled',
-        type: isInt ? 'number' : 'text',
+        type: type,
         value,
         validations: [],
       };
@@ -128,6 +128,14 @@ const SearchParams: FC<SearchParamsProps> = ({
         config.validations?.push({
           rule: 'integer',
           errorText: warningTrans('integer', { name: label }),
+        });
+      }
+
+      if (typeof min === 'number' && typeof max === 'number') {
+        config.validations?.push({
+          rule: 'range',
+          errorText: warningTrans('range', { name: label, min, max }),
+          extraParam: { min, max, type: 'number' },
         });
       }
 
@@ -169,6 +177,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           key: 'filter',
           value: searchParamsForm['filter'] || '',
           isInt: false,
+          type: 'text',
           required: false,
           handleChange: value => {
             handleInputChange('filter', value);
@@ -204,7 +213,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           label: 'radius',
           key: 'radius',
           value: searchParamsForm['radius'] || '',
-          min: 1,
+          min: 0.1,
           max: nlist,
           isInt: false,
           required: false,
@@ -217,8 +226,6 @@ const SearchParams: FC<SearchParamsProps> = ({
           label: 'range filter',
           key: 'range_filter',
           value: searchParamsForm['range_filter'] || '',
-          min: topK,
-          max: Infinity,
           isInt: false,
           required: false,
           handleChange: value => {
@@ -309,17 +316,18 @@ const SearchParams: FC<SearchParamsProps> = ({
     ]
   );
 
-  useEffect(() => {
-    // generate different form according to search params
-    const form = searchParams.reduce(
-      (paramsForm, param) => ({
-        ...paramsForm,
-        [param]: DEFAULT_SEARCH_PARAM_VALUE_MAP[param],
-      }),
-      {}
-    );
-    handleFormChange(form);
-  }, [searchParams, handleFormChange]);
+  // useEffect(() => {
+  //   // generate different form according to search params
+  //   const form = searchParams.reduce(
+  //     (paramsForm, param) => ({
+  //       ...paramsForm,
+  //       [param]: DEFAULT_SEARCH_PARAM_VALUE_MAP[param],
+  //     }),
+  //     {}
+  //   );
+  //   console.log('xxx', form)
+  //   handleFormChange(form);
+  // }, []);
 
   const checkedForm = useMemo(() => {
     const { ...needCheckItems } = searchParamsForm;

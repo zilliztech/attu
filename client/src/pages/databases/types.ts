@@ -4,6 +4,7 @@ export type SearchSingleParams = {
   anns_field: string;
   params: Record<string, any>;
   data: any[];
+  field: FieldObject;
 };
 
 export type GlobalParams = {
@@ -12,7 +13,6 @@ export type GlobalParams = {
 };
 
 export type SearchParams = {
-  field: FieldObject;
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
 };

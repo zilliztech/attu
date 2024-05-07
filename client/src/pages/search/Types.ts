@@ -36,6 +36,7 @@ export interface SearchParamInputConfig {
   min?: number;
   max?: number;
   isInt?: boolean;
+  type?: 'number' | 'text';
   // no value: empty string
   value: number | string;
   handleChange: (value: number) => void;

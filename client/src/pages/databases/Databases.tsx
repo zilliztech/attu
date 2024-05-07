@@ -169,13 +169,13 @@ const CollectionTabs = (props: {
         anns_field: '',
         data: [] as any[],
         params: {},
+        field: {} as FieldObject,
       },
     ],
     globalParams: {
       topK: 50,
       consistency_level: ConsistencyLevelEnum.Bounded,
     },
-    field: {} as FieldObject,
   });
 
   useEffect(() => {

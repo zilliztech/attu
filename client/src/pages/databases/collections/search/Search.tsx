@@ -1,4 +1,11 @@
-import { useState, useEffect, useRef, useContext, ChangeEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  ChangeEvent,
+  useCallback,
+} from 'react';
 import {
   Typography,
   Accordion,
@@ -28,6 +35,7 @@ import {
   SearchSingleParams,
 } from '../../types';
 import { cloneObj } from '@/utils';
+import { PanoramaVerticalSharp } from '@material-ui/icons';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -86,6 +94,21 @@ const Search = (props: CollectionDataProps) => {
     }
   };
 
+  const updateSearchParamCallback = useCallback(
+    (updates: SearchSingleParams, index: number) => {
+      if (
+        JSON.stringify(updates) !==
+        JSON.stringify(searchParams.searchParams[index].params)
+      ) {
+        const s = cloneObj(searchParams);
+        // update the searchParams
+        s.searchParams[index].params = updates;
+        setSearchParams({ ...s });
+      }
+    },
+    [JSON.stringify(searchParams)]
+  );
+
   // collection is not found or collection full object is not ready
   if (searchParams && searchParams.searchParams.length === 0) {
     return <StatusIcon type={LoadingType.CREATING} />;
@@ -96,8 +119,9 @@ const Search = (props: CollectionDataProps) => {
       {collection && (
         <div className={classes.inputArea}>
           <div className={classes.accordions}>
-            {searchParams.searchParams.map((s: any, index: number) => {
+            {searchParams.searchParams.map((s, index: number) => {
               const field = s.field;
+              console.log('update', s.params);
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -129,7 +153,7 @@ const Search = (props: CollectionDataProps) => {
                       value={s.data}
                       onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
                         if (s.data !== e.target.value) {
-                          s.data = e.target.value;
+                          s.data = e.target.value as any;
                           handleFormChange(s);
                         }
                       }}
@@ -146,18 +170,9 @@ const Search = (props: CollectionDataProps) => {
                       indexParams={field.index_params}
                       searchParamsForm={s.params}
                       handleFormChange={(
-                        params: { [key in string]: number | string }
+                        updates: { [key in string]: number | string }
                       ) => {
-                        if (
-                          JSON.stringify(s.params) !== JSON.stringify(params)
-                        ) {
-                          const s = cloneObj(searchParams);
-                          // update the searchParams
-                          s.searchParams[index] = params;
-
-                          // compare the form with the searchParams
-                          setSearchParams({ ...s });
-                        }
+                        updateSearchParamCallback(updates as any, index);
                       }}
                       topK={searchParams.globalParams.topK}
                       setParamsDisabled={() => {
