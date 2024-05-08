@@ -34,6 +34,18 @@ export const parseValue = (value: string) => {
   }
 };
 
+export const formatValue = (value: any) => {
+  if (Array.isArray(value) && value.length > 0) {
+    return `[${value}]`;
+  }
+
+  if (typeof value === 'object' && value && !Array.isArray(value)) {
+    return JSON.stringify(value);
+  }
+
+  return value;
+};
+
 /**
  *
  * @param heads table heads, e.g. ['field1', 'field2', 'field3']

@@ -23,9 +23,13 @@ import Filter from '@/components/advancedSearch';
 import CustomToolBar from '@/components/grid/ToolBar';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
-
 import SearchGlobalParams from './SearchGlobalParams';
-import { CollectionObject, CollectionFullObject } from '@server/types';
+import VectorInputBox from './VectorInputBox';
+import {
+  CollectionObject,
+  CollectionFullObject,
+  FieldObject,
+} from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { formatFieldType } from '@/utils';
@@ -34,8 +38,8 @@ import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
 } from '../../types';
-import { cloneObj } from '@/utils';
-import { PanoramaVerticalSharp } from '@material-ui/icons';
+import { cloneObj, generateVector, parseValue, formatValue } from '@/utils';
+import { DataTypeStringEnum } from '@/consts';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -43,6 +47,20 @@ export interface CollectionDataProps {
   searchParams: SearchParamsType;
   setSearchParams: any;
 }
+
+export const generateVectorsByField = (field: FieldObject) => {
+  switch (field.data_type) {
+    case DataTypeStringEnum.FloatVector:
+    case DataTypeStringEnum.BinaryVector:
+    case DataTypeStringEnum.Float16Vector:
+    case DataTypeStringEnum.BFloat16Vector:
+      return generateVector(field.dimension);
+    case 'SparseFloatVector':
+      return { [Math.floor(Math.random() * 10)]: Math.random() };
+    default:
+      return [1, 2, 3];
+  }
+};
 
 const Search = (props: CollectionDataProps) => {
   // props
@@ -94,6 +112,7 @@ const Search = (props: CollectionDataProps) => {
     }
   };
 
+  // update search params
   const updateSearchParamCallback = useCallback(
     (updates: SearchSingleParams, index: number) => {
       if (
@@ -109,6 +128,21 @@ const Search = (props: CollectionDataProps) => {
     [JSON.stringify(searchParams)]
   );
 
+  // execute search
+  const executeSearch = useCallback(() => {
+    console.log('executeSearch', searchParams);
+  }, [JSON.stringify(searchParams)]);
+
+  // generate vectors
+  const executeGenerateVectors = useCallback(() => {
+    const s = cloneObj(searchParams) as SearchParamsType;
+    s.searchParams.forEach((sp: SearchSingleParams) => {
+      sp.data = generateVectorsByField(sp.field) as any;
+    });
+
+    setSearchParams({ ...s });
+  }, [JSON.stringify(searchParams)]);
+
   // collection is not found or collection full object is not ready
   if (searchParams && searchParams.searchParams.length === 0) {
     return <StatusIcon type={LoadingType.CREATING} />;
@@ -121,7 +155,11 @@ const Search = (props: CollectionDataProps) => {
           <div className={classes.accordions}>
             {searchParams.searchParams.map((s, index: number) => {
               const field = s.field;
-              console.log('update', s.params);
+              console.log(
+                'update',
+                s.params,
+                searchParams.globalParams
+              );
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -135,7 +173,6 @@ const Search = (props: CollectionDataProps) => {
                     id={`${field.name}-header`}
                   >
                     <FormControlLabel
-                      aria-label="Acknowledge"
                       onClick={event => event.stopPropagation()}
                       onFocus={event => event.stopPropagation()}
                       control={<Checkbox size="small" />}
@@ -147,17 +184,7 @@ const Search = (props: CollectionDataProps) => {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails className={classes.accordionDetail}>
-                    <textarea
-                      className="textarea"
-                      placeholder={searchTrans('vectorPlaceholder')}
-                      value={s.data}
-                      onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                        if (s.data !== e.target.value) {
-                          s.data = e.target.value as any;
-                          handleFormChange(s);
-                        }
-                      }}
-                    ></textarea>
+                    <VectorInputBox />
                     <Typography className="text">
                       {searchTrans('thirdTip')}
                     </Typography>
@@ -191,6 +218,8 @@ const Search = (props: CollectionDataProps) => {
               searchParams.globalParams = params;
               setSearchParams({ ...searchParams });
             }}
+            executeGenerateVectors={executeGenerateVectors}
+            executeSearch={executeSearch}
           />
         </div>
       )}

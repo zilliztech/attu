@@ -13,11 +13,18 @@ export interface CollectionDataProps {
     [key in string]: number | string;
   };
   handleFormChange: (form: { [key in string]: number | string }) => void;
+  executeGenerateVectors: () => void;
+  executeSearch: () => void;
 }
 
 const SearchGlobalParams = (props: CollectionDataProps) => {
   // props
-  const { searchParamsForm, handleFormChange } = props;
+  const {
+    searchParamsForm,
+    handleFormChange,
+    executeSearch,
+    executeGenerateVectors,
+  } = props;
 
   // UI functions
   const handleInputChange = useCallback(
@@ -98,13 +105,19 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
         checkValid={() => true}
       />
 
-      <CustomButton>{btnTrans('example')}</CustomButton>
+      <CustomButton
+        onClick={executeGenerateVectors}
+        size="small"
+        disabled={false}
+      >
+        {btnTrans('example')}
+      </CustomButton>
 
       <CustomButton
         variant="contained"
         size="small"
         disabled={false}
-        onClick={() => {}}
+        onClick={executeSearch}
       >
         {btnTrans('search')}
       </CustomButton>
