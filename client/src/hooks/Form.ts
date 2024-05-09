@@ -60,7 +60,7 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
     const { value, key, rules } = param;
 
     let validDetail = {
-      result: true,
+      result: false,
       errText: '',
     };
 
@@ -74,7 +74,7 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
 
       if (!checkResult) {
         validDetail = {
-          result: false,
+          result: true,
           errText: rule.errorText || '',
         };
 

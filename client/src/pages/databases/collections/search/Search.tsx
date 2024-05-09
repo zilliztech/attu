@@ -96,22 +96,6 @@ const Search = (props: CollectionDataProps) => {
       setExpanded(expanded ? panel : false);
     };
 
-  const handleFormChange = (form: SearchSingleParams) => {
-    const s = cloneObj(searchParams);
-    const findIndex = s.searchParams.findIndex(
-      (s: any) => s.anns_field === form.anns_field
-    );
-
-    // update the searchParams
-    if (findIndex !== -1) {
-      console.log('update the searchParams', form);
-      s.searchParams[findIndex] = form;
-
-      // compare the form with the searchParams
-      setSearchParams({ ...s });
-    }
-  };
-
   // update search params
   const updateSearchParamCallback = useCallback(
     (updates: SearchSingleParams, index: number) => {
@@ -143,6 +127,25 @@ const Search = (props: CollectionDataProps) => {
     setSearchParams({ ...s });
   }, [JSON.stringify(searchParams)]);
 
+  const onVectorInputChange = useCallback(
+    (
+      searchSingleParams: SearchSingleParams,
+      value: Array<number> | Object | undefined
+    ) => {
+      const s = cloneObj(searchParams) as SearchParamsType;
+      const target = s.searchParams.find((sp: SearchSingleParams) => {
+        return sp.field.name === searchSingleParams.field.name;
+      });
+
+      if (JSON.stringify(value) !== JSON.stringify(target!.data)) {
+        console.log('onVectorInputChange', value, target);
+        target!.data = value as any;
+        setSearchParams({ ...s });
+      }
+    },
+    [JSON.stringify(searchParams)]
+  );
+
   // collection is not found or collection full object is not ready
   if (searchParams && searchParams.searchParams.length === 0) {
     return <StatusIcon type={LoadingType.CREATING} />;
@@ -155,11 +158,7 @@ const Search = (props: CollectionDataProps) => {
           <div className={classes.accordions}>
             {searchParams.searchParams.map((s, index: number) => {
               const field = s.field;
-              console.log(
-                'update',
-                s.params,
-                searchParams.globalParams
-              );
+              // console.log('update', s.params, searchParams.globalParams);
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -184,7 +183,10 @@ const Search = (props: CollectionDataProps) => {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails className={classes.accordionDetail}>
-                    <VectorInputBox />
+                    <VectorInputBox
+                      searchParams={s}
+                      onChange={onVectorInputChange}
+                    />
                     <Typography className="text">
                       {searchTrans('thirdTip')}
                     </Typography>

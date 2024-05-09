@@ -1,5 +1,3 @@
-import { lab } from 'd3';
-
 export const MILVUS_URL =
   ((window as any)._env_ && (window as any)._env_.MILVUS_URL) || '';
 
