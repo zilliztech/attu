@@ -29,6 +29,23 @@ const Formatter = {
 const floatVectorValidator = (text: string, field: FieldObject) => {
   try {
     const value = JSON.parse(text);
+    const dim = field.dimension;
+    if (!Array.isArray(value)) {
+      return {
+        valid: false,
+        value: undefined,
+        message: `Not an array`,
+      };
+    }
+
+    if (Array.isArray(value) && value.length !== dim) {
+      return {
+        valid: false,
+        value: undefined,
+        message: `Dimension is not equal to ${dim} `,
+      };
+    }
+
     return { valid: true, message: ``, value: value };
   } catch (e: any) {
     return {
@@ -78,137 +95,150 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const editor = useRef<EditorView>();
   const onChangeRef = useRef(onChange);
   const dataRef = useRef(data);
+  const fieldRef = useRef(field);
 
   // get formatter
   const formatter = Formatter[field.data_type as keyof typeof Formatter];
   // get validator
   const validator = Validator[field.data_type as keyof typeof Validator];
 
-  // update dataRef and onChangeRef when data changes
   useEffect(() => {
+    // update dataRef and onChangeRef when data changes
     dataRef.current = data;
     onChangeRef.current = onChange;
-    if (editor.current) {
-      const currentPosition = editor.current.state.selection.main.head;
+    fieldRef.current = field;
 
-      editor.current.dispatch({
-        changes: {
-          from: 0,
-          to: editor.current.state.doc.length,
-          insert: formatter(data as any),
-        },
-        selection: {
-          anchor: currentPosition,
-          head: currentPosition,
-        },
+    if (editor.current) {
+      // only data replace should trigger this, otherwise, let cm handle the state
+      if (editor.current.state.doc.toString() !== JSON.stringify(data)) {
+        editor.current.dispatch({
+          changes: {
+            from: 0,
+            to: editor.current.state.doc.length,
+            insert: formatter(data as any),
+          },
+        });
+      }
+    }
+  }, [JSON.stringify(data)]);
+
+  // create editor
+  useEffect(() => {
+    if (!editor.current) {
+      const startState = EditorState.create({
+        doc: formatter(data as any),
+        extensions: [
+          minimalSetup,
+          javascript(),
+          linter(view => {
+            const text = view.state.doc.toString();
+
+            // ignore empty text
+            if (!text) return [];
+
+            // validate
+            const { valid, message } = validator(text, field);
+
+            // if invalid, draw a red line
+            if (!valid) {
+              let diagnostics: Diagnostic[] = [];
+
+              diagnostics.push({
+                from: 0,
+                to: view.state.doc.line(view.state.doc.lines).to,
+                severity: 'error',
+                message: message,
+                actions: [
+                  {
+                    name: 'Remove',
+                    apply(view, from, to) {
+                      view.dispatch({ changes: { from, to } });
+                    },
+                  },
+                ],
+              });
+
+              return diagnostics;
+            } else {
+              // onChangeRef.current(searchParams.anns_field, value);
+              return [];
+            }
+          }),
+          keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
+          indentUnit.of('    '), // fix tab indentation
+          EditorView.theme({
+            '&.cm-editor': {
+              '&.cm-focused': {
+                outline: 'none',
+              },
+            },
+            '.cm-content': {
+              color: '#484D52',
+              fontSize: '12px',
+            },
+            '.cm-gutters': {
+              display: 'none',
+            },
+            '.cm-activeLine': {
+              backgroundColor: '#f4f4f4',
+            },
+            '.cm-tooltip-lint': {
+              width: '80%',
+            },
+          }),
+          EditorView.baseTheme({
+            '&light .cm-selectionBackground': {
+              backgroundColor: '#f4f4f4',
+            },
+            '&light.cm-focused .cm-selectionBackground': {
+              backgroundColor: '#f4f4f4',
+            },
+            '&light .cm-activeLineGutter': {
+              backgroundColor: 'transparent',
+              fontWeight: 'bold',
+            },
+          }),
+          EditorView.lineWrapping,
+          EditorView.updateListener.of(update => {
+            if (update.docChanged) {
+              const text = update.state.doc.toString();
+              const { valid, value } = validator(text, fieldRef.current);
+              if (valid || text === '') {
+                onChangeRef.current(searchParams.anns_field, value);
+              }
+            }
+          }),
+        ],
+      });
+
+      editor.current = new EditorView({
+        state: startState,
+        parent: editorEl.current!,
       });
     }
-  }, [JSON.stringify(data)]);
-
-  useEffect(() => {
-    if (editor.current) {
-      return;
-    }
-    let startState = EditorState.create({
-      doc: formatter(data as any),
-      extensions: [
-        minimalSetup,
-        javascript(),
-        linter(view => {
-          const text = view.state.doc.toString();
-
-          // ignore empty text
-          if (!text) return [];
-
-          // validate
-          const { valid, message, value } = validator(text, field);
-
-          // if invalid, draw a red line
-          if (!valid) {
-            let diagnostics: Diagnostic[] = [];
-
-            diagnostics.push({
-              from: 0,
-              to: view.state.doc.line(view.state.doc.lines).to,
-              severity: 'error',
-              message: message,
-              actions: [
-                {
-                  name: 'Remove',
-                  apply(view, from, to) {
-                    view.dispatch({ changes: { from, to } });
-                  },
-                },
-              ],
-            });
-
-            return diagnostics;
-          } else {
-            // onChangeRef.current(searchParams.anns_field, value);
-            return [];
-          }
-        }),
-        keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
-        indentUnit.of('    '), // fix tab indentation
-        EditorView.theme({
-          '&.cm-editor': {
-            '&.cm-focused': {
-              outline: 'none',
-            },
-          },
-          '.cm-content': {
-            color: '#484D52',
-            fontSize: '12px',
-          },
-          '.cm-gutters': {
-            display: 'none',
-          },
-          '.cm-activeLine': {
-            backgroundColor: '#f4f4f4',
-          },
-          '.cm-tooltip-lint': {
-            width: '80%',
-          },
-        }),
-        EditorView.baseTheme({
-          '&light .cm-selectionBackground': {
-            backgroundColor: '#f4f4f4',
-          },
-          '&light.cm-focused .cm-selectionBackground': {
-            backgroundColor: '#f4f4f4',
-          },
-          '&light .cm-activeLineGutter': {
-            backgroundColor: 'transparent',
-            fontWeight: 'bold',
-          },
-        }),
-        EditorView.lineWrapping,
-        EditorView.updateListener.of(update => {
-          if (update.docChanged) {
-            const text = update.state.doc.toString();
-            const { valid, value } = validator(text, field);
-            if (valid) {
-              onChangeRef.current(searchParams.anns_field, value);
-            }
-          }
-        }),
-      ],
-    });
-
-    editor.current = new EditorView({
-      state: startState,
-      parent: editorEl.current!,
-    });
-
-    editor.current;
-  }, [JSON.stringify(data)]);
+    return () => {
+      if (editor.current) {
+        editor.current.destroy();
+        editor.current = undefined;
+      }
+    };
+  }, [JSON.stringify(field)]);
 
   const containerStyle = {
     height: '126px',
     margin: '0 0 8px 0',
     overflow: 'auto',
     backgroundColor: '#f4f4f4',
+    cursor: 'text',
   };
 
-  return <div ref={editorEl} style={containerStyle}></div>;
+  return (
+    <div
+      ref={editorEl}
+      style={containerStyle}
+      onClick={() => {
+        if (editor.current) editor.current.focus();
+      }}
+    ></div>
+  );
 }
