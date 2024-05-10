@@ -128,17 +128,15 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams)]);
 
   const onVectorInputChange = useCallback(
-    (
-      searchSingleParams: SearchSingleParams,
-      value: Array<number> | Object | undefined
-    ) => {
+    (anns_field: string, value: Array<number> | Object | undefined) => {
       const s = cloneObj(searchParams) as SearchParamsType;
       const target = s.searchParams.find((sp: SearchSingleParams) => {
-        return sp.field.name === searchSingleParams.field.name;
+        return sp.anns_field === anns_field;
       });
 
       if (JSON.stringify(value) !== JSON.stringify(target!.data)) {
-        console.log('onVectorInputChange', value, target);
+        console.log('onVectorInputChange', value, target!.data);
+
         target!.data = value as any;
         setSearchParams({ ...s });
       }

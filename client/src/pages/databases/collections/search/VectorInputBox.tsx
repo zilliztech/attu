@@ -65,7 +65,7 @@ const Validator = {
 
 export type VectorInputBoxProps = {
   onChange: (
-    searchParams: SearchSingleParams,
+    anns_field: string,
     value: Array<number> | Object | undefined
   ) => void;
   searchParams: SearchSingleParams;
@@ -76,20 +76,37 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const { field, data } = searchParams;
   const editorEl = useRef<HTMLDivElement>(null); // Adjusted type here
   const editor = useRef<EditorView>();
+  const onChangeRef = useRef(onChange);
+  const dataRef = useRef(data);
 
+  // get formatter
   const formatter = Formatter[field.data_type as keyof typeof Formatter];
+  // get validator
+  const validator = Validator[field.data_type as keyof typeof Validator];
 
+  // update dataRef and onChangeRef when data changes
   useEffect(() => {
+    dataRef.current = data;
+    onChangeRef.current = onChange;
     if (editor.current) {
-      console.log('update', data, formatter(data as any));
-      // Update editor content if value changes
+      const currentPosition = editor.current.state.selection.main.head;
+
       editor.current.dispatch({
         changes: {
           from: 0,
           to: editor.current.state.doc.length,
           insert: formatter(data as any),
         },
+        selection: {
+          anchor: currentPosition,
+          head: currentPosition,
+        },
       });
+    }
+  }, [JSON.stringify(data)]);
+
+  useEffect(() => {
+    if (editor.current) {
       return;
     }
     let startState = EditorState.create({
@@ -102,10 +119,6 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
 
           // ignore empty text
           if (!text) return [];
-
-          // get validator
-          const validator =
-            Validator[field.data_type as keyof typeof Validator];
 
           // validate
           const { valid, message, value } = validator(text, field);
@@ -131,10 +144,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
 
             return diagnostics;
           } else {
-            console.log('xxx', data, value);
-            if (JSON.stringify(value) !== JSON.stringify(data)) {
-              onChange(searchParams, value);
-            }
+            // onChangeRef.current(searchParams.anns_field, value);
             return [];
           }
         }),
@@ -173,6 +183,15 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
           },
         }),
         EditorView.lineWrapping,
+        EditorView.updateListener.of(update => {
+          if (update.docChanged) {
+            const text = update.state.doc.toString();
+            const { valid, value } = validator(text, field);
+            if (valid) {
+              onChangeRef.current(searchParams.anns_field, value);
+            }
+          }
+        }),
       ],
     });
 
@@ -180,6 +199,8 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
       state: startState,
       parent: editorEl.current!,
     });
+
+    editor.current;
   }, [JSON.stringify(data)]);
 
   const containerStyle = {
