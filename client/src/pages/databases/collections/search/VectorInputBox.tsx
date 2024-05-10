@@ -2,13 +2,14 @@ import { useRef, useEffect } from 'react';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
-import { indentUnit, syntaxTree } from '@codemirror/language';
+import { indentUnit } from '@codemirror/language';
 import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { linter, Diagnostic } from '@codemirror/lint';
 import { FieldObject } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
+import { isSparseVector } from '@/utils';
 
 const arrayFormatter = (value: Array<number>) => {
   return JSON.stringify(value);
@@ -42,7 +43,7 @@ const floatVectorValidator = (text: string, field: FieldObject) => {
       return {
         valid: false,
         value: undefined,
-        message: `Dimension is not equal to ${dim} `,
+        message: `Dimension ${value.length} is not equal to ${dim} `,
       };
     }
 
@@ -51,11 +52,19 @@ const floatVectorValidator = (text: string, field: FieldObject) => {
     return {
       valid: false,
       value: undefined,
-      message: `Wrong Float Vector format`,
+      message: `Wrong Float Vector format, it should be an array of ${field.dimension} numbers`,
     };
   }
 };
+
 const sparseVectorValidator = (text: string, field: FieldObject) => {
+  if (!isSparseVector(text)) {
+    return {
+      valid: false,
+      value: undefined,
+      message: `Incorrect Sparse Vector format, it should be like {1: 0.1, 3: 0.2}`,
+    };
+  }
   try {
     const obj = JSON.parse(text);
     return {

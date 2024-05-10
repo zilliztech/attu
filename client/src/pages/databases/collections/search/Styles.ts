@@ -43,7 +43,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     // borderBottom: `1px solid ${theme.palette.divider}`,
     '& .MuiAccordionSummary-root': {
       minHeight: '48px',
-      padding: '0 8px',
+      padding: '0 12px',
       '& .MuiAccordionSummary-expandIcon': {
         padding: 4,
       },
@@ -84,7 +84,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   searchControls: {
     display: 'flex',
     flexDirection: 'column',
-    width: 200,
+    width: 160,
     padding: '0 8px',
     height: 'calc(100vh - 156px)',
     borderRight: `1px solid ${theme.palette.divider}`,

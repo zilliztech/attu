@@ -217,3 +217,32 @@ export const formatFieldType = (field: FieldObject) => {
 
   return `${data_type}${elementType}${maxCap}${dim}${maxLn}`;
 };
+
+export const isSparseVector = (str: string): boolean => {
+  str = str.trim();
+
+  if (str === '') return false;
+
+  if (str[0] !== '{' || str[str.length - 1] !== '}') return false;
+
+  const innerStr = str.slice(1, -1);
+
+  const pairs = innerStr.split(',');
+
+  for (const pair of pairs) {
+    const [key, value] = pair.split(':');
+    const trimmedKey = key && key.trim();
+    const trimmedValue = value && value.trim();
+    if (
+      !(
+        (trimmedKey.match(/^".*"$/) && trimmedKey.length > 2) ||
+        trimmedKey.match(/^\d+$/)
+      ) ||
+      !trimmedValue.match(/^(\d*\.)?\d+$/)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};

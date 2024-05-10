@@ -135,8 +135,6 @@ const Search = (props: CollectionDataProps) => {
       });
 
       if (JSON.stringify(value) !== JSON.stringify(target!.data)) {
-        console.log('onVectorInputChange', value, target!.data);
-
         target!.data = value as any;
         setSearchParams({ ...s });
       }
