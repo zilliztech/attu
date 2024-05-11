@@ -38,7 +38,7 @@ import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
 } from '../../types';
-import { cloneObj, generateVector, parseValue, formatValue } from '@/utils';
+import { cloneObj, generateVector, transformObjToStr } from '@/utils';
 import { DataTypeStringEnum } from '@/consts';
 
 export interface CollectionDataProps {
@@ -54,9 +54,11 @@ export const generateVectorsByField = (field: FieldObject) => {
     case DataTypeStringEnum.BinaryVector:
     case DataTypeStringEnum.Float16Vector:
     case DataTypeStringEnum.BFloat16Vector:
-      return generateVector(field.dimension);
+      return JSON.stringify(generateVector(field.dimension));
     case 'SparseFloatVector':
-      return { [Math.floor(Math.random() * 10)]: Math.random() };
+      return transformObjToStr({
+        [Math.floor(Math.random() * 10)]: Math.random(),
+      });
     default:
       return [1, 2, 3];
   }
@@ -128,14 +130,14 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams)]);
 
   const onVectorInputChange = useCallback(
-    (anns_field: string, value: Array<number> | Object | undefined) => {
+    (anns_field: string, value: string) => {
       const s = cloneObj(searchParams) as SearchParamsType;
       const target = s.searchParams.find((sp: SearchSingleParams) => {
         return sp.anns_field === anns_field;
       });
 
-      if (JSON.stringify(value) !== JSON.stringify(target!.data)) {
-        target!.data = value as any;
+      if (value !== target!.data) {
+        target!.data = value;
         setSearchParams({ ...s });
       }
     },

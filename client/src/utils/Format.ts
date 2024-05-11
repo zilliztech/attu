@@ -219,30 +219,51 @@ export const formatFieldType = (field: FieldObject) => {
 };
 
 export const isSparseVector = (str: string): boolean => {
-  str = str.trim();
+  try {
+    str = str.trim();
 
-  if (str === '') return false;
+    if (str === '') return false;
 
-  if (str[0] !== '{' || str[str.length - 1] !== '}') return false;
+    if (str[0] !== '{' || str[str.length - 1] !== '}') return false;
 
-  const innerStr = str.slice(1, -1);
+    const innerStr = str.slice(1, -1);
 
-  const pairs = innerStr.split(',');
+    const pairs = innerStr.split(',');
 
-  for (const pair of pairs) {
-    const [key, value] = pair.split(':');
-    const trimmedKey = key && key.trim();
-    const trimmedValue = value && value.trim();
-    if (
-      !(
-        (trimmedKey.match(/^".*"$/) && trimmedKey.length > 2) ||
-        trimmedKey.match(/^\d+$/)
-      ) ||
-      !trimmedValue.match(/^(\d*\.)?\d+$/)
-    ) {
-      return false;
+    for (const pair of pairs) {
+      const [key, value] = pair.split(':');
+      const trimmedKey = key && key.trim();
+      const trimmedValue = value && value.trim();
+      if (
+        !(
+          (trimmedKey.match(/^".*"$/) && trimmedKey.length > 2) ||
+          trimmedKey.match(/^\d+$/)
+        ) ||
+        !trimmedValue.match(/^(\d*\.)?\d+$/)
+      ) {
+        return false;
+      }
     }
-  }
 
-  return true;
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// transform ObjStr To JSONStr
+// `{a: 1, b: 2}` => `{"a": 1, "b": 2}`
+// `{'a': 1, 'b': 2}` => `{"a": 1, "b": 2}`
+// `{'a': 1, b: 2}` => `{"a": 1, "b": 2}`
+// it may have empty space between key and value
+export const transformObjStrToJSONStr = (str: string): string => {
+  const objStr = str.replace(/'/g, '"').replace(/(\w+)\s*:/g, '"$1":');
+  return objStr;
+};
+
+// transform object to valid string without quotes
+// {a: 1, b: 2} => '{a: 1, b: 2}'
+export const transformObjToStr = (obj: any): string => {
+  const str = JSON.stringify(obj);
+  return str.replace(/"/g, '');
 };

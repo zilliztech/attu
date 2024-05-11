@@ -9,14 +9,18 @@ import { linter, Diagnostic } from '@codemirror/lint';
 import { FieldObject } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
-import { isSparseVector } from '@/utils';
+import {
+  isSparseVector,
+  transformObjStrToJSONStr,
+  transformObjToStr,
+} from '@/utils';
 
 const arrayFormatter = (value: Array<number>) => {
   return value ? JSON.stringify(value) : '';
 };
 
 const sparseVectorFormatter = (value: Object) => {
-  return value ? JSON.stringify(value) : '';
+  return value ? transformObjToStr(value) : '';
 };
 
 const Formatter = {
@@ -66,7 +70,7 @@ const sparseVectorValidator = (text: string, field: FieldObject) => {
     };
   }
   try {
-    const obj = JSON.parse(text);
+    const obj = JSON.parse(transformObjStrToJSONStr(text));
     return {
       valid: true,
       value: obj,
@@ -90,10 +94,7 @@ const Validator = {
 };
 
 export type VectorInputBoxProps = {
-  onChange: (
-    anns_field: string,
-    value: Array<number> | Object | undefined
-  ) => void;
+  onChange: (anns_field: string, value: string) => void;
   searchParams: SearchSingleParams;
 };
 
@@ -106,8 +107,6 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const dataRef = useRef(data);
   const fieldRef = useRef(field);
 
-  // get formatter
-  const formatter = Formatter[field.data_type as keyof typeof Formatter];
   // get validator
   const validator = Validator[field.data_type as keyof typeof Validator];
 
@@ -119,23 +118,23 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
 
     if (editor.current) {
       // only data replace should trigger this, otherwise, let cm handle the state
-      if (editor.current.state.doc.toString() !== JSON.stringify(data)) {
+      if (editor.current.state.doc.toString() !== data) {
         editor.current.dispatch({
           changes: {
             from: 0,
             to: editor.current.state.doc.length,
-            insert: formatter(data as any),
+            insert: data,
           },
         });
       }
     }
-  }, [JSON.stringify(data)]);
+  }, [data]);
 
   // create editor
   useEffect(() => {
     if (!editor.current) {
       const startState = EditorState.create({
-        doc: formatter(data as any),
+        doc: data,
         extensions: [
           minimalSetup,
           javascript(),
@@ -211,9 +210,9 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
               const text = update.state.doc.toString();
-              const { valid, value } = validator(text, fieldRef.current);
+              const { valid } = validator(text, fieldRef.current);
               if (valid || text === '') {
-                onChangeRef.current(searchParams.anns_field, value);
+                onChangeRef.current(searchParams.anns_field, text);
               }
             }
           }),

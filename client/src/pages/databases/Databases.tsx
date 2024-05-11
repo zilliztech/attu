@@ -167,7 +167,7 @@ const CollectionTabs = (props: {
     searchParams: [
       {
         anns_field: '',
-        data: [] as any[],
+        data: '',
         params: {},
         field: {} as FieldObject,
       },
@@ -184,7 +184,7 @@ const CollectionTabs = (props: {
       collection && collection.schema
         ? collection.schema.vectorFields.map(v => ({
             anns_field: v.name,
-            data: [],
+            data: '',
             params: {},
             field: v,
           }))

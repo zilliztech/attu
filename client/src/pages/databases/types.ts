@@ -3,7 +3,7 @@ import { FieldObject } from '@server/types';
 export type SearchSingleParams = {
   anns_field: string;
   params: Record<string, any>;
-  data: any[];
+  data: string;
   field: FieldObject;
 };
 
