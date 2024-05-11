@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
@@ -99,9 +99,15 @@ export type VectorInputBoxProps = {
 };
 
 export default function VectorInputBox(props: VectorInputBoxProps) {
+  // props
   const { searchParams, onChange } = props;
   const { field, data } = searchParams;
-  const editorEl = useRef<HTMLDivElement>(null); // Adjusted type here
+
+  // UI states
+  const [isFocused, setIsFocused] = useState(false);
+
+  // refs
+  const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<EditorView>();
   const onChangeRef = useRef(onChange);
   const dataRef = useRef(data);
@@ -215,6 +221,9 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
                 onChangeRef.current(searchParams.anns_field, text);
               }
             }
+            if (update.focusChanged) {
+              setIsFocused(update.view.hasFocus);
+            }
           }),
         ],
       });
@@ -233,11 +242,12 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   }, [JSON.stringify(field)]);
 
   const containerStyle = {
-    height: '126px',
+    height: '124px',
     margin: '0 0 8px 0',
     overflow: 'auto',
     backgroundColor: '#f4f4f4',
     cursor: 'text',
+    border: isFocused ? '1px solid #000' : '1px solid transparent',
   };
 
   return (

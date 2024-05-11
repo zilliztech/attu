@@ -1,5 +1,4 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { Height, Opacity } from '@material-ui/icons';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {
