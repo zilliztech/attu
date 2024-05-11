@@ -12,11 +12,11 @@ import { SearchSingleParams } from '../../types';
 import { isSparseVector } from '@/utils';
 
 const arrayFormatter = (value: Array<number>) => {
-  return JSON.stringify(value);
+  return value ? JSON.stringify(value) : '';
 };
 
 const sparseVectorFormatter = (value: Object) => {
-  return JSON.stringify(value);
+  return value ? JSON.stringify(value) : '';
 };
 
 const Formatter = {
