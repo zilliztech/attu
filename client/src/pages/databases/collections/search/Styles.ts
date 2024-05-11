@@ -12,7 +12,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    overflow: 'auto',
+    height: 'max-content',
     padding: 0,
   },
 
@@ -23,7 +23,8 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexShrink: 0,
     padding: '0 8px 8px 0',
     borderRadius: '0',
-    height: 'calc(100vh - 164px)',
+    minHeight: 'calc(100vh - 164px)',
+    height: 'max-content',
     borderRight: `1px solid ${theme.palette.divider}`,
     '& .MuiAccordion-root.Mui-expanded': {
       margin: 0,
@@ -85,7 +86,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     width: 160,
     padding: '0 8px',
-    height: 'calc(100vh - 156px)',
     borderRight: `1px solid ${theme.palette.divider}`,
 
     '& .selector': {
