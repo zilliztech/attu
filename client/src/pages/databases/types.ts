@@ -5,6 +5,7 @@ export type SearchSingleParams = {
   params: Record<string, any>;
   data: string;
   field: FieldObject;
+  expanded: boolean;
 };
 
 export type GlobalParams = {

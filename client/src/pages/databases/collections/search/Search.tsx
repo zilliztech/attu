@@ -90,12 +90,19 @@ const Search = (props: CollectionDataProps) => {
   const gridTrans = commonTrans('grid');
   // classes
   const classes = getQueryStyles();
-  const [expanded, setExpanded] = useState<string | false>(false);
 
   // UI functions
   const handleExpand =
     (panel: string) => (event: ChangeEvent<{}>, expanded: boolean) => {
-      setExpanded(expanded ? panel : false);
+      const s = cloneObj(searchParams);
+      const target = s.searchParams.find((sp: SearchSingleParams) => {
+        return sp.field.name === panel;
+      });
+
+      if (target) {
+        target.expanded = expanded;
+        setSearchParams({ ...s });
+      }
     };
 
   // update search params
@@ -160,7 +167,7 @@ const Search = (props: CollectionDataProps) => {
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
-                  expanded={expanded === field.name}
+                  expanded={s.expanded}
                   onChange={handleExpand(field.name)}
                   className={classes.accordion}
                 >

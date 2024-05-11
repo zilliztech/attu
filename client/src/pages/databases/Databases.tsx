@@ -170,6 +170,7 @@ const CollectionTabs = (props: {
         data: '',
         params: {},
         field: {} as FieldObject,
+        expanded: false,
       },
     ],
     globalParams: {
@@ -187,6 +188,7 @@ const CollectionTabs = (props: {
             data: '',
             params: {},
             field: v,
+            expanded: false,
           }))
         : ([] as any);
 
