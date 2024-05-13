@@ -116,7 +116,6 @@ const Search = (props: CollectionDataProps) => {
       if (target) {
         target.selected = !target.selected;
 
-        target.expanded = !target.expanded;
         setSearchParams({ ...s });
       }
     },
