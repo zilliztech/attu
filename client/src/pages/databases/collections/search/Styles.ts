@@ -38,7 +38,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     border: 'none',
     borderRadius: 0,
     boxShadow: 'none',
-    padding: '0 0 0 0',
+    padding: '0',
 
     // borderBottom: `1px solid ${theme.palette.divider}`,
     '& .MuiAccordionSummary-root': {
@@ -48,8 +48,14 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
         padding: 4,
       },
     },
-    '& .MuiAccordionSummary-content.Mui-expanded': {
+    '& .MuiAccordionSummary-content': {
       margin: 0,
+      padding: '8px 0',
+    },
+    '& .MuiAccordionSummary-expandIcon': {
+      alignSelf: 'flex-start',
+      postion: 'relative',
+      top: '4px',
     },
   },
   accordionDetail: {
@@ -70,15 +76,31 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexShrink: 0,
   },
   checkbox: {
+    display: 'flex',
+    flexDirection: 'row',
     '& .MuiCheckbox-root': {
       padding: 0,
       marginRight: 4,
+      alignSelf: 'flex-start',
+      postion: 'relative',
+      top: '2px',
     },
-  },
-  secondaryHeading: {
-    color: theme.palette.text.secondary,
-    fontSize: '13px',
-    lineHeight: '20px',
+    '& .MuiFormControlLabel-label': {
+      fontSize: '14px',
+      lineHeight: '20px',
+      wordBreak: 'break-all',
+    },
+
+    '& .field-name': {
+      fontSize: '13px',
+      fontWeight: 600,
+    },
+
+    '& .vector-type': {
+      color: theme.palette.text.secondary,
+      fontSize: '12px',
+      lineHeight: '20px',
+    },
   },
 
   searchControls: {

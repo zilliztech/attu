@@ -19,11 +19,7 @@ import { ConsistencyLevelEnum } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
-import {
-  CollectionObject,
-  CollectionFullObject,
-  FieldObject,
-} from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

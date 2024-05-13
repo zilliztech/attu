@@ -184,12 +184,18 @@ const Search = (props: CollectionDataProps) => {
                       onClick={event => event.stopPropagation()}
                       onFocus={event => event.stopPropagation()}
                       control={<Checkbox size="small" />}
-                      label={field.name} //  formatFieldType(field)
+                      label={
+                        <>
+                          <Typography className="field-name">
+                            {field.name}
+                          </Typography>
+                          <Typography className="vector-type">
+                            {formatFieldType(field)}
+                          </Typography>
+                        </>
+                      } //  formatFieldType(field)
                       className={classes.checkbox}
                     />
-                    <Typography className={classes.secondaryHeading}>
-                      {formatFieldType(field)}
-                    </Typography>
                   </AccordionSummary>
                   <AccordionDetails className={classes.accordionDetail}>
                     <VectorInputBox
