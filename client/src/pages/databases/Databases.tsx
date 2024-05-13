@@ -61,6 +61,38 @@ const Databases = () => {
   const { database, collections, loading, fetchCollection } =
     useContext(dataContext);
 
+  // UI state
+  const [searchParams, setSearchParams] = useState<SearchParams[]>(
+    [] as SearchParams[]
+  );
+
+  // init search params
+  useEffect(() => {
+    if (collections[0] && collections[0].schema) {
+      const initSearchParams = (collections as CollectionFullObject[]).map(
+        c => {
+          return {
+            collection: c,
+            searchParams: c.schema.vectorFields.map(v => {
+              return {
+                anns_field: v.name,
+                params: {},
+                data: '',
+                expanded: false,
+                field: v,
+              };
+            }),
+            globalParams: {
+              topK: 50,
+              consistency_level: ConsistencyLevelEnum.Bounded,
+            },
+          };
+        }
+      );
+      setSearchParams(initSearchParams);
+    }
+  }, [collections]);
+
   // get current collection from url
   const params = useParams();
   const {
@@ -93,6 +125,19 @@ const Databases = () => {
     ),
   });
 
+  const setCollectionSearchParams = (params: SearchParams) => {
+    setSearchParams(
+      searchParams.map(s => {
+        if (
+          s.collection.collection_name === params.collection.collection_name
+        ) {
+          return params;
+        }
+        return s;
+      })
+    );
+  };
+
   // render
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
@@ -116,6 +161,12 @@ const Databases = () => {
           collectionPage={collectionPage}
           collectionName={collectionName}
           tabClass={classes.tab}
+          searchParams={
+            searchParams.find(
+              s => s.collection.collection_name === collectionName
+            )!
+          }
+          setSearchParams={setCollectionSearchParams}
           collections={collections}
         />
       )}
@@ -154,48 +205,22 @@ const CollectionTabs = (props: {
   collectionName: string; // current collection name
   tabClass: string; // tab class
   collections: CollectionObject[]; // collections
+  searchParams: SearchParams; // search params
+  setSearchParams: (params: SearchParams) => void; // set search params
 }) => {
   // props
-  const { collectionPage, collectionName, tabClass, collections } = props;
+  const {
+    collectionPage,
+    collectionName,
+    tabClass,
+    collections,
+    searchParams,
+    setSearchParams,
+  } = props;
 
   const collection = collections.find(
     i => i.collection_name === collectionName
   ) as CollectionFullObject;
-
-  // UI state
-  const [searchParams, setSearchParams] = useState<SearchParams>({
-    searchParams: [
-      {
-        anns_field: '',
-        data: '',
-        params: {},
-        field: {} as FieldObject,
-        expanded: false,
-      },
-    ],
-    globalParams: {
-      topK: 50,
-      consistency_level: ConsistencyLevelEnum.Bounded,
-    },
-  });
-
-  useEffect(() => {
-    // Initialize searchParams
-    const initSearchParams =
-      collection && collection.schema
-        ? collection.schema.vectorFields.map(v => ({
-            anns_field: v.name,
-            data: '',
-            params: {},
-            field: v,
-            expanded: false,
-          }))
-        : ([] as any);
-
-    searchParams.searchParams = initSearchParams;
-
-    setSearchParams({ ...searchParams });
-  }, [collectionName, collection && JSON.stringify(collection.schema)]);
 
   // context
   const { isManaged } = useContext(authContext);

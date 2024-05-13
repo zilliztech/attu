@@ -1,11 +1,11 @@
-import { FieldObject } from '@server/types';
+import { FieldObject, CollectionObject } from '@server/types';
 
 export type SearchSingleParams = {
   anns_field: string;
   params: Record<string, any>;
   data: string;
-  field: FieldObject;
   expanded: boolean;
+  field: FieldObject;
 };
 
 export type GlobalParams = {
@@ -14,6 +14,7 @@ export type GlobalParams = {
 };
 
 export type SearchParams = {
+  collection: CollectionObject;
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
 };

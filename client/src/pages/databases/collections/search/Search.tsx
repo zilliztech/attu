@@ -152,7 +152,7 @@ const Search = (props: CollectionDataProps) => {
   );
 
   // collection is not found or collection full object is not ready
-  if (searchParams && searchParams.searchParams.length === 0) {
+  if (!searchParams || searchParams && searchParams.searchParams.length === 0) {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
 
