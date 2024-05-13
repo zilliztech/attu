@@ -11,7 +11,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -116,6 +115,8 @@ const Search = (props: CollectionDataProps) => {
       });
       if (target) {
         target.selected = !target.selected;
+
+        target.expanded = !target.expanded;
         setSearchParams({ ...s });
       }
     },
@@ -182,6 +183,17 @@ const Search = (props: CollectionDataProps) => {
     s => s.data === '' || !s.selected
   );
 
+  // get search params
+  const searchParamsForm = searchParams.searchParams
+    .filter(s => s.selected)
+    .map(s => {
+      return {
+        anns_field: s.field.name,
+        data: s.data,
+        params: s.params,
+      };
+    });
+
   return (
     <div className={classes.root}>
       {collection && (
@@ -202,24 +214,26 @@ const Search = (props: CollectionDataProps) => {
                     aria-controls={`${field.name}-content`}
                     id={`${field.name}-header`}
                   >
-                    <FormControlLabel
-                      onClick={event => event.stopPropagation()}
-                      onFocus={event => event.stopPropagation()}
-                      onChange={handleSelect(field.name)}
-                      control={<Checkbox size="small" checked={s.selected} />}
-                      label={
-                        <>
-                          <Typography className="field-name">
-                            {field.name}
-                          </Typography>
-                          <Typography className="vector-type">
-                            {formatFieldType(field)}
-                            <i>{field.index.metricType}</i>
-                          </Typography>
-                        </>
-                      } //  formatFieldType(field)
-                      className={classes.checkbox}
-                    />
+                    <div className={classes.checkbox}>
+                      <Checkbox
+                        size="small"
+                        checked={s.selected}
+                        onChange={handleSelect(field.name)}
+                      />
+                      <div className="label">
+                        <Typography
+                          className={`field-name ${
+                            s.data.length > 0 ? 'bold' : ''
+                          }`}
+                        >
+                          {field.name}
+                        </Typography>
+                        <Typography className="vector-type">
+                          {formatFieldType(field)}
+                          <i>{field.index.metricType}</i>
+                        </Typography>
+                      </div>
+                    </div>
                   </AccordionSummary>
                   <AccordionDetails className={classes.accordionDetail}>
                     <VectorInputBox
@@ -279,6 +293,8 @@ const Search = (props: CollectionDataProps) => {
               {btnTrans('search')}
             </CustomButton>
           </div>
+
+          <div>{JSON.stringify(searchParamsForm)}</div>
         </div>
       )}
     </div>

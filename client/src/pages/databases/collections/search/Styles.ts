@@ -43,7 +43,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     // borderBottom: `1px solid ${theme.palette.divider}`,
     '& .MuiAccordionSummary-root': {
       minHeight: '48px',
-      padding: '0 12px',
+      padding: '0 12px 0 0',
       '& .MuiAccordionSummary-expandIcon': {
         padding: 4,
       },
@@ -54,7 +54,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
     '& .MuiAccordionSummary-expandIcon': {
       alignSelf: 'flex-start',
-      postion: 'relative',
+      position: 'relative',
       top: '4px',
     },
   },
@@ -85,17 +85,15 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       postion: 'relative',
       top: '2px',
     },
-    '& .MuiFormControlLabel-label': {
-      fontSize: '14px',
+    '& .field-name': {
+      fontSize: '13px',
+      fontWeight: 400,
       lineHeight: '20px',
       wordBreak: 'break-all',
     },
-
-    '& .field-name': {
-      fontSize: '13px',
+    '& .bold': {
       fontWeight: 600,
     },
-
     '& .vector-type': {
       color: theme.palette.text.secondary,
       fontSize: '12px',
@@ -103,8 +101,8 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       '& i': {
         marginLeft: '4px',
         fontSize: '10px',
-        fontWeight: 500,
-        color: theme.palette.text.secondary,
+        fontWeight: 600,
+        color: theme.palette.primary.light,
       },
     },
   },
@@ -113,6 +111,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     width: 160,
+    minWidth: 160,
     padding: '0 8px',
     borderRight: `1px solid ${theme.palette.divider}`,
 
