@@ -100,6 +100,12 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.text.secondary,
       fontSize: '12px',
       lineHeight: '20px',
+      '& i': {
+        marginLeft: '4px',
+        fontSize: '10px',
+        fontWeight: 500,
+        color: theme.palette.text.secondary,
+      },
     },
   },
 

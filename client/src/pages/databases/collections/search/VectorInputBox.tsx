@@ -134,7 +134,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         });
       }
     }
-  }, [data]);
+  }, [JSON.stringify(searchParams)]);
 
   // create editor
   useEffect(() => {

@@ -20,6 +20,7 @@ import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
+import { select } from 'd3';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -76,6 +77,7 @@ const Databases = () => {
                 data: '',
                 expanded: c.schema.vectorFields.length === 1,
                 field: v,
+                selected: c.schema.vectorFields.length === 1,
               };
             }),
             globalParams: {

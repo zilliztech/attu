@@ -21,6 +21,7 @@ import icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
 import CustomToolBar from '@/components/grid/ToolBar';
+import CustomButton from '@/components/customButton/CustomButton';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
 import SearchGlobalParams from './SearchGlobalParams';
@@ -92,7 +93,7 @@ const Search = (props: CollectionDataProps) => {
   const classes = getQueryStyles();
 
   // UI functions
-  const handleExpand =
+  const handleExpand = useCallback(
     (panel: string) => (event: ChangeEvent<{}>, expanded: boolean) => {
       const s = cloneObj(searchParams);
       const target = s.searchParams.find((sp: SearchSingleParams) => {
@@ -103,7 +104,23 @@ const Search = (props: CollectionDataProps) => {
         target.expanded = expanded;
         setSearchParams({ ...s });
       }
-    };
+    },
+    [JSON.stringify(searchParams)]
+  );
+
+  const handleSelect = useCallback(
+    (panel: string) => (event: ChangeEvent<{}>) => {
+      const s = cloneObj(searchParams) as SearchParamsType;
+      const target = s.searchParams.find(sp => {
+        return sp.field.name === panel;
+      });
+      if (target) {
+        target.selected = !target.selected;
+        setSearchParams({ ...s });
+      }
+    },
+    [JSON.stringify(searchParams)]
+  );
 
   // update search params
   const updateSearchParamCallback = useCallback(
@@ -160,6 +177,11 @@ const Search = (props: CollectionDataProps) => {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
 
+  // disable search button
+  const disableSearch = searchParams.searchParams.every(
+    s => s.data === '' || !s.selected
+  );
+
   return (
     <div className={classes.root}>
       {collection && (
@@ -183,7 +205,8 @@ const Search = (props: CollectionDataProps) => {
                     <FormControlLabel
                       onClick={event => event.stopPropagation()}
                       onFocus={event => event.stopPropagation()}
-                      control={<Checkbox size="small" />}
+                      onChange={handleSelect(field.name)}
+                      control={<Checkbox size="small" checked={s.selected} />}
                       label={
                         <>
                           <Typography className="field-name">
@@ -191,6 +214,7 @@ const Search = (props: CollectionDataProps) => {
                           </Typography>
                           <Typography className="vector-type">
                             {formatFieldType(field)}
+                            <i>{field.index.metricType}</i>
                           </Typography>
                         </>
                       } //  formatFieldType(field)
@@ -229,15 +253,32 @@ const Search = (props: CollectionDataProps) => {
             })}
           </div>
 
-          <SearchGlobalParams
-            searchParamsForm={searchParams.globalParams}
-            handleFormChange={(params: any) => {
-              searchParams.globalParams = params;
-              setSearchParams({ ...searchParams });
-            }}
-            executeGenerateVectors={executeGenerateVectors}
-            executeSearch={executeSearch}
-          />
+          <div className={classes.searchControls}>
+            <SearchGlobalParams
+              searchParamsForm={searchParams.globalParams}
+              handleFormChange={(params: any) => {
+                searchParams.globalParams = params;
+                setSearchParams({ ...searchParams });
+              }}
+            />
+
+            <CustomButton
+              onClick={executeGenerateVectors}
+              size="small"
+              disabled={false}
+            >
+              {btnTrans('example')}
+            </CustomButton>
+
+            <CustomButton
+              variant="contained"
+              size="small"
+              disabled={disableSearch}
+              onClick={executeSearch}
+            >
+              {btnTrans('search')}
+            </CustomButton>
+          </div>
         </div>
       )}
     </div>

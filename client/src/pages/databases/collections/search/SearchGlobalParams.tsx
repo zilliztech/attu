@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { getQueryStyles } from './Styles';
@@ -13,18 +12,11 @@ export interface CollectionDataProps {
     [key in string]: number | string;
   };
   handleFormChange: (form: { [key in string]: number | string }) => void;
-  executeGenerateVectors: () => void;
-  executeSearch: () => void;
 }
 
 const SearchGlobalParams = (props: CollectionDataProps) => {
   // props
-  const {
-    searchParamsForm,
-    handleFormChange,
-    executeSearch,
-    executeGenerateVectors,
-  } = props;
+  const { searchParamsForm, handleFormChange } = props;
 
   // UI functions
   const handleInputChange = useCallback(
@@ -74,7 +66,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
   };
 
   return (
-    <div className={classes.searchControls}>
+    <>
       <CustomSelector
         options={TOP_K_OPTIONS}
         value={searchParamsForm.topK as string}
@@ -104,24 +96,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
         textConfig={roundInputConfig}
         checkValid={() => true}
       />
-
-      <CustomButton
-        onClick={executeGenerateVectors}
-        size="small"
-        disabled={false}
-      >
-        {btnTrans('example')}
-      </CustomButton>
-
-      <CustomButton
-        variant="contained"
-        size="small"
-        disabled={false}
-        onClick={executeSearch}
-      >
-        {btnTrans('search')}
-      </CustomButton>
-    </div>
+    </>
   );
 };
 

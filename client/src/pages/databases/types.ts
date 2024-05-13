@@ -5,6 +5,7 @@ export type SearchSingleParams = {
   params: Record<string, any>;
   data: string;
   expanded: boolean;
+  selected: boolean
   field: FieldObject;
 };
 
