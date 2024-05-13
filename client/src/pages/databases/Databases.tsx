@@ -78,7 +78,7 @@ const Databases = () => {
                 anns_field: v.name,
                 params: {},
                 data: '',
-                expanded: false,
+                expanded: c.schema.vectorFields.length === 1,
                 field: v,
               };
             }),

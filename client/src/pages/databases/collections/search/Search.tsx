@@ -121,12 +121,7 @@ const Search = (props: CollectionDataProps) => {
     [JSON.stringify(searchParams)]
   );
 
-  // execute search
-  const executeSearch = useCallback(() => {
-    console.log('executeSearch', searchParams);
-  }, [JSON.stringify(searchParams)]);
-
-  // generate vectors
+  // generate random vectors
   const executeGenerateVectors = useCallback(() => {
     const s = cloneObj(searchParams) as SearchParamsType;
     s.searchParams.forEach((sp: SearchSingleParams) => {
@@ -136,6 +131,7 @@ const Search = (props: CollectionDataProps) => {
     setSearchParams({ ...s });
   }, [JSON.stringify(searchParams)]);
 
+  // on vector input change, update the search params
   const onVectorInputChange = useCallback(
     (anns_field: string, value: string) => {
       const s = cloneObj(searchParams) as SearchParamsType;
@@ -151,8 +147,16 @@ const Search = (props: CollectionDataProps) => {
     [JSON.stringify(searchParams)]
   );
 
+  // execute search
+  const executeSearch = useCallback(() => {
+    console.log('executeSearch', searchParams);
+  }, [JSON.stringify(searchParams)]);
+
   // collection is not found or collection full object is not ready
-  if (!searchParams || searchParams && searchParams.searchParams.length === 0) {
+  if (
+    !searchParams ||
+    (searchParams && searchParams.searchParams.length === 0)
+  ) {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
 
