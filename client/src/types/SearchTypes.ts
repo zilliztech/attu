@@ -44,18 +44,7 @@ export interface SearchParamInputConfig {
   className?: string;
 }
 
-export interface VectorSearchParam {
-  expr?: string;
-  search_params: {
-    anns_field: string; // your vector field name
-    topk: string | number;
-    metric_type: string;
-    params: string;
-  };
-  vectors: any;
-  output_fields: string[];
-  vector_type: DataTypeEnum;
-}
+export type VectorSearchParam  = any
 
 export interface SearchResult {
   // dynamic field names

@@ -9,27 +9,7 @@ import { linter, Diagnostic } from '@codemirror/lint';
 import { FieldObject } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
-import {
-  isSparseVector,
-  transformObjStrToJSONStr,
-  transformObjToStr,
-} from '@/utils';
-
-const arrayFormatter = (value: Array<number>) => {
-  return value ? JSON.stringify(value) : '';
-};
-
-const sparseVectorFormatter = (value: Object) => {
-  return value ? transformObjToStr(value) : '';
-};
-
-const Formatter = {
-  [DataTypeStringEnum.FloatVector]: arrayFormatter,
-  [DataTypeStringEnum.BinaryVector]: arrayFormatter,
-  [DataTypeStringEnum.Float16Vector]: arrayFormatter,
-  [DataTypeStringEnum.BFloat16Vector]: arrayFormatter,
-  [DataTypeStringEnum.SparseFloatVector]: sparseVectorFormatter,
-};
+import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
 
 const floatVectorValidator = (text: string, field: FieldObject) => {
   try {

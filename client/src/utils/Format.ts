@@ -3,12 +3,14 @@ import {
   DEFAULT_MILVUS_PORT,
   DEFAULT_PROMETHEUS_PORT,
   VectorTypes,
+  DataTypeStringEnum,
 } from '@/consts';
 import {
   CreateFieldType,
   CreateField,
 } from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
+import { generateVector } from './';
 
 /**
  * transform large capacity to capacity in b.
@@ -266,4 +268,36 @@ export const transformObjStrToJSONStr = (str: string): string => {
 export const transformObjToStr = (obj: any): string => {
   const str = JSON.stringify(obj);
   return str.replace(/"/g, '');
+};
+
+export const generateVectorsByField = (field: FieldObject) => {
+  switch (field.data_type) {
+    case DataTypeStringEnum.FloatVector:
+    case DataTypeStringEnum.BinaryVector:
+    case DataTypeStringEnum.Float16Vector:
+    case DataTypeStringEnum.BFloat16Vector:
+      return JSON.stringify(generateVector(field.dimension));
+    case 'SparseFloatVector':
+      return transformObjToStr({
+        [Math.floor(Math.random() * 10)]: Math.random(),
+      });
+    default:
+      return [1, 2, 3];
+  }
+};
+
+const arrayFormatter = (value: string) => {
+  return JSON.parse(value);
+};
+
+const sparseVectorFormatter = (str: string) => {
+  return JSON.parse(transformObjStrToJSONStr(str));
+};
+
+export const VectorStrToObject = {
+  [DataTypeStringEnum.FloatVector]: arrayFormatter,
+  [DataTypeStringEnum.BinaryVector]: arrayFormatter,
+  [DataTypeStringEnum.Float16Vector]: arrayFormatter,
+  [DataTypeStringEnum.BFloat16Vector]: arrayFormatter,
+  [DataTypeStringEnum.SparseFloatVector]: sparseVectorFormatter,
 };

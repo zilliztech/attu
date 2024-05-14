@@ -2,6 +2,7 @@ import {
   useState,
   useEffect,
   useRef,
+  useMemo,
   useContext,
   ChangeEvent,
   useCallback,
@@ -22,26 +23,29 @@ import icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
 import CustomToolBar from '@/components/grid/ToolBar';
+import EmptyCard from '@/components/cards/EmptyCard';
 import CustomButton from '@/components/customButton/CustomButton';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import { useSearchResult, usePaginationHook } from '@/hooks';
 import { getQueryStyles } from './Styles';
 import SearchGlobalParams from './SearchGlobalParams';
 import VectorInputBox from './VectorInputBox';
-import {
-  CollectionObject,
-  CollectionFullObject,
-  FieldObject,
-} from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { formatFieldType } from '@/utils';
+import {
+  formatFieldType,
+  VectorStrToObject,
+  cloneObj,
+  generateVectorsByField,
+} from '@/utils';
 import SearchParams from '../../../search/SearchParams';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
 } from '../../types';
-import { cloneObj, generateVector, transformObjToStr } from '@/utils';
-import { DataTypeStringEnum } from '@/consts';
+import { DYNAMIC_FIELD } from '@/consts';
+import { ColDefinitionsType } from '@/components/grid/Types';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -50,20 +54,11 @@ export interface CollectionDataProps {
   setSearchParams: (params: SearchParamsType) => void;
 }
 
-export const generateVectorsByField = (field: FieldObject) => {
-  switch (field.data_type) {
-    case DataTypeStringEnum.FloatVector:
-    case DataTypeStringEnum.BinaryVector:
-    case DataTypeStringEnum.Float16Vector:
-    case DataTypeStringEnum.BFloat16Vector:
-      return JSON.stringify(generateVector(field.dimension));
-    case 'SparseFloatVector':
-      return transformObjToStr({
-        [Math.floor(Math.random() * 10)]: Math.random(),
-      });
-    default:
-      return [1, 2, 3];
-  }
+export type SearchResultView = {
+  // dynamic field names
+  [key: string]: any;
+  rank: number;
+  distance: number;
 };
 
 const Search = (props: CollectionDataProps) => {
@@ -74,13 +69,20 @@ const Search = (props: CollectionDataProps) => {
   ) as CollectionFullObject;
 
   // UI state
+  // use null as init value before search, empty array means no results
+  const [searchResult, setSearchResult] = useState<SearchResultView[] | null>(
+    null
+  );
   const [tableLoading, setTableLoading] = useState<boolean>();
+
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
 
   // icons
   const ResetIcon = icons.refresh;
+  const VectorSearchIcon = icons.vectorSearch;
+
   // translations
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
@@ -167,9 +169,119 @@ const Search = (props: CollectionDataProps) => {
   );
 
   // execute search
-  const executeSearch = useCallback(() => {
-    console.log('executeSearch', searchParams);
-  }, [JSON.stringify(searchParams)]);
+  const handleSearch = async () => {
+    const clonedSearchParams = cloneObj(searchParams);
+    delete clonedSearchParams.round_decimal;
+    const data = searchParams.searchParams
+      .filter(s => s.selected)
+      .map(s => {
+        const formatter =
+          VectorStrToObject[
+            s.field.data_type as keyof typeof VectorStrToObject
+          ];
+        return {
+          anns_field: s.field.name,
+          data: formatter(s.data),
+          params: s.params,
+        };
+      });
+
+    const params = {
+      output_fields: outputFields,
+      limit: searchParams.globalParams.topK,
+      data: data,
+      consistency_level: searchParams.globalParams.consistency_level,
+    };
+
+    console.log('search params', params);
+
+    setTableLoading(true);
+    try {
+      const res = await DataService.vectorSearchData(
+        searchParams.collection.collection_name,
+        params
+      );
+      setTableLoading(false);
+      setSearchResult(res.results);
+      // setLatency(res.latency);
+    } catch (err) {
+      setTableLoading(false);
+    }
+  };
+
+  const searchResultMemo = useSearchResult(searchResult as any);
+
+  let primaryKeyField = 'id';
+
+  const outputFields: string[] = useMemo(() => {
+    if (!searchParams || !searchParams.collection) {
+      return [];
+    }
+
+    const s = searchParams.collection;
+
+    const fields = (s.schema && s.schema.fields) || [];
+
+    // vector field can't be output fields
+    const invalidTypes = [
+      'BinaryVector',
+      'FloatVector',
+      'Float16Vector',
+      'BFloat16Vector',
+      'SparseFloatVector',
+    ];
+    const nonVectorFields = fields.filter(
+      field => !invalidTypes.includes(field.data_type)
+    );
+
+    const _outputFields = nonVectorFields.map(f => f.name);
+    if (s.schema?.enable_dynamic_field) {
+      _outputFields.push(DYNAMIC_FIELD);
+    }
+    return _outputFields;
+  }, [searchParams]);
+
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data: result,
+    order,
+    orderBy,
+    handleGridSort,
+  } = usePaginationHook(searchResultMemo || []);
+
+  const colDefinitions: ColDefinitionsType[] = useMemo(() => {
+    const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
+
+    return searchResult && searchResult.length > 0
+      ? Object.keys(searchResult[0])
+          .sort((a, b) => {
+            const indexA = orderArray.indexOf(a);
+            const indexB = orderArray.indexOf(b);
+            return indexA - indexB;
+          })
+          .filter(item => {
+            // if primary key field name is id, don't filter it
+            const invalidItems = primaryKeyField === 'id' ? [] : ['id'];
+            return !invalidItems.includes(item);
+          })
+          .map(key => ({
+            id: key,
+            align: 'left',
+            disablePadding: false,
+            label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
+            needCopy: key !== 'score',
+          }))
+      : [];
+  }, [searchResult, searchParams, primaryKeyField]);
+
+  // methods
+  const handlePageChange = (e: any, page: number) => {
+    handleCurrentPage(page);
+  };
 
   // collection is not found or collection full object is not ready
   if (
@@ -185,15 +297,6 @@ const Search = (props: CollectionDataProps) => {
   );
 
   // get search params
-  const searchParamsForm = searchParams.searchParams
-    .filter(s => s.selected)
-    .map(s => {
-      return {
-        anns_field: s.field.name,
-        data: s.data,
-        params: s.params,
-      };
-    });
 
   return (
     <div className={classes.root}>
@@ -289,13 +392,44 @@ const Search = (props: CollectionDataProps) => {
               variant="contained"
               size="small"
               disabled={disableSearch}
-              onClick={executeSearch}
+              onClick={handleSearch}
             >
               {btnTrans('search')}
             </CustomButton>
           </div>
 
-          <div>{JSON.stringify(searchParamsForm)}</div>
+          <div>
+            {(searchResult && searchResult.length > 0) || tableLoading ? (
+              <AttuGrid
+                toolbarConfigs={[]}
+                colDefinitions={colDefinitions}
+                rows={result}
+                rowCount={total}
+                primaryKey="rank"
+                page={currentPage}
+                rowHeight={39}
+                onPageChange={handlePageChange}
+                rowsPerPage={pageSize}
+                setRowsPerPage={handlePageSize}
+                openCheckBox={false}
+                isLoading={tableLoading}
+                orderBy={orderBy}
+                order={order}
+                labelDisplayedRows={getLabelDisplayedRows(`(1 ms)`)} // TODO
+                handleSort={handleGridSort}
+              />
+            ) : (
+              <EmptyCard
+                wrapperClass={`page-empty-card`}
+                icon={<VectorSearchIcon />}
+                text={
+                  searchResult !== null
+                    ? searchTrans('empty')
+                    : searchTrans('startTip')
+                }
+              />
+            )}
+          </div>
         </div>
       )}
     </div>

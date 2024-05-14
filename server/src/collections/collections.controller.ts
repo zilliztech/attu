@@ -94,11 +94,7 @@ export class CollectionController {
     );
     // we need use req.body, so we can't use delete here
     this.router.put('/:name/entities', this.deleteEntities.bind(this));
-    this.router.post(
-      '/:name/search',
-      dtoValidationMiddleware(VectorSearchDto),
-      this.vectorSearch.bind(this)
-    );
+    this.router.post('/:name/search', this.vectorSearch.bind(this));
     // query
     this.router.post(
       '/:name/query',
