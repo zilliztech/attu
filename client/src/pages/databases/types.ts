@@ -14,8 +14,16 @@ export type GlobalParams = {
   consistency_level: string;
 };
 
+export type SearchResultView = {
+  // dynamic field names
+  [key: string]: any;
+  rank: number;
+  distance: number;
+};
+
 export type SearchParams = {
   collection: CollectionObject;
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
+  searchResult: SearchResultView[] | null;
 };

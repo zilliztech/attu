@@ -119,4 +119,12 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       marginBottom: '8px',
     },
   },
+
+  searchResults: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    padding: '0 8px',
+    overflow: 'auto',
+  },
 }));

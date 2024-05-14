@@ -83,6 +83,7 @@ const Databases = () => {
               topK: 50,
               consistency_level: ConsistencyLevelEnum.Bounded,
             },
+            searchResult: null,
           };
         }
       );
@@ -214,10 +215,6 @@ const CollectionTabs = (props: {
     searchParams,
     setSearchParams,
   } = props;
-
-  const collection = collections.find(
-    i => i.collection_name === collectionName
-  ) as CollectionFullObject;
 
   // context
   const { isManaged } = useContext(authContext);

@@ -6,8 +6,6 @@ import {
   useContext,
   ChangeEvent,
   useCallback,
-  Dispatch,
-  SetStateAction,
 } from 'react';
 import {
   Typography,
@@ -43,6 +41,7 @@ import SearchParams from '../../../search/SearchParams';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
+  SearchResultView,
 } from '../../types';
 import { DYNAMIC_FIELD } from '@/consts';
 import { ColDefinitionsType } from '@/components/grid/Types';
@@ -54,13 +53,6 @@ export interface CollectionDataProps {
   setSearchParams: (params: SearchParamsType) => void;
 }
 
-export type SearchResultView = {
-  // dynamic field names
-  [key: string]: any;
-  rank: number;
-  distance: number;
-};
-
 const Search = (props: CollectionDataProps) => {
   // props
   const { collections, collectionName, searchParams, setSearchParams } = props;
@@ -68,11 +60,6 @@ const Search = (props: CollectionDataProps) => {
     i => i.collection_name === collectionName
   ) as CollectionFullObject;
 
-  // UI state
-  // use null as init value before search, empty array means no results
-  const [searchResult, setSearchResult] = useState<SearchResultView[] | null>(
-    null
-  );
   const [tableLoading, setTableLoading] = useState<boolean>();
 
   // UI functions
@@ -168,6 +155,15 @@ const Search = (props: CollectionDataProps) => {
     [JSON.stringify(searchParams)]
   );
 
+  const setSearchResult = useCallback(
+    (result: SearchResultView[]) => {
+      const s = cloneObj(searchParams);
+      s.searchResult = result;
+      setSearchParams({ ...s });
+    },
+    [JSON.stringify(searchParams)]
+  );
+
   // execute search
   const handleSearch = async () => {
     const clonedSearchParams = cloneObj(searchParams);
@@ -209,7 +205,9 @@ const Search = (props: CollectionDataProps) => {
     }
   };
 
-  const searchResultMemo = useSearchResult(searchResult as any);
+  const searchResultMemo = useSearchResult(
+    (searchParams && (searchParams.searchResult as SearchResultView[])) || []
+  );
 
   let primaryKeyField = 'id';
 
@@ -256,8 +254,10 @@ const Search = (props: CollectionDataProps) => {
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
 
-    return searchResult && searchResult.length > 0
-      ? Object.keys(searchResult[0])
+    return searchParams &&
+      searchParams.searchResult &&
+      searchParams.searchResult.length > 0
+      ? Object.keys(searchParams.searchResult[0])
           .sort((a, b) => {
             const indexA = orderArray.indexOf(a);
             const indexB = orderArray.indexOf(b);
@@ -276,7 +276,7 @@ const Search = (props: CollectionDataProps) => {
             needCopy: key !== 'score',
           }))
       : [];
-  }, [searchResult, searchParams, primaryKeyField]);
+  }, [searchParams, primaryKeyField]);
 
   // methods
   const handlePageChange = (e: any, page: number) => {
@@ -398,8 +398,10 @@ const Search = (props: CollectionDataProps) => {
             </CustomButton>
           </div>
 
-          <div>
-            {(searchResult && searchResult.length > 0) || tableLoading ? (
+          <div className={classes.searchResults}>
+            {(searchParams.searchResult &&
+              searchParams.searchResult.length > 0) ||
+            tableLoading ? (
               <AttuGrid
                 toolbarConfigs={[]}
                 colDefinitions={colDefinitions}
@@ -423,7 +425,7 @@ const Search = (props: CollectionDataProps) => {
                 wrapperClass={`page-empty-card`}
                 icon={<VectorSearchIcon />}
                 text={
-                  searchResult !== null
+                  searchParams.searchResult !== null
                     ? searchTrans('empty')
                     : searchTrans('startTip')
                 }
