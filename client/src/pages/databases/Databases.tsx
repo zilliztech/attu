@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
@@ -20,7 +20,6 @@ import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
-import { select } from 'd3';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -124,16 +123,16 @@ const Databases = () => {
   });
 
   const setCollectionSearchParams = (params: SearchParams) => {
-    setSearchParams(
-      searchParams.map(s => {
+    setSearchParams(prevParams => {
+      return prevParams.map(s => {
         if (
           s.collection.collection_name === params.collection.collection_name
         ) {
-          return params;
+          return {...params};
         }
         return s;
-      })
-    );
+      });
+    });
   };
 
   // render

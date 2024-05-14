@@ -5,6 +5,8 @@ import {
   useContext,
   ChangeEvent,
   useCallback,
+  Dispatch,
+  SetStateAction,
 } from 'react';
 import {
   Typography,
@@ -45,7 +47,7 @@ export interface CollectionDataProps {
   collectionName: string;
   collections: CollectionObject[];
   searchParams: SearchParamsType;
-  setSearchParams: any;
+  setSearchParams: (params: SearchParamsType) => void;
 }
 
 export const generateVectorsByField = (field: FieldObject) => {
