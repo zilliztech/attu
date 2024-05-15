@@ -97,6 +97,13 @@ const Databases = () => {
         });
       }
     });
+
+    // delete search params for the collection that is not in the collections
+    setSearchParams(prevParams => {
+      return prevParams.filter(s =>
+        collections.find(c => c.collection_name === s.collection.collection_name)
+      );
+    });
   }, [collections]);
 
   // get current collection from url
