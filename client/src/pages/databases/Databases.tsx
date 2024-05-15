@@ -64,31 +64,39 @@ const Databases = () => {
 
   // init search params
   useEffect(() => {
-    if (collections[0] && collections[0].schema) {
-      const initSearchParams = (collections as CollectionFullObject[]).map(
-        c => {
-          return {
-            collection: c,
-            searchParams: c.schema.vectorFields.map(v => {
-              return {
-                anns_field: v.name,
-                params: {},
-                data: '',
-                expanded: c.schema.vectorFields.length === 1,
-                field: v,
-                selected: c.schema.vectorFields.length === 1,
-              };
-            }),
-            globalParams: {
-              topK: 50,
-              consistency_level: ConsistencyLevelEnum.Bounded,
-            },
-            searchResult: null,
-          };
-        }
+    collections.forEach(c => {
+      // find search params for the collection
+      const searchParam = searchParams.find(
+        s => s.collection.collection_name === c.collection_name
       );
-      setSearchParams(initSearchParams);
-    }
+
+      // if search params not found, and the schema is ready, create new search params
+      if (!searchParam && c.schema) {
+        setSearchParams(prevParams => {
+          return [
+            ...prevParams,
+            {
+              collection: c,
+              searchParams: c.schema.vectorFields.map(v => {
+                return {
+                  anns_field: v.name,
+                  params: {},
+                  data: '',
+                  expanded: c.schema.vectorFields.length === 1,
+                  field: v,
+                  selected: c.schema.vectorFields.length === 1,
+                };
+              }),
+              globalParams: {
+                topK: 50,
+                consistency_level: ConsistencyLevelEnum.Bounded,
+              },
+              searchResult: null,
+            },
+          ];
+        });
+      }
+    });
   }, [collections]);
 
   // get current collection from url
@@ -129,7 +137,7 @@ const Databases = () => {
         if (
           s.collection.collection_name === params.collection.collection_name
         ) {
-          return {...params};
+          return { ...params };
         }
         return s;
       });

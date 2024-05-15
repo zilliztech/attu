@@ -276,7 +276,11 @@ export const generateVectorsByField = (field: FieldObject) => {
     case DataTypeStringEnum.BinaryVector:
     case DataTypeStringEnum.Float16Vector:
     case DataTypeStringEnum.BFloat16Vector:
-      return JSON.stringify(generateVector(field.dimension));
+      const dim =
+        field.data_type === DataTypeStringEnum.BinaryVector
+          ? field.dimension / 8
+          : field.dimension;
+      return JSON.stringify(generateVector(dim));
     case 'SparseFloatVector':
       return transformObjToStr({
         [Math.floor(Math.random() * 10)]: Math.random(),

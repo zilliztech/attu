@@ -18,7 +18,6 @@ const floatVectorValidator = (text: string, field: FieldObject) => {
     if (!Array.isArray(value)) {
       return {
         valid: false,
-        value: undefined,
         message: `Not an array`,
       };
     }
@@ -35,8 +34,37 @@ const floatVectorValidator = (text: string, field: FieldObject) => {
   } catch (e: any) {
     return {
       valid: false,
-      value: undefined,
       message: `Wrong Float Vector format, it should be an array of ${field.dimension} numbers`,
+    };
+  }
+};
+
+const binaryVectorValidator = (text: string, field: FieldObject) => {
+  try {
+    const value = JSON.parse(text);
+    const dim = field.dimension;
+    if (!Array.isArray(value)) {
+      return {
+        valid: false,
+        message: `Not an array`,
+      };
+    }
+
+    if (Array.isArray(value) && value.length !== dim / 8) {
+      return {
+        valid: false,
+        value: undefined,
+        message: `Dimension ${value.length} is not equal to ${dim / 8} `,
+      };
+    }
+
+    return { valid: true, message: ``, value: value };
+  } catch (e: any) {
+    return {
+      valid: false,
+      message: `Wrong Binary Vector format, it should be an array of ${
+        field.dimension / 8
+      } numbers`,
     };
   }
 };
@@ -50,16 +78,14 @@ const sparseVectorValidator = (text: string, field: FieldObject) => {
     };
   }
   try {
-    const obj = JSON.parse(transformObjStrToJSONStr(text));
+    JSON.parse(transformObjStrToJSONStr(text));
     return {
       valid: true,
-      value: obj,
       message: ``,
     };
   } catch (e: any) {
     return {
       valid: false,
-      value: undefined,
       message: `Wrong Sparse Vector format`,
     };
   }
@@ -67,7 +93,7 @@ const sparseVectorValidator = (text: string, field: FieldObject) => {
 
 const Validator = {
   [DataTypeStringEnum.FloatVector]: floatVectorValidator,
-  [DataTypeStringEnum.BinaryVector]: floatVectorValidator,
+  [DataTypeStringEnum.BinaryVector]: binaryVectorValidator,
   [DataTypeStringEnum.Float16Vector]: floatVectorValidator,
   [DataTypeStringEnum.BFloat16Vector]: floatVectorValidator,
   [DataTypeStringEnum.SparseFloatVector]: sparseVectorValidator,
@@ -231,12 +257,16 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   };
 
   return (
-    <div
-      ref={editorEl}
-      style={containerStyle}
-      onClick={() => {
-        if (editor.current) editor.current.focus();
-      }}
-    ></div>
+    <div>
+      <div
+        ref={editorEl}
+        style={containerStyle}
+        onClick={() => {
+          if (editor.current) editor.current.focus();
+        }}
+      ></div>
+      <button>random</button>
+      <button>search</button>
+    </div>
   );
 }
