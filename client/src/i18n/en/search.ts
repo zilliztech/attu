@@ -20,6 +20,7 @@ const searchTrans = {
   addCondition: 'Add Condition',
   filterExpr: 'Filter expression, eg: id > 0 ',
   exprHelper: 'Expr Helper',
+  loadCollectionFirst: 'Please load the collection first.',
 };
 
 export default searchTrans;

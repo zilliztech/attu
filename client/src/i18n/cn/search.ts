@@ -20,6 +20,7 @@ const searchTrans = {
   addCondition: '添加条件',
   filterExpr: '过滤表达式',
   exprHelper: '表达式助手',
+  loadCollectionFirst: '请先加载Collection.'
 };
 
 export default searchTrans;

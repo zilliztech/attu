@@ -17,7 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
-import icons from '@/components/icons/Icons';
+import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
 import CustomToolBar from '@/components/grid/ToolBar';
@@ -65,10 +65,6 @@ const Search = (props: CollectionDataProps) => {
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
-
-  // icons
-  const ResetIcon = icons.refresh;
-  const VectorSearchIcon = icons.vectorSearch;
 
   // translations
   const { t: dialogTrans } = useTranslation('dialog');
@@ -189,8 +185,6 @@ const Search = (props: CollectionDataProps) => {
       consistency_level: searchParams.globalParams.consistency_level,
     };
 
-    console.log('search params', params);
-
     setTableLoading(true);
     try {
       const res = await DataService.vectorSearchData(
@@ -290,13 +284,25 @@ const Search = (props: CollectionDataProps) => {
   ) {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
+  const hasVectorIndex = searchParams.collection.schema?.hasVectorIndex;
+  const loaded = searchParams.collection.loaded;
+
+  if (!hasVectorIndex || !loaded) {
+    return (
+      <div className={classes.root}>
+        <EmptyCard
+          wrapperClass={`page-empty-card`}
+          icon={<Icons.load />}
+          text={searchTrans('loadCollectionFirst')}
+        />
+      </div>
+    );
+  }
 
   // disable search button
-  const disableSearch = searchParams.searchParams.every(
-    s => s.data === '' || !s.selected
-  );
-
-  // get search params
+  const disableSearch =
+    searchParams.searchParams.every(s => s.data === '' || !s.selected) ||
+    !searchParams.collection.schema?.hasVectorIndex;
 
   return (
     <div className={classes.root}>
@@ -334,7 +340,7 @@ const Search = (props: CollectionDataProps) => {
                         </Typography>
                         <Typography className="vector-type">
                           {formatFieldType(field)}
-                          <i>{field.index.metricType}</i>
+                          <i>{field.index && field.index.metricType}</i>
                         </Typography>
                       </div>
                     </div>
@@ -344,6 +350,7 @@ const Search = (props: CollectionDataProps) => {
                       searchParams={s}
                       onChange={onVectorInputChange}
                     />
+
                     <Typography className="text">
                       {searchTrans('thirdTip')}
                     </Typography>
@@ -423,7 +430,7 @@ const Search = (props: CollectionDataProps) => {
             ) : (
               <EmptyCard
                 wrapperClass={`page-empty-card`}
-                icon={<VectorSearchIcon />}
+                icon={<Icons.search />}
                 text={
                   searchParams.searchResult !== null
                     ? searchTrans('empty')

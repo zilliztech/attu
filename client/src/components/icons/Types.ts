@@ -50,4 +50,5 @@ export type IconsType =
   | 'question'
   | 'check'
   | 'discord'
-  | 'star';
+  | 'star'
+  | 'magic';

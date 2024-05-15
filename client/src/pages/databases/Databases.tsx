@@ -95,13 +95,25 @@ const Databases = () => {
             },
           ];
         });
+      } else {
+        // update collection
+        setSearchParams(prevParams => {
+          return prevParams.map(s => {
+            if (s.collection.collection_name === c.collection_name) {
+              return { ...s, collection: c };
+            }
+            return s;
+          });
+        });
       }
     });
 
     // delete search params for the collection that is not in the collections
     setSearchParams(prevParams => {
       return prevParams.filter(s =>
-        collections.find(c => c.collection_name === s.collection.collection_name)
+        collections.find(
+          c => c.collection_name === s.collection.collection_name
+        )
       );
     });
   }, [collections]);
