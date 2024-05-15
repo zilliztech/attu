@@ -5,7 +5,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    overflow: 'auto',
   },
 
   inputArea: {
@@ -24,7 +23,9 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     padding: '0 8px 8px 0',
     borderRadius: '0',
     minHeight: 'calc(100vh - 164px)',
-    height: 'max-content',
+    height: 'calc(100vh - 164px)',
+    overflow: 'auto',
+
     borderRight: `1px solid ${theme.palette.divider}`,
     '& .MuiAccordion-root.Mui-expanded': {
       margin: 0,
