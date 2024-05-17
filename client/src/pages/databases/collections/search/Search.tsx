@@ -126,7 +126,7 @@ const Search = (props: CollectionDataProps) => {
   );
 
   // generate random vectors
-  const executeGenerateVectors = useCallback(() => {
+  const genRandomVectors = useCallback(() => {
     const s = cloneObj(searchParams) as SearchParamsType;
     s.searchParams.forEach((sp: SearchSingleParams) => {
       sp.data = generateVectorsByField(sp.field) as any;
@@ -388,7 +388,7 @@ const Search = (props: CollectionDataProps) => {
             />
 
             <CustomButton
-              onClick={executeGenerateVectors}
+              onClick={genRandomVectors}
               size="small"
               disabled={false}
             >
