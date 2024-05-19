@@ -36,6 +36,7 @@ import {
   VectorStrToObject,
   cloneObj,
   generateVectorsByField,
+  saveCsvAs,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
 import {
@@ -447,10 +448,10 @@ const Search = (props: CollectionDataProps) => {
                   className="btn"
                   disabled={result.length === 0}
                   onClick={() => {
-                    // saveCsvAs(
-                    //   searchResult,
-                    //   `search_result_${selectedCollection}`
-                    // );
+                    saveCsvAs(
+                      searchParams.searchResult,
+                      `search_result_${searchParams.collection.collection_name}`
+                    );
                   }}
                   startIcon={<Icons.download classes={{ root: 'icon' }} />}
                 >
