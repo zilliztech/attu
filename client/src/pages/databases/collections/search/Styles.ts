@@ -128,4 +128,26 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     padding: '0 8px',
     overflow: 'auto',
   },
+
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    background: '#fff',
+    paddingBottom: theme.spacing(1),
+    '& .icon': {
+      fontSize: '16px',
+    },
+
+    '& .left': {
+      display: 'flex',
+      alignItems: 'center',
+
+      '& .text': { fontSize: 12, minWidth: '92px' },
+      '& .MuiButton-root': {
+        marginRight: theme.spacing(1),
+      },
+    },
+    '& .right': {},
+  },
 }));

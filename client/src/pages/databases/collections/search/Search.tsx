@@ -13,14 +13,14 @@ import {
   AccordionSummary,
   AccordionDetails,
   Checkbox,
+  TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext, dataContext } from '@/context';
+import { rootContext } from '@/context';
 import { DataService } from '@/http';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
-import CustomToolBar from '@/components/grid/ToolBar';
 import EmptyCard from '@/components/cards/EmptyCard';
 import CustomButton from '@/components/customButton/CustomButton';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
@@ -161,7 +161,7 @@ const Search = (props: CollectionDataProps) => {
   );
 
   // execute search
-  const handleSearch = async () => {
+  const onSearchClicked = async () => {
     const clonedSearchParams = cloneObj(searchParams);
     delete clonedSearchParams.round_decimal;
     const data = searchParams.searchParams
@@ -198,6 +198,14 @@ const Search = (props: CollectionDataProps) => {
       setTableLoading(false);
     }
   };
+
+  // reset
+  const onResetClicked = useCallback(() => {
+    const s = cloneObj(searchParams) as SearchParamsType;
+    s.searchResult = null;
+
+    setSearchParams({ ...s });
+  }, [JSON.stringify(searchParams)]);
 
   const searchResultMemo = useSearchResult(
     (searchParams && (searchParams.searchResult as SearchResultView[])) || []
@@ -399,13 +407,67 @@ const Search = (props: CollectionDataProps) => {
               variant="contained"
               size="small"
               disabled={disableSearch}
-              onClick={handleSearch}
+              onClick={onSearchClicked}
             >
               {btnTrans('search')}
             </CustomButton>
           </div>
 
           <div className={classes.searchResults}>
+            <section className={classes.toolbar}>
+              <div className="left">
+                <Typography variant="h5" className="text">
+                  {`${searchTrans('result')}: `}
+                </Typography>
+
+                <TextField
+                  className={''}
+                  value={''}
+                  onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+                    ('');
+                  }}
+                  disabled={false}
+                  InputLabelProps={{ shrink: true }}
+                  placeholder={searchTrans('filterExpr')}
+                  onKeyDown={(e: any) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+
+                <Filter
+                  title={searchTrans('exprHelper')}
+                  fields={collection.schema.fields}
+                  filterDisabled={false}
+                  onSubmit={() => {}}
+                  showTooltip={false}
+                />
+                <CustomButton
+                  className="btn"
+                  disabled={result.length === 0}
+                  onClick={() => {
+                    // saveCsvAs(
+                    //   searchResult,
+                    //   `search_result_${selectedCollection}`
+                    // );
+                  }}
+                  startIcon={<Icons.download classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('export')}
+                </CustomButton>
+              </div>
+              <div className="right">
+                <CustomButton
+                  className="btn"
+                  onClick={onResetClicked}
+                  startIcon={<Icons.clear classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('reset')}
+                </CustomButton>
+              </div>
+            </section>
+
             {(searchParams.searchResult &&
               searchParams.searchResult.length > 0) ||
             tableLoading ? (

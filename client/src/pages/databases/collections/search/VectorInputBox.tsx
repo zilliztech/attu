@@ -10,8 +10,6 @@ import { FieldObject } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
 import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
-import Icons from '@/components/icons/Icons';
-import CustomButton from '@/components/customButton/CustomButton';
 
 const floatVectorValidator = (text: string, field: FieldObject) => {
   try {
@@ -259,20 +257,12 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   };
 
   return (
-    <div>
-      <div
-        ref={editorEl}
-        style={containerStyle}
-        onClick={() => {
-          if (editor.current) editor.current.focus();
-        }}
-      ></div>
-      <CustomButton
-        endIcon={<Icons.magic />}
-        title="Magic"
-        onClick={() => console.log('magic')}
-      />
-      <button>search</button>
-    </div>
+    <div
+      ref={editorEl}
+      style={containerStyle}
+      onClick={() => {
+        if (editor.current) editor.current.focus();
+      }}
+    ></div>
   );
 }
