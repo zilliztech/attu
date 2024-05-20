@@ -92,6 +92,7 @@ const Databases = () => {
                 consistency_level: ConsistencyLevelEnum.Bounded,
               },
               searchResult: null,
+              searchLatency: 0,
             },
           ];
         });

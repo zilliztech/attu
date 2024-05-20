@@ -153,9 +153,11 @@ const Search = (props: CollectionDataProps) => {
   );
 
   const setSearchResult = useCallback(
-    (result: SearchResultView[]) => {
-      const s = cloneObj(searchParams);
-      s.searchResult = result;
+    (props: { results: SearchResultView[]; latency: number }) => {
+      const { results, latency } = props;
+      const s = cloneObj(searchParams) as SearchParamsType;
+      s.searchResult = results;
+      s.searchLatency = latency;
       setSearchParams({ ...s });
     },
     [JSON.stringify(searchParams)]
@@ -193,7 +195,7 @@ const Search = (props: CollectionDataProps) => {
         params
       );
       setTableLoading(false);
-      setSearchResult(res.results);
+      setSearchResult(res);
       // setLatency(res.latency);
     } catch (err) {
       setTableLoading(false);
@@ -417,7 +419,6 @@ const Search = (props: CollectionDataProps) => {
           <div className={classes.searchResults}>
             <section className={classes.toolbar}>
               <div className="left">
-             
                 <TextField
                   className={''}
                   value={''}
@@ -486,7 +487,9 @@ const Search = (props: CollectionDataProps) => {
                 isLoading={tableLoading}
                 orderBy={orderBy}
                 order={order}
-                labelDisplayedRows={getLabelDisplayedRows(`(1 ms)`)} // TODO
+                labelDisplayedRows={getLabelDisplayedRows(
+                  `(${searchParams.searchLatency} ms)`
+                )} // TODO
                 handleSort={handleGridSort}
               />
             ) : (

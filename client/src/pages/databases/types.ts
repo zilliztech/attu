@@ -26,4 +26,5 @@ export type SearchParams = {
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
   searchResult: SearchResultView[] | null;
+  searchLatency: number;
 };
