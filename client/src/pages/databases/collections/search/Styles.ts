@@ -150,4 +150,8 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
     '& .right': {},
   },
+
+  filterInput: {
+    width: '320px',
+  },
 }));

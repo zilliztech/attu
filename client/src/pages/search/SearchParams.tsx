@@ -60,7 +60,6 @@ const SearchParams: FC<SearchParamsProps> = ({
     }
 
     const commonParams: searchKeywordsType[] = [
-      'filter',
       'radius',
       'range_filter',
     ];

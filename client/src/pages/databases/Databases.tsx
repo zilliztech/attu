@@ -90,6 +90,7 @@ const Databases = () => {
               globalParams: {
                 topK: 50,
                 consistency_level: ConsistencyLevelEnum.Bounded,
+                filter: '',
               },
               searchResult: null,
               searchLatency: 0,

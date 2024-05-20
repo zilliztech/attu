@@ -12,6 +12,7 @@ export type SearchSingleParams = {
 export type GlobalParams = {
   topK: number;
   consistency_level: string;
+  filter: string;
 };
 
 export type SearchResultView = {

@@ -1,12 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useContext,
-  ChangeEvent,
-  useCallback,
-} from 'react';
+import { useState, useMemo, ChangeEvent, useCallback } from 'react';
 import {
   Typography,
   Accordion,
@@ -16,7 +8,6 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { rootContext } from '@/context';
 import { DataService } from '@/http';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
@@ -63,19 +54,9 @@ const Search = (props: CollectionDataProps) => {
 
   const [tableLoading, setTableLoading] = useState<boolean>();
 
-  // UI functions
-  const { setDialog, handleCloseDialog, openSnackBar } =
-    useContext(rootContext);
-
   // translations
-  const { t: dialogTrans } = useTranslation('dialog');
-  const { t: successTrans } = useTranslation('success');
-  const { t: warningTrans } = useTranslation('warning');
   const { t: searchTrans } = useTranslation('search');
-  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
   // classes
   const classes = getQueryStyles();
 
@@ -152,6 +133,17 @@ const Search = (props: CollectionDataProps) => {
     [JSON.stringify(searchParams)]
   );
 
+  // on filter change
+  const onFilterChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const s = cloneObj(searchParams) as SearchParamsType;
+      s.globalParams.filter = e.target.value;
+      setSearchParams({ ...s });
+    },
+    [JSON.stringify(searchParams)]
+  );
+
+  // set search result
   const setSearchResult = useCallback(
     (props: { results: SearchResultView[]; latency: number }) => {
       const { results, latency } = props;
@@ -165,8 +157,6 @@ const Search = (props: CollectionDataProps) => {
 
   // execute search
   const onSearchClicked = async () => {
-    const clonedSearchParams = cloneObj(searchParams);
-    delete clonedSearchParams.round_decimal;
     const data = searchParams.searchParams
       .filter(s => s.selected)
       .map(s => {
@@ -185,6 +175,7 @@ const Search = (props: CollectionDataProps) => {
       output_fields: outputFields,
       limit: searchParams.globalParams.topK,
       data: data,
+      filter: searchParams.globalParams.filter,
       consistency_level: searchParams.globalParams.consistency_level,
     };
 
@@ -221,26 +212,13 @@ const Search = (props: CollectionDataProps) => {
       return [];
     }
 
-    const s = searchParams.collection;
+    const s = searchParams.collection.schema!;
+    const _outputFields = s.scalarFields.map(f => f.name);
 
-    const fields = (s.schema && s.schema.fields) || [];
-
-    // vector field can't be output fields
-    const invalidTypes = [
-      'BinaryVector',
-      'FloatVector',
-      'Float16Vector',
-      'BFloat16Vector',
-      'SparseFloatVector',
-    ];
-    const nonVectorFields = fields.filter(
-      field => !invalidTypes.includes(field.data_type)
-    );
-
-    const _outputFields = nonVectorFields.map(f => f.name);
-    if (s.schema?.enable_dynamic_field) {
+    if (s.enable_dynamic_field) {
       _outputFields.push(DYNAMIC_FIELD);
     }
+
     return _outputFields;
   }, [searchParams]);
 
@@ -420,27 +398,27 @@ const Search = (props: CollectionDataProps) => {
             <section className={classes.toolbar}>
               <div className="left">
                 <TextField
-                  className={''}
-                  value={''}
-                  onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                    console.log('vlaue', e.target.value);
-                  }}
+                  className={classes.filterInput}
+                  value={searchParams.globalParams.filter}
+                  onChange={onFilterChange}
                   disabled={false}
                   InputLabelProps={{ shrink: true }}
                   placeholder={searchTrans('filterExpr')}
                   onKeyDown={(e: any) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
+                      onSearchClicked();
                     }
                   }}
                 />
 
                 <Filter
                   title={searchTrans('exprHelper')}
-                  fields={collection.schema.fields}
+                  fields={collection.schema.scalarFields}
                   filterDisabled={false}
                   onSubmit={(data: string) => {
-                    console.log('value', data);
+                    onFilterChange({ target: { value: data } } as any);
+                    onSearchClicked();
                   }}
                   showTooltip={false}
                 />
