@@ -417,15 +417,12 @@ const Search = (props: CollectionDataProps) => {
           <div className={classes.searchResults}>
             <section className={classes.toolbar}>
               <div className="left">
-                <Typography variant="h5" className="text">
-                  {`${searchTrans('result')}: `}
-                </Typography>
-
+             
                 <TextField
                   className={''}
                   value={''}
                   onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                    ('');
+                    console.log('vlaue', e.target.value);
                   }}
                   disabled={false}
                   InputLabelProps={{ shrink: true }}
@@ -441,9 +438,13 @@ const Search = (props: CollectionDataProps) => {
                   title={searchTrans('exprHelper')}
                   fields={collection.schema.fields}
                   filterDisabled={false}
-                  onSubmit={() => {}}
+                  onSubmit={(data: string) => {
+                    console.log('value', data);
+                  }}
                   showTooltip={false}
                 />
+              </div>
+              <div className="right">
                 <CustomButton
                   className="btn"
                   disabled={result.length === 0}
@@ -457,8 +458,6 @@ const Search = (props: CollectionDataProps) => {
                 >
                   {btnTrans('export')}
                 </CustomButton>
-              </div>
-              <div className="right">
                 <CustomButton
                   className="btn"
                   onClick={onResetClicked}
