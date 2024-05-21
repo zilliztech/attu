@@ -10,6 +10,7 @@ import { FieldObject } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
 import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
+import { getQueryStyles } from './Styles';
 
 const floatVectorValidator = (text: string, field: FieldObject) => {
   try {
@@ -111,6 +112,9 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
 
   // UI states
   const [isFocused, setIsFocused] = useState(false);
+
+  // classes
+  const classes = getQueryStyles();
 
   // refs
   const editorEl = useRef<HTMLDivElement>(null);
@@ -247,19 +251,10 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     };
   }, [JSON.stringify(field)]);
 
-  const containerStyle = {
-    height: '124px',
-    margin: '0 0 8px 0',
-    overflow: 'auto',
-    backgroundColor: '#f4f4f4',
-    cursor: 'text',
-    border: isFocused ? '1px solid #000' : '1px solid transparent',
-  };
-
   return (
     <div
+      className={`${classes.vectorInputBox} ${isFocused ? 'focused' : ''}`}
       ref={editorEl}
-      style={containerStyle}
       onClick={() => {
         if (editor.current) editor.current.focus();
       }}

@@ -3,6 +3,7 @@ export {
   ShowCollectionsType,
   MilvusClient,
   ResStatus,
+  RerankerObj,
 } from '@zilliz/milvus2-sdk-node';
 
 export * from './collections.type';

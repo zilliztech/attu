@@ -1,7 +1,7 @@
 import { FormControlClassKey, SelectProps } from '@material-ui/core';
 import { ClassNameMap } from '@material-ui/core/styles/withStyles';
 
-export interface Option<T = string, U = string | number> {
+export interface Option<T = string, U = any> {
   label: T;
   value: U;
 }
@@ -13,7 +13,7 @@ export interface GroupOption {
 
 export type CustomSelectorType = SelectProps & {
   label?: string;
-  value: string | number;
+  value: any;
   options: Option[];
   onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
   classes?: Partial<ClassNameMap<FormControlClassKey>>;
@@ -30,6 +30,6 @@ export interface ICustomGroupSelect {
   haveLabel?: boolean;
   label?: string;
   placeholder?: string;
-  value: string | number;
+  value: any;
   onChange: (event: any) => void;
 }

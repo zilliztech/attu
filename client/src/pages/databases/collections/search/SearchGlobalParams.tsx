@@ -3,15 +3,18 @@ import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { getQueryStyles } from './Styles';
-import { CONSISTENCY_LEVEL_OPTIONS, TOP_K_OPTIONS } from '@/consts';
+import {
+  CONSISTENCY_LEVEL_OPTIONS,
+  TOP_K_OPTIONS,
+  RERANKER_OPTIONS,
+} from '@/consts';
+import { GlobalParams } from '../../types';
 
 import CustomSelector from '@/components/customSelector/CustomSelector';
 
 export interface CollectionDataProps {
-  searchParamsForm: {
-    [key in string]: number | string;
-  };
-  handleFormChange: (form: { [key in string]: number | string }) => void;
+  searchParamsForm: GlobalParams;
+  handleFormChange: (form: GlobalParams) => void;
 }
 
 const SearchGlobalParams = (props: CollectionDataProps) => {
@@ -20,7 +23,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
 
   // UI functions
   const handleInputChange = useCallback(
-    (key: string, value: number | string) => {
+    <K extends keyof GlobalParams>(key: K, value: GlobalParams[K]) => {
       let form = { ...searchParamsForm };
       if (value === '') {
         delete form[key];
@@ -32,12 +35,10 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     },
     [handleFormChange, searchParamsForm]
   );
-
   // icons
   // translations
   const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
-  const { t: btnTrans } = useTranslation('btn');
   // classes
   const classes = getQueryStyles();
 
@@ -69,16 +70,15 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     <>
       <CustomSelector
         options={TOP_K_OPTIONS}
-        value={searchParamsForm.topK as string}
+        value={searchParamsForm.topK}
         label={collectionTrans('topK')}
         wrapperClass="selector"
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
-          const topK = e.target.value as string;
+          const topK = e.target.value as number;
           handleInputChange('topK', topK);
         }}
       />
-
       <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
         value={searchParamsForm.consistency_level as string}
@@ -90,11 +90,19 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
           handleInputChange('consistency_level', consistency);
         }}
       />
-
       <CustomInput
         type="text"
         textConfig={roundInputConfig}
         checkValid={() => true}
+      />
+
+      <CustomSelector
+        options={RERANKER_OPTIONS}
+        value={RERANKER_OPTIONS[0]}
+        label={collectionTrans('reranker')}
+        wrapperClass="selector"
+        variant="filled"
+        onChange={(e: { target: { value: unknown } }) => {}}
       />
     </>
   );

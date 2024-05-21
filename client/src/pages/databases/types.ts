@@ -1,11 +1,11 @@
-import { FieldObject, CollectionObject } from '@server/types';
+import { FieldObject, CollectionObject, RerankerObj } from '@server/types';
 
 export type SearchSingleParams = {
   anns_field: string;
   params: Record<string, any>;
   data: string;
   expanded: boolean;
-  selected: boolean
+  selected: boolean;
   field: FieldObject;
 };
 
@@ -13,6 +13,8 @@ export type GlobalParams = {
   topK: number;
   consistency_level: string;
   filter: string;
+  reranker?: RerankerObj;
+  round_decimal?: number;
 };
 
 export type SearchResultView = {

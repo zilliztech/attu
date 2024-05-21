@@ -108,6 +108,24 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
   },
 
+  vectorInputBox: {
+    height: '124px',
+    margin: '0 0 8px 0',
+    overflow: 'auto',
+    backgroundColor: '#f4f4f4',
+    cursor: 'text',
+    borderBottom: `2px solid transparent`,
+    '&:hover': {
+      borderBottom: '2px solid #000',
+    },
+    '&:active': {
+      borderBottom: `2px solid ${theme.palette.primary.main}`,
+    },
+    '&.focused': {
+      borderBottom: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
+
   searchControls: {
     display: 'flex',
     flexDirection: 'column',
