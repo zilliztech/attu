@@ -142,6 +142,9 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       '& .MuiFilledInput-adornedEnd': {
         paddingRight: 0,
       },
+      '& span button': {
+        height: '100%',
+      },
     },
     '& .right': {},
   },

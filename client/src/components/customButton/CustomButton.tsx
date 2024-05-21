@@ -38,9 +38,27 @@ const buttonStyle = makeStyles(theme => ({
 }));
 
 // props types same as Material Button
-const CustomButton = (props: ButtonProps & { tooltip?: string }) => {
+const CustomButton = (
+  props: ButtonProps & {
+    tooltip?: string;
+    tooltipPlacement?:
+      | 'bottom'
+      | 'left'
+      | 'right'
+      | 'top'
+      | 'bottom-end'
+      | 'bottom-start'
+      | 'left-end'
+      | 'left-start'
+      | 'right-end'
+      | 'right-start'
+      | 'top-end'
+      | 'top-start'
+      | undefined;
+  }
+) => {
   const classes = buttonStyle();
-  const { tooltip, ...otherProps } = props;
+  const { tooltip, tooltipPlacement, ...otherProps } = props;
 
   return (
     <>
@@ -49,7 +67,7 @@ const CustomButton = (props: ButtonProps & { tooltip?: string }) => {
       see https://material-ui.com/zh/components/tooltips/#disabled-elements
       */}
       {tooltip ? (
-        <Tooltip title={tooltip}>
+        <Tooltip title={tooltip} placement={tooltipPlacement}>
           <span>
             <Button
               classes={{

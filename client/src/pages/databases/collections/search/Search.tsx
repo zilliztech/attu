@@ -236,7 +236,7 @@ const Search = (props: CollectionDataProps) => {
     s.searchResult = null;
 
     setSearchParams({ ...s });
-    setCurrentPage(0)
+    setCurrentPage(0);
   }, [JSON.stringify(searchParams), setCurrentPage]);
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
@@ -294,9 +294,22 @@ const Search = (props: CollectionDataProps) => {
   }
 
   // disable search button
-  const disableSearch =
-    searchParams.searchParams.every(s => s.data === '' || !s.selected) ||
-    !searchParams.collection.schema?.hasVectorIndex;
+  let disableSearch = false;
+  let disableSearchTooltip = '';
+  // has selected vector fields
+  const selectedFields = searchParams.searchParams.filter(s => s.selected);
+
+  if (selectedFields.length === 0) {
+    disableSearch = true;
+    disableSearchTooltip = searchTrans('noSelectedVectorField');
+  }
+  // has vector data to search
+  const noDataInSelected = selectedFields.some(s => s.data === '');
+
+  if (noDataInSelected) {
+    disableSearch = true;
+    disableSearchTooltip = searchTrans('noVectorToSearch');
+  }
 
   return (
     <div className={classes.root}>
@@ -433,6 +446,8 @@ const Search = (props: CollectionDataProps) => {
                   variant="contained"
                   size="small"
                   disabled={disableSearch}
+                  tooltip={disableSearchTooltip}
+                  tooltipPlacement="top"
                   onClick={onSearchClicked}
                 >
                   {btnTrans('search')}
