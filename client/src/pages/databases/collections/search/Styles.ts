@@ -134,18 +134,13 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     background: '#fff',
-    paddingBottom: theme.spacing(1),
-    '& .icon': {
-      fontSize: '16px',
-    },
+    marginBottom: theme.spacing(1),
 
     '& .left': {
       display: 'flex',
-      alignItems: 'center',
 
-      '& .text': { fontSize: 12, minWidth: '92px' },
-      '& .MuiButton-root': {
-        marginRight: theme.spacing(1),
+      '& .MuiFilledInput-adornedEnd': {
+        paddingRight: 0,
       },
     },
     '& .right': {},

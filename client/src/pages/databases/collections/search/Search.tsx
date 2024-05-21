@@ -196,14 +196,6 @@ const Search = (props: CollectionDataProps) => {
     }
   }, [JSON.stringify(searchParams)]);
 
-  // reset
-  const onResetClicked = useCallback(() => {
-    const s = cloneObj(searchParams) as SearchParamsType;
-    s.searchResult = null;
-
-    setSearchParams({ ...s });
-  }, [JSON.stringify(searchParams)]);
-
   const searchResultMemo = useSearchResult(
     (searchParams && (searchParams.searchResult as SearchResultView[])) || []
   );
@@ -228,6 +220,7 @@ const Search = (props: CollectionDataProps) => {
   const {
     pageSize,
     handlePageSize,
+    setCurrentPage,
     currentPage,
     handleCurrentPage,
     total,
@@ -236,6 +229,15 @@ const Search = (props: CollectionDataProps) => {
     orderBy,
     handleGridSort,
   } = usePaginationHook(searchResultMemo || []);
+
+  // reset
+  const onResetClicked = useCallback(() => {
+    const s = cloneObj(searchParams) as SearchParamsType;
+    s.searchResult = null;
+
+    setSearchParams({ ...s });
+    setCurrentPage(0)
+  }, [JSON.stringify(searchParams), setCurrentPage]);
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
@@ -296,8 +298,6 @@ const Search = (props: CollectionDataProps) => {
     searchParams.searchParams.every(s => s.data === '' || !s.selected) ||
     !searchParams.collection.schema?.hasVectorIndex;
 
-  console.log('update render', searchParams.globalParams.filter);
-
   return (
     <div className={classes.root}>
       {collection && (
@@ -305,7 +305,6 @@ const Search = (props: CollectionDataProps) => {
           <div className={classes.accordions}>
             {searchParams.searchParams.map((s, index: number) => {
               const field = s.field;
-              console.log('update', searchParams.globalParams.filter);
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -319,11 +318,13 @@ const Search = (props: CollectionDataProps) => {
                     id={`${field.name}-header`}
                   >
                     <div className={classes.checkbox}>
-                      <Checkbox
-                        size="small"
-                        checked={s.selected}
-                        onChange={handleSelect(field.name)}
-                      />
+                      {searchParams.searchParams.length > 1 && (
+                        <Checkbox
+                          size="small"
+                          checked={s.selected}
+                          onChange={handleSelect(field.name)}
+                        />
+                      )}
                       <div className="label">
                         <Typography
                           className={`field-name ${
@@ -481,7 +482,7 @@ const Search = (props: CollectionDataProps) => {
                 order={order}
                 labelDisplayedRows={getLabelDisplayedRows(
                   `(${searchParams.searchLatency} ms)`
-                )} // TODO
+                )}
                 handleSort={handleGridSort}
               />
             ) : (

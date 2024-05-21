@@ -44,6 +44,7 @@ export const usePaginationHook = (list: any[]) => {
   return {
     offset,
     currentPage,
+    setCurrentPage,
     pageSize,
     handlePageSize,
     handleCurrentPage,
