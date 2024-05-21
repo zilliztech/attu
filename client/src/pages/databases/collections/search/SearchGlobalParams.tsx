@@ -82,7 +82,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
       <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
         value={searchParamsForm.consistency_level as string}
-        label={collectionTrans('consistencyLevel')}
+        label={collectionTrans('consistency')}
         wrapperClass="selector"
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {

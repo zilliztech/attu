@@ -17,7 +17,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
 
   accordions: {
     display: 'flex',
-    width: '240px',
+    width: '220px',
     flexDirection: 'column',
     flexShrink: 0,
     padding: '0 8px 8px 0',
@@ -111,8 +111,8 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   searchControls: {
     display: 'flex',
     flexDirection: 'column',
-    width: 160,
-    minWidth: 160,
+    width: 120,
+    minWidth: 120,
     padding: '0 8px',
     borderRight: `1px solid ${theme.palette.divider}`,
 
@@ -152,6 +152,10 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   },
 
   filterInput: {
-    width: '320px',
+    width: '360px',
+    marginRight: '8px',
+    '& .MuiFormHelperText-root': {
+      display: 'none',
+    },
   },
 }));

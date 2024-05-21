@@ -39,7 +39,6 @@ export interface ICustomInputProps {
   iconConfig?: IIconConfig;
   adornmentConfig?: IAdornmentConfig;
   textConfig?: ITextfieldConfig;
-
   // used for validation
   checkValid?: Function;
   validInfo?: IValidInfo;
@@ -79,6 +78,7 @@ export interface ITextfieldConfig {
   type?: string;
   onBlur?: (event: any) => void;
   onChange?: (event: any) => void;
+  onKeyDown?: (event: any) => void;
   InputLabelProps?: Partial<InputLabelProps>;
 }
 
@@ -93,6 +93,7 @@ export interface IAdornmentConfig {
   onIconClick?: () => void;
   onInputBlur?: (event: any) => void;
   onInputChange?: (event: any) => void;
+  onKeyDown?: (event: any) => void;
 }
 
 export type SearchType = {

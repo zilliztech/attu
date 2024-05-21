@@ -5,7 +5,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Checkbox,
-  TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DataService } from '@/http';
@@ -22,6 +21,7 @@ import VectorInputBox from './VectorInputBox';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CustomInput from '@/components/customInput/CustomInput';
 import {
   formatFieldType,
   VectorStrToObject,
@@ -135,10 +135,12 @@ const Search = (props: CollectionDataProps) => {
 
   // on filter change
   const onFilterChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
+    (value: string) => {
       const s = cloneObj(searchParams) as SearchParamsType;
-      s.globalParams.filter = e.target.value;
+      s.globalParams.filter = value;
       setSearchParams({ ...s });
+
+      return s;
     },
     [JSON.stringify(searchParams)]
   );
@@ -156,7 +158,7 @@ const Search = (props: CollectionDataProps) => {
   );
 
   // execute search
-  const onSearchClicked = async () => {
+  const onSearchClicked = useCallback(async () => {
     const data = searchParams.searchParams
       .filter(s => s.selected)
       .map(s => {
@@ -185,13 +187,14 @@ const Search = (props: CollectionDataProps) => {
         searchParams.collection.collection_name,
         params
       );
+
       setTableLoading(false);
       setSearchResult(res);
       // setLatency(res.latency);
     } catch (err) {
       setTableLoading(false);
     }
-  };
+  }, [JSON.stringify(searchParams)]);
 
   // reset
   const onResetClicked = useCallback(() => {
@@ -220,7 +223,7 @@ const Search = (props: CollectionDataProps) => {
     }
 
     return _outputFields;
-  }, [searchParams]);
+  }, [JSON.stringify(searchParams)]);
 
   const {
     pageSize,
@@ -259,7 +262,7 @@ const Search = (props: CollectionDataProps) => {
             needCopy: key !== 'score',
           }))
       : [];
-  }, [searchParams, primaryKeyField]);
+  }, [JSON.stringify({ searchParams, outputFields })]);
 
   // methods
   const handlePageChange = (e: any, page: number) => {
@@ -293,6 +296,8 @@ const Search = (props: CollectionDataProps) => {
     searchParams.searchParams.every(s => s.data === '' || !s.selected) ||
     !searchParams.collection.schema?.hasVectorIndex;
 
+  console.log('update render', searchParams.globalParams.filter);
+
   return (
     <div className={classes.root}>
       {collection && (
@@ -300,7 +305,7 @@ const Search = (props: CollectionDataProps) => {
           <div className={classes.accordions}>
             {searchParams.searchParams.map((s, index: number) => {
               const field = s.field;
-              // console.log('update', s.params, searchParams.globalParams);
+              console.log('update', searchParams.globalParams.filter);
               return (
                 <Accordion
                   key={`${collection.collection_name}-${field.name}`}
@@ -383,45 +388,54 @@ const Search = (props: CollectionDataProps) => {
             >
               {btnTrans('example')}
             </CustomButton>
-
-            <CustomButton
-              variant="contained"
-              size="small"
-              disabled={disableSearch}
-              onClick={onSearchClicked}
-            >
-              {btnTrans('search')}
-            </CustomButton>
           </div>
 
           <div className={classes.searchResults}>
             <section className={classes.toolbar}>
               <div className="left">
-                <TextField
-                  className={classes.filterInput}
-                  value={searchParams.globalParams.filter}
-                  onChange={onFilterChange}
-                  disabled={false}
-                  InputLabelProps={{ shrink: true }}
-                  placeholder={searchTrans('filterExpr')}
-                  onKeyDown={(e: any) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      onSearchClicked();
-                    }
+                <CustomInput
+                  type="text"
+                  textConfig={{
+                    label: searchTrans('filterExpr'),
+                    key: 'advFilter',
+                    className: classes.filterInput,
+                    onChange: onFilterChange,
+                    value: searchParams.globalParams.filter,
+                    disabled: false,
+                    variant: 'filled',
+                    required: false,
+                    InputLabelProps: { shrink: true },
+                    InputProps: {
+                      endAdornment: (
+                        <Filter
+                          title={''}
+                          showTitle={false}
+                          fields={collection.schema.scalarFields}
+                          filterDisabled={false}
+                          onSubmit={(value: string) => {
+                            onFilterChange(value);
+                          }}
+                          showTooltip={false}
+                        />
+                      ),
+                    },
+                    onKeyDown: (e: any) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        onSearchClicked();
+                      }
+                    },
                   }}
+                  checkValid={() => true}
                 />
-
-                <Filter
-                  title={searchTrans('exprHelper')}
-                  fields={collection.schema.scalarFields}
-                  filterDisabled={false}
-                  onSubmit={(data: string) => {
-                    onFilterChange({ target: { value: data } } as any);
-                    onSearchClicked();
-                  }}
-                  showTooltip={false}
-                />
+                <CustomButton
+                  variant="contained"
+                  size="small"
+                  disabled={disableSearch}
+                  onClick={onSearchClicked}
+                >
+                  {btnTrans('search')}
+                </CustomButton>
               </div>
               <div className="right">
                 <CustomButton

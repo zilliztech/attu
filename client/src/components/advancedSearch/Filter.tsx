@@ -6,6 +6,7 @@ import {
   Chip,
   Tooltip,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
@@ -25,6 +26,9 @@ const Filter = forwardRef((props: FilterProps, ref) => {
     ...others
   } = props;
   const classes = useStyles();
+
+  // i18n
+  const { t: searchTrans } = useTranslation('search');
 
   const [open, setOpen] = useState(false);
   const [flatConditions, setFlatConditions] = useState<any[]>([]);
@@ -300,7 +304,8 @@ const Filter = forwardRef((props: FilterProps, ref) => {
           disabled={filterDisabled}
           className={classes.afBtn}
           onClick={handleClickOpen}
-          startIcon={<FilterIcon />}
+          size='small'
+          endIcon={<FilterIcon />}
         >
           {showTitle ? title : ''}
         </CustomButton>
@@ -326,7 +331,7 @@ const Filter = forwardRef((props: FilterProps, ref) => {
             onCancel={handleCancel}
             onSubmit={handleSubmit}
             onReset={handleReset}
-            title="Advanced Filter"
+            title={searchTrans('filterExpr')}
             fields={fields}
             handleConditions={handleConditions}
             conditions={flatConditions}
