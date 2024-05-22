@@ -159,19 +159,16 @@ const Search = (props: CollectionDataProps) => {
 
   // execute search
   const onSearchClicked = useCallback(async () => {
-    const data = searchParams.searchParams
-      .filter(s => s.selected)
-      .map(s => {
-        const formatter =
-          VectorStrToObject[
-            s.field.data_type as keyof typeof VectorStrToObject
-          ];
-        return {
-          anns_field: s.field.name,
-          data: formatter(s.data),
-          params: s.params,
-        };
-      });
+    const selected = searchParams.searchParams.filter(s => s.selected);
+    const data = selected.map(s => {
+      const formatter =
+        VectorStrToObject[s.field.data_type as keyof typeof VectorStrToObject];
+      return {
+        anns_field: s.field.name,
+        data: formatter(s.data),
+        params: s.params,
+      };
+    });
 
     const params: any = {
       output_fields: outputFields,
@@ -182,7 +179,7 @@ const Search = (props: CollectionDataProps) => {
     };
 
     // reranker if exists
-    if (searchParams.globalParams.rerank) {
+    if (searchParams.globalParams.rerank && selected.length > 1) {
       params.rerank = searchParams.globalParams.rerank;
     }
 
