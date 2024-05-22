@@ -5,6 +5,7 @@ const btnTrans = {
   reset: '重置',
   update: '更新',
   search: '搜索',
+  searchMulti: `搜索{{number}}`,
   confirm: '确认',
   connect: '连接',
   import: '导入',

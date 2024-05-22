@@ -456,7 +456,12 @@ const Search = (props: CollectionDataProps) => {
                   tooltipPlacement="top"
                   onClick={onSearchClicked}
                 >
-                  {btnTrans('search')}
+                  {btnTrans('searchMulti', {
+                    number:
+                      searchParams.collection.schema.vectorFields.length > 1
+                        ? `(${selectedFields.length})`
+                        : '',
+                  })}
                 </CustomButton>
               </div>
               <div className="right">
