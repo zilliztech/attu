@@ -2,38 +2,38 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
+import CustomSelector from '@/components/customSelector/CustomSelector';
 import { getQueryStyles } from './Styles';
 import {
   CONSISTENCY_LEVEL_OPTIONS,
   TOP_K_OPTIONS,
   RERANKER_OPTIONS,
 } from '@/consts';
-import { GlobalParams } from '../../types';
-
-import CustomSelector from '@/components/customSelector/CustomSelector';
+import { SearchParams, GlobalParams } from '../../types';
 
 export interface CollectionDataProps {
-  searchParamsForm: GlobalParams;
+  searchGlobalParams: GlobalParams;
+  searchParams: SearchParams;
   handleFormChange: (form: GlobalParams) => void;
 }
 
 const SearchGlobalParams = (props: CollectionDataProps) => {
   // props
-  const { searchParamsForm, handleFormChange } = props;
+  const { searchParams, searchGlobalParams, handleFormChange } = props;
 
   // UI functions
   const handleInputChange = useCallback(
     <K extends keyof GlobalParams>(key: K, value: GlobalParams[K]) => {
-      let form = { ...searchParamsForm };
+      let form = { ...searchGlobalParams };
       if (value === '') {
         delete form[key];
       } else {
-        form = { ...searchParamsForm, [key]: value };
+        form = { ...searchGlobalParams, [key]: value };
       }
 
       handleFormChange(form);
     },
-    [handleFormChange, searchParamsForm]
+    [handleFormChange, searchGlobalParams]
   );
   // icons
   // translations
@@ -66,11 +66,16 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     defaultValue: '0',
   };
 
+  const selectedCount = searchParams.searchParams.filter(
+    sp => sp.selected
+  ).length;
+  const showReranker = selectedCount > 1;
+
   return (
     <>
       <CustomSelector
         options={TOP_K_OPTIONS}
-        value={searchParamsForm.topK}
+        value={searchGlobalParams.topK}
         label={collectionTrans('topK')}
         wrapperClass="selector"
         variant="filled"
@@ -81,7 +86,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
       />
       <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
-        value={searchParamsForm.consistency_level as string}
+        value={searchGlobalParams.consistency_level}
         label={collectionTrans('consistency')}
         wrapperClass="selector"
         variant="filled"
@@ -90,19 +95,44 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
           handleInputChange('consistency_level', consistency);
         }}
       />
+
+      {showReranker && (
+        <CustomSelector
+          options={RERANKER_OPTIONS}
+          value={
+            searchGlobalParams.rerank
+              ? searchGlobalParams.rerank.strategy
+              : RERANKER_OPTIONS[0].value
+          }
+          label={collectionTrans('reranker')}
+          wrapperClass="selector"
+          variant="filled"
+          onChange={(e: { target: { value: unknown } }) => {
+            const rerankerStr = e.target.value as string;
+
+            const rerank = {
+              strategy: rerankerStr,
+              params: {},
+            };
+            if (rerankerStr === 'weighted') {
+              rerank.params = {
+                weights: Array(selectedCount).fill(0.5),
+              };
+            }
+
+            if (rerankerStr === 'rrf') {
+              rerank.params = {
+                k: 60,
+              };
+            }
+            handleInputChange('rerank', rerank);
+          }}
+        />
+      )}
       <CustomInput
         type="text"
         textConfig={roundInputConfig}
         checkValid={() => true}
-      />
-
-      <CustomSelector
-        options={RERANKER_OPTIONS}
-        value={RERANKER_OPTIONS[0]}
-        label={collectionTrans('reranker')}
-        wrapperClass="selector"
-        variant="filled"
-        onChange={(e: { target: { value: unknown } }) => {}}
       />
     </>
   );

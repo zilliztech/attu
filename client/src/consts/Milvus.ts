@@ -324,21 +324,11 @@ export const CONSISTENCY_LEVEL_OPTIONS = [
 export const RERANKER_OPTIONS = [
   {
     label: 'RRF',
-    value: {
-      strategy: 'rrf',
-      params: {
-        k: 60,
-      },
-    },
+    value: 'rrf',
   },
   {
     label: 'Weighted',
-    value: {
-      strategy: 'weighted',
-      params: {
-        weights: [0.5, 0.5],
-      },
-    },
+    value: 'weighted',
   },
 ];
 

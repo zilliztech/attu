@@ -114,15 +114,16 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     overflow: 'auto',
     backgroundColor: '#f4f4f4',
     cursor: 'text',
-    borderBottom: `2px solid transparent`,
+    boxShadow: '0 1px 0 transparent',
+    transition: `box-shadow 0.3s ease`,
     '&:hover': {
-      borderBottom: '2px solid #000',
+      boxShadow: '0 1px 0 #000',
     },
     '&:active': {
-      borderBottom: `2px solid ${theme.palette.primary.main}`,
+      boxShadow: `0 1px 0 ${theme.palette.primary.main}`,
     },
     '&.focused': {
-      borderBottom: `2px solid ${theme.palette.primary.main}`,
+      boxShadow: `0 2px 0 ${theme.palette.primary.main}`,
     },
   },
 

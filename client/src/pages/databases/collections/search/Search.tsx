@@ -18,7 +18,6 @@ import { useSearchResult, usePaginationHook } from '@/hooks';
 import { getQueryStyles } from './Styles';
 import SearchGlobalParams from './SearchGlobalParams';
 import VectorInputBox from './VectorInputBox';
-import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -37,6 +36,7 @@ import {
 } from '../../types';
 import { DYNAMIC_FIELD } from '@/consts';
 import { ColDefinitionsType } from '@/components/grid/Types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -173,13 +173,18 @@ const Search = (props: CollectionDataProps) => {
         };
       });
 
-    const params = {
+    const params: any = {
       output_fields: outputFields,
       limit: searchParams.globalParams.topK,
       data: data,
       filter: searchParams.globalParams.filter,
       consistency_level: searchParams.globalParams.consistency_level,
     };
+
+    // reranker if exists
+    if (searchParams.globalParams.rerank) {
+      params.rerank = searchParams.globalParams.rerank;
+    }
 
     setTableLoading(true);
     try {
@@ -388,7 +393,8 @@ const Search = (props: CollectionDataProps) => {
 
           <div className={classes.searchControls}>
             <SearchGlobalParams
-              searchParamsForm={searchParams.globalParams}
+              searchParams={searchParams}
+              searchGlobalParams={searchParams.globalParams}
               handleFormChange={(params: any) => {
                 searchParams.globalParams = params;
                 setSearchParams({ ...searchParams });

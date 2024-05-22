@@ -13,7 +13,7 @@ export type GlobalParams = {
   topK: number;
   consistency_level: string;
   filter: string;
-  reranker?: RerankerObj;
+  rerank?: RerankerObj;
   round_decimal?: number;
 };
 
