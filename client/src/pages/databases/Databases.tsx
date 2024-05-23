@@ -91,6 +91,11 @@ const Databases = () => {
                 topK: 50,
                 consistency_level: ConsistencyLevelEnum.Bounded,
                 filter: '',
+                rerank: 'rrf',
+                rrfParams: { k: 60 },
+                weightedParams: {
+                  weights: Array(c.schema.vectorFields.length).fill(0.5),
+                },
               },
               searchResult: null,
               searchLatency: 0,

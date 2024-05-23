@@ -161,15 +161,22 @@ const Search = (props: CollectionDataProps) => {
 
   // execute search
   const onSearchClicked = useCallback(async () => {
-    const selected = searchParams.searchParams.filter(s => s.selected);
-    const data = selected.map(s => {
+    const data: any = [];
+    const weightedParams: number[] = [];
+
+    searchParams.searchParams.forEach((s, index) => {
       const formatter =
         VectorStrToObject[s.field.data_type as keyof typeof VectorStrToObject];
-      return {
-        anns_field: s.field.name,
-        data: formatter(s.data),
-        params: s.params,
-      };
+      if (s.selected) {
+        data.push({
+          anns_field: s.field.name,
+          data: formatter(s.data),
+          params: s.params,
+        });
+        weightedParams.push(
+          searchParams.globalParams.weightedParams.weights[index]
+        );
+      }
     });
 
     const params: any = {
@@ -181,8 +188,19 @@ const Search = (props: CollectionDataProps) => {
     };
 
     // reranker if exists
-    if (searchParams.globalParams.rerank && selected.length > 1) {
-      params.rerank = searchParams.globalParams.rerank;
+    if (data.length > 1) {
+      if (searchParams.globalParams.rerank === 'rrf') {
+        params.rerank = {
+          strategy: 'rrf',
+          params: { k: searchParams.globalParams.rrfParams },
+        };
+      }
+      if (searchParams.globalParams.rerank === 'weighted') {
+        params.rerank = {
+          strategy: 'weighted',
+          params: { weights: weightedParams },
+        };
+      }
     }
 
     setTableLoading(true);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Slider } from '@material-ui/core';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -55,36 +55,12 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
 
   const onRerankChanged = useCallback(
     (e: { target: { value: unknown } }) => {
-      const rerankerStr = e.target.value as string;
+      const rerankerStr = e.target.value as 'rrf' | 'weighted';
 
-      const rerank = {
-        strategy: rerankerStr,
-        params: {},
-      };
-      if (rerankerStr === 'weighted') {
-        rerank.params = {
-          weights: Array(selectedCount).fill(0.5),
-        };
-      }
-
-      if (rerankerStr === 'rrf') {
-        rerank.params = {
-          k: 60,
-        };
-      }
-      handleInputChange('rerank', rerank);
+      handleInputChange('rerank', rerankerStr);
     },
     [selectedCount, handleInputChange]
   );
-
-  // update rerank params if selected count changes
-  useEffect(() => {
-    if (searchGlobalParams.rerank) {
-      onRerankChanged({
-        target: { value: searchGlobalParams.rerank.strategy },
-      });
-    }
-  }, [selectedCount]);
 
   return (
     <>
@@ -117,24 +93,28 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
             options={RERANKER_OPTIONS}
             value={
               searchGlobalParams.rerank
-                ? searchGlobalParams.rerank.strategy
+                ? searchGlobalParams.rerank
                 : RERANKER_OPTIONS[0].value
             }
             label={searchTrans('rerank')}
             wrapperClass="selector"
             variant="filled"
-            onChange={onRerankChanged}
+            onChange={(e: { target: { value: unknown } }) => {
+              const rerankerStr = e.target.value as 'rrf' | 'weighted';
+
+              handleInputChange('rerank', rerankerStr);
+            }}
           />
 
-          {(!searchGlobalParams.rerank?.strategy ||
-            searchGlobalParams.rerank.strategy == 'rrf') && (
+          {searchGlobalParams.rerank == 'rrf' && (
             <CustomInput
               type="text"
               textConfig={{
+                type: 'number',
                 label: 'K',
                 key: 'k',
                 onChange: value => {
-                  console.log('update', value);
+                  handleInputChange('rrfParams', { k: Number(value) });
                 },
                 variant: 'filled',
                 placeholder: 'k',
@@ -148,24 +128,35 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
                   },
                 ],
                 defaultValue: 60,
+                value: searchGlobalParams.rrfParams!.k,
               }}
               checkValid={() => true}
             />
           )}
 
-          {searchGlobalParams.rerank?.strategy == 'weighted' &&
-            searchParams.searchParams
-              .filter(s => s.selected)
-              .map(s => {
+          {searchGlobalParams.rerank == 'weighted' &&
+            searchParams.searchParams.map((s, index) => {
+              if (s.selected) {
                 return (
                   <Slider
                     key={s.anns_field}
                     color="secondary"
                     defaultValue={0.5}
+                    value={searchGlobalParams.weightedParams!.weights[index]}
                     getAriaValueText={value => {
                       return `${s.anns_field}'s weight: ${value}`;
                     }}
-                    onChange={() => {
+                    onChange={(
+                      e: ChangeEvent<{}>,
+                      value: number | number[]
+                    ) => {
+                      // update the selected field
+                      const weights = [
+                        ...searchGlobalParams.weightedParams!.weights,
+                      ];
+                      weights[index] = Number(value);
+                      handleInputChange('weightedParams', { weights: weights });
+                      // fire on change event
                       onSlideChange(s.anns_field);
                     }}
                     onChangeCommitted={() => {
@@ -178,7 +169,8 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
                     max={1}
                   />
                 );
-              })}
+              }
+            })}
         </>
       )}
     </>

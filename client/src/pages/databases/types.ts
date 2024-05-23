@@ -13,7 +13,9 @@ export type GlobalParams = {
   topK: number;
   consistency_level: string;
   filter: string;
-  rerank?: RerankerObj;
+  rerank: 'rrf' | 'weighted';
+  rrfParams: { k: number };
+  weightedParams: { weights: number[] };
   round_decimal?: number;
 };
 
