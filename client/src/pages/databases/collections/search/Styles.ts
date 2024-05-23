@@ -157,7 +157,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
 
     '& .left': {
       display: 'flex',
-
+      gap: theme.spacing(1),
       '& .MuiFilledInput-adornedEnd': {
         paddingRight: 0,
       },
@@ -169,8 +169,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   },
 
   filterInput: {
-    width: '360px',
-    marginRight: '8px',
+    width: '320px',
     '& .MuiFormHelperText-root': {
       display: 'none',
     },
