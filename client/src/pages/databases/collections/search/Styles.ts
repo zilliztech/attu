@@ -1,4 +1,5 @@
 import { makeStyles, Theme } from '@material-ui/core';
+import { Height } from '@material-ui/icons';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -137,6 +138,10 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
 
     '& .selector': {
       marginBottom: '8px',
+    },
+    '& span button': {
+      width: '100%',
+      height: '100%',
     },
   },
 

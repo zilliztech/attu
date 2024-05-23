@@ -405,6 +405,22 @@ const Search = (props: CollectionDataProps) => {
             >
               {btnTrans('example')}
             </CustomButton>
+
+            <CustomButton
+              variant="contained"
+              size="small"
+              disabled={disableSearch}
+              tooltip={disableSearchTooltip}
+              tooltipPlacement="top"
+              onClick={onSearchClicked}
+            >
+              {btnTrans('searchMulti', {
+                number:
+                  searchParams.collection.schema.vectorFields.length > 1
+                    ? `(${selectedFields.length})`
+                    : '',
+              })}
+            </CustomButton>
           </div>
 
           <div className={classes.searchResults}>
@@ -445,21 +461,6 @@ const Search = (props: CollectionDataProps) => {
                   }}
                   checkValid={() => true}
                 />
-                <CustomButton
-                  variant="contained"
-                  size="small"
-                  disabled={disableSearch}
-                  tooltip={disableSearchTooltip}
-                  tooltipPlacement="top"
-                  onClick={onSearchClicked}
-                >
-                  {btnTrans('searchMulti', {
-                    number:
-                      searchParams.collection.schema.vectorFields.length > 1
-                        ? `(${selectedFields.length})`
-                        : '',
-                  })}
-                </CustomButton>
               </div>
               <div className="right">
                 <CustomButton

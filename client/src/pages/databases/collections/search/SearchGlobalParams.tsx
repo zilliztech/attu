@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
@@ -25,6 +25,10 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
   ).length;
   const showReranker = selectedCount > 1;
 
+  // translations
+  const { t: warningTrans } = useTranslation('warning');
+  const { t: collectionTrans } = useTranslation('collection');
+
   // UI functions
   const handleInputChange = useCallback(
     <K extends keyof GlobalParams>(key: K, value: GlobalParams[K]) => {
@@ -39,6 +43,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     },
     [handleFormChange, searchGlobalParams]
   );
+
   const onRerankChanged = useCallback(
     (e: { target: { value: unknown } }) => {
       const rerankerStr = e.target.value as string;
@@ -63,33 +68,38 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     [selectedCount, handleInputChange]
   );
 
-  // translations
-  const { t: warningTrans } = useTranslation('warning');
-  const { t: collectionTrans } = useTranslation('collection');
+  // update rerank params if selected count changes
+  useEffect(() => {
+    if (searchGlobalParams.rerank) {
+      onRerankChanged({
+        target: { value: searchGlobalParams.rerank.strategy },
+      });
+    }
+  }, [selectedCount]);
 
-  const roundInputConfig: ITextfieldConfig = {
-    label: collectionTrans('round'),
-    key: 'round',
-    onChange: value => {
-      handleInputChange('round_decimal', value);
-    },
-    variant: 'filled',
-    placeholder: 'round_decimal',
-    fullWidth: true,
-    validations: [
-      {
-        rule: 'require',
-        errorText: warningTrans('required', {
-          name: collectionTrans('name'),
-        }),
-      },
-      {
-        rule: 'collectionName',
-        errorText: collectionTrans('nameContentWarning'),
-      },
-    ],
-    defaultValue: '0',
-  };
+  // const roundInputConfig: ITextfieldConfig = {
+  //   label: collectionTrans('round'),
+  //   key: 'round',
+  //   onChange: value => {
+  //     handleInputChange('round_decimal', value);
+  //   },
+  //   variant: 'filled',
+  //   placeholder: 'round_decimal',
+  //   fullWidth: true,
+  //   validations: [
+  //     {
+  //       rule: 'require',
+  //       errorText: warningTrans('required', {
+  //         name: collectionTrans('name'),
+  //       }),
+  //     },
+  //     {
+  //       rule: 'collectionName',
+  //       errorText: collectionTrans('nameContentWarning'),
+  //     },
+  //   ],
+  //   defaultValue: '0',
+  // };
 
   return (
     <>
@@ -130,11 +140,11 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
           onChange={onRerankChanged}
         />
       )}
-      <CustomInput
+      {/* <CustomInput
         type="text"
         textConfig={roundInputConfig}
         checkValid={() => true}
-      />
+      /> */}
     </>
   );
 };
