@@ -37,10 +37,19 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   },
 
   accordion: {
-    border: 'none',
     borderRadius: 0,
     boxShadow: 'none',
     padding: '0',
+    border: '1px solid transparent',
+
+    '&:first-child': {
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+    },
+
+    '&.highlight': {
+      border: `1px solid ${theme.palette.primary.main}`,
+    },
 
     // borderBottom: `1px solid ${theme.palette.divider}`,
     '& .MuiAccordionSummary-root': {
@@ -142,6 +151,10 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     '& span button': {
       width: '100%',
       height: '100%',
+    },
+    '& .slider': {
+      display: 'flex',
+      flexDirection: 'row',
     },
   },
 

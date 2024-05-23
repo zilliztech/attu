@@ -22,7 +22,8 @@ const searchTrans = {
   exprHelper: 'Expr Helper',
   loadCollectionFirst: 'Please load the collection first.',
   noVectorToSearch: 'No vector data to search.',
-  noSelectedVectorField: 'At least select one vector field to search.'
+  noSelectedVectorField: 'At least select one vector field to search.',
+  rerank: 'Reranker',
 };
 
 export default searchTrans;

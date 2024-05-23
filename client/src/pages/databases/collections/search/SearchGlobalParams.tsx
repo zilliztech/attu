@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Slider } from '@material-ui/core';
 import CustomInput from '@/components/customInput/CustomInput';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { getQueryStyles } from './Styles';
 import {
@@ -15,11 +15,19 @@ export interface CollectionDataProps {
   searchGlobalParams: GlobalParams;
   searchParams: SearchParams;
   handleFormChange: (form: GlobalParams) => void;
+  onSlideChange: (field: string) => void;
+  onSlideChangeCommitted: () => void;
 }
 
 const SearchGlobalParams = (props: CollectionDataProps) => {
   // props
-  const { searchParams, searchGlobalParams, handleFormChange } = props;
+  const {
+    searchParams,
+    searchGlobalParams,
+    handleFormChange,
+    onSlideChange,
+    onSlideChangeCommitted,
+  } = props;
   const selectedCount = searchParams.searchParams.filter(
     sp => sp.selected
   ).length;
@@ -28,6 +36,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
   // translations
   const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
+  const { t: searchTrans } = useTranslation('search');
 
   // UI functions
   const handleInputChange = useCallback(
@@ -77,30 +86,6 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     }
   }, [selectedCount]);
 
-  // const roundInputConfig: ITextfieldConfig = {
-  //   label: collectionTrans('round'),
-  //   key: 'round',
-  //   onChange: value => {
-  //     handleInputChange('round_decimal', value);
-  //   },
-  //   variant: 'filled',
-  //   placeholder: 'round_decimal',
-  //   fullWidth: true,
-  //   validations: [
-  //     {
-  //       rule: 'require',
-  //       errorText: warningTrans('required', {
-  //         name: collectionTrans('name'),
-  //       }),
-  //     },
-  //     {
-  //       rule: 'collectionName',
-  //       errorText: collectionTrans('nameContentWarning'),
-  //     },
-  //   ],
-  //   defaultValue: '0',
-  // };
-
   return (
     <>
       <CustomSelector
@@ -127,24 +112,75 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
       />
 
       {showReranker && (
-        <CustomSelector
-          options={RERANKER_OPTIONS}
-          value={
-            searchGlobalParams.rerank
-              ? searchGlobalParams.rerank.strategy
-              : RERANKER_OPTIONS[0].value
-          }
-          label={collectionTrans('reranker')}
-          wrapperClass="selector"
-          variant="filled"
-          onChange={onRerankChanged}
-        />
+        <>
+          <CustomSelector
+            options={RERANKER_OPTIONS}
+            value={
+              searchGlobalParams.rerank
+                ? searchGlobalParams.rerank.strategy
+                : RERANKER_OPTIONS[0].value
+            }
+            label={searchTrans('rerank')}
+            wrapperClass="selector"
+            variant="filled"
+            onChange={onRerankChanged}
+          />
+
+          {(!searchGlobalParams.rerank?.strategy ||
+            searchGlobalParams.rerank.strategy == 'rrf') && (
+            <CustomInput
+              type="text"
+              textConfig={{
+                label: 'K',
+                key: 'k',
+                onChange: value => {
+                  console.log('update', value);
+                },
+                variant: 'filled',
+                placeholder: 'k',
+                fullWidth: true,
+                validations: [
+                  {
+                    rule: 'require',
+                    errorText: warningTrans('required', {
+                      name: 'k',
+                    }),
+                  },
+                ],
+                defaultValue: 60,
+              }}
+              checkValid={() => true}
+            />
+          )}
+
+          {searchGlobalParams.rerank?.strategy == 'weighted' &&
+            searchParams.searchParams
+              .filter(s => s.selected)
+              .map(s => {
+                return (
+                  <div className="slider">
+                    <Slider
+                      defaultValue={0.5}
+                      getAriaValueText={value => {
+                        return `${s.anns_field}'s weight: ${value}`;
+                      }}
+                      onChange={() => {
+                        onSlideChange(s.anns_field);
+                      }}
+                      onChangeCommitted={() => {
+                        onSlideChangeCommitted();
+                      }}
+                      aria-labelledby="discrete-slider-custom"
+                      step={0.1}
+                      valueLabelDisplay="auto"
+                      min={0}
+                      max={1}
+                    />
+                  </div>
+                );
+              })}
+        </>
       )}
-      {/* <CustomInput
-        type="text"
-        textConfig={roundInputConfig}
-        checkValid={() => true}
-      /> */}
     </>
   );
 };

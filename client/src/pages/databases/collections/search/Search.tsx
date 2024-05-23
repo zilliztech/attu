@@ -52,7 +52,9 @@ const Search = (props: CollectionDataProps) => {
     i => i.collection_name === collectionName
   ) as CollectionFullObject;
 
+  // UI states
   const [tableLoading, setTableLoading] = useState<boolean>();
+  const [highlightField, setHighlightField] = useState<string>('');
 
   // translations
   const { t: searchTrans } = useTranslation('search');
@@ -325,7 +327,9 @@ const Search = (props: CollectionDataProps) => {
                   key={`${collection.collection_name}-${field.name}`}
                   expanded={s.expanded}
                   onChange={handleExpand(field.name)}
-                  className={classes.accordion}
+                  className={`${classes.accordion} ${
+                    highlightField === field.name && 'highlight'
+                  }`}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -390,6 +394,12 @@ const Search = (props: CollectionDataProps) => {
 
           <div className={classes.searchControls}>
             <SearchGlobalParams
+              onSlideChange={(field: string) => {
+                setHighlightField(field);
+              }}
+              onSlideChangeCommitted={() => {
+                setHighlightField('');
+              }}
               searchParams={searchParams}
               searchGlobalParams={searchParams.globalParams}
               handleFormChange={(params: any) => {
