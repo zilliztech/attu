@@ -169,7 +169,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   },
 
   filterInput: {
-    width: '320px',
+    width: '280px',
     '& .MuiFormHelperText-root': {
       display: 'none',
     },

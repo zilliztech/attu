@@ -20,6 +20,10 @@ export interface CollectionDataProps {
 const SearchGlobalParams = (props: CollectionDataProps) => {
   // props
   const { searchParams, searchGlobalParams, handleFormChange } = props;
+  const selectedCount = searchParams.searchParams.filter(
+    sp => sp.selected
+  ).length;
+  const showReranker = selectedCount > 1;
 
   // UI functions
   const handleInputChange = useCallback(
@@ -35,12 +39,33 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     },
     [handleFormChange, searchGlobalParams]
   );
-  // icons
+  const onRerankChanged = useCallback(
+    (e: { target: { value: unknown } }) => {
+      const rerankerStr = e.target.value as string;
+
+      const rerank = {
+        strategy: rerankerStr,
+        params: {},
+      };
+      if (rerankerStr === 'weighted') {
+        rerank.params = {
+          weights: Array(selectedCount).fill(0.5),
+        };
+      }
+
+      if (rerankerStr === 'rrf') {
+        rerank.params = {
+          k: 60,
+        };
+      }
+      handleInputChange('rerank', rerank);
+    },
+    [selectedCount, handleInputChange]
+  );
+
   // translations
   const { t: warningTrans } = useTranslation('warning');
   const { t: collectionTrans } = useTranslation('collection');
-  // classes
-  const classes = getQueryStyles();
 
   const roundInputConfig: ITextfieldConfig = {
     label: collectionTrans('round'),
@@ -65,11 +90,6 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     ],
     defaultValue: '0',
   };
-
-  const selectedCount = searchParams.searchParams.filter(
-    sp => sp.selected
-  ).length;
-  const showReranker = selectedCount > 1;
 
   return (
     <>
@@ -107,26 +127,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
           label={collectionTrans('reranker')}
           wrapperClass="selector"
           variant="filled"
-          onChange={(e: { target: { value: unknown } }) => {
-            const rerankerStr = e.target.value as string;
-
-            const rerank = {
-              strategy: rerankerStr,
-              params: {},
-            };
-            if (rerankerStr === 'weighted') {
-              rerank.params = {
-                weights: Array(selectedCount).fill(0.5),
-              };
-            }
-
-            if (rerankerStr === 'rrf') {
-              rerank.params = {
-                k: 60,
-              };
-            }
-            handleInputChange('rerank', rerank);
-          }}
+          onChange={onRerankChanged}
         />
       )}
       <CustomInput
