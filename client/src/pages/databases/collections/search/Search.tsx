@@ -192,7 +192,7 @@ const Search = (props: CollectionDataProps) => {
       if (searchParams.globalParams.rerank === 'rrf') {
         params.rerank = {
           strategy: 'rrf',
-          params: { k: searchParams.globalParams.rrfParams },
+          params:  searchParams.globalParams.rrfParams,
         };
       }
       if (searchParams.globalParams.rerank === 'weighted') {
