@@ -158,25 +158,25 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
               .filter(s => s.selected)
               .map(s => {
                 return (
-                  <div className="slider">
-                    <Slider
-                      defaultValue={0.5}
-                      getAriaValueText={value => {
-                        return `${s.anns_field}'s weight: ${value}`;
-                      }}
-                      onChange={() => {
-                        onSlideChange(s.anns_field);
-                      }}
-                      onChangeCommitted={() => {
-                        onSlideChangeCommitted();
-                      }}
-                      aria-labelledby="discrete-slider-custom"
-                      step={0.1}
-                      valueLabelDisplay="auto"
-                      min={0}
-                      max={1}
-                    />
-                  </div>
+                  <Slider
+                    key={s.anns_field}
+                    color="secondary"
+                    defaultValue={0.5}
+                    getAriaValueText={value => {
+                      return `${s.anns_field}'s weight: ${value}`;
+                    }}
+                    onChange={() => {
+                      onSlideChange(s.anns_field);
+                    }}
+                    onChangeCommitted={() => {
+                      onSlideChangeCommitted();
+                    }}
+                    aria-labelledby="weight-slider"
+                    valueLabelDisplay="auto"
+                    step={0.1}
+                    min={0}
+                    max={1}
+                  />
                 );
               })}
         </>

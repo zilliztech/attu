@@ -48,7 +48,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
 
     '&.highlight': {
-      border: `1px solid ${theme.palette.primary.main}`,
+      border: `1px solid ${theme.palette.secondary.main}`,
     },
 
     // borderBottom: `1px solid ${theme.palette.divider}`,
@@ -151,10 +151,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     '& span button': {
       width: '100%',
       height: '100%',
-    },
-    '& .slider': {
-      display: 'flex',
-      flexDirection: 'row',
     },
   },
 
