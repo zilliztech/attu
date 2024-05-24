@@ -49,7 +49,13 @@ const handleOnChange = (param: IChangeParam) => {
     key,
     param: { cb, checkValid, validations },
   } = param;
-  const input = event.target.value;
+  let input = event.target.value;
+
+  // fix for number input
+  if (!isNaN(input)) {
+    input = parseFloat(input);
+  }
+
   const isValid = validations
     ? checkValid({
         key,
@@ -233,7 +239,8 @@ const getTextfield = (
       onBlur={event => {
         handleOnBlur({ event, key, param });
       }}
-      // value={value}
+      type={others.type || 'text'}
+      value={value}
       onChange={event => {
         handleOnChange({
           event,
