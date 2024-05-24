@@ -12,6 +12,7 @@ const indexTrans = {
   metric: '度量类型',
   createSuccess: '开始创建索引',
   deleteWarning: '您正在尝试删除一个索引。此操作无法撤销。',
+  cancelCreate: '取消创建索引',
 };
 
 export default indexTrans;
