@@ -107,7 +107,19 @@ const Databases = () => {
         setSearchParams(prevParams => {
           return prevParams.map(s => {
             if (s.collection.collection_name === c.collection_name) {
-              return { ...s, collection: c };
+              // update field in search params
+              const searchParams = s.searchParams.map(sp => {
+                const field = c.schema?.vectorFields.find(
+                  v => v.name === sp.anns_field
+                );
+                if (field) {
+                  return { ...sp, field };
+                }
+                return sp;
+              });
+              // update collection
+              const collection = c;
+              return { ...s, searchParams, collection };
             }
             return s;
           });
