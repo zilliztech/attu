@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
@@ -11,11 +11,14 @@ import Partitions from './collections/partitions/Partitions';
 import Overview from './collections/overview/Overview';
 import Data from './collections/data/CollectionData';
 import Segments from './collections/segments/Segments';
+import Search from './collections/search/Search';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import { ConsistencyLevelEnum } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
+import { SearchParams } from './types';
 import { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,6 +57,86 @@ const Databases = () => {
   const { database, collections, loading, fetchCollection } =
     useContext(dataContext);
 
+  // UI state
+  const [searchParams, setSearchParams] = useState<SearchParams[]>(
+    [] as SearchParams[]
+  );
+
+  // init search params
+  useEffect(() => {
+    collections.forEach(c => {
+      // find search params for the collection
+      const searchParam = searchParams.find(
+        s => s.collection.collection_name === c.collection_name
+      );
+
+      // if search params not found, and the schema is ready, create new search params
+      if (!searchParam && c.schema) {
+        setSearchParams(prevParams => {
+          return [
+            ...prevParams,
+            {
+              collection: c,
+              searchParams: c.schema.vectorFields.map(v => {
+                return {
+                  anns_field: v.name,
+                  params: {},
+                  data: '',
+                  expanded: c.schema.vectorFields.length === 1,
+                  field: v,
+                  selected: c.schema.vectorFields.length === 1,
+                };
+              }),
+              globalParams: {
+                topK: 50,
+                consistency_level: ConsistencyLevelEnum.Bounded,
+                filter: '',
+                rerank: 'rrf',
+                rrfParams: { k: 60 },
+                weightedParams: {
+                  weights: Array(c.schema.vectorFields.length).fill(0.5),
+                },
+              },
+              searchResult: null,
+              searchLatency: 0,
+            },
+          ];
+        });
+      } else {
+        // update collection
+        setSearchParams(prevParams => {
+          return prevParams.map(s => {
+            if (s.collection.collection_name === c.collection_name) {
+              // update field in search params
+              const searchParams = s.searchParams.map(sp => {
+                const field = c.schema?.vectorFields.find(
+                  v => v.name === sp.anns_field
+                );
+                if (field) {
+                  return { ...sp, field };
+                }
+                return sp;
+              });
+              // update collection
+              const collection = c;
+              return { ...s, searchParams, collection };
+            }
+            return s;
+          });
+        });
+      }
+    });
+
+    // delete search params for the collection that is not in the collections
+    setSearchParams(prevParams => {
+      return prevParams.filter(s =>
+        collections.find(
+          c => c.collection_name === s.collection.collection_name
+        )
+      );
+    });
+  }, [collections]);
+
   // get current collection from url
   const params = useParams();
   const {
@@ -86,6 +169,19 @@ const Databases = () => {
     ),
   });
 
+  const setCollectionSearchParams = (params: SearchParams) => {
+    setSearchParams(prevParams => {
+      return prevParams.map(s => {
+        if (
+          s.collection.collection_name === params.collection.collection_name
+        ) {
+          return { ...params };
+        }
+        return s;
+      });
+    });
+  };
+
   // render
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
@@ -109,6 +205,12 @@ const Databases = () => {
           collectionPage={collectionPage}
           collectionName={collectionName}
           tabClass={classes.tab}
+          searchParams={
+            searchParams.find(
+              s => s.collection.collection_name === collectionName
+            )!
+          }
+          setSearchParams={setCollectionSearchParams}
           collections={collections}
         />
       )}
@@ -147,19 +249,42 @@ const CollectionTabs = (props: {
   collectionName: string; // current collection name
   tabClass: string; // tab class
   collections: CollectionObject[]; // collections
+  searchParams: SearchParams; // search params
+  setSearchParams: (params: SearchParams) => void; // set search params
 }) => {
   // props
-  const { collectionPage, collectionName, tabClass, collections } = props;
+  const {
+    collectionPage,
+    collectionName,
+    tabClass,
+    collections,
+    searchParams,
+    setSearchParams,
+  } = props;
+
   // context
   const { isManaged } = useContext(authContext);
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
+
   // collection tabs
   const collectionTabs: ITab[] = [
     {
       label: collectionTrans('overviewTab'),
       component: <Overview />,
       path: `overview`,
+    },
+    {
+      label: collectionTrans('searchTab'),
+      component: (
+        <Search
+          collections={collections}
+          collectionName={collectionName}
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+        />
+      ),
+      path: `search`,
     },
     {
       label: collectionTrans('dataTab'),

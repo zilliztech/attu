@@ -5,14 +5,14 @@ import { FieldObject, KeyValuePair } from '@server/types';
 
 export interface SearchParamsProps {
   // default index type is FLAT
-  indexType: string;
+  indexType?: string;
   // index extra params, e.g. nlist
-  indexParams: KeyValuePair[];
+  indexParams?: KeyValuePair[];
   searchParamsForm: {
-    [key in string]: number;
+    [key in string]: number | string;
   };
+  handleFormChange: (form: { [key in string]: number | string }) => void;
   topK: number;
-  handleFormChange: (form: { [key in string]: number }) => void;
   handleConsistencyChange: (type: string) => void;
   wrapperClass?: string;
   setParamsDisabled: (isDisabled: boolean) => void;
@@ -33,9 +33,10 @@ export interface FieldOption extends Option {
 export interface SearchParamInputConfig {
   label: string;
   key: searchKeywordsType;
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   isInt?: boolean;
+  type?: 'number' | 'text';
   // no value: empty string
   value: number | string;
   handleChange: (value: number) => void;

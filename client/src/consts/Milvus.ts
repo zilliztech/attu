@@ -120,7 +120,8 @@ export type searchKeywordsType =
   | 'search_list'
   | 'radius'
   | 'range_filter'
-  | 'drop_ratio_search';
+  | 'drop_ratio_search'
+  | 'filter';
 
 export type indexConfigType = {
   [x: string]: {
@@ -296,6 +297,11 @@ export enum ConsistencyLevelEnum {
   Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
 }
 
+export const TOP_K_OPTIONS = [50, 100, 150, 200, 250].map(v => ({
+  value: v,
+  label: String(v),
+}));
+
 export const CONSISTENCY_LEVEL_OPTIONS = [
   {
     value: ConsistencyLevelEnum.Bounded,
@@ -312,6 +318,17 @@ export const CONSISTENCY_LEVEL_OPTIONS = [
   {
     value: ConsistencyLevelEnum.Eventually,
     label: ConsistencyLevelEnum.Eventually,
+  },
+];
+
+export const RERANKER_OPTIONS = [
+  {
+    label: 'RRF',
+    value: 'rrf',
+  },
+  {
+    label: 'Weighted',
+    value: 'weighted',
   },
 ];
 

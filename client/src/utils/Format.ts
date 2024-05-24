@@ -3,12 +3,14 @@ import {
   DEFAULT_MILVUS_PORT,
   DEFAULT_PROMETHEUS_PORT,
   VectorTypes,
+  DataTypeStringEnum,
 } from '@/consts';
 import {
   CreateFieldType,
   CreateField,
 } from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
+import { generateVector } from './';
 
 /**
  * transform large capacity to capacity in b.
@@ -216,4 +218,90 @@ export const formatFieldType = (field: FieldObject) => {
   const maxLn = data_type === 'VarChar' ? `(${maxLength})` : '';
 
   return `${data_type}${elementType}${maxCap}${dim}${maxLn}`;
+};
+
+export const isSparseVector = (str: string): boolean => {
+  try {
+    str = str.trim();
+
+    if (str === '') return false;
+
+    if (str[0] !== '{' || str[str.length - 1] !== '}') return false;
+
+    const innerStr = str.slice(1, -1);
+
+    const pairs = innerStr.split(',');
+
+    for (const pair of pairs) {
+      const [key, value] = pair.split(':');
+      const trimmedKey = key && key.trim();
+      const trimmedValue = value && value.trim();
+      if (
+        !(
+          (trimmedKey.match(/^".*"$/) && trimmedKey.length > 2) ||
+          trimmedKey.match(/^\d+$/)
+        ) ||
+        !trimmedValue.match(/^(\d*\.)?\d+$/)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// transform ObjStr To JSONStr
+// `{a: 1, b: 2}` => `{"a": 1, "b": 2}`
+// `{'a': 1, 'b': 2}` => `{"a": 1, "b": 2}`
+// `{'a': 1, b: 2}` => `{"a": 1, "b": 2}`
+// it may have empty space between key and value
+export const transformObjStrToJSONStr = (str: string): string => {
+  const objStr = str.replace(/'/g, '"').replace(/(\w+)\s*:/g, '"$1":');
+  return objStr;
+};
+
+// transform object to valid string without quotes
+// {a: 1, b: 2} => '{a: 1, b: 2}'
+export const transformObjToStr = (obj: any): string => {
+  const str = JSON.stringify(obj);
+  return str.replace(/"/g, '');
+};
+
+export const generateVectorsByField = (field: FieldObject) => {
+  switch (field.data_type) {
+    case DataTypeStringEnum.FloatVector:
+    case DataTypeStringEnum.BinaryVector:
+    case DataTypeStringEnum.Float16Vector:
+    case DataTypeStringEnum.BFloat16Vector:
+      const dim =
+        field.data_type === DataTypeStringEnum.BinaryVector
+          ? field.dimension / 8
+          : field.dimension;
+      return JSON.stringify(generateVector(dim));
+    case 'SparseFloatVector':
+      return transformObjToStr({
+        [Math.floor(Math.random() * 10)]: Math.random(),
+      });
+    default:
+      return [1, 2, 3];
+  }
+};
+
+const arrayFormatter = (value: string) => {
+  return JSON.parse(value);
+};
+
+const sparseVectorFormatter = (str: string) => {
+  return JSON.parse(transformObjStrToJSONStr(str));
+};
+
+export const VectorStrToObject = {
+  [DataTypeStringEnum.FloatVector]: arrayFormatter,
+  [DataTypeStringEnum.BinaryVector]: arrayFormatter,
+  [DataTypeStringEnum.Float16Vector]: arrayFormatter,
+  [DataTypeStringEnum.BFloat16Vector]: arrayFormatter,
+  [DataTypeStringEnum.SparseFloatVector]: sparseVectorFormatter,
 };

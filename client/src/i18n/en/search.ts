@@ -20,6 +20,10 @@ const searchTrans = {
   addCondition: 'Add Condition',
   filterExpr: 'Filter expression, eg: id > 0 ',
   exprHelper: 'Expr Helper',
+  loadCollectionFirst: 'Please load the collection first.',
+  noVectorToSearch: 'No vector data to search.',
+  noSelectedVectorField: 'At least select one vector field to search.',
+  rerank: 'Reranker',
 };
 
 export default searchTrans;

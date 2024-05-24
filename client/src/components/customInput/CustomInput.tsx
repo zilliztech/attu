@@ -49,7 +49,13 @@ const handleOnChange = (param: IChangeParam) => {
     key,
     param: { cb, checkValid, validations },
   } = param;
-  const input = event.target.value;
+  let input = event.target.value;
+
+  // fix for number input
+  if (!isNaN(input)) {
+    input = parseFloat(input);
+  }
+
   const isValid = validations
     ? checkValid({
         key,
@@ -119,7 +125,11 @@ const getAdornmentInput = (
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton onClick={onIconClick || (() => {})} edge="end" role="icon-button">
+            <IconButton
+              onClick={onIconClick || (() => {})}
+              edge="end"
+              role="icon-button"
+            >
               {isPasswordType
                 ? showPassword
                   ? Icons.visible({ classes: { root: classes.icon } })
@@ -129,7 +139,7 @@ const getAdornmentInput = (
           </InputAdornment>
         }
         inputProps={{
-          'role': 'textbox',
+          role: 'textbox',
           'data-cy': key,
         }}
       />
@@ -205,6 +215,7 @@ const getTextfield = (
 
   const info = validInfo ? validInfo[key] : null;
   const defaultInputProps = { 'data-cy': key };
+
   return (
     <TextField
       {...(others as
@@ -219,18 +230,17 @@ const getTextfield = (
           ? { ...inputProps, ...defaultInputProps, role: 'textbox' }
           : { ...defaultInputProps, role: 'textbox' }
       }
-      error={info?.result && info.errText !== ''}
+      error={info?.result === false && info.errText !== ''}
       InputProps={InputProps ? { ...InputProps } : {}}
       helperText={
-        info && info.result && info.errText
-          ? createHelperTextNode(info.errText)
-          : ' '
+        info && info.errText ? createHelperTextNode(info.errText) : ' '
       }
       className={className || ''}
       onBlur={event => {
         handleOnBlur({ event, key, param });
       }}
-      // value={value}
+      type={others.type || 'text'}
+      value={value}
       onChange={event => {
         handleOnChange({
           event,

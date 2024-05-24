@@ -57,9 +57,9 @@ const VectorSearch = () => {
   const [selectedField, setSelectedField] = useState<string>('');
 
   // search params form
-  const [searchParam, setSearchParam] = useState<{ [key in string]: number }>(
-    {}
-  );
+  const [searchParam, setSearchParam] = useState<
+    { [key in string]: number | string }
+  >({});
   // search params disable state
   const [paramDisabled, setParamDisabled] = useState<boolean>(true);
   // use null as init value before search, empty array means no results

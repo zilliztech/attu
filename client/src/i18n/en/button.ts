@@ -5,6 +5,7 @@ const btnTrans = {
   reset: 'Reset',
   update: 'Update',
   search: 'Search',
+  searchMulti: `Search{{number}}`,
   confirm: 'Confirm',
   connect: 'Connect',
   import: 'Import',

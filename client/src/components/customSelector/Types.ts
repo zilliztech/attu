@@ -30,6 +30,6 @@ export interface ICustomGroupSelect {
   haveLabel?: boolean;
   label?: string;
   placeholder?: string;
-  value: string | number;
+  value: any;
   onChange: (event: any) => void;
 }

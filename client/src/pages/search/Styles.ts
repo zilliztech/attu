@@ -20,7 +20,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
       marginTop: theme.spacing(0),
       marginBottom: theme.spacing(1),
       overflow: 'scroll',
-      height: '130px',
+      height: '65px',
       maxWidth: '100%',
       width: '100%',
       display: 'block',

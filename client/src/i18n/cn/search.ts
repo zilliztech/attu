@@ -20,6 +20,10 @@ const searchTrans = {
   addCondition: '添加条件',
   filterExpr: '过滤表达式',
   exprHelper: '表达式助手',
+  loadCollectionFirst: '请先加载Collection.',
+  noVectorToSearch: '没有用于搜索的向量数据.',
+  noSelectedVectorField: '至少选择一个向量字段进行搜索.',
+  rerank: '排序器',
 };
 
 export default searchTrans;

@@ -71,6 +71,7 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
         extraParam: rule.extraParam,
         rule: rule.rule,
       });
+
       if (!checkResult) {
         validDetail = {
           result: true,
