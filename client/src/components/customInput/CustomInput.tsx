@@ -52,7 +52,7 @@ const handleOnChange = (param: IChangeParam) => {
   let input = event.target.value;
 
   // fix for number input
-  if (!isNaN(input)) {
+  if (!isNaN(input) && input.trim() !== '') {
     input = parseFloat(input);
   }
 

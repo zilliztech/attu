@@ -300,6 +300,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           max: 1,
           isInt: false,
           type: 'number',
+          required: false,
           handleChange: value => {
             handleInputChange('drop_ratio_search', value);
           },
