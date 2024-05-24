@@ -150,6 +150,37 @@ const IndexTypeElement: FC<{
     });
   };
 
+  const chipComp = (
+    text = field.index.indexType,
+    icon = <Icons.delete classes={{ root: 'icon' }} />,
+    tooltip = ''
+  ) => {
+    const IndexElem = () => (
+      <Chip
+        label={text}
+        classes={{ root: classes.chip, label: classes.chipLabel }}
+        deleteIcon={icon}
+        onDelete={handleDelete}
+        disabled={disabled}
+        onClick={e => {
+          e.stopPropagation();
+          handleDelete();
+        }}
+        size="small"
+      />
+    );
+
+    return tooltip ? (
+      <Tooltip interactive arrow title={tooltip} placement="top">
+        <div>
+          <IndexElem />
+        </div>
+      </Tooltip>
+    ) : (
+      <IndexElem />
+    );
+  };
+
   const generateElement = () => {
     if (
       field.is_primary_key ||
@@ -176,38 +207,21 @@ const IndexTypeElement: FC<{
     switch (field.index.indexType) {
       default: {
         if (field.index.state === IndexState.InProgress) {
-          return <StatusIcon type={LoadingType.CREATING} />;
+          return (
+            <>
+              {chipComp(
+                field.index.indexType,
+                <StatusIcon type={LoadingType.CREATING} />,
+                indexTrans('cancelCreate')
+              )}
+            </>
+          );
         }
 
-        const chipComp = () => (
-          <Chip
-            label={field.index.indexType}
-            classes={{ root: classes.chip, label: classes.chipLabel }}
-            deleteIcon={<Icons.delete classes={{ root: 'icon' }} />}
-            onDelete={handleDelete}
-            disabled={disabled}
-            onClick={(e: MouseEvent<HTMLDivElement>) => {
-              e.stopPropagation();
-              handleDelete();
-            }}
-            size="small"
-          />
-        );
         /**
          * if creating finished, show chip that contains index type
          */
-        return disabled ? (
-          <Tooltip
-            interactive
-            arrow
-            title={disabledTooltip ?? ''}
-            placement={'top'}
-          >
-            <div>{chipComp()}</div>
-          </Tooltip>
-        ) : (
-          <div>{chipComp()}</div>
-        );
+        return chipComp(field.index.indexType);
       }
     }
   };

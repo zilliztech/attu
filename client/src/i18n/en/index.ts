@@ -13,6 +13,7 @@ const indexTrans = {
   createSuccess: 'Start creating index',
   deleteWarning:
     'You are trying to delete an index. This action cannot be undone.',
+  cancelCreate: 'Cancel Index Creation',
 };
 
 export default indexTrans;
