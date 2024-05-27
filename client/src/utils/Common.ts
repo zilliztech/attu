@@ -1,6 +1,5 @@
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
-import { csv } from 'd3';
 
 export const copyToCommand = (
   value: string,

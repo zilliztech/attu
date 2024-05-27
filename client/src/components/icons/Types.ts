@@ -51,4 +51,5 @@ export type IconsType =
   | 'check'
   | 'discord'
   | 'star'
-  | 'magic';
+  | 'magic'
+  | 'code';
