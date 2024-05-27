@@ -1,4 +1,4 @@
-import { useState, useMemo, ChangeEvent, useCallback } from 'react';
+import { useState, useMemo, ChangeEvent, useCallback, useContext } from 'react';
 import {
   Typography,
   Accordion,
@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DataService } from '@/http';
+import { rootContext } from '@/context';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
@@ -23,10 +24,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomInput from '@/components/customInput/CustomInput';
 import {
   formatFieldType,
-  VectorStrToObject,
   cloneObj,
   generateVectorsByField,
   saveCsvAs,
+  buildSearchParams,
+  buildSearchCode,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
 import {
@@ -37,6 +39,7 @@ import {
 import { DYNAMIC_FIELD } from '@/consts';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
+import CodeDialog from '@/pages/dialogs/CodeDialog';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -51,6 +54,9 @@ const Search = (props: CollectionDataProps) => {
   const collection = collections.find(
     i => i.collection_name === collectionName
   ) as CollectionFullObject;
+
+  // context
+  const { setDialog } = useContext(rootContext);
 
   // UI states
   const [tableLoading, setTableLoading] = useState<boolean>();
@@ -161,47 +167,7 @@ const Search = (props: CollectionDataProps) => {
 
   // execute search
   const onSearchClicked = useCallback(async () => {
-    const data: any = [];
-    const weightedParams: number[] = [];
-
-    searchParams.searchParams.forEach((s, index) => {
-      const formatter =
-        VectorStrToObject[s.field.data_type as keyof typeof VectorStrToObject];
-      if (s.selected) {
-        data.push({
-          anns_field: s.field.name,
-          data: formatter(s.data),
-          params: s.params,
-        });
-        weightedParams.push(
-          searchParams.globalParams.weightedParams.weights[index]
-        );
-      }
-    });
-
-    const params: any = {
-      output_fields: outputFields,
-      limit: searchParams.globalParams.topK,
-      data: data,
-      filter: searchParams.globalParams.filter,
-      consistency_level: searchParams.globalParams.consistency_level,
-    };
-
-    // reranker if exists
-    if (data.length > 1) {
-      if (searchParams.globalParams.rerank === 'rrf') {
-        params.rerank = {
-          strategy: 'rrf',
-          params:  searchParams.globalParams.rrfParams,
-        };
-      }
-      if (searchParams.globalParams.rerank === 'weighted') {
-        params.rerank = {
-          strategy: 'weighted',
-          params: { weights: weightedParams },
-        };
-      }
-    }
+    const params = buildSearchParams(searchParams, outputFields);
 
     setTableLoading(true);
     try {
@@ -491,6 +457,32 @@ const Search = (props: CollectionDataProps) => {
                 />
               </div>
               <div className="right">
+                <CustomButton
+                  className="btn"
+                  disabled={disableSearch}
+                  onClick={() => {
+                    // open code dialog
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <CodeDialog
+                            data={buildSearchCode(
+                              searchParams,
+                              outputFields,
+                              collection
+                            )}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                  startIcon={<Icons.code classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('Code')}
+                </CustomButton>
+
                 <CustomButton
                   className="btn"
                   disabled={result.length === 0}

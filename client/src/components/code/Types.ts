@@ -13,7 +13,7 @@ export enum CodeLanguageEnum {
 
 export interface CodeBlockProps {
   code: string;
-  language: CodeLanguageEnum;
+  language: string;
   wrapperClass?: string;
 }
 

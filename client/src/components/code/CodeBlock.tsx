@@ -2,29 +2,28 @@ import { makeStyles, Theme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CopyButton from '../advancedSearch/CopyButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { FC } from 'react';
 import { CodeBlockProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     position: 'relative',
-    padding: theme.spacing(3),
     backgroundColor: '#fff',
     color: '#454545',
   },
-  block: {
-    margin: 0,
-  },
   copy: {
     position: 'absolute',
-    top: theme.spacing(2),
-    right: theme.spacing(2),
+    top: theme.spacing(1),
+    right: theme.spacing(1),
+    '& svg': {
+      width: 16,
+    },
   },
 }));
 
 const CodeStyle = {
-  backgroundColor: '#fff',
+  backgroundColor: '#f5f5f5',
   padding: 0,
   margin: 0,
   marginRight: 32,
@@ -50,8 +49,9 @@ const CodeBlock: FC<CodeBlockProps> = ({
       />
       <SyntaxHighlighter
         language={language}
-        style={docco}
+        style={githubGist}
         customStyle={CodeStyle}
+        showLineNumbers={true}
       >
         {code}
       </SyntaxHighlighter>
