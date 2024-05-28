@@ -482,7 +482,9 @@ export class CollectionsService {
       const res = await this.getAllCollections(clientId, collections);
 
       // emit event to current client
-      socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
+      if (socketClient) {
+        socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
+      }
     } catch (e) {
       console.log('ignore queue error');
     }

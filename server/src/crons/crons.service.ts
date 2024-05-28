@@ -69,19 +69,22 @@ export class CronsService {
         );
         // get current socket
         const socketClient = clients.get(currentJob.clientId);
-        // emit event to current client, loading and indexing events are indetified as collection update
-        socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, collections);
 
-        // if all collections are loaded, stop cron
-        const LoadingOrBuildingCollections = collections.filter(v => {
-          const isLoading = checkLoading(v);
-          const isBuildingIndex = checkIndexing(v);
+        if (!socketClient) {
+          // emit event to current client, loading and indexing events are indetified as collection update
+          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, collections);
 
-          return isLoading || isBuildingIndex;
-        });
+          // if all collections are loaded, stop cron
+          const LoadingOrBuildingCollections = collections.filter(v => {
+            const isLoading = checkLoading(v);
+            const isBuildingIndex = checkIndexing(v);
 
-        if (LoadingOrBuildingCollections.length === 0) {
-          this.schedulerRegistry.deleteCronJob(clientId, data);
+            return isLoading || isBuildingIndex;
+          });
+
+          if (LoadingOrBuildingCollections.length === 0) {
+            this.schedulerRegistry.deleteCronJob(clientId, data);
+          }
         }
       } catch (error) {
         // When user not connect milvus, stop cron

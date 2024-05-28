@@ -25,6 +25,17 @@ export function initWebSocket(server: http.Server) {
         console.info(chalk.green(`ws client disconnected ${clientId}`));
         clients.delete(clientId);
       });
+
+      socket.on('error', (error: Error) => {
+        console.error(
+          chalk.red(`ws client error ${clientId}: ${error.message}`)
+        );
+      });
     });
+  });
+
+  // Handle server-level errors
+  io.on('error', (error: Error) => {
+    console.error(chalk.red(`ws server error: ${error.message}`));
   });
 }
