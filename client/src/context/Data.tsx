@@ -330,11 +330,22 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       socket.current.emit(WS_EVENTS.REGISTER, clientId);
 
       socket.current.on('connect', async () => {
-        console.log('--- ws connected ---', clientId);
+        // console.info('--- ws connected ---', clientId);
         // fetch db
         await fetchDatabases(true);
         // set connected to trues
         setConnected(true);
+      });
+
+      // handle disconnect
+      socket.current.on('disconnect', () => {
+        // Set connected to false
+        setConnected(false);
+      });
+
+      // handle error
+      socket.current.on('error', error => {
+        socket.current?.disconnect();
       });
     } else {
       socket.current?.disconnect();
