@@ -70,7 +70,7 @@ export class CronsService {
         // get current socket
         const socketClient = clients.get(currentJob.clientId);
 
-        if (!socketClient) {
+        if (socketClient) {
           // emit event to current client, loading and indexing events are indetified as collection update
           socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, collections);
 
