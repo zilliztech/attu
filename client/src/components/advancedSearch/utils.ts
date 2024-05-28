@@ -4,7 +4,15 @@ export const formatValue = (value: string, type: string, operator: string) => {
   let conditionValue: string = ''; //
   switch (type) {
     case DataTypeStringEnum.VarChar:
-      conditionValue = `"${value}"`;
+      switch (operator) {
+        case 'in':
+        case 'not in':
+          conditionValue = `${value}`;
+          break;
+        default:
+          conditionValue = `"${value}"`;
+          break;
+      }
       break;
     case DataTypeStringEnum.JSON:
       switch (operator) {
@@ -42,7 +50,7 @@ export const checkValue = (data: any): boolean => {
   const regFloat = /^-?\d+\.\d+$/;
   const regIntInterval = /^\[-?\d+(,-?\d+)*\]$/;
   const regFloatInterval = /^\[-?\d+\.\d+(,-?\d+\.\d+)*\]$/;
-  const isIn = data.operator === 'in';
+  const isIn = data.operator === 'in' || data.operator === 'not in';
 
   switch (data.type) {
     case DataTypeStringEnum.Int8:
