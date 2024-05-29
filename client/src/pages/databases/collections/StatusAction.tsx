@@ -183,17 +183,10 @@ const StatusAction: FC<StatusActionType> = props => {
               className={classes.extraBtn}
               tooltip={collectionTrans('clickToSearch')}
               onClick={() => {
-                // navigate to search page, just replace the current url 'overview' with 'search'
-                // http://localhost:3001/#/databases/default/testNode/overview -> http://localhost:3001/#/databases/default/testNode/search
-                navigate(
-                  window.location.pathname +
-                    window.location.hash
-                      .replace('overview', 'search')
-                      .replace('#/', ''),
-                  {
-                    replace: true,
-                  }
-                );
+                const currentHash = window.location.hash;
+                const newHash = currentHash.replace('overview', 'search');
+
+                window.location.hash = newHash;
               }}
             >
               {btnTrans('vectorSearch')}
