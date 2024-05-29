@@ -229,7 +229,7 @@ const CreateIndex = (props: {
       candidate_pool_size: '',
       search_length: '',
       knng: '',
-      drop_ratio_build: '',
+      drop_ratio_build: '0.5',
     }));
   }, [indexCreateParams, setDisabled, defaultMetricType]);
 
