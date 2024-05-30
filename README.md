@@ -84,6 +84,26 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 
 Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
 
+### Running Attu behind a nginx proxy
+```nginx
+server {
+  listen 8080;
+  server_name localhost;
+
+  location /attu/ {
+    proxy_pass http://localhost:3000/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    rewrite ^/attu/(.*)$ /$1 break;
+  }
+}
+```
+
 ### Install Desktop application
 
 If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
