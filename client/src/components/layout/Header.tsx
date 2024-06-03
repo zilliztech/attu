@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { navContext, dataContext, authContext } from '@/context';
 import { MilvusService } from '@/http';
 import CustomSelector from '@/components/customSelector/CustomSelector';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import icons from '../icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -96,6 +97,8 @@ const Header: FC = () => {
   };
 
   const dbOptions = databases.map(d => ({ value: d.name, label: d.name }));
+  const isLoadingDb = dbOptions.length === 0;
+
   return (
     <header className={classes.header}>
       <div className={classes.contentWrapper}>
@@ -106,26 +109,29 @@ const Header: FC = () => {
               onClick={() => handleBack(navInfo.backPath)}
             />
           )}
-          {navInfo.showDatabaseSelector ? (
-            <CustomSelector
-              label={dbTrans('database')}
-              value={database}
-              onChange={async (e: { target: { value: unknown } }) => {
-                const database = e.target.value as string;
-                await useDatabase(database);
-                setDatabase(database);
+          {navInfo.showDatabaseSelector &&
+            (!isLoadingDb ? (
+              <CustomSelector
+                label={dbTrans('database')}
+                value={database}
+                onChange={async (e: { target: { value: unknown } }) => {
+                  const database = e.target.value as string;
+                  await useDatabase(database);
+                  setDatabase(database);
 
-                // if url contains databases, go to the database page
-                if (window.location.hash.includes('databases')) {
-                  navigate(`/databases/${database}`);
-                }
-              }}
-              options={dbOptions}
-              variant="filled"
-              wrapperClass={classes.database}
-              disabled={loading}
-            />
-          ) : null}
+                  // if url contains databases, go to the database page
+                  if (window.location.hash.includes('databases')) {
+                    navigate(`/databases/${database}`);
+                  }
+                }}
+                options={dbOptions}
+                variant="filled"
+                wrapperClass={classes.database}
+                disabled={loading}
+              />
+            ) : (
+              <StatusIcon type={LoadingType.CREATING} />
+            ))}
 
           <Typography variant="h5" color="textPrimary">
             {navInfo.navTitle}
