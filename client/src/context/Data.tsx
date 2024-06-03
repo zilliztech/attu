@@ -137,17 +137,19 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: fetch databases
   const fetchDatabases = async (updateLoading?: boolean) => {
-    updateLoading && setLoadingDatabases(true);
-    const newDatabases = await DatabaseService.listDatabases();
-    updateLoading && setLoadingDatabases(false);
+    try {
+      updateLoading && setLoadingDatabases(true);
+      const newDatabases = await DatabaseService.listDatabases();
+      // if no database, logout
+      if (newDatabases.length === 0) {
+        logout();
+      }
+      setDatabases(newDatabases);
 
-    // if no database, logout
-    if (newDatabases.length === 0) {
-      logout();
+      return newDatabases;
+    } finally {
+      updateLoading && setLoadingDatabases(false);
     }
-    setDatabases(newDatabases);
-
-    return newDatabases;
   };
 
   // API: create database
