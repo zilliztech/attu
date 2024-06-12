@@ -168,3 +168,5 @@ export const getKeyValueListFromJsonString = (json: string): KeyValuePair[] => {
     throw err;
   }
 };
+
+export const cloneObj = (obj: any) => JSON.parse(JSON.stringify(obj));

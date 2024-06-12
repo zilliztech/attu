@@ -27,6 +27,8 @@ import {
   DropIndexReq,
   AlterCollectionReq,
   DataType,
+  HybridSearchReq,
+  SearchSimpleReq,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -41,6 +43,7 @@ import {
   SimpleQueue,
   MIN_INT64,
   VectorTypes,
+  cloneObj,
 } from '../utils';
 import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
 import {
@@ -249,10 +252,31 @@ export class CollectionsService {
     return res;
   }
 
-  async vectorSearch(clientId: string, data: SearchReq) {
+  async vectorSearch(
+    clientId: string,
+    data: HybridSearchReq | SearchSimpleReq
+  ) {
     const { milvusClient } = clientCache.get(clientId);
     const now = Date.now();
-    const res = await milvusClient.search(data);
+    const searchParams = data as HybridSearchReq;
+    const isHybrid = searchParams.data.length > 1;
+    const singleSearchParams = cloneObj(data) as SearchSimpleReq;
+
+    // for 2.3.x milvus
+    if (searchParams.data.length === 1) {
+      delete singleSearchParams.data;
+      delete singleSearchParams.params;
+
+      if (Object.keys(searchParams.data[0].params).length > 0) {
+        singleSearchParams.params = searchParams.data[0].params;
+      }
+      singleSearchParams.data = searchParams.data[0].data;
+      singleSearchParams.anns_field = searchParams.data[0].anns_field;
+    }
+
+    const res = await milvusClient.search(
+      isHybrid ? searchParams : singleSearchParams
+    );
     const after = Date.now();
 
     throwErrorFromSDK(res.status);
