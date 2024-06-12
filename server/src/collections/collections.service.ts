@@ -250,7 +250,7 @@ export class CollectionsService {
     const singleSearchParams = cloneObj(data) as SearchSimpleReq;
 
     // for 2.3.x milvus
-    if (searchParams.data.length == 1) {
+    if (searchParams.data.length === 1) {
       delete singleSearchParams.data;
       delete singleSearchParams.params;
 
