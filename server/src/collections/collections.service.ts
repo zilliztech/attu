@@ -25,6 +25,7 @@ import {
   CreateIndexReq,
   DescribeIndexReq,
   DropIndexReq,
+  AlterCollectionReq,
   DataType,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
@@ -158,6 +159,18 @@ export class CollectionsService {
 
     const newCollection = (await this.getAllCollections(clientId, [
       data.new_collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
+  }
+
+  async alterCollection(clientId: string, data: AlterCollectionReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.alterCollection(data);
+    throwErrorFromSDK(res);
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
     ])) as CollectionFullObject[];
 
     return newCollection[0];

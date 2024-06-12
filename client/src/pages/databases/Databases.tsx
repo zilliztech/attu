@@ -11,6 +11,7 @@ import Partitions from './collections/partitions/Partitions';
 import Overview from './collections/overview/Overview';
 import Data from './collections/data/CollectionData';
 import Segments from './collections/segments/Segments';
+import Properties from './collections/properties/Properties';
 import Search from './collections/search/Search';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
@@ -295,17 +296,24 @@ const CollectionTabs = (props: {
     },
     {
       label: collectionTrans('partitionTab'),
-      component: <Partitions />,
+      component: <Properties />,
       path: `partitions`,
     },
   ];
 
   if (!isManaged) {
-    collectionTabs.push({
-      label: collectionTrans('segmentsTab'),
-      component: <Segments />,
-      path: `segments`,
-    });
+    collectionTabs.push(
+      {
+        label: collectionTrans('segmentsTab'),
+        component: <Segments />,
+        path: `segments`,
+      },
+      {
+        label: collectionTrans('propertiesTab'),
+        component: <Partitions />,
+        path: `properties`,
+      }
+    );
   }
 
   // get active collection tab
