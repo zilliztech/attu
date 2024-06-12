@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Properties = () => {
+const Partitions = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
   const { t } = useTranslation('partition');
@@ -120,6 +120,37 @@ const Properties = () => {
       icon: 'add',
     },
     {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('importFile'),
+      icon: 'uploadFile',
+      onClick: async () => {
+        const collection = await fetchCollectionDetail(collectionName);
+        const schema = collection.schema;
+
+        handleInsertDialog(
+          <InsertContainer
+            schema={schema}
+            defaultSelectedCollection={collectionName}
+            defaultSelectedPartition={
+              selectedPartitions.length === 1 ? selectedPartitions[0].name : ''
+            }
+            partitions={partitions}
+            onInsert={async () => {
+              await fetchPartitions(collectionName);
+            }}
+          />
+        );
+      },
+      /**
+       * insert validation:
+       * 1. At least 1 available partition
+       * 2. selected partition quantity shouldn't over 1
+       */
+      disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
+    },
+    {
       icon: 'delete',
       type: 'button',
       btnVariant: 'text',
@@ -147,6 +178,14 @@ const Properties = () => {
       tooltip: selectedPartitions.some(p => p.name === '_default')
         ? t('deletePartitionError')
         : '',
+    },
+    {
+      label: 'Search',
+      icon: 'search',
+      searchText: search,
+      onSearch: (value: string) => {
+        handleSearch(value);
+      },
     },
   ];
 
@@ -269,4 +308,4 @@ const Properties = () => {
   );
 };
 
-export default Properties;
+export default Partitions;

@@ -35,6 +35,7 @@ const btnTrans = {
   star: '给我一颗小星星',
   applyFilter: '应用过滤器',
   createIndex: '创建索引',
+  edit: '编辑',
 
   // tips
   loadColTooltip: '加载Collection',

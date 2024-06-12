@@ -296,7 +296,7 @@ const CollectionTabs = (props: {
     },
     {
       label: collectionTrans('partitionTab'),
-      component: <Properties />,
+      component: <Partitions />,
       path: `partitions`,
     },
   ];
@@ -310,7 +310,7 @@ const CollectionTabs = (props: {
       },
       {
         label: collectionTrans('propertiesTab'),
-        component: <Partitions />,
+        component: <Properties />,
         path: `properties`,
       }
     );

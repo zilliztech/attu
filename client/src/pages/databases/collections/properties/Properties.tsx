@@ -1,20 +1,13 @@
 import { makeStyles, Theme } from '@material-ui/core';
 import { useContext, useEffect, useState } from 'react';
-import { useSearchParams, useParams } from 'react-router-dom';
-import Highlighter from 'react-highlight-words';
+import { useParams } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
-import { usePaginationHook, useInsertDialogHook } from '@/hooks';
+import { usePaginationHook } from '@/hooks';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext } from '@/context';
-import { CollectionService, PartitionService } from '@/http';
-import InsertContainer from '@/pages/dialogs/insert/Dialog';
-import CreatePartitionDialog from '@/pages/dialogs/CreatePartitionDialog';
-import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
-import { PartitionData } from '@server/types';
-import { formatNumber } from '@/utils';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -31,50 +24,41 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Partitions = () => {
+type Properties = { key: string; value: any; desc: string };
+
+let defaults: Properties[] = [
+  { key: 'collection.ttl.seconds', value: '', desc: '' },
+  { key: 'collection.autocompaction.enabled', value: '', desc: '' },
+  { key: 'collection.insertRate.max.mb', value: '', desc: '' },
+  { key: 'collection.insertRate.min.mb', value: '', desc: '' },
+  { key: 'collection.upsertRate.max.mb', value: '', desc: '' },
+  { key: 'collection.upsertRate.min.mb', value: '', desc: '' },
+  { key: 'collection.deleteRate.max.mb', value: '', desc: '' },
+  { key: 'collection.deleteRate.min.mb', value: '', desc: '' },
+  { key: 'collection.bulkLoadRate.max.mb', value: '', desc: '' },
+  { key: 'collection.bulkLoadRate.min.mb', value: '', desc: '' },
+  { key: 'collection.queryRate.max.qps', value: '', desc: '' },
+  { key: 'collection.queryRate.min.qps', value: '', desc: '' },
+  { key: 'collection.searchRate.max.vps', value: '', desc: '' },
+  { key: 'collection.searchRate.min.vps', value: '', desc: '' },
+  { key: 'collection.diskProtection.diskQuota.mb', value: '', desc: '' },
+  { key: 'partition.diskProtection.diskQuota.mb', value: '', desc: '' },
+  { key: 'mmap.enabled', value: '', desc: '' },
+  { key: 'lazyload.enabled', value: '', desc: '' },
+];
+
+const Properties = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
-  const { t } = useTranslation('partition');
+  const { t } = useTranslation('properties');
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
-  const [searchParams] = useSearchParams();
-  const [search, setSearch] = useState<string>(
-    (searchParams.get('search') as string) || ''
-  );
 
-  const { handleInsertDialog } = useInsertDialogHook();
-
-  const [selectedPartitions, setSelectedPartitions] = useState<PartitionData[]>(
-    []
-  );
-  const [partitions, setPartitions] = useState<PartitionData[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [selected, setSelected] = useState<Properties[]>([]);
+  const [properties, setProperties] = useState<Properties[]>(defaults);
   const { setDialog, openSnackBar } = useContext(rootContext);
-
-  const fetchPartitions = async (collectionName: string) => {
-    try {
-      const res = await PartitionService.getPartitions(collectionName);
-      setLoading(false);
-      setPartitions(res);
-    } catch (err) {
-      setLoading(false);
-    }
-  };
-
-  const fetchCollectionDetail = async (name: string) => {
-    const res = await CollectionService.getCollection(name);
-    return res;
-  };
-
-  useEffect(() => {
-    fetchPartitions(collectionName);
-  }, [collectionName]);
-
-  const list = search
-    ? partitions.filter(p => p.name.includes(search))
-    : partitions;
 
   const {
     pageSize,
@@ -82,76 +66,20 @@ const Partitions = () => {
     currentPage,
     handleCurrentPage,
     total,
-    data: partitionList,
+    data,
     order,
     orderBy,
     handleGridSort,
-  } = usePaginationHook(list);
+  } = usePaginationHook(properties);
 
   // on delete
   const onDelete = () => {
     openSnackBar(successTrans('delete', { name: t('partition') }));
-    fetchPartitions(collectionName);
-  };
-
-  // on handle search
-  const handleSearch = (value: string) => {
-    setSearch(value);
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
-      btnVariant: 'text',
-      label: t('create'),
-      onClick: () => {
-        setDialog({
-          open: true,
-          type: 'custom',
-          params: {
-            component: (
-              <CreatePartitionDialog
-                collectionName={collectionName}
-                onCreate={onCreate}
-              />
-            ),
-          },
-        });
-      },
-      icon: 'add',
-    },
-    {
-      type: 'button',
-      btnVariant: 'text',
-      btnColor: 'secondary',
-      label: btnTrans('importFile'),
-      icon: 'uploadFile',
-      onClick: async () => {
-        const collection = await fetchCollectionDetail(collectionName);
-        const schema = collection.schema;
-
-        handleInsertDialog(
-          <InsertContainer
-            schema={schema}
-            defaultSelectedCollection={collectionName}
-            defaultSelectedPartition={
-              selectedPartitions.length === 1 ? selectedPartitions[0].name : ''
-            }
-            partitions={partitions}
-            onInsert={async () => {
-              await fetchPartitions(collectionName);
-            }}
-          />
-        );
-      },
-      /**
-       * insert validation:
-       * 1. At least 1 available partition
-       * 2. selected partition quantity shouldn't over 1
-       */
-      disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
-    },
-    {
-      icon: 'delete',
+      icon: 'edit',
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
@@ -160,126 +88,57 @@ const Partitions = () => {
           open: true,
           type: 'custom',
           params: {
-            component: (
-              <DropPartitionDialog
-                partitions={selectedPartitions}
-                collectionName={collectionName}
-                onDelete={onDelete}
-              />
-            ),
+            component: <></>,
           },
         });
       },
-      label: btnTrans('drop'),
-      // can't delete default partition
-      disabled: () =>
-        selectedPartitions.length === 0 ||
-        selectedPartitions.some(p => p.name === '_default'),
-      tooltip: selectedPartitions.some(p => p.name === '_default')
-        ? t('deletePartitionError')
-        : '',
-    },
-    {
-      label: 'Search',
-      icon: 'search',
-      searchText: search,
-      onSearch: (value: string) => {
-        handleSearch(value);
-      },
+      label: btnTrans('edit'),
+      disabled: () => selected.length === 0,
     },
   ];
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'name',
+      id: 'key',
       sortType: 'string',
       align: 'left',
       disablePadding: true,
-      sortBy: 'name',
-      formatter({ name }) {
-        const newName = name === '_default' ? 'Default partition' : name;
-        return (
-          <Highlighter
-            textToHighlight={newName}
-            searchWords={[search]}
-            highlightClassName={classes.highlight}
-          />
-        );
-      },
-      label: t('name'),
+      sortBy: 'key',
+      label: t('property'),
+      needCopy: true,
     },
 
-    // {
-    //   id: '_statusElement',
-    //   align: 'left',
-    //   disablePadding: false,
-    //   label: t('status'),
-    // },
     {
-      id: 'rowCount',
+      id: 'value',
       align: 'left',
       disablePadding: false,
-      label: (
-        <span className="flex-center with-max-content">
-          {t('rowCount')}
-          <CustomToolTip title={t('tooltip')}>
-            <Icons.question classes={{ root: classes.icon }} />
-          </CustomToolTip>
-        </span>
-      ),
-      formatter(data) {
-        return formatNumber(Number(data.rowCount));
+      label: t('value'),
+      formatter: (obj: Properties) => {
+        if (obj.value === '') {
+          return '-';
+        }
       },
     },
-    // {
-    //   id: 'action',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: '',
-    //   showActionCell: true,
-    //   isHoverAction: true,
-    //   actionBarConfigs: [
-    //     {
-    //       onClick: (e: React.MouseEvent, row: PartitionView) => {
-    //         const cb =
-    //           row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
-    //         handleAction(row, cb);
-    //       },
-    //       icon: 'load',
-    //       label: 'load',
-    //       showIconMethod: 'renderFn',
-    //       getLabel: (row: PartitionView) =>
-    //         row._status === StatusEnum.loaded ? 'release' : 'load',
-    //       renderIconFn: (row: PartitionView) =>
-    //         row._status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
-    //     },
-    //   ],
-    // },
     {
-      id: 'createdTime',
+      id: 'desc',
       align: 'left',
       disablePadding: false,
-      formatter(data) {
-        return new Date(Number(data.createdTime)).toLocaleString();
+      label: t('description'),
+      formatter: (obj: Properties) => {
+        if (obj.desc === '') {
+          return '-';
+        }
       },
-      label: t('createdTime'),
     },
   ];
 
-  const handleSelectChange = (value: PartitionData[]) => {
-    setSelectedPartitions(value);
+  const handleSelectChange = (value: Properties[]) => {
+    setSelected(value);
   };
 
   const handlePageChange = (e: any, page: number) => {
     handleCurrentPage(page);
-    setSelectedPartitions([]);
-  };
-
-  const onCreate = () => {
-    openSnackBar(successTrans('create', { name: t('partition') }));
-    // refresh partitions
-    fetchPartitions(collectionName);
-    setSelectedPartitions([]);
+    setSelected([]);
   };
 
   return (
@@ -287,25 +146,25 @@ const Partitions = () => {
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={partitionList}
+        rows={data}
         rowCount={total}
-        primaryKey="id"
-        selected={selectedPartitions}
+        primaryKey="key"
+        selected={selected}
         setSelected={handleSelectChange}
         page={currentPage}
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
-        isLoading={loading}
+        isLoading={false}
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(
-          gridTrans[partitionList.length > 1 ? 'partitions' : 'partition']
+          gridTrans[data.length > 1 ? 'properties' : 'property']
         )}
       />
     </section>
   );
 };
 
-export default Partitions;
+export default Properties;

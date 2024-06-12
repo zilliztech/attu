@@ -40,6 +40,8 @@ const commonTrans = {
     segments: 'Segments',
     partition: 'Partition',
     partitions: 'Partitions',
+    property: 'Property',
+    properties: 'Properties',
     results: 'results',
     of: 'of',
     nextLabel: 'next page',
