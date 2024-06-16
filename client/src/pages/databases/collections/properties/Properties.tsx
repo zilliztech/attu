@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import EditPropertyDialog from '@/pages/dialogs/EditPropertyDialog';
+import ResetPropertyDialog from '@/pages/dialogs/ResetPropertyDialog';
 import { rootContext } from '@/context';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { CollectionFullObject } from '@server/types';
@@ -129,6 +130,11 @@ const Properties = (props: PropertiesProps) => {
               <EditPropertyDialog
                 collection={collection}
                 property={selected[0]}
+                cb={() => {
+                  openSnackBar(
+                    successTrans('update', { name: selected[0].key })
+                  );
+                }}
               />
             ),
           },
@@ -148,9 +154,14 @@ const Properties = (props: PropertiesProps) => {
           type: 'custom',
           params: {
             component: (
-              <EditPropertyDialog
+              <ResetPropertyDialog
                 collection={collection}
                 property={selected[0]}
+                cb={() => {
+                  openSnackBar(
+                    successTrans('reset', { name: selected[0].key })
+                  );
+                }}
               />
             ),
           },
@@ -164,14 +175,12 @@ const Properties = (props: PropertiesProps) => {
   const colDefinitions: ColDefinitionsType[] = [
     {
       id: 'key',
-      sortType: 'string',
+      notSort: true,
       align: 'left',
-      disablePadding: true,
-      sortBy: 'key',
+      disablePadding: false,
       label: t('property'),
       needCopy: true,
     },
-
     {
       id: 'value',
       align: 'left',

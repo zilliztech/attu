@@ -8,6 +8,7 @@ const successTrans = {
   rename: `{{name}} has been renamed.`,
   duplicate: `{{name}} has been duplicated.`,
   empty: `Emptying data for {{name}} has started.`,
+  reset: `{{name}} has been reset.`,
 };
 
 export default successTrans;
