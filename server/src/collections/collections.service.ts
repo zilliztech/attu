@@ -25,6 +25,7 @@ import {
   CreateIndexReq,
   DescribeIndexReq,
   DropIndexReq,
+  AlterCollectionReq,
   DataType,
   HybridSearchReq,
   SearchSimpleReq,
@@ -161,6 +162,18 @@ export class CollectionsService {
 
     const newCollection = (await this.getAllCollections(clientId, [
       data.new_collection_name,
+    ])) as CollectionFullObject[];
+
+    return newCollection[0];
+  }
+
+  async alterCollection(clientId: string, data: AlterCollectionReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.alterCollection(data);
+    throwErrorFromSDK(res);
+
+    const newCollection = (await this.getAllCollections(clientId, [
+      data.collection_name,
     ])) as CollectionFullObject[];
 
     return newCollection[0];
@@ -417,6 +430,7 @@ export class CollectionsService {
       replicas: replicas && replicas.replicas,
       loaded: status === LOADING_STATE.LOADED,
       status,
+      properties: collectionInfo.properties,
     };
   }
 

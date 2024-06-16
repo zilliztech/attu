@@ -90,6 +90,7 @@ const collectionTrans = {
   dataTab: 'Data',
   previewTab: 'Data Preview',
   segmentsTab: 'Segments',
+  propertiesTab: 'Properties',
   startTip: 'Start Your Data Query',
   exprPlaceHolder: 'Please enter your data query, for example id > 0',
 

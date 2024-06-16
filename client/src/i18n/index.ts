@@ -34,6 +34,8 @@ import databaseTransEn from './en/database';
 import databaseTransCn from './cn/database';
 import prometheusTransEn from './en/prometheus';
 import prometheusTransCn from './cn/prometheus';
+import propertiesEn from './en/properties';
+import propertiesCn from './cn/properties';
 
 export const resources = {
   'zh-CN': {
@@ -53,6 +55,7 @@ export const resources = {
     user: userTransCn,
     database: databaseTransCn,
     prometheus: prometheusTransCn,
+    properties: propertiesCn,
   },
   en: {
     translation: commonEn,
@@ -71,6 +74,7 @@ export const resources = {
     user: userTransEn,
     database: databaseTransEn,
     prometheus: prometheusTransEn,
+    properties: propertiesEn,
   },
 };
 

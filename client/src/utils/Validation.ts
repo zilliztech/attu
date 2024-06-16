@@ -2,6 +2,8 @@ import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
 import { CollectionObject } from '@server/types';
 
 export type ValidType =
+  | 'bool'
+  | 'number'
   | 'email'
   | 'require'
   | 'confirm'
@@ -211,11 +213,21 @@ export const checkDuplicate = (param: {
   return param.value !== param.compare;
 };
 
+export const checkBool = (value: string): boolean => {
+  return value === 'true' || value === 'false';
+}
+
+export const checkNumber = (value: string): boolean => {
+  return !isNaN(Number(value));
+}
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
 
   const checkMap = {
+    bool: checkBool(value),
+    number: checkNumber(value),
     email: checkEmail(value),
     require: checkEmptyValid(value),
     confirm: value === extraParam?.compareValue,

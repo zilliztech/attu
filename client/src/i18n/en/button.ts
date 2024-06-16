@@ -35,6 +35,7 @@ const btnTrans = {
   star: 'Give me a Star',
   applyFilter: 'Apply Filters',
   createIndex: 'Create Index',
+  edit: 'Edit',
 
   // tips
   loadColTooltip: 'Load Collection',

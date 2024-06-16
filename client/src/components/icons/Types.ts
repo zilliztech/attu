@@ -52,4 +52,5 @@ export type IconsType =
   | 'discord'
   | 'star'
   | 'magic'
-  | 'code';
+  | 'code'
+  | 'reset';

@@ -55,6 +55,7 @@ export type CollectionFullObject = {
   replicas: ReplicaInfo[];
   status: LOADING_STATE;
   loaded: boolean;
+  properties: KeyValuePair[];
 };
 
 export type CollectionLazyObject = {
@@ -71,6 +72,7 @@ export type CollectionLazyObject = {
   consistency_level: undefined;
   replicas: undefined;
   loaded: undefined;
+  properties: undefined;
 };
 
 export type CollectionObject = CollectionFullObject | CollectionLazyObject;

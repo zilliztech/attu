@@ -88,6 +88,7 @@ const collectionTrans = {
   dataTab: '数据',
   previewTab: '数据预览',
   segmentsTab: '数据段(Segments)',
+  propertiesTab: '属性',
   startTip: '开始你的数据查询',
   exprPlaceHolder: '请输入你的数据查询，例如 id > 0',
 

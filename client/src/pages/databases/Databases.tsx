@@ -11,6 +11,7 @@ import Partitions from './collections/partitions/Partitions';
 import Overview from './collections/overview/Overview';
 import Data from './collections/data/CollectionData';
 import Segments from './collections/segments/Segments';
+import Properties from './collections/properties/Properties';
 import Search from './collections/search/Search';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
@@ -19,7 +20,7 @@ import { ConsistencyLevelEnum } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -267,6 +268,10 @@ const CollectionTabs = (props: {
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
 
+  const collection = collections.find(
+    i => i.collection_name === collectionName
+  ) as CollectionFullObject;
+
   // collection tabs
   const collectionTabs: ITab[] = [
     {
@@ -301,11 +306,18 @@ const CollectionTabs = (props: {
   ];
 
   if (!isManaged) {
-    collectionTabs.push({
-      label: collectionTrans('segmentsTab'),
-      component: <Segments />,
-      path: `segments`,
-    });
+    collectionTabs.push(
+      {
+        label: collectionTrans('segmentsTab'),
+        component: <Segments />,
+        path: `segments`,
+      },
+      {
+        label: collectionTrans('propertiesTab'),
+        component: <Properties collection={collection} />,
+        path: `properties`,
+      }
+    );
   }
 
   // get active collection tab

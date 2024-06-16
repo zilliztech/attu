@@ -7,7 +7,6 @@ import {
   CreateCollectionDto,
   InsertDataDto,
   ImportSampleDto,
-  VectorSearchDto,
   QueryDto,
   RenameCollectionDto,
   DuplicateCollectionDto,
@@ -61,6 +60,7 @@ export class CollectionController {
       dtoValidationMiddleware(RenameCollectionDto),
       this.renameCollection.bind(this)
     );
+
     // duplicate collection
     this.router.post(
       '/:name/duplicate',
@@ -78,6 +78,12 @@ export class CollectionController {
     this.router.put('/:name/load', this.loadCollection.bind(this));
     this.router.put('/:name/release', this.releaseCollection.bind(this));
     this.router.put('/:name/empty', this.empty.bind(this));
+
+    // alter collection
+    this.router.put(
+      '/:name/properties',
+      this.setCollectionProperties.bind(this)
+    );
 
     // insert data
     this.router.post(
@@ -159,6 +165,27 @@ export class CollectionController {
     const data = req.body;
     try {
       const result = await this.collectionsService.renameCollection(
+        req.clientId,
+        {
+          collection_name: name,
+          ...data,
+        }
+      );
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async setCollectionProperties(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const name = req.params?.name;
+    const data = req.body;
+    try {
+      const result = await this.collectionsService.alterCollection(
         req.clientId,
         {
           collection_name: name,

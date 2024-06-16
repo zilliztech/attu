@@ -91,7 +91,11 @@ const DeleteTemplate: FC<DeleteDialogContentType> = props => {
         </CustomDialogTitle>
 
         <DialogContent>
-          <Typography variant="body1" className={classes.info}>{text}</Typography>
+          <Typography
+            variant="body1"
+            className={classes.info}
+            dangerouslySetInnerHTML={{ __html: text }}
+          ></Typography>
           <Typography variant="body1" className={classes.mb}>
             {dialogTrans('deleteTipAction')}
             <strong className={classes.btnLabel}>{` ${(

@@ -39,6 +39,8 @@ const commonTrans = {
     segments: '数据段',
     partition: '分区',
     partitions: '分区',
+    property: '属性',
+    properties: '属性',
     results: '结果',
     of: '的',
     nextLabel: '下一页',
