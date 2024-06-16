@@ -1,4 +1,5 @@
 const dialogTrans = {
+  value: '值',
   deleteTipAction: '输入',
   deleteTipPurpose: '以确认。',
   deleteTitle: `删除 {{type}}`,
@@ -15,6 +16,8 @@ const dialogTrans = {
 
   createTitle: `在 "{{name}}" 上创建 {{type}}`,
   emptyTitle: `清空{{type}}的数据`,
+  editPropertyTitle: `编辑属性 {{type}}`,
+  editPropertyContent: ``,
 
   // info
   duplicateCollectionInfo:

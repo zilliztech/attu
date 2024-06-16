@@ -1,7 +1,7 @@
-const propertiseTrans = {
+const propertiesTrans = {
   property: 'Property',
   value: 'Value',
   description: 'Description',
 };
 
-export default propertiseTrans;
+export default propertiesTrans;

@@ -1,4 +1,5 @@
 const dialogTrans = {
+  value: 'value',
   deleteTipAction: 'Type',
   deleteTipPurpose: 'to confirm.',
   deleteTitle: `Drop {{type}}`,
@@ -15,6 +16,8 @@ const dialogTrans = {
 
   createTitle: `Create {{type}} on "{{name}}"`,
   emptyTitle: `Empty data for {{type}}`,
+  editPropertyTitle: `Edit property {{type}}`,
+  editPropertyContent: ``,
 
   // info
   duplicateCollectionInfo:

@@ -1,14 +1,15 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useState } from 'react';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import { usePaginationHook } from '@/hooks';
-import Icons from '@/components/icons/Icons';
-import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import EditPropertyDialog from '@/pages/dialogs/EditPropertyDialog';
 import { rootContext } from '@/context';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import { CollectionFullObject } from '@server/types';
+import { formatNumber } from '@/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -24,31 +25,61 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-type Properties = { key: string; value: any; desc: string };
+export type Property = { key: string; value: any; desc: string; type: string };
 
-let defaults: Properties[] = [
-  { key: 'collection.ttl.seconds', value: '', desc: '' },
-  { key: 'collection.autocompaction.enabled', value: '', desc: '' },
-  { key: 'collection.insertRate.max.mb', value: '', desc: '' },
-  { key: 'collection.insertRate.min.mb', value: '', desc: '' },
-  { key: 'collection.upsertRate.max.mb', value: '', desc: '' },
-  { key: 'collection.upsertRate.min.mb', value: '', desc: '' },
-  { key: 'collection.deleteRate.max.mb', value: '', desc: '' },
-  { key: 'collection.deleteRate.min.mb', value: '', desc: '' },
-  { key: 'collection.bulkLoadRate.max.mb', value: '', desc: '' },
-  { key: 'collection.bulkLoadRate.min.mb', value: '', desc: '' },
-  { key: 'collection.queryRate.max.qps', value: '', desc: '' },
-  { key: 'collection.queryRate.min.qps', value: '', desc: '' },
-  { key: 'collection.searchRate.max.vps', value: '', desc: '' },
-  { key: 'collection.searchRate.min.vps', value: '', desc: '' },
-  { key: 'collection.diskProtection.diskQuota.mb', value: '', desc: '' },
-  { key: 'partition.diskProtection.diskQuota.mb', value: '', desc: '' },
-  { key: 'mmap.enabled', value: '', desc: '' },
-  { key: 'lazyload.enabled', value: '', desc: '' },
+let defaults: Property[] = [
+  { key: 'collection.ttl.seconds', value: '', desc: '', type: 'number' },
+  {
+    key: 'collection.autocompaction.enabled',
+    value: '',
+    desc: '',
+    type: 'boolean',
+  },
+  { key: 'collection.insertRate.max.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.insertRate.min.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.upsertRate.max.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.upsertRate.min.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.deleteRate.max.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.deleteRate.min.mb', value: '', desc: '', type: 'number' },
+  {
+    key: 'collection.bulkLoadRate.max.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  {
+    key: 'collection.bulkLoadRate.min.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  { key: 'collection.queryRate.max.qps', value: '', desc: '', type: 'number' },
+  { key: 'collection.queryRate.min.qps', value: '', desc: '', type: 'number' },
+  { key: 'collection.searchRate.max.vps', value: '', desc: '', type: 'number' },
+  { key: 'collection.searchRate.min.vps', value: '', desc: '', type: 'number' },
+  {
+    key: 'collection.diskProtection.diskQuota.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  {
+    key: 'partition.diskProtection.diskQuota.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  { key: 'mmap.enabled', value: '', desc: '', type: 'boolean' },
+  { key: 'lazyload.enabled', value: '', desc: '', type: 'boolean' },
 ];
 
-const Properties = () => {
-  const { collectionName = '' } = useParams<{ collectionName: string }>();
+interface PropertiesProps {
+  collection: CollectionFullObject;
+}
+
+const Properties = (props: PropertiesProps) => {
+  const { collection } = props;
+
   const classes = useStyles();
   const { t } = useTranslation('properties');
   const { t: successTrans } = useTranslation('success');
@@ -56,9 +87,20 @@ const Properties = () => {
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
 
-  const [selected, setSelected] = useState<Properties[]>([]);
-  const [properties, setProperties] = useState<Properties[]>(defaults);
+  const [selected, setSelected] = useState<Property[]>([]);
   const { setDialog, openSnackBar } = useContext(rootContext);
+
+  // combine default properties with collection properties
+  let properties: Property[] = collection
+    ? defaults.map(i => {
+        let prop = collection.properties.find(p => p.key === i.key);
+        if (prop) {
+          return { ...i, ...prop };
+        } else {
+          return i;
+        }
+      })
+    : defaults;
 
   const {
     pageSize,
@@ -72,11 +114,6 @@ const Properties = () => {
     handleGridSort,
   } = usePaginationHook(properties);
 
-  // on delete
-  const onDelete = () => {
-    openSnackBar(successTrans('delete', { name: t('partition') }));
-  };
-
   const toolbarConfigs: ToolBarConfig[] = [
     {
       icon: 'edit',
@@ -88,11 +125,38 @@ const Properties = () => {
           open: true,
           type: 'custom',
           params: {
-            component: <></>,
+            component: (
+              <EditPropertyDialog
+                collection={collection}
+                property={selected[0]}
+              />
+            ),
           },
         });
       },
       label: btnTrans('edit'),
+      disabled: () => selected.length === 0,
+    },
+    {
+      icon: 'reset',
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <EditPropertyDialog
+                collection={collection}
+                property={selected[0]}
+              />
+            ),
+          },
+        });
+      },
+      label: btnTrans('reset'),
       disabled: () => selected.length === 0,
     },
   ];
@@ -113,26 +177,21 @@ const Properties = () => {
       align: 'left',
       disablePadding: false,
       label: t('value'),
-      formatter: (obj: Properties) => {
+      formatter: (obj: Property) => {
         if (obj.value === '') {
           return '-';
-        }
-      },
-    },
-    {
-      id: 'desc',
-      align: 'left',
-      disablePadding: false,
-      label: t('description'),
-      formatter: (obj: Properties) => {
-        if (obj.desc === '') {
-          return '-';
+        } else {
+          return obj.type === 'number' ? formatNumber(obj.value) : obj.value;
         }
       },
     },
   ];
 
-  const handleSelectChange = (value: Properties[]) => {
+  const handleSelectChange = (value: Property[]) => {
+    // only select one row, filter out the rest
+    if (value.length > 1) {
+      value = [value[value.length - 1]];
+    }
     setSelected(value);
   };
 
@@ -140,6 +199,11 @@ const Properties = () => {
     handleCurrentPage(page);
     setSelected([]);
   };
+
+  // collection is not found or collection full object is not ready
+  if (!collection || !collection.schema) {
+    return <StatusIcon type={LoadingType.CREATING} />;
+  }
 
   return (
     <section className={classes.wrapper}>

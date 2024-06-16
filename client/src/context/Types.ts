@@ -137,4 +137,9 @@ export type DataContextType = {
     collectionName: string,
     alias: string
   ) => Promise<CollectionFullObject>;
+  setProperty: (
+    collectionName: string,
+    key: string,
+    value: any
+  ) => Promise<CollectionFullObject>;
 };

@@ -64,8 +64,17 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
       errText: '',
     };
 
+    const hasRequire = rules.some(r => r.rule === 'require');
+
+    // if value is empty, and no require rule, skip this check
+    if (!checkEmptyValid(value) && !hasRequire) {
+      setDisabled(false);
+      return validDetail;
+    }
+
     for (let i = 0; i < rules.length; i++) {
       const rule = rules[i];
+
       const checkResult = getCheckResult({
         value,
         extraParam: rule.extraParam,

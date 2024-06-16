@@ -64,6 +64,9 @@ export const dataContext = createContext<DataContextType>({
   dropAlias: async () => {
     return {} as CollectionFullObject;
   },
+  setProperty: async () => {
+    return {} as CollectionFullObject;
+  },
 });
 
 const { Provider } = dataContext;
@@ -118,7 +121,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       detectLoadingIndexing(updateCollections);
       // update single collection
       setCollections(prev => {
-        // update exsit collection
+        // update exist collection
         const newCollections = prev.map(v => {
           const collectionToUpdate = updateCollections.find(c => c.id === v.id);
 
@@ -322,6 +325,23 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     return data;
   };
 
+  // API: set property
+  const setProperty = async (
+    collectionName: string,
+    key: string,
+    value: any
+  ) => {
+    // set property
+    const newCollection = await CollectionService.setProperty(collectionName, {
+      [key]: value,
+    });
+
+    // update existing collection
+    updateCollections([newCollection]);
+
+    return newCollection;
+  };
+
   useEffect(() => {
     if (isAuth) {
       // update database get from auth
@@ -409,6 +429,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         dropIndex,
         createAlias,
         dropAlias,
+        setProperty,
       }}
     >
       {props.children}

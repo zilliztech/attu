@@ -60,11 +60,6 @@ export class CollectionController {
       dtoValidationMiddleware(RenameCollectionDto),
       this.renameCollection.bind(this)
     );
-    // alter collection
-    this.router.post(
-      '/:name/properties',
-      this.setCollectionProperties.bind(this)
-    );
 
     // duplicate collection
     this.router.post(
@@ -83,6 +78,12 @@ export class CollectionController {
     this.router.put('/:name/load', this.loadCollection.bind(this));
     this.router.put('/:name/release', this.releaseCollection.bind(this));
     this.router.put('/:name/empty', this.empty.bind(this));
+
+    // alter collection
+    this.router.put(
+      '/:name/properties',
+      this.setCollectionProperties.bind(this)
+    );
 
     // insert data
     this.router.post(

@@ -3,6 +3,8 @@ const warningTrans = {
   requiredOnly: '必需的',
   positive: '{{name}} 应为正数',
   integer: '{{name}} 应为整数',
+  number: '{{name}} 应为数字',
+  bool: '{{name}} 应为布尔值`true`或`false`',
   range: '范围是 {{min}} ~ {{max}}',
   specValueOrRange:
     '{{name}} 应为 {{specValue}}，或在范围 {{min}} ~ {{max}} 内',

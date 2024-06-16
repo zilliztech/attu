@@ -430,6 +430,7 @@ export class CollectionsService {
       replicas: replicas && replicas.replicas,
       loaded: status === LOADING_STATE.LOADED,
       status,
+      properties: collectionInfo.properties,
     };
   }
 

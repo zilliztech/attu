@@ -20,7 +20,7 @@ import { ConsistencyLevelEnum } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -268,6 +268,10 @@ const CollectionTabs = (props: {
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
 
+  const collection = collections.find(
+    i => i.collection_name === collectionName
+  ) as CollectionFullObject;
+
   // collection tabs
   const collectionTabs: ITab[] = [
     {
@@ -310,7 +314,7 @@ const CollectionTabs = (props: {
       },
       {
         label: collectionTrans('propertiesTab'),
-        component: <Properties />,
+        component: <Properties collection={collection} />,
         path: `properties`,
       }
     );

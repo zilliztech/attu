@@ -12,7 +12,10 @@ import {
   IndexObject,
 } from '@server/types';
 import { ManageRequestMethods } from '../types/Common';
-import { IndexCreateParam, IndexManageParam } from '@/pages/databases/collections/overview/Types';
+import {
+  IndexCreateParam,
+  IndexManageParam,
+} from '@/pages/databases/collections/overview/Types';
 
 export class CollectionService extends BaseModel {
   static getCollections(data?: {
@@ -58,6 +61,13 @@ export class CollectionService extends BaseModel {
     return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}`,
       data: params,
+    });
+  }
+
+  static setProperty(collectionName: string, params: { [key: string]: any }) {
+    return super.update<CollectionFullObject>({
+      path: `/collections/${collectionName}/properties`,
+      data: { properties: params },
     });
   }
 

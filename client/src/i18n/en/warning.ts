@@ -3,6 +3,8 @@ const warningTrans = {
   requiredOnly: 'Required',
   positive: '{{name}} should be positive',
   integer: '{{name}} should be integers',
+  number: '{{name}} should be numbers',
+  bool: '{{name}} should be boolean value `true` or `false`',
   range: 'Range is {{min}} ~ {{max}}',
   specValueOrRange:
     '{{name}} should be {{specValue}}, or in range {{min}} ~ {{max}}',
