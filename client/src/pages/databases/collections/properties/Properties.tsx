@@ -71,6 +71,7 @@ let defaults: Property[] = [
     type: 'number',
   },
   { key: 'mmap.enabled', value: '', desc: '', type: 'boolean' },
+  { key: 'lazyload.enabled', value: '', desc: '', type: 'boolean' },
 ];
 
 interface PropertiesProps {
