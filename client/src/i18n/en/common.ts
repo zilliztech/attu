@@ -42,6 +42,8 @@ const commonTrans = {
     partitions: 'Partitions',
     property: 'Property',
     properties: 'Properties',
+    node: 'Node',
+    nodes: 'Nodes',
     results: 'results',
     of: 'of',
     nextLabel: 'next page',

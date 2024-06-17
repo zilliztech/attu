@@ -15,8 +15,8 @@ const getStyles = makeStyles((theme: Theme) => ({
   root: {
     margin: '16px',
     position: 'relative',
-    height: 'fit-content',
     display: 'flex',
+    height: 'calc(100vh - 80px)',
   },
   transparent: {
     opacity: 0,
@@ -25,10 +25,11 @@ const getStyles = makeStyles((theme: Theme) => ({
   contentContainer: {
     display: 'flex',
     border: '1px solid #e9e9ed',
-    background: '#fff',
     gap: 8,
     width: '100%',
   },
+  left: { width: '70%', background: '#fff' },
+  right: { width: '30%' },
   childView: {
     height: '100%',
     width: '100%',
@@ -39,12 +40,11 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   showChildView: {
     top: 0,
-    minHeight: '100%',
-    height: 'fit-content',
+    opacity: 1,
   },
   hideChildView: {
-    top: '1500px',
-    maxHeight: 0,
+    top: 1600,
+    opacity: 0,
   },
   childCloseBtn: {
     border: 0,
@@ -67,6 +67,7 @@ const SystemView: any = () => {
   }>({ nodes: [], childNodes: [], system: {} });
   const [selectedNode, setNode] = useState<any>();
   const [selectedCord, setCord] = useState<any>();
+  const [showChildView, setShowChildView] = useState(false);
   const { nodes, childNodes } = data;
 
   useInterval(async () => {
@@ -91,20 +92,25 @@ const SystemView: any = () => {
   return (
     <div className={classes.root}>
       <div className={classes.contentContainer}>
-        <Topo
-          nodes={nodes}
-          childNodes={childNodes}
-          setNode={setNode}
-          setCord={setCord}
-        />
-        <DataCard node={selectedNode} extend />
+        <div className={classes.left}>
+          <Topo
+            nodes={nodes}
+            childNodes={childNodes}
+            setNode={setNode}
+            setCord={setCord}
+            setShowChildView={setShowChildView}
+          />
+        </div>
+        <div className={classes.right}>
+          <DataCard node={selectedNode} />
+        </div>
       </div>
 
       <div
         ref={childView}
         className={clsx(
           classes.childView,
-          selectedCord ? classes.showChildView : classes.hideChildView
+          showChildView ? classes.showChildView : classes.hideChildView
         )}
       >
         {selectedCord && (
@@ -112,6 +118,7 @@ const SystemView: any = () => {
             selectedCord={selectedCord}
             childNodes={childNodes}
             setCord={setCord}
+            setShowChildView={setShowChildView}
           />
         )}
       </div>

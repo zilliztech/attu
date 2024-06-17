@@ -126,7 +126,7 @@ const setSelected = (el: any) => {
 const Topo = (props: any) => {
   const classes = getStyles();
   const theme = useTheme();
-  const { nodes, setNode, setCord } = props;
+  const { nodes, setNode, setCord, setShowChildView } = props;
 
   useEffect(() => {
     const center = document.getElementById('center');
@@ -405,6 +405,7 @@ const Topo = (props: any) => {
                       className={classes.subChild}
                       onClick={() => {
                         setCord(node);
+                        setShowChildView(true);
                       }}
                     >
                       <circle

@@ -68,10 +68,12 @@ export interface MiniTopoProps {
   selectedCord: Node,
   selectedChildNode: Node | undefined,
   setCord: SetCord,
+  setShowChildView: (arg1: boolean) => void,
 }
 
 export interface NodeListViewProps {
   selectedCord: Node,
   childNodes: Node[],
   setCord: SetCord,
+  setShowChildView: (arg1: boolean) => void,
 }

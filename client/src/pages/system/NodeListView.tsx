@@ -16,9 +16,10 @@ import { NodeListViewProps, Node } from './Types';
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
     overflow: 'hidden',
-    margin: '0 16px',
+    padding: '0 16px',
     display: 'flex',
     flexDirection: 'column',
+    border: '1px solid #e9e9ed',
   },
   childCloseBtnContainer: {
     border: 0,
@@ -40,8 +41,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '30%',
     overflow: 'scroll',
   },
-  dataCard: {
-  },
+  dataCard: {},
 }));
 
 type GridNode = {
@@ -67,7 +67,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
   const classes = getStyles();
   const [selectedChildNode, setSelectedChildNode] = useState<GridNode[]>([]);
   const [rows, setRows] = useState<any[]>([]);
-  const { selectedCord, childNodes, setCord } = props;
+  const { selectedCord, childNodes, setCord, setShowChildView } = props;
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -93,7 +93,8 @@ const NodeListView: FC<NodeListViewProps> = props => {
       id: 'cpuUsage',
       label: t('thCPUUsage'),
       formatter(_, cellData) {
-        return Number(cellData).toFixed(2);
+        // -> 0.00%
+        return `${cellData.toFixed(2)}%`;
       },
       disablePadding: true,
     },
@@ -139,6 +140,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
       childNodes.forEach(node => {
         if (connectedTypes.includes(node.infos.type)) {
           const dataRow = {
+            _id: `${node?.identifier}-${node?.infos?.type}`,
             id: node?.identifier,
             ip: node?.infos?.hardware_infos.ip,
             cpuCore: node?.infos?.hardware_infos.cpu_core_count,
@@ -154,16 +156,16 @@ const NodeListView: FC<NodeListViewProps> = props => {
       });
 
       // create mock rows 100 times to test pagination
-      const mockRows: any = [...newRows];
-      for (let i = 0; i < 100; i++) {
-        mockRows.push({
-          ...newRows[0],
-          id: 'mock' + i,
-          memUsage: i * 1000 * Math.floor(Math.random() * 100000000),
-        });
-      }
+      // const mockRows: any = [...newRows];
+      // for (let i = 0; i < 100; i++) {
+      //   mockRows.push({
+      //     ...newRows[0],
+      //     id: 'mock' + i,
+      //     memUsage: i * 1000 * Math.floor(Math.random() * 100000000),
+      //   });
+      // }
 
-      setRows(mockRows);
+      setRows(newRows);
       // make first row selected
       if (newRows.length > 0) {
         setSelectedChildNode([newRows[0]]);
@@ -173,7 +175,6 @@ const NodeListView: FC<NodeListViewProps> = props => {
 
   const handlePageChange = (e: any, page: number) => {
     handleCurrentPage(page);
-    setSelectedChildNode([]);
   };
 
   const handleSelectChange = (value: GridNode[]) => {
@@ -190,7 +191,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
     <div className={classes.root}>
       <button
         className={classes.childCloseBtnContainer}
-        onClick={() => setCord(null)}
+        onClick={() => setShowChildView(false)}
       >
         <KeyboardArrowDown />
       </button>
@@ -201,7 +202,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
             colDefinitions={colDefinitions}
             rows={data}
             rowCount={total}
-            primaryKey="key"
+            primaryKey="_id"
             page={currentPage}
             onPageChange={handlePageChange}
             rowsPerPage={pageSize}
@@ -214,7 +215,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
             selected={selectedChildNode}
             setSelected={handleSelectChange}
             labelDisplayedRows={getLabelDisplayedRows(
-              gridTrans[data.length > 1 ? 'properties' : 'property']
+              gridTrans[data.length > 1 ? 'nodes' : 'node']
             )}
           />
         </div>
@@ -223,6 +224,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
             selectedCord={selectedCord}
             setCord={setCord}
             selectedChildNode={infoNode}
+            setShowChildView={setShowChildView}
           />
           <DataCard className={classes.dataCard} node={infoNode} />
         </div>

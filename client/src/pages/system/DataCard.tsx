@@ -8,7 +8,6 @@ import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 const getStyles = makeStyles(theme => ({
   root: {
     backgroundColor: '#F6F6F6',
-    height: '100%',
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
     flexGrow: 1,
@@ -54,7 +53,7 @@ const getStyles = makeStyles(theme => ({
   sectionRoot: {
     borderSpacing: '0 1px',
     display: 'table',
-    marginTop: theme.spacing(2.5),
+    marginTop: theme.spacing(.5),
     width: '100%',
   },
 
@@ -67,7 +66,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuGrey.dark,
     fontSize: '12px',
     lineHeight: '24px',
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(.5, 1),
     textTransform: 'uppercase',
     width: '50%',
   },
@@ -77,8 +76,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuDark.main,
     display: 'table-cell',
     fontSize: '14px',
-    lineHeight: '24px',
-    padding: theme.spacing(1.5, 2),
+    padding: theme.spacing(1, 1),
     textTransform: 'capitalize',
     verticalAlign: 'middle',
     width: '50%',
