@@ -33,7 +33,9 @@ export const parseJson = (jsonData: any) => {
       nodes.push(node);
       // other nodes
     } else {
-      childNodes.push(node);
+      if (!type?.toLowerCase().includes('proxy')) {
+        childNodes.push(node);
+      }
     }
 
     const info = node.infos.hardware_infos || {};

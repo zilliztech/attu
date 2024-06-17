@@ -15,47 +15,32 @@ import { NodeListViewProps, Node } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    height: `calc(100vh - 100px)`,
-    overflow: 'auto',
+    overflow: 'hidden',
     margin: '0 16px',
-    display: 'grid',
-    gridTemplateColumns: 'auto 400px',
-    gridTemplateRows: '32px 400px auto',
-    gridTemplateAreas: `"a a"
-       "b ."
-       "b d"`,
+    display: 'flex',
+    flexDirection: 'column',
   },
-  cardContainer: {
-    display: 'grid',
-    gap: '8px',
-    gridTemplateColumns: 'repeat(4, minmax(300px, 1fr))',
-  },
-  contentContainer: {
-    display: 'grid',
-    marginTop: '14px',
-  },
-  childView: {
-    height: '100%',
-    width: '100%',
-    transition: 'all .25s',
-    position: 'absolute',
-    // zIndex: 1000,
-    backgroundColor: 'white',
-    overflow: 'auto',
-  },
-  childCloseBtn: {
+  childCloseBtnContainer: {
     border: 0,
     backgroundColor: 'white',
-    gridArea: 'a',
     cursor: 'pointer',
     width: '100%',
+    height: '28px',
   },
   gridContainer: {
-    gridArea: 'b',
+    height: `calc(100vh - 120px)`,
     display: 'flex',
+    gap: 8,
+  },
+  leftContainer: {
+    height: '100%',
+    width: '70%',
+  },
+  rightContainer: {
+    width: '30%',
+    overflow: 'scroll',
   },
   dataCard: {
-    gridArea: 'd',
   },
 }));
 
@@ -147,14 +132,12 @@ const NodeListView: FC<NodeListViewProps> = props => {
 
   useEffect(() => {
     if (selectedCord) {
-      const connectedIds = selectedCord.connected.map(
-        node => node.connected_identifier
+      const connectedTypes = selectedCord.connected.map(
+        node => node.target_type
       );
-      console.log('connectedIds', connectedIds, childNodes)
       const newRows: any[] = [];
       childNodes.forEach(node => {
-        console.log('node.identifier', node.identifier)
-        if (connectedIds.includes(node.identifier)) {
+        if (connectedTypes.includes(node.infos.type)) {
           const dataRow = {
             id: node?.identifier,
             ip: node?.infos?.hardware_infos.ip,
@@ -169,7 +152,18 @@ const NodeListView: FC<NodeListViewProps> = props => {
           newRows.push(dataRow);
         }
       });
-      setRows(newRows);
+
+      // create mock rows 100 times to test pagination
+      const mockRows: any = [...newRows];
+      for (let i = 0; i < 100; i++) {
+        mockRows.push({
+          ...newRows[0],
+          id: 'mock' + i,
+          memUsage: i * 1000 * Math.floor(Math.random() * 100000000),
+        });
+      }
+
+      setRows(mockRows);
       // make first row selected
       if (newRows.length > 0) {
         setSelectedChildNode([newRows[0]]);
@@ -194,38 +188,45 @@ const NodeListView: FC<NodeListViewProps> = props => {
 
   return (
     <div className={classes.root}>
-      <button className={classes.childCloseBtn} onClick={() => setCord(null)}>
+      <button
+        className={classes.childCloseBtnContainer}
+        onClick={() => setCord(null)}
+      >
         <KeyboardArrowDown />
       </button>
       <div className={classes.gridContainer}>
-        <AttuGrid
-          toolbarConfigs={[]}
-          colDefinitions={colDefinitions}
-          rows={data}
-          rowCount={total}
-          primaryKey="key"
-          page={currentPage}
-          onPageChange={handlePageChange}
-          rowsPerPage={pageSize}
-          setRowsPerPage={handlePageSize}
-          isLoading={false}
-          order={order}
-          orderBy={orderBy}
-          handleSort={handleGridSort}
-          openCheckBox={false}
-          selected={selectedChildNode}
-          setSelected={handleSelectChange}
-          labelDisplayedRows={getLabelDisplayedRows(
-            gridTrans[data.length > 1 ? 'properties' : 'property']
-          )}
-        />
+        <div className={classes.leftContainer}>
+          <AttuGrid
+            toolbarConfigs={[]}
+            colDefinitions={colDefinitions}
+            rows={data}
+            rowCount={total}
+            primaryKey="key"
+            page={currentPage}
+            onPageChange={handlePageChange}
+            rowsPerPage={pageSize}
+            setRowsPerPage={handlePageSize}
+            isLoading={false}
+            order={order}
+            orderBy={orderBy}
+            handleSort={handleGridSort}
+            openCheckBox={false}
+            selected={selectedChildNode}
+            setSelected={handleSelectChange}
+            labelDisplayedRows={getLabelDisplayedRows(
+              gridTrans[data.length > 1 ? 'properties' : 'property']
+            )}
+          />
+        </div>
+        <div className={classes.rightContainer}>
+          <MiniTopo
+            selectedCord={selectedCord}
+            setCord={setCord}
+            selectedChildNode={infoNode}
+          />
+          <DataCard className={classes.dataCard} node={infoNode} />
+        </div>
       </div>
-      <MiniTopo
-        selectedCord={selectedCord}
-        setCord={setCord}
-        selectedChildNode={infoNode}
-      />
-      <DataCard className={classes.dataCard} node={infoNode} />
     </div>
   );
 };

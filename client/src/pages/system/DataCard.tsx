@@ -11,6 +11,7 @@ const getStyles = makeStyles(theme => ({
     height: '100%',
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
+    flexGrow: 1,
   },
 
   title: {

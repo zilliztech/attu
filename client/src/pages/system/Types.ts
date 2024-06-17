@@ -8,9 +8,12 @@ export interface Node {
     created_time: string,
     updated_time: string,
     system_configurations: any,
+    type: string,
   },
   connected: {
     connected_identifier: number,
+    target_type: string,
+    type: string,
   }[],
   identifier: number,
 }

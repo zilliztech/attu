@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-// import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
 import { useNavigationHook, useInterval } from '@/hooks';
@@ -18,22 +17,17 @@ const getStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     height: 'fit-content',
     display: 'flex',
-    flexDirection: 'column',
-  },
-  cardContainer: {
-    display: 'grid',
-    gap: '16px',
-    gridTemplateColumns: 'repeat(4, minmax(300px, 1fr))',
   },
   transparent: {
     opacity: 0,
     transition: 'opacity .5s',
   },
   contentContainer: {
-    display: 'grid',
-    gridTemplateColumns: '1fr auto',
-    marginTop: '14px',
-    height: '100%',
+    display: 'flex',
+    border: '1px solid #e9e9ed',
+    background: '#fff',
+    gap: 8,
+    width: '100%',
   },
   childView: {
     height: '100%',
@@ -59,10 +53,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-/**
- * Todo: Milvus V2.0.0 Memory data is not ready for now, open it after Milvus ready.
- * @returns
- */
 const SystemView: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
   // const { t } = useTranslation('systemView');
