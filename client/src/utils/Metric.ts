@@ -19,6 +19,13 @@ export const parseJson = (jsonData: any) => {
 
   const allNodes = jsonData?.response?.nodes_info;
 
+  console.log(workingNodes,
+    // workingNodes.map((d: any) => ({
+    //   name: d.infos.name,
+    //   ip: d.infos.hardware_infos.ip,
+    // }))
+  );
+
   workingNodes.forEach((node: any) => {
     const type = node?.infos?.type;
     if (node.connected) {
@@ -29,13 +36,14 @@ export const parseJson = (jsonData: any) => {
       );
     }
     // coordinator node
-    if (type?.toLowerCase().includes('coord')) {
+    if (
+      type?.toLowerCase().includes('coord') ||
+      type?.toLowerCase().includes('proxy')
+    ) {
       nodes.push(node);
       // other nodes
     } else {
-      if (!type?.toLowerCase().includes('proxy')) {
-        childNodes.push(node);
-      }
+      childNodes.push(node);
     }
 
     const info = node.infos.hardware_infos || {};

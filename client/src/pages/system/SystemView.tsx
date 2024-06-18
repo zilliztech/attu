@@ -17,6 +17,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     display: 'flex',
     height: 'calc(100vh - 80px)',
+    overflow: 'hidden',
   },
   transparent: {
     opacity: 0,
@@ -102,7 +103,7 @@ const SystemView: any = () => {
           />
         </div>
         <div className={classes.right}>
-          <DataCard node={selectedNode} />
+          <DataCard node={selectedNode} extend={true} />
         </div>
       </div>
 

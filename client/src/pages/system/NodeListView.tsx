@@ -220,13 +220,21 @@ const NodeListView: FC<NodeListViewProps> = props => {
           />
         </div>
         <div className={classes.rightContainer}>
-          <MiniTopo
-            selectedCord={selectedCord}
-            setCord={setCord}
-            selectedChildNode={infoNode}
-            setShowChildView={setShowChildView}
-          />
-          <DataCard className={classes.dataCard} node={infoNode} />
+          {infoNode && (
+            <>
+              <MiniTopo
+                selectedCord={selectedCord}
+                setCord={setCord}
+                selectedChildNode={infoNode}
+                setShowChildView={setShowChildView}
+              />
+              <DataCard
+                className={classes.dataCard}
+                node={infoNode}
+                extend={true}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
