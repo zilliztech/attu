@@ -259,11 +259,12 @@ export class CollectionsService {
     const { milvusClient } = clientCache.get(clientId);
     const now = Date.now();
     const searchParams = data as HybridSearchReq;
-    const isHybrid = searchParams.data.length > 1;
+    const isHybrid =
+      Array.isArray(searchParams.data) && searchParams.data.length > 1;
     const singleSearchParams = cloneObj(data) as SearchSimpleReq;
 
     // for 2.3.x milvus
-    if (searchParams.data.length === 1) {
+    if (searchParams.data && searchParams.data.length === 1) {
       delete singleSearchParams.data;
       delete singleSearchParams.params;
 
