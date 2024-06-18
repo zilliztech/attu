@@ -2,56 +2,59 @@ import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
-import { DataGrid } from '@mui/x-data-grid';
+import AttuGrid from '@/components/grid/Grid';
+import { ColDefinitionsType } from '@/components/grid/Types';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import MiniTopo from './MiniTopology';
 import { getByteString, formatByteSize } from '@/utils';
 import DataCard from './DataCard';
+import { usePaginationHook } from '@/hooks';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { NodeListViewProps, Node } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: '14px 40px',
-    display: 'grid',
-    gridTemplateColumns: 'auto 400px',
-    gridTemplateRows: '40px 400px auto',
-    gridTemplateAreas: `"a a"
-       "b ."
-       "b d"`,
+    overflow: 'hidden',
+    padding: '0 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    border: '1px solid #e9e9ed',
   },
-  cardContainer: {
-    display: 'grid',
-    gap: '16px',
-    gridTemplateColumns: 'repeat(4, minmax(300px, 1fr))',
-  },
-  contentContainer: {
-    display: 'grid',
-    marginTop: '14px',
-  },
-  childView: {
-    height: '100%',
-    width: '100%',
-    transition: 'all .25s',
-    position: 'absolute',
-    // zIndex: 1000,
-    backgroundColor: 'white',
-  },
-  childCloseBtn: {
+  childCloseBtnContainer: {
     border: 0,
     backgroundColor: 'white',
-    gridArea: 'a',
     cursor: 'pointer',
     width: '100%',
+    height: '28px',
   },
   gridContainer: {
-    gridArea: 'b',
+    height: `calc(100vh - 120px)`,
     display: 'flex',
+    gap: 8,
   },
-  dataCard: {
-    gridArea: 'd',
+  leftContainer: {
+    height: '100%',
+    width: '70%',
   },
+  rightContainer: {
+    width: '30%',
+    overflow: 'scroll',
+  },
+  dataCard: {},
 }));
+
+type GridNode = {
+  id: string;
+  ip: string;
+  cpuCore: number;
+  cpuUsage: number;
+  disk: number;
+  diskUsage: number;
+  memUsage: number;
+  name: string;
+  node: Node;
+};
 
 const NodeListView: FC<NodeListViewProps> = props => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
@@ -59,121 +62,181 @@ const NodeListView: FC<NodeListViewProps> = props => {
   const { t: commonTrans } = useTranslation();
   const capacityTrans: { [key in string]: string } = commonTrans('capacity');
 
-  const classes = getStyles();
-  const [selectedChildNode, setSelectedChildNode] = useState<
-    Node | undefined
-  >();
-  const [rows, setRows] = useState<any[]>([]);
-  const { selectedCord, childNodes, setCord } = props;
+  const gridTrans = commonTrans('grid');
 
-  const columns: any[] = [
+  const classes = getStyles();
+  const [selectedChildNode, setSelectedChildNode] = useState<GridNode[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
+  const { selectedCord, childNodes, setCord, setShowChildView } = props;
+
+  const colDefinitions: ColDefinitionsType[] = [
     {
-      field: 'name',
-      headerName: t('thName'),
-      flex: 1,
+      id: 'name',
+      label: t('thName'),
+      disablePadding: true,
+      sortBy: 'name',
+      sortType: 'string',
     },
     {
-      field: 'ip',
-      headerName: t('thIP'),
-      flex: 1,
+      id: 'ip',
+      label: t('thIP'),
+      disablePadding: true,
+      notSort: true,
+      needCopy: true,
     },
     {
-      field: 'cpuCore',
-      headerName: t('thCPUCount'),
-      flex: 1,
+      id: 'cpuCore',
+      label: t('thCPUCount'),
+      disablePadding: true,
     },
     {
-      field: 'cpuUsage',
-      headerName: t('thCPUUsage'),
-      flex: 1,
+      id: 'cpuUsage',
+      label: t('thCPUUsage'),
+      formatter(_, cellData) {
+        // -> 0.00%
+        return `${cellData.toFixed(2)}%`;
+      },
+      disablePadding: true,
     },
     {
-      field: 'diskUsage',
-      headerName: t('thDiskUsage'),
-      flex: 1,
+      id: 'diskUsage',
+      label: t('thDiskUsage'),
+      disablePadding: true,
+      notSort: true,
+      formatter(rowData) {
+        return getByteString(rowData.diskUsage, rowData.disk, capacityTrans);
+      },
     },
     {
-      field: 'memUsage',
-      headerName: t('thMemUsage'),
-      flex: 1,
+      id: 'memUsage',
+      label: t('thMemUsage'),
+      disablePadding: true,
+      formatter(_, cellData) {
+        const memUsage = formatByteSize(cellData, capacityTrans);
+
+        return `${memUsage.value}${memUsage.unit}`;
+      },
     },
   ];
 
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data,
+    order,
+    orderBy,
+    handleGridSort,
+  } = usePaginationHook(rows);
+
   useEffect(() => {
     if (selectedCord) {
-      const connectedIds = selectedCord.connected.map(
-        node => node.connected_identifier
+      const connectedTypes = selectedCord.connected.map(
+        node => node.target_type
       );
       const newRows: any[] = [];
       childNodes.forEach(node => {
-        if (connectedIds.includes(node.identifier)) {
-          const memUsage = formatByteSize(
-            node?.infos?.hardware_infos.memory_usage,
-            capacityTrans
-          );
+        if (connectedTypes.includes(node.infos.type)) {
           const dataRow = {
+            _id: `${node?.identifier}-${node?.infos?.type}`,
             id: node?.identifier,
             ip: node?.infos?.hardware_infos.ip,
             cpuCore: node?.infos?.hardware_infos.cpu_core_count,
-            cpuUsage: Number(
-              node?.infos?.hardware_infos.cpu_core_usage
-            ).toFixed(2),
-            diskUsage: getByteString(
-              node?.infos?.hardware_infos.disk_usage,
-              node?.infos?.hardware_infos.disk,
-              capacityTrans
-            ),
-            // memUsage: getByteString(
-            //   node?.infos?.hardware_infos.memory_usage,
-            //   node?.infos?.hardware_infos.memory,
-            //   capacityTrans
-            // ),
-            memUsage: `${memUsage.value}${memUsage.unit}`,
+            cpuUsage: node?.infos?.hardware_infos.cpu_core_usage,
+            disk: node?.infos?.hardware_infos.disk,
+            diskUsage: node?.infos?.hardware_infos.disk_usage,
+            memUsage: node?.infos?.hardware_infos.memory_usage,
             name: node?.infos?.name,
+            node: node,
           };
           newRows.push(dataRow);
         }
       });
-      setRows(newRows);
-    }
-  }, [selectedCord, childNodes, capacityTrans]);
 
-  // select first node
-  useEffect(() => {
-    const timeoutID = window.setTimeout(() => {
-      const el = document.querySelectorAll<HTMLElement>('.MuiDataGrid-row')[0];
-      if (el instanceof HTMLElement) {
-        el.click();
+      // create mock rows 100 times to test pagination
+      // const mockRows: any = [...newRows];
+      // for (let i = 0; i < 100; i++) {
+      //   mockRows.push({
+      //     ...newRows[0],
+      //     id: 'mock' + i,
+      //     memUsage: i * 1000 * Math.floor(Math.random() * 100000000),
+      //   });
+      // }
+
+      setRows(newRows);
+      // make first row selected
+      if (newRows.length > 0) {
+        setSelectedChildNode([newRows[0]]);
       }
-    }, 300);
-    return () => window.clearTimeout(timeoutID);
-  }, [childNodes]);
+    }
+  }, [selectedCord, childNodes]);
+
+  const handlePageChange = (e: any, page: number) => {
+    handleCurrentPage(page);
+  };
+
+  const handleSelectChange = (value: GridNode[]) => {
+    // only select one row, filter out the rest
+    if (value.length > 1) {
+      value = [value[value.length - 1]];
+    }
+    setSelectedChildNode(value);
+  };
+
+  const infoNode = selectedChildNode[0] && selectedChildNode[0].node;
 
   return (
     <div className={classes.root}>
-      <button className={classes.childCloseBtn} onClick={() => setCord(null)}>
+      <button
+        className={classes.childCloseBtnContainer}
+        onClick={() => setShowChildView(false)}
+      >
         <KeyboardArrowDown />
       </button>
       <div className={classes.gridContainer}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          hideFooterPagination
-          hideFooterSelectedRowCount
-          onRowClick={rowData => {
-            const selectedNode = childNodes.find(
-              node => rowData.row.id === node.identifier
-            );
-            setSelectedChildNode(selectedNode);
-          }}
-        />
+        <div className={classes.leftContainer}>
+          <AttuGrid
+            toolbarConfigs={[]}
+            colDefinitions={colDefinitions}
+            rows={data}
+            rowCount={total}
+            primaryKey="_id"
+            page={currentPage}
+            onPageChange={handlePageChange}
+            rowsPerPage={pageSize}
+            setRowsPerPage={handlePageSize}
+            isLoading={false}
+            order={order}
+            orderBy={orderBy}
+            handleSort={handleGridSort}
+            openCheckBox={false}
+            selected={selectedChildNode}
+            setSelected={handleSelectChange}
+            labelDisplayedRows={getLabelDisplayedRows(
+              gridTrans[data.length > 1 ? 'nodes' : 'node']
+            )}
+          />
+        </div>
+        <div className={classes.rightContainer}>
+          {infoNode && (
+            <>
+              <MiniTopo
+                selectedCord={selectedCord}
+                setCord={setCord}
+                selectedChildNode={infoNode}
+                setShowChildView={setShowChildView}
+              />
+              <DataCard
+                className={classes.dataCard}
+                node={infoNode}
+                extend={true}
+              />
+            </>
+          )}
+        </div>
       </div>
-      <MiniTopo
-        selectedCord={selectedCord}
-        setCord={setCord}
-        selectedChildNode={selectedChildNode}
-      />
-      <DataCard className={classes.dataCard} node={selectedChildNode} />
     </div>
   );
 };

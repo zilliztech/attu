@@ -65,6 +65,12 @@ const useStyles = makeStyles(theme => ({
       },
     },
   },
+  selected: {
+    backgroundColor: '#f3fcfe !important',
+    '& td': {
+      background: 'inherit',
+    },
+  },
   cell: {
     borderBottom: '1px solid #e9e9ed',
 
@@ -168,6 +174,10 @@ const EnhancedTable: FC<TableType> = props => {
                       selected={isItemSelected && !disableSelect}
                       classes={{
                         hover: classes.rowHover,
+                        selected:
+                          isItemSelected && !disableSelect
+                            ? classes.selected
+                            : undefined,
                       }}
                     >
                       {openCheckBox && (
@@ -241,7 +251,7 @@ const EnhancedTable: FC<TableType> = props => {
                                     </Button>
                                   ) : colDef.formatter ? (
                                     colDef.formatter(row, row[colDef.id], i)
-                                    ) : (
+                                  ) : (
                                     <Typography title={row[colDef.id]}>
                                       {row[colDef.id]}
                                     </Typography>

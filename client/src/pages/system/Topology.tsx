@@ -126,7 +126,7 @@ const setSelected = (el: any) => {
 const Topo = (props: any) => {
   const classes = getStyles();
   const theme = useTheme();
-  const { nodes, setNode, setCord } = props;
+  const { nodes, setNode, setCord, setShowChildView } = props;
 
   useEffect(() => {
     const center = document.getElementById('center');
@@ -144,15 +144,15 @@ const Topo = (props: any) => {
 
   const WIDTH = 800; // width for svg
   const HEIGHT = 600; // height for svg
-  const LINE1 = 160; // line lenght from lv1 node
-  const LINE2 = 270; // line lenght from lv2 node
-  const ANGLE2 = 10; // angle offset for lv2 node
-  const R1 = 68; // root node radius
+  const LINE1 = 180; // line lenght from lv1 node
+  const LINE2 = 290; // line lenght from lv2 node
+  const ANGLE2 = 20; // angle offset for lv2 node
+  const R1 = 78; // root node radius
   const R2 = 45; // lv1 node radius
   const R3 = 30; // lv2 node radius
   const LIMIT = 10; // limit to show lv1 node
   const BOUNDARY_ANGLE = 45; // boundary angle
-  const START_DRAW_Y = HEIGHT / 4; // where we start to draw y axis
+  const START_DRAW_Y = HEIGHT / 3; // where we start to draw y axis
   const START_DRAW_X = WIDTH / 2; // where we start to draw x axis
 
   let steps = 0; // angle step to avoid graph out of boundary
@@ -168,7 +168,7 @@ const Topo = (props: any) => {
       >
         <rect width="100%" height="100%" fill="white" />
         {nodes.map((node: any, index: number) => {
-          if (node?.infos?.type?.toLowerCase() === 'rootcoord') {
+          if (node?.infos?.type?.toLowerCase() === 'proxy') {
             centerNode = node;
             return null;
           }
@@ -405,6 +405,7 @@ const Topo = (props: any) => {
                       className={classes.subChild}
                       onClick={() => {
                         setCord(node);
+                        setShowChildView(true);
                       }}
                     >
                       <circle
@@ -543,11 +544,11 @@ const Topo = (props: any) => {
             alignmentBaseline="middle"
             fill={theme.palette.primary.main}
             fontWeight="700"
-            fontSize="24"
+            fontSize="20"
             x={`${START_DRAW_X}`}
             y={`${START_DRAW_Y}`}
           >
-            Milvus
+            Milvus Proxy
           </text>
         </g>
       </svg>

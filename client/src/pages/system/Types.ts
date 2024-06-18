@@ -8,9 +8,12 @@ export interface Node {
     created_time: string,
     updated_time: string,
     system_configurations: any,
+    type: string,
   },
   connected: {
     connected_identifier: number,
+    target_type: string,
+    type: string,
   }[],
   identifier: number,
 }
@@ -65,10 +68,12 @@ export interface MiniTopoProps {
   selectedCord: Node,
   selectedChildNode: Node | undefined,
   setCord: SetCord,
+  setShowChildView: (arg1: boolean) => void,
 }
 
 export interface NodeListViewProps {
   selectedCord: Node,
   childNodes: Node[],
   setCord: SetCord,
+  setShowChildView: (arg1: boolean) => void,
 }

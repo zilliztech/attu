@@ -8,9 +8,9 @@ import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 const getStyles = makeStyles(theme => ({
   root: {
     backgroundColor: '#F6F6F6',
-    height: '100%',
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
+    flexGrow: 1,
   },
 
   title: {
@@ -46,14 +46,14 @@ const getStyles = makeStyles(theme => ({
 
   ip: {
     color: theme.palette.attuDark.main,
-    fontSize: '16px',
+    fontSize: '11px',
     lineHeight: '24px',
   },
 
   sectionRoot: {
     borderSpacing: '0 1px',
     display: 'table',
-    marginTop: theme.spacing(2.5),
+    marginTop: theme.spacing(0.5),
     width: '100%',
   },
 
@@ -66,7 +66,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuGrey.dark,
     fontSize: '12px',
     lineHeight: '24px',
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(0.5, 1),
     textTransform: 'uppercase',
     width: '50%',
   },
@@ -76,8 +76,7 @@ const getStyles = makeStyles(theme => ({
     color: theme.palette.attuDark.main,
     display: 'table-cell',
     fontSize: '14px',
-    lineHeight: '24px',
-    padding: theme.spacing(1.5, 2),
+    padding: theme.spacing(1, 1),
     textTransform: 'capitalize',
     verticalAlign: 'middle',
     width: '50%',
@@ -138,13 +137,14 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
     const capacityTrans: { [key in string]: string } = commonTrans('capacity');
     const { node, extend } = props;
 
-    // const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
+    const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
     const hardwareContent = [];
 
     const configTitle = [t('configTitle'), t('valueTitle')];
     const systemConfig: { label: string; value: any }[] = [];
 
     const systemTitle = [t('systemTitle'), t('valueTitle')];
+
     const systemContent = [];
 
     const {
@@ -210,12 +210,13 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
             <span className={classes.rootName}>Milvus / </span>
             <span className={classes.childName}>{node?.infos?.name}</span>
           </div>
-          {/* <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div> */}
+          <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
         </div>
-        {/* {extend && (
-          <DataSection titles={hardwareTitle} contents={hardwareContent} />
-        )} */}
         <DataSection titles={systemTitle} contents={systemContent} />
+        {extend && (
+          <DataSection titles={hardwareTitle} contents={hardwareContent} />
+        )}
+
         {systemConfig.length ? (
           <DataSection titles={configTitle} contents={systemConfig} />
         ) : null}

@@ -3,10 +3,7 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core';
 import { MiniTopoProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
-  container: {
-    height: '100%',
-    width: 'auto',
-  },
+  container: {},
   childNode: {
     transition: 'all .25s',
     cursor: 'pointer',
@@ -52,10 +49,10 @@ const capitalize = (s: string) => {
 const MiniTopo: FC<MiniTopoProps> = props => {
   const classes = getStyles();
   const theme = useTheme();
-  const { selectedCord, selectedChildNode, setCord } = props;
+  const { selectedCord, selectedChildNode, setCord, setShowChildView } = props;
 
-  const WIDTH = 400; // width for svg
-  const HEIGHT = 400; // height for svg
+  const WIDTH = 300; // width for svg
+  const HEIGHT = 300; // height for svg
   const LINE = 80; // line lenght from lv2 node
   const ANGLE = 10; // angle offset for lv2 node
   const R1 = 45; // root node radius
@@ -85,7 +82,7 @@ const MiniTopo: FC<MiniTopoProps> = props => {
       <g
         className={classes.childNode}
         onClick={() => {
-          setCord(null);
+          setShowChildView(false);
         }}
       >
         <circle

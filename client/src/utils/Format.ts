@@ -138,7 +138,7 @@ export const formatPrometheusAddress = (address: string): string => {
 export const formatByteSize = (
   size: number,
   capacityTrans: { [key in string]: string }
-): { value: string; unit: string; power: number } => {
+) => {
   const power = Math.round(Math.log(size) / Math.log(1024));
   let unit = '';
   switch (power) {
@@ -166,6 +166,7 @@ export const formatByteSize = (
     value: byteValue.toFixed(2),
     unit,
     power,
+    originValue: size,
   };
 };
 

@@ -41,6 +41,8 @@ const commonTrans = {
     partitions: '分区',
     property: '属性',
     properties: '属性',
+    node: '节点',
+    nodes: '节点',
     results: '结果',
     of: '的',
     nextLabel: '下一页',
