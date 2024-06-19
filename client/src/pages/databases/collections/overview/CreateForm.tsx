@@ -5,7 +5,6 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { Option } from '@/components/customSelector/Types';
-import { m_OPTIONS } from '@/consts';
 import { FormHelperType } from '../../../../types/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,6 +41,7 @@ const CreateForm = (
     indexTypeChange,
     indexOptions,
     metricOptions,
+    wrapperClass,
   } = props;
 
   const { t: commonTrans } = useTranslation();
@@ -49,7 +49,6 @@ const CreateForm = (
   const { t: warningTrans } = useTranslation('warning');
 
   const paramsConfig: ITextfieldConfig[] = useMemo(() => {
-    const result = [];
     const generateNumberConfig = (
       label: string,
       key: string,
@@ -85,79 +84,46 @@ const CreateForm = (
       return config;
     };
 
-    const nlist = generateNumberConfig('nlist', 'nlist', 1, 65536);
-    const nbits = generateNumberConfig('nbits', 'nbits', 1, 16);
-    const nTrees = generateNumberConfig('nTrees', 'n_trees', 1, 1024);
+    const paramsMap = {
+      nlist: generateNumberConfig('nlist', 'nlist', 1, 65536),
+      nbits: generateNumberConfig('nbits', 'nbits', 1, 16),
+      M: generateNumberConfig('M', 'M', 1, 2048),
+      efConstruction: generateNumberConfig(
+        'Ef Construction',
+        'efConstruction',
+        1,
+        2147483647
+      ),
+      n_trees: generateNumberConfig('nTrees', 'n_trees', 1, 1024),
+      out_degree: generateNumberConfig('out_degree', 'out_degree', 5, 300),
+      candidate_pool_size: generateNumberConfig(
+        'candidate_pool_size',
+        'candidate_pool_size',
+        50,
+        1000
+      ),
+      search_length: generateNumberConfig(
+        'search_length',
+        'search_length',
+        10,
+        300
+      ),
+      knng: generateNumberConfig('knng', 'knng', 5, 300),
+      drop_ratio_build: generateNumberConfig(
+        'drop_ratio_build',
+        'drop_ratio_build',
+        0,
+        1
+      ),
+    };
 
-    const M = generateNumberConfig('M', 'M', 1, 2048);
-    const efConstruction = generateNumberConfig(
-      'Ef Construction',
-      'efConstruction',
-      1,
-      2147483647
-    );
+    const result: ITextfieldConfig[] = [];
 
-    const outDegree = generateNumberConfig('out_degree', 'out_degree', 5, 300);
-    const candidatePoolSize = generateNumberConfig(
-      'candidate_pool_size',
-      'candidate_pool_size',
-      50,
-      1000
-    );
-    const searchLength = generateNumberConfig(
-      'search_length',
-      'search_length',
-      10,
-      300
-    );
-    const knng = generateNumberConfig('knng', 'knng', 5, 300);
-
-    const drop_ratio_build = generateNumberConfig(
-      'drop_ratio_build',
-      'drop_ratio_build',
-      0,
-      1
-    );
-
-    if (indexParams.includes('nlist')) {
-      result.push(nlist);
-    }
-
-    if (indexParams.includes('nbits')) {
-      result.push(nbits);
-    }
-
-    if (indexParams.includes('M')) {
-      result.push(M);
-    }
-
-    if (indexParams.includes('efConstruction')) {
-      result.push(efConstruction);
-    }
-
-    if (indexParams.includes('n_trees')) {
-      result.push(nTrees);
-    }
-
-    if (indexParams.includes('out_degree')) {
-      result.push(outDegree);
-    }
-
-    if (indexParams.includes('candidate_pool_size')) {
-      result.push(candidatePoolSize);
-    }
-
-    if (indexParams.includes('search_length')) {
-      result.push(searchLength);
-    }
-
-    if (indexParams.includes('knng')) {
-      result.push(knng);
-    }
-
-    if (indexParams.includes('drop_ratio_build')) {
-      result.push(drop_ratio_build);
-    }
+    indexParams.forEach(param => {
+      if (paramsMap.hasOwnProperty(param)) {
+        result.push(paramsMap[param as keyof typeof paramsMap]);
+      }
+    });
 
     return result;
   }, [updateForm, warningTrans, indexParams, formValue]);
@@ -167,26 +133,14 @@ const CreateForm = (
     key: 'index_name',
     onChange: (value: string) => updateForm('index_name', value),
     variant: 'filled',
-    placeholder: 'Index name',
     fullWidth: true,
-    validations: [
-      {
-        rule: 'require',
-        errorText: warningTrans('required', {
-          name: 'Index Name',
-        }),
-      },
-    ],
+    validations: [],
     defaultValue: '',
+    value: formValue.index_name,
   };
+
   return (
-    <div className={classes.wrapper}>
-      <CustomInput
-        type="text"
-        textConfig={indexNameConfig}
-        checkValid={checkIsValid}
-        validInfo={validation}
-      />
+    <div className={`${classes.wrapper} ${wrapperClass}`}>
       <CustomSelector
         label={indexTrans('type')}
         value={formValue.index_type}
@@ -195,11 +149,17 @@ const CreateForm = (
           const type = e.target.value;
           updateForm('index_type', type as string);
           // reset metric type value
-          updateForm('metric_type', 'L2');
+          updateForm('metric_type', metricOptions[0].value as string);
           indexTypeChange && indexTypeChange(type as string);
         }}
         variant="filled"
         wrapperClass={classes.select}
+      />
+      <CustomInput
+        type="text"
+        textConfig={indexNameConfig}
+        checkValid={checkIsValid}
+        validInfo={validation}
       />
       {metricOptions.length ? (
         <Typography className={classes.paramTitle}>
@@ -220,19 +180,6 @@ const CreateForm = (
           wrapperClass={classes.select}
         />
       ) : null}
-
-      {indexParams.includes('m') && (
-        <CustomSelector
-          label="m"
-          value={Number(formValue.m)}
-          options={m_OPTIONS}
-          onChange={(e: { target: { value: unknown } }) =>
-            updateForm('m', e.target.value as string)
-          }
-          variant="filled"
-          wrapperClass={classes.select}
-        />
-      )}
 
       {paramsConfig.length
         ? paramsConfig.map(v => (

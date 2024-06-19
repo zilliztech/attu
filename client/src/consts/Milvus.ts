@@ -168,14 +168,6 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: [],
     search: ['search_list'],
   },
-  SPARSE_WAND: {
-    create: ['drop_ratio_build'],
-    search: ['drop_ratio_search'],
-  },
-  SPARSE_INVERTED_INDEX: {
-    create: ['drop_ratio_build'],
-    search: ['drop_ratio_search'],
-  },
 };
 
 export const BINARY_INDEX_CONFIG: indexConfigType = {
