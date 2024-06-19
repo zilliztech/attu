@@ -33,6 +33,7 @@ export interface ICheckValidParam {
   rules: IValidation[];
 }
 
+// form and element ref
 export const useFormValidation = (form: IForm[]): IValidationInfo => {
   const initValidation = form
     .filter(f => f.needCheck)
@@ -57,6 +58,7 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
   const [disabled, setDisabled] = useState<boolean>(!isOverallValid);
 
   const checkIsValid = (param: ICheckValidParam): IValidationItem => {
+    console.log(param)
     const { value, key, rules } = param;
 
     let validDetail = {
@@ -106,14 +108,20 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
     return validDetail;
   };
 
-  const checkFormValid = (form: IForm[]): boolean => {
-    const requireCheckItems = form.filter(f => f.needCheck);
-    if (requireCheckItems.some(item => !checkEmptyValid(item.value))) {
-      return false;
-    }
-
-    const validations = Object.values(validation);
-    return validations.every(v => !(v as IValidationItem).result);
+  const checkFormValid = (elementClass: string) => {
+    // find dom element to check
+    const elements = document.querySelectorAll(
+      elementClass
+    ) as NodeListOf<HTMLElement>;
+    // Trigger blur
+    elements.forEach(element => {
+      // Using setTimeout to trigger blur event after render
+      setTimeout(() => {
+        // Using HTMLElement.prototype.blur method to trigger blur event
+        element.focus();
+        element.blur();
+      }, 0);
+    });
   };
 
   const resetValidation = (form: IForm[]) => {

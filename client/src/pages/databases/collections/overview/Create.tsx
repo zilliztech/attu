@@ -209,8 +209,14 @@ const CreateIndex = (props: {
     fieldType,
   ]);
 
-  const { validation, checkIsValid, disabled, setDisabled, resetValidation } =
-    useFormValidation(checkedForm);
+  const {
+    validation,
+    checkIsValid,
+    disabled,
+    setDisabled,
+    resetValidation,
+    checkFormValid,
+  } = useFormValidation(checkedForm);
   // reset index params
   useEffect(() => {
     // no need
@@ -231,13 +237,14 @@ const CreateIndex = (props: {
       knng: '',
       drop_ratio_build: '0.5',
     }));
-  }, [indexCreateParams, setDisabled, defaultMetricType]);
+  }, [setDisabled, defaultMetricType]);
 
   const updateStepTwoForm = (type: string, value: string) => {
     setIndexSetting(v => ({ ...v, [type]: value }));
   };
 
   const onIndexTypeChange = (type: string) => {
+    // reset index params
     let paramsForm: { [key in string]: string } = {};
     // m is selector not input
     (INDEX_CONFIG[type].create || [])
@@ -246,9 +253,12 @@ const CreateIndex = (props: {
         paramsForm[item] = '';
       });
     // if no other params, the form should be valid.
-    setDisabled((INDEX_CONFIG[type].create || []).length === 0 ? false : true);
     const form = formatForm(paramsForm);
     resetValidation(form);
+    // trigger validation check after the render
+    setTimeout(() => {
+      checkFormValid('.index-form .MuiInputBase-input');
+    }, 0);
   };
 
   const handleCreateIndex = () => {
@@ -284,6 +294,7 @@ const CreateIndex = (props: {
           validation={validation}
           indexParams={indexCreateParams}
           indexTypeChange={onIndexTypeChange}
+          wrapperClass="index-form"
         />
       </>
     </DialogTemplate>

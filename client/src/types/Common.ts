@@ -15,4 +15,5 @@ export type FormHelperType = {
   updateForm: (type: string, value: string) => void;
   validation: { [key: string]: IValidationItem };
   checkIsValid: Function;
+  wrapperClass?: string;
 };
