@@ -58,7 +58,6 @@ export const useFormValidation = (form: IForm[]): IValidationInfo => {
   const [disabled, setDisabled] = useState<boolean>(!isOverallValid);
 
   const checkIsValid = (param: ICheckValidParam): IValidationItem => {
-    console.log(param)
     const { value, key, rules } = param;
 
     let validDetail = {

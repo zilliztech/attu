@@ -49,12 +49,14 @@ const CreateForm = (
   const { t: warningTrans } = useTranslation('warning');
 
   const paramsConfig: ITextfieldConfig[] = useMemo(() => {
-    const generateNumberConfig = (
-      label: string,
-      key: string,
-      min: number,
-      max: number
-    ) => {
+    const generateConfig = (props: {
+      label: string;
+      key: string;
+      min?: number;
+      max?: number;
+      type?: string;
+    }) => {
+      const { label, key, min, max, type = 'number' } = props;
       const config: ITextfieldConfig = {
         label,
         key,
@@ -63,58 +65,98 @@ const CreateForm = (
         },
         variant: 'filled',
         fullWidth: true,
-        type: 'number',
+        type: type,
         value: formValue[key],
         validations: [
           {
             rule: 'require',
             errorText: warningTrans('required', { name: label }),
           },
-          {
-            rule: 'range',
-            errorText: warningTrans('range', { min, max }),
-            extraParam: {
-              min,
-              max,
-              type: 'number',
-            },
-          },
         ],
       };
+
+      if (type === 'number') {
+        config.validations!.push({
+          rule: 'range',
+          errorText: warningTrans('range', { min, max }),
+          extraParam: {
+            min,
+            max,
+            type: 'number',
+          },
+        });
+      }
+
+      if (type === 'bool') {
+        config.validations!.push({
+          rule: 'bool',
+          errorText: warningTrans('bool', { name: label }),
+        });
+      }
       return config;
     };
 
     const paramsMap = {
-      nlist: generateNumberConfig('nlist', 'nlist', 1, 65536),
-      nbits: generateNumberConfig('nbits', 'nbits', 1, 16),
-      M: generateNumberConfig('M', 'M', 1, 2048),
-      efConstruction: generateNumberConfig(
-        'Ef Construction',
-        'efConstruction',
-        1,
-        2147483647
-      ),
-      n_trees: generateNumberConfig('nTrees', 'n_trees', 1, 1024),
-      out_degree: generateNumberConfig('out_degree', 'out_degree', 5, 300),
-      candidate_pool_size: generateNumberConfig(
-        'candidate_pool_size',
-        'candidate_pool_size',
-        50,
-        1000
-      ),
-      search_length: generateNumberConfig(
-        'search_length',
-        'search_length',
-        10,
-        300
-      ),
-      knng: generateNumberConfig('knng', 'knng', 5, 300),
-      drop_ratio_build: generateNumberConfig(
-        'drop_ratio_build',
-        'drop_ratio_build',
-        0,
-        1
-      ),
+      nlist: generateConfig({
+        label: 'nlist',
+        key: 'nlist',
+        min: 1,
+        max: 65536,
+      }),
+      nbits: generateConfig({
+        label: 'nbits',
+        key: 'nbits',
+        min: 1,
+        max: 16,
+      }),
+      M: generateConfig({ label: 'M', key: 'M', min: 2, max: 2048 }),
+      efConstruction: generateConfig({
+        label: 'efConstruction',
+        key: 'efConstruction',
+        min: 1,
+        max: 2147483647,
+      }),
+      n_trees: generateConfig({
+        label: 'n_trees',
+        key: 'n_trees',
+        min: 1,
+        max: 1024,
+      }),
+      out_degree: generateConfig({
+        label: 'out_degree',
+        key: 'out_degree',
+        min: 5,
+        max: 300,
+      }),
+      candidate_pool_size: generateConfig({
+        label: 'candidate_pool_size',
+        key: 'candidate_pool_size',
+        min: 50,
+        max: 1000,
+      }),
+      search_length: generateConfig({
+        label: 'search_length',
+        key: 'search_length',
+        min: 10,
+        max: 300,
+      }),
+      knng: generateConfig({
+        label: 'knng',
+        key: 'knng',
+        min: 5,
+        max: 300,
+      }),
+      drop_ratio_build: generateConfig({
+        label: 'drop_ratio_build',
+        key: 'drop_ratio_build',
+        min: 0,
+        max: 1,
+      }),
+      with_raw_data: generateConfig({
+        label: 'with_raw_data',
+        key: 'with_raw_data',
+        type: 'bool',
+      }),
     };
 
     const result: ITextfieldConfig[] = [];
@@ -135,8 +177,7 @@ const CreateForm = (
     variant: 'filled',
     fullWidth: true,
     validations: [],
-    defaultValue: '',
-    value: formValue.index_name,
+    defaultValue: formValue.index_name,
   };
 
   return (

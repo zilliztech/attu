@@ -95,12 +95,14 @@ const CreateIndex = (props: {
     m: '4',
     efConstruction: '',
     nlist: '',
-    nbits: '',
+    nbits: '8',
     n_trees: '',
     outDegree: '',
     candidatePoolSize: '',
     searchLength: '',
     knng: '',
+    drop_ratio_build: '0.5',
+    with_raw_data: 'true',
   });
 
   // control whether show code mode
@@ -213,31 +215,9 @@ const CreateIndex = (props: {
     validation,
     checkIsValid,
     disabled,
-    setDisabled,
     resetValidation,
     checkFormValid,
   } = useFormValidation(checkedForm);
-  // reset index params
-  useEffect(() => {
-    // no need
-    // setDisabled(true);
-    setIndexSetting(v => ({
-      ...v,
-      index_name: v.index_name,
-      metric_type: defaultMetricType,
-      M: '',
-      m: '4',
-      efConstruction: '',
-      nlist: '',
-      nbits: '8', // 8 by default
-      n_trees: '',
-      out_degree: '',
-      candidate_pool_size: '',
-      search_length: '',
-      knng: '',
-      drop_ratio_build: '0.5',
-    }));
-  }, [setDisabled, defaultMetricType]);
 
   const updateStepTwoForm = (type: string, value: string) => {
     setIndexSetting(v => ({ ...v, [type]: value }));
