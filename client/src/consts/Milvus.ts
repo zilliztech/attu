@@ -133,7 +133,7 @@ export type indexConfigType = {
 // index
 export const FLOAT_INDEX_CONFIG: indexConfigType = {
   SCANN: {
-    create: ['nlist'],
+    create: ['nlist', 'with_raw_data'],
     search: ['nprobe'],
   },
   IVF_FLAT: {
@@ -156,10 +156,6 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: ['M', 'efConstruction'],
     search: ['ef'],
   },
-  ANNOY: {
-    create: ['n_trees'],
-    search: ['search_k'],
-  },
   AUTOINDEX: {
     create: [],
     search: ['level'],
@@ -173,7 +169,7 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
 export const BINARY_INDEX_CONFIG: indexConfigType = {
   // },
   BIN_FLAT: {
-    create: ['nlist'],
+    create: [],
     search: [],
   },
   BIN_IVF_FLAT: {

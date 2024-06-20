@@ -214,12 +214,13 @@ export const checkDuplicate = (param: {
 };
 
 export const checkBool = (value: string): boolean => {
-  return value === 'true' || value === 'false';
-}
+  const v = String(value).toLowerCase();
+  return v === 'true' || v === 'false';
+};
 
 export const checkNumber = (value: string): boolean => {
   return !isNaN(Number(value));
-}
+};
 
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
