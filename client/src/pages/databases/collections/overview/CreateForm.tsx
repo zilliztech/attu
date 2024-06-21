@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import { Option } from '@/components/customSelector/Types';
+import CustomGroupedSelect from '@/components/customSelector/CustomGroupedSelect';
+import { Option, GroupOption } from '@/components/customSelector/Types';
 import { FormHelperType } from '../../../../types/Common';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CreateForm = (
   props: FormHelperType & {
     metricOptions: Option[];
-    indexOptions: Option[];
+    indexOptions: GroupOption[];
     indexParams: string[];
     indexTypeChange?: (type: string) => void;
   }
@@ -76,6 +77,16 @@ const CreateForm = (
       };
 
       if (type === 'number') {
+        config.validations!.push({
+          rule: 'number',
+          errorText: warningTrans('number', { name: label }),
+        });
+      }
+      if (
+        type === 'number' &&
+        typeof min === 'number' &&
+        typeof max === 'number'
+      ) {
         config.validations!.push({
           rule: 'range',
           errorText: warningTrans('range', { min, max }),
@@ -157,6 +168,24 @@ const CreateForm = (
         key: 'with_raw_data',
         type: 'bool',
       }),
+      intermediate_graph_degree: generateConfig({
+        label: 'intermediate_graph_degree',
+        key: 'intermediate_graph_degree',
+      }),
+      graph_degree: generateConfig({
+        label: 'graph_degree',
+        key: 'graph_degree',
+      }),
+      build_algo: generateConfig({
+        label: 'build_algo',
+        key: 'build_algo',
+        type: 'text',
+      }),
+      cache_dataset_on_device: generateConfig({
+        label: 'cache_dataset_on_device',
+        key: 'cache_dataset_on_device',
+        type: 'bool',
+      }),
     };
 
     const result: ITextfieldConfig[] = [];
@@ -182,10 +211,10 @@ const CreateForm = (
 
   return (
     <div className={`${classes.wrapper} ${wrapperClass}`}>
-      <CustomSelector
+      <CustomGroupedSelect
         label={indexTrans('type')}
-        value={formValue.index_type}
         options={indexOptions}
+        value={formValue.index_type}
         onChange={(e: { target: { value: unknown } }) => {
           const type = e.target.value;
           updateForm('index_type', type as string);
@@ -193,8 +222,7 @@ const CreateForm = (
           updateForm('metric_type', metricOptions[0].value as string);
           indexTypeChange && indexTypeChange(type as string);
         }}
-        variant="filled"
-        wrapperClass={classes.select}
+        className={classes.select}
       />
       <CustomInput
         type="text"

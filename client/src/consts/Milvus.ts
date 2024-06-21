@@ -121,7 +121,12 @@ export type searchKeywordsType =
   | 'radius'
   | 'range_filter'
   | 'drop_ratio_search'
-  | 'filter';
+  | 'filter'
+  | 'itopk_size'
+  | 'search_width'
+  | 'min_iterations'
+  | 'max_iterations'
+  | 'team_size';
 
 export type indexConfigType = {
   [x: string]: {
@@ -132,9 +137,13 @@ export type indexConfigType = {
 
 // index
 export const FLOAT_INDEX_CONFIG: indexConfigType = {
-  SCANN: {
-    create: ['nlist', 'with_raw_data'],
-    search: ['nprobe'],
+  AUTOINDEX: {
+    create: [],
+    search: ['level'],
+  },
+  HNSW: {
+    create: ['M', 'efConstruction'],
+    search: ['ef'],
   },
   IVF_FLAT: {
     create: ['nlist'],
@@ -152,22 +161,50 @@ export const FLOAT_INDEX_CONFIG: indexConfigType = {
     create: [],
     search: ['nprobe'],
   },
-  HNSW: {
-    create: ['M', 'efConstruction'],
-    search: ['ef'],
+  SCANN: {
+    create: ['nlist', 'with_raw_data'],
+    search: ['nprobe'],
   },
-  AUTOINDEX: {
-    create: [],
-    search: ['level'],
-  },
+};
+
+export const DISK_INDEX_CONFIG: indexConfigType = {
   DISKANN: {
     create: [],
     search: ['search_list'],
   },
 };
 
+export const GPU_INDEX_CONFIG: indexConfigType = {
+  GPU_CAGRA: {
+    create: [
+      'intermediate_graph_degree',
+      'graph_degree',
+      'build_algo',
+      'cache_dataset_on_device',
+    ],
+    search: [
+      'itopk_size',
+      'search_width',
+      'min_iterations',
+      'max_iterations',
+      'team_size',
+    ],
+  },
+  GPU_IVF_FLAT: {
+    create: ['nlist'],
+    search: ['nprobe'],
+  },
+  GPU_IVF_PQ: {
+    create: ['nlist', 'm', 'nbits'],
+    search: ['nprobe'],
+  },
+  GPU_BRUTE_FORCE: {
+    create: [],
+    search: [],
+  },
+};
+
 export const BINARY_INDEX_CONFIG: indexConfigType = {
-  // },
   BIN_FLAT: {
     create: [],
     search: [],
@@ -193,6 +230,8 @@ export const INDEX_CONFIG: indexConfigType = {
   ...FLOAT_INDEX_CONFIG,
   ...BINARY_INDEX_CONFIG,
   ...SPARSE_INDEX_CONFIG,
+  ...DISK_INDEX_CONFIG,
+  ...GPU_INDEX_CONFIG,
 };
 
 export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
@@ -224,6 +263,14 @@ export const INDEX_OPTIONS_MAP = {
       value: INDEX_TYPES_ENUM.MARISA_TRIE,
     },
   ],
+  ['DISK']: Object.keys(DISK_INDEX_CONFIG).map(v => ({
+    label: v,
+    value: v,
+  })),
+  ['GPU']: Object.keys(GPU_INDEX_CONFIG).map(v => ({
+    label: v,
+    value: v,
+  })),
 };
 
 // search params default value map
