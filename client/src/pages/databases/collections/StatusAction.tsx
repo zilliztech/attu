@@ -15,7 +15,6 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomButton from '@/components/customButton/CustomButton';
-import { useNavigate } from 'react-router-dom';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 
@@ -79,7 +78,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const StatusAction: FC<StatusActionType> = props => {
   const theme = useTheme();
-  const navigate = useNavigate();
   const { setDialog } = useContext(rootContext);
 
   const classes = useStyles({ color: theme.palette.primary.main });
@@ -128,7 +126,7 @@ const StatusAction: FC<StatusActionType> = props => {
 
       default:
         return {
-          label: statusTrans.error,
+          label: status,
           icon: <span></span>,
           tooltip: '',
           deleteIcon: <ReleaseIcon />,
