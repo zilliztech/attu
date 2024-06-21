@@ -256,11 +256,7 @@ const InsertContainer: FC<InsertContentProps> = ({
   }, [schema, collectionValue, collections]);
 
   const checkUploadFileValidation = (firstRowItems: string[]): boolean => {
-    const uploadFieldNamesLength = firstRowItems.length;
-    return (
-      checkIsAutoIdFieldValid(firstRowItems) ||
-      checkColumnLength(uploadFieldNamesLength)
-    );
+    return checkIsAutoIdFieldValid(firstRowItems);
   };
 
   /**
@@ -277,19 +273,6 @@ const InsertContainer: FC<InsertContentProps> = ({
         'error'
       );
     return isContainAutoIdField;
-  };
-
-  /**
-   * uploaded file column length should be equal to schema length
-   * @param fieldNamesLength every row items length
-   * @returns whether invalid, true means invalid
-   */
-  const checkColumnLength = (fieldNamesLength: number): boolean => {
-    const isLengthEqual = schemaOptions.length === fieldNamesLength;
-    // if not equal, open warning snackbar
-    !isLengthEqual &&
-      openSnackBar(insertTrans('uploadFieldNamesLenWarning'), 'error');
-    return !isLengthEqual;
   };
 
   const handleUploadedData = (
