@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CodeLanguageEnum, CodeViewData } from '@/components/code/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSwitch from '@/components/customSwitch/CustomSwitch';
+import { Option } from '@/components/customSelector/Types';
 import {
   INDEX_CONFIG,
   INDEX_OPTIONS_MAP,
@@ -103,6 +104,10 @@ const CreateIndex = (props: {
     knng: '',
     drop_ratio_build: '0.5',
     with_raw_data: 'true',
+    intermediate_graph_degree: '128',
+    graph_degree: '64',
+    build_algo: 'IVF_PQ',
+    cache_dataset_on_device: 'false',
   });
 
   // control whether show code mode
@@ -138,26 +143,53 @@ const CreateIndex = (props: {
     return extraParams;
   }, [indexCreateParams, indexSetting]);
 
-  const indexOptions = useMemo(() => {
-    switch (fieldType) {
-      case DataTypeStringEnum.BinaryVector:
-        return INDEX_OPTIONS_MAP[DataTypeEnum.BinaryVector];
-      case DataTypeStringEnum.FloatVector:
-      case DataTypeStringEnum.Float16Vector:
-      case DataTypeStringEnum.BFloat16Vector:
-        return INDEX_OPTIONS_MAP[DataTypeEnum.FloatVector];
-      case DataTypeStringEnum.SparseFloatVector:
-        return INDEX_OPTIONS_MAP[DataTypeEnum.SparseFloatVector];
-      case DataTypeStringEnum.VarChar:
-        return INDEX_OPTIONS_MAP[DataTypeEnum.VarChar];
+  const getOptions = (label: string, children: Option[]) => [
+    { label, children },
+  ];
 
-      default:
-        return [
-          { label: 'INVERTED', value: INDEX_TYPES_ENUM.INVERTED },
-          { label: 'STL sort', value: INDEX_TYPES_ENUM.SORT },
-        ];
+  const indexOptions = useMemo(() => {
+    if (VectorTypes.includes(dataType)) {
+      switch (fieldType) {
+        case DataTypeStringEnum.BinaryVector:
+          return [
+            ...getOptions(
+              indexTrans('inMemory'),
+              INDEX_OPTIONS_MAP[DataTypeEnum.BinaryVector]
+            ),
+          ];
+        case DataTypeStringEnum.SparseFloatVector:
+          return [
+            ...getOptions(
+              indexTrans('inMemory'),
+              INDEX_OPTIONS_MAP[DataTypeEnum.SparseFloatVector]
+            ),
+          ];
+
+        default:
+          return [
+            ...getOptions(
+              indexTrans('inMemory'),
+              INDEX_OPTIONS_MAP[DataTypeEnum.FloatVector]
+            ),
+            ...getOptions(indexTrans('disk'), INDEX_OPTIONS_MAP['DISK']),
+            ...getOptions(indexTrans('gpu'), INDEX_OPTIONS_MAP['GPU']),
+          ];
+      }
+    } else {
+      switch (fieldType) {
+        case DataTypeStringEnum.VarChar:
+          return getOptions(
+            indexTrans('scalar'),
+            INDEX_OPTIONS_MAP[DataTypeEnum.VarChar]
+          );
+        default:
+          return getOptions(indexTrans('scalar'), [
+            { label: 'INVERTED', value: INDEX_TYPES_ENUM.INVERTED },
+            { label: 'STL sort', value: INDEX_TYPES_ENUM.SORT },
+          ]);
+      }
     }
-  }, [fieldType]);
+  }, [fieldType, dataType, fieldName]);
 
   const checkedForm = useMemo(() => {
     if (!VectorTypes.includes(dataType)) {
@@ -241,8 +273,8 @@ const CreateIndex = (props: {
     }, 0);
   };
 
-  const handleCreateIndex = () => {
-    handleCreate(extraParams, indexSetting.index_name);
+  const handleCreateIndex = async () => {
+    await handleCreate(extraParams, indexSetting.index_name);
   };
 
   const handleShowCode = (event: React.ChangeEvent<{ checked: boolean }>) => {

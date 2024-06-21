@@ -305,6 +305,63 @@ const SearchParams: FC<SearchParamsProps> = ({
             handleInputChange('drop_ratio_search', value);
           },
         },
+        itopk_size: {
+          label: 'itopk_size',
+          key: 'itopk_size',
+          value: searchParamsForm['itopk_size'] ?? '',
+          isInt: true,
+          type: 'number',
+          required: false,
+          handleChange: value => {
+            handleInputChange('itopk_size', value);
+          },
+        },
+        search_width: {
+          label: 'search_width',
+          key: 'search_width',
+          value: searchParamsForm['search_width'] ?? '',
+          isInt: true,
+          type: 'number',
+          required: false,
+          handleChange: value => {
+            handleInputChange('search_width', value);
+          },
+        },
+        min_iterations: {
+          label: 'min_iterations',
+          key: 'min_iterations',
+          value: searchParamsForm['min_iterations'] ?? '0',
+          isInt: true,
+          type: 'number',
+          required: false,
+          handleChange: value => {
+            handleInputChange('min_iterations', value);
+          },
+        },
+        max_iterations: {
+          label: 'max_iterations',
+          key: 'max_iterations',
+          value: searchParamsForm['max_iterations'] ?? '0',
+          isInt: true,
+          type: 'number',
+          required: false,
+          handleChange: value => {
+            handleInputChange('max_iterations', value);
+          },
+        },
+        team_size: {
+          label: 'team_size',
+          key: 'team_size',
+          value: searchParamsForm['team_size'] ?? '0',
+          min: 2,
+          max: 32,
+          isInt: true,
+          type: 'number',
+          required: false,
+          handleChange: value => {
+            handleInputChange('team_size', value);
+          },
+        },
       };
 
       const param = configParamMap[paramKey];

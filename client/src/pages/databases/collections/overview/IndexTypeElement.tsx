@@ -13,7 +13,7 @@ import {
   DataTypeStringEnum,
   DataTypeEnum,
 } from '@/consts';
-import CreateIndex from './Create';
+import CreateIndexDialog from './CreateIndexDialog';
 import { FieldObject } from '@server/types';
 import CustomButton from '@/components/customButton/CustomButton';
 
@@ -106,7 +106,7 @@ const IndexTypeElement: FC<{
       type: 'custom',
       params: {
         component: (
-          <CreateIndex
+          <CreateIndexDialog
             collectionName={collectionName}
             fieldName={field.name}
             dataType={field.dataType as unknown as DataTypeEnum}

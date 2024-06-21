@@ -1,6 +1,10 @@
 const indexTrans = {
   type: '索引类型',
   param: '索引参数',
+  inMemory: '内存索引',
+  disk: '磁盘索引',
+  gpu: 'GPU索引',
+  scalar: '标量索引',
 
   create: '创建索引',
   index: '索引',

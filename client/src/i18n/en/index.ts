@@ -1,6 +1,10 @@
 const indexTrans = {
   type: 'Index Type',
   param: 'Index Parameters',
+  inMemory: 'In-Memory Index',
+  disk: 'Disk Index',
+  gpu: 'GPU Index',
+  scalar: 'Scalar Index',
 
   create: 'Create Index',
   index: 'Index',
