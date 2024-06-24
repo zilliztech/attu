@@ -78,44 +78,49 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
           </TableCell>
         )}
 
-        {colDefinitions.map(headCell => (
-          <TableCell
-            key={headCell.id + headCell.label}
-            align={headCell.align || 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={
-              orderBy === (headCell.sortBy || headCell.id) ? order : false
-            }
-            className={classes.tableCell}
-            role="cell"
-          >
-            {headCell.label && handleSort && !headCell.notSort ? (
-              <TableSortLabel
-                active={orderBy === (headCell.sortBy || headCell.id)}
-                direction={
-                  orderBy === (headCell.sortBy || headCell.id) ? order : 'asc'
-                }
-                onClick={createSortHandler(headCell.sortBy || headCell.id)}
-              >
+        {colDefinitions.map(headCell => {
+          const cellStyle = headCell.getStyle ? headCell.getStyle(headCell) : {};
+
+          return (
+            <TableCell
+              key={headCell.id + headCell.label}
+              align={headCell.align || 'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={
+                orderBy === (headCell.sortBy || headCell.id) ? order : false
+              }
+              style={cellStyle}
+              className={classes.tableCell}
+              role="cell"
+            >
+              {headCell.label && handleSort && !headCell.notSort ? (
+                <TableSortLabel
+                  active={orderBy === (headCell.sortBy || headCell.id)}
+                  direction={
+                    orderBy === (headCell.sortBy || headCell.id) ? order : 'asc'
+                  }
+                  onClick={createSortHandler(headCell.sortBy || headCell.id)}
+                >
+                  <Typography variant="body1" className={classes.tableHeader}>
+                    {headCell.label}
+                  </Typography>
+
+                  {orderBy === (headCell.sortBy || headCell.id) ? (
+                    <Typography className={classes.visuallyHidden}>
+                      {order === 'desc'
+                        ? 'sorted descending'
+                        : 'sorted ascending'}
+                    </Typography>
+                  ) : null}
+                </TableSortLabel>
+              ) : (
                 <Typography variant="body1" className={classes.tableHeader}>
                   {headCell.label}
                 </Typography>
-
-                {orderBy === (headCell.sortBy || headCell.id) ? (
-                  <Typography className={classes.visuallyHidden}>
-                    {order === 'desc'
-                      ? 'sorted descending'
-                      : 'sorted ascending'}
-                  </Typography>
-                ) : null}
-              </TableSortLabel>
-            ) : (
-              <Typography variant="body1" className={classes.tableHeader}>
-                {headCell.label}
-              </Typography>
-            )}
-          </TableCell>
-        ))}
+              )}
+            </TableCell>
+          );
+        })}
       </TableRow>
     </TableHead>
   );
