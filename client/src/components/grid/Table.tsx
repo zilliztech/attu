@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: '100%',
-    minHeight: 57,
   },
   tableCell: {
     background: theme.palette.common.white,

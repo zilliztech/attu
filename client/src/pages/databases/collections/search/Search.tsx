@@ -263,6 +263,11 @@ const Search = (props: CollectionDataProps) => {
                     minWidth: 180,
                   };
                 }
+                if (d.id === DYNAMIC_FIELD) {
+                  return {
+                    minWidth: 180,
+                  };
+                }
                 if (!d.field) {
                   return {};
                 }
@@ -537,6 +542,7 @@ const Search = (props: CollectionDataProps) => {
                 rowCount={total}
                 primaryKey="rank"
                 page={currentPage}
+                tableHeaderHeight={46}
                 rowHeight={39}
                 onPageChange={handlePageChange}
                 rowsPerPage={pageSize}
