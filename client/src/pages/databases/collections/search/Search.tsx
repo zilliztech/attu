@@ -29,6 +29,7 @@ import {
   saveCsvAs,
   buildSearchParams,
   buildSearchCode,
+  getColumnWidth,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
 import {
@@ -244,13 +245,33 @@ const Search = (props: CollectionDataProps) => {
             const invalidItems = primaryKeyField === 'id' ? [] : ['id'];
             return !invalidItems.includes(item);
           })
-          .map(key => ({
-            id: key,
-            align: 'left',
-            disablePadding: false,
-            label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
-            needCopy: key !== 'score',
-          }))
+          .map(key => {
+            // find the field
+            const field = searchParams.collection.schema!.scalarFields.find(
+              f => f.name === key
+            );
+            return {
+              id: key,
+              align: 'left',
+              disablePadding: false,
+              label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
+              needCopy: key !== 'score',
+              field: field,
+              getStyle: d => {
+                if (d.id === 'score') {
+                  return {
+                    minWidth: 180,
+                  };
+                }
+                if (!d.field) {
+                  return {};
+                }
+                return {
+                  minWidth: getColumnWidth(d.field),
+                };
+              },
+            };
+          })
       : [];
   }, [JSON.stringify({ searchParams, outputFields })]);
 

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
 import { useQuery } from '@/hooks';
-import { saveCsvAs } from '@/utils';
+import { saveCsvAs, getColumnWidth } from '@/utils';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import AttuGrid from '@/components/grid/Grid';
@@ -414,6 +414,15 @@ const CollectionData = (props: CollectionDataProps) => {
                     default:
                       return cellData;
                   }
+                },
+                field: i,
+                getStyle: d => {
+                  if (!d.field) {
+                    return {};
+                  }
+                  return {
+                    minWidth: getColumnWidth(d.field),
+                  };
                 },
                 label:
                   i.name === DYNAMIC_FIELD

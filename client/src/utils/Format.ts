@@ -11,6 +11,7 @@ import {
 } from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
 import { generateVector } from './';
+import { get } from 'http';
 
 /**
  * transform large capacity to capacity in b.
@@ -305,4 +306,34 @@ export const VectorStrToObject = {
   [DataTypeStringEnum.Float16Vector]: arrayFormatter,
   [DataTypeStringEnum.BFloat16Vector]: arrayFormatter,
   [DataTypeStringEnum.SparseFloatVector]: sparseVectorFormatter,
+};
+
+export const getColumnWidth = (field: FieldObject): number => {
+  switch (field.data_type) {
+    case DataTypeStringEnum.Int64:
+    case DataTypeStringEnum.Int32:
+    case DataTypeStringEnum.Int16:
+    case DataTypeStringEnum.Int8:
+      return 200;
+    case DataTypeStringEnum.Float:
+      return 200;
+
+    case DataTypeStringEnum.VarChar:
+      const varCharWidth = field.maxLength * 10;
+      return varCharWidth > 350 ? 350 : varCharWidth; 
+
+    case DataTypeStringEnum.Bool:
+      return 80;
+
+    case DataTypeStringEnum.Array:
+      const width =
+        getColumnWidth({
+          ...field,
+          data_type: field.element_type as any,
+        }) * field.maxCapacity;
+      return width > 350 ? 350 : width;
+
+    default:
+      return 350;
+  }
 };

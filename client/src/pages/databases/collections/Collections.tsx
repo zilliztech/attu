@@ -356,6 +356,9 @@ const Collections = () => {
           </Link>
         );
       },
+      getStyle: () => {
+        return { minWidth: '200px' };
+      },
       label: collectionTrans('name'),
     },
     {
@@ -372,6 +375,9 @@ const Collections = () => {
             collection={v}
           />
         );
+      },
+      getStyle: () => {
+        return { minWidth: '130px' };
       },
     },
     {
@@ -390,6 +396,9 @@ const Collections = () => {
       formatter(v) {
         return formatNumber(v.rowCount);
       },
+      getStyle: () => {
+        return { minWidth: '150px' };
+      },
     },
     {
       id: 'description',
@@ -403,6 +412,9 @@ const Collections = () => {
       formatter(v) {
         return v.description || '--';
       },
+      getStyle: () => {
+        return { minWidth: '150px' };
+      },
     },
     {
       id: 'createdTime',
@@ -411,6 +423,9 @@ const Collections = () => {
       label: collectionTrans('createdTime'),
       formatter(data) {
         return new Date(data.createdTime).toLocaleString();
+      },
+      getStyle: () => {
+        return { minWidth: '165px' };
       },
     },
     {
@@ -463,6 +478,9 @@ const Collections = () => {
       ),
       formatter(v) {
         return <Aliases aliases={v.aliases} collection={v} />;
+      },
+      getStyle: () => {
+        return { minWidth: '120px' };
       },
     });
   }
