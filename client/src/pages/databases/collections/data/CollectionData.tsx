@@ -417,7 +417,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 },
                 field: i,
                 getStyle: d => {
-                  if (!d.field) {
+                  if (!d || !d.field) {
                     return {};
                   }
                   return {

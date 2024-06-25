@@ -258,6 +258,9 @@ const Search = (props: CollectionDataProps) => {
               needCopy: key !== 'score',
               field: field,
               getStyle: d => {
+                if (!d || !d.field) {
+                  return {};
+                }
                 if (d.id === 'score') {
                   return {
                     minWidth: 180,
@@ -267,9 +270,6 @@ const Search = (props: CollectionDataProps) => {
                   return {
                     minWidth: 180,
                   };
-                }
-                if (!d.field) {
-                  return {};
                 }
                 return {
                   minWidth: getColumnWidth(d.field),
