@@ -303,16 +303,21 @@ const InsertContainer: FC<InsertContentProps> = ({
   };
 
   const handleInsertData = async () => {
+    const fields = schema
+      ? schema.fields
+      : collections.find(c => c.collection_name === collectionValue)?.schema
+          ?.fields;
+
     // start loading
     setInsertStatus(InsertStatusEnum.loading);
-
     // process data
     const data =
       typeof jsonData !== 'undefined'
         ? jsonData
         : combineHeadsAndData(
             tableHeads,
-            isContainFieldNames ? csvData.slice(1) : csvData
+            isContainFieldNames ? csvData.slice(1) : csvData,
+            fields!
           );
 
     const param: InsertDataParam = {
