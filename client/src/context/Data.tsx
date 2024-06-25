@@ -174,6 +174,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     try {
       // set loading true
       setLoading(true);
+      // set collections
+      setCollections([]);
       // fetch collections
       const res = await CollectionService.getCollections();
       // check state
@@ -343,6 +345,18 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    const clear = () => {
+      // clear collections
+      setCollections([]);
+      // clear database
+      setDatabases([]);
+      // set connected to false
+      setConnected(false);
+      // remove all listeners when component unmount
+      socket.current?.offAny();
+      socket.current?.disconnect();
+    };
+
     if (isAuth) {
       // update database get from auth
       setDatabase(authReq.database);
@@ -370,14 +384,12 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         socket.current?.disconnect();
       });
     } else {
-      socket.current?.disconnect();
-      // clear collections
-      setCollections([]);
-      // clear database
-      setDatabases([]);
-      // set connected to false
-      setConnected(false);
+      clear();
     }
+
+    return () => {
+      clear();
+    };
   }, [isAuth]);
 
   useEffect(() => {

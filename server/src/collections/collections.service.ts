@@ -438,12 +438,12 @@ export class CollectionsService {
   // get all collections details
   async getAllCollections(
     clientId: string,
-    collectionName: string[] = []
+    collections: string[] = []
   ): Promise<CollectionObject[]> {
     const cache = clientCache.get(clientId);
 
-    // clear collectionsQueue
-    if (collectionName.length === 0) {
+    // clear collectionsQueue if we fetch all collections
+    if (collections.length === 0) {
       cache.collectionsQueue.stop();
       cache.collectionsQueue = new SimpleQueue<string>();
     }
@@ -460,11 +460,14 @@ export class CollectionsService {
 
     // get target collections details
     const targetCollections = allCollections.data.filter(
-      d => collectionName.indexOf(d.name) !== -1
+      d => collections.indexOf(d.name) !== -1
     );
 
     const targets =
       targetCollections.length > 0 ? targetCollections : allCollections.data;
+
+    // sort targets by name
+    targets.sort((a, b) => a.name.localeCompare(b.name));
 
     // get all collection details
     for (let i = 0; i < targets.length; i++) {
@@ -495,17 +498,6 @@ export class CollectionsService {
         await this.updateCollectionsDetails(clientId, collectionsToGet);
       }, 5);
     }
-
-    // sort data by loadedPercentage and has index or not, then createdTime.
-    data.sort((a, b) => {
-      if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
-        if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
-          return b.createdTime - a.createdTime;
-        }
-        return a.schema.hasVectorIndex ? -1 : 1;
-      }
-      return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
-    });
 
     // return data
     return data;
