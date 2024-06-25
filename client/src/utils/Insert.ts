@@ -1,4 +1,6 @@
+import { FieldObject } from '@server/types';
 import { generateId } from './Common';
+import { DataTypeEnum } from '@/consts'
 
 /**
  * function to convert uploaded csv to AttuGrid component accepted data type
@@ -18,10 +20,17 @@ export const transferCsvArrayToTableData = (data: any[][]) => {
  * @param newKeys e.g. ['name', 'age', 'color']
  * @returns e.g. {name: 'name1', age: 12, color: 'red'}
  */
-const replaceKeysByIndex = (obj: any, newKeys: string[]) => {
+const replaceKeysByIndex = (
+  obj: any,
+  newKeys: string[],
+  fields: FieldObject[]
+) => {
   const keyValues = Object.keys(obj).map(key => {
     const newKey = newKeys[Number(key)] || key;
-    return { [newKey]: parseValue(obj[key]) };
+    const field = fields.find(f => f.name === newKey);
+    const isVarChar = field && field.dataType === DataTypeEnum.VarChar as any;
+
+    return { [newKey]: isVarChar? obj[key] : parseValue(obj[key]) };
   });
   return Object.assign({}, ...keyValues);
 };
@@ -52,12 +61,16 @@ export const formatValue = (value: any) => {
  * @param data table data, e.g. [[23, [2,3,34,4,5,56], [1,1,1,1,1,1,1,1,1,1,1]]]
  * @returns key value pair object array, with user selected heads or csv heads
  */
-export const combineHeadsAndData = (heads: string[], data: any[]) => {
+export const combineHeadsAndData = (
+  heads: string[],
+  data: any[],
+  fields: FieldObject[]
+) => {
   // use index as key, flatten two-dimensional array
   // filter useless row
   const flatTableData = data
     .filter(d => d.some((item: string) => item !== ''))
     .reduce((result, arr) => [...result, { ...arr }], []);
   // replace flatTableData key with real head rely on index
-  return flatTableData.map((d: any) => replaceKeysByIndex(d, heads));
+  return flatTableData.map((d: any) => replaceKeysByIndex(d, heads, fields));
 };
