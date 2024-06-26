@@ -46,6 +46,11 @@ export const buildSearchParams = (
     consistency_level: searchParams.globalParams.consistency_level,
   };
 
+  // group_by_field if exists
+  if (searchParams.globalParams.group_by_field) {
+    params.group_by_field = searchParams.globalParams.group_by_field;
+  }
+
   // reranker if exists
   if (data.length > 1) {
     if (searchParams.globalParams.rerank === 'rrf') {

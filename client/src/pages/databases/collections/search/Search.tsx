@@ -410,6 +410,7 @@ const Search = (props: CollectionDataProps) => {
               onSlideChangeCommitted={() => {
                 setHighlightField('');
               }}
+              fields={searchParams.collection.schema.scalarFields}
               searchParams={searchParams}
               searchGlobalParams={searchParams.globalParams}
               handleFormChange={(params: any) => {

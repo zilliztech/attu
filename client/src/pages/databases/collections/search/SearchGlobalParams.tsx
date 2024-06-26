@@ -7,18 +7,27 @@ import {
   CONSISTENCY_LEVEL_OPTIONS,
   TOP_K_OPTIONS,
   RERANKER_OPTIONS,
+  DataTypeStringEnum,
 } from '@/consts';
 import { SearchParams, GlobalParams } from '../../types';
+import { FieldObject } from '@server/types';
 
-export interface CollectionDataProps {
+export interface SearchGlobalProps {
   searchGlobalParams: GlobalParams;
   searchParams: SearchParams;
   handleFormChange: (form: GlobalParams) => void;
   onSlideChange: (field: string) => void;
   onSlideChangeCommitted: () => void;
+  fields: FieldObject[];
 }
 
-const SearchGlobalParams = (props: CollectionDataProps) => {
+const UNSPORTED_GROUPBY_TYPES = [
+  DataTypeStringEnum.Double,
+  DataTypeStringEnum.Float,
+  DataTypeStringEnum.JSON,
+];
+
+const SearchGlobalParams = (props: SearchGlobalProps) => {
   // props
   const {
     searchParams,
@@ -26,6 +35,7 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     handleFormChange,
     onSlideChange,
     onSlideChangeCommitted,
+    fields,
   } = props;
   const selectedCount = searchParams.searchParams.filter(
     sp => sp.selected
@@ -52,14 +62,14 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
     [handleFormChange, searchGlobalParams]
   );
 
-  const onRerankChanged = useCallback(
-    (e: { target: { value: unknown } }) => {
-      const rerankerStr = e.target.value as 'rrf' | 'weighted';
-
-      handleInputChange('rerank', rerankerStr);
-    },
-    [selectedCount, handleInputChange]
-  );
+  const groupByOptions = fields
+    .filter(f => !UNSPORTED_GROUPBY_TYPES.includes(f.data_type as any))
+    .map(f => {
+      return {
+        value: f.name,
+        label: f.name,
+      };
+    });
 
   return (
     <>
@@ -85,6 +95,20 @@ const SearchGlobalParams = (props: CollectionDataProps) => {
           handleInputChange('consistency_level', consistency);
         }}
       />
+
+      {!showReranker && (
+        <CustomSelector
+          options={[{ label: '--', value: '' }, ...groupByOptions]}
+          value={searchGlobalParams.group_by_field || ''}
+          label={searchTrans('groupBy')}
+          wrapperClass="selector"
+          variant="filled"
+          onChange={(e: { target: { value: unknown } }) => {
+            const groupBy = e.target.value as string;
+            handleInputChange('group_by_field', groupBy);
+          }}
+        />
+      )}
 
       {showReranker && (
         <>

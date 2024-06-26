@@ -1,3 +1,5 @@
+import { group } from "console";
+
 const searchTrans = {
   firstTip: '2. Enter search vector {{dimensionTip}}',
   secondTip: '1. Choose collection and field',
@@ -24,6 +26,7 @@ const searchTrans = {
   noVectorToSearch: 'No vector data to search.',
   noSelectedVectorField: 'At least select one vector field to search.',
   rerank: 'Reranker',
+  groupBy: 'Group By',
 };
 
 export default searchTrans;

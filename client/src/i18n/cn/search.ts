@@ -1,3 +1,5 @@
+import { group } from "console";
+
 const searchTrans = {
   firstTip: '2. 输入搜索向量 {{dimensionTip}}',
   secondTip: '1. 选择Collection和字段',
@@ -24,6 +26,7 @@ const searchTrans = {
   noVectorToSearch: '没有用于搜索的向量数据.',
   noSelectedVectorField: '至少选择一个向量字段进行搜索.',
   rerank: '排序器',
+  groupBy: '分组',
 };
 
 export default searchTrans;
