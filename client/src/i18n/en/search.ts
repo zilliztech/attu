@@ -1,5 +1,3 @@
-import { group } from "console";
-
 const searchTrans = {
   firstTip: '2. Enter search vector {{dimensionTip}}',
   secondTip: '1. Choose collection and field',

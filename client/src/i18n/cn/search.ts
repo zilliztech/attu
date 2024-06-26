@@ -1,5 +1,3 @@
-import { group } from "console";
-
 const searchTrans = {
   firstTip: '2. 输入搜索向量 {{dimensionTip}}',
   secondTip: '1. 选择Collection和字段',
