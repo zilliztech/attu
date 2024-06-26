@@ -17,6 +17,7 @@ export type GlobalParams = {
   rrfParams: { k: number };
   weightedParams: { weights: number[] };
   round_decimal?: number;
+  group_by_field?: string;
 };
 
 export type SearchResultView = {

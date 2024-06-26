@@ -24,6 +24,7 @@ const searchTrans = {
   noVectorToSearch: '没有用于搜索的向量数据.',
   noSelectedVectorField: '至少选择一个向量字段进行搜索.',
   rerank: '排序器',
+  groupBy: '分组',
 };
 
 export default searchTrans;

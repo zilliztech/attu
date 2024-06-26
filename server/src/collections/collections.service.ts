@@ -261,7 +261,7 @@ export class CollectionsService {
     const searchParams = data as HybridSearchReq;
     const isHybrid =
       Array.isArray(searchParams.data) && searchParams.data.length > 1;
-    const singleSearchParams = cloneObj(data) as SearchSimpleReq;
+    let singleSearchParams = cloneObj(data) as SearchSimpleReq;
 
     // for 2.3.x milvus
     if (searchParams.data && searchParams.data.length === 1) {
@@ -273,6 +273,7 @@ export class CollectionsService {
       }
       singleSearchParams.data = searchParams.data[0].data;
       singleSearchParams.anns_field = searchParams.data[0].anns_field;
+      singleSearchParams.group_by_field = searchParams.group_by_field;
     }
 
     const res = await milvusClient.search(
