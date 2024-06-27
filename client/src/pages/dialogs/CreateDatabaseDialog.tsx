@@ -72,7 +72,9 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
 
   const handleCreate = async () => {
     setLoading(true);
-    await createDatabase(form);
+    await createDatabase(form).finally(() => {
+      setLoading(false);
+    });
     openSnackBar(successTrans('create', { name: dbTrans('database') }));
     setLoading(false);
 
