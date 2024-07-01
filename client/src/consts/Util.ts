@@ -54,6 +54,10 @@ export const LOGICAL_OPERATORS = [
     value: 'ARRAY_CONTAINS_ALL',
     label: 'ARRAY_CONTAINS_ALL',
   },
+  {
+    value: 'ARRAY_CONTAINS_ANY',
+    label: 'ARRAY_CONTAINS_ANY',
+  },
 ];
 
 export enum FILE_MIME_TYPE {
