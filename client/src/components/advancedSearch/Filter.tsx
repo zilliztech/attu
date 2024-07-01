@@ -104,6 +104,10 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       if (op === 'JSON_CONTAINS' || op === 'ARRAY_CONTAINS') {
         newExpr = `${op}(${n}, ${value})`;
       }
+      // rewrite expression if the op is ARRAY_CONTAINS_ALL/ARRAY_CONTAINS_ANY
+      if (op === 'ARRAY_CONTAINS_ALL' || op === 'ARRAY_CONTAINS_ANY') {
+        newExpr = `${op}(${n}, ${value})`;
+      }
 
       return `${prev}${prev && !prev.endsWith('|| ') ? ' && ' : ''}${newExpr}`;
     }, '');

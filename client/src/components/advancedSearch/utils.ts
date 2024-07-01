@@ -31,6 +31,10 @@ export const formatValue = (value: string, type: string, operator: string) => {
         case 'ARRAY_CONTAINS':
           conditionValue = `${value}`;
           break;
+        case 'ARRAY_CONTAINS_ALL':
+        case 'ARRAY_CONTAINS_ANY':
+          conditionValue = `[${value}]`;
+          break;
         default:
           conditionValue = `"${value}"`;
           break;
