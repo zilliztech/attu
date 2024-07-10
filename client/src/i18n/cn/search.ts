@@ -25,6 +25,8 @@ const searchTrans = {
   noSelectedVectorField: '至少选择一个向量字段进行搜索.',
   rerank: '排序器',
   groupBy: '分组',
+  outputFields: '输出字段',
+  consistency: '一致性',
 };
 
 export default searchTrans;

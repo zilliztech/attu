@@ -18,6 +18,7 @@ export type GlobalParams = {
   weightedParams: { weights: number[] };
   round_decimal?: number;
   group_by_field?: string;
+  output_fields: string[];
 };
 
 export type SearchResultView = {
