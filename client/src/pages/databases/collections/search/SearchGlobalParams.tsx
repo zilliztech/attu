@@ -115,7 +115,6 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
         wrapperClass="selector"
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
-          console.log('on change', e.target.value);
           // add value to output fields if not exist, remove if exist
           const outputFields = [...searchGlobalParams.output_fields];
           const values = e.target.value as string[];
@@ -131,7 +130,6 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
             outputFields.splice(index, 1);
           });
 
-          console.log('xxx', outputFields);
           handleInputChange('output_fields', outputFields);
         }}
       />
