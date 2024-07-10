@@ -97,6 +97,7 @@ const Databases = () => {
                 weightedParams: {
                   weights: Array(c.schema.vectorFields.length).fill(0.5),
                 },
+                output_fields: c.schema.scalarFields.map(s => s.name),
               },
               searchResult: null,
               searchLatency: 0,

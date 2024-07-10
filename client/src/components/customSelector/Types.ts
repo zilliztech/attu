@@ -24,6 +24,11 @@ export type CustomSelectorType = SelectProps & {
   size?: 'small' | 'medium' | undefined;
 };
 
+export type CustomMultiSelectorType = Omit<CustomSelectorType, 'value'> & {
+  values: string[];
+  renderValue?: (selected: string[]) => React.ReactNode;
+};
+
 export interface ICustomGroupSelect {
   className?: string;
   options: GroupOption[];

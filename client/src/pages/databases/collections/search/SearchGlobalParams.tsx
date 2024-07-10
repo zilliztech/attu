@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Slider } from '@material-ui/core';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
+import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
+
 import {
   CONSISTENCY_LEVEL_OPTIONS,
   TOP_K_OPTIONS,
@@ -19,6 +21,7 @@ export interface SearchGlobalProps {
   onSlideChange: (field: string) => void;
   onSlideChangeCommitted: () => void;
   fields: FieldObject[];
+  outputFields: FieldObject[];
 }
 
 const UNSPORTED_GROUPBY_TYPES = [
@@ -36,6 +39,7 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
     onSlideChange,
     onSlideChangeCommitted,
     fields,
+    outputFields,
   } = props;
   const selectedCount = searchParams.searchParams.filter(
     sp => sp.selected
@@ -44,8 +48,9 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
 
   // translations
   const { t: warningTrans } = useTranslation('warning');
-  const { t: collectionTrans } = useTranslation('collection');
+  const { t: commonTrans } = useTranslation();
   const { t: searchTrans } = useTranslation('search');
+  const gridTrans = commonTrans('grid');
 
   // UI functions
   const handleInputChange = useCallback(
@@ -76,7 +81,7 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
       <CustomSelector
         options={TOP_K_OPTIONS}
         value={searchGlobalParams.topK}
-        label={collectionTrans('topK')}
+        label={searchTrans('topK')}
         wrapperClass="selector"
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
@@ -87,12 +92,47 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
       <CustomSelector
         options={CONSISTENCY_LEVEL_OPTIONS}
         value={searchGlobalParams.consistency_level}
-        label={collectionTrans('consistency')}
+        label={searchTrans('consistency')}
         wrapperClass="selector"
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
           const consistency = e.target.value as string;
           handleInputChange('consistency_level', consistency);
+        }}
+      />
+
+      <CustomMultiSelector
+        options={outputFields.map(f => {
+          return { label: f.name, value: f.name };
+        })}
+        values={searchGlobalParams.output_fields}
+        renderValue={selected => (
+          <span>{`${(selected as string[]).length} ${
+            gridTrans[(selected as string[]).length > 1 ? 'fields' : 'field']
+          }`}</span>
+        )}
+        label={searchTrans('outputFields')}
+        wrapperClass="selector"
+        variant="filled"
+        onChange={(e: { target: { value: unknown } }) => {
+          console.log('on change', e.target.value);
+          // add value to output fields if not exist, remove if exist
+          const outputFields = [...searchGlobalParams.output_fields];
+          const values = e.target.value as string[];
+          const newFields = values.filter(
+            v => !outputFields.includes(v as string)
+          );
+          const removeFields = outputFields.filter(
+            v => !values.includes(v as string)
+          );
+          outputFields.push(...newFields);
+          removeFields.forEach(f => {
+            const index = outputFields.indexOf(f);
+            outputFields.splice(index, 1);
+          });
+
+          console.log('xxx', outputFields);
+          handleInputChange('output_fields', outputFields);
         }}
       />
 

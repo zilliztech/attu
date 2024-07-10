@@ -25,6 +25,8 @@ const searchTrans = {
   noSelectedVectorField: 'At least select one vector field to search.',
   rerank: 'Reranker',
   groupBy: 'Group By',
+  outputFields: 'Outputs',
+  consistency: 'Consistency',
 };
 
 export default searchTrans;

@@ -197,7 +197,7 @@ const Search = (props: CollectionDataProps) => {
     }
 
     const s = searchParams.collection.schema!;
-    const _outputFields = s.scalarFields.map(f => f.name);
+    const _outputFields = [...searchParams.globalParams.output_fields];
 
     if (s.enable_dynamic_field) {
       _outputFields.push(DYNAMIC_FIELD);
@@ -243,7 +243,7 @@ const Search = (props: CollectionDataProps) => {
           .filter(item => {
             // if primary key field name is id, don't filter it
             const invalidItems = primaryKeyField === 'id' ? [] : ['id'];
-            return !invalidItems.includes(item);
+            return !invalidItems.includes(item) && orderArray.includes(item);
           })
           .map(key => {
             // find the field
@@ -411,6 +411,7 @@ const Search = (props: CollectionDataProps) => {
                 setHighlightField('');
               }}
               fields={searchParams.collection.schema.scalarFields}
+              outputFields={searchParams.collection.schema.scalarFields}
               searchParams={searchParams}
               searchGlobalParams={searchParams.globalParams}
               handleFormChange={(params: any) => {
