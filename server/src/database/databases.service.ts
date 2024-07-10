@@ -6,6 +6,7 @@ import {
 import { throwErrorFromSDK } from '../utils/Error';
 import { clientCache } from '../app';
 import { DatabaseObject } from '../types';
+import { SimpleQueue } from '../utils';
 
 export class DatabasesService {
   async createDatabase(clientId: string, data: CreateDatabaseRequest) {
@@ -59,9 +60,13 @@ export class DatabasesService {
   }
 
   async use(clientId: string, db_name: string) {
-    const { milvusClient } = clientCache.get(clientId);
+    const currentClient = clientCache.get(clientId);
 
-    return await await milvusClient.use({ db_name });
+    // clear collectionsQueue when switching database
+    currentClient.collectionsQueue.stop();
+    currentClient.collectionsQueue = new SimpleQueue<string>();
+
+    return await await currentClient.milvusClient.use({ db_name });
   }
 
   async hasDatabase(clientId: string, data: string) {

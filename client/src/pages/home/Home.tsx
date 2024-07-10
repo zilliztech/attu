@@ -78,11 +78,14 @@ const Home = () => {
     return `${duration.toFixed(2)} ${unit}`;
   }, [data.rootCoord]);
 
+  // make sure the database has collections data
+  const isLoading = loadingDatabases || collections.every(c => !c.schema);
+
   return (
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
       <section className={classes.section}>
         <Typography variant="h4">{databaseTrans('databases')}</Typography>
-        {loadingDatabases ? (
+        {isLoading ? (
           <StatusIcon type={LoadingType.CREATING} />
         ) : (
           <div className={classes.cardWrapper}>
