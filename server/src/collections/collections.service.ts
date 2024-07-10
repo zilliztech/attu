@@ -6,7 +6,6 @@ import {
   InsertReq,
   LoadCollectionReq,
   ReleaseLoadCollectionReq,
-  SearchReq,
   RenameCollectionReq,
   AlterAliasReq,
   CreateAliasReq,
@@ -261,7 +260,7 @@ export class CollectionsService {
     const searchParams = data as HybridSearchReq;
     const isHybrid =
       Array.isArray(searchParams.data) && searchParams.data.length > 1;
-    let singleSearchParams = cloneObj(data) as SearchSimpleReq;
+    const singleSearchParams = cloneObj(data) as SearchSimpleReq;
 
     // for 2.3.x milvus
     if (searchParams.data && searchParams.data.length === 1) {
@@ -441,12 +440,12 @@ export class CollectionsService {
     clientId: string,
     collections: string[] = []
   ): Promise<CollectionObject[]> {
-    const cache = clientCache.get(clientId);
+    const currentClient = clientCache.get(clientId);
 
     // clear collectionsQueue if we fetch all collections
     if (collections.length === 0) {
-      cache.collectionsQueue.stop();
-      cache.collectionsQueue = new SimpleQueue<string>();
+      currentClient.collectionsQueue.stop();
+      currentClient.collectionsQueue = new SimpleQueue<string>();
     }
 
     // get all collections(name, timestamp, id)
@@ -490,14 +489,17 @@ export class CollectionsService {
     }
 
     // start the queue
-    if (cache.collectionsQueue.size() > 0) {
-      cache.collectionsQueue.executeNext(async (collectionsToGet, q) => {
-        // if the queue is obseleted, return
-        if (q.isObseleted) {
-          return;
-        }
-        await this.updateCollectionsDetails(clientId, collectionsToGet);
-      }, 5);
+    if (currentClient.collectionsQueue.size() > 0) {
+      currentClient.collectionsQueue.executeNext(
+        async (collectionsToGet, q) => {
+          // if the queue is obseleted, return
+          if (q.isObseleted) {
+            return;
+          }
+          await this.updateCollectionsDetails(clientId, collectionsToGet);
+        },
+        5
+      );
     }
 
     // return data
