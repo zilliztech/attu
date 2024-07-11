@@ -16,7 +16,7 @@ import Search from './collections/search/Search';
 import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import { ConsistencyLevelEnum } from '@/consts';
+import { ConsistencyLevelEnum, DYNAMIC_FIELD } from '@/consts';
 import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
@@ -74,6 +74,8 @@ const Databases = () => {
       // if search params not found, and the schema is ready, create new search params
       if (!searchParam && c.schema) {
         setSearchParams(prevParams => {
+          const scalarFields = c.schema.scalarFields.map(s => s.name);
+
           return [
             ...prevParams,
             {
@@ -97,7 +99,9 @@ const Databases = () => {
                 weightedParams: {
                   weights: Array(c.schema.vectorFields.length).fill(0.5),
                 },
-                output_fields: c.schema.scalarFields.map(s => s.name),
+                output_fields: c.schema.enable_dynamic_field
+                  ? [...scalarFields, DYNAMIC_FIELD]
+                  : scalarFields,
               },
               searchResult: null,
               searchLatency: 0,

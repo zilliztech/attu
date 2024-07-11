@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import { TextField, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
@@ -27,6 +27,8 @@ import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import { detectItemType } from '@/utils';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import CustomInput from '@/components/customInput/CustomInput';
+import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -144,6 +146,8 @@ const CollectionData = (props: CollectionDataProps) => {
     query,
     reset,
     count,
+    outputFields,
+    setOutputFields,
   } = useQuery({
     collection,
     consistencyLevel,
@@ -318,44 +322,51 @@ const CollectionData = (props: CollectionDataProps) => {
           <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
           <div className={classes.toolbar}>
             <div className="left">
-              <TextField
-                className="textarea"
-                value={expression}
-                onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                  setExpression(e.target.value as string);
-                }}
-                disabled={!collection.loaded}
-                InputLabelProps={{ shrink: true }}
-                label={expression ? ' ' : collectionTrans('exprPlaceHolder')}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    // reset page
-                    setCurrentPage(0);
-                    if (expr !== expression) {
-                      setExpr(expression);
-                    } else {
-                      // ensure query
-                      query();
+              <CustomInput
+                type="text"
+                textConfig={{
+                  label: expression
+                    ? collectionTrans('queryExpression')
+                    : collectionTrans('exprPlaceHolder'),
+                  key: 'advFilter',
+                  className: 'textarea',
+                  onChange: (value: string) => {
+                    setExpression(value);
+                  },
+                  value: expression,
+                  disabled: !collection.loaded,
+                  variant: 'filled',
+                  required: false,
+                  InputLabelProps: { shrink: true },
+                  InputProps: {
+                    endAdornment: (
+                      <Filter
+                        title={''}
+                        showTitle={false}
+                        fields={collection.schema.scalarFields}
+                        filterDisabled={!collection.loaded}
+                        onSubmit={handleFilterSubmit}
+                        showTooltip={false}
+                      />
+                    ),
+                  },
+                  onKeyDown: (e: any) => {
+                    if (e.key === 'Enter') {
+                      // reset page
+                      setCurrentPage(0);
+                      if (expr !== expression) {
+                        setExpr(expression);
+                      } else {
+                        // ensure query
+                        query();
+                      }
+                      e.preventDefault();
                     }
-                    e.preventDefault();
-                  }
+                  },
                 }}
-                inputRef={inputRef}
+                checkValid={() => true}
               />
-              <Filter
-                ref={filterRef}
-                title={btnTrans('advFilter')}
-                fields={collection.schema.fields.filter(
-                  i =>
-                    i.data_type !== DataTypeStringEnum.FloatVector &&
-                    i.data_type !== DataTypeStringEnum.BinaryVector
-                )}
-                filterDisabled={!collection.loaded}
-                onSubmit={handleFilterSubmit}
-                showTitle={false}
-                showTooltip={false}
-              />
-              {/* </div> */}
+
               <CustomSelector
                 options={CONSISTENCY_LEVEL_OPTIONS}
                 value={consistencyLevel}
@@ -369,7 +380,55 @@ const CollectionData = (props: CollectionDataProps) => {
                 }}
               />
             </div>
+
             <div className="right">
+              <CustomMultiSelector
+                options={fields.map(f => {
+                  return {
+                    label:
+                      f.name === DYNAMIC_FIELD
+                        ? searchTrans('dynamicFields')
+                        : f.name,
+                    value: f.name,
+                  };
+                })}
+                values={outputFields}
+                renderValue={selected => (
+                  <span>{`${(selected as string[]).length} ${
+                    gridTrans[
+                      (selected as string[]).length > 1 ? 'fields' : 'field'
+                    ]
+                  }`}</span>
+                )}
+                label={searchTrans('outputFields')}
+                wrapperClass="selector"
+                variant="filled"
+                onChange={(e: { target: { value: unknown } }) => {
+                  // add value to output fields if not exist, remove if exist
+                  const newOutputFields = [...outputFields];
+                  const values = e.target.value as string[];
+                  const newFields = values.filter(
+                    v => !newOutputFields.includes(v as string)
+                  );
+                  const removeFields = newOutputFields.filter(
+                    v => !values.includes(v as string)
+                  );
+                  newOutputFields.push(...newFields);
+                  removeFields.forEach(f => {
+                    const index = newOutputFields.indexOf(f);
+                    newOutputFields.splice(index, 1);
+                  });
+
+                  // sort output fields by schema order
+                  newOutputFields.sort(
+                    (a, b) =>
+                      fields.findIndex(f => f.name === a) -
+                      fields.findIndex(f => f.name === b)
+                  );
+
+                  setOutputFields(newOutputFields);
+                }}
+              />
               <CustomButton
                 className="btn"
                 onClick={handleFilterReset}
@@ -397,9 +456,9 @@ const CollectionData = (props: CollectionDataProps) => {
           </div>
           <AttuGrid
             toolbarConfigs={[]}
-            colDefinitions={fields.map(i => {
+            colDefinitions={outputFields.map(i => {
               return {
-                id: i.name,
+                id: i,
                 align: 'left',
                 disablePadding: false,
                 needCopy: true,
@@ -424,10 +483,7 @@ const CollectionData = (props: CollectionDataProps) => {
                     minWidth: getColumnWidth(d.field),
                   };
                 },
-                label:
-                  i.name === DYNAMIC_FIELD
-                    ? searchTrans('dynamicFields')
-                    : i.name,
+                label: i === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i,
               };
             })}
             primaryKey={collection.schema.primaryField.name}
