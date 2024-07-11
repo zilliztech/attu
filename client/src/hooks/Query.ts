@@ -27,6 +27,9 @@ export const useQuery = (params: {
   const [total, setTotal] = useState<number>(collection.rowCount);
   const [expr, setExpr] = useState<string>('');
   const [queryResult, setQueryResult] = useState<any>({ data: [], latency: 0 });
+  const [outputFields, setOutputFields] = useState<string[]>(
+    fields.map(i => i.name) || []
+  );
 
   // build local cache for pk ids
   const pageCache = useRef(new Map());
@@ -76,7 +79,7 @@ export const useQuery = (params: {
     try {
       const queryParams = {
         expr: _expr,
-        output_fields: fields.map(i => i.name),
+        output_fields: outputFields,
         limit: pageSize || 10,
         consistency_level,
         // travel_timestamp: timeTravelInfo.timestamp,
@@ -181,5 +184,9 @@ export const useQuery = (params: {
     count,
     // get expression
     getPageExpr,
+    // output fields
+    outputFields,
+    // set output fields
+    setOutputFields,
   };
 };

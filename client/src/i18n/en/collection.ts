@@ -92,7 +92,7 @@ const collectionTrans = {
   segmentsTab: 'Segments',
   propertiesTab: 'Properties',
   startTip: 'Start Your Data Query',
-  exprPlaceHolder: 'Please enter your query expression, for example id > 0',
+  exprPlaceHolder: 'Please enter your query expression, eg: id > 0',
   queryExpression: 'Query Expression',
 
   // alias dialog
