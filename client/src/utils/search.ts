@@ -96,7 +96,7 @@ res = client.search(
   }, # Search parameters
   limit=${params.limit}, # Max. number of search results to return
   output_fields=${JSON.stringify(
-    params.output_fields
+    params.output_fields.filter((f: string) => f !== '$meta')
   )}, # Fields to return in the search results
   consistency_level="${params.consistency_level}"
 )
