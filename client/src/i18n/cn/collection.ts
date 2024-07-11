@@ -90,7 +90,8 @@ const collectionTrans = {
   segmentsTab: '数据段(Segments)',
   propertiesTab: '属性',
   startTip: '开始你的数据查询',
-  exprPlaceHolder: '请输入你的数据查询，例如 id > 0',
+  exprPlaceHolder: '请输入你的查询表达式，例如 id > 0',
+  queryExpression: '查询表达式',
 
   // alias dialog
   aliasCreatePlaceholder: '别名',

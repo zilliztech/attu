@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import { TextField, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
@@ -27,6 +27,7 @@ import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import { detectItemType } from '@/utils';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import CustomInput from '@/components/customInput/CustomInput';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -318,44 +319,51 @@ const CollectionData = (props: CollectionDataProps) => {
           <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
           <div className={classes.toolbar}>
             <div className="left">
-              <TextField
-                className="textarea"
-                value={expression}
-                onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-                  setExpression(e.target.value as string);
-                }}
-                disabled={!collection.loaded}
-                InputLabelProps={{ shrink: true }}
-                label={expression ? ' ' : collectionTrans('exprPlaceHolder')}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    // reset page
-                    setCurrentPage(0);
-                    if (expr !== expression) {
-                      setExpr(expression);
-                    } else {
-                      // ensure query
-                      query();
+              <CustomInput
+                type="text"
+                textConfig={{
+                  label: expression
+                    ? collectionTrans('queryExpression')
+                    : collectionTrans('exprPlaceHolder'),
+                  key: 'advFilter',
+                  className: 'textarea',
+                  onChange: (value: string) => {
+                    setExpression(value);
+                  },
+                  value: expression,
+                  disabled: !collection.loaded,
+                  variant: 'filled',
+                  required: false,
+                  InputLabelProps: { shrink: true },
+                  InputProps: {
+                    endAdornment: (
+                      <Filter
+                        title={''}
+                        showTitle={false}
+                        fields={collection.schema.scalarFields}
+                        filterDisabled={!collection.loaded}
+                        onSubmit={handleFilterSubmit}
+                        showTooltip={false}
+                      />
+                    ),
+                  },
+                  onKeyDown: (e: any) => {
+                    if (e.key === 'Enter') {
+                      // reset page
+                      setCurrentPage(0);
+                      if (expr !== expression) {
+                        setExpr(expression);
+                      } else {
+                        // ensure query
+                        query();
+                      }
+                      e.preventDefault();
                     }
-                    e.preventDefault();
-                  }
+                  },
                 }}
-                inputRef={inputRef}
+                checkValid={() => true}
               />
-              <Filter
-                ref={filterRef}
-                title={btnTrans('advFilter')}
-                fields={collection.schema.fields.filter(
-                  i =>
-                    i.data_type !== DataTypeStringEnum.FloatVector &&
-                    i.data_type !== DataTypeStringEnum.BinaryVector
-                )}
-                filterDisabled={!collection.loaded}
-                onSubmit={handleFilterSubmit}
-                showTitle={false}
-                showTooltip={false}
-              />
-              {/* </div> */}
+
               <CustomSelector
                 options={CONSISTENCY_LEVEL_OPTIONS}
                 value={consistencyLevel}

@@ -23,7 +23,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       justifyContent: 'space-between',
       alignItems: 'center',
       flex: 1,
-      padding: theme.spacing(0, 0, 0, 2),
+      padding: theme.spacing(0, 0, 0, 0),
       fontSize: theme.spacing(2),
       backgroundColor: '#f4f4f4',
 
@@ -37,6 +37,9 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       },
       '& .textarea': {
         width: '100%',
+        '& .MuiFormHelperText-root': {
+          display: 'none',
+        },
       },
     },
 
