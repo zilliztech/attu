@@ -190,21 +190,6 @@ const Search = (props: CollectionDataProps) => {
 
   let primaryKeyField = 'id';
 
-  // const outputFields: string[] = useMemo(() => {
-  //   if (!searchParams || !searchParams.collection) {
-  //     return [];
-  //   }
-
-  //   const s = searchParams.collection.schema!;
-  //   const _outputFields = [...searchParams.globalParams.output_fields];
-
-  //   if (s.enable_dynamic_field) {
-  //     _outputFields.push(DYNAMIC_FIELD);
-  //   }
-
-  //   return _outputFields;
-  // }, [JSON.stringify(searchParams)]);
-
   const {
     pageSize,
     handlePageSize,
