@@ -16,10 +16,7 @@ export const getVectorFieldOptions = (fields: FieldObject[]): FieldOption[] => {
 };
 
 // new search: build search params
-export const buildSearchParams = (
-  searchParams: SearchParams,
-  output_fields: string[]
-) => {
+export const buildSearchParams = (searchParams: SearchParams) => {
   const data: any = [];
   const weightedParams: number[] = [];
 
@@ -39,7 +36,7 @@ export const buildSearchParams = (
   });
 
   const params: any = {
-    output_fields: output_fields,
+    output_fields: searchParams.globalParams.output_fields,
     limit: searchParams.globalParams.topK,
     data: data,
     filter: searchParams.globalParams.filter,
@@ -72,10 +69,9 @@ export const buildSearchParams = (
 
 export const buildSearchCode = (
   searchParams: SearchParams,
-  output_fields: string[],
   collection: CollectionFullObject
 ) => {
-  const params = buildSearchParams(searchParams, output_fields);
+  const params = buildSearchParams(searchParams);
   const isMultiple = params.data.length > 1;
 
   return {

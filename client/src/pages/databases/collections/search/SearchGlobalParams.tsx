@@ -4,24 +4,20 @@ import { Slider } from '@material-ui/core';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
-
 import {
+  DYNAMIC_FIELD,
   CONSISTENCY_LEVEL_OPTIONS,
   TOP_K_OPTIONS,
   RERANKER_OPTIONS,
   DataTypeStringEnum,
 } from '@/consts';
 import { SearchParams, GlobalParams } from '../../types';
-import { FieldObject } from '@server/types';
 
 export interface SearchGlobalProps {
-  searchGlobalParams: GlobalParams;
   searchParams: SearchParams;
   handleFormChange: (form: GlobalParams) => void;
   onSlideChange: (field: string) => void;
   onSlideChangeCommitted: () => void;
-  fields: FieldObject[];
-  outputFields: FieldObject[];
 }
 
 const UNSPORTED_GROUPBY_TYPES = [
@@ -34,13 +30,18 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
   // props
   const {
     searchParams,
-    searchGlobalParams,
     handleFormChange,
     onSlideChange,
     onSlideChangeCommitted,
-    fields,
-    outputFields,
   } = props;
+  // values
+  const searchGlobalParams = searchParams.globalParams;
+  const fields = searchParams.collection.schema?.scalarFields || [];
+  const outputFields = [
+    ...(searchParams.collection.schema?.scalarFields || []),
+    ...(searchParams.collection.schema?.dynamicFields || []),
+  ];
+
   const selectedCount = searchParams.searchParams.filter(
     sp => sp.selected
   ).length;
@@ -103,7 +104,11 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
 
       <CustomMultiSelector
         options={outputFields.map(f => {
-          return { label: f.name, value: f.name };
+          return {
+            label:
+              f.name === DYNAMIC_FIELD ? searchTrans('dynamicFields') : f.name,
+            value: f.name,
+          };
         })}
         values={searchGlobalParams.output_fields}
         renderValue={selected => (
@@ -116,21 +121,28 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
           // add value to output fields if not exist, remove if exist
-          const outputFields = [...searchGlobalParams.output_fields];
+          const newOutputFields = [...searchGlobalParams.output_fields];
           const values = e.target.value as string[];
           const newFields = values.filter(
-            v => !outputFields.includes(v as string)
+            v => !newOutputFields.includes(v as string)
           );
-          const removeFields = outputFields.filter(
+          const removeFields = newOutputFields.filter(
             v => !values.includes(v as string)
           );
-          outputFields.push(...newFields);
+          newOutputFields.push(...newFields);
           removeFields.forEach(f => {
-            const index = outputFields.indexOf(f);
-            outputFields.splice(index, 1);
+            const index = newOutputFields.indexOf(f);
+            newOutputFields.splice(index, 1);
           });
 
-          handleInputChange('output_fields', outputFields);
+          // sort output fields by schema order
+          newOutputFields.sort((a, b) => {
+            const aIndex = outputFields.findIndex(f => f.name === a);
+            const bIndex = outputFields.findIndex(f => f.name === b);
+            return aIndex - bIndex;
+          });
+
+          handleInputChange('output_fields', newOutputFields);
         }}
       />
 

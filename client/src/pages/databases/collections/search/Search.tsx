@@ -168,7 +168,7 @@ const Search = (props: CollectionDataProps) => {
 
   // execute search
   const onSearchClicked = useCallback(async () => {
-    const params = buildSearchParams(searchParams, outputFields);
+    const params = buildSearchParams(searchParams);
 
     setTableLoading(true);
     try {
@@ -179,7 +179,6 @@ const Search = (props: CollectionDataProps) => {
 
       setTableLoading(false);
       setSearchResult(res);
-      // setLatency(res.latency);
     } catch (err) {
       setTableLoading(false);
     }
@@ -191,20 +190,20 @@ const Search = (props: CollectionDataProps) => {
 
   let primaryKeyField = 'id';
 
-  const outputFields: string[] = useMemo(() => {
-    if (!searchParams || !searchParams.collection) {
-      return [];
-    }
+  // const outputFields: string[] = useMemo(() => {
+  //   if (!searchParams || !searchParams.collection) {
+  //     return [];
+  //   }
 
-    const s = searchParams.collection.schema!;
-    const _outputFields = [...searchParams.globalParams.output_fields];
+  //   const s = searchParams.collection.schema!;
+  //   const _outputFields = [...searchParams.globalParams.output_fields];
 
-    if (s.enable_dynamic_field) {
-      _outputFields.push(DYNAMIC_FIELD);
-    }
+  //   if (s.enable_dynamic_field) {
+  //     _outputFields.push(DYNAMIC_FIELD);
+  //   }
 
-    return _outputFields;
-  }, [JSON.stringify(searchParams)]);
+  //   return _outputFields;
+  // }, [JSON.stringify(searchParams)]);
 
   const {
     pageSize,
@@ -229,7 +228,16 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams), setCurrentPage]);
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
-    const orderArray = [primaryKeyField, 'id', 'score', ...outputFields];
+    if (!searchParams || !searchParams.collection) {
+      return [];
+    }
+    // collection fields, combine static and dynamic fields
+    const orderArray = [
+      primaryKeyField,
+      'id',
+      'score',
+      ...searchParams.globalParams.output_fields,
+    ];
 
     return searchParams &&
       searchParams.searchResult &&
@@ -278,7 +286,11 @@ const Search = (props: CollectionDataProps) => {
             };
           })
       : [];
-  }, [JSON.stringify({ searchParams, outputFields })]);
+  }, [
+    JSON.stringify({
+      searchParams,
+    }),
+  ]);
 
   // methods
   const handlePageChange = (e: any, page: number) => {
@@ -410,10 +422,7 @@ const Search = (props: CollectionDataProps) => {
               onSlideChangeCommitted={() => {
                 setHighlightField('');
               }}
-              fields={searchParams.collection.schema.scalarFields}
-              outputFields={searchParams.collection.schema.scalarFields}
               searchParams={searchParams}
-              searchGlobalParams={searchParams.globalParams}
               handleFormChange={(params: any) => {
                 searchParams.globalParams = params;
                 setSearchParams({ ...searchParams });
@@ -496,11 +505,7 @@ const Search = (props: CollectionDataProps) => {
                       params: {
                         component: (
                           <CodeDialog
-                            data={buildSearchCode(
-                              searchParams,
-                              outputFields,
-                              collection
-                            )}
+                            data={buildSearchCode(searchParams, collection)}
                           />
                         ),
                       },
