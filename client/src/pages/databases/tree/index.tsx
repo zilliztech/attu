@@ -7,6 +7,7 @@ import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
 import { formatNumber } from '@/utils';
+import { min } from 'd3';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
 
@@ -95,6 +96,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     width: 'calc(100% - 45px)',
+    '& .collectionName': {
+      minWidth: 36,
+    },
   },
   dbName: {
     width: 'calc(100% - 30px)',
@@ -104,6 +108,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontWeight: 500,
     marginLeft: theme.spacing(0.5),
     color: theme.palette.attuGrey.main,
+    pointerEvents: 'none',
   },
   dot: {
     width: '8px',
@@ -113,6 +118,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     left: 160,
     top: 8,
     zIndex: 1,
+    pointerEvents: 'none',
   },
   loaded: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -160,7 +166,9 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
     <div className={classes.collectionNode}>
       <div className={classes.collectionName}>
         <Tooltip title={data.collection_name}>
-          <Typography noWrap>{data.collection_name}</Typography>
+          <Typography noWrap className="collectionName">
+            {data.collection_name}
+          </Typography>
         </Tooltip>
         <span className={classes.count}>
           ({formatNumber(data.rowCount || 0)})
