@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Theme } from '@material-ui/core';
@@ -22,21 +22,42 @@ import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 
+const DEFAULT_TREE_WIDTH = 230;
+
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
   },
   tree: {
     boxShadow: 'none',
-    flexBasis: theme.spacing(28),
-    width: theme.spacing(28),
     flexGrow: 0,
     flexShrink: 0,
-    height: 'calc(100vh - 96px)',
-    overflow: 'auto',
+    height: 'calc(100vh - 90px)',
+    overflowY: 'auto',
+    overflowX: 'hidden',
     boxSizing: 'border-box',
-    padding: theme.spacing(0, 2, 0, 0),
+    padding: 0,
+    position: 'relative',
   },
+  dragger: {
+    pointerEvents: 'auto',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 2,
+    height: '100%',
+    background: 'transparent',
+    cursor: 'ew-resize',
+    '&:hover': {
+      width: 2,
+      cursor: 'ew-resize',
+      background: theme.palette.divider,
+    },
+    '&.tree-collapsed': {
+      background: theme.palette.divider,
+    },
+  },
+
   tab: {
     flexGrow: 1,
     flexShrink: 1,
@@ -62,6 +83,54 @@ const Databases = () => {
   const [searchParams, setSearchParams] = useState<SearchParams[]>(
     [] as SearchParams[]
   );
+
+  // tree ref
+  const treeRef = useRef<HTMLDivElement>(null);
+  const draggerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let isDragging = false;
+    let treeWidth = 0;
+    const handleMouseMove = (e: MouseEvent) => {
+      requestAnimationFrame(() => {
+        // get mouse position
+        let mouseX = e.clientX - treeRef.current!.offsetLeft;
+
+        treeWidth = Math.max(1, Math.min(mouseX, DEFAULT_TREE_WIDTH));
+
+        // set tree width
+        treeRef.current!.style.width = `${treeWidth}px`;
+        draggerRef.current!.classList.toggle('tree-collapsed', true);
+      });
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      draggerRef.current!.classList.toggle('tree-collapsed', treeWidth === 1);
+    };
+
+    const handleMouseDown = (e: MouseEvent) => {
+      const t = e.target as HTMLDivElement;
+      if (t && t.dataset.id === 'dragger') {
+        isDragging = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+    };
+  }, []);
+
+  // double click on the dragger, recover default
+  const handleDoubleClick = () => {
+    treeRef.current!.style.width = `${DEFAULT_TREE_WIDTH}px`;
+    draggerRef.current!.classList.toggle('tree-collapsed', false);
+  };
 
   // init search params
   useEffect(() => {
@@ -191,7 +260,7 @@ const Databases = () => {
   // render
   return (
     <section className={`page-wrapper ${classes.wrapper}`}>
-      <section className={classes.tree}>
+      <section className={classes.tree} ref={treeRef}>
         {loading ? (
           <StatusIcon type={LoadingType.CREATING} />
         ) : (
@@ -202,6 +271,12 @@ const Databases = () => {
             params={params}
           />
         )}
+        <div
+          className={classes.dragger}
+          data-id="dragger"
+          onDoubleClick={handleDoubleClick}
+          ref={draggerRef}
+        ></div>
       </section>
       {!collectionName && (
         <DatabasesTab databaseName={databaseName} tabClass={classes.tab} />
