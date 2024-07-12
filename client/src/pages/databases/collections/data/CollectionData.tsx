@@ -383,6 +383,7 @@ const CollectionData = (props: CollectionDataProps) => {
 
             <div className="right">
               <CustomMultiSelector
+                className={classes.outputs}
                 options={fields.map(f => {
                   return {
                     label:
@@ -430,7 +431,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 }}
               />
               <CustomButton
-                className="btn"
+                className={classes.btn}
                 onClick={handleFilterReset}
                 disabled={!collection.loaded}
                 startIcon={<ResetIcon classes={{ root: 'icon' }} />}
@@ -438,6 +439,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 {btnTrans('reset')}
               </CustomButton>
               <CustomButton
+                className={classes.btn}
                 variant="contained"
                 onClick={() => {
                   setCurrentPage(0);

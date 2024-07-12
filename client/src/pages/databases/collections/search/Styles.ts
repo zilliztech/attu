@@ -1,5 +1,4 @@
 import { makeStyles, Theme } from '@material-ui/core';
-import { Height } from '@material-ui/icons';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -166,26 +165,35 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    background: '#fff',
-    marginBottom: theme.spacing(1),
+    backgroundColor: 'white',
+    padding: theme.spacing(0, 0, 1),
+    gap: theme.spacing(1),
 
     '& .left': {
       display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       gap: theme.spacing(1),
-      '& .MuiFilledInput-adornedEnd': {
-        paddingRight: 0,
-      },
-      '& span button': {
-        height: '100%',
+      flex: 1,
+
+      '& .textarea': {
+        width: '100%',
+        '& .MuiFormHelperText-root': {
+          display: 'none',
+        },
       },
     },
-    '& .right': {},
+
+    '& .right': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: theme.spacing(1),
+    },
   },
 
-  filterInput: {
-    width: '280px',
-    '& .MuiFormHelperText-root': {
-      display: 'none',
-    },
+  btn: {
+    height: 56,
+    width: 80,
   },
 }));

@@ -16,25 +16,15 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     backgroundColor: 'white',
     padding: theme.spacing(0, 0, 1),
-    gap: theme.spacing(2),
+    gap: theme.spacing(1),
 
     '& .left': {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      gap: theme.spacing(1),
       flex: 1,
-      padding: theme.spacing(0, 0, 0, 0),
-      fontSize: theme.spacing(2),
-      backgroundColor: '#f4f4f4',
 
-      '& .expression': {
-        display: 'flex',
-        justifyContent: 'space-between',
-        flex: 1,
-        alignItems: 'center',
-        padding: theme.spacing(0, 1.5),
-        backgroundColor: '#f4f4f4',
-      },
       '& .textarea': {
         width: '100%',
         '& .MuiFormHelperText-root': {
@@ -51,6 +41,14 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
   },
   selector: {
-    width: 180,
+    width: 160,
+  },
+  outputs: {
+    height: 56,
+    width: 140,
+  },
+  btn: {
+    height: 56,
+    width: 80,
   },
 }));

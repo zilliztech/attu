@@ -447,7 +447,7 @@ const Search = (props: CollectionDataProps) => {
                   textConfig={{
                     label: searchTrans('filterExpr'),
                     key: 'advFilter',
-                    className: classes.filterInput,
+                    className: 'textarea',
                     onChange: onFilterChange,
                     value: searchParams.globalParams.filter,
                     disabled: false,
@@ -480,7 +480,7 @@ const Search = (props: CollectionDataProps) => {
               </div>
               <div className="right">
                 <CustomButton
-                  className="btn"
+                  className={classes.btn}
                   disabled={disableSearch}
                   onClick={() => {
                     // open code dialog
@@ -502,7 +502,7 @@ const Search = (props: CollectionDataProps) => {
                 </CustomButton>
 
                 <CustomButton
-                  className="btn"
+                  className={classes.btn}
                   disabled={result.length === 0}
                   onClick={() => {
                     saveCsvAs(
@@ -515,7 +515,7 @@ const Search = (props: CollectionDataProps) => {
                   {btnTrans('export')}
                 </CustomButton>
                 <CustomButton
-                  className="btn"
+                  className={classes.btn}
                   onClick={onResetClicked}
                   startIcon={<Icons.clear classes={{ root: 'icon' }} />}
                 >
