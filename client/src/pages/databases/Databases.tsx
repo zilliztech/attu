@@ -27,6 +27,20 @@ const DEFAULT_TREE_WIDTH = 230;
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
+    '&.dragging': {
+      cursor: 'ew-resize',
+      '& $tree': {
+        pointerEvents: 'none',
+        userSelect: 'none',
+      },
+      '& $tab': {
+        pointerEvents: 'none',
+        userSelect: 'none',
+      },
+      '& $dragger': {
+        background: theme.palette.divider,
+      },
+    },
   },
   tree: {
     boxShadow: 'none',
@@ -57,7 +71,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       background: theme.palette.divider,
     },
   },
-
   tab: {
     flexGrow: 1,
     flexShrink: 1,
@@ -76,7 +89,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 // Databases page(tree and tabs)
 const Databases = () => {
   // context
-  const { database, collections, loading, fetchCollection } =
+  const { database, collections, loading, fetchCollection, ui, setUIPref } =
     useContext(dataContext);
 
   // UI state
@@ -85,51 +98,62 @@ const Databases = () => {
   );
 
   // tree ref
+  const [isDragging, setIsDragging] = useState(false);
   const treeRef = useRef<HTMLDivElement>(null);
   const draggerRef = useRef<HTMLDivElement>(null);
 
+  // support dragging tree width
   useEffect(() => {
-    let isDragging = false;
+    // local tree width
     let treeWidth = 0;
     const handleMouseMove = (e: MouseEvent) => {
       requestAnimationFrame(() => {
         // get mouse position
         let mouseX = e.clientX - treeRef.current!.offsetLeft;
 
+        // set min and max width
         treeWidth = Math.max(1, Math.min(mouseX, DEFAULT_TREE_WIDTH));
 
         // set tree width
-        treeRef.current!.style.width = `${treeWidth}px`;
-        draggerRef.current!.classList.toggle('tree-collapsed', true);
+        setUIPref({ tree: { width: treeWidth } });
+        // set dragging true
+        setIsDragging(true);
       });
     };
 
     const handleMouseUp = () => {
-      isDragging = false;
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      // highlight dragger alwasy if width === 1
       draggerRef.current!.classList.toggle('tree-collapsed', treeWidth === 1);
+      // set dragging true
+      setIsDragging(false);
     };
 
     const handleMouseDown = (e: MouseEvent) => {
       const t = e.target as HTMLDivElement;
       if (t && t.dataset.id === 'dragger') {
-        isDragging = true;
+        // set dragging true
+        setIsDragging(true);
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
       }
     };
 
+    // add event listener
     document.addEventListener('mousedown', handleMouseDown);
     return () => {
+      // remove event listener
       document.removeEventListener('mousedown', handleMouseDown);
+      // set dragging false
+      setIsDragging(false);
     };
   }, []);
 
   // double click on the dragger, recover default
   const handleDoubleClick = () => {
-    treeRef.current!.style.width = `${DEFAULT_TREE_WIDTH}px`;
     draggerRef.current!.classList.toggle('tree-collapsed', false);
+    setUIPref({ tree: { width: DEFAULT_TREE_WIDTH } });
   };
 
   // init search params
@@ -259,8 +283,16 @@ const Databases = () => {
 
   // render
   return (
-    <section className={`page-wrapper ${classes.wrapper}`}>
-      <section className={classes.tree} ref={treeRef}>
+    <section
+      className={`page-wrapper ${classes.wrapper} ${
+        isDragging ? 'dragging' : ''
+      }`}
+    >
+      <section
+        className={classes.tree}
+        ref={treeRef}
+        style={{ width: ui.tree.width }}
+      >
         {loading ? (
           <StatusIcon type={LoadingType.CREATING} />
         ) : (
