@@ -104,7 +104,6 @@ export type DataContextType = {
   setDatabase: Dispatch<SetStateAction<string>>;
   databases: DatabaseObject[];
   setDatabaseList: Dispatch<SetStateAction<DatabaseObject[]>>;
-  // search UI state
 
   // APIs
   // databases
@@ -142,4 +141,11 @@ export type DataContextType = {
     key: string,
     value: any
   ) => Promise<CollectionFullObject>;
+  // UI preferences
+  ui: {
+    tree: {
+      width: number;
+    };
+  };
+  setUIPref: (pref: DataContextType['ui']) => void;
 };

@@ -20,6 +20,7 @@ import {
   DatabaseObject,
 } from '@server/types';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
+import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
@@ -67,6 +68,12 @@ export const dataContext = createContext<DataContextType>({
   setProperty: async () => {
     return {} as CollectionFullObject;
   },
+  ui: {
+    tree: {
+      width: DEFAULT_TREE_WIDTH,
+    },
+  },
+  setUIPref: () => {},
 });
 
 const { Provider } = dataContext;
@@ -75,6 +82,13 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // auth context
   const { authReq, isAuth, clientId, logout, setAuthReq } =
     useContext(authContext);
+
+  // UI preferences
+  const [ui, setUI] = useState({
+    tree: {
+      width: DEFAULT_TREE_WIDTH,
+    },
+  });
 
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
@@ -344,6 +358,26 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     return newCollection;
   };
 
+  // set UI preferences
+  const setUIPref = (pref: DataContextType['ui']) => {
+    setUI(pref);
+    localStorage.setItem('attu.ui.tree.width', String(pref.tree.width));
+  };
+
+  // load UI preferences
+  useEffect(() => {
+    const storedWidth = Number(localStorage.getItem('attu.ui.tree.width'));
+    if (storedWidth) {
+      setUI(prevUI => ({
+        ...prevUI,
+        tree: {
+          ...prevUI.tree,
+          width: storedWidth,
+        },
+      }));
+    }
+  }, []);
+
   useEffect(() => {
     const clear = () => {
       // clear collections
@@ -442,6 +476,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         createAlias,
         dropAlias,
         setProperty,
+        ui,
+        setUIPref,
       }}
     >
       {props.children}
