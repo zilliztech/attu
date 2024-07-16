@@ -117,6 +117,10 @@ If you prefer to use a desktop application, you can download the [desktop versio
 
 - I can't log into the system
   > Make sure that the IP address of the Milvus server can be accessed from the Attu container. [#161](https://github.com/zilliztech/attu/issues/161)
+- Mac M chip install app failed: attu.app is damaged and cannot be opened.
+  ```shell
+    sudo xattr -rd com.apple.quarantine /Applications/attu.app
+  ```
 - TBD
 
 ## More Screenshots
