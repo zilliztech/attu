@@ -15,7 +15,7 @@ export class PartitionService extends BaseModel {
   static managePartition(param: PartitionManageParam) {
     const { collectionName, partitionName, type } = param;
     return super.create({
-      path: `./partitions`,
+      path: `/partitions`,
       data: {
         collection_name: collectionName,
         partition_name: partitionName,

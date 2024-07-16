@@ -26,7 +26,7 @@ export class CollectionService extends BaseModel {
 
   static getCollection(collectionName: string) {
     return super.search<CollectionFullObject>({
-      path: `./collections/${collectionName}`,
+      path: `/collections/${collectionName}`,
       params: {},
     });
   }
@@ -37,20 +37,20 @@ export class CollectionService extends BaseModel {
 
   static dropCollection(collectionName: string) {
     return super.delete<{ data: ResStatus }>({
-      path: `./collections/${collectionName}`,
+      path: `/collections/${collectionName}`,
     });
   }
 
   static loadCollection(collectionName: string, param?: LoadReplicaReq) {
     return super.update<string>({
-      path: `./collections/${collectionName}/load`,
+      path: `/collections/${collectionName}/load`,
       data: param,
     });
   }
 
   static releaseCollection(collectionName: string) {
     return super.update<string>({
-      path: `./collections/${collectionName}/release`,
+      path: `/collections/${collectionName}/release`,
     });
   }
 
@@ -59,14 +59,14 @@ export class CollectionService extends BaseModel {
     params: { new_collection_name: string }
   ) {
     return super.create<CollectionFullObject>({
-      path: `./collections/${collectionName}`,
+      path: `/collections/${collectionName}`,
       data: params,
     });
   }
 
   static setProperty(collectionName: string, params: { [key: string]: any }) {
     return super.update<CollectionFullObject>({
-      path: `./collections/${collectionName}/properties`,
+      path: `/collections/${collectionName}/properties`,
       data: { properties: params },
     });
   }
@@ -76,48 +76,48 @@ export class CollectionService extends BaseModel {
     params: { new_collection_name: string }
   ) {
     return super.create<CollectionFullObject>({
-      path: `./collections/${collectionName}/duplicate`,
+      path: `/collections/${collectionName}/duplicate`,
       data: params,
     });
   }
 
   static getStatistics() {
     return super.search<StatisticsObject>({
-      path: `./collections/statistics`,
+      path: `/collections/statistics`,
       params: {},
     });
   }
 
   static count(collectionName: string) {
     return super.search<CountObject>({
-      path: `./collections/${collectionName}/count`,
+      path: `/collections/${collectionName}/count`,
       params: {},
     });
   }
 
   static createAlias(collectionName: string, params: { alias: string }) {
     return super.create<CollectionFullObject>({
-      path: `./collections/${collectionName}/alias`,
+      path: `/collections/${collectionName}/alias`,
       data: params,
     });
   }
 
   static dropAlias(collectionName: string, params: { alias: string }) {
     return super.delete<{ data: CollectionFullObject }>({
-      path: `./collections/${collectionName}/alias/${params.alias}`,
+      path: `/collections/${collectionName}/alias/${params.alias}`,
     });
   }
 
   static async describeIndex(collectionName: string): Promise<IndexObject[]> {
     const res = await super.findAll<DescribeIndexRes>({
-      path: `./collections/index`,
+      path: `/collections/index`,
       params: { collection_name: collectionName },
     });
     return res.index_descriptions;
   }
 
   static async createIndex(param: IndexCreateParam) {
-    const path = `./collections/index`;
+    const path = `/collections/index`;
     const type: ManageRequestMethods = ManageRequestMethods.CREATE;
 
     return super.create<CollectionFullObject>({
@@ -127,7 +127,7 @@ export class CollectionService extends BaseModel {
   }
 
   static async dropIndex(param: IndexManageParam) {
-    const path = `./collections/index`;
+    const path = `/collections/index`;
     const type: ManageRequestMethods = ManageRequestMethods.DELETE;
 
     return super.batchDelete<{ data: CollectionFullObject }>({
@@ -137,14 +137,14 @@ export class CollectionService extends BaseModel {
   }
 
   static async flush() {
-    const path = `./collections/index/flush`;
+    const path = `/collections/index/flush`;
 
     return super.query({ path, data: {} });
   }
 
   static queryData(collectionName: string, params: QueryParam) {
     return super.query({
-      path: `./collections/${collectionName}/query`,
+      path: `/collections/${collectionName}/query`,
       data: params,
     });
   }
