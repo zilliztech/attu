@@ -395,7 +395,11 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // update database get from auth
       setDatabase(authReq.database);
       // connect to socket server
-      socket.current = io(url as string);
+      // strip url to host
+      const socketUrl = new URL(url as string);
+
+      // create socket
+      socket.current = io(socketUrl.origin);
       // register client
       socket.current.emit(WS_EVENTS.REGISTER, clientId);
 
