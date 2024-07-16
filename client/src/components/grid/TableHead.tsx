@@ -25,12 +25,15 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     // background: theme.palette.common.t,
-    padding: theme.spacing(1.5),
+    padding: 0,
     // borderBottom: 'none',
   },
   tableHeader: {
+    padding: theme.spacing(1.5),
     color: 'rgba(0, 0, 0, 0.6)',
     fontWeight: 500,
+    maxHeight: 45,
+    overflow: 'hidden',
   },
   tableRow: {
     // borderBottom: '1px solid rgba(0, 0, 0, 0.6);',

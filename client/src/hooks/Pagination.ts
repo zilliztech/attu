@@ -4,7 +4,7 @@ import { ColDefinitionsType, SortType } from '../components/grid/Types';
 
 export const usePaginationHook = (list: any[]) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(0);
   const [orderBy, setOrderBy] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [sortType, setSortType] = useState<SortType>('number');

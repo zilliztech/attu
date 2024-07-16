@@ -200,16 +200,16 @@ const AttuGrid: FC<AttuGridType> = props => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // const timer = setTimeout(() => {
       calculateRowCountAndPageSize();
-    }, 0);
+    // }, 16);
     // Add event listener for window resize
     window.addEventListener('resize', calculateRowCountAndPageSize);
 
     // Clean up event listener on unmount
     return () => {
       window.removeEventListener('resize', calculateRowCountAndPageSize);
-      clearTimeout(timer);
+      // clearTimeout(timer);
     };
   }, [tableHeaderHeight, rowHeight]);
 
