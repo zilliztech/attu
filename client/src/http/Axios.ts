@@ -2,12 +2,10 @@ import axios from 'axios';
 import { MILVUS_CLIENT_ID } from '@/consts';
 
 // base hots url
-const DEFAULT_HOST_URL = `http://127.0.0.1:3000`;
-
 const hostUrl: { [key: string]: string | undefined } = {
-  development: DEFAULT_HOST_URL,
+  development: ``,
   production: ((window as any)._env_ && (window as any)._env_.HOST_URL) || '',
-  electron: DEFAULT_HOST_URL,
+  electron: `http://127.0.0.1:3000`,
 };
 
 const isElectron =

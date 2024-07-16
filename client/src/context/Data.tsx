@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
-import { url, CollectionService, MilvusService, DatabaseService } from '@/http';
+import { CollectionService, MilvusService, DatabaseService } from '@/http';
 import {
   IndexCreateParam,
   IndexManageParam,
@@ -394,12 +394,9 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     if (isAuth) {
       // update database get from auth
       setDatabase(authReq.database);
-      // connect to socket server
-      // strip url to host
-      const socketUrl = new URL(url as string);
 
       // create socket
-      socket.current = io(socketUrl.origin);
+      socket.current = io();
       // register client
       socket.current.emit(WS_EVENTS.REGISTER, clientId);
 
