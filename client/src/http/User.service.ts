@@ -13,7 +13,7 @@ import { Users, UsersWithRoles } from '@server/types';
 export class UserService extends BaseModel {
   // get user data
   static getUsers() {
-    return super.search<Users>({ path: '/users', params: {} });
+    return super.search<Users>({ path: `/users`, params: {} });
   }
 
   // get all roles
@@ -23,12 +23,12 @@ export class UserService extends BaseModel {
 
   // create user
   static createUser(data: CreateUserParams) {
-    return super.create({ path: '/users', data });
+    return super.create({ path: `/users`, data });
   }
 
   // update user (pass)
   static updateUser(data: UpdateUserParams) {
-    return super.update({ path: '/users', data });
+    return super.update({ path: `/users`, data });
   }
 
   // delete user

@@ -1,8 +1,8 @@
 import BaseModel from './BaseModel';
 
 export class PrometheusService extends BaseModel {
-  static SET_PROMETHEUS_URL = '/prometheus/setPrometheus';
-  static GET_MILVUS_HEALTHY_DATA_URL = '/prometheus/getMilvusHealthyData';
+  static SET_PROMETHEUS_URL = `/prometheus/setPrometheus`;
+  static GET_MILVUS_HEALTHY_DATA_URL = `/prometheus/getMilvusHealthyData`;
 
   static setPrometheus({
     prometheusAddress,
