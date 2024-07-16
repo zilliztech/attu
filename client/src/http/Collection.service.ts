@@ -21,7 +21,7 @@ export class CollectionService extends BaseModel {
   static getCollections(data?: {
     type: ShowCollectionsType;
   }): Promise<CollectionObject[]> {
-    return super.findAll({ path: './collections', params: data || {} });
+    return super.findAll({ path: `/collections`, params: data || {} });
   }
 
   static getCollection(collectionName: string) {
