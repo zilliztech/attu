@@ -146,7 +146,7 @@ export const useQuery = (params: {
 
   // query if expr is changed
   useEffect(() => {
-    if (!collection || !collection.loaded) {
+    if (!collection || !collection.loaded || !pageSize) {
       setQueryResult({ data: [], latency: 0 });
       setTotal(collection.rowCount);
       // console.info('[skip running query]: no key yet');
