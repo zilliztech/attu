@@ -134,29 +134,30 @@ const EnhancedTable: FC<TableType> = props => {
   return (
     <TableContainer className={classes.root}>
       <Box height="100%" className={classes.box}>
-        <Table
-          stickyHeader
-          className={classes.table}
-          aria-labelledby="tableTitle"
-          size="medium"
-          aria-label="enhanced table"
-        >
-          {!headEditable ? (
-            <EnhancedTableHead
-              colDefinitions={colDefinitions}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={onSelectedAll}
-              handleSort={handleSort}
-              rowCount={rows.length}
-              openCheckBox={openCheckBox}
-              disableSelect={disableSelect}
-            />
-          ) : (
-            <EditableTableHead editHeads={editHeads} />
-          )}
-          {!isLoading && (
+        {!isLoading && (
+          <Table
+            stickyHeader
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            size="medium"
+            aria-label="enhanced table"
+          >
+            {!headEditable ? (
+              <EnhancedTableHead
+                colDefinitions={colDefinitions}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={onSelectedAll}
+                handleSort={handleSort}
+                rowCount={rows.length}
+                openCheckBox={openCheckBox}
+                disableSelect={disableSelect}
+              />
+            ) : (
+              <EditableTableHead editHeads={editHeads} />
+            )}
+
             <TableBody>
               {rows && rows.length ? (
                 rows.map((row, index) => {
@@ -288,8 +289,9 @@ const EnhancedTable: FC<TableType> = props => {
                 </tr>
               )}
             </TableBody>
-          )}
-        </Table>
+          </Table>
+        )}
+
         {isLoading && <LoadingTable count={loadingRowCount} />}
       </Box>
     </TableContainer>
