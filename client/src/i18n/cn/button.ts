@@ -27,7 +27,7 @@ const btnTrans = {
   example: '生成随机向量',
   rename: '重命名',
   duplicate: '复制',
-  export: '导出数据',
+  export: '导出',
   empty: '清空数据',
   flush: '落盘(Flush)',
   compact: '压缩(Compact)',

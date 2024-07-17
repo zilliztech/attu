@@ -44,7 +44,7 @@ const commonTrans = {
     node: '节点',
     nodes: '节点',
     results: '结果',
-    of: '的',
+    of: '共',
     nextLabel: '下一页',
     prevLabel: '上一页',
   },

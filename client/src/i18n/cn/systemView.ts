@@ -4,7 +4,7 @@ const systemViewTrans = {
   qpsTitle: '每秒查询率',
   latencyTitle: '延迟',
   hardwareTitle: '硬件',
-  configTitle: '配置',
+  configTitle: '参数',
   valueTitle: '值',
   systemTitle: '系统',
   thName: '节点名称',
