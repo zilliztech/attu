@@ -8,7 +8,7 @@ const hostUrl: { [key: string]: string | undefined } = {
   electron: `http://127.0.0.1:3000`,
 };
 
-const isElectron =
+export const isElectron =
   (window as any)._env_ && (window as any)._env_.IS_ELECTRON === 'yes';
 
 export const url = hostUrl[isElectron ? 'electron' : import.meta.env.MODE];
