@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     maxHeight: 45,
     overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
   tableRow: {
     // borderBottom: '1px solid rgba(0, 0, 0, 0.6);',
@@ -82,7 +83,9 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
         )}
 
         {colDefinitions.map(headCell => {
-          const cellStyle = headCell.getStyle ? headCell.getStyle(headCell) : {};
+          const cellStyle = headCell.getStyle
+            ? headCell.getStyle(headCell)
+            : {};
 
           return (
             <TableCell
