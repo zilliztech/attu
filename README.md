@@ -1,4 +1,5 @@
 # Attu
+
 [![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
 
@@ -12,12 +13,12 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 ### Compatibility
 
-| Milvus Version | Recommended Attu Version                                           |
-| -------------- | ------------------------------------------------------------------ |
-| 2.4.x          | [v2.4.2](https://github.com/zilliztech/attu/releases/tag/v2.4.2)   |
-| 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)  |
-| 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
-| 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2)   |
+| Milvus Version | Recommended Attu Version                                         |
+| -------------- | ---------------------------------------------------------------- |
+| 2.4.x          | [v2.4.4](https://github.com/zilliztech/attu/releases/tag/v2.4.4) |
+| 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
+| 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
+| 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
 
 ### Running Attu from Docker
 
@@ -85,24 +86,8 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
 
 ### Running Attu behind a nginx proxy
-```nginx
-server {
-  listen 8080;
-  server_name localhost;
 
-  location /attu/ {
-    proxy_pass http://localhost:3000/;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    rewrite ^/attu/(.*)$ /$1 break;
-  }
-}
-```
+[Running Attu behind a nginx proxy](https://github.com/zilliztech/attu/blob/main/doc/use-attu-behind-proxy.md)
 
 ### Install Desktop application
 

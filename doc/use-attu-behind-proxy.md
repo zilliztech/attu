@@ -15,7 +15,7 @@ brew install nginx # For Mac OS
 2. **Attu**:
 
 ```bash
-docker run -p 3000:3000 -e HOST_URL=http://localhost:8080/attu zilliz/attu:dev
+docker run -p 3000:3000 -e HOST_URL=http://localhost:8080/attu zilliz/attu:v2.4.4
 ```
 
 The `HOST_URL` environment variable specifies the URL where Attu is hosted. In this case, it is set to `http://localhost:8080/attu/`.
