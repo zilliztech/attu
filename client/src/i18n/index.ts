@@ -100,7 +100,7 @@ i18n
       order: ['localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
 
       // keys or params to lookup language from
-      lookupLocalStorage: 'lang',
+      lookupLocalStorage: 'attu.ui.lang',
       lookupFromPathIndex: 0,
       lookupFromSubdomainIndex: 0,
 
