@@ -3,6 +3,7 @@ import { DataTypeStringEnum, MIN_INT64 } from '@/consts';
 import { CollectionService } from '@/http';
 import { CollectionFullObject, FieldObject } from '@server/types';
 
+// TODO: refactor this, a little bit messy
 export const useQuery = (params: {
   collection: CollectionFullObject;
   fields: FieldObject[];
@@ -69,7 +70,8 @@ export const useQuery = (params: {
   // query function
   const query = async (
     page: number = currentPage,
-    consistency_level = consistencyLevel
+    consistency_level = consistencyLevel,
+    _outputFields = outputFields
   ) => {
     if (!collection || !collection.loaded) return;
     const _expr = getPageExpr(page);
@@ -79,7 +81,7 @@ export const useQuery = (params: {
     try {
       const queryParams = {
         expr: _expr,
-        output_fields: outputFields,
+        output_fields: _outputFields,
         limit: pageSize || 10,
         consistency_level,
         // travel_timestamp: timeTravelInfo.timestamp,
@@ -141,6 +143,7 @@ export const useQuery = (params: {
   const reset = () => {
     setCurrentPage(0);
     setQueryResult({ data: [], latency: 0 });
+
     pageCache.current.clear();
   };
 
@@ -155,8 +158,13 @@ export const useQuery = (params: {
     reset();
     // get count;
     count();
+
+    // update output fields, then query again
+    const newOutputFields = fields.map(i => i.name) || [];
+    setOutputFields(newOutputFields);
+
     // do the query
-    query();
+    query(currentPage, consistencyLevel, newOutputFields);
   }, [expr, pageSize, collection.collection_name]);
 
   return {
