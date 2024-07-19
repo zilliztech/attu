@@ -79,7 +79,9 @@ const Home = () => {
   }, [data.rootCoord]);
 
   // make sure the database has collections data
-  const isLoading = loadingDatabases || collections.every(c => !c.schema);
+  const isLoading =
+    loadingDatabases ||
+    (collections.length > 0 && collections.every(c => !c.schema));
 
   return (
     <section className={`page-wrapper  ${classes.overviewContainer}`}>
