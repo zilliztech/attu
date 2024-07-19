@@ -174,7 +174,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
         break;
       case 'element':
         _options = ALL_OPTIONS.filter(
-          d => d.label !== 'Array' && d.label !== 'JSON'
+          d =>
+            d.label !== 'Array' &&
+            d.label !== 'JSON' &&
+            !d.label.includes('Vector')
         );
         break;
       default:
