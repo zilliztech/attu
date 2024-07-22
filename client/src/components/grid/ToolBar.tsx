@@ -72,9 +72,15 @@ const CustomToolBar: FC<ToolBarType> = props => {
             const Icon = c.icon ? Icons[c.icon!]() : '';
             const disabled = c.disabled ? c.disabled(selected) : false;
 
-            if (disabled && hideOnDisable && !c.alwaysShow) {
-              return null;
+            if (
+              disabled && // Check if the component is disabled
+              hideOnDisable && // Check if the component should be hidden when disabled
+              !c.alwaysShow && // Check if the button is not marked to always be shown
+              (typeof c.hideOnDisable === 'undefined' || c.hideOnDisable()) // Check if hideOnDisable on button is undefined or returns true
+            ) {
+              return null; // Return null to hide the component
             }
+
             // when disabled "disabledTooltip" will replace "tooltip"
             const tooltip =
               disabled && c.disabledTooltip ? c.disabledTooltip : c.tooltip;

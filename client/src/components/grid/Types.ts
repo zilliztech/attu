@@ -51,6 +51,7 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     btnVariant?: 'contained' | 'outlined' | 'text';
     btnColor?: 'primary' | 'secondary';
     alwaysShow?: boolean;
+    hideOnDisable?: () => boolean;
   };
 
 export type TableHeadType = {
