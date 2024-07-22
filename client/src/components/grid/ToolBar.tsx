@@ -72,7 +72,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
             const Icon = c.icon ? Icons[c.icon!]() : '';
             const disabled = c.disabled ? c.disabled(selected) : false;
 
-            if (disabled && hideOnDisable) {
+            if (disabled && hideOnDisable && !c.alwaysShow) {
               return null;
             }
             // when disabled "disabledTooltip" will replace "tooltip"
