@@ -177,6 +177,7 @@ const CollectionData = (props: CollectionDataProps) => {
       btnColor: 'secondary',
       label: btnTrans('importFile'),
       tooltip: btnTrans('importFileTooltip'),
+      disabled: () => selectedData?.length > 0,
       onClick: () => {
         setDialog({
           open: true,
@@ -219,6 +220,7 @@ const CollectionData = (props: CollectionDataProps) => {
       label: btnTrans('importSampleData'),
       icon: 'add',
       // tooltip: collectionTrans('deleteTooltip'),
+      disabled: () => selectedData?.length > 0,
     },
     {
       icon: 'deleteOutline',
@@ -245,9 +247,9 @@ const CollectionData = (props: CollectionDataProps) => {
           },
         });
       },
-      disabled: () => total == 0,
       label: btnTrans('empty'),
       tooltip: btnTrans('emptyTooltip'),
+      disabled: () => selectedData?.length > 0 ||  total == 0,
     },
     {
       type: 'button',
