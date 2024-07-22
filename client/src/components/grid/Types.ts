@@ -50,6 +50,7 @@ export type ToolBarConfig = Partial<TableSwitchType> &
     component?: ReactElement;
     btnVariant?: 'contained' | 'outlined' | 'text';
     btnColor?: 'primary' | 'secondary';
+    alwaysShow?: boolean;
   };
 
 export type TableHeadType = {
