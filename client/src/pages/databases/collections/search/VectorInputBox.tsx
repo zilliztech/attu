@@ -238,17 +238,18 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         ],
       });
 
-      editor.current = new EditorView({
+      const view = new EditorView({
         state: startState,
         parent: editorEl.current!,
       });
-    }
-    return () => {
-      if (editor.current) {
-        editor.current.destroy();
+
+      editor.current = view;
+
+      return () => {
+        view.destroy();
         editor.current = undefined;
-      }
-    };
+      };
+    }
   }, [JSON.stringify(field)]);
 
   return (

@@ -49,10 +49,12 @@ const btnTrans = {
   deleteColTooltip: 'Drop selected collection',
   duplicateTooltip: 'Duplicate selected collection without data',
   renameTooltip: 'Rename collection',
+  editEntityTooltip: 'Edit entity(JSON)',
 
   // disable tooltip
   downloadDisabledTooltip: 'Please select data before exporting',
   deleteDisableTooltip: 'Please select at least one item to delete.',
+  editEntityDisabledTooltip: 'Only one entity can be edited at a time.',
 };
 
 export default btnTrans;

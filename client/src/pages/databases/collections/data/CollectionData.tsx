@@ -13,6 +13,7 @@ import Filter from '@/components/advancedSearch';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
 import InsertDialog from '@/pages/dialogs/insert/Dialog';
+import EditEntityDialog from '@/pages/dialogs/EditEntityDialog';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
 import {
@@ -250,6 +251,32 @@ const CollectionData = (props: CollectionDataProps) => {
       label: btnTrans('empty'),
       tooltip: btnTrans('emptyTooltip'),
       disabled: () => selectedData?.length > 0 ||  total == 0,
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <EditEntityDialog
+                data={selectedData[0]}
+                collection={collection!}
+              />
+            ),
+          },
+        });
+      },
+      label: btnTrans('edit'),
+      icon: 'edit',
+      tooltip: btnTrans('editEntityTooltip'),
+      disabledTooltip: btnTrans('editEntityDisabledTooltip'),
+      disabled: () => selectedData?.length !== 1,
+      hideOnDisable() {
+        return selectedData?.length === 0;
+      },
     },
     {
       type: 'button',
