@@ -25,7 +25,8 @@ const dialogTrans = {
     'Duplicating a collection does not copy the data within the collection. It only creates a new collection using the existing schema.',
   flushDialogInfo: `Flush is a process that seals and indexes any remaining segments after data is upserted into Milvus. This avoids brute force searches on unsealed segments.  <br /><br />It's best to use flush at the end of an upsert session to prevent data fragmentation. <br /><br /><strong>Note: that this operation may take some time for large datasets.</strong>`,
   emptyDataDialogInfo: `You are attempting to empty the data. This action cannot be undone, please proceed with caution.`,
-  resetPropertyInfo: `Are you sure you want to reset the property?`
+  resetPropertyInfo: `Are you sure you want to reset the property?`,
+  editEntityInfo: `NOTE: Edit id field will create a new entity.`
 };
 
 export default dialogTrans;

@@ -55,6 +55,7 @@ const btnTrans = {
   downloadDisabledTooltip: '导出前请先选择数据。',
   deleteDisableTooltip: '请至少选择一个要删除的项目。',
   editEntityDisabledTooltip: '一次只能编辑一个entity。',
+  editEntityDisabledTooltipAutoId: 'auto-id数据无法编辑。',
 };
 
 export default btnTrans;

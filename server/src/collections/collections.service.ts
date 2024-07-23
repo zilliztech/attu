@@ -244,6 +244,14 @@ export class CollectionsService {
     return res;
   }
 
+  async upsert(clientId: string, data: InsertReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.upsert(data);
+    throwErrorFromSDK(res.status);
+    return res;
+  }
+
+
   async deleteEntities(clientId: string, data: DeleteEntitiesReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.deleteEntities(data);

@@ -250,7 +250,7 @@ const CollectionData = (props: CollectionDataProps) => {
       },
       label: btnTrans('empty'),
       tooltip: btnTrans('emptyTooltip'),
-      disabled: () => selectedData?.length > 0 ||  total == 0,
+      disabled: () => selectedData?.length > 0 || total == 0,
     },
     {
       type: 'button',
@@ -272,8 +272,12 @@ const CollectionData = (props: CollectionDataProps) => {
       label: btnTrans('edit'),
       icon: 'edit',
       tooltip: btnTrans('editEntityTooltip'),
-      disabledTooltip: btnTrans('editEntityDisabledTooltip'),
-      disabled: () => selectedData?.length !== 1,
+      disabledTooltip: btnTrans(
+        collection.autoID
+          ? 'editEntityDisabledTooltipAutoId'
+          : 'editEntityDisabledTooltip'
+      ),
+      disabled: () => selectedData?.length !== 1 && collection.autoID,
       hideOnDisable() {
         return selectedData?.length === 0;
       },

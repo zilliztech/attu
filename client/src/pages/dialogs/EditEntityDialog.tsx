@@ -1,7 +1,7 @@
-import { FC, useContext, useEffect, useRef } from 'react';
+import { FC, useContext, useEffect, useRef, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { EditorState } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
@@ -11,21 +11,26 @@ import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CollectionFullObject } from '@server/types';
+import { DataService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {
     backgroundColor: '#f5f5f5',
     padding: 4,
-    width: '60vw',
-    minHeight: '60vh',
-    maxHeight: '60vh',
+    width: '100%',
+    height: '60vh',
     overflow: 'auto',
+  },
+  tip: {
+    fontSize: 12,
+    marginBottom: 8,
   },
 }));
 
 type EditEntityDialogProps = {
   data: { [key: string]: any };
   collection: CollectionFullObject;
+  cb?: () => void;
 };
 
 // json linter for cm
@@ -34,6 +39,8 @@ const linterExtension = linter(jsonParseLinter());
 const EditEntityDialog: FC<EditEntityDialogProps> = props => {
   // props
   const { data, collection } = props;
+  // UI states
+  const [disabled, setDisabled] = useState(true);
   // context
   const { handleCloseDialog } = useContext(rootContext);
   // translations
@@ -54,11 +61,13 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
     }
   });
 
+  const originalData = JSON.stringify(sortedData, null, 4);
+
   // create editor
   useEffect(() => {
     if (!editor.current) {
       const startState = EditorState.create({
-        doc: JSON.stringify(sortedData, null, 4),
+        doc: originalData,
         extensions: [
           basicSetup,
           json(),
@@ -79,8 +88,21 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
               width: '80%',
             },
           }),
-
           EditorView.lineWrapping,
+          EditorView.updateListener.of((viewUpdate: ViewUpdate) => {
+            if (viewUpdate.docChanged) {
+              const d = jsonParseLinter()(view);
+              if (d.length !== 0) {
+                setDisabled(true);
+                return;
+              }
+
+              const doc = viewUpdate.state.doc;
+              const value = doc.toString();
+
+              setDisabled(value === originalData);
+            }
+          }),
         ],
       });
 
@@ -99,8 +121,12 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
   }, [JSON.stringify(data)]);
 
   // handle confirm
-  const handleConfirm = () => {
-    console.log(JSON.parse(editor.current?.state.doc.toString()!));
+  const handleConfirm = async () => {
+    await DataService.upsert(collection.collection_name, {
+      fields_data: [JSON.parse(editor.current?.state.doc.toString()!)],
+    });
+
+    props.cb && props.cb();
     handleCloseDialog();
   };
 
@@ -109,14 +135,18 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
       title={dialogTrans('editEntityTitle')}
       handleClose={handleCloseDialog}
       children={
-        <div
-          className={`${classes.code} cm-editor`}
-          ref={editorEl}
-          onClick={() => {
-            if (editor.current) editor.current.focus();
-          }}
-        ></div>
+        <>
+          <div className={classes.tip}>{dialogTrans('editEntityInfo')}</div>
+          <div
+            className={`${classes.code} cm-editor`}
+            ref={editorEl}
+            onClick={() => {
+              if (editor.current) editor.current.focus();
+            }}
+          ></div>
+        </>
       }
+      confirmDisabled={disabled}
       confirmLabel={btnTrans('edit')}
       handleConfirm={handleConfirm}
       showCancel={true}

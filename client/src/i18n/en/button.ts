@@ -55,6 +55,7 @@ const btnTrans = {
   downloadDisabledTooltip: 'Please select data before exporting',
   deleteDisableTooltip: 'Please select at least one item to delete.',
   editEntityDisabledTooltip: 'Only one entity can be edited at a time.',
+  editEntityDisabledTooltipAutoId: 'The auto-generated ID entity cannot be edited.',
 };
 
 export default btnTrans;

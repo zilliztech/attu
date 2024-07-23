@@ -91,6 +91,11 @@ export class CollectionController {
       dtoValidationMiddleware(InsertDataDto),
       this.insert.bind(this)
     );
+    this.router.post(
+      '/:name/upsert',
+      dtoValidationMiddleware(InsertDataDto),
+      this.upsert.bind(this)
+    );
 
     // insert sample data
     this.router.post(
@@ -300,6 +305,20 @@ export class CollectionController {
     const data = req.body;
     try {
       const result = await this.collectionsService.insert(req.clientId, {
+        collection_name: name,
+        ...data,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async upsert(req: Request, res: Response, next: NextFunction) {
+    const name = req.params?.name;
+    const data = req.body;
+    try {
+      const result = await this.collectionsService.upsert(req.clientId, {
         collection_name: name,
         ...data,
       });
