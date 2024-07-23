@@ -277,7 +277,7 @@ const CollectionData = (props: CollectionDataProps) => {
           ? 'editEntityDisabledTooltipAutoId'
           : 'editEntityDisabledTooltip'
       ),
-      disabled: () => selectedData?.length !== 1 && collection.autoID,
+      disabled: () => collection.autoID || selectedData?.length !== 1,
       hideOnDisable() {
         return selectedData?.length === 0;
       },
