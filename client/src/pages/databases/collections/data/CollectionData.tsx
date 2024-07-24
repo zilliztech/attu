@@ -514,7 +514,7 @@ const CollectionData = (props: CollectionDataProps) => {
                       return cellData;
                   }
                 },
-                field: i,
+                field: collection.schema.fields.find(f => f.name === i),
                 getStyle: d => {
                   if (!d || !d.field) {
                     return {};
