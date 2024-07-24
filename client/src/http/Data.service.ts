@@ -18,6 +18,13 @@ export class DataService extends BaseModel {
     });
   }
 
+  static upsert(collectionName: string, param: InsertDataParam) {
+    return super.create({
+      path: `/collections/${collectionName}/upsert`,
+      data: param,
+    });
+  }
+
   static deleteEntities(collectionName: string, param: DeleteEntitiesReq) {
     return super.update({
       path: `/collections/${collectionName}/entities`,
