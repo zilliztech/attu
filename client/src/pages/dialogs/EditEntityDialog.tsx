@@ -12,6 +12,7 @@ import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CollectionFullObject } from '@server/types';
 import { DataService } from '@/http';
+import { DYNAMIC_FIELD } from '@/consts';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {
@@ -54,12 +55,18 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
 
   // sort data by collection schema order
   const schema = collection.schema;
-  const sortedData: { [key: string]: any } = {};
+  let sortedData: { [key: string]: any } = {};
   schema.fields.forEach(field => {
     if (data[field.name] !== undefined) {
       sortedData[field.name] = data[field.name];
     }
   });
+
+  // add dynamic fields if exist
+  const isDynamicSchema = collection.schema.dynamicFields.length > 0;
+  if (isDynamicSchema) {
+    sortedData = { ...sortedData, ...data[DYNAMIC_FIELD] };
+  }
 
   const originalData = JSON.stringify(sortedData, null, 4);
 
