@@ -169,6 +169,10 @@ const CollectionData = (props: CollectionDataProps) => {
     await fetchCollection(collectionName);
   };
 
+  const onEditEntity = async () => {
+    await query(currentPage, ConsistencyLevelEnum.Strong);
+  };
+
   // Toolbar settings
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -264,6 +268,7 @@ const CollectionData = (props: CollectionDataProps) => {
               <EditEntityDialog
                 data={selectedData[0]}
                 collection={collection!}
+                cb={onEditEntity}
               />
             ),
           },
