@@ -26,7 +26,7 @@ const CollectionColHeader = (props: {
     <>
       {title}
       <CustomToolTip title={field ? formatFieldType(field) : (title as string)}>
-        <Icons.question classes={{ root: classes.icon }} />
+        <Icons.info classes={{ root: classes.icon }} />
       </CustomToolTip>
     </>
   );
