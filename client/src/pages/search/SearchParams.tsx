@@ -247,7 +247,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           key: 'level',
           value: searchParamsForm['level'] ?? 1,
           min: 1,
-          max: 3,
+          max: 5,
           isInt: true,
           required: false,
           type: 'number',
