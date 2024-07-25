@@ -41,6 +41,7 @@ import { DYNAMIC_FIELD } from '@/consts';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import CodeDialog from '@/pages/dialogs/CodeDialog';
+import CollectionColHeader from '../CollectionColHeader';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -239,33 +240,24 @@ const Search = (props: CollectionDataProps) => {
             return !invalidItems.includes(item) && orderArray.includes(item);
           })
           .map(key => {
-            // find the field
-            const field = searchParams.collection.schema!.scalarFields.find(
-              f => f.name === key
-            );
             return {
               id: key,
               align: 'left',
               disablePadding: false,
               label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
               needCopy: key !== 'score',
-              field: field,
+              headerFormatter: v => {
+                return <CollectionColHeader def={v} collection={collection} />;
+              },
               getStyle: d => {
-                if (!d || !d.field) {
+                const field = collection.schema.fields.find(
+                  f => f.name === key
+                );
+                if (!d || !field) {
                   return {};
                 }
-                if (d.id === 'score') {
-                  return {
-                    minWidth: 180,
-                  };
-                }
-                if (d.id === DYNAMIC_FIELD) {
-                  return {
-                    minWidth: 180,
-                  };
-                }
                 return {
-                  minWidth: getColumnWidth(d.field),
+                  minWidth: getColumnWidth(field),
                 };
               },
             };
