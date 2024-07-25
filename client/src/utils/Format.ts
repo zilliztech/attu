@@ -10,8 +10,7 @@ import {
   CreateField,
 } from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
-import { generateVector } from './';
-import { get } from 'http';
+import { generateVector } from '.';
 
 /**
  * transform large capacity to capacity in b.
@@ -320,7 +319,7 @@ export const getColumnWidth = (field: FieldObject): number => {
 
     case DataTypeStringEnum.VarChar:
       const varCharWidth = field.maxLength * 10;
-      return varCharWidth > 350 ? 350 : varCharWidth; 
+      return varCharWidth > 350 ? 350 : varCharWidth;
 
     case DataTypeStringEnum.Bool:
       return 80;

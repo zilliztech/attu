@@ -30,6 +30,7 @@ import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
+import CollectionColHeader from '../CollectionColHeader';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -519,13 +520,20 @@ const CollectionData = (props: CollectionDataProps) => {
                       return cellData;
                   }
                 },
-                field: collection.schema.fields.find(f => f.name === i),
+                headerFormatter: v => {
+                  return (
+                    <CollectionColHeader def={v} collection={collection} />
+                  );
+                },
                 getStyle: d => {
-                  if (!d || !d.field) {
+                  const field = collection.schema.fields.find(
+                    f => f.name === i
+                  );
+                  if (!d || !field) {
                     return {};
                   }
                   return {
-                    minWidth: getColumnWidth(d.field),
+                    minWidth: getColumnWidth(field),
                   };
                 },
                 label: i === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i,
