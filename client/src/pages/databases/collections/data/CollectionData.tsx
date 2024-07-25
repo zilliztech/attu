@@ -353,6 +353,11 @@ const CollectionData = (props: CollectionDataProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    // reset selection
+    setSelectedData([]);
+  }, [collection.collection_name]);
+
   return (
     <div className={classes.root}>
       {collection && (
