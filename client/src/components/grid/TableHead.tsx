@@ -83,9 +83,14 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
         )}
 
         {colDefinitions.map(headCell => {
+          // get cell style
           const cellStyle = headCell.getStyle
             ? headCell.getStyle(headCell)
             : {};
+
+          // get header formatter
+          const headerFormatter =
+            headCell.headerFormatter || (v => <>{v.label}</>);
 
           return (
             <TableCell
@@ -108,7 +113,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
                   onClick={createSortHandler(headCell.sortBy || headCell.id)}
                 >
                   <Typography variant="body1" className={classes.tableHeader}>
-                    {headCell.label}
+                    {headerFormatter(headCell)}
                   </Typography>
 
                   {orderBy === (headCell.sortBy || headCell.id) ? (
@@ -121,7 +126,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
                 </TableSortLabel>
               ) : (
                 <Typography variant="body1" className={classes.tableHeader}>
-                  {headCell.label}
+                  {headerFormatter(headCell)}
                 </Typography>
               )}
             </TableCell>
