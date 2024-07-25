@@ -18,8 +18,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   code: {
     backgroundColor: '#f5f5f5',
     padding: 4,
-    width: '100%',
-    height: '60vh',
     overflow: 'auto',
   },
   tip: {
