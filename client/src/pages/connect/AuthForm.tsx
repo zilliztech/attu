@@ -13,7 +13,6 @@ import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useStyles } from './style';
-import { a } from 'vitest/dist/suite-IbNSsUWN';
 
 export const AuthForm = (props: any) => {
   // styles
@@ -82,6 +81,29 @@ export const AuthForm = (props: any) => {
       openSnackBar(successTrans('connect'));
       // save clientId to local storage
       window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
+      // save connection to local storage
+      const history = JSON.parse(
+        window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
+      );
+
+      // add new connection to history, filter out the same connection
+      const newHistory = [
+        ...history.filter(
+          (item: any) =>
+            item.url !== authReq.address || item.database !== authReq.database
+        ),
+        {
+          url: authReq.address,
+          database: authReq.database,
+          time: new Date().toLocaleString(),
+        },
+      ];
+
+      // save to local storage
+      window.localStorage.setItem(
+        ATTU_AUTH_HISTORY,
+        JSON.stringify(newHistory)
+      );
 
       // redirect to homepage
       navigate('/');
@@ -108,7 +130,7 @@ export const AuthForm = (props: any) => {
   useEffect(() => {
     const connections = JSON.parse(
       window.localStorage.getItem(ATTU_AUTH_HISTORY) ||
-        '[{"url":"http://102.232.234.234:19121","database":"default","time":"2021-09-09 12:00:00"}]'
+        '[{"url":"http://127.0.0.1:19530","database":"default","time":"--"}]'
     );
     setConnections(connections);
   }, []);
