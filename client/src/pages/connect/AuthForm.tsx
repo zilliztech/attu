@@ -1,5 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { makeStyles, Theme, Typography, Menu } from '@material-ui/core';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Typography, Menu } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -7,70 +7,13 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import { MILVUS_CLIENT_ID } from '@/consts';
+import { MILVUS_CLIENT_ID, ATTU_AUTH_HISTORY } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import ConnectHistory from './ConnectHistory';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: theme.spacing(0, 3),
-    position: 'relative',
-  },
-  titleWrapper: {
-    textAlign: 'left',
-    alignSelf: 'flex-start',
-    padding: theme.spacing(3, 0),
-    '& svg': {
-      fontSize: 15,
-      marginLeft: theme.spacing(0.5),
-    },
-  },
-  input: {
-    margin: theme.spacing(0.5, 0, 0),
-  },
-  toggle: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'flex-start',
-  },
-  star: {
-    position: 'absolute',
-    top: -48,
-    right: -8,
-    marginTop: theme.spacing(1),
-    alignItems: 'center',
-    height: '32px',
-    lineHeight: '32px',
-    color: '#333',
-    background: '#f1f1f1',
-    padding: theme.spacing(0.5, 0, 0.5, 1),
-    fontSize: 13,
-    display: 'block',
-    width: '132px',
-    textDecoration: 'none',
-    marginRight: theme.spacing(1),
-    fontWeight: 500,
-    '&:hover': {
-      fontWeight: 'bold',
-    },
-  },
-  menu: {
-    '& ul': {
-      padding: '0',
-      maxHeight: '400px',
-      overflowY: 'auto',
-    },
-  },
-  icon: {
-    verticalAlign: '-5px',
-    marginRight: theme.spacing(1),
-  },
-}));
+import { useStyles } from './style';
+import { a } from 'vitest/dist/suite-IbNSsUWN';
 
 export const AuthForm = (props: any) => {
   // styles
@@ -94,6 +37,7 @@ export const AuthForm = (props: any) => {
   // UI states
   const [withPass, setWithPass] = useState(authReq.username.length > 0);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [connections, setConnections] = useState<any[]>([]);
 
   // form validation
   const checkedForm = useMemo(() => {
@@ -101,6 +45,7 @@ export const AuthForm = (props: any) => {
   }, [authReq]);
   const { validation, checkIsValid } = useFormValidation(checkedForm);
 
+  // UI handlers
   // handle input change
   const handleInputChange = (
     key: 'address' | 'username' | 'password' | 'database' | 'token',
@@ -108,13 +53,12 @@ export const AuthForm = (props: any) => {
   ) => {
     setAuthReq(v => ({ ...v, [key]: value }));
   };
-
-  // UI handlers
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  // handle menu clicked
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  //
+  // handle menu close
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -124,7 +68,7 @@ export const AuthForm = (props: any) => {
     setWithPass(val);
   };
 
-  // connect
+  // handle connect
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -160,6 +104,15 @@ export const AuthForm = (props: any) => {
     return authReq.address.trim().length === 0;
   }, [authReq.address]);
 
+  // load connection from localstorage
+  useEffect(() => {
+    const connections = JSON.parse(
+      window.localStorage.getItem(ATTU_AUTH_HISTORY) ||
+        '[{"url":"http://102.232.234.234:19121","database":"default","time":"2021-09-09 12:00:00"}]'
+    );
+    setConnections(connections);
+  }, []);
+
   return (
     <form onSubmit={handleConnect}>
       <section className={classes.wrapper}>
@@ -185,8 +138,8 @@ export const AuthForm = (props: any) => {
             fullWidth: true,
             InputProps: {
               endAdornment: (
-                <CustomIconButton onClick={handleClick}>
-                  <Icons.dropdown />
+                <CustomIconButton onClick={handleMenuClick}>
+                  <Icons.link />
                 </CustomIconButton>
               ),
             },
@@ -293,24 +246,6 @@ export const AuthForm = (props: any) => {
           </>
         )}
 
-        {/* <div className={classes.toggle}>
-          <CustomRadio
-            defaultChecked={withPrometheus}
-            label={attuTrans.prometheus}
-            handleChange={setWithPrometheus}
-          />
-        </div>
-        {withPrometheus &&
-          prometheusConfigs.map(v => (
-            <CustomInput
-              type="text"
-              textConfig={v}
-              checkValid={checkIsValid}
-              validInfo={validation}
-              key={v.label}
-            />
-          ))} */}
-
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans('connect')}
         </CustomButton>
@@ -332,22 +267,23 @@ export const AuthForm = (props: any) => {
         onClose={handleMenuClose}
         getContentAnchorEl={null}
       >
-        <ConnectHistory
-          data={{
-            url: 'http://102.232.234.234:19121',
-            database: 'default',
-            time: '2021-09-09 12:00:00',
-          }}
-          onClick={onConnectHistoryClicked}
-        />
-        <ConnectHistory
-          data={{
-            url: 'http://102.232.234.234:19121',
-            database: 'default2',
-            time: '2021-09-09 12:00:00',
-          }}
-          onClick={onConnectHistoryClicked}
-        />
+        {connections.map((connection, index) => (
+          <li
+            key={index}
+            className={classes.connection}
+            onClick={() => {
+              onConnectHistoryClicked(connection);
+            }}
+          >
+            <div className="url">
+              <Icons.link className="icon"></Icons.link>
+              <div className="text">
+                {connection.url}/{connection.database}
+              </div>
+            </div>
+            <div className="time">{connection.time}</div>
+          </li>
+        ))}
       </Menu>
     </form>
   );

@@ -26,7 +26,7 @@ import {
   DatabaseObject,
 } from '@server/types';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
-import { DEFAULT_TREE_WIDTH } from '@/consts';
+import { DEFAULT_TREE_WIDTH, ATTU_UI_TREE_WIDTH } from '@/consts';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
@@ -367,12 +367,12 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // set UI preferences
   const setUIPref = (pref: DataContextType['ui']) => {
     setUI(pref);
-    localStorage.setItem('attu.ui.tree.width', String(pref.tree.width));
+    localStorage.setItem(ATTU_UI_TREE_WIDTH, String(pref.tree.width));
   };
 
   // load UI preferences
   useEffect(() => {
-    const storedWidth = Number(localStorage.getItem('attu.ui.tree.width'));
+    const storedWidth = Number(localStorage.getItem(ATTU_UI_TREE_WIDTH));
     if (storedWidth) {
       setUI(prevUI => ({
         ...prevUI,
