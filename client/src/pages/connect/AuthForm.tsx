@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { makeStyles, Theme, Typography, Menu } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -11,12 +11,13 @@ import { MILVUS_CLIENT_ID } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import ConnectHistory from './ConnectHistory';
+import CustomIconButton from '@/components/customButton/CustomIconButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-end',
     padding: theme.spacing(0, 3),
     position: 'relative',
   },
@@ -58,6 +59,13 @@ const useStyles = makeStyles((theme: Theme) => ({
       fontWeight: 'bold',
     },
   },
+  menu: {
+    '& ul': {
+      padding: '0',
+      maxHeight: '400px',
+      overflowY: 'auto',
+    },
+  },
   icon: {
     verticalAlign: '-5px',
     marginRight: theme.spacing(1),
@@ -85,6 +93,7 @@ export const AuthForm = (props: any) => {
 
   // UI states
   const [withPass, setWithPass] = useState(authReq.username.length > 0);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   // form validation
   const checkedForm = useMemo(() => {
@@ -100,56 +109,22 @@ export const AuthForm = (props: any) => {
     setAuthReq(v => ({ ...v, [key]: value }));
   };
 
-  // const {
-  //   withPrometheus,
-  //   setWithPrometheus,
-  //   prometheusAddress,
-  //   prometheusInstance,
-  //   prometheusNamespace,
-  //   setPrometheusAddress,
-  //   setPrometheusInstance,
-  //   setPrometheusNamespace,
-  // } = useContext(prometheusContext);
+  // UI handlers
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  // const prometheusConfigs: ITextfieldConfig[] = useMemo(
-  //   () => [
-  //     {
-  //       label: `${attuTrans.prometheusAddress}`,
-  //       key: 'prometheus_address',
-  //       onChange: setPrometheusAddress,
-  //       variant: 'filled',
-  //       className: classes.input,
-  //       placeholder: attuTrans.prometheusAddress,
-  //       fullWidth: true,
+  //
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-  //       defaultValue: prometheusAddress,
-  //     },
-  //     {
-  //       label: `${attuTrans.prometheusNamespace}`,
-  //       key: 'prometheus_namespace',
-  //       onChange: setPrometheusNamespace,
-  //       variant: 'filled',
-  //       className: classes.input,
-  //       placeholder: attuTrans.prometheusNamespace,
-  //       fullWidth: true,
+  // handle auth toggle
+  const handleEnableAuth = (val: boolean) => {
+    setWithPass(val);
+  };
 
-  //       defaultValue: prometheusNamespace,
-  //     },
-  //     {
-  //       label: `${attuTrans.prometheusInstance}`,
-  //       key: 'prometheus_instance',
-  //       onChange: setPrometheusInstance,
-  //       variant: 'filled',
-  //       className: classes.input,
-  //       placeholder: attuTrans.prometheusInstance,
-  //       fullWidth: true,
-
-  //       defaultValue: prometheusInstance,
-  //     },
-  //   ],
-  //   []
-  // );
-
+  // connect
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -174,14 +149,16 @@ export const AuthForm = (props: any) => {
     }
   };
 
+  // connect history clicked
+  const onConnectHistoryClicked = (connection: any) => {
+    console.log('connection', connection);
+    handleMenuClose();
+  };
+
+  // is button should be disabled
   const btnDisabled = useMemo(() => {
     return authReq.address.trim().length === 0;
   }, [authReq.address]);
-
-  // handle auth toggle
-  const handleEnableAuth = (val: boolean) => {
-    setWithPass(val);
-  };
 
   return (
     <form onSubmit={handleConnect}>
@@ -194,6 +171,7 @@ export const AuthForm = (props: any) => {
             </CustomToolTip>
           </Typography>
         </div>
+
         {/* address  */}
         <CustomInput
           type="text"
@@ -205,6 +183,13 @@ export const AuthForm = (props: any) => {
             className: classes.input,
             placeholder: attuTrans.address,
             fullWidth: true,
+            InputProps: {
+              endAdornment: (
+                <CustomIconButton onClick={handleClick}>
+                  <Icons.dropdown />
+                </CustomIconButton>
+              ),
+            },
             validations: [
               {
                 rule: 'require',
@@ -219,6 +204,7 @@ export const AuthForm = (props: any) => {
           validInfo={validation}
           key={attuTrans.address}
         />
+
         {/* db  */}
         <CustomInput
           type="text"
@@ -329,6 +315,40 @@ export const AuthForm = (props: any) => {
           {btnTrans('connect')}
         </CustomButton>
       </section>
+
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        className={classes.menu}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        getContentAnchorEl={null}
+      >
+        <ConnectHistory
+          data={{
+            url: 'http://102.232.234.234:19121',
+            database: 'default',
+            time: '2021-09-09 12:00:00',
+          }}
+          onClick={onConnectHistoryClicked}
+        />
+        <ConnectHistory
+          data={{
+            url: 'http://102.232.234.234:19121',
+            database: 'default2',
+            time: '2021-09-09 12:00:00',
+          }}
+          onClick={onConnectHistoryClicked}
+        />
+      </Menu>
     </form>
   );
 };
