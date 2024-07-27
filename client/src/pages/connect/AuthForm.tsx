@@ -7,12 +7,17 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import { MILVUS_CLIENT_ID, ATTU_AUTH_HISTORY } from '@/consts';
+import { MILVUS_CLIENT_ID, ATTU_AUTH_HISTORY, MILVUS_DATABASE } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useStyles } from './style';
+import { AuthReq } from '@server/types';
+
+type Connection = AuthReq & {
+  time: string;
+};
 
 export const AuthForm = (props: any) => {
   // styles
@@ -36,7 +41,7 @@ export const AuthForm = (props: any) => {
   // UI states
   const [withPass, setWithPass] = useState(authReq.username.length > 0);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [connections, setConnections] = useState<any[]>([]);
+  const [connections, setConnections] = useState<Connection[]>([]);
 
   // form validation
   const checkedForm = useMemo(() => {
@@ -50,6 +55,10 @@ export const AuthForm = (props: any) => {
     key: 'address' | 'username' | 'password' | 'database' | 'token',
     value: string | boolean
   ) => {
+    // set database to default if empty
+    if (key === 'database' && value === '') {
+      value = MILVUS_DATABASE;
+    }
     setAuthReq(v => ({ ...v, [key]: value }));
   };
   // handle menu clicked
@@ -81,7 +90,7 @@ export const AuthForm = (props: any) => {
       openSnackBar(successTrans('connect'));
       // save clientId to local storage
       window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
-      // save connection to local storage
+      // get connection history
       const history = JSON.parse(
         window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
       );
@@ -90,12 +99,14 @@ export const AuthForm = (props: any) => {
       const newHistory = [
         ...history.filter(
           (item: any) =>
-            item.url !== authReq.address || item.database !== authReq.database
+            item.address !== authReq.address ||
+            item.database !== authReq.database
         ),
         {
-          url: authReq.address,
+          address: authReq.address,
           database: authReq.database,
-          time: new Date().toLocaleString(),
+          username: authReq.username,
+          time: Date.now(),
         },
       ];
 
@@ -118,6 +129,7 @@ export const AuthForm = (props: any) => {
   // connect history clicked
   const onConnectHistoryClicked = (connection: any) => {
     console.log('connection', connection);
+    setAuthReq(connection);
     handleMenuClose();
   };
 
@@ -126,12 +138,18 @@ export const AuthForm = (props: any) => {
     return authReq.address.trim().length === 0;
   }, [authReq.address]);
 
-  // load connection from localstorage
+  // load connection from local storage
   useEffect(() => {
-    const connections = JSON.parse(
+    const connections: Connection[] = JSON.parse(
       window.localStorage.getItem(ATTU_AUTH_HISTORY) ||
-        '[{"url":"http://127.0.0.1:19530","database":"default","time":"--"}]'
+        '[{"address":"http://127.0.0.1:19530","database":"default","username":"","time":"--"}]'
     );
+
+    // sort by time
+    connections.sort((a, b) => {
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
+    });
+
     setConnections(connections);
   }, []);
 
@@ -173,7 +191,7 @@ export const AuthForm = (props: any) => {
                 }),
               },
             ],
-            defaultValue: authReq.address,
+            value: authReq.address,
           }}
           checkValid={checkIsValid}
           validInfo={validation}
@@ -191,7 +209,7 @@ export const AuthForm = (props: any) => {
             className: classes.input,
             placeholder: dbTrans('database'),
             fullWidth: true,
-            defaultValue: authReq.database,
+            value: authReq.database,
           }}
           checkValid={checkIsValid}
           validInfo={validation}
@@ -220,7 +238,7 @@ export const AuthForm = (props: any) => {
                 className: classes.input,
                 placeholder: attuTrans.token,
                 fullWidth: true,
-                defaultValue: authReq.token,
+                value: authReq.token,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
@@ -239,7 +257,7 @@ export const AuthForm = (props: any) => {
                 className: classes.input,
                 placeholder: attuTrans.username,
                 fullWidth: true,
-                defaultValue: authReq.username,
+                value: authReq.username,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
@@ -259,7 +277,7 @@ export const AuthForm = (props: any) => {
                 placeholder: attuTrans.password,
                 fullWidth: true,
                 type: 'password',
-                defaultValue: authReq.password,
+                value: authReq.password,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
@@ -297,13 +315,15 @@ export const AuthForm = (props: any) => {
               onConnectHistoryClicked(connection);
             }}
           >
-            <div className="url">
+            <div className="address">
               <Icons.link className="icon"></Icons.link>
               <div className="text">
-                {connection.url}/{connection.database}
+                {connection.address}/{connection.database}
               </div>
             </div>
-            <div className="time">{connection.time}</div>
+            <div className="time">
+              {new Date(connection.time).toLocaleString()}
+            </div>
           </li>
         ))}
       </Menu>

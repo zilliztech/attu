@@ -35,11 +35,12 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       JSON.stringify({
         username: '',
         password: '',
-        address: '' || MILVUS_URL,
+        address: MILVUS_URL,
         token: '',
-        database: '' || MILVUS_DATABASE,
+        database: MILVUS_DATABASE,
       })
   );
+
   // state
   const [authReq, setAuthReq] = useState<AuthReq>(localAuthReq);
   const [clientId, setClientId] = useState<string>(

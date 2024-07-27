@@ -67,7 +67,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
     cursor: 'pointer',
 
-    '& .url': {
+    '& .address': {
       display: 'grid',
       gridTemplateColumns: '20px 1fr',
       gap: 4,
