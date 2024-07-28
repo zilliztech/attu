@@ -18,6 +18,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   input: {
     margin: theme.spacing(0.5, 0, 0),
+    '& .MuiFilledInput-adornedEnd': {
+      paddingRight: 0,
+    },
   },
   toggle: {
     display: 'flex',
@@ -44,6 +47,13 @@ export const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       fontWeight: 'bold',
     },
+  },
+  menuBtn: {
+    display: 'flex',
+    width: 36,
+    paddingLeft: 8,
+    paddingRight: 8,
+    fontSize: 14,
   },
   menu: {
     '& ul': {

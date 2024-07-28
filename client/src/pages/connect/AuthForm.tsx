@@ -42,6 +42,7 @@ export const AuthForm = (props: any) => {
   const [withPass, setWithPass] = useState(authReq.username.length > 0);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   // form validation
   const checkedForm = useMemo(() => {
@@ -79,6 +80,9 @@ export const AuthForm = (props: any) => {
   // handle connect
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // set connecting
+    setIsConnecting(true);
 
     try {
       // login
@@ -123,6 +127,8 @@ export const AuthForm = (props: any) => {
       if (error.response.data.message.includes('UNAUTHENTICATED')) {
         handleEnableAuth(true);
       }
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -134,9 +140,7 @@ export const AuthForm = (props: any) => {
   };
 
   // is button should be disabled
-  const btnDisabled = useMemo(() => {
-    return authReq.address.trim().length === 0;
-  }, [authReq.address]);
+  const btnDisabled = authReq.address.trim().length === 0 || isConnecting;
 
   // load connection from local storage
   useEffect(() => {
@@ -178,7 +182,10 @@ export const AuthForm = (props: any) => {
             fullWidth: true,
             InputProps: {
               endAdornment: (
-                <CustomIconButton onClick={handleMenuClick}>
+                <CustomIconButton
+                  className={classes.menuBtn}
+                  onClick={handleMenuClick}
+                >
                   <Icons.link />
                 </CustomIconButton>
               ),
@@ -287,7 +294,7 @@ export const AuthForm = (props: any) => {
         )}
 
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
-          {btnTrans('connect')}
+          {btnTrans(isConnecting ? 'connecting' : 'connect')}
         </CustomButton>
       </section>
 
