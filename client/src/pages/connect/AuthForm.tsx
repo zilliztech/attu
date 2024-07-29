@@ -122,6 +122,11 @@ export const AuthForm = () => {
         },
       ];
 
+      // if history connections are more than 16, remove the first one, but it should keep the default one
+      if (newHistory.length > 16) {
+        newHistory.shift();
+      }
+     
       // save to local storage
       window.localStorage.setItem(
         ATTU_AUTH_HISTORY,
