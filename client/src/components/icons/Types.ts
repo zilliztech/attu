@@ -54,4 +54,5 @@ export type IconsType =
   | 'magic'
   | 'code'
   | 'reset'
-  | 'link';
+  | 'link'
+  | 'cross';

@@ -7,7 +7,12 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import { MILVUS_CLIENT_ID, ATTU_AUTH_HISTORY, MILVUS_DATABASE } from '@/consts';
+import {
+  MILVUS_CLIENT_ID,
+  ATTU_AUTH_HISTORY,
+  MILVUS_DATABASE,
+  DEFAULT_CONNECTION,
+} from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
@@ -16,7 +21,7 @@ import { useStyles } from './style';
 import { AuthReq } from '@server/types';
 
 type Connection = AuthReq & {
-  time: string;
+  time: number;
 };
 
 export const AuthForm = () => {
@@ -123,6 +128,9 @@ export const AuthForm = () => {
         JSON.stringify(newHistory)
       );
 
+      // set title
+      document.title = authReq.address ? `${authReq.address} - Attu` : 'Attu';
+
       // redirect to homepage
       navigate('/');
     } catch (error: any) {
@@ -136,12 +144,36 @@ export const AuthForm = () => {
   };
 
   // connect history clicked
-  const onConnectHistoryClicked = (connection: any) => {
-    console.log('connection', connection);
+  const handleClickOnHisotry = (connection: Connection) => {
     // set auth request
     setAuthReq(connection);
     // close menu
     handleMenuClose();
+  };
+
+  const handleDeleteConnection = (connection: Connection) => {
+    const history = JSON.parse(
+      window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
+    ) as Connection[];
+
+    const newHistory = history.filter(
+      item =>
+        item.address !== connection.address ||
+        item.database !== connection.database
+    );
+
+    if (newHistory.length === 0) {
+      newHistory.push(DEFAULT_CONNECTION);
+    }
+
+    // save to local storage
+    window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
+
+    // sort by time, put '--' to the end
+    newHistory.sort((a, b) => {
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
+    });
+    setConnections(newHistory);
   };
 
   // is button should be disabled
@@ -150,11 +182,14 @@ export const AuthForm = () => {
   // load connection from local storage
   useEffect(() => {
     const connections: Connection[] = JSON.parse(
-      window.localStorage.getItem(ATTU_AUTH_HISTORY) ||
-        '[{"address":"http://127.0.0.1:19530","database":"default","username":"","time":"--"}]'
+      window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
     );
 
-    // sort by time
+    if (connections.length === 0) {
+      connections.push(DEFAULT_CONNECTION);
+    }
+
+    // sort by time, put '--' to the end
     connections.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
@@ -166,15 +201,17 @@ export const AuthForm = () => {
   useEffect(() => {
     // if address contains zilliz, or username or password is not empty
     //  set withpass to true
-    if (
+    const withPass =
       (authReq.address.length > 0 && authReq.address.includes('zilliz')) ||
       authReq.username.length > 0 ||
-      authReq.password.length > 0
-    ) {
-      setWithPass(true);
-    }
+      authReq.password.length > 0;
+
+    // set with pass
+    setWithPass(withPass);
     // reset form
     resetValidation(formatForm(authReq));
+    // update title
+    document.title = 'Attu';
   }, [authReq.address, authReq.username, authReq.password]);
 
   return (
@@ -195,7 +232,8 @@ export const AuthForm = () => {
           textConfig={{
             label: attuTrans.address,
             key: 'address',
-            onChange: (val: string) => handleInputChange('address', String(val)),
+            onChange: (val: string) =>
+              handleInputChange('address', String(val)),
             variant: 'filled',
             className: classes.input,
             placeholder: attuTrans.address,
@@ -271,7 +309,6 @@ export const AuthForm = () => {
               validInfo={validation}
               key={attuTrans.token}
             />
-
             {/* user  */}
             <CustomInput
               type="text"
@@ -290,7 +327,6 @@ export const AuthForm = () => {
               validInfo={validation}
               key={attuTrans.username}
             />
-
             {/* pass  */}
             <CustomInput
               type="text"
@@ -339,7 +375,7 @@ export const AuthForm = () => {
             key={index}
             className={classes.connection}
             onClick={() => {
-              onConnectHistoryClicked(connection);
+              handleClickOnHisotry(connection);
             }}
           >
             <div className="address">
@@ -349,7 +385,23 @@ export const AuthForm = () => {
               </div>
             </div>
             <div className="time">
-              {new Date(connection.time).toLocaleString()}
+              {connection.time !== -1
+                ? new Date(connection.time).toLocaleString()
+                : '--'}
+            </div>
+
+            <div>
+              {connection.time !== -1 && (
+                <CustomIconButton
+                  className="deleteIconBtn"
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleDeleteConnection(connection);
+                  }}
+                >
+                  <Icons.cross></Icons.cross>
+                </CustomIconButton>
+              )}
             </div>
           </li>
         ))}

@@ -47,14 +47,6 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
   );
 
-  // update title when address changes
-  useEffect(() => {
-    document.title = authReq.address ? `${authReq.address} - Attu` : 'Attu';
-    return () => {
-      document.title = 'Attu';
-    };
-  }, [authReq.address]);
-
   // update local storage when authReq changes
   useEffect(() => {
     // store auth request in local storage
@@ -69,7 +61,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     // connect to Milvus
     const res = await MilvusService.connect(params);
     // update auth request
-    setAuthReq({ ...params, database: res.database, password: '', token: '' });
+    setAuthReq({ ...params, database: res.database });
     setClientId(res.clientId);
 
     return res;

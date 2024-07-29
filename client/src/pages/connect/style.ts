@@ -50,10 +50,15 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   menuBtn: {
     display: 'flex',
-    width: 36,
+
     paddingLeft: 8,
     paddingRight: 8,
+
     fontSize: 14,
+    '& button': {
+      width: 36,
+      height: 36,
+    },
   },
   menu: {
     '& ul': {
@@ -70,8 +75,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     fontSize: '14px',
-    width: 360,
-    padding: `0 16px`,
+    width: 380,
+    padding: `0 8px`,
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
     },
@@ -79,7 +84,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
 
     '& .address': {
       display: 'grid',
-      gridTemplateColumns: '20px 1fr',
+      gridTemplateColumns: '24px 1fr',
       gap: 4,
       color: theme.palette.text.primary,
       fontSize: '14px',
@@ -87,7 +92,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
       '& .text': {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        maxWidth: 200,
+        width: 200,
         wordWrap: 'break-word',
       },
     },
@@ -100,8 +105,21 @@ export const useStyles = makeStyles((theme: Theme) => ({
 
     '& .time': {
       color: theme.palette.text.secondary,
-      fontSize: '12px',
+      fontSize: 11,
+      lineHeight: 1.5,
       padding: '12px 0',
+      width: 130,
+      fontStyle: 'italic',
+    },
+
+    '& .deleteIconBtn': {
+      padding: '8px 0',
+      '& svg': {
+        fontSize: '14px',
+      },
+      height: 16,
+      lineHeight: '16px',
+      margin: 0,
     },
   },
 }));
