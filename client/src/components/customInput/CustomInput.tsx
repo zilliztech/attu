@@ -48,11 +48,12 @@ const handleOnChange = (param: IChangeParam) => {
     event,
     key,
     param: { cb, checkValid, validations },
+    type,
   } = param;
   let input = event.target.value;
 
   // fix for number input
-  if (!isNaN(input) && input.trim() !== '') {
+  if (!isNaN(input) && input.trim() !== '' && type === 'number') {
     input = parseFloat(input);
   }
 
@@ -121,6 +122,7 @@ const getAdornmentInput = (
               ...param,
               cb: onInputChange || (() => {}),
             },
+            type: config.type || 'text',
           });
         }}
         endAdornment={
@@ -246,6 +248,7 @@ const getTextfield = (
           event,
           key,
           param: { ...param, cb: onChange || (() => {}) },
+          type: others.type || 'text',
         });
       }}
     />

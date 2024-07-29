@@ -19,7 +19,7 @@ type Connection = AuthReq & {
   time: string;
 };
 
-export const AuthForm = (props: any) => {
+export const AuthForm = () => {
   // styles
   const classes = useStyles();
 
@@ -39,7 +39,7 @@ export const AuthForm = (props: any) => {
   const navigate = useNavigate();
 
   // UI states
-  const [withPass, setWithPass] = useState(authReq.username.length > 0);
+  const [withPass, setWithPass] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -48,7 +48,8 @@ export const AuthForm = (props: any) => {
   const checkedForm = useMemo(() => {
     return formatForm(authReq);
   }, [authReq]);
-  const { validation, checkIsValid } = useFormValidation(checkedForm);
+  const { validation, checkIsValid, resetValidation } =
+    useFormValidation(checkedForm);
 
   // UI handlers
   // handle input change
@@ -110,6 +111,8 @@ export const AuthForm = (props: any) => {
           address: authReq.address,
           database: authReq.database,
           username: authReq.username,
+          password: authReq.password,
+          token: authReq.token,
           time: Date.now(),
         },
       ];
@@ -135,7 +138,9 @@ export const AuthForm = (props: any) => {
   // connect history clicked
   const onConnectHistoryClicked = (connection: any) => {
     console.log('connection', connection);
+    // set auth request
     setAuthReq(connection);
+    // close menu
     handleMenuClose();
   };
 
@@ -157,6 +162,21 @@ export const AuthForm = (props: any) => {
     setConnections(connections);
   }, []);
 
+  // UI effect
+  useEffect(() => {
+    // if address contains zilliz, or username or password is not empty
+    //  set withpass to true
+    if (
+      (authReq.address.length > 0 && authReq.address.includes('zilliz')) ||
+      authReq.username.length > 0 ||
+      authReq.password.length > 0
+    ) {
+      setWithPass(true);
+    }
+    // reset form
+    resetValidation(formatForm(authReq));
+  }, [authReq.address, authReq.username, authReq.password]);
+
   return (
     <form onSubmit={handleConnect}>
       <section className={classes.wrapper}>
@@ -175,7 +195,7 @@ export const AuthForm = (props: any) => {
           textConfig={{
             label: attuTrans.address,
             key: 'address',
-            onChange: (val: string) => handleInputChange('address', val),
+            onChange: (val: string) => handleInputChange('address', String(val)),
             variant: 'filled',
             className: classes.input,
             placeholder: attuTrans.address,
