@@ -30,6 +30,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+export const CREATE_DB = { name: '___new___', collections: [], createdTime: 0 };
+
 const Home = () => {
   useNavigationHook(ALL_ROUTER_TYPES.HOME);
   const {
@@ -106,10 +108,10 @@ const Home = () => {
               );
             })}
             <DatabaseCard
-              database={{ name: 'new', collections: [], createdTime: 0 }}
+              database={CREATE_DB}
               setDatabase={setDatabase}
               dropDatabase={dropDatabase}
-              key={'new'}
+              key={CREATE_DB.name}
             />
           </div>
         )}

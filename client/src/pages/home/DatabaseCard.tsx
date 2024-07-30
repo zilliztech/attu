@@ -10,6 +10,7 @@ import { rootContext, authContext } from '@/context';
 import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import { CREATE_DB } from './Home';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -131,7 +132,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   };
 
   // empty database => create new database
-  if (database.name === 'new') {
+  if (database.name === CREATE_DB.name) {
     return (
       <section
         className={`${wrapperClass} ${classes.wrapper} ${classes.create}`}
