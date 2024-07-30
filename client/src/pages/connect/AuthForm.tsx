@@ -11,7 +11,7 @@ import {
   MILVUS_CLIENT_ID,
   ATTU_AUTH_HISTORY,
   MILVUS_DATABASE,
-  DEFAULT_CONNECTION,
+  MILVUS_URL,
 } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
@@ -22,6 +22,15 @@ import { AuthReq } from '@server/types';
 
 type Connection = AuthReq & {
   time: number;
+};
+
+const DEFAULT_CONNECTION = {
+  address: MILVUS_URL || '127.0.0.1:19530',
+  database: MILVUS_DATABASE,
+  token: '',
+  username: '',
+  password: '',
+  time: -1,
 };
 
 export const AuthForm = () => {
@@ -122,11 +131,11 @@ export const AuthForm = () => {
         },
       ];
 
-      // if history connections are more than 16, remove the first one, but it should keep the default one
+      // if the count of history connections are more than 16, remove the first one, but it should keep the default one
       if (newHistory.length > 16) {
         newHistory.shift();
       }
-     
+
       // save to local storage
       window.localStorage.setItem(
         ATTU_AUTH_HISTORY,
@@ -173,8 +182,7 @@ export const AuthForm = () => {
 
     // save to local storage
     window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
-
-    // sort by time, put '--' to the end
+    // sort by time
     newHistory.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
@@ -194,7 +202,7 @@ export const AuthForm = () => {
       connections.push(DEFAULT_CONNECTION);
     }
 
-    // sort by time, put '--' to the end
+    // sort by time
     connections.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
