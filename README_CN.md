@@ -1,7 +1,11 @@
 # Attu
 
-[![typescript](https://badges.aleen42.com/src/typescript.svg)](https://badges.aleen42.com/src/typescript.svg)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
+![License](https://img.shields.io/github/license/zilliztech/attu)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
+![GitHub last commit](https://img.shields.io/github/last-commit/zilliztech/attu)
+![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
+[![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
 Attu 是一个全方位的 Milvus 管理工具。使用 Attu，您可以显著降低管理 Milvus 的成本。
 
@@ -13,8 +17,8 @@ Attu 是一个全方位的 Milvus 管理工具。使用 Attu，您可以显著�
 
 ### 兼容性
 
-| Milvus 版本 | 推荐的 Attu 版本                                         |
-| ----------- | -------------------------------------------------------- |
+| Milvus 版本 | 推荐的 Attu 版本                                                 |
+| ----------- | ---------------------------------------------------------------- |
 | 2.4.x       | [v2.4.4](https://github.com/zilliztech/attu/releases/tag/v2.4.4) |
 | 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
 | 2.2.x       | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
@@ -32,15 +36,15 @@ docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.4
 
 #### 运行 Attu Docker 的可选环境变量
 
-| 参数              | 示例                  | 必填 | 描述                                    |
-| :---------------- | :------------------- | :--: | --------------------------------------- |
-| MILVUS_URL        | 192.168.0.1:19530    |  否  | 可选，Milvus 服务器 URL                 |
-| ATTU_LOG_LEVEL    | info                 |  否  | 可选，设置 Attu 的日志级别              |
-| ROOT_CERT_PATH    | /path/to/root/cert   |  否  | 可选，根证书的路径                      |
-| PRIVATE_KEY_PATH  | /path/to/private/key |  否  | 可选，私钥的路径                        |
-| CERT_CHAIN_PATH   | /path/to/cert/chain  |  否  | 可选，证书链的路径                      |
-| SERVER_NAME       | your_server_name     |  否  | 可选，您的服务器名称                    |
-| SERVER_PORT       | Server listen port   |  否  | 可选，默认 3000                         |
+| 参数             | 示例                 | 必填 | 描述                       |
+| :--------------- | :------------------- | :--: | -------------------------- |
+| MILVUS_URL       | 192.168.0.1:19530    |  否  | 可选，Milvus 服务器 URL    |
+| ATTU_LOG_LEVEL   | info                 |  否  | 可选，设置 Attu 的日志级别 |
+| ROOT_CERT_PATH   | /path/to/root/cert   |  否  | 可选，根证书的路径         |
+| PRIVATE_KEY_PATH | /path/to/private/key |  否  | 可选，私钥的路径           |
+| CERT_CHAIN_PATH  | /path/to/cert/chain  |  否  | 可选，证书链的路径         |
+| SERVER_NAME      | your_server_name     |  否  | 可选，您的服务器名称       |
+| SERVER_PORT      | Server listen port   |  否  | 可选，默认 3000            |
 
 > 请注意，`MILVUS_URL` 应为 Attu Docker 容器可访问的地址，因此 "127.0.0.1" 或 "localhost" 将无法使用。
 
@@ -157,10 +161,11 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 
 [Milvus Typescript 示例](https://github.com/zilliztech/zilliz-cloud-typescript-example)：此仓库提供了一些基于 Next.js 的简单 React 应用程序。
 
-| 名称                                                                                                                                   | 演示                                                   | 模型                 |
-| -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------------- |
-| [semantic-search-example](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-search-example)           | https://zilliz-semantic-search-example.vercel.app      | all-MiniLM-L6-v2      |
-| [semantic-image-search](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search)               |                                                        | clip-vit-base-patch16 |
+| 名称                                                                                                                         | 演示                                              | 模型                  |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | --------------------- |
+| [semantic-search-example](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-search-example) | https://zilliz-semantic-search-example.vercel.app | all-MiniLM-L6-v2      |
+| [semantic-image-search](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search)     |                                                   | clip-vit-base-patch16 |
+
 | [semantic-image-search
 
 -client](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search-client) | https://zilliz-semantic-image-search-client.vercel.app | clip-vit-base-patch16 |
