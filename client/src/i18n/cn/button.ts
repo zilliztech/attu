@@ -8,6 +8,7 @@ const btnTrans = {
   searchMulti: `搜索{{number}}`,
   confirm: '确认',
   connect: '连接',
+  connecting: '连接中...',
   import: '导入',
   delete: '删除',
   drop: 'drop',

@@ -35,24 +35,17 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       JSON.stringify({
         username: '',
         password: '',
-        address: '' || MILVUS_URL,
+        address: MILVUS_URL,
         token: '',
-        database: '' || MILVUS_DATABASE,
+        database: MILVUS_DATABASE,
       })
   );
+
   // state
   const [authReq, setAuthReq] = useState<AuthReq>(localAuthReq);
   const [clientId, setClientId] = useState<string>(
     window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
   );
-
-  // update title when address changes
-  useEffect(() => {
-    document.title = authReq.address ? `${authReq.address} - Attu` : 'Attu';
-    return () => {
-      document.title = 'Attu';
-    };
-  }, [authReq.address]);
 
   // update local storage when authReq changes
   useEffect(() => {
@@ -68,7 +61,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     // connect to Milvus
     const res = await MilvusService.connect(params);
     // update auth request
-    setAuthReq({ ...params, database: res.database, password: '', token: '' });
+    setAuthReq({ ...params, database: res.database });
     setClientId(res.clientId);
 
     return res;

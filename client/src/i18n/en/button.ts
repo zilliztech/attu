@@ -8,6 +8,7 @@ const btnTrans = {
   searchMulti: `Search{{number}}`,
   confirm: 'Confirm',
   connect: 'Connect',
+  connecting: 'Connecting...',
   import: 'Import',
   delete: 'Delete',
   drop: 'Drop',

@@ -1,5 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Typography, Menu } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -7,64 +7,33 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import { MILVUS_CLIENT_ID } from '@/consts';
+import {
+  MILVUS_CLIENT_ID,
+  ATTU_AUTH_HISTORY,
+  MILVUS_DATABASE,
+  MILVUS_URL,
+} from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
+import CustomIconButton from '@/components/customButton/CustomIconButton';
+import { useStyles } from './style';
+import { AuthReq } from '@server/types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    padding: theme.spacing(0, 3),
-    position: 'relative',
-  },
-  titleWrapper: {
-    textAlign: 'left',
-    alignSelf: 'flex-start',
-    padding: theme.spacing(3, 0),
-    '& svg': {
-      fontSize: 15,
-      marginLeft: theme.spacing(0.5),
-    },
-  },
-  input: {
-    margin: theme.spacing(0.5, 0, 0),
-  },
-  toggle: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'flex-start',
-  },
-  star: {
-    position: 'absolute',
-    top: -48,
-    right: -8,
-    marginTop: theme.spacing(1),
-    alignItems: 'center',
-    height: '32px',
-    lineHeight: '32px',
-    color: '#333',
-    background: '#f1f1f1',
-    padding: theme.spacing(0.5, 0, 0.5, 1),
-    fontSize: 13,
-    display: 'block',
-    width: '132px',
-    textDecoration: 'none',
-    marginRight: theme.spacing(1),
-    fontWeight: 500,
-    '&:hover': {
-      fontWeight: 'bold',
-    },
-  },
-  icon: {
-    verticalAlign: '-5px',
-    marginRight: theme.spacing(1),
-  },
-}));
+type Connection = AuthReq & {
+  time: number;
+};
 
-export const AuthForm = (props: any) => {
+const DEFAULT_CONNECTION = {
+  address: MILVUS_URL || '127.0.0.1:19530',
+  database: MILVUS_DATABASE,
+  token: '',
+  username: '',
+  password: '',
+  time: -1,
+};
+
+export const AuthForm = () => {
   // styles
   const classes = useStyles();
 
@@ -84,74 +53,51 @@ export const AuthForm = (props: any) => {
   const navigate = useNavigate();
 
   // UI states
-  const [withPass, setWithPass] = useState(authReq.username.length > 0);
+  const [withPass, setWithPass] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [connections, setConnections] = useState<Connection[]>([]);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   // form validation
   const checkedForm = useMemo(() => {
     return formatForm(authReq);
   }, [authReq]);
-  const { validation, checkIsValid } = useFormValidation(checkedForm);
+  const { validation, checkIsValid, resetValidation } =
+    useFormValidation(checkedForm);
 
+  // UI handlers
   // handle input change
   const handleInputChange = (
     key: 'address' | 'username' | 'password' | 'database' | 'token',
     value: string | boolean
   ) => {
+    // set database to default if empty
+    if (key === 'database' && value === '') {
+      value = MILVUS_DATABASE;
+    }
     setAuthReq(v => ({ ...v, [key]: value }));
   };
+  // handle menu clicked
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  // const {
-  //   withPrometheus,
-  //   setWithPrometheus,
-  //   prometheusAddress,
-  //   prometheusInstance,
-  //   prometheusNamespace,
-  //   setPrometheusAddress,
-  //   setPrometheusInstance,
-  //   setPrometheusNamespace,
-  // } = useContext(prometheusContext);
+  // handle menu close
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-  // const prometheusConfigs: ITextfieldConfig[] = useMemo(
-  //   () => [
-  //     {
-  //       label: `${attuTrans.prometheusAddress}`,
-  //       key: 'prometheus_address',
-  //       onChange: setPrometheusAddress,
-  //       variant: 'filled',
-  //       className: classes.input,
-  //       placeholder: attuTrans.prometheusAddress,
-  //       fullWidth: true,
+  // handle auth toggle
+  const handleEnableAuth = (val: boolean) => {
+    setWithPass(val);
+  };
 
-  //       defaultValue: prometheusAddress,
-  //     },
-  //     {
-  //       label: `${attuTrans.prometheusNamespace}`,
-  //       key: 'prometheus_namespace',
-  //       onChange: setPrometheusNamespace,
-  //       variant: 'filled',
-  //       className: classes.input,
-  //       placeholder: attuTrans.prometheusNamespace,
-  //       fullWidth: true,
-
-  //       defaultValue: prometheusNamespace,
-  //     },
-  //     {
-  //       label: `${attuTrans.prometheusInstance}`,
-  //       key: 'prometheus_instance',
-  //       onChange: setPrometheusInstance,
-  //       variant: 'filled',
-  //       className: classes.input,
-  //       placeholder: attuTrans.prometheusInstance,
-  //       fullWidth: true,
-
-  //       defaultValue: prometheusInstance,
-  //     },
-  //   ],
-  //   []
-  // );
-
+  // handle connect
   const handleConnect = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // set connecting
+    setIsConnecting(true);
 
     try {
       // login
@@ -163,6 +109,41 @@ export const AuthForm = (props: any) => {
       openSnackBar(successTrans('connect'));
       // save clientId to local storage
       window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
+      // get connection history
+      const history = JSON.parse(
+        window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
+      );
+
+      // add new connection to history, filter out the same connection
+      const newHistory = [
+        ...history.filter(
+          (item: any) =>
+            item.address !== authReq.address ||
+            item.database !== authReq.database
+        ),
+        {
+          address: authReq.address,
+          database: authReq.database,
+          username: authReq.username,
+          password: authReq.password,
+          token: authReq.token,
+          time: Date.now(),
+        },
+      ];
+
+      // if the count of history connections are more than 16, remove the first one, but it should keep the default one
+      if (newHistory.length > 16) {
+        newHistory.shift();
+      }
+
+      // save to local storage
+      window.localStorage.setItem(
+        ATTU_AUTH_HISTORY,
+        JSON.stringify(newHistory)
+      );
+
+      // set title
+      document.title = authReq.address ? `${authReq.address} - Attu` : 'Attu';
 
       // redirect to homepage
       navigate('/');
@@ -171,17 +152,80 @@ export const AuthForm = (props: any) => {
       if (error.response.data.message.includes('UNAUTHENTICATED')) {
         handleEnableAuth(true);
       }
+    } finally {
+      setIsConnecting(false);
     }
   };
 
-  const btnDisabled = useMemo(() => {
-    return authReq.address.trim().length === 0;
-  }, [authReq.address]);
-
-  // handle auth toggle
-  const handleEnableAuth = (val: boolean) => {
-    setWithPass(val);
+  // connect history clicked
+  const handleClickOnHisotry = (connection: Connection) => {
+    // set auth request
+    setAuthReq(connection);
+    // close menu
+    handleMenuClose();
   };
+
+  const handleDeleteConnection = (connection: Connection) => {
+    const history = JSON.parse(
+      window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
+    ) as Connection[];
+
+    const newHistory = history.filter(
+      item =>
+        item.address !== connection.address ||
+        item.database !== connection.database
+    );
+
+    if (newHistory.length === 0) {
+      newHistory.push(DEFAULT_CONNECTION);
+    }
+
+    // save to local storage
+    window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
+    // sort by time
+    newHistory.sort((a, b) => {
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
+    });
+    setConnections(newHistory);
+  };
+
+  // is button should be disabled
+  const btnDisabled = authReq.address.trim().length === 0 || isConnecting;
+
+  // load connection from local storage
+  useEffect(() => {
+    const connections: Connection[] = JSON.parse(
+      window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
+    );
+
+    if (connections.length === 0) {
+      connections.push(DEFAULT_CONNECTION);
+    }
+
+    // sort by time
+    connections.sort((a, b) => {
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
+    });
+
+    setConnections(connections);
+  }, []);
+
+  // UI effect
+  useEffect(() => {
+    // if address contains zilliz, or username or password is not empty
+    //  set withpass to true
+    const withPass =
+      (authReq.address.length > 0 && authReq.address.includes('zilliz')) ||
+      authReq.username.length > 0 ||
+      authReq.password.length > 0;
+
+    // set with pass
+    setWithPass(withPass);
+    // reset form
+    resetValidation(formatForm(authReq));
+    // update title
+    document.title = 'Attu';
+  }, [authReq.address, authReq.username, authReq.password]);
 
   return (
     <form onSubmit={handleConnect}>
@@ -194,17 +238,29 @@ export const AuthForm = (props: any) => {
             </CustomToolTip>
           </Typography>
         </div>
+
         {/* address  */}
         <CustomInput
           type="text"
           textConfig={{
             label: attuTrans.address,
             key: 'address',
-            onChange: (val: string) => handleInputChange('address', val),
+            onChange: (val: string) =>
+              handleInputChange('address', String(val)),
             variant: 'filled',
             className: classes.input,
             placeholder: attuTrans.address,
             fullWidth: true,
+            InputProps: {
+              endAdornment: (
+                <CustomIconButton
+                  className={classes.menuBtn}
+                  onClick={handleMenuClick}
+                >
+                  <Icons.link />
+                </CustomIconButton>
+              ),
+            },
             validations: [
               {
                 rule: 'require',
@@ -213,12 +269,13 @@ export const AuthForm = (props: any) => {
                 }),
               },
             ],
-            defaultValue: authReq.address,
+            value: authReq.address,
           }}
           checkValid={checkIsValid}
           validInfo={validation}
           key={attuTrans.address}
         />
+
         {/* db  */}
         <CustomInput
           type="text"
@@ -230,7 +287,7 @@ export const AuthForm = (props: any) => {
             className: classes.input,
             placeholder: dbTrans('database'),
             fullWidth: true,
-            defaultValue: authReq.database,
+            value: authReq.database,
           }}
           checkValid={checkIsValid}
           validInfo={validation}
@@ -259,13 +316,12 @@ export const AuthForm = (props: any) => {
                 className: classes.input,
                 placeholder: attuTrans.token,
                 fullWidth: true,
-                defaultValue: authReq.token,
+                value: authReq.token,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
               key={attuTrans.token}
             />
-
             {/* user  */}
             <CustomInput
               type="text"
@@ -278,13 +334,12 @@ export const AuthForm = (props: any) => {
                 className: classes.input,
                 placeholder: attuTrans.username,
                 fullWidth: true,
-                defaultValue: authReq.username,
+                value: authReq.username,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
               key={attuTrans.username}
             />
-
             {/* pass  */}
             <CustomInput
               type="text"
@@ -298,7 +353,7 @@ export const AuthForm = (props: any) => {
                 placeholder: attuTrans.password,
                 fullWidth: true,
                 type: 'password',
-                defaultValue: authReq.password,
+                value: authReq.password,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
@@ -307,28 +362,63 @@ export const AuthForm = (props: any) => {
           </>
         )}
 
-        {/* <div className={classes.toggle}>
-          <CustomRadio
-            defaultChecked={withPrometheus}
-            label={attuTrans.prometheus}
-            handleChange={setWithPrometheus}
-          />
-        </div>
-        {withPrometheus &&
-          prometheusConfigs.map(v => (
-            <CustomInput
-              type="text"
-              textConfig={v}
-              checkValid={checkIsValid}
-              validInfo={validation}
-              key={v.label}
-            />
-          ))} */}
-
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
-          {btnTrans('connect')}
+          {btnTrans(isConnecting ? 'connecting' : 'connect')}
         </CustomButton>
       </section>
+
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        className={classes.menu}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        getContentAnchorEl={null}
+      >
+        {connections.map((connection, index) => (
+          <li
+            key={index}
+            className={classes.connection}
+            onClick={() => {
+              handleClickOnHisotry(connection);
+            }}
+          >
+            <div className="address">
+              <Icons.link className="icon"></Icons.link>
+              <div className="text">
+                {connection.address}/{connection.database}
+              </div>
+            </div>
+            <div className="time">
+              {connection.time !== -1
+                ? new Date(connection.time).toLocaleString()
+                : '--'}
+            </div>
+
+            <div>
+              {connection.time !== -1 && (
+                <CustomIconButton
+                  className="deleteIconBtn"
+                  onClick={e => {
+                    e.stopPropagation();
+                    handleDeleteConnection(connection);
+                  }}
+                >
+                  <Icons.cross></Icons.cross>
+                </CustomIconButton>
+              )}
+            </div>
+          </li>
+        ))}
+      </Menu>
     </form>
   );
 };

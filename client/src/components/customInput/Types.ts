@@ -32,7 +32,9 @@ export interface IBlurParam {
   };
 }
 
-export interface IChangeParam extends IBlurParam {}
+export interface IChangeParam extends IBlurParam {
+  type: 'text' | 'number' | 'password';
+}
 
 export interface ICustomInputProps {
   type?: InputType;
@@ -75,7 +77,7 @@ export interface ITextfieldConfig {
   validations?: IValidation[];
   fullWidth?: boolean;
   className?: string;
-  type?: string;
+  type?: 'text' | 'number' | 'password';
   onBlur?: (event: any) => void;
   onChange?: (event: any) => void;
   onKeyDown?: (event: any) => void;
@@ -94,6 +96,7 @@ export interface IAdornmentConfig {
   onInputBlur?: (event: any) => void;
   onInputChange?: (event: any) => void;
   onKeyDown?: (event: any) => void;
+  type?: 'text' | 'number' | 'password';
 }
 
 export type SearchType = {
