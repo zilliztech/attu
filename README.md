@@ -13,12 +13,12 @@ Attu is an all-in-one milvus administration tool.
 
 Attu is designed to manage and interact with Milvus, offering features such as:
 
-- **Database, Collection and Partition Management:** Organize and manage your data database, collections and partitions efficiently, helping users quickly structure and navigate their milvus database.
-- **Insertion, indexing and Querying of vector embeddings:** Easily insert and query vectors for seamless data operations, enabling users to swiftly handle vector data.
-- **Performing Vector Search:** Conduct high-performance vector searches with just a few clicks to quickly find similar items, helping users rapidly validate functionality.
-- **User and Role Management:** Manage users and roles to ensure secure and controlled access, allowing users to quickly administer permissions and security.
-- **Viewing System Topology:** Visualize the system architecture for better oversight and management, enabling users to quickly understand and optimize their system setup.
-
+- **Database, Collection, and Partition Management:** Efficiently organize and manage your Milvus setup.
+- **Insertion, Indexing, and Querying of Vector Embeddings:** Easily handle Milvus vector data operations.
+- **Performing Vector Search:** Rapidly validate your results using the vector search feature.
+- **User and Role Management:** Easyily manage Milvus permissions and security.
+- **Viewing System Topology:** Visualize Milvus system architecture for better management and optimization.
+  
 ## Installation Guides
 
 Before you begin, make sure that you have Milvus installed on either [Zilliz Cloud](https://cloud.zilliz.com/signup) or [your own server](https://milvus.io/docs/install_standalone-docker.md).
