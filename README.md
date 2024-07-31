@@ -16,7 +16,7 @@ Attu is designed to manage and interact with Milvus, offering features such as:
 - **Database, Collection, and Partition Management:** Efficiently organize and manage your Milvus setup.
 - **Insertion, Indexing, and Querying of Vector Embeddings:** Easily handle Milvus vector data operations.
 - **Performing Vector Search:** Rapidly validate your results using the vector search feature.
-- **User and Role Management:** Easyily manage Milvus permissions and security.
+- **User and Role Management:** Easily manage Milvus permissions and security.
 - **Viewing System Topology:** Visualize Milvus system architecture for better management and optimization.
   
 ## Installation Guides
