@@ -1,5 +1,7 @@
 # Attu
 
+Attu is an all-in-one milvus administration tool.
+
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
 ![License](https://img.shields.io/github/license/zilliztech/attu)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
@@ -7,9 +9,15 @@
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu is an all-in-one milvus administration tool. With Attu, you can dramatically reduce the cost of managing milvus.
-
 <img src="./.github/images/screenshot.png" width="800" alt="attu home view" />
+
+Attu is designed to manage and interact with Milvus, offering features such as:
+
+- **Database, Collection and Partition Management:** Organize and manage your data database, collections and partitions efficiently, helping users quickly structure and navigate their milvus database.
+- **Insertion, indexing and Querying of vector embeddings:** Easily insert and query vectors for seamless data operations, enabling users to swiftly handle vector data.
+- **Performing Vector Search:** Conduct high-performance vector searches with just a few clicks to quickly find similar items, helping users rapidly validate functionality.
+- **User and Role Management:** Manage users and roles to ensure secure and controlled access, allowing users to quickly administer permissions and security.
+- **Viewing System Topology:** Visualize the system architecture for better oversight and management, enabling users to quickly understand and optimize their system setup.
 
 ## Installation Guides
 

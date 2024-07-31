@@ -1,5 +1,7 @@
 # Attu
 
+Attu 是一个全方位的 Milvus 管理工具。
+
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
 ![License](https://img.shields.io/github/license/zilliztech/attu)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
@@ -7,9 +9,16 @@
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu 是一个全方位的 Milvus 管理工具。使用 Attu，您可以显著降低管理 Milvus 的成本。
-
 <img src="./.github/images/screenshot.png" width="800" alt="attu home view" />
+
+Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统，提供以下功能：
+
+- **数据库、集合和分区管理：** 只需点击几下鼠标即可高效地组织和管理您的数据库、集合和分区，帮助用户快速构建和导航 Milvus 设置。
+- **向量的插入、索引和查询：** 通过简单的图形界面无缝插入、索引和查询向量，使用户能够高效地处理向量数据。
+- **执行向量搜索：** 只需点击几下鼠标即可进行高性能的向量搜索，快速找到相似项，帮助用户迅速进行功能验证。
+- **用户和角色管理：** 管理用户和角色，以确保安全和受控的访问权限，使用户能够快速管理权限和安全设置。
+- **查看系统拓扑：** 可视化系统架构以实现更好的监督和管理，使用户能够迅速了解和优化他们的系统设置。
+-
 
 ## 安装指南
 
