@@ -1,4 +1,5 @@
-import { InputAdornment, makeStyles, TextField } from '@material-ui/core';
+import { InputAdornment, TextField } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icons from '../icons/Icons';

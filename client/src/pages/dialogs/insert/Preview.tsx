@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
 import { Option } from '@/components/customSelector/Types';
@@ -9,6 +9,7 @@ import { transferCsvArrayToTableData } from '@/utils';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import SimpleMenu from '@/components/menu/SimpleMenu';
 import icons from '@/components/icons/Icons';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

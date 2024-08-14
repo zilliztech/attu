@@ -1,11 +1,10 @@
 import {
-  makeStyles,
   Theme,
   TextField,
   IconButton,
   Switch,
   FormControlLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
@@ -31,6 +30,7 @@ import {
   DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
   DEFAULT_ATTU_ELEMENT_TYPE,
 } from '@/consts';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
@@ -580,6 +580,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           onClick={() => handleAddNewField(index)}
           classes={{ root: classes.iconBtn }}
           aria-label="add"
+          size="large"
         >
           <AddIcon />
         </IconButton>
@@ -639,6 +640,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           }}
           classes={{ root: classes.iconBtn }}
           aria-label="add"
+          size="large"
         >
           <AddIcon />
         </IconButton>
@@ -649,6 +651,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           }}
           classes={{ root: classes.iconBtn }}
           aria-label="delete"
+          size="large"
         >
           <RemoveIcon />
         </IconButton>
@@ -676,6 +679,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           }}
           classes={{ root: classes.iconBtn }}
           aria-label="add"
+          size="large"
         >
           <AddIcon />
         </IconButton>
@@ -686,6 +690,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           }}
           classes={{ root: classes.iconBtn }}
           aria-label="delete"
+          size="large"
         >
           <RemoveIcon />
         </IconButton>

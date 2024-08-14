@@ -1,12 +1,5 @@
 import { FC, useMemo } from 'react';
-import {
-  Grid,
-  Typography,
-  makeStyles,
-  Theme,
-  createStyles,
-  IconButton,
-} from '@material-ui/core';
+import { Grid, Typography, Theme, IconButton } from '@mui/material';
 import CustomButton from '../customButton/CustomButton';
 import Icons from '../icons/Icons';
 import { ToolBarConfig, ToolBarType } from './Types';
@@ -14,29 +7,28 @@ import SearchInput from '../customInput/SearchInput';
 import TableSwitch from './TableSwitch';
 import { throwErrorForDev } from '../../utils/Common';
 import CustomIconButton from '../customButton/CustomIconButton';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    countLabel: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      color: theme.palette.common.black,
-      opacity: 0.4,
-    },
-    btn: {
-      marginRight: theme.spacing(0.5),
-    },
-    gridEnd: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-    },
-    toolbar: {
-      marginBottom: theme.spacing(1),
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  countLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    color: theme.palette.common.black,
+    opacity: 0.4,
+  },
+  btn: {
+    marginRight: theme.spacing(0.5),
+  },
+  gridEnd: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  toolbar: {
+    marginBottom: theme.spacing(1),
+  },
+}));
 
 const CustomToolBar: FC<ToolBarType> = props => {
   const { toolbarConfigs, selected = [], hideOnDisable = false } = props;
@@ -162,7 +154,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 default:
                   const Icon = c.icon ? Icons[c.icon]() : '';
                   return Icon ? (
-                    <IconButton onClick={c.onClick} key={i}>
+                    <IconButton onClick={c.onClick} key={i} size="large">
                       {Icon}
                     </IconButton>
                   ) : (

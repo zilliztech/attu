@@ -1,5 +1,6 @@
-import { makeStyles, Theme } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Theme } from '@mui/material';
+import { Skeleton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -22,7 +23,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 const LoadingTable = (props: { wrapperClass?: string; count: number }) => {
   const { wrapperClass = '', count } = props;
   const classes = getStyles();
-  const rows = Array(count).fill(1);
+  const rows = Array(count || 5).fill(1);
 
   return (
     <div className={`${classes.wrapper} ${wrapperClass}`}>

@@ -1,4 +1,4 @@
-import { makeStyles, Theme, useTheme } from '@material-ui/core';
+import { Theme, useTheme } from '@mui/material';
 import { useContext } from 'react';
 import {
   TOPO_HEIGHT,
@@ -11,6 +11,7 @@ import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 import clsx from 'clsx';
 import { formatPrometheusAddress } from '@/utils';
 import { prometheusContext } from '@/context';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

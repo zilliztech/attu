@@ -1,10 +1,4 @@
-import {
-  makeStyles,
-  Theme,
-  Typography,
-  Chip,
-  Tooltip,
-} from '@material-ui/core';
+import { Theme, Typography, Chip, Tooltip } from '@mui/material';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
@@ -18,6 +12,7 @@ import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { FieldObject } from '@server/types';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -256,7 +251,6 @@ const Overview = () => {
       label: indexTrans('desc'),
     },
   ];
-
 
   // only show create index element when there is only one vector field
   let CreateIndexElement = null;

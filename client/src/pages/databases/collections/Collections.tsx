@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
@@ -26,6 +26,7 @@ import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
 import { CollectionObject } from '@server/types';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

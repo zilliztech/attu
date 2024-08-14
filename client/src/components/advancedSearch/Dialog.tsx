@@ -1,16 +1,15 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  makeStyles,
   Theme,
-  createStyles,
   Typography,
   IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import CustomButton from '../customButton/CustomButton';
 import ConditionGroup from './ConditionGroup';
 import icons from '../icons/Icons';
@@ -60,8 +59,8 @@ const AdvancedDialog = (props: DialogProps) => {
         className={classes.wrapper}
         {...others}
       >
-        <DialogTitle className={classes.dialogTitle} disableTypography>
-          <Typography variant="h5" component="h2">
+        <DialogTitle className={classes.dialogTitle}>
+          <Typography variant="h5" component="div">
             {title}
           </Typography>
           <IconButton
@@ -125,99 +124,97 @@ const AdvancedDialog = (props: DialogProps) => {
         </DialogActions>
       </Dialog>
       {/* <DialogTemplate
-        title={title}
-        handleClose={onClose}
-        showCloseIcon
-        handleConfirm={onSubmit}
-        confirmLabel="Apply Filters"
-        confirmDisabled={!isLegal}
-        handleCancel={onCancel}
-        cancelLabel="Cancel"
-        leftActions={
-          <Button
-            onClick={onReset}
-            color="primary"
-            className={classes.resetBtn}
-            size="small"
-          >
-            <CachedIcon />
-            Reset
-          </Button>
-        }
-      >
-        <div
-          className={`${classes.expResult} ${
-            !isLegal && 'disable-exp'
-          } testcopy`}
+      title={title}
+      handleClose={onClose}
+      showCloseIcon
+      handleConfirm={onSubmit}
+      confirmLabel="Apply Filters"
+      confirmDisabled={!isLegal}
+      handleCancel={onCancel}
+      cancelLabel="Cancel"
+      leftActions={
+        <Button
+          onClick={onReset}
+          color="primary"
+          className={classes.resetBtn}
+          size="small"
         >
-          {`${isLegal ? filterExpression : 'Filter Expression'}`}
-          {isLegal && (
-            <CopyBtn label="copy expression" value={filterExpression} />
-          )}
-        </div>
-        <div className={classes.expWrapper}>
-          <ConditionGroup
-            fields={fields}
-            handleConditions={handleConditions}
-            conditions={flatConditions}
-          />
-        </div>
-      </DialogTemplate> */}
+          <CachedIcon />
+          Reset
+        </Button>
+      }
+    >
+      <div
+        className={`${classes.expResult} ${
+          !isLegal && 'disable-exp'
+        } testcopy`}
+      >
+        {`${isLegal ? filterExpression : 'Filter Expression'}`}
+        {isLegal && (
+          <CopyBtn label="copy expression" value={filterExpression} />
+        )}
+      </div>
+      <div className={classes.expWrapper}>
+        <ConditionGroup
+          fields={fields}
+          handleConditions={handleConditions}
+          conditions={flatConditions}
+        />
+      </div>
+    </DialogTemplate> */}
     </>
   );
 };
 
 AdvancedDialog.displayName = 'AdvancedDialog';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {},
-    wrapper: {
-      '& .disable-exp': {
-        userSelect: 'none',
-        color: theme.palette.attuGrey.main,
-      },
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {},
+  wrapper: {
+    '& .disable-exp': {
+      userSelect: 'none',
+      color: theme.palette.attuGrey.main,
     },
-    closeButton: {
-      color: 'black',
-    },
-    dialogTitle: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    dialogActions: {
-      justifyContent: 'space-between',
-    },
-    resetBtn: {},
-    cancelBtn: {
-      marginRight: theme.spacing(1),
-    },
-    applyBtn: {
-      backgroundColor: theme.palette.primary.main,
-      color: 'white',
-    },
-    copyButton: {},
-    expResult: {
-      background: '#f4f4f4',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      minHeight: '40px',
-      margin: theme.spacing(1, 4),
-      padding: theme.spacing(0, 2),
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontSize: '16px',
-      lineHeight: '24px',
-    },
-    expWrapper: {
-      background: '#f4f4f4',
-      minWidth: '480px',
-      minHeight: '104px',
-      padding: theme.spacing(1.5),
-    },
-  })
-);
+  },
+  closeButton: {
+    color: 'black',
+  },
+  dialogTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dialogActions: {
+    justifyContent: 'space-between',
+  },
+  resetBtn: {},
+  cancelBtn: {
+    marginRight: theme.spacing(1),
+  },
+  applyBtn: {
+    backgroundColor: theme.palette.primary.main,
+    color: 'white',
+  },
+  copyButton: {},
+  expResult: {
+    background: '#f4f4f4',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: '40px',
+    margin: theme.spacing(1, 4),
+    padding: theme.spacing(0, 2),
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    fontSize: '16px',
+    lineHeight: '24px',
+  },
+  expWrapper: {
+    background: '#f4f4f4',
+    minWidth: '480px',
+    minHeight: '104px',
+    padding: theme.spacing(1.5),
+  },
+}));
 
 export default AdvancedDialog;

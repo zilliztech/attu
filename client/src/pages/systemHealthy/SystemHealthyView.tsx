@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook, useInterval } from '@/hooks';
 import { PrometheusService } from '@/http';
@@ -22,7 +22,7 @@ import Topology from './Topology';
 import { reconNodeTree } from './dataHandler';
 import HealthyIndexOverview from './HealthyIndexOverview';
 import { timeRangeOptions } from './consts';
-
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 import {
   CHART_WIDTH,
@@ -17,6 +17,7 @@ import {
   IThreshold,
   ITimeRangeOption,
 } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

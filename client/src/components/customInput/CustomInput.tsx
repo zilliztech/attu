@@ -7,10 +7,10 @@ import {
   Input,
   InputAdornment,
   InputLabel,
-  makeStyles,
   StandardTextFieldProps,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import Icons from '../icons/Icons';
 import { ReactElement } from 'react';
 import {
@@ -131,7 +131,7 @@ const getAdornmentInput = (
               onClick={onIconClick || (() => {})}
               edge="end"
               role="icon-button"
-            >
+              size="large">
               {isPasswordType
                 ? showPassword
                   ? Icons.visible({ classes: { root: classes.icon } })

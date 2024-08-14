@@ -1,7 +1,8 @@
 import { FC, useState, useEffect, useRef } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 import BaseCard from './BaseCard';
 import { LineChartCardProps, LinceChartNode } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles(theme => ({
   root: {

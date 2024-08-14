@@ -1,16 +1,17 @@
 import { FC, MouseEvent, useRef, useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import TablePagination from '@material-ui/core/TablePagination';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
+import { Theme } from '@mui/material/styles/createTheme';
+import Grid from '@mui/material/Grid';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import TablePagination from '@mui/material/TablePagination';
+import { makeStyles } from '@mui/styles';
 import CustomToolbar from './ToolBar';
 import Table from './Table';
 import { AttuGridType } from './Types';
 import { useTranslation } from 'react-i18next';
 import TablePaginationActions from './TablePaginationActions';
 
-const userStyle = makeStyles(theme => ({
+const userStyle = makeStyles((theme: Theme) => ({
   loading: {
     height: '100%',
     display: 'flex',
@@ -36,6 +37,14 @@ const userStyle = makeStyles(theme => ({
     fontSize: '32px',
   },
   pagenation: {
+    '& .MuiTablePagination-spacer': {
+      display: 'none',
+    },
+    '& .MuiTablePagination-toolbar': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      paddingLeft: 8,
+    },
     '& .MuiTablePagination-caption': {
       position: 'absolute',
       left: 0,
@@ -201,7 +210,7 @@ const AttuGrid: FC<AttuGridType> = props => {
 
   useEffect(() => {
     // const timer = setTimeout(() => {
-      calculateRowCountAndPageSize();
+    calculateRowCountAndPageSize();
     // }, 16);
     // Add event listener for window resize
     window.addEventListener('resize', calculateRowCountAndPageSize);

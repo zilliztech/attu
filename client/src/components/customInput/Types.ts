@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { InputLabelProps } from '@material-ui/core';
+import { InputLabelProps } from '@mui/material';
 import { IValidationItem } from '@/hooks';
 import { IExtraParam, ValidType } from '@/utils';
 

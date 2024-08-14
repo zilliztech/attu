@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import clsx from 'clsx';
 import { useNavigationHook, useInterval } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -10,6 +10,7 @@ import NodeListView from './NodeListView';
 // import LineChartCard from './LineChartCard';
 // import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

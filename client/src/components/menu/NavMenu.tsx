@@ -1,132 +1,131 @@
 import { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { Theme } from '@mui/material/styles';
+import Fade from '@mui/material/Fade';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { NavMenuItem, NavMenuType } from './Types';
 import icons from '../icons/Icons';
 import { useTranslation } from 'react-i18next';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 
 const timeout = 150;
 const duration = `${timeout}ms`;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      borderRight: '1px solid #e0e0e0',
-      background: '#fff',
-      paddingTop: 0,
-      paddingBottom: theme.spacing(4),
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      transition: theme.transitions.create('width', {
-        duration,
-      }),
-    },
-    rootCollapse: {
-      width: '56px',
-    },
-    rootExpand: {
-      width: (props: any) => props.width || '100%',
-    },
-    nested: {
-      paddingLeft: '12px',
-    },
-    item: {
-      paddingLeft: '16px',
-      boxSizing: 'content-box',
-      height: theme.spacing(3),
-      width: 'initial',
-      color: theme.palette.attuGrey.dark,
-      '&:hover': {
-        backgroundColor: '#efefef',
-      },
-    },
-    itemIcon: {
-      minWidth: '24px',
-      marginRight: theme.spacing(1),
-    },
-    itemText: {
-      whiteSpace: 'nowrap',
-    },
-    active: {
-      color: '#323232',
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    borderRight: '1px solid #e0e0e0',
+    background: '#fff',
+    paddingTop: 0,
+    paddingBottom: theme.spacing(4),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    transition: theme.transitions.create('width', {
+      duration,
+    }),
+  },
+  rootCollapse: {
+    width: '56px',
+  },
+  rootExpand: {
+    width: (props: any) => props.width || '100%',
+  },
+  nested: {
+    paddingLeft: '12px',
+  },
+  item: {
+    paddingLeft: '16px',
+    boxSizing: 'content-box',
+    height: theme.spacing(3),
+    width: 'initial',
+    color: theme.palette.attuGrey.dark,
+    '&:hover': {
       backgroundColor: '#efefef',
+    },
+  },
+  itemIcon: {
+    minWidth: '24px',
+    marginRight: theme.spacing(1),
+  },
+  itemText: {
+    whiteSpace: 'nowrap',
+  },
+  active: {
+    color: '#323232',
+    backgroundColor: '#efefef',
 
-      '& .icon': {
-        color: theme.palette.primary.main,
-      },
+    '& .icon': {
+      color: theme.palette.primary.main,
+    },
+  },
+
+  logoWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    height: '86px',
+    marginBottom: theme.spacing(1),
+    paddingLeft: '16px',
+
+    '& .title': {
+      margin: 0,
+      paddingLeft: theme.spacing(2),
+      fontSize: '24px',
+      letterSpacing: '0.15px',
+    },
+  },
+  logo: {
+    transition: theme.transitions.create('all', {
+      duration,
+    }),
+  },
+  logoExpand: {
+    marginRight: theme.spacing(1),
+    transform: 'scale(1.5)',
+  },
+  logoCollapse: {
+    transform: 'scale(1.5)',
+  },
+  actionIcon: {
+    position: 'fixed',
+    backgroundColor: 'white',
+    top: '24px',
+    transition: theme.transitions.create('all', {
+      duration,
+    }),
+    minWidth: '24px',
+    padding: 0,
+
+    '& svg path': {
+      fill: theme.palette.attuGrey.dark,
     },
 
-    logoWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      height: '86px',
-      marginBottom: theme.spacing(1),
-      paddingLeft: '16px',
-
-      '& .title': {
-        margin: 0,
-        paddingLeft: theme.spacing(2),
-        fontSize: '24px',
-        letterSpacing: '0.15px',
-      },
-    },
-    logo: {
-      transition: theme.transitions.create('all', {
-        duration,
-      }),
-    },
-    logoExpand: {
-      marginRight: theme.spacing(1),
-      transform: 'scale(1.5)',
-    },
-    logoCollapse: {
-      transform: 'scale(1.5)',
-    },
-    actionIcon: {
-      position: 'fixed',
-      backgroundColor: 'white',
-      top: '24px',
-      transition: theme.transitions.create('all', {
-        duration,
-      }),
-      minWidth: '24px',
-      padding: 0,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
 
       '& svg path': {
-        fill: theme.palette.attuGrey.dark,
-      },
-
-      '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-
-        '& svg path': {
-          fill: 'white',
-        },
+        fill: 'white',
       },
     },
-    expandIcon: {
-      left: '160px',
-      transform: 'rotateZ(180deg)',
-    },
-    collapseIcon: {
-      left: 44,
-    },
-    version: {
-      position: 'absolute',
-      fontSize: '10px',
-      bottom: 10,
-      left: 12,
-    },
-  })
-);
+  },
+  expandIcon: {
+    left: '160px',
+    transform: 'rotateZ(180deg)',
+  },
+  collapseIcon: {
+    left: 44,
+  },
+  version: {
+    position: 'absolute',
+    fontSize: '10px',
+    bottom: 10,
+    left: 12,
+  },
+}));
 
 const NavMenu: FC<NavMenuType> = props => {
   const { width, data, defaultActive = '', versionInfo } = props;

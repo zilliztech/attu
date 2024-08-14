@@ -1,49 +1,41 @@
 import { FC } from 'react';
-import {
-  IconButton,
-  makeStyles,
-  Theme,
-  createStyles,
-  Button,
-  Typography,
-} from '@material-ui/core';
+import { IconButton, Theme, Button, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import Icons from '../icons/Icons';
 import { ActionBarType } from './Types';
 import CustomToolTip from '../customToolTip/CustomToolTip';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      position: 'relative',
-      display: 'inline-block',
-      marginRight: theme.spacing(1),
-    },
-    tip: {
-      position: 'absolute',
-      left: 0,
-      bottom: '-10px',
-      fontSize: '10px',
-      textTransform: 'capitalize',
-      textAlign: 'center',
-      width: '100%',
-    },
-    disabled: {
-      color: theme.palette.common.black,
-      opacity: 0.15,
-    },
-    hoverType: {
-      marginRight: 0,
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    position: 'relative',
+    display: 'inline-block',
+    marginRight: theme.spacing(1),
+  },
+  tip: {
+    position: 'absolute',
+    left: 0,
+    bottom: '-10px',
+    fontSize: '10px',
+    textTransform: 'capitalize',
+    textAlign: 'center',
+    width: '100%',
+  },
+  disabled: {
+    color: theme.palette.common.black,
+    opacity: 0.15,
+  },
+  hoverType: {
+    marginRight: 0,
 
-      '& button': {
-        color: '#fff',
-      },
+    '& button': {
+      color: '#fff',
     },
-    link: {
-      textDecoration: 'underline',
-      color: theme.palette.common.black,
-    }
-  })
-);
+  },
+  link: {
+    textDecoration: 'underline',
+    color: theme.palette.common.black,
+  },
+}));
 
 const ActionBar: FC<ActionBarType> = props => {
   const classes = useStyles();
@@ -73,6 +65,7 @@ const ActionBar: FC<ActionBarType> = props => {
                   classes={{
                     disabled: classes.disabled,
                   }}
+                  size="large"
                 >
                   {v.showIconMethod === 'renderFn'
                     ? v.renderIconFn && v.renderIconFn(row)

@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
-import { makeStyles, Theme, Typography, useTheme } from '@material-ui/core';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Theme, Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MilvusService } from '@/http';
 import icons from '@/components/icons/Icons';
@@ -11,6 +11,7 @@ import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { CREATE_DB } from './Home';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

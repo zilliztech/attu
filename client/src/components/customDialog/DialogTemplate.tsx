@@ -1,15 +1,11 @@
 import { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  DialogContent,
-  DialogActions,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { DialogContent, DialogActions, Theme } from '@mui/material';
 import { DialogContainerProps } from './Types';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
 import CodeView from '../code/CodeView';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -93,11 +89,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
               <div>{leftActions}</div>
               <div>
                 {showCancel && (
-                  <CustomButton
-                    onClick={onCancel}
-                    color="default"
-                    name="cancel"
-                  >
+                  <CustomButton onClick={onCancel} name="cancel">
                     {cancel}
                   </CustomButton>
                 )}

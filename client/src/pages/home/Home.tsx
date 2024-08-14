@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { dataContext, systemContext } from '@/context';
@@ -9,6 +9,7 @@ import { ALL_ROUTER_TYPES } from '@/router/Types';
 import DatabaseCard from './DatabaseCard';
 import SysCard from './SysCard';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   overviewContainer: {

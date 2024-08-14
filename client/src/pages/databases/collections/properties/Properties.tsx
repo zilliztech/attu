@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useContext, useState } from 'react';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
@@ -11,6 +11,7 @@ import { rootContext } from '@/context';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { CollectionFullObject } from '@server/types';
 import { formatNumber } from '@/utils';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

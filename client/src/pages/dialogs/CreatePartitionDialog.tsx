@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
@@ -11,6 +11,7 @@ import { PartitionService } from '@/http';
 import { PartitionCreateProps } from './Types';
 import { PartitionManageParam } from '../databases/collections/partitions/Types';
 import { ManageRequestMethods } from '../../types/Common';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

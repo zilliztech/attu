@@ -1,11 +1,5 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
-import {
-  Typography,
-  makeStyles,
-  Theme,
-  Switch,
-  FormControlLabel,
-} from '@material-ui/core';
+import { Typography, Theme, Switch, FormControlLabel } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { authContext, rootContext, dataContext } from '@/context';
 import { MilvusService } from '@/http';
@@ -18,6 +12,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
 import { CollectionObject } from '@server/types';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

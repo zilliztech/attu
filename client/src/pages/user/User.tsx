@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
@@ -18,6 +18,7 @@ import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './CreateUser';
 import UpdateUserRole from './UpdateUserRole';
 import UpdateUser from './Update';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

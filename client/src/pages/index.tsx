@@ -1,7 +1,7 @@
 import { useMemo, useContext } from 'react';
 import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import GlobalEffect from '@/components/layout/GlobalEffect';
 import Header from '@/components/layout/Header';
 import NavMenu from '@/components/menu/NavMenu';
@@ -14,37 +14,36 @@ import {
   dataContext,
 } from '@/context';
 import Overview from '@/pages/home/Home';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5',
-    },
-    content: {
-      display: 'flex',
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    minHeight: '100vh',
+    backgroundColor: '#f5f5f5',
+  },
+  content: {
+    display: 'flex',
 
-      '& .active': {
-        '& path': {
-          fill: theme.palette.attuGrey.dark,
-        },
-      },
-
-      '& .normal': {
-        '& path': {
-          fill: theme.palette.primary.main,
-        },
+    '& .active': {
+      '& path': {
+        fill: theme.palette.attuGrey.dark,
       },
     },
-    body: {
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
-      overflowY: 'scroll',
+
+    '& .normal': {
+      '& path': {
+        fill: theme.palette.primary.main,
+      },
     },
-  })
-);
+  },
+  body: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    overflowY: 'scroll',
+  },
+}));
 
 function Index() {
   const navigate = useNavigate();

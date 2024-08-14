@@ -1,12 +1,7 @@
 import React, { useState, useEffect, FC, useMemo } from 'react';
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  IconButton,
-  TextField,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Theme, IconButton, TextField, SelectChangeEvent } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import { ConditionProps } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS, DataTypeStringEnum } from '@/consts';
@@ -89,13 +84,11 @@ const Condition: FC<ConditionProps> = props => {
   }, [conditionField]);
 
   // Logic operator input change.
-  const handleOpChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleOpChange = (event: SelectChangeEvent<unknown>) => {
     setOperator(event.target.value);
   };
   // Field Name input change.
-  const handleFieldNameChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
+  const handleFieldNameChange = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value;
     const target = fields.find(field => field.name === value);
     target && setConditionField(target);
@@ -163,27 +156,25 @@ const Condition: FC<ConditionProps> = props => {
 
 Condition.displayName = 'Condition';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {},
-    wrapper: {
-      minWidth: '466px',
-      minHeight: '62px',
-      background: '#FFFFFF',
-      padding: theme.spacing(1.5, 2),
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    closeButton: {},
-    fieldName: {
-      minHeight: '38px',
-      minWidth: '130px',
-    },
-    logic: { minHeight: '38px', minWidth: '100px', margin: '0 24px' },
-    key: { minHeight: '38px', width: '150px', margin: '0 0' },
-    value: { minHeight: '38px', minWidth: '130px' },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {},
+  wrapper: {
+    minWidth: '466px',
+    minHeight: '62px',
+    background: '#FFFFFF',
+    padding: theme.spacing(1.5, 2),
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  closeButton: {},
+  fieldName: {
+    minHeight: '38px',
+    minWidth: '130px',
+  },
+  logic: { minHeight: '38px', minWidth: '100px', margin: '0 24px' },
+  key: { minHeight: '38px', width: '150px', margin: '0 0' },
+  value: { minHeight: '38px', minWidth: '130px' },
+}));
 
 export default Condition;

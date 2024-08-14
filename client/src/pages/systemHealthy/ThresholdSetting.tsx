@@ -1,4 +1,4 @@
-import { Dialog, makeStyles, Theme } from '@material-ui/core';
+import { Dialog, Theme } from '@mui/material';
 import { useMemo, useState } from 'react';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
@@ -6,8 +6,10 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus, IThreshold } from './Types';
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import CustomButton from '@/components/customButton/CustomButton';
+import { makeStyles } from '@mui/styles';
+
 export interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;

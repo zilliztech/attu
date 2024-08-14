@@ -1,36 +1,42 @@
-import { forwardRef, FC, SyntheticEvent } from 'react';
+import { forwardRef, FC } from 'react';
 import { CustomSnackBarType } from './Types';
-import MuiAlert from '@material-ui/lab/Alert';
-import { Snackbar, makeStyles, Theme, createStyles } from '@material-ui/core';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions/transition';
+import MuiAlert from '@mui/material/Alert';
+import {
+  Snackbar,
+  Theme,
+  Slide,
+  SnackbarCloseReason,
+  AlertProps,
+} from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions/transition';
+import { makeStyles } from '@mui/styles';
 
 // if we need to use slide component
 // snackbar content must use forwardRef to wrapper it
-const Alert = forwardRef((props: { [x: string]: any }, ref) => {
-  return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
-});
+const Alert = forwardRef<HTMLDivElement, AlertProps>(
+  (props: { [x: string]: any }, ref) => {
+    return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
+  }
+);
 
 function SlideTransition(props: TransitionProps) {
   return <Slide {...props} direction="left" />;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      maxWidth: '50vh',
-      wordBreak: 'break-all'
-    },
-    topRight: {
-      [theme.breakpoints.up('md')]: {
-        top: '72px',
-        right: theme.spacing(4),
-      },
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    maxWidth: '50vh',
+    wordBreak: 'break-all',
+  },
+  topRight: {
+    [theme.breakpoints.up('md')]: {
       top: '72px',
       right: theme.spacing(4),
     },
-  })
-);
+    top: '72px',
+    right: theme.spacing(4),
+  },
+}));
 
 const CustomSnackBar: FC<CustomSnackBarType> = props => {
   const {
@@ -43,7 +49,10 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
     onClose,
   } = props;
   const classes = useStyles();
-  const handleClose = (e: SyntheticEvent<any, Event>, reason: string) => {
+  const handleClose = (
+    event: React.SyntheticEvent<any> | Event,
+    reason: SnackbarCloseReason
+  ) => {
     // only click x to close or auto hide.
     if (reason === 'clickaway') {
       return;

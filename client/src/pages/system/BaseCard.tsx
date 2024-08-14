@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { makeStyles } from '@material-ui/core';
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
 import { BaseCardProps } from './Types';
 import pic from '../../assets/imgs/pic.svg?react';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles(theme => ({
   root: {

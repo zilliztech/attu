@@ -1,5 +1,5 @@
 import { FC, useContext, useMemo, useState } from 'react';
-import { Typography, makeStyles, Theme } from '@material-ui/core';
+import { Typography, Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -9,6 +9,7 @@ import { IForm, useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { CollectionObject } from '@server/types';
 import { Property } from '../databases/collections/properties/Properties';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

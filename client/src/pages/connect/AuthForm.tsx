@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Typography, Menu } from '@material-ui/core';
+import { Typography, Menu } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -381,7 +381,6 @@ export const AuthForm = () => {
         }}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
-        getContentAnchorEl={null}
       >
         {connections.map((connection, index) => (
           <li

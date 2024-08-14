@@ -1,27 +1,26 @@
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { FC, useState } from 'react';
 import Icons from '../icons/Icons';
 import { TableSwitchType } from './Types';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    line: {
-      display: 'inline-block',
-      margin: theme.spacing(0, 1),
-      border: '1px solid rgba(0, 0, 0, 0.15)',
-    },
-    btn: {
-      cursor: 'pointer',
-      color: 'rgba(0, 0, 0, 0.15)',
-    },
-    active: {
-      color: 'rgba(0, 0, 0, 0.6) ',
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+  },
+  line: {
+    display: 'inline-block',
+    margin: theme.spacing(0, 1),
+    border: '1px solid rgba(0, 0, 0, 0.15)',
+  },
+  btn: {
+    cursor: 'pointer',
+    color: 'rgba(0, 0, 0, 0.15)',
+  },
+  active: {
+    color: 'rgba(0, 0, 0, 0.6) ',
+  },
+}));
 
 const TableSwitch: FC<TableSwitchType> = props => {
   const { defaultActive = 'list', onListClick, onAppClick } = props;

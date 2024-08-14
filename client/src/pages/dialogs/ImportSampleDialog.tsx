@@ -1,4 +1,4 @@
-import { makeStyles, Theme, Typography, Chip } from '@material-ui/core';
+import { Theme, Typography, Chip } from '@mui/material';
 import { FC, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { saveAs } from 'file-saver';
@@ -10,6 +10,7 @@ import { DataService } from '@/http';
 import { LoadSampleParam } from './Types';
 import icons from '@/components/icons/Icons';
 import { CollectionObject } from '@server/types';
+import { makeStyles } from '@mui/styles';
 
 const DownloadIcon = icons.download;
 

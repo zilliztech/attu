@@ -1,14 +1,7 @@
 import { FC, useMemo, MouseEvent, useContext } from 'react';
 import { StatusActionType } from '@/components/status/Types';
 import { useTranslation } from 'react-i18next';
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Typography,
-  useTheme,
-  Chip,
-} from '@material-ui/core';
+import { Theme, Typography, useTheme, Chip } from '@mui/material';
 import { rootContext } from '@/context';
 import { LOADING_STATE } from '@/consts';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
@@ -17,64 +10,63 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomButton from '@/components/customButton/CustomButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    chip: {
-      border: 'none',
-      background: `rgba(0, 0, 0, 0.04)`,
-      marginRight: theme.spacing(0.5),
-      paddingLeft: theme.spacing(0.5),
-    },
-    circle: {
-      width: '8px',
-      height: '8px',
-      borderRadius: '50%',
-      backgroundColor: theme.palette.primary.main,
-    },
-    loaded: {
-      border: `1px solid ${theme.palette.primary.main}`,
-      backgroundColor: theme.palette.primary.main,
-    },
-    unloaded: {
-      border: `1px solid ${theme.palette.primary.main}`,
-      background: '#fff !important',
-    },
-    noIndex: {
-      border: `1px solid ${theme.palette.attuGrey.light}`,
-      backgroundColor: '#fff',
-    },
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  chip: {
+    border: 'none',
+    background: `rgba(0, 0, 0, 0.04)`,
+    marginRight: theme.spacing(0.5),
+    paddingLeft: theme.spacing(0.5),
+  },
+  circle: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main,
+  },
+  loaded: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    backgroundColor: theme.palette.primary.main,
+  },
+  unloaded: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: '#fff !important',
+  },
+  noIndex: {
+    border: `1px solid ${theme.palette.attuGrey.light}`,
+    backgroundColor: '#fff',
+  },
 
-    loading: {
-      marginRight: '10px',
-    },
-    icon: {
-      marginTop: theme.spacing(0.5),
-    },
-    flash: {
-      animation: '$bgColorChange 1.5s infinite',
-    },
-    extraBtn: {
-      height: 24,
-    },
+  loading: {
+    marginRight: '10px',
+  },
+  icon: {
+    marginTop: theme.spacing(0.5),
+  },
+  flash: {
+    animation: '$bgColorChange 1.5s infinite',
+  },
+  extraBtn: {
+    height: 24,
+  },
 
-    '@keyframes bgColorChange': {
-      '0%': {
-        backgroundColor: (props: any) => props.color,
-      },
-      '50%': {
-        backgroundColor: 'transparent',
-      },
-      '100%': {
-        backgroundColor: (props: any) => props.color,
-      },
+  '@keyframes bgColorChange': {
+    '0%': {
+      backgroundColor: (props: any) => props.color,
     },
-  })
-);
+    '50%': {
+      backgroundColor: 'transparent',
+    },
+    '100%': {
+      backgroundColor: (props: any) => props.color,
+    },
+  },
+}));
 
 const StatusAction: FC<StatusActionType> = props => {
   const theme = useTheme();

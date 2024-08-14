@@ -1,73 +1,66 @@
 import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Typography,
-  Tooltip,
-} from '@material-ui/core';
+import { Theme, Typography, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { navContext, dataContext, authContext } from '@/context';
 import { MilvusService } from '@/http';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import icons from '../icons/Icons';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    header: {
-      display: 'flex',
-      alignItems: 'center',
-      color: theme.palette.common.black,
-      paddingRight: theme.spacing(1),
-      backgroundColor: '#fff',
-      borderBottom: '1px solid #e0e0e0',
-      minHeight: 56,
-    },
-    contentWrapper: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingLeft: theme.spacing(1.5),
-      flex: 1,
-    },
-    navigation: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    icon: {
-      color: theme.palette.primary.main,
-      cursor: 'pointer',
-      marginRight: theme.spacing(1),
-      width: '20px',
-    },
-    addressWrapper: {
-      display: 'flex',
-      alignItems: 'center',
+const useStyles = makeStyles((theme: Theme) => ({
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    color: theme.palette.common.black,
+    paddingRight: theme.spacing(1),
+    backgroundColor: '#fff',
+    borderBottom: '1px solid #e0e0e0',
+    minHeight: 56,
+  },
+  contentWrapper: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: theme.spacing(1.5),
+    flex: 1,
+  },
+  navigation: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  icon: {
+    color: theme.palette.primary.main,
+    cursor: 'pointer',
+    marginRight: theme.spacing(1),
+    width: '20px',
+  },
+  addressWrapper: {
+    display: 'flex',
+    alignItems: 'center',
 
-      '& .text': {
-        marginRight: theme.spacing(2),
+    '& .text': {
+      marginRight: theme.spacing(2),
 
-        '& .address': {
-          fontSize: '14px',
-          lineHeight: '20px',
-          color: '#545454',
-        },
+      '& .address': {
+        fontSize: '14px',
+        lineHeight: '20px',
+        color: '#545454',
+      },
 
-        '& .status': {
-          fontSize: '12px',
-          lineHeight: '16px',
-          color: '#1ba954',
-        },
+      '& .status': {
+        fontSize: '12px',
+        lineHeight: '16px',
+        color: '#1ba954',
       },
     },
-    database: {
-      width: theme.spacing(16),
-      marginRight: theme.spacing(2),
-    },
-  })
-);
+  },
+  database: {
+    width: theme.spacing(16),
+    marginRight: theme.spacing(2),
+  },
+}));
 
 const Header: FC = () => {
   const classes = useStyles();

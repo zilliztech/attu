@@ -1,11 +1,6 @@
 import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Chip,
-  Tooltip,
-} from '@material-ui/core';
+import { Theme, Chip, Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
@@ -308,18 +303,13 @@ const Filter = forwardRef((props: FilterProps, ref) => {
           disabled={filterDisabled}
           className={classes.afBtn}
           onClick={handleClickOpen}
-          size='small'
+          size="small"
           endIcon={<FilterIcon />}
         >
           {showTitle ? title : ''}
         </CustomButton>
         {showTooltip && initConditions.length > 0 && (
-          <Tooltip
-            arrow
-            interactive
-            title={filterExpression}
-            placement={tooltipPlacement}
-          >
+          <Tooltip arrow title={filterExpression} placement={tooltipPlacement}>
             <Chip
               label={initConditions.filter(i => i.type === 'condition').length}
               onDelete={handleDeleteAll}
@@ -350,13 +340,11 @@ const Filter = forwardRef((props: FilterProps, ref) => {
 
 Filter.displayName = 'AdvancedFilter';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    wrapper: {},
-    afBtn: {
-      color: theme.palette.primary.main,
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  wrapper: {},
+  afBtn: {
+    color: theme.palette.primary.main,
+  },
+}));
 
 export default Filter;

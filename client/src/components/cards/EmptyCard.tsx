@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { makeStyles, Theme, Typography, CardContent } from '@material-ui/core';
+import { Theme, Typography, CardContent } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { EmptyCardProps } from './Types';
 

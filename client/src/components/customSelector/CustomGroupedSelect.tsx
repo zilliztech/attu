@@ -2,11 +2,11 @@ import {
   FormControl,
   InputLabel,
   ListSubheader,
-  makeStyles,
   MenuItem,
   Select,
   Theme,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { FC } from 'react';
 import { GroupOption, ICustomGroupSelect } from './Types';
 
@@ -89,7 +89,6 @@ const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
               vertical: 'top',
               horizontal: 'left',
             },
-            getContentAnchorEl: null,
           }}
         >
           {options.map(option => renderSelectGroup(option))}

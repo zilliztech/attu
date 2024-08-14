@@ -1,7 +1,7 @@
 import { FC, useContext, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import Chip from '@material-ui/core/Chip';
-import { makeStyles, Theme, Tooltip } from '@material-ui/core';
+import Chip from '@mui/material/Chip';
+import { Theme, Tooltip } from '@mui/material';
 import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
 import { rootContext, dataContext } from '@/context';
 import Icons from '@/components/icons/Icons';
@@ -16,6 +16,7 @@ import {
 import CreateIndexDialog from './CreateIndexDialog';
 import { FieldObject } from '@server/types';
 import CustomButton from '@/components/customButton/CustomButton';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

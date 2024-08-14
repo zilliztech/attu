@@ -1,32 +1,31 @@
-import { makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import CustomButton from '../customButton/CustomButton';
 import icons from '../icons/Icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TablePaginationActionsProps } from './Types';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      alignItems: 'center',
-      flexShrink: 0,
-    },
-    page: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '24px',
-      height: '24px',
-      backgroundColor: theme.palette.common.white,
-    },
-    btn: {
-      paddingLeft: 8,
-      paddingRight: 8,
-      minWidth: '24px',
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    flexShrink: 0,
+  },
+  page: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '24px',
+    height: '24px',
+    backgroundColor: theme.palette.common.white,
+  },
+  btn: {
+    paddingLeft: 8,
+    paddingRight: 8,
+    minWidth: '24px',
+  },
+}));
 
 const TablePaginationActions = (props: TablePaginationActionsProps) => {
   const classes = useStyles();

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import RouteTabList from '@/components/customTabList/RouteTabList';
@@ -21,12 +21,14 @@ import RefreshButton from './RefreshButton';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
+import { makeStyles } from '@mui/styles';
 
 const DEFAULT_TREE_WIDTH = 230;
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
+    padding: theme.spacing(0),
     '&.dragging': {
       cursor: 'ew-resize',
       '& $tree': {
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowY: 'auto',
     overflowX: 'hidden',
     boxSizing: 'border-box',
-    padding: 0,
+    paddingRight: 8,
     position: 'relative',
   },
   dragger: {

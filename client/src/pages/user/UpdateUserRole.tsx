@@ -1,15 +1,10 @@
-import {
-  makeStyles,
-  Theme,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-} from '@material-ui/core';
+import { Theme, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
 import { UserService } from '@/http';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

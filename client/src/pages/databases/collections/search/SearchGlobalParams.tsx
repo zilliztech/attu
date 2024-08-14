@@ -1,6 +1,6 @@
 import { useCallback, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Slider } from '@material-ui/core';
+import { Slider } from '@mui/material';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';

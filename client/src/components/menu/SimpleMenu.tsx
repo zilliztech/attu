@@ -1,11 +1,12 @@
 import { FC, useMemo } from 'react';
 import React from 'react';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { generateId } from '../../utils/Common';
 import { SimpleMenuType } from './Types';
 import CustomButton from '../customButton/CustomButton';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   menuPaper: {
@@ -59,7 +60,6 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
         classes={{ paper: classes.menuPaper }}
-        getContentAnchorEl={null}
         // anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         // transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >

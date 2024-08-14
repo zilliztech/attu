@@ -1,11 +1,10 @@
 import {
-  makeStyles,
   Theme,
   Checkbox,
   FormGroup,
   FormControlLabel,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -15,6 +14,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { CreateUserProps, CreateUserParams } from './Types';
 import { Option as RoleOption } from '@/components/customSelector/Types';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
 import { AuthForm } from './AuthForm';
 import CustomButton from '@/components/customButton/CustomButton';
 import { MilvusService } from '@/http';
+import { makeStyles } from '@mui/styles';
 
 const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -76,7 +77,7 @@ const ConnectContainer = () => {
       <section className={classes.box}>
         <section className={`flex-center ${classes.attu}`}>
           <Icons.attu classes={{ root: classes.logo }} />
-          <Typography variant="h2" className="title">
+          <Typography variant="body2" className="title">
             {attuTrans.admin}
           </Typography>
           {version && (
