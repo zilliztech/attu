@@ -1,8 +1,4 @@
-import {
-  // for strict mode
-  unstable_createMuiStrictModeTheme as createMuiTheme,
-  adaptV4Theme,
-} from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
 declare module '@mui/material/styles/createPalette' {
   interface Palette {
@@ -62,11 +58,11 @@ const commonThemes = {
   spacing: (factor: number) => `${8 * factor}px`,
 };
 
-export const theme = createMuiTheme(
-  adaptV4Theme({
-    ...commonThemes,
-    overrides: {
-      MuiTypography: {
+export const theme = createTheme({
+  ...commonThemes,
+  components: {
+    MuiTypography: {
+      styleOverrides: {
         button: {
           textTransform: 'initial',
           lineHeight: '16px',
@@ -105,23 +101,22 @@ export const theme = createMuiTheme(
           lineHeight: '24px',
           letterSpacing: '-0.01em',
         },
-        // style for element p
         body1: {
           fontSize: '14px',
           lineHeight: 1.5,
         },
-        // small caption
         body2: {
           fontSize: '12px',
           lineHeight: '16px',
         },
-        // tiny caption
         caption: {
           fontSize: '10px',
           lineHeight: '12px',
         },
       },
-      MuiButton: {
+    },
+    MuiButton: {
+      styleOverrides: {
         root: {
           textTransform: 'initial',
           fontWeight: 'bold',
@@ -132,39 +127,50 @@ export const theme = createMuiTheme(
           },
         },
       },
-      MuiDialog: {
+    },
+    MuiDialog: {
+      styleOverrides: {
         paper: {
           borderRadius: 8,
         },
       },
-      MuiDialogActions: {
+    },
+    MuiDialogActions: {
+      styleOverrides: {
         spacing: {
           padding: commonThemes.spacing(4),
         },
       },
-      MuiDialogContent: {
+    },
+    MuiDialogContent: {
+      styleOverrides: {
         root: {
           padding: `${commonThemes.spacing(1)} ${commonThemes.spacing(4)}`,
         },
       },
-      MuiDialogTitle: {
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
         root: {
           padding: commonThemes.spacing(4),
           paddingBottom: commonThemes.spacing(1),
         },
       },
-      MuiFormHelperText: {
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
         contained: {
           marginLeft: 0,
         },
       },
-      MuiTextField: {
-        root: {},
-      },
-      MuiFilledInput: {
+    },
+    MuiTextField: {
+      styleOverrides: {},
+    },
+    MuiFilledInput: {
+      styleOverrides: {
         root: {
           backgroundColor: '#f4f4f4',
-
           '&:hover': {
             backgroundColor: '#f4f4f4',
           },
@@ -177,8 +183,9 @@ export const theme = createMuiTheme(
           borderColor: 'transparent',
         },
       },
-
-      MuiInput: {
+    },
+    MuiInput: {
+      styleOverrides: {
         underline: {
           '&:hover:not(.Mui-disabled):before': {
             borderWidth: 1,
@@ -188,5 +195,7 @@ export const theme = createMuiTheme(
         },
       },
     },
-  })
-);
+  },
+});
+
+export default theme;

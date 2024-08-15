@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: theme.spacing(1.5),
     flex: 1,
     height: 48,
   },
@@ -51,17 +50,18 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
 
       '& .status': {
-        fontSize: '11px',
+        fontSize: '12px',
         lineHeight: 1.3,
         color: '#1ba954',
       },
     },
   },
+  title: {
+    paddingLeft: theme.spacing(2),
+  },
   database: {
     transform: 'translateY(-4px)',
     width: theme.spacing(16),
-    marginRight: theme.spacing(2),
-    // make the label of the selector top = 4px
     '& .MuiInputLabel-root': {
       top: '4px',
     },
@@ -132,7 +132,11 @@ const Header: FC = () => {
               <StatusIcon type={LoadingType.CREATING} />
             ))}
 
-          <Typography variant="h5" color="textPrimary">
+          <Typography
+            variant="h5"
+            color="textPrimary"
+            className={classes.title}
+          >
             {navInfo.navTitle}
           </Typography>
           {navInfo.extra}
@@ -150,7 +154,7 @@ const Header: FC = () => {
               </div>
             </Tooltip>
           )}
-          <Tooltip title={''}>
+          <Tooltip title={'disconnect'}>
             <div>
               <LogoutIcon
                 classes={{ root: classes.icon }}

@@ -165,7 +165,7 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   return (
     <div className={classes.collectionNode}>
       <div className={classes.collectionName}>
-        <Tooltip title={data.collection_name}>
+        <Tooltip title={data.collection_name} placement="top">
           <Typography noWrap className="collectionName">
             {data.collection_name}
           </Typography>
