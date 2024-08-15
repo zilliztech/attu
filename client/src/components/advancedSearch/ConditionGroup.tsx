@@ -1,7 +1,8 @@
 import React, { useState, FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme, createStyles, Button } from '@material-ui/core';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
 import ConditionItem from './Condition';
 import icons from '../icons/Icons';
 import CustomButton from '../customButton/CustomButton';
@@ -188,46 +189,44 @@ const ConditionGroup = (props: ConditionGroupProps) => {
 
 ConditionGroup.displayName = 'ConditionGroup';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {},
-    wrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {},
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
 
-      '& .op-or': {
-        backgroundColor: 'unset',
-        margin: '16px 0',
-      },
+    '& .op-or': {
+      backgroundColor: 'unset',
+      margin: '16px 0',
     },
-    addBtn: {},
-    binaryLogicOp: {
+  },
+  addBtn: {},
+  binaryLogicOp: {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    '& .op-split': {
+      height: '1px',
+      backgroundColor: '#E9E9ED',
       width: '100%',
-      backgroundColor: '#FFFFFF',
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      '& .op-split': {
-        height: '1px',
-        backgroundColor: '#E9E9ED',
-        width: '100%',
-      },
-      '& button': {
-        width: '42px',
-        height: '32px',
-        color: theme.palette.attuDark.main,
-      },
-      '& button.Mui-selected': {
-        backgroundColor: theme.palette.primary.main,
-        color: '#FFFFFF',
-      },
-      '& button.Mui-selected:hover': {
-        backgroundColor: theme.palette.primary.main,
-        color: '#FFFFFF',
-      },
     },
-  })
-);
+    '& button': {
+      width: '42px',
+      height: '32px',
+      color: theme.palette.attuDark.main,
+    },
+    '& button.Mui-selected': {
+      backgroundColor: theme.palette.primary.main,
+      color: '#FFFFFF',
+    },
+    '& button.Mui-selected:hover': {
+      backgroundColor: theme.palette.primary.main,
+      color: '#FFFFFF',
+    },
+  },
+}));
 
 export default ConditionGroup;

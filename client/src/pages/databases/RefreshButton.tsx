@@ -1,8 +1,7 @@
 import { useState, MouseEvent } from 'react';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-
-import { IconButtonProps } from '@material-ui/core';
+import { IconButtonProps } from '@mui/material';
 import icons from '@/components/icons/Icons';
 
 const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {

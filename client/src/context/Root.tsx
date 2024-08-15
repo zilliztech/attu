@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect, useContext } from 'react';
 import React from 'react';
-import { ThemeProvider, makeStyles } from '@material-ui/core/styles';
-import { SwipeableDrawer } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { SwipeableDrawer } from '@mui/material';
 import { authContext } from '@/context';
 import {
   RootContextType,
@@ -12,7 +13,6 @@ import {
 import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
 import CustomDialog from '@/components/customDialog/CustomDialog';
 import { MilvusService } from '@/http';
-import { theme } from '../styles/theme';
 
 const DefaultDialogConfigs: DialogType = {
   open: false,
@@ -40,20 +40,24 @@ export const rootContext = React.createContext<RootContextType>({
 });
 
 const { Provider } = rootContext;
+
+const useStyles = makeStyles((theme: Theme) => ({
+  paper: {
+    minWidth: '300px',
+  },
+  paperAnchorRight: {
+    width: '40vw',
+  },
+}));
+
 // Dialog has two type : normal | custom;
 // notice type mean it's a notice dialog you need to set props like title, content, actions
 // custom type could have own state, you could set a complete component in dialog.
 export const RootProvider = (props: { children: React.ReactNode }) => {
   const { isAuth } = useContext(authContext);
 
-  const classes = makeStyles({
-    paper: {
-      minWidth: '300px',
-    },
-    paperAnchorRight: {
-      width: '40vw',
-    },
-  })();
+  const classes = useStyles();
+
   const [snackBar, setSnackBar] = useState<SnackBarType>({
     open: false,
     type: 'success',
@@ -146,21 +150,19 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         versionInfo,
       }}
     >
-      <ThemeProvider theme={theme}>
-        <CustomSnackBar {...snackBar} onClose={handleSnackBarClose} />
-        {props.children}
-        <CustomDialog {...dialog} onClose={handleCloseDialog} />
+      <CustomSnackBar {...snackBar} onClose={handleSnackBarClose} />
+      {props.children}
+      <CustomDialog {...dialog} onClose={handleCloseDialog} />
 
-        <SwipeableDrawer
-          anchor={drawer.anchor}
-          open={drawer.open}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
-          classes={{ paperAnchorRight: classes.paperAnchorRight }}
-        >
-          {drawer.child}
-        </SwipeableDrawer>
-      </ThemeProvider>
+      <SwipeableDrawer
+        anchor={drawer.anchor}
+        open={drawer.open}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+        classes={{ paperAnchorRight: classes.paperAnchorRight }}
+      >
+        {drawer.child}
+      </SwipeableDrawer>
     </Provider>
   );
 };

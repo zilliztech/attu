@@ -1,14 +1,10 @@
 import { FC } from 'react';
-import {
-  makeStyles,
-  Theme,
-  Typography,
-  CircularProgress,
-} from '@material-ui/core';
+import { Theme, Typography, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { InsertStatusEnum, InsertStatusProps } from './Types';
 import successPath from '@/assets/imgs/insert/success.png';
 import failPath from '@/assets/imgs/insert/fail.png';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

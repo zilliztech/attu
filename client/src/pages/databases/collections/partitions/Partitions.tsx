@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
@@ -16,6 +16,7 @@ import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
 import { PartitionData } from '@server/types';
 import { formatNumber } from '@/utils';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

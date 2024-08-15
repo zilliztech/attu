@@ -1,6 +1,7 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { HEALTHY_INDEX_ROW_HEIGHT, HEALTHY_STATUS_COLORS } from './consts';
 import { EHealthyStatus } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const legendData = [
   {

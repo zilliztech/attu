@@ -1,5 +1,5 @@
-import { FormControlClassKey, SelectProps } from '@material-ui/core';
-import { ClassNameMap } from '@material-ui/core/styles/withStyles';
+import { FormControlClassKey, SelectProps } from '@mui/material';
+import { ClassNameMap } from '@mui/styles';
 
 export interface Option<T = string, U = string | number> {
   label: T;
@@ -15,7 +15,6 @@ export type CustomSelectorType = SelectProps & {
   label?: string;
   value: string | number;
   options: Option[];
-  onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
   classes?: Partial<ClassNameMap<FormControlClassKey>>;
   variant?: 'filled' | 'outlined' | 'standard';
   labelClass?: string;

@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { TableEditableHeadType } from './Types';
-import { TableHead, TableRow, TableCell, makeStyles } from '@material-ui/core';
+import { TableHead, TableRow, TableCell } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
   tableCell: {

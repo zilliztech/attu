@@ -1,11 +1,12 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme, Divider, Typography } from '@material-ui/core';
+import { Theme, Divider, Typography } from '@mui/material';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { InsertImportProps } from './Types';
 import Uploader from '@/components/uploader/Uploader';
 import { INSERT_MAX_SIZE } from '@/consts';
 import { parseByte } from '@/utils';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {

@@ -1,5 +1,5 @@
 import React, { ReactElement, Ref } from 'react';
-import { LabelDisplayedRowsArgs } from '@material-ui/core';
+import { LabelDisplayedRowsArgs } from '@mui/material';
 import { IconsType } from '../icons/Types';
 import { SearchType } from '../customInput/Types';
 

@@ -3,53 +3,30 @@ import {
   DialogActions,
   DialogContent,
   Dialog,
-  makeStyles,
   Theme,
-  createStyles,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { CustomDialogType } from './Types';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '../customButton/CustomButton';
 import CustomDialogTitle from './CustomDialogTitle';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    paper: {
-      minWidth: 540,
-      padding: 0,
-      borderRadius: 0,
-      backgroundColor: 'transparent',
-    },
-    noticePaper: {
-      backgroundColor: '#fff',
-      maxWidth: 540,
-    },
-    paperSm: {
-      maxWidth: '80%',
-    },
-    dialogContent: {
-      marginTop: theme.spacing(2),
-    },
-    title: {
-      '& p': {
-        fontWeight: 500,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        maxWidth: 300,
-        fontSize: 20,
-      },
-    },
-    padding: {
-      padding: theme.spacing(3, 4, 4),
-    },
-    cancel: {
-      color: theme.palette.common.black,
-      opacity: 0.4,
-    },
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  paper: {},
+  noticePaper: {},
+  paperSm: {
+    maxWidth: '80%',
+  },
+  dialogContent: {
+    // marginTop: theme.spacing(2),
+  },
+  title: {},
+  cancel: {
+    // color: theme.palette.common.black,
+    // opacity: 0.4,
+  },
+}));
 
 const CustomDialog: FC<CustomDialogType> = props => {
   const { t } = useTranslation('btn');
@@ -116,11 +93,10 @@ const CustomDialog: FC<CustomDialogType> = props => {
               {component}
             </DialogContent>
           )}
-          <DialogActions classes={{ spacing: classes.padding }}>
+          <DialogActions>
             <CustomButton
               onClick={() => handleCancel()}
               className={classes.cancel}
-              color="default"
             >
               {cancelLabel}
             </CustomButton>

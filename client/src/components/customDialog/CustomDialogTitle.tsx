@@ -1,22 +1,24 @@
-import { DialogTitleProps, makeStyles, Typography } from '@material-ui/core';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import { DialogTitleProps, Typography } from '@mui/material';
+import MuiDialogTitle from '@mui/material/DialogTitle';
 import icons from '../icons/Icons';
 import { theme } from '../../styles/theme';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles(() => ({
   root: {
-    margin: 0,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
+    paddingTop: 32,
   },
   title: {
     fontWeight: 500,
     wordBreak: 'break-all',
-    maxWidth: 540,
+    fontSize: '20px',
   },
   icon: {
-    fontSize: '24px',
+    fontSize: '18px',
     color: theme.palette.attuDark.main,
     cursor: 'pointer',
   },
@@ -40,12 +42,8 @@ const CustomDialogTitle = (props: IProps) => {
   const ClearIcon = icons.clear;
 
   return (
-    <MuiDialogTitle
-      disableTypography
-      className={`${innerClass.root} ${classes.root}`}
-      {...other}
-    >
-      <Typography variant="h4" className={innerClass.title}>
+    <MuiDialogTitle className={`${innerClass.root} ${classes.root}`} {...other}>
+      <Typography variant="body2" className={innerClass.title}>
         {children}
       </Typography>
       {showCloseIcon && onClose ? (

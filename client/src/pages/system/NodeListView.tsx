@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme } from '@material-ui/core';
-import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import { Theme } from '@mui/material';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useNavigationHook } from '@/hooks';
@@ -12,6 +12,7 @@ import DataCard from './DataCard';
 import { usePaginationHook } from '@/hooks';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { NodeListViewProps, Node } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

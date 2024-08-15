@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 
 export const getLabelDisplayedRows =
@@ -10,7 +10,7 @@ export const getLabelDisplayedRows =
     return (
       <>
         <Typography variant="body2" component="span">
-          {from} - {to}
+          {from} - {to} &nbsp;
         </Typography>
         <Typography variant="body2" className="rows" component="span">
           {gridTrans.of} {count} {itemName} {info}

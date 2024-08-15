@@ -1,8 +1,8 @@
 import React from 'react';
 import { IconsType } from './Types';
-import { SvgIcon } from '@material-ui/core';
-import AppsIcon from '@material-ui/icons/Apps';
-import CancelIcon from '@material-ui/icons/Cancel';
+import { SvgIcon } from '@mui/material';
+import AppsIcon from '@mui/icons-material/Apps';
+import CancelIcon from '@mui/icons-material/Cancel';
 import AttuIcon from '@/assets/icons/attu.svg?react';
 import ConsoleIcon from '@/assets/icons/console.svg?react';
 import KeyIcon from '@/assets/icons/key.svg?react';
@@ -317,7 +317,20 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   ),
 
   attu: (props = {}) => (
-    <SvgIcon viewBox="0 0 36 36" component={AttuIcon} {...props} />
+    <SvgIcon
+      width="24"
+      viewBox="0 0 85 76"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M37.5573 0.730987C37.681 0.516793 37.9902 0.516796 38.1138 0.730989L45.662 13.8048L22.4824 54.1969C15.9608 54.5099 9.94173 55.556 5.29464 56.6116L37.5573 0.730987ZM62.0648 61.0994C70.1283 61.0994 78.7156 57.2386 84.0453 54.327L57.626 8.28937C57.5025 8.0742 57.1921 8.07421 57.0686 8.28937L30.6772 54.2784C36.9536 54.7969 41.7251 56.38 46.2781 57.8906L46.2782 57.8906C51.2439 59.5381 55.9498 61.0994 62.0648 61.0994ZM45.3813 64.1357C49.7579 65.5787 53.9185 66.9505 57.5981 67.4917C66.7067 68.8311 79.2979 64.8127 84.6559 59.7226C80.6374 67.4917 70.4572 75.7965 57.5981 75.7965C47.2001 75.7965 39.2704 72.7493 31.2207 69.6561C29.3154 68.9239 27.4034 68.1892 25.4503 67.4917C19.0702 65.213 8.03853 65.4539 2.41114 65.5768C1.42242 65.5984 0.600526 65.6164 0 65.6164C4.82217 61.8658 14.4665 59.7226 25.4503 59.7226C31.9969 59.7226 38.9242 62.0066 45.3813 64.1357Z"
+        fill="currentColor"
+      />
+    </SvgIcon>
   ),
   zilliz: (props = {}) => (
     <svg
@@ -874,8 +887,8 @@ const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
       <path
         d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z"
         fill="currentColor"
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
       ></path>
     </svg>
   ),

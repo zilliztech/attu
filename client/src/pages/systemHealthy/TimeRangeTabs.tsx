@@ -1,8 +1,9 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { Dispatch, Fragment, SetStateAction } from 'react';
 import { timeRangeOptions } from './consts';
 import { ITimeRangeOption } from './Types';
 import clsx from 'clsx';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import clsx from 'clsx';
 import { useNavigationHook, useInterval } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
@@ -10,6 +10,7 @@ import NodeListView from './NodeListView';
 // import LineChartCard from './LineChartCard';
 // import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -18,6 +19,9 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     height: 'calc(100vh - 80px)',
     overflow: 'hidden',
+    border: '1px solid #e5e5e5',
+    borderRadius: 8,
+    boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
   },
   transparent: {
     opacity: 0,
@@ -25,12 +29,12 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   contentContainer: {
     display: 'flex',
-    border: '1px solid #e9e9ed',
+    borderRadius: 8,
     gap: 8,
     width: '100%',
   },
-  left: { width: '70%', background: '#fff' },
-  right: { width: '30%' },
+  left: { width: '70%', background: '#fff', borderRadius: 8 },
+  right: { width: '30%', borderRadius: 8 },
   childView: {
     height: '100%',
     width: '100%',
@@ -38,6 +42,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     position: 'absolute',
     // zIndex: 1000,
     backgroundColor: 'white',
+    borderRadius: 8,
   },
   showChildView: {
     top: 0,

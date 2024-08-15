@@ -1,13 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Button from '@material-ui/core/Button';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import { makeStyles, Theme, Link } from '@material-ui/core';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import Button from '@mui/material/Button';
+import SvgIcon from '@mui/material/SvgIcon';
+import { Theme, Link } from '@mui/material';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import peopleIcon from '@/assets/icons/people.svg?react';
 import qrcodePath from '@/assets/imgs/wechat_qrcode.jpeg';
 import discordIcon from '@/assets/icons/discord.svg?react';
+import { makeStyles } from '@mui/styles';
 
 const GITHUB_LINK = 'https://github.com/milvus-io/milvus/discussions';
 const DISCORD_LINK = 'https://discord.com/invite/8uyFbECzPX';

@@ -1,10 +1,11 @@
 import { FC, useContext, useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CodeBlock from '@/components/code/CodeBlock';
 import CustomSelector from '@/components/customSelector/CustomSelector';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {

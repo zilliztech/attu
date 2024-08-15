@@ -1,59 +1,52 @@
 import { FC, useMemo } from 'react';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { useTranslation } from 'react-i18next';
-import {
-  makeStyles,
-  Theme,
-  createStyles,
-  Typography,
-  useTheme,
-} from '@material-ui/core';
+import { Theme, Typography, useTheme } from '@mui/material';
 import { LOADING_STATE } from '@/consts';
+import { makeStyles } from '@mui/styles';
 
 export type StatusType = {
   status: LOADING_STATE;
   percentage?: number;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    label: {
-      color: theme.palette.attuGrey.dark,
-      textTransform: 'capitalize',
-    },
-    circle: {
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  label: {
+    color: theme.palette.attuGrey.dark,
+    textTransform: 'capitalize',
+  },
+  circle: {
+    backgroundColor: (props: any) => props.color,
+    borderRadius: '50%',
+    width: '10px',
+    height: '10px',
+    marginRight: theme.spacing(0.5),
+  },
+
+  loading: {
+    marginRight: '10px',
+  },
+
+  flash: {
+    animation: '$bgColorChange 1.5s infinite',
+  },
+
+  '@keyframes bgColorChange': {
+    '0%': {
       backgroundColor: (props: any) => props.color,
-      borderRadius: '50%',
-      width: '10px',
-      height: '10px',
-      marginRight: theme.spacing(0.5),
     },
-
-    loading: {
-      marginRight: '10px',
+    '50%': {
+      backgroundColor: 'transparent',
     },
-
-    flash: {
-      animation: '$bgColorChange 1.5s infinite',
+    '100%': {
+      backgroundColor: (props: any) => props.color,
     },
-
-    '@keyframes bgColorChange': {
-      '0%': {
-        backgroundColor: (props: any) => props.color,
-      },
-      '50%': {
-        backgroundColor: 'transparent',
-      },
-      '100%': {
-        backgroundColor: (props: any) => props.color,
-      },
-    },
-  })
-);
+  },
+}));
 
 const Status: FC<StatusType> = props => {
   const { status, percentage = 0 } = props;

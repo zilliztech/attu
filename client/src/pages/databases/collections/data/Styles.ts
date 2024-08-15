@@ -1,4 +1,5 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {

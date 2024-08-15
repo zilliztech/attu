@@ -1,142 +1,66 @@
 import { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { Theme } from '@mui/material/styles';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Tooltip from '@mui/material/Tooltip';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import { NavMenuItem, NavMenuType } from './Types';
-import icons from '../icons/Icons';
-import { useTranslation } from 'react-i18next';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
+import icons from '@/components/icons/Icons';
 
 const timeout = 150;
 const duration = `${timeout}ms`;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      borderRight: '1px solid #e0e0e0',
-      background: '#fff',
-      paddingTop: 0,
-      paddingBottom: theme.spacing(4),
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      transition: theme.transitions.create('width', {
-        duration,
-      }),
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    backgroundColor: '#fff',
+    padding: `${theme.spacing(0)}px ${theme.spacing(4)}px`,
+    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    transition: theme.transitions.create('width', { duration }),
+    width: 48,
+  },
+  item: {
+    width: 'initial',
+    borderRadius: 8,
+    margin: theme.spacing(0.5),
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+      color: '#fff',
+      '& .icon': { color: '#fff' },
     },
-    rootCollapse: {
-      width: '56px',
+    '&.attu .icon': {
+      color: theme.palette.primary.main,
+      '&:hover': { color: '#fff' },
+      '&.active:hover': { color: '#fff' },
     },
-    rootExpand: {
-      width: (props: any) => props.width || '100%',
+    '& .itemIcon': {
+      marginLeft: -8,
+      minWidth: 24,
     },
-    nested: {
-      paddingLeft: '12px',
+    '&.active': {
+      borderRadius: 8,
+      backgroundColor: theme.palette.primary.main,
+      color: '#fff',
+      '& .icon path': { fill: '#fff' },
     },
-    item: {
-      paddingLeft: '16px',
-      boxSizing: 'content-box',
-      height: theme.spacing(3),
-      width: 'initial',
-      color: theme.palette.attuGrey.dark,
-      '&:hover': {
-        backgroundColor: '#efefef',
-      },
-    },
-    itemIcon: {
-      minWidth: '24px',
-      marginRight: theme.spacing(1),
-    },
-    itemText: {
-      whiteSpace: 'nowrap',
-    },
-    active: {
-      color: '#323232',
-      backgroundColor: '#efefef',
+  },
 
-      '& .icon': {
-        color: theme.palette.primary.main,
-      },
-    },
-
-    logoWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      height: '86px',
-      marginBottom: theme.spacing(1),
-      paddingLeft: '16px',
-
-      '& .title': {
-        margin: 0,
-        paddingLeft: theme.spacing(2),
-        fontSize: '24px',
-        letterSpacing: '0.15px',
-      },
-    },
-    logo: {
-      transition: theme.transitions.create('all', {
-        duration,
-      }),
-    },
-    logoExpand: {
-      marginRight: theme.spacing(1),
-      transform: 'scale(1.5)',
-    },
-    logoCollapse: {
-      transform: 'scale(1.5)',
-    },
-    actionIcon: {
-      position: 'fixed',
-      backgroundColor: 'white',
-      top: '24px',
-      transition: theme.transitions.create('all', {
-        duration,
-      }),
-      minWidth: '24px',
-      padding: 0,
-
-      '& svg path': {
-        fill: theme.palette.attuGrey.dark,
-      },
-
-      '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-
-        '& svg path': {
-          fill: 'white',
-        },
-      },
-    },
-    expandIcon: {
-      left: '160px',
-      transform: 'rotateZ(180deg)',
-    },
-    collapseIcon: {
-      left: 44,
-    },
-    version: {
-      position: 'absolute',
-      fontSize: '10px',
-      bottom: 10,
-      left: 12,
-    },
-  })
-);
+  version: {
+    position: 'absolute',
+    fontSize: 10,
+    bottom: 8,
+    left: 8,
+  },
+}));
 
 const NavMenu: FC<NavMenuType> = props => {
   const { width, data, defaultActive = '', versionInfo } = props;
-  const [expanded, setExpanded] = useState<boolean>(false);
-
-  const classes = useStyles({ width, expanded });
+  const classes = useStyles({ width });
   const [active, setActive] = useState<string>(defaultActive);
-
-  const { t: commonTrans } = useTranslation();
-  const attuTrans = commonTrans('attu');
 
   useEffect(() => {
     if (defaultActive) {
@@ -157,27 +81,26 @@ const NavMenu: FC<NavMenuType> = props => {
                 ? v.iconActiveClass
                 : v.iconNormalClass
               : 'icon';
+
           return (
             <ListItem
-              button
               key={v.label}
               title={v.label}
               className={clsx(classes.item, {
                 [className]: className,
-                [classes.active]: isActive,
+                ['active']: isActive,
+                ['attu']: v.icon === icons.attu,
               })}
               onClick={() => {
                 setActive(v.label);
                 v.onClick && v.onClick();
               }}
             >
-              <ListItemIcon className={classes.itemIcon}>
-                <IconComponent classes={{ root: iconClass }} />
-              </ListItemIcon>
-
-              <Fade in={expanded} timeout={timeout}>
-                <ListItemText className={classes.itemText} primary={v.label} />
-              </Fade>
+              <Tooltip title={v.label} placement="right">
+                <ListItemIcon className="itemIcon">
+                  <IconComponent classes={{ root: iconClass }} />
+                </ListItemIcon>
+              </Tooltip>
             </ListItem>
           );
         })}
@@ -185,43 +108,9 @@ const NavMenu: FC<NavMenuType> = props => {
     );
   };
 
-  const Logo = icons.attu;
-  const ExpandIcon = icons.expand;
-
   return (
-    <List
-      component="nav"
-      className={clsx(classes.root, {
-        [classes.rootExpand]: expanded,
-        [classes.rootCollapse]: !expanded,
-      })}
-    >
+    <List component="nav" className={clsx(classes.root)}>
       <div>
-        <div className={classes.logoWrapper}>
-          <Logo
-            classes={{ root: classes.logo }}
-            className={clsx({
-              [classes.logoExpand]: expanded,
-              [classes.logoCollapse]: !expanded,
-            })}
-          />
-          <Fade in={expanded} timeout={timeout}>
-            <Typography variant="h1" className="title">
-              {attuTrans.admin}
-            </Typography>
-          </Fade>
-        </div>
-        <Button
-          onClick={() => {
-            setExpanded(!expanded);
-          }}
-          className={clsx(classes.actionIcon, {
-            [classes.expandIcon]: expanded,
-            [classes.collapseIcon]: !expanded,
-          })}
-        >
-          <ExpandIcon />
-        </Button>
         <NestList data={data} />
         <Typography
           classes={{

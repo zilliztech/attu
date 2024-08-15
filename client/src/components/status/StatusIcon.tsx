@@ -1,5 +1,6 @@
-import { CircularProgress, makeStyles, Theme } from '@material-ui/core';
+import { CircularProgress, Theme } from '@mui/material';
 import { FC, ReactElement } from 'react';
+import { makeStyles } from '@mui/styles';
 
 export enum LoadingType {
   CREATING = 'creating',

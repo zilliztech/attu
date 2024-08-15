@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { FC, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -13,6 +13,7 @@ import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { SearchParamInputConfig, SearchParamsProps } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   selector: {

@@ -217,6 +217,8 @@ const Segments = () => {
         showPagination={true}
         openCheckBox={false}
         page={currentPage}
+        tableHeaderHeight={46}
+        rowHeight={40}
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}

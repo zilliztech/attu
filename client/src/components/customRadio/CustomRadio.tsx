@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormGroup, FormControlLabel, Switch } from '@material-ui/core';
+import { FormGroup, FormControlLabel, Switch } from '@mui/material';
 
 export const CustomRadio = (props: {
   label: string;

@@ -1,24 +1,11 @@
-import {
-  // for strict mode
-  unstable_createMuiStrictModeTheme as createMuiTheme,
-} from '@material-ui/core/styles';
-import { MuiPickersOverrides } from '@material-ui/pickers/typings/overrides';
+import { createTheme } from '@mui/material/styles';
 
-type overridesNameToClassKey = {
-  [P in keyof MuiPickersOverrides]: keyof MuiPickersOverrides[P];
-};
-
-declare module '@material-ui/core/styles/overrides' {
-  export interface ComponentNameToClassKey extends overridesNameToClassKey {}
-}
-declare module '@material-ui/core/styles/createPalette' {
+declare module '@mui/material/styles/createPalette' {
   interface Palette {
-    attuBlue: Palette['primary'];
     attuGrey: Palette['primary'];
     attuDark: Palette['primary'];
   }
   interface PaletteOptions {
-    attuBlue: PaletteOptions['primary'];
     attuGrey: PaletteOptions['primary'];
     attuDark: PaletteOptions['primary'];
   }
@@ -55,10 +42,6 @@ const commonThemes = {
       light: '#ff8f68',
       dark: '#cd3804',
     },
-    attuBlue: {
-      main: '#18D4E0',
-      dark: '#dcdce3',
-    },
     attuGrey: {
       main: '#aeaebb',
       light: '#dcdce3',
@@ -68,196 +51,151 @@ const commonThemes = {
     attuDark: {
       main: '#010e29',
     },
-  },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 1025,
-      lg: 1200,
-      xl: 1920,
+    background: {
+      default: '#f5f5f5',
     },
   },
   spacing: (factor: number) => `${8 * factor}px`,
 };
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   ...commonThemes,
-  overrides: {
+  components: {
     MuiTypography: {
-      button: {
-        textTransform: 'initial',
-        lineHeight: '16px',
-        fontWeight: 'bold',
-      },
-      h1: {
-        fontSize: '36px',
-        lineHeight: '42px',
-        fontWeight: 'bold',
-        letterSpacing: '-0.02em',
-      },
-      h2: {
-        lineHeight: '24px',
-        fontSize: '28px',
-        fontWeight: 'bold',
-      },
-      h3: {
-        lineHeight: '20px',
-        fontSize: '24px',
-        fontWeight: 'bold',
-      },
-      h4: {
-        fontWeight: 500,
-        lineHeight: '23px',
-        fontSize: '20px',
-        letterSpacing: '-0.02em',
-      },
-      h5: {
-        fontWeight: 'bold',
-        fontSize: '16px',
-        lineHeight: '24px',
-      },
-      h6: {
-        fontWeight: 'normal',
-        fontSize: '16px',
-        lineHeight: '24px',
-        letterSpacing: '-0.01em',
-      },
-      // style for element p
-      body1: {
-        fontSize: '14px',
-        lineHeight: 1.5,
-      },
-      // small caption
-      body2: {
-        fontSize: '12px',
-        lineHeight: '16px',
-      },
-      // tiny caption
-      caption: {
-        fontSize: '10px',
-        lineHeight: '12px',
+      styleOverrides: {
+        button: {
+          textTransform: 'initial',
+          lineHeight: '16px',
+          fontWeight: 'bold',
+        },
+        h1: {
+          fontSize: '36px',
+          lineHeight: '42px',
+          fontWeight: 'bold',
+          letterSpacing: '-0.02em',
+        },
+        h2: {
+          lineHeight: '24px',
+          fontSize: '28px',
+          fontWeight: 'bold',
+        },
+        h3: {
+          lineHeight: '20px',
+          fontSize: '24px',
+          fontWeight: 'bold',
+        },
+        h4: {
+          fontWeight: 500,
+          lineHeight: '23px',
+          fontSize: '20px',
+          letterSpacing: '-0.02em',
+        },
+        h5: {
+          fontWeight: 'bold',
+          fontSize: '16px',
+          lineHeight: '24px',
+        },
+        h6: {
+          fontWeight: 'normal',
+          fontSize: '16px',
+          lineHeight: '24px',
+          letterSpacing: '-0.01em',
+        },
+        body1: {
+          fontSize: '14px',
+          lineHeight: 1.5,
+        },
+        body2: {
+          fontSize: '12px',
+          lineHeight: '16px',
+        },
+        caption: {
+          fontSize: '10px',
+          lineHeight: '12px',
+        },
       },
     },
     MuiButton: {
-      root: {
-        textTransform: 'initial',
-        fontWeight: 'bold',
-        borderRadius: 0,
+      styleOverrides: {
+        root: {
+          textTransform: 'initial',
+          fontWeight: 'bold',
+        },
+        text: {
+          '&:hover': {
+            backgroundColor: commonThemes.palette.primary.light,
+          },
+        },
       },
-      text: {
-        '&:hover': {
-          backgroundColor: commonThemes.palette.primary.light,
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 8,
         },
       },
     },
     MuiDialogActions: {
-      spacing: {
-        padding: commonThemes.spacing(4),
+      styleOverrides: {
+        spacing: {
+          padding: commonThemes.spacing(4),
+        },
       },
     },
     MuiDialogContent: {
-      root: {
-        padding: `${commonThemes.spacing(1)} ${commonThemes.spacing(4)}`,
+      styleOverrides: {
+        root: {
+          padding: `${commonThemes.spacing(1)} ${commonThemes.spacing(4)}`,
+        },
       },
     },
     MuiDialogTitle: {
-      root: {
-        padding: commonThemes.spacing(4),
-        paddingBottom: commonThemes.spacing(1),
+      styleOverrides: {
+        root: {
+          padding: commonThemes.spacing(4),
+          paddingBottom: commonThemes.spacing(1),
+        },
       },
     },
     MuiFormHelperText: {
-      contained: {
-        marginLeft: 0,
+      styleOverrides: {
+        contained: {
+          marginLeft: 0,
+        },
       },
     },
     MuiTextField: {
-      root: {
-        borderRadius: 0,
-      },
+      styleOverrides: {},
     },
     MuiFilledInput: {
-      root: {
-        backgroundColor: '#f4f4f4',
-        borderRadius: 0,
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-
-        '&:hover': {
+      styleOverrides: {
+        root: {
           backgroundColor: '#f4f4f4',
+          '&:hover': {
+            backgroundColor: '#f4f4f4',
+          },
         },
-      },
-      underline: {
-        '&:before': {
-          borderBottom: 'none',
-        },
-        borderWidth: 1,
-        borderColor: 'transparent',
-      },
-    },
-
-    MuiInput: {
-      underline: {
-        '&:hover:not(.Mui-disabled):before': {
+        underline: {
+          '&:before': {
+            borderBottom: 'none',
+          },
           borderWidth: 1,
-        },
-        borderWidth: 1,
-        borderColor: 'transparent',
-      },
-    },
-
-    // Date time picker theme overrides
-    MuiPickersToolbar: {
-      toolbar: {
-        '& .MuiTypography-h3': {
-          fontSize: '3rem',
-          lineHeight: 1.04,
-        },
-        '& .MuiTypography-h4': {
-          fontSize: '1.5rem',
-          lineHeight: 1.17,
+          borderColor: 'transparent',
         },
       },
     },
-    MuiPickerDTTabs: {
-      tabs: {
-        backgroundColor: '#fff',
-        '& .MuiTabs-indicator': {
-          backgroundColor: commonThemes.palette.primary.main,
+    MuiInput: {
+      styleOverrides: {
+        underline: {
+          '&:hover:not(.Mui-disabled):before': {
+            borderWidth: 1,
+          },
+          borderWidth: 1,
+          borderColor: 'transparent',
         },
-      },
-    },
-    MuiPickersCalendarHeader: {
-      switchHeader: {
-        '& .MuiTypography-body1': {
-          fontSize: '0.85rem',
-        },
-      },
-      daysHeader: {
-        '& .MuiTypography-caption': {
-          fontSize: '0.85rem',
-        },
-      },
-    },
-
-    MuiPickersDay: {
-      day: {
-        '& .MuiTypography-body2': {
-          fontSize: '0.85rem',
-        },
-      },
-      daySelected: {
-        backgroundColor: commonThemes.palette.primary.main,
-        color: '#fff',
-      },
-      dayDisabled: {},
-      current: {},
-    },
-    MuiPickersModal: {
-      dialogAction: {
-        color: commonThemes.palette.primary.main,
       },
     },
   },
 });
+
+export default theme;

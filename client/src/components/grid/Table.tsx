@@ -1,13 +1,13 @@
 import { FC } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
+import { makeStyles } from '@mui/styles';
 import { TableType } from './Types';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Typography, Theme } from '@mui/material';
 import EnhancedTableHead from './TableHead';
 import EditableTableHead from './TableEditableHead';
 import ActionBar from './ActionBar';
@@ -15,7 +15,7 @@ import LoadingTable from './LoadingTable';
 import CopyButton from '../advancedSearch/CopyButton';
 import { useTranslation } from 'react-i18next';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '100%',
     flexGrow: 1,

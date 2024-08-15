@@ -1,40 +1,8 @@
-import { Box, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
-import { FC, useState } from 'react';
+import { Box, Tab, Tabs } from '@mui/material';
+import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ITabListProps, ITabPanel } from './Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexBasis: 0,
-    flexGrow: 1,
-    '& .MuiTab-wrapper': {
-      textTransform: 'capitalize',
-      fontWeight: 'normal',
-      color: '#323232',
-    },
-    background: '#fff',
-    border: '1px solid #e9e9ed',
-    padding: theme.spacing(0, 1),
-  },
-  tab: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  tabContainer: {
-    borderBottom: '1px solid #e0e0e0',
-  },
-  tabContent: {
-    minWidth: 0,
-    marginRight: theme.spacing(3),
-  },
-  tabPanel: {
-    flexBasis: 0,
-    flexGrow: 1,
-    marginTop: theme.spacing(1),
-    overflow: 'hidden',
-  },
-}));
+import { useStyles } from './style';
 
 const TabPanel = (props: ITabPanel) => {
   const { children, value, index, className = '', ...other } = props;
@@ -91,7 +59,6 @@ const RouteTabList: FC<ITabListProps> = props => {
         {tabs.map((tab, index) => (
           <Tab
             classes={{ root: classes.tabContent }}
-            textColor="primary"
             key={tab.label}
             label={tab.label}
             {...a11yProps(index)}

@@ -1,5 +1,5 @@
 const navTrans = {
-  overview: 'Overview',
+  overview: 'Milvus Home',
   welcome: 'Welcome to Milvus!',
   collection: 'Collection',
   console: 'Search Console',

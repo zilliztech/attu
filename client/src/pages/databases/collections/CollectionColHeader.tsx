@@ -2,8 +2,9 @@ import { CollectionFullObject } from '@server/types';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { formatFieldType } from '@/utils';
 import Icons from '@/components/icons/Icons';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { ColDefinitionsType } from '@/components/grid/Types';
+import { makeStyles } from '@mui/styles';
 
 export const style = makeStyles((theme: Theme) => ({
   icon: {

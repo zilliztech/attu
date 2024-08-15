@@ -5,7 +5,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Checkbox,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { DataService } from '@/http';
 import { rootContext } from '@/context';
@@ -20,7 +20,7 @@ import { getQueryStyles } from './Styles';
 import SearchGlobalParams from './SearchGlobalParams';
 import VectorInputBox from './VectorInputBox';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CustomInput from '@/components/customInput/CustomInput';
 import {
   formatFieldType,

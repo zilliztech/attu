@@ -1,6 +1,6 @@
 import { useCallback, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Slider } from '@material-ui/core';
+import { Slider } from '@mui/material';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
@@ -219,10 +219,7 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
                     getAriaValueText={value => {
                       return `${s.anns_field}'s weight: ${value}`;
                     }}
-                    onChange={(
-                      e: ChangeEvent<{}>,
-                      value: number | number[]
-                    ) => {
+                    onChange={(event: Event, value: number | number[]) => {
                       // update the selected field
                       const weights = [
                         ...searchGlobalParams.weightedParams!.weights,
@@ -237,6 +234,7 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
                     }}
                     aria-labelledby="weight-slider"
                     valueLabelDisplay="auto"
+                    size='small'
                     step={0.1}
                     min={0}
                     max={1}

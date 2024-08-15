@@ -1,17 +1,22 @@
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import { ITab } from '@/components/customTabList/Types';
 import User from './User';
 import Roles from './Roles';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     flexDirection: 'row',
-    gap: theme.spacing(4),
+    background: theme.palette.background.paper,
+    padding: theme.spacing(0.5, 2),
+    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
+    borderRadius: 8,
+    border: '1px solid #e5e5e5',
   },
   card: {
     boxShadow: 'none',

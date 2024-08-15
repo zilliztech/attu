@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -8,6 +8,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { CreateDatabaseParams } from '@/http';
 import { dataContext, rootContext } from '@/context';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import {
   FC,
   ReactElement,
@@ -27,6 +27,7 @@ import {
 } from './Types';
 import { InsertDataParam } from '@/pages/databases/collections/Types';
 import { DataService } from '@/http';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {

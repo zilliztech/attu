@@ -1,5 +1,4 @@
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DayjsUtils from '@date-io/dayjs';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material';
 import Router from './router/Router';
 import {
   RootProvider,
@@ -9,24 +8,27 @@ import {
   PrometheusProvider,
   SystemProvider,
 } from './context';
+import { theme } from './styles/theme';
 
 function App() {
   return (
-    <AuthProvider>
-      <DataProvider>
-        <RootProvider>
-          <SystemProvider>
-            <PrometheusProvider>
-              <NavProvider>
-                <MuiPickersUtilsProvider utils={DayjsUtils}>
-                  <Router></Router>
-                </MuiPickersUtilsProvider>
-              </NavProvider>
-            </PrometheusProvider>
-          </SystemProvider>
-        </RootProvider>
-      </DataProvider>
-    </AuthProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <DataProvider>
+            <RootProvider>
+              <SystemProvider>
+                <PrometheusProvider>
+                  <NavProvider>
+                    <Router></Router>
+                  </NavProvider>
+                </PrometheusProvider>
+              </SystemProvider>
+            </RootProvider>
+          </DataProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 

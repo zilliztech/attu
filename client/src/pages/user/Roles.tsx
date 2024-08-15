@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { makeStyles, Theme, Chip } from '@material-ui/core';
+import { Theme, Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import { rootContext, dataContext } from '@/context';
@@ -10,6 +10,7 @@ import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import UpdateRoleDialog from './UpdateRoleDialog';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

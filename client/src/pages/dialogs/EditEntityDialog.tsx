@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useRef, useState } from 'react';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
@@ -13,6 +13,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CollectionFullObject } from '@server/types';
 import { DataService } from '@/http';
 import { DYNAMIC_FIELD } from '@/consts';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {

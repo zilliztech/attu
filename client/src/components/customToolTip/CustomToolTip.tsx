@@ -1,13 +1,12 @@
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import { CustomToolTipType } from './Types';
 import { FC } from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tooltip: {},
-  })
-);
+const useStyles = makeStyles((theme: Theme) => ({
+  tooltip: {},
+}));
 
 const CustomToolTip: FC<CustomToolTipType> = props => {
   const classes = useStyles();

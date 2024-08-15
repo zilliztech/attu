@@ -1,6 +1,7 @@
-import { Button, ButtonProps, makeStyles, Tooltip } from '@material-ui/core';
+import { Button, ButtonProps, Tooltip, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const buttonStyle = makeStyles(theme => ({
+const buttonStyle = makeStyles((theme: Theme) => ({
   button: {
     padding: theme.spacing(1, 3),
     textTransform: 'initial',

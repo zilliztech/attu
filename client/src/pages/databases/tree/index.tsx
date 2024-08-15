@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import TreeView from '@material-ui/lab/TreeView';
-import TreeItem from '@material-ui/lab/TreeItem';
+import { SimpleTreeView, TreeItem } from '@mui/x-tree-view';
 import icons from '@/components/icons/Icons';
-import { makeStyles, Theme, Tooltip, Typography } from '@material-ui/core';
+import { Theme, Tooltip, Typography } from '@mui/material';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
 import { formatNumber } from '@/utils';
-import { min } from 'd3';
+import { makeStyles } from '@mui/styles';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
 
@@ -57,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     '& .MuiTreeItem-content': {
       width: 'auto',
+      padding: '0',
 
       '&:hover': {
         backgroundColor: 'rgba(10, 206, 130, 0.08)',
@@ -165,7 +165,7 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   return (
     <div className={classes.collectionNode}>
       <div className={classes.collectionName}>
-        <Tooltip title={data.collection_name}>
+        <Tooltip title={data.collection_name} placement="top">
           <Typography noWrap className="collectionName">
             {data.collection_name}
           </Typography>
@@ -230,11 +230,13 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
         return (
           <TreeItem
             key={node.id}
-            nodeId={node.id}
-            icon={<CollectionIcon />}
+            itemId={node.id}
+            slots={{
+              icon: CollectionIcon,
+            }}
             label={node.name}
             className={classes.treeItem}
-            onClick={event => {
+            onClick={(event: any) => {
               event.stopPropagation();
               if (onNodeClick) {
                 onNodeClick(node);
@@ -249,11 +251,13 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       return (
         <TreeItem
           key={node.id}
-          nodeId={node.id}
-          icon={<CollectionIcon />}
+          itemId={node.id}
+          slots={{
+            icon: CollectionIcon,
+          }}
           label={<CollectionNode data={node.data!} />}
           className={classes.treeItem}
-          onClick={event => {
+          onClick={(event: any) => {
             event.stopPropagation();
             if (onNodeClick) {
               onNodeClick(node);
@@ -265,11 +269,11 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
   };
 
   return (
-    <TreeView
-      expanded={[database]}
+    <SimpleTreeView
+      expandedItems={[database]}
       multiSelect={false}
       disableSelection={false}
-      selected={
+      selectedItems={
         params.collectionName
           ? `c_${params.collectionName}`
           : params.databaseName
@@ -279,7 +283,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       {
         <TreeItem
           key={tree.id}
-          nodeId={tree.id}
+          itemId={tree.id}
           label={
             <Tooltip title={tree.name}>
               <Typography noWrap className={classes.dbName}>
@@ -288,8 +292,10 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             </Tooltip>
           }
           className={classes.treeItem}
-          icon={<DatabaseIcon />}
-          onClick={event => {
+          slots={{
+            icon: DatabaseIcon,
+          }}
+          onClick={(event: any) => {
             event.stopPropagation();
             if (onNodeClick) {
               onNodeClick(tree);
@@ -301,7 +307,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             : [<div key="stub" />]}
         </TreeItem>
       }
-    </TreeView>
+    </SimpleTreeView>
   );
 };
 

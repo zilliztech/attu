@@ -1,9 +1,4 @@
-import {
-  makeStyles,
-  Theme,
-  Checkbox,
-  FormControlLabel,
-} from '@material-ui/core';
+import { Theme, Checkbox, FormControlLabel } from '@mui/material';
 import { FC, useContext, useMemo, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -26,6 +21,7 @@ import {
   CreateField,
 } from '../databases/collections/Types';
 import { CONSISTENCY_LEVEL_OPTIONS } from '../databases/collections/Constants';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   fieldset: {

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { CustomSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
 

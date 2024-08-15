@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
 import { AuthForm } from './AuthForm';
 import CustomButton from '@/components/customButton/CustomButton';
 import { MilvusService } from '@/http';
+import { makeStyles } from '@mui/styles';
 
 const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -16,6 +17,7 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     backgroundColor: '#fff',
     border: '1px solid #E0E0E0',
+    borderRadius: 8,
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
     minHeight: 644,
   },
@@ -24,6 +26,7 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     height: 'auto',
     marginBottom: theme.spacing(1),
     display: 'block',
+    color: theme.palette.primary.main,
   },
 
   links: {
@@ -35,7 +38,7 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     padding: theme.spacing(2, 0),
     '& button': {
-      border: 'none',
+      borderColor: 'transparent',
     },
   },
 
@@ -44,22 +47,33 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing(0, 3),
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
+    borderRadius: 8,
   },
   form: {
     width: 481,
+    borderRadius: 8,
     padding: theme.spacing(5, 0),
+    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+  },
+  brand: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: theme.spacing(2),
+    height: 24,
   },
   sub: {
     marginTop: theme.spacing(1),
     fontSize: 12,
     color: '#666',
+    height: 12,
   },
 }));
 
 // used for user connect process
 const ConnectContainer = () => {
-  const [version, setVersion] = useState('');
+  const [version, setVersion] = useState('loading');
   const classes = getContainerStyles();
   const { t: commonTrans } = useTranslation();
   const attuTrans = commonTrans('attu');
@@ -76,7 +90,7 @@ const ConnectContainer = () => {
       <section className={classes.box}>
         <section className={`flex-center ${classes.attu}`}>
           <Icons.attu classes={{ root: classes.logo }} />
-          <Typography variant="h2" className="title">
+          <Typography variant="body2" className={classes.brand}>
             {attuTrans.admin}
           </Typography>
           {version && (

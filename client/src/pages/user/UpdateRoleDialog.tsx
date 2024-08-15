@@ -1,4 +1,4 @@
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import { FC, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -14,6 +14,7 @@ import {
   RBACOptions,
 } from './Types';
 import PrivilegeOptions from './PrivilegeOptions';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

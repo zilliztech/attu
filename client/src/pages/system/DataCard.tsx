@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 import Progress from './Progress';
 import { formatByteSize, formatSystemTime, getByteString } from '@/utils';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles(theme => ({
   root: {

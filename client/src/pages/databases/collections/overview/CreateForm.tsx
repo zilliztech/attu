@@ -1,4 +1,4 @@
-import { makeStyles, Theme, Typography } from '@material-ui/core';
+import { Theme, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITextfieldConfig } from '@/components/customInput/Types';
@@ -7,6 +7,7 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomGroupedSelect from '@/components/customSelector/CustomGroupedSelect';
 import { Option, GroupOption } from '@/components/customSelector/Types';
 import { FormHelperType } from '../../../../types/Common';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

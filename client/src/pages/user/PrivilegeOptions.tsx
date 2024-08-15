@@ -1,13 +1,13 @@
 import {
-  makeStyles,
   Theme,
   Typography,
   Checkbox,
   FormGroup,
   FormControlLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FC } from 'react';
 import { Privilege, PrivilegeOptionsProps } from './Types';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   checkBox: {
@@ -67,7 +67,10 @@ const PrivilegeOptions: FC<PrivilegeOptionsProps> = ({
             key={r}
             label={r}
             value={r}
-            checked={selection.filter((s: Privilege) => s.privilegeName === r).length > 0}
+            checked={
+              selection.filter((s: Privilege) => s.privilegeName === r).length >
+              0
+            }
             className={classes.checkBox}
           />
         ))}

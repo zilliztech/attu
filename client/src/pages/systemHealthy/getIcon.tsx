@@ -1,4 +1,4 @@
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 
 export const getIcon = (

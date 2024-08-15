@@ -5,11 +5,10 @@ import {
   MenuItem,
   Select,
   Checkbox,
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+} from '@mui/material';
+import { withStyles } from '@mui/styles';
 import { CustomMultiSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
-import { render } from '@testing-library/react';
 
 const CustomMenuItem = withStyles({
   root: {

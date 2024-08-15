@@ -1,10 +1,5 @@
-import {
-  IconButtonProps,
-  Tooltip,
-  IconButton,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { IconButtonProps, Tooltip, IconButton, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -24,13 +19,21 @@ const CustomIconButton = (props: IconButtonProps & { tooltip?: string }) => {
       {tooltip ? (
         <Tooltip title={tooltip} arrow>
           <span>
-            <IconButton classes={{ root: classes.iconBtn }} {...otherProps}>
+            <IconButton
+              classes={{ root: classes.iconBtn }}
+              {...otherProps}
+              size="large"
+            >
               {props.children}
             </IconButton>
           </span>
         </Tooltip>
       ) : (
-        <IconButton classes={{ root: classes.iconBtn }} {...otherProps}>
+        <IconButton
+          classes={{ root: classes.iconBtn }}
+          {...otherProps}
+          size="large"
+        >
           {props.children}
         </IconButton>
       )}

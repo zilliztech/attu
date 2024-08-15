@@ -1,4 +1,5 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   pageContainer: {
@@ -49,7 +50,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   },
   s3: {},
   selector: {
-    display: 'block',
+    width: '50%',
     marginBottom: theme.spacing(0),
   },
   exampleBtn: {
