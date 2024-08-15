@@ -89,11 +89,11 @@ function Index() {
       label: navTrans('database'),
       onClick: () => navigate(`/databases/${database}`),
     },
-    {
-      icon: icons.navSearch,
-      label: navTrans('search'),
-      onClick: () => navigate('/search'),
-    },
+    // {
+    //   icon: icons.navSearch,
+    //   label: navTrans('search'),
+    //   onClick: () => navigate('/search'),
+    // },
   ];
 
   if (!isManaged) {
