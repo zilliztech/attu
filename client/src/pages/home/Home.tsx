@@ -102,6 +102,7 @@ const Home = () => {
               return (
                 <DatabaseCard
                   database={db}
+                  isActive={db.name === database}
                   setDatabase={setDatabase}
                   dropDatabase={dropDatabase}
                   key={db.name}

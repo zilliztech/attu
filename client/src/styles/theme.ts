@@ -6,12 +6,10 @@ import {
 
 declare module '@mui/material/styles/createPalette' {
   interface Palette {
-    attuBlue: Palette['primary'];
     attuGrey: Palette['primary'];
     attuDark: Palette['primary'];
   }
   interface PaletteOptions {
-    attuBlue: PaletteOptions['primary'];
     attuGrey: PaletteOptions['primary'];
     attuDark: PaletteOptions['primary'];
   }
@@ -48,10 +46,6 @@ const commonThemes = {
       light: '#ff8f68',
       dark: '#cd3804',
     },
-    attuBlue: {
-      main: '#18D4E0',
-      dark: '#dcdce3',
-    },
     attuGrey: {
       main: '#aeaebb',
       light: '#dcdce3',
@@ -61,14 +55,8 @@ const commonThemes = {
     attuDark: {
       main: '#010e29',
     },
-  },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 1025,
-      lg: 1200,
-      xl: 1920,
+    background: {
+      default: '#f5f5f5',
     },
   },
   spacing: (factor: number) => `${8 * factor}px`,
@@ -137,12 +125,16 @@ export const theme = createMuiTheme(
         root: {
           textTransform: 'initial',
           fontWeight: 'bold',
-          borderRadius: 0,
         },
         text: {
           '&:hover': {
             backgroundColor: commonThemes.palette.primary.light,
           },
+        },
+      },
+      MuiDialog: {
+        paper: {
+          borderRadius: 8,
         },
       },
       MuiDialogActions: {
@@ -167,16 +159,11 @@ export const theme = createMuiTheme(
         },
       },
       MuiTextField: {
-        root: {
-          borderRadius: 0,
-        },
+        root: {},
       },
       MuiFilledInput: {
         root: {
           backgroundColor: '#f4f4f4',
-          borderRadius: 0,
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
 
           '&:hover': {
             backgroundColor: '#f4f4f4',

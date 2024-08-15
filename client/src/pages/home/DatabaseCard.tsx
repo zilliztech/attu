@@ -25,7 +25,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     minWidth: '168px',
     minHeight: '168px',
     cursor: 'pointer',
+    borderRadius: 8,
     '&:hover': {
+      boxShadow: '0px 0px 4px 0px #00000029',
+    },
+    '&.active': {
       boxShadow: '0px 0px 4px 0px #00000029',
     },
   },
@@ -80,6 +84,7 @@ export interface DatabaseCardProps {
   database: DatabaseObject;
   setDatabase: (database: string) => void;
   dropDatabase: (params: { db_name: string }) => Promise<void>;
+  isActive?: boolean;
 }
 
 const DatabaseCard: FC<DatabaseCardProps> = ({
@@ -87,6 +92,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   wrapperClass = '',
   setDatabase,
   dropDatabase,
+  isActive = false,
 }) => {
   // context
   const { isManaged } = useContext(authContext);
@@ -155,7 +161,10 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
 
   return (
     <section className={`${wrapperClass}`}>
-      <section className={`${classes.wrapper}`} onClick={onClick}>
+      <section
+        className={`${classes.wrapper} ${isActive ? 'active' : ''}`}
+        onClick={onClick}
+      >
         <>
           {isManaged ? <ZillizIcon /> : <DbIcon />}
 

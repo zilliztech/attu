@@ -78,6 +78,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexShrink: 1,
     overflowX: 'auto',
     padding: theme.spacing(0, 2),
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: 8,
+    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
   },
   headerIcon: {
     marginLeft: theme.spacing(0.5),

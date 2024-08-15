@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row',
     background: theme.palette.background.paper,
     padding: theme.spacing(0.5, 2),
+    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
+    borderRadius: 8,
+    border: '1px solid #e5e5e5',
   },
   card: {
     boxShadow: 'none',

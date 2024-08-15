@@ -1,14 +1,8 @@
 import { forwardRef, FC } from 'react';
 import { CustomSnackBarType } from './Types';
 import MuiAlert from '@mui/material/Alert';
-import {
-  Snackbar,
-  Theme,
-  Slide,
-  SnackbarCloseReason,
-  AlertProps,
-} from '@mui/material';
-import { TransitionProps } from '@mui/material/transitions/transition';
+import { Snackbar, Theme, AlertProps } from '@mui/material';
+import Slide, { SlideProps } from '@mui/material/Slide';
 import { makeStyles } from '@mui/styles';
 
 // if we need to use slide component
@@ -19,9 +13,13 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
   }
 );
 
-function SlideTransition(props: TransitionProps) {
-  return <Slide {...props} direction="left" />;
+interface SlideTransitionProps extends SlideProps {
+  direction?: 'left' | 'right' | 'up' | 'down';
 }
+
+const SlideTransition: React.FC<SlideTransitionProps> = props => {
+  return <Slide {...props} direction="left" />;
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -49,14 +47,7 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
     onClose,
   } = props;
   const classes = useStyles();
-  const handleClose = (
-    event: React.SyntheticEvent<any> | Event,
-    reason: SnackbarCloseReason
-  ) => {
-    // only click x to close or auto hide.
-    if (reason === 'clickaway') {
-      return;
-    }
+  const handleClose = (event: React.SyntheticEvent<any> | Event) => {
     onClose && onClose();
   };
 

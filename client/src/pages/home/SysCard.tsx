@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     border: '1px solid #E0E0E0',
     cursor: 'pointer',
+    borderRadius: 8,
     '&:hover': {
       boxShadow: '0px 0px 4px 0px #00000029',
     },

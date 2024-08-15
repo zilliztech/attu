@@ -1,15 +1,10 @@
 import { useState, FC, useEffect } from 'react';
 import clsx from 'clsx';
 import { Theme } from '@mui/material/styles';
-import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { NavMenuItem, NavMenuType } from './Types';
-import icons from '../icons/Icons';
-import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 
@@ -18,9 +13,9 @@ const duration = `${timeout}ms`;
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    borderRight: '1px solid #e0e0e0',
-    background: '#fff',
+    backgroundColor: '#fff',
     paddingTop: 0,
+    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
     paddingBottom: theme.spacing(4),
     display: 'flex',
     flexDirection: 'column',
@@ -30,75 +25,60 @@ const useStyles = makeStyles((theme: Theme) => ({
     }),
   },
   rootCollapse: {
-    width: '56px',
+    width: '48px',
   },
   rootExpand: {
     width: (props: any) => props.width || '100%',
   },
-  nested: {
-    paddingLeft: '12px',
-  },
+  nested: {},
   item: {
-    paddingLeft: '16px',
     boxSizing: 'content-box',
-    height: theme.spacing(3),
     width: 'initial',
     color: theme.palette.attuGrey.dark,
+    borderRadius: 8,
+    fontWeight: 500,
+    margin: theme.spacing(0.5),
+
     '&:hover': {
-      backgroundColor: '#efefef',
+      backgroundColor: theme.palette.primary.main,
+
+      '& .icon': {
+        color: '#fff',
+      },
+      color: '#fff',
     },
+    cursor: 'pointer',
   },
   itemIcon: {
     minWidth: '24px',
     marginRight: theme.spacing(1),
+    marginLeft: '-8px',
   },
   itemText: {
     whiteSpace: 'nowrap',
+    pointerEvents: 'none',
   },
   active: {
-    color: '#323232',
-    backgroundColor: '#efefef',
+    borderRadius: 8,
+    backgroundColor: theme.palette.primary.main,
 
     '& .icon': {
-      color: theme.palette.primary.main,
+      color: '#fff',
     },
-  },
-
-  logoWrapper: {
-    display: 'flex',
-    alignItems: 'center',
-    height: '86px',
-    marginBottom: theme.spacing(1),
-    paddingLeft: '16px',
-
-    '& .title': {
-      margin: 0,
-      paddingLeft: theme.spacing(2),
-      fontSize: '24px',
-      letterSpacing: '0.15px',
-    },
-  },
-  logo: {
-    transition: theme.transitions.create('all', {
-      duration,
-    }),
-  },
-  logoExpand: {
-    marginRight: theme.spacing(1),
-    transform: 'scale(1.5)',
-  },
-  logoCollapse: {
-    transform: 'scale(1.5)',
+    color: '#fff',
   },
   actionIcon: {
     position: 'fixed',
-    backgroundColor: 'white',
-    top: '24px',
+    top: 24,
     transition: theme.transitions.create('all', {
       duration,
     }),
-    minWidth: '24px',
+    minWidth: '16px',
     padding: 0,
+
+    '& svg': {
+      fontSize: '16px',
+    },
 
     '& svg path': {
       fill: theme.palette.attuGrey.dark,
@@ -106,7 +86,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
-
       '& svg path': {
         fill: 'white',
       },
@@ -117,13 +96,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     transform: 'rotateZ(180deg)',
   },
   collapseIcon: {
-    left: 44,
+    left: 48,
   },
   version: {
     position: 'absolute',
     fontSize: '10px',
-    bottom: 10,
-    left: 12,
+    bottom: 8,
+    left: 8,
   },
 }));
 
@@ -133,9 +112,6 @@ const NavMenu: FC<NavMenuType> = props => {
 
   const classes = useStyles({ width, expanded });
   const [active, setActive] = useState<string>(defaultActive);
-
-  const { t: commonTrans } = useTranslation();
-  const attuTrans = commonTrans('attu');
 
   useEffect(() => {
     if (defaultActive) {
@@ -156,9 +132,9 @@ const NavMenu: FC<NavMenuType> = props => {
                 ? v.iconActiveClass
                 : v.iconNormalClass
               : 'icon';
+
           return (
             <ListItem
-              button
               key={v.label}
               title={v.label}
               className={clsx(classes.item, {
@@ -173,19 +149,12 @@ const NavMenu: FC<NavMenuType> = props => {
               <ListItemIcon className={classes.itemIcon}>
                 <IconComponent classes={{ root: iconClass }} />
               </ListItemIcon>
-
-              <Fade in={expanded} timeout={timeout}>
-                <ListItemText className={classes.itemText} primary={v.label} />
-              </Fade>
             </ListItem>
           );
         })}
       </>
     );
   };
-
-  const Logo = icons.attu;
-  const ExpandIcon = icons.expand;
 
   return (
     <List
@@ -196,31 +165,6 @@ const NavMenu: FC<NavMenuType> = props => {
       })}
     >
       <div>
-        <div className={classes.logoWrapper}>
-          <Logo
-            classes={{ root: classes.logo }}
-            className={clsx({
-              [classes.logoExpand]: expanded,
-              [classes.logoCollapse]: !expanded,
-            })}
-          />
-          <Fade in={expanded} timeout={timeout}>
-            <Typography variant="h1" className="title">
-              {attuTrans.admin}
-            </Typography>
-          </Fade>
-        </div>
-        <Button
-          onClick={() => {
-            setExpanded(!expanded);
-          }}
-          className={clsx(classes.actionIcon, {
-            [classes.expandIcon]: expanded,
-            [classes.collapseIcon]: !expanded,
-          })}
-        >
-          <ExpandIcon />
-        </Button>
         <NestList data={data} />
         <Typography
           classes={{

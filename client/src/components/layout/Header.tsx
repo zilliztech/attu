@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingRight: theme.spacing(1),
     backgroundColor: '#fff',
     borderBottom: '1px solid #e0e0e0',
-    minHeight: 56,
+    height: 48,
   },
   contentWrapper: {
     display: 'flex',
@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     paddingLeft: theme.spacing(1.5),
     flex: 1,
+    height: 48,
   },
   navigation: {
     display: 'flex',
@@ -44,21 +45,26 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: theme.spacing(2),
 
       '& .address': {
-        fontSize: '14px',
-        lineHeight: '20px',
+        fontSize: '12px',
+        lineHeight: 1.3,
         color: '#545454',
       },
 
       '& .status': {
-        fontSize: '12px',
-        lineHeight: '16px',
+        fontSize: '11px',
+        lineHeight: 1.3,
         color: '#1ba954',
       },
     },
   },
   database: {
+    transform: 'translateY(-4px)',
     width: theme.spacing(16),
     marginRight: theme.spacing(2),
+    // make the label of the selector top = 4px
+    '& .MuiInputLabel-root': {
+      top: '4px',
+    },
   },
 }));
 

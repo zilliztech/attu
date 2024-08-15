@@ -19,7 +19,7 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.palette.background.default,
   },
   content: {
     display: 'flex',
@@ -80,7 +80,7 @@ function Index() {
 
   const menuItems: NavMenuItem[] = [
     {
-      icon: icons.navOverview,
+      icon: icons.attu,
       label: navTrans('overview'),
       onClick: () => navigate('/'),
     },
@@ -93,8 +93,6 @@ function Index() {
       icon: icons.navSearch,
       label: navTrans('search'),
       onClick: () => navigate('/search'),
-      iconActiveClass: 'normal',
-      iconNormalClass: 'active',
     },
   ];
 
@@ -110,8 +108,6 @@ function Index() {
         label: navTrans('system'),
         onClick: () =>
           isPrometheusReady ? navigate('/system_healthy') : navigate('/system'),
-        iconActiveClass: 'normal',
-        iconNormalClass: 'active',
       }
     );
   }

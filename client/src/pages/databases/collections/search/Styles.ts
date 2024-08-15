@@ -22,7 +22,6 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     flexShrink: 0,
     padding: '0 8px 8px 0',
-    borderRadius: '0',
     minHeight: 'calc(100vh - 164px)',
     height: 'calc(100vh - 164px)',
     overflow: 'auto',
@@ -37,18 +36,13 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
   },
 
   accordion: {
-    borderRadius: 0,
     boxShadow: 'none',
     padding: '0',
     border: '1px solid transparent',
 
-    '&:first-child': {
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: 0,
-    },
-
     '&.highlight': {
       border: `1px solid ${theme.palette.secondary.main}`,
+      borderRadius: 8,
     },
 
     // borderBottom: `1px solid ${theme.palette.divider}`,
