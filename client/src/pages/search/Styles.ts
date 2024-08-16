@@ -13,11 +13,11 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     gap: theme.spacing(0),
     width: 360,
     flexShrink: 0,
-    backgroundColor: '#fff',
-    border: '1px solid #e0e0e0',
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.divider}`,
 
     '& textarea': {
-      border: `1px solid ${theme.palette.attuGrey.main}`,
+      border: `1px solid ${theme.palette.divider}`,
       marginTop: theme.spacing(0),
       marginBottom: theme.spacing(1),
       overflow: 'scroll',
@@ -62,7 +62,7 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
   },
 
   resultsWrapper: {
-    border: '1px solid #e0e0e0',
+    border: `1px solid ${theme.palette.divider}`,
     background: '#fff',
     display: 'flex',
     flexDirection: 'column',
@@ -97,14 +97,14 @@ export const getVectorSearchStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(0, 1),
     margin: theme.spacing(0, 1),
 
-    backgroundColor: '#fff',
-    color: theme.palette.attuGrey.dark,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.secondary,
   },
   menuItem: {
     fontWeight: 500,
     fontSize: '12px',
     lineHeight: '16px',
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
   },
   error: {
     display: 'block',

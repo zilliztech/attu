@@ -15,10 +15,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   tab: {
     height: theme.spacing(0.5),
-    backgroundColor: theme.palette.primary.main,
   },
   tabContainer: {
-    borderBottom: '1px solid #e0e0e0',
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   tabContent: {
     minWidth: 0,

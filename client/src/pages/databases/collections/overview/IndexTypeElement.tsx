@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   btnDisabled: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     pointerEvents: 'none',
 
     '&:hover': {

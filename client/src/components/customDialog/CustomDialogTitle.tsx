@@ -18,7 +18,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   icon: {
     fontSize: '18px',
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     cursor: 'pointer',
   },
 }));

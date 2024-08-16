@@ -10,7 +10,7 @@ import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   tip: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.primary,
     fontWeight: 500,
     marginBottom: theme.spacing(1),
   },
@@ -31,7 +31,7 @@ const getStyles = makeStyles((theme: Theme) => ({
       '& .divider': {
         width: '20px',
         margin: theme.spacing(0, 4),
-        backgroundColor: theme.palette.attuGrey.dark,
+        backgroundcolor: theme.palette.text.secondary,
       },
     },
 
@@ -44,10 +44,10 @@ const getStyles = makeStyles((theme: Theme) => ({
   uploadWrapper: {
     marginTop: theme.spacing(3),
     padding: theme.spacing(1),
-    backgroundColor: '#f4f4f4',
+    backgroundColor: theme.palette.background.default,
 
     '& .text': {
-      color: theme.palette.attuGrey.dark,
+      color: theme.palette.text.secondary,
     },
 
     '& .file': {
@@ -58,10 +58,10 @@ const getStyles = makeStyles((theme: Theme) => ({
       display: 'flex',
       alignItems: 'center',
 
-      border: '1px solid #e9e9ed',
+      border: `1px solid ${theme.palette.divider}`,
       padding: theme.spacing(1),
 
-      backgroundColor: '#fff',
+      backgroundColor: theme.palette.background.paper,
 
       '& .uploader': {
         marginRight: theme.spacing(1),
@@ -70,7 +70,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 
     '& .sampleWrapper': {
       '& .sample': {
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(2),
         margin: theme.spacing(1, 0),
       },

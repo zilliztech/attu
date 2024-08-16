@@ -6,9 +6,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   sysCard: {
     minWidth: 'auto',
     gap: theme.spacing(1),
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(2),
-    border: '1px solid #E0E0E0',
+    border: `1px solid ${theme.palette.divider}`,
     cursor: 'pointer',
     borderRadius: 8,
     '&:hover': {
@@ -23,11 +23,11 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: 0,
       fontSize: '14px',
       lineHeight: 1.5,
-      color: theme.palette.attuGrey.dark,
+      color: theme.palette.text.secondary,
     },
     '& a': {
       textDecoration: 'none',
-      color: '#000',
+      color: theme.palette.text.primary,
     },
   },
 }));

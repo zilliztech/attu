@@ -20,11 +20,11 @@ const getStyles = makeStyles((theme: Theme) => ({
     padding: '0 16px',
     display: 'flex',
     flexDirection: 'column',
-    border: '1px solid #e9e9ed',
+    border: `1px solid ${theme.palette.divider}`,
   },
   childCloseBtnContainer: {
     border: 0,
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     cursor: 'pointer',
     width: '100%',
     height: '28px',

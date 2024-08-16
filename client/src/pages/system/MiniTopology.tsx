@@ -28,7 +28,7 @@ const getStyles = makeStyles((theme: Theme) => ({
       outline: 'none',
 
       '& svg path': {
-        fill: 'white',
+        fill: theme.palette.background.paper,
       },
 
       '& circle': {
@@ -37,7 +37,7 @@ const getStyles = makeStyles((theme: Theme) => ({
       },
 
       '& text': {
-        fill: 'white',
+        fill: theme.palette.background.paper,
       },
     },
   },
@@ -72,7 +72,7 @@ const MiniTopo: FC<MiniTopoProps> = props => {
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect width="100%" height="100%" fill="white" />
+      <rect width="100%" height="100%" fill={theme.palette.background.paper} />
       <line
         x1={`${WIDTH / 3}`}
         y1={`${HEIGHT / 3}`}
@@ -90,7 +90,7 @@ const MiniTopo: FC<MiniTopoProps> = props => {
           cx={`${WIDTH / 3}`}
           cy={`${HEIGHT / 3}`}
           r={R1}
-          fill="white"
+          fill={theme.palette.background.paper}
           stroke={theme.palette.primary.main}
         />
         <text
@@ -117,8 +117,8 @@ const MiniTopo: FC<MiniTopoProps> = props => {
             cx={R2}
             cy={R2}
             r={R2}
-            fill={theme.palette.primary.main}
-            stroke="white"
+            fill={theme.palette.background.paper}
+            stroke={theme.palette.primary.main}
           />
           <rect
             className="selected"
@@ -126,12 +126,12 @@ const MiniTopo: FC<MiniTopoProps> = props => {
             y={R2 - W3 / 2}
             width={W3}
             height={W3}
-            fill="white"
+            fill={theme.palette.primary.main}
           />
         </svg>
         <text
           textAnchor="middle"
-          fill={theme.palette.attuGrey.dark}
+          fill={theme.palette.text.primary}
           fontSize="12"
           x={childNodeCenterX}
           y={childNodeCenterY + 50}

@@ -28,7 +28,7 @@ const userStyle = makeStyles((theme: Theme) => ({
   },
   noData: {
     pointerEvents: 'none',
-    color: '#999',
+    color:  theme.palette.text.secondary,
     textAlign: 'center',
     height: '50vh',
     display: 'grid',

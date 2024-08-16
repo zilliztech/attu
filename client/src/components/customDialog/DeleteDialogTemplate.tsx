@@ -18,10 +18,11 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     maxWidth: 540,
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.background.paper,
   },
   info: {
     marginBottom: theme.spacing(0.5),
+    color: theme.palette.text.secondary,
   },
   mb: {
     marginBottom: theme.spacing(2.5),
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '10px 12px',
   },
   cancelBtn: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
   },
   checkBox: {},
 }));

@@ -21,7 +21,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     lineHeight: '32px',
-    color: 'rgba(0, 0, 0, 0.33)',
+    color: theme.palette.text.primary,
     fontWeight: 'bold',
     fontSize: '12.8px',
   },

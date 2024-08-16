@@ -12,11 +12,12 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  overviewContainer: {
+  homeWrapper: {
     gap: theme.spacing(2),
     '& h4': {
       marginBottom: theme.spacing(2),
     },
+    color: theme.palette.text.primary,
   },
 
   section: {
@@ -87,7 +88,7 @@ const Home = () => {
     (collections.length > 0 && collections.every(c => !c.schema));
 
   return (
-    <section className={`page-wrapper  ${classes.overviewContainer}`}>
+    <section className={`page-wrapper  ${classes.homeWrapper}`}>
       <section className={classes.section}>
         <Typography variant="h4">{databaseTrans('databases')}</Typography>
         {isLoading ? (

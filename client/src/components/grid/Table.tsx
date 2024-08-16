@@ -41,16 +41,16 @@ const useStyles = makeStyles((theme: Theme) => ({
       opacity: 0,
     },
   },
-  checkbox: {},
+  checkbox: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
   rowHover: {
     '&:hover': {
-      backgroundColor: `${theme.palette.secondary.main} !important`,
       '& td': {
         background: 'inherit',
       },
 
       '& $hoverActionCell': {
-        backgroundColor: theme.palette.secondary.main,
         '& span': {
           opacity: 1,
         },
@@ -58,7 +58,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   selected: {
-    backgroundColor: `#f3fcfe !important`,
     '& td': {
       background: 'inherit',
     },
@@ -82,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: theme.spacing(6),
     textAlign: 'center',
     letterSpacing: '0.5px',
-    color: 'rgba(0, 0, 0, 0.6)',
+    color: theme.palette.text.secondary,
   },
   copyBtn: {
     '& svg': {

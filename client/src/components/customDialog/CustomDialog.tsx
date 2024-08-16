@@ -13,7 +13,9 @@ import CustomDialogTitle from './CustomDialogTitle';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  paper: {},
+  paper: {
+    border: `1px solid ${theme.palette.divider}`,
+  },
   noticePaper: {},
   paperSm: {
     maxWidth: '80%',

@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '16px',
   },
   link: {
-    color: theme.palette.common.black,
+    color: theme.palette.text.primary,
     display: 'inline-block',
     wordBreak: 'break-all',
     whiteSpace: 'nowrap',
@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     height: '20px',
+    textDecoration: 'none',
   },
   highlight: {
     color: theme.palette.primary.main,

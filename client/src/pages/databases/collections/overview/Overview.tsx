@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginRight: theme.spacing(2),
 
       '& .key': {
-        color: theme.palette.attuGrey.dark,
+        color: theme.palette.text.secondary,
         display: 'inline-block',
         marginRight: theme.spacing(0.5),
       },

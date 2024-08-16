@@ -1,14 +1,14 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material';
+import { useTheme, Theme } from '@mui/material';
 import Progress from './Progress';
 import { formatByteSize, formatSystemTime, getByteString } from '@/utils';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 import { makeStyles } from '@mui/styles';
 
-const getStyles = makeStyles(theme => ({
+const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    backgroundColor: '#F6F6F6',
+    backgroundColor: theme.palette.background.default,
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
     flexGrow: 1,
@@ -20,21 +20,21 @@ const getStyles = makeStyles(theme => ({
   },
 
   content: {
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     fontSize: '20px',
     fontWeight: 600,
     lineHeight: '36px',
   },
 
   desc: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '14px',
     lineHeight: '36px',
     marginLeft: theme.spacing(1),
   },
 
   rootName: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '20px',
     lineHeight: '24px',
   },
@@ -46,7 +46,7 @@ const getStyles = makeStyles(theme => ({
   },
 
   ip: {
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     fontSize: '11px',
     lineHeight: '24px',
   },
@@ -64,7 +64,7 @@ const getStyles = makeStyles(theme => ({
 
   sectionHeaderCell: {
     display: 'table-cell',
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '12px',
     lineHeight: '24px',
     padding: theme.spacing(0.5, 1),
@@ -73,8 +73,8 @@ const getStyles = makeStyles(theme => ({
   },
 
   sectionCell: {
-    backgroundColor: 'white',
-    color: theme.palette.attuDark.main,
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
     display: 'table-cell',
     fontSize: '14px',
     padding: theme.spacing(1, 1),
@@ -84,7 +84,7 @@ const getStyles = makeStyles(theme => ({
   },
   progressTitle: {
     fontSize: '14px',
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     lineHeight: '24px',
     display: 'flex',
     justifyContent: 'space-between',

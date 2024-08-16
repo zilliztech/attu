@@ -344,6 +344,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {},
   afBtn: {
     color: theme.palette.primary.main,
+    minWidth: 32,
+    padding: '8px 0',
+    '& .MuiButton-endIcon': {
+      marginLeft: 0,
+    },
   },
 }));
 

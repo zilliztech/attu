@@ -9,6 +9,7 @@ import {
   InputLabel,
   StandardTextFieldProps,
   TextField,
+  Theme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Icons from '../icons/Icons';
@@ -70,9 +71,9 @@ const handleOnChange = (param: IChangeParam) => {
   }
 };
 
-const getAdornmentStyles = makeStyles(theme => ({
+const getAdornmentStyles = makeStyles((theme: Theme) => ({
   icon: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -131,7 +132,8 @@ const getAdornmentInput = (
               onClick={onIconClick || (() => {})}
               edge="end"
               role="icon-button"
-              size="large">
+              size="large"
+            >
               {isPasswordType
                 ? showPassword
                   ? Icons.visible({ classes: { root: classes.icon } })
@@ -255,7 +257,7 @@ const getTextfield = (
   );
 };
 
-const getStyles = makeStyles(theme => ({
+const getStyles = makeStyles((theme: Theme) => ({
   errWrapper: {
     display: 'flex',
     alignItems: 'flex-start',

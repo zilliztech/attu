@@ -161,7 +161,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     minWidth: '466px',
     minHeight: '62px',
-    background: '#FFFFFF',
+    background:  theme.palette.background.paper,
     padding: theme.spacing(1.5, 2),
     display: 'flex',
     flexDirection: 'row',

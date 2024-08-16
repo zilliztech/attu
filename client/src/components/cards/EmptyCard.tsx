@@ -7,7 +7,7 @@ import { EmptyCardProps } from './Types';
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     flexDirection: 'column',
     textAlign: 'center',
   },

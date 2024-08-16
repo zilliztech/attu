@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   desc: {
     margin: '8px 0 16px 0',
     maxWidth: 480,
+    color: theme.palette.text.secondary,
   },
 }));
 

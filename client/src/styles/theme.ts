@@ -176,12 +176,6 @@ export const getAttuTheme = (mode: PaletteMode) => {
       },
       MuiFilledInput: {
         styleOverrides: {
-          root: {
-            backgroundColor: mode === 'light' ? '#f4f4f4' : '#303030',
-            '&:hover': {
-              backgroundColor: mode === 'light' ? '#f4f4f4' : '#404040',
-            },
-          },
           underline: {
             '&:before': {
               borderBottom: 'none',

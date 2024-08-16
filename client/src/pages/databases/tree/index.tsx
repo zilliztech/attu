@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '13px',
     fontWeight: 500,
     marginLeft: theme.spacing(0.5),
-    color: theme.palette.attuGrey.main,
+    color: theme.palette.text.secondary,
     pointerEvents: 'none',
   },
   dot: {
@@ -135,8 +135,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: `${theme.palette.primary.light} !important`,
   },
   noIndex: {
-    border: `1px solid ${theme.palette.attuGrey.light}`,
-    backgroundColor: theme.palette.attuGrey.light,
+    border: `1px solid ${theme.palette.text.disabled}`,
+    backgroundColor: theme.palette.text.disabled,
   },
 }));
 
