@@ -34,8 +34,12 @@ const useStyles = makeStyles((theme: Theme) => ({
       props.showCode ? theme.spacing(4) : 0,
   },
   actions: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
     justifyContent: 'space-between',
+    '& .btn': {
+      margin: theme.spacing(.5),
+    },
   },
 }));
 
@@ -89,7 +93,11 @@ const DialogTemplate: FC<DialogContainerProps> = ({
               <div>{leftActions}</div>
               <div>
                 {showCancel && (
-                  <CustomButton onClick={onCancel} name="cancel">
+                  <CustomButton
+                    onClick={onCancel}
+                    name="cancel"
+                    className="btn"
+                  >
                     {cancel}
                   </CustomButton>
                 )}
@@ -99,6 +107,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                   color="primary"
                   disabled={confirmDisabled}
                   name="confirm"
+                  className="btn"
                 >
                   {confirm}
                 </CustomButton>

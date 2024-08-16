@@ -10,22 +10,19 @@ import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import icons from '@/components/icons/Icons';
 
-const timeout = 150;
-const duration = `${timeout}ms`;
-
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     backgroundColor: '#fff',
-    padding: `${theme.spacing(0)}px ${theme.spacing(4)}px`,
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
     borderRight: `1px solid ${theme.palette.divider}`,
-    transition: theme.transitions.create('width', { duration }),
     width: 48,
+    paddingTop: 0,
   },
   item: {
     width: 'initial',
     borderRadius: 8,
     margin: theme.spacing(0.5),
+    marginBottom: theme.spacing(1.5),
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
