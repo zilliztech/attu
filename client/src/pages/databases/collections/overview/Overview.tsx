@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       fontSize: '14px',
       lineHeight: 1.5,
     },
+    color: theme.palette.text.primary,
     paddingBottom: theme.spacing(2),
   },
   icon: {
@@ -100,7 +101,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
 
       '& .value': {
-        color: theme.palette.attuDark.main,
+        color: theme.palette.text.primary,
       },
     },
   },

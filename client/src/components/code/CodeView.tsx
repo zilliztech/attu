@@ -13,7 +13,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '100%',
 
     padding: theme.spacing(4),
-    backgroundColor: theme.palette.attuDark.main,
+    backgroundColor: theme.palette.text.primary,
     display: 'flex',
     flexDirection: 'column',
     color: '#fff',

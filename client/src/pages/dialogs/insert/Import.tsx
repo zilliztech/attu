@@ -25,7 +25,7 @@ const getStyles = makeStyles((theme: Theme) => ({
       '& .selectLabel': {
         fontSize: '14px',
         lineHeight: '20px',
-        color: theme.palette.attuDark.main,
+        color: theme.palette.text.primary,
       },
 
       '& .divider': {

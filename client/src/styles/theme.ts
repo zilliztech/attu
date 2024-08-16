@@ -55,6 +55,7 @@ const getCommonThemes = (mode: PaletteMode) => ({
     },
     background: {
       default: mode === 'light' ? '#f5f5f5' : '#121212',
+      paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
     },
   },
   spacing: (factor: number) => `${8 * factor}px`,
