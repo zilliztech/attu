@@ -160,7 +160,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor:  theme.palette.background.default,
     padding: theme.spacing(0, 0, 1),
     gap: theme.spacing(1),
 

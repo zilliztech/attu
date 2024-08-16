@@ -8,10 +8,11 @@ import {
   Checkbox,
   TableSortLabel,
   Typography,
+  Theme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   visuallyHidden: {
     border: 0,
     clip: 'rect(0 0 0 0)',
@@ -30,7 +31,6 @@ const useStyles = makeStyles(theme => ({
   },
   tableHeader: {
     padding: theme.spacing(1.5),
-    color: 'rgba(0, 0, 0, 0.6)',
     fontWeight: 500,
     maxHeight: 45,
     overflow: 'hidden',

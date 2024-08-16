@@ -14,7 +14,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    color: theme.palette.common.black,
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.default,
     opacity: 0.4,
   },
   btn: {

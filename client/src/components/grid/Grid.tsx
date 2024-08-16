@@ -67,6 +67,7 @@ const userStyle = makeStyles((theme: Theme) => ({
 
   wrapper: {
     height: '100%',
+    
   },
   container: {
     flexWrap: 'nowrap',

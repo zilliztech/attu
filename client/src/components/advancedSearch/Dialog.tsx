@@ -193,7 +193,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   applyBtn: {
     backgroundColor: theme.palette.primary.main,
-    color: 'white',
+    color: theme.palette.text.primary,
   },
   copyButton: {},
   expResult: {

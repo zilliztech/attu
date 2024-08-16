@@ -1,4 +1,6 @@
+import React from 'react';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Router from './router/Router';
 import {
   RootProvider,
@@ -8,9 +10,19 @@ import {
   PrometheusProvider,
   SystemProvider,
 } from './context';
-import { theme } from './styles/theme';
+import { createTheme } from '@mui/material/styles';
+import getCommonThemes from './styles/theme';
+
+const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
 function App() {
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const theme = React.useMemo(
+    () => createTheme(getCommonThemes(prefersDarkMode ? 'dark' : 'dark')),
+    [true]
+  );
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>

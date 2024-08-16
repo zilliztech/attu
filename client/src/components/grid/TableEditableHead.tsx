@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { TableEditableHeadType } from './Types';
-import { TableHead, TableRow, TableCell } from '@mui/material';
+import { TableHead, TableRow, TableCell, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   tableCell: {
     paddingLeft: theme.spacing(2),
   },

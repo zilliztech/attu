@@ -1,19 +1,19 @@
-import { InputAdornment, TextField } from '@mui/material';
+import { InputAdornment, TextField, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icons from '../icons/Icons';
 import { SearchType } from './Types';
 
-const useSearchStyles = makeStyles(theme => ({
+const useSearchStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     display: 'flex',
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(1),
     width: '240px',
-    border: '1px solid #e9e9ed',
+    border: `1px solid ${theme.palette.divider}`,
     fontSize: '14px',
 
     transition: 'all 0.2s',
