@@ -11,12 +11,14 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     width: '100%',
     height: '100vh',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.default,
   },
   box: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    border: '1px solid #E0E0E0',
+    backgroundColor: theme.palette.background.default,
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: 8,
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
     minHeight: 644,
@@ -28,7 +30,6 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     display: 'block',
     color: theme.palette.primary.main,
   },
-
   links: {
     marginTop: theme.spacing(4),
     display: 'flex',
@@ -41,13 +42,12 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
       borderColor: 'transparent',
     },
   },
-
   attu: {
     width: 299,
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing(0, 3),
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.background.default,
     borderRadius: 8,
   },
   form: {
@@ -55,18 +55,19 @@ const getContainerStyles = makeStyles((theme: Theme) => ({
     borderRadius: 8,
     padding: theme.spacing(5, 0),
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+    backgroundColor: theme.palette.background.paper,
   },
   brand: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: theme.palette.text.primary,
     marginTop: theme.spacing(2),
     height: 24,
   },
   sub: {
     marginTop: theme.spacing(1),
     fontSize: 12,
-    color: '#666',
+    color: theme.palette.text.secondary,
     height: 12,
   },
 }));

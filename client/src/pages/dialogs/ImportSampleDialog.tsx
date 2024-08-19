@@ -33,11 +33,11 @@ const getStyles = makeStyles((theme: Theme) => {
           fontSize: '14px',
           lineHeight: '20px',
 
-          color: theme.palette.attuDark.main,
+          color: theme.palette.text.secondary,
         },
 
         '& .description': {
-          color: theme.palette.attuGrey.dark,
+          color: theme.palette.text.secondary,
           marginBottom: theme.spacing(2),
           fontSize: 13,
           lineHeight: 1.5,

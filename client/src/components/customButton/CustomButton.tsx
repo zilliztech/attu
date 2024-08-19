@@ -12,11 +12,12 @@ const buttonStyle = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1),
 
     '&:hover': {
-      backgroundColor: '#f4f4f4',
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.background.paper,
     },
   },
   containedBtn: {
-    color: '#fff',
+    color: theme.palette.background.paper,
     backgroundColor: theme.palette.primary.main,
     boxShadow: 'initial',
     fontWeight: 'bold',

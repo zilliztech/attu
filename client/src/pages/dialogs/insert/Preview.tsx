@@ -16,7 +16,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '75vw',
   },
   selectorTip: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontWeight: 500,
     marginBottom: theme.spacing(1),
   },
@@ -43,7 +43,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
 
     '& .text': {
-      color: theme.palette.attuGrey.dark,
+      color: theme.palette.text.secondary,
       fontWeight: 500,
     },
   },
@@ -52,7 +52,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     minWidth: '160px',
 
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     backgroundColor: '#fff',
 
     '&:hover': {
@@ -61,13 +61,13 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 
   menuIcon: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
   },
   menuItem: {
     fontWeight: 500,
     fontSize: '12px',
     lineHeight: '16px',
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
   },
   menuActive: {
     color: theme.palette.primary.main,

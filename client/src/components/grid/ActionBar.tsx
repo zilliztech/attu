@@ -10,6 +10,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     display: 'inline-block',
     marginRight: theme.spacing(1),
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
   },
   tip: {
     position: 'absolute',
@@ -21,19 +23,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   disabled: {
-    color: theme.palette.common.black,
     opacity: 0.15,
   },
   hoverType: {
     marginRight: 0,
 
     '& button': {
-      color: '#fff',
+      color: theme.palette.text.primary,
     },
   },
   link: {
     textDecoration: 'underline',
-    color: theme.palette.common.black,
+    color: theme.palette.text.primary,
   },
 }));
 

@@ -55,4 +55,6 @@ export type IconsType =
   | 'code'
   | 'reset'
   | 'link'
-  | 'cross';
+  | 'cross'
+  | 'day'
+  | 'night';

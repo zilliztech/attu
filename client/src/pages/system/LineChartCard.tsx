@@ -1,10 +1,10 @@
 import { FC, useState, useEffect, useRef } from 'react';
-import { useTheme } from '@mui/material';
+import { useTheme, Theme } from '@mui/material';
 import BaseCard from './BaseCard';
 import { LineChartCardProps, LinceChartNode } from './Types';
 import { makeStyles } from '@mui/styles';
 
-const getStyles = makeStyles(theme => ({
+const getStyles = makeStyles((theme: Theme) => ({
   root: {
     transform: 'scaleY(-1)',
     maxWidth: '90%',
@@ -102,7 +102,7 @@ const LineChartCard: FC<LineChartCardProps> = props => {
         width={FULL_WIDTH}
         height={FULL_HEIGHT}
         viewBox={`0 5 ${FULL_WIDTH} ${FULL_HEIGHT}`}
-        fill="white"
+        fill={theme.palette.background.paper}
         xmlns="http://www.w3.org/2000/svg"
       >
         {displayNodes.map((node, index) => {
@@ -136,7 +136,7 @@ const LineChartCard: FC<LineChartCardProps> = props => {
                   cx={x1}
                   cy={y1}
                   r={ROUND}
-                  fill="white"
+                  fill={theme.palette.background.paper}
                   stroke={theme.palette.primary.main}
                 />
                 <rect

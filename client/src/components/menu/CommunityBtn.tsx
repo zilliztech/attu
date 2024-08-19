@@ -82,7 +82,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   contentDesc: {
     fontSize: theme.spacing(1.5),
     lineHeight: theme.spacing(2.5),
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     marginBottom: theme.spacing(1),
   },
   contentLink: {

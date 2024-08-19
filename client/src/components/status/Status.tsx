@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
   },
   label: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     textTransform: 'capitalize',
   },
   circle: {

@@ -19,18 +19,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '100%',
     flexGrow: 1,
-    // /* set flex basis to make child item height 100% work on Safari */
-    // flexBasis: 0,
-    background: '#fff',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
   },
-  box: {
-    backgroundColor: '#fff',
-  },
+  box: {},
   table: {
     minWidth: '100%',
   },
   tableCell: {
-    background: theme.palette.common.white,
     padding: theme.spacing(1, 1.5),
   },
   cellContainer: {
@@ -41,23 +37,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     transition: '0.2s all',
     padding: 0,
     width: '50px',
-    backgroundColor: '#fff',
     '& span': {
       opacity: 0,
     },
   },
   checkbox: {
-    background: theme.palette.common.white,
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   rowHover: {
     '&:hover': {
-      backgroundColor: '#f3fcfe !important',
       '& td': {
         background: 'inherit',
       },
 
       '& $hoverActionCell': {
-        backgroundColor: theme.palette.primary.main,
         '& span': {
           opacity: 1,
         },
@@ -65,13 +58,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   selected: {
-    backgroundColor: '#f3fcfe !important',
     '& td': {
       background: 'inherit',
     },
   },
   cell: {
-    borderBottom: '1px solid #e9e9ed',
+    borderBottom: `1px solid ${theme.palette.divider}`,
 
     '& p': {
       display: 'inline-block',
@@ -89,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: theme.spacing(6),
     textAlign: 'center',
     letterSpacing: '0.5px',
-    color: 'rgba(0, 0, 0, 0.6)',
+    color: theme.palette.text.secondary,
   },
   copyBtn: {
     '& svg': {

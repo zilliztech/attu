@@ -20,14 +20,20 @@ const getStyles = makeStyles((theme: Theme) => ({
     padding: '0 16px',
     display: 'flex',
     flexDirection: 'column',
-    border: '1px solid #e9e9ed',
+    border: `1px solid ${theme.palette.divider}`,
   },
   childCloseBtnContainer: {
     border: 0,
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     cursor: 'pointer',
     width: '100%',
     height: '28px',
+  },
+  childCloseBtn: {
+    border: 0,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    width: '100%',
   },
   gridContainer: {
     height: `calc(100vh - 120px)`,
@@ -194,7 +200,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
         className={classes.childCloseBtnContainer}
         onClick={() => setShowChildView(false)}
       >
-        <KeyboardArrowDown />
+        <KeyboardArrowDown className={classes.childCloseBtn} />
       </button>
       <div className={classes.gridContainer}>
         <div className={classes.leftContainer}>

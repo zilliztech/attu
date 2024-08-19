@@ -8,15 +8,17 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import icons from '../icons/Icons';
 import { makeStyles } from '@mui/styles';
+import IconButton from '@mui/material/IconButton';
+import { ColorModeContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
     display: 'flex',
     alignItems: 'center',
-    color: theme.palette.common.black,
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
     paddingRight: theme.spacing(1),
-    backgroundColor: '#fff',
-    borderBottom: '1px solid #e0e0e0',
+    borderBottom: `1px solid ${theme.palette.divider}`,
     height: 48,
   },
   contentWrapper: {
@@ -46,7 +48,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       '& .address': {
         fontSize: '12px',
         lineHeight: 1.3,
-        color: '#545454',
       },
 
       '& .status': {
@@ -66,11 +67,27 @@ const useStyles = makeStyles((theme: Theme) => ({
       top: '4px',
     },
   },
+  modeBtn: {
+    marginRight: theme.spacing(1),
+    '& svg': {
+      fontSize: 18,
+    },
+    color: theme.palette.text.primary,
+  },
+  extra: {
+    marginLeft: theme.spacing(0.5),
+    '& svg': {
+      fontSize: 15,
+      color: theme.palette.primary.main,
+    },
+  },
 }));
 
 const Header: FC = () => {
   const classes = useStyles();
+  // use context
   const { navInfo } = useContext(navContext);
+  const { mode, toggleColorMode } = useContext(ColorModeContext);
   const { database, databases, setDatabase, loading } = useContext(dataContext);
   const { authReq, logout } = useContext(authContext);
   const { address, username } = authReq;
@@ -139,10 +156,17 @@ const Header: FC = () => {
           >
             {navInfo.navTitle}
           </Typography>
-          {navInfo.extra}
+          <span className={classes.extra}>{navInfo.extra}</span>
         </div>
 
         <div className={classes.addressWrapper}>
+          <IconButton
+            className={classes.modeBtn}
+            onClick={toggleColorMode}
+            color="inherit"
+          >
+            {mode === 'dark' ? <icons.night /> : <icons.day />}
+          </IconButton>
           <div className="text">
             <Typography className="address">{address}</Typography>
             <Typography className="status">{statusTrans.running}</Typography>

@@ -28,7 +28,7 @@ const userStyle = makeStyles((theme: Theme) => ({
   },
   noData: {
     pointerEvents: 'none',
-    color: '#999',
+    color:  theme.palette.text.secondary,
     textAlign: 'center',
     height: '50vh',
     display: 'grid',
@@ -67,6 +67,7 @@ const userStyle = makeStyles((theme: Theme) => ({
 
   wrapper: {
     height: '100%',
+    
   },
   container: {
     flexWrap: 'nowrap',

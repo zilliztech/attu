@@ -1,17 +1,18 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material';
+import { useTheme, Theme } from '@mui/material';
 import Progress from './Progress';
 import { formatByteSize, formatSystemTime, getByteString } from '@/utils';
 import { DataProgressProps, DataSectionProps, DataCardProps } from './Types';
 import { makeStyles } from '@mui/styles';
 
-const getStyles = makeStyles(theme => ({
+const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    backgroundColor: '#F6F6F6',
+    backgroundColor: theme.palette.background.default,
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
     flexGrow: 1,
+    height: '100%',
   },
 
   title: {
@@ -20,35 +21,33 @@ const getStyles = makeStyles(theme => ({
   },
 
   content: {
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     fontSize: '20px',
     fontWeight: 600,
     lineHeight: '36px',
   },
 
   desc: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '14px',
     lineHeight: '36px',
     marginLeft: theme.spacing(1),
   },
 
   rootName: {
-    color: theme.palette.attuGrey.dark,
-    fontSize: '20px',
-    lineHeight: '24px',
+    color: theme.palette.text.secondary,
+    fontSize: 20,
   },
 
   childName: {
     color: theme.palette.primary.main,
-    fontSize: '20px',
-    lineHeight: '24px',
+    fontSize: 20,
   },
 
   ip: {
-    color: theme.palette.attuDark.main,
-    fontSize: '11px',
-    lineHeight: '24px',
+    color: theme.palette.text.primary,
+    fontSize: 11,
+    lineHeight: 2,
   },
 
   sectionRoot: {
@@ -64,7 +63,7 @@ const getStyles = makeStyles(theme => ({
 
   sectionHeaderCell: {
     display: 'table-cell',
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '12px',
     lineHeight: '24px',
     padding: theme.spacing(0.5, 1),
@@ -73,19 +72,18 @@ const getStyles = makeStyles(theme => ({
   },
 
   sectionCell: {
-    backgroundColor: 'white',
-    color: theme.palette.attuDark.main,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
     display: 'table-cell',
-    fontSize: '14px',
-    padding: theme.spacing(1, 1),
+    fontSize: 13,
+    padding: theme.spacing(1),
     textTransform: 'capitalize',
     verticalAlign: 'middle',
     width: '50%',
   },
   progressTitle: {
     fontSize: '14px',
-    color: theme.palette.attuDark.main,
-    lineHeight: '24px',
+    color: theme.palette.text.primary,
     display: 'flex',
     justifyContent: 'space-between',
   },

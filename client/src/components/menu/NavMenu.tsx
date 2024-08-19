@@ -12,11 +12,12 @@ import icons from '@/components/icons/Icons';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    backgroundColor: '#fff',
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
     borderRight: `1px solid ${theme.palette.divider}`,
     width: 48,
     paddingTop: 0,
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.default,
   },
   item: {
     width: 'initial',

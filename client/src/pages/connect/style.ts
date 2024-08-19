@@ -36,8 +36,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     height: '32px',
     lineHeight: '32px',
-    color: '#333',
-    background: '#f1f1f1',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(0.5, 0, 0.5, 1),
     fontSize: 13,
     display: 'block',
@@ -51,10 +51,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   menuBtn: {
     display: 'flex',
-
     paddingLeft: 8,
     paddingRight: 8,
-
     fontSize: 14,
     '& button': {
       width: 36,
@@ -63,7 +61,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   menu: {
     '& ul': {
-      padding: '0',
+      padding: 0,
       maxHeight: '400px',
       overflowY: 'auto',
     },
@@ -78,11 +76,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
     width: 380,
     padding: `0 8px`,
+    cursor: 'pointer',
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
     },
-    cursor: 'pointer',
-
     '& .address': {
       display: 'grid',
       gridTemplateColumns: '24px 1fr',
@@ -97,13 +94,11 @@ export const useStyles = makeStyles((theme: Theme) => ({
         wordWrap: 'break-word',
       },
     },
-
     '& .icon': {
       verticalAlign: '-3px',
       marginRight: 8,
       fontSize: '14px',
     },
-
     '& .time': {
       color: theme.palette.text.secondary,
       fontSize: 11,
@@ -112,7 +107,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
       width: 130,
       fontStyle: 'italic',
     },
-
     '& .deleteIconBtn': {
       padding: '8px 0',
       '& svg': {

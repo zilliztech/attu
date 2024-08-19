@@ -1,30 +1,30 @@
 import { FC } from 'react';
-import { SvgIcon } from '@mui/material';
+import { SvgIcon, Theme } from '@mui/material';
 import { BaseCardProps } from './Types';
 import pic from '../../assets/imgs/pic.svg?react';
 import { makeStyles } from '@mui/styles';
 
-const getStyles = makeStyles(theme => ({
+const getStyles = makeStyles((theme: Theme) => ({
   root: {
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     boxSizing: 'border-box',
     height: '150px',
     padding: theme.spacing(2),
   },
   title: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '14px',
     marginBottom: '5px',
     textTransform: 'capitalize',
   },
   content: {
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     fontSize: '20px',
     fontWeight: 600,
     lineHeight: '36px',
   },
   desc: {
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     fontSize: '14px',
     lineHeight: '36px',
     marginLeft: theme.spacing(1),
@@ -47,7 +47,7 @@ const getStyles = makeStyles(theme => ({
   },
   emptyDesc: {
     fontSize: '10px',
-    color: theme.palette.attuGrey.dark,
+    color: theme.palette.text.secondary,
     marginTop: theme.spacing(1),
   },
 }));

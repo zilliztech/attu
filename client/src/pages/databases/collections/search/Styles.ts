@@ -116,7 +116,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     height: '124px',
     margin: '0 0 8px 0',
     overflow: 'auto',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: theme.palette.background.default,
     cursor: 'text',
     boxShadow: '0 1px 0 transparent',
     transition: `box-shadow 0.3s ease`,
@@ -152,7 +152,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    padding: '0 8px',
+    paddingLeft: 8,
     overflow: 'auto',
   },
 
@@ -160,7 +160,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(0, 0, 1),
     gap: theme.spacing(1),
 
@@ -185,6 +185,10 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
       gap: theme.spacing(1),
     },
+  },
+
+  genBtn: {
+    marginBottom: 8,
   },
 
   btn: {

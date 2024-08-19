@@ -19,7 +19,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     height: 'calc(100vh - 80px)',
     overflow: 'hidden',
-    border: '1px solid #e5e5e5',
+    border: `1px solid ${theme.palette.divider}`,
     borderRadius: 8,
     boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
   },
@@ -33,7 +33,12 @@ const getStyles = makeStyles((theme: Theme) => ({
     gap: 8,
     width: '100%',
   },
-  left: { width: '70%', background: '#fff', borderRadius: 8 },
+  left: {
+    width: '70%',
+    background: theme.palette.background.paper,
+    borderRadius: 8,
+    boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
+  },
   right: { width: '30%', borderRadius: 8 },
   childView: {
     height: '100%',
@@ -41,7 +46,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     transition: 'all .25s',
     position: 'absolute',
     // zIndex: 1000,
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     borderRadius: 8,
   },
   showChildView: {
@@ -51,11 +56,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   hideChildView: {
     top: 1600,
     opacity: 0,
-  },
-  childCloseBtn: {
-    border: 0,
-    backgroundColor: 'white',
-    width: '100%',
   },
 }));
 

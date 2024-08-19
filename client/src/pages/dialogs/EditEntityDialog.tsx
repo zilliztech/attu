@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useRef, useState } from 'react';
-import { Theme } from '@mui/material';
-import { EditorState } from '@codemirror/state';
+import { Theme, useTheme } from '@mui/material';
+import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
@@ -14,11 +14,12 @@ import { CollectionFullObject } from '@server/types';
 import { DataService } from '@/http';
 import { DYNAMIC_FIELD } from '@/consts';
 import { makeStyles } from '@mui/styles';
+import { githubLight } from '@ddietr/codemirror-themes/github-light';
+import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {
-    backgroundColor: '#f5f5f5',
-    padding: 4,
+    border: `1px solid ${theme.palette.divider}`,
     overflow: 'auto',
   },
   tip: {
@@ -37,6 +38,9 @@ type EditEntityDialogProps = {
 const linterExtension = linter(jsonParseLinter());
 
 const EditEntityDialog: FC<EditEntityDialogProps> = props => {
+  const theme = useTheme();
+  const themeCompartment = new Compartment();
+
   // props
   const { data, collection } = props;
   // UI states
@@ -87,13 +91,15 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
               },
             },
             '.cm-content': {
-              color: '#484D52',
               fontSize: '12px',
             },
             '.cm-tooltip-lint': {
               width: '80%',
             },
           }),
+          themeCompartment.of(
+            theme.palette.mode === 'light' ? githubLight : githubDark
+          ),
           EditorView.lineWrapping,
           EditorView.updateListener.of((viewUpdate: ViewUpdate) => {
             if (viewUpdate.docChanged) {

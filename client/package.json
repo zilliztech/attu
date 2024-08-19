@@ -14,6 +14,7 @@
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.28.6",
     "@date-io/dayjs": "1.x",
+    "@ddietr/codemirror-themes": "^1.4.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@json2csv/plainjs": "^7.0.3",

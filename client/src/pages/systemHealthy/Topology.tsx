@@ -18,7 +18,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     borderTopLeftRadius: '8px',
     borderBottomLeftRadius: '8px',
     overflow: 'auto',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     position: 'relative',
   },
   svg: {
@@ -72,7 +72,7 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
   selected: {
     '& svg path': {
-      fill: 'white',
+      fill: theme.palette.background.paper,
     },
 
     '& circle': {
@@ -81,7 +81,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     },
 
     '& text': {
-      fill: 'white',
+      fill: theme.palette.background.paper,
     },
   },
 }));
@@ -209,7 +209,7 @@ const Topology = ({
 
                   <text
                     textAnchor="middle"
-                    fill={theme.palette.attuGrey.dark}
+                    fill={theme.palette.text.primary}
                     fontSize="12"
                     x={subChildPos[0]}
                     y={subChildPos[1] + 50}

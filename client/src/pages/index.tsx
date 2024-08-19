@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     '& .active': {
       '& path': {
-        fill: theme.palette.attuGrey.dark,
+        fill: theme.palette.text.primary,
       },
     },
 

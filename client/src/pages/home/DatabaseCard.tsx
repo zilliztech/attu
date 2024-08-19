@@ -19,18 +19,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: `flex`,
     flexDirection: `column`,
     gap: theme.spacing(1),
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
     padding: theme.spacing(2),
-    border: '1px solid #E0E0E0',
+    border: `1px solid ${theme.palette.divider}`,
     minWidth: '168px',
     minHeight: '168px',
     cursor: 'pointer',
     borderRadius: 8,
     '&:hover': {
       boxShadow: '0px 0px 4px 0px #00000029',
+      borderColor: theme.palette.primary.main,
     },
-    '&.active': {
+    '&.current': {
       boxShadow: '0px 0px 4px 0px #00000029',
+      borderColor: theme.palette.primary.main,
     },
   },
   dbTitle: {
@@ -38,7 +41,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '24px',
     fontWeight: 'bold',
     marginBottom: theme.spacing(1),
-    color: theme.palette.attuDark.main,
     '& svg': {
       verticalAlign: '-3px',
     },
@@ -48,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   label: {
     fontSize: '12px',
     lineHeight: '16px',
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.secondary,
   },
   value: {
     fontSize: '24px',
@@ -57,17 +59,23 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
   },
   delIcon: {
-    color: theme.palette.attuGrey.main,
+    color: theme.palette.text.secondary,
     cursor: 'pointer',
     position: 'absolute',
-    right: 4,
-    top: 4,
-    minWidth: 0,
-    minHeight: 0,
-    padding: theme.spacing(0),
+    width: 24,
+    height: 24,
+    lineHeight: 24,
+    display: 'flex',
+    top: 8,
+    right: 8,
+    minWidth: 8,
     '& svg': {
-      width: 15,
+      width: 16,
+      height: 16,
+      overflow: 'hidden',
     },
+    padding: theme.spacing(1),
+   
   },
 
   // create db
@@ -75,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     border: `1px dashed ${theme.palette.primary.main}`,
     justifyContent: 'center',
     alignItems: 'center',
-    color: theme.palette.primary.main,
+    color: theme.palette.text.primary,
   },
 }));
 
@@ -162,7 +170,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   return (
     <section className={`${wrapperClass}`}>
       <section
-        className={`${classes.wrapper} ${isActive ? 'active' : ''}`}
+        className={`${classes.wrapper} ${isActive ? 'current' : ''}`}
         onClick={onClick}
       >
         <>

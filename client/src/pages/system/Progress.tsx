@@ -36,7 +36,7 @@ const Progress: FC<ProgressProps> = props => {
         y2={15}
         vectorEffect="non-scaling-stroke"
         strokeWidth="12"
-        stroke={theme.palette.attuGrey.main}
+        stroke={theme.palette.text.disabled}
         strokeLinecap="round"
       />
       <line

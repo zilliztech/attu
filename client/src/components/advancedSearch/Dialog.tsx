@@ -173,11 +173,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     '& .disable-exp': {
       userSelect: 'none',
-      color: theme.palette.attuGrey.main,
+      color: theme.palette.text.primary,
     },
   },
   closeButton: {
-    color: 'black',
+    color: theme.palette.text.primary,
   },
   dialogTitle: {
     display: 'flex',
@@ -193,11 +193,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   applyBtn: {
     backgroundColor: theme.palette.primary.main,
-    color: 'white',
+    color: theme.palette.text.primary,
   },
   copyButton: {},
   expResult: {
-    background: '#f4f4f4',
+    background: theme.palette.background.paper,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -210,7 +210,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: '24px',
   },
   expWrapper: {
-    background: '#f4f4f4',
+    background: theme.palette.background.default,
     minWidth: '480px',
     minHeight: '104px',
     padding: theme.spacing(1.5),

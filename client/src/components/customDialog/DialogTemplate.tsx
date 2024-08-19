@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   block: {
-    backgroundColor: '#fff',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
   },
   dialog: {
     minWidth: 540,

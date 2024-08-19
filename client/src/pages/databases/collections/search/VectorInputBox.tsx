@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
@@ -11,6 +11,9 @@ import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
 import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
 import { getQueryStyles } from './Styles';
+import { useTheme } from '@mui/material';
+import { githubLight } from '@ddietr/codemirror-themes/github-light';
+import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 
 const floatVectorValidator = (text: string, field: FieldObject) => {
   try {
@@ -106,6 +109,8 @@ export type VectorInputBoxProps = {
 };
 
 export default function VectorInputBox(props: VectorInputBoxProps) {
+  const theme = useTheme();
+
   // props
   const { searchParams, onChange } = props;
   const { field, data } = searchParams;
@@ -122,6 +127,8 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const onChangeRef = useRef(onChange);
   const dataRef = useRef(data);
   const fieldRef = useRef(field);
+
+  const themeCompartment = new Compartment();
 
   // get validator
   const validator = Validator[field.data_type as keyof typeof Validator];
@@ -197,29 +204,11 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
               },
             },
             '.cm-content': {
-              color: '#484D52',
               fontSize: '12px',
+              minHeight: '124px',
             },
             '.cm-gutters': {
               display: 'none',
-            },
-            '.cm-activeLine': {
-              backgroundColor: '#f4f4f4',
-            },
-            '.cm-tooltip-lint': {
-              width: '80%',
-            },
-          }),
-          EditorView.baseTheme({
-            '&light .cm-selectionBackground': {
-              backgroundColor: '#f4f4f4',
-            },
-            '&light.cm-focused .cm-selectionBackground': {
-              backgroundColor: '#f4f4f4',
-            },
-            '&light .cm-activeLineGutter': {
-              backgroundColor: 'transparent',
-              fontWeight: 'bold',
             },
           }),
           EditorView.lineWrapping,
@@ -251,6 +240,17 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
       };
     }
   }, [JSON.stringify(field)]);
+
+  useEffect(() => {
+    // dispatch dark mode change to editor
+    if (editor.current) {
+      editor.current.dispatch({
+        effects: themeCompartment.reconfigure(
+          themeCompartment.of(theme.palette.mode === 'light' ? githubLight : githubDark)
+        ),
+      });
+    }
+  }, [theme.palette.mode]);
 
   return (
     <div

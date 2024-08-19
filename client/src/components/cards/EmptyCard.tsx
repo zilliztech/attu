@@ -6,7 +6,8 @@ import { EmptyCardProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
-    backgroundColor: '#fff',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
     flexDirection: 'column',
     textAlign: 'center',
   },
@@ -14,14 +15,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(2),
     fontSize: '36px',
     lineHeight: '42px',
-    color: theme.palette.attuGrey.dark,
     fontWeight: 'bold',
     letterSpacing: '-0.02em',
   },
   subText: {
     fontSize: '18px',
     marginTop: theme.spacing(1),
-    color: theme.palette.attuGrey.dark,
   },
 }));
 

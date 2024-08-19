@@ -204,27 +204,26 @@ const useStyles = makeStyles((theme: Theme) => ({
   addBtn: {},
   binaryLogicOp: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.palette.background.paper,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     '& .op-split': {
       height: '1px',
-      backgroundColor: '#E9E9ED',
+      backgroundColor: theme.palette.divider,
       width: '100%',
     },
     '& button': {
       width: '42px',
       height: '32px',
-      color: theme.palette.attuDark.main,
     },
     '& button.Mui-selected': {
-      backgroundColor: theme.palette.primary.main,
-      color: '#FFFFFF',
+      backgroundColor: theme.palette.background.default,
+      color:  theme.palette.text.primary
     },
     '& button.Mui-selected:hover': {
-      backgroundColor: theme.palette.primary.main,
-      color: '#FFFFFF',
+      backgroundColor: theme.palette.background.default,
+      color:  theme.palette.text.primary
     },
   },
 }));

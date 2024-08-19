@@ -1,10 +1,9 @@
-import { DialogTitleProps, Typography } from '@mui/material';
+import { DialogTitleProps, Typography, Theme } from '@mui/material';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import icons from '../icons/Icons';
-import { theme } from '../../styles/theme';
 import { makeStyles } from '@mui/styles';
 
-const getStyles = makeStyles(() => ({
+const getStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -19,7 +18,7 @@ const getStyles = makeStyles(() => ({
   },
   icon: {
     fontSize: '18px',
-    color: theme.palette.attuDark.main,
+    color: theme.palette.text.primary,
     cursor: 'pointer',
   },
 }));

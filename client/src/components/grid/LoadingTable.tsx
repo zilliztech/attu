@@ -6,11 +6,12 @@ const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     padding: theme.spacing(2),
     paddingTop: 0,
-    backgroundColor: '#fff',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
   },
   skeleton: {
     transform: 'scale(1)',
-    background: 'linear-gradient(90deg, #f0f4f9 0%, #f4f4f4 50%)',
+    background: `linear-gradient(90deg, ${theme.palette.divider} 0%, ${theme.palette.divider} 50%)`,
   },
   tr: {
     display: 'grid',
