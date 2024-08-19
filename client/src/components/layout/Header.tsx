@@ -74,6 +74,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     color: theme.palette.text.primary,
   },
+  extra: {
+    marginLeft: theme.spacing(0.5),
+    '& svg': {
+      fontSize: 15,
+      color: theme.palette.primary.main,
+    },
+  },
 }));
 
 const Header: FC = () => {
@@ -149,7 +156,7 @@ const Header: FC = () => {
           >
             {navInfo.navTitle}
           </Typography>
-          {navInfo.extra}
+          <span className={classes.extra}>{navInfo.extra}</span>
         </div>
 
         <div className={classes.addressWrapper}>

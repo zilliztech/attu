@@ -82,13 +82,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: 8,
     boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
   },
-  headerIcon: {
-    marginLeft: theme.spacing(0.5),
-    '& svg': {
-      fontSize: 15,
-      color: theme.palette.primary.main,
-    },
-  },
 }));
 
 // Databases page(tree and tabs)
@@ -258,13 +251,8 @@ const Databases = () => {
     databaseName,
     extra: (
       <>
-        <CopyButton
-          label=""
-          value={collectionName}
-          className={classes.headerIcon}
-        />
+        <CopyButton label="" value={collectionName} />
         <RefreshButton
-          className={classes.headerIcon}
           onClick={async () => {
             await fetchCollection(collectionName);
           }}
