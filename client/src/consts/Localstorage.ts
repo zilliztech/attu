@@ -14,3 +14,4 @@ export const LAST_TIME_HEALTHY_THRESHOLD_MEMORY =
 // new local storage keys
 export const ATTU_UI_TREE_WIDTH = 'attu.ui.tree.with';
 export const ATTU_AUTH_HISTORY = 'attu.auth.history';
+export const ATTU_THEME_MODE = 'attu.theme.mode';

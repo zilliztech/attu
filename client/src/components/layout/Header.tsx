@@ -8,6 +8,8 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import icons from '../icons/Icons';
 import { makeStyles } from '@mui/styles';
+import IconButton from '@mui/material/IconButton';
+import { ColorModeContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -65,11 +67,20 @@ const useStyles = makeStyles((theme: Theme) => ({
       top: '4px',
     },
   },
+  modeBtn: {
+    marginRight: theme.spacing(1),
+    '& svg': {
+      fontSize: 18,
+    },
+    color: theme.palette.text.primary,
+  },
 }));
 
 const Header: FC = () => {
   const classes = useStyles();
+  // use context
   const { navInfo } = useContext(navContext);
+  const { mode, toggleColorMode } = useContext(ColorModeContext);
   const { database, databases, setDatabase, loading } = useContext(dataContext);
   const { authReq, logout } = useContext(authContext);
   const { address, username } = authReq;
@@ -142,6 +153,13 @@ const Header: FC = () => {
         </div>
 
         <div className={classes.addressWrapper}>
+          <IconButton
+            className={classes.modeBtn}
+            onClick={toggleColorMode}
+            color="inherit"
+          >
+            {mode === 'dark' ? <icons.night /> : <icons.day />}
+          </IconButton>
           <div className="text">
             <Typography className="address">{address}</Typography>
             <Typography className="status">{statusTrans.running}</Typography>
