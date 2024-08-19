@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: '#fff !important',
   },
   noIndex: {
-    border: `1px solid ${theme.palette.attuGrey.light}`,
+    border: `1px solid ${theme.palette.text.disabled}`,
     backgroundColor: '#fff',
   },
 

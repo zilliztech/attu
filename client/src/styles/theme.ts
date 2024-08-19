@@ -1,17 +1,5 @@
 import { PaletteMode } from '@mui/material';
 
-// define types for the common theme
-declare module '@mui/material/styles/createPalette' {
-  interface Palette {
-    attuGrey: Palette['primary'];
-    attuDark: Palette['primary'];
-  }
-  interface PaletteOptions {
-    attuGrey: PaletteOptions['primary'];
-    attuDark: PaletteOptions['primary'];
-  }
-}
-
 const getCommonThemes = (mode: PaletteMode) => ({
   typography: {
     fontFamily: [
@@ -35,23 +23,14 @@ const getCommonThemes = (mode: PaletteMode) => ({
       dark: mode === 'light' ? '#08a568' : '#078b63',
     },
     secondary: {
-      light: '#82d3ba',
-      main: '#0ACE82',
-      dark: '#279371',
+      light: mode === 'light' ? '#7EE3D0' : '#4DBB9C',
+      main: '#10C998',
+      dark: mode === 'light' ? '#0BA978' : '#08845B',
     },
     error: {
       main: '#ff4605',
       light: mode === 'light' ? '#ff8f68' : '#ff6a3a',
       dark: mode === 'light' ? '#cd3804' : '#b33900',
-    },
-    attuGrey: {
-      main: mode === 'light' ? '#aeaebb' : '#565665',
-      light: mode === 'light' ? '#dcdce3' : '#838394',
-      dark: mode === 'light' ? '#82838e' : '#34343f',
-      contrastText: mode === 'light' ? '#f8f8fc' : '#e0e0e5',
-    },
-    attuDark: {
-      main: mode === 'light' ? '#010e29' : '#0d1b34',
     },
     background: {
       default: mode === 'light' ? '#f5f5f5' : '#121212',

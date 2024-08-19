@@ -52,7 +52,7 @@ const useSearchStyles = makeStyles((theme: Theme) => ({
     },
   },
   searchIcon: {
-    color: theme.palette.attuGrey.main,
+    color: theme.palette.text.secondary,
     cursor: 'pointer',
     fontSize: '20px',
     width: (props: { searched: boolean }) => `${props.searched ? 0 : '20px'}`,

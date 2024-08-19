@@ -12,6 +12,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
     flexGrow: 1,
+    height: '100%',
   },
 
   title: {
@@ -35,20 +36,18 @@ const getStyles = makeStyles((theme: Theme) => ({
 
   rootName: {
     color: theme.palette.text.secondary,
-    fontSize: '20px',
-    lineHeight: '24px',
+    fontSize: 20,
   },
 
   childName: {
     color: theme.palette.primary.main,
-    fontSize: '20px',
-    lineHeight: '24px',
+    fontSize: 20,
   },
 
   ip: {
     color: theme.palette.text.primary,
-    fontSize: '11px',
-    lineHeight: '24px',
+    fontSize: 11,
+    lineHeight: 2,
   },
 
   sectionRoot: {
@@ -73,11 +72,11 @@ const getStyles = makeStyles((theme: Theme) => ({
   },
 
   sectionCell: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
     display: 'table-cell',
-    fontSize: '14px',
-    padding: theme.spacing(1, 1),
+    fontSize: 13,
+    padding: theme.spacing(1),
     textTransform: 'capitalize',
     verticalAlign: 'middle',
     width: '50%',
@@ -85,7 +84,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   progressTitle: {
     fontSize: '14px',
     color: theme.palette.text.primary,
-    lineHeight: '24px',
     display: 'flex',
     justifyContent: 'space-between',
   },

@@ -187,6 +187,10 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     },
   },
 
+  genBtn: {
+    marginBottom: 8,
+  },
+
   btn: {
     height: 56,
     width: 80,

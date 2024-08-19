@@ -410,6 +410,7 @@ const Search = (props: CollectionDataProps) => {
               onClick={genRandomVectors}
               size="small"
               disabled={false}
+              className={classes.genBtn}
             >
               {btnTrans('example')}
             </CustomButton>

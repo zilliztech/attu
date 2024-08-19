@@ -37,6 +37,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     width: '70%',
     background: theme.palette.background.paper,
     borderRadius: 8,
+    boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
   },
   right: { width: '30%', borderRadius: 8 },
   childView: {
@@ -55,11 +56,6 @@ const getStyles = makeStyles((theme: Theme) => ({
   hideChildView: {
     top: 1600,
     opacity: 0,
-  },
-  childCloseBtn: {
-    border: 0,
-    backgroundColor: theme.palette.background.paper,
-    width: '100%',
   },
 }));
 
