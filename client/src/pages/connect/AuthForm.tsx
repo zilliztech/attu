@@ -223,8 +223,6 @@ export const AuthForm = () => {
     setWithPass(withPass);
     // reset form
     resetValidation(formatForm(authReq));
-    // update title
-    document.title = 'Attu';
   }, [authReq.address, authReq.username, authReq.password]);
 
   return (
