@@ -1,8 +1,8 @@
-import { Theme } from '@mui/material';
+import { Theme, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CopyButton from '../advancedSearch/CopyButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { githubGist } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { vs2015, github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { FC } from 'react';
 import { CodeBlockProps } from './Types';
 import { makeStyles } from '@mui/styles';
@@ -10,8 +10,7 @@ import { makeStyles } from '@mui/styles';
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     position: 'relative',
-    backgroundColor: '#fff',
-    color: '#454545',
+    backgroundColor: theme.palette.background.paper,
   },
   copy: {
     position: 'absolute',
@@ -24,11 +23,7 @@ const getStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CodeStyle = {
-  backgroundColor: '#f5f5f5',
-  padding: 0,
-  margin: 0,
-  marginRight: 32,
-  fontSize: 14,
+  fontSize: 12,
 };
 
 const CodeBlock: FC<CodeBlockProps> = ({
@@ -36,6 +31,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
   language,
   wrapperClass = '',
 }) => {
+  const theme = useTheme();
   const classes = getStyles();
 
   const { t: commonTrans } = useTranslation();
@@ -50,7 +46,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
       />
       <SyntaxHighlighter
         language={language}
-        style={githubGist}
+        style={theme.palette.mode === 'dark' ? vs2015 : github}
         customStyle={CodeStyle}
         showLineNumbers={true}
       >

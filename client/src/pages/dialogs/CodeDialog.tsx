@@ -1,5 +1,5 @@
 import { FC, useContext, useState } from 'react';
-import { Theme } from '@mui/material';
+import { Theme, SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -9,11 +9,9 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {
-    backgroundColor: '#f5f5f5',
-    padding: 8,
-    width: '40vw',
-    minHeight: '40vh',
-    maxHeight: '40vh',
+    backgroundColor: theme.palette.background.default,
+    width: 800,
+    height: '40vh',
     overflow: 'auto',
   },
 }));
@@ -53,7 +51,7 @@ const CodeDialog: FC<CodeDialogProps> = props => {
           <CustomSelector
             label="Language"
             value={langauge}
-            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+            onChange={(event: SelectChangeEvent<unknown>) => {
               setLanguage(event.target.value as string);
             }}
             options={options}

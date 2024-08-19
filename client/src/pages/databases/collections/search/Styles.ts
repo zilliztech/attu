@@ -116,7 +116,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     height: '124px',
     margin: '0 0 8px 0',
     overflow: 'auto',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: theme.palette.background.default,
     cursor: 'text',
     boxShadow: '0 1px 0 transparent',
     transition: `box-shadow 0.3s ease`,
