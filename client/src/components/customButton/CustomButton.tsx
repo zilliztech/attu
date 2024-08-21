@@ -62,8 +62,6 @@ const CustomButton = (
   const classes = buttonStyle();
   const { tooltip, tooltipPlacement, disabled, ...otherProps } = props;
 
-  // wrap a span to let disabled elements show tooltip
-
   const btn = (
     <Button
       classes={{
@@ -98,6 +96,7 @@ const CustomButton = (
             contained: classes.containedBtn,
             containedSecondary: classes.containedSecondary,
           }}
+          disabled={disabled}
           {...otherProps}
         >
           {props.children}
