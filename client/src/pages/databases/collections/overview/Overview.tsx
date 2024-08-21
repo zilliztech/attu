@@ -304,10 +304,16 @@ const Overview = () => {
 
           <div className={classes.block}>
             <Typography variant="h5">
-              {collectionTrans('rowCount')}
-              <CustomToolTip title={collectionTrans('entityCountInfo')}>
-                <Icons.question classes={{ root: classes.questionIcon }} />
-              </CustomToolTip>
+              {collection.loaded ? (
+                collectionTrans('count')
+              ) : (
+                <>
+                  {collectionTrans('rowCount')}
+                  <CustomToolTip title={collectionTrans('entityCountInfo')}>
+                    <Icons.question classes={{ root: classes.questionIcon }} />
+                  </CustomToolTip>
+                </>
+              )}
             </Typography>
             <Typography variant="h6">{collection?.rowCount || '0'}</Typography>
           </div>
