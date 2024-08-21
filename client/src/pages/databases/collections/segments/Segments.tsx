@@ -110,11 +110,20 @@ const Segments = () => {
       align: 'left',
       disablePadding: false,
       needCopy: true,
-      label: collectionTrans('segmentID'),
+      label: 'ID',
       getStyle: () => {
         return {
           minWidth: 190,
         };
+      },
+    },
+    {
+      id: 'level',
+      align: 'left',
+      disablePadding: false,
+      label: 'Level',
+      getStyle: () => {
+        return {};
       },
     },
     {
