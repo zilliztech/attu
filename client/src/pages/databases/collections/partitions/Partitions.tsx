@@ -192,6 +192,18 @@ const Partitions = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
+      id: 'id',
+      align: 'left',
+      needCopy: true,
+      disablePadding: false,
+      label: t('id'),
+      getStyle: () => {
+        return {
+          width: 120,
+        };
+      },
+    },
+    {
       id: 'name',
       sortType: 'string',
       align: 'left',
@@ -210,12 +222,6 @@ const Partitions = () => {
       label: t('name'),
     },
 
-    // {
-    //   id: '_statusElement',
-    //   align: 'left',
-    //   disablePadding: false,
-    //   label: t('status'),
-    // },
     {
       id: 'rowCount',
       align: 'left',
