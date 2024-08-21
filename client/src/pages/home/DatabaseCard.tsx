@@ -9,7 +9,6 @@ import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, authContext } from '@/context';
 import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
-import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { CREATE_DB } from './Home';
 import { makeStyles } from '@mui/styles';
 
@@ -75,7 +74,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       overflow: 'hidden',
     },
     padding: theme.spacing(1),
-   
   },
 
   // create db
@@ -206,6 +204,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
           {database.name !== 'default' && (
             <CustomButton
               className={classes.delIcon}
+              tooltip={`${btnTrans('drop')} ${dbTrans('database')}`}
               onClick={(event: any) => {
                 event.stopPropagation();
                 setDialog({
@@ -227,11 +226,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
                 });
               }}
             >
-              <CustomToolTip
-                title={`${btnTrans('drop')} ${dbTrans('database')}`}
-              >
-                <DeleteIcon />
-              </CustomToolTip>
+              <DeleteIcon />
             </CustomButton>
           )}
         </div>

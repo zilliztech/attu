@@ -20,7 +20,7 @@ const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
   };
 
   if (isLoading) {
-    return <StatusIcon type={LoadingType.CREATING} size={20} />;
+    return <StatusIcon type={LoadingType.CREATING} size={16} />;
   }
 
   return (
