@@ -60,7 +60,25 @@ const CustomButton = (
   }
 ) => {
   const classes = buttonStyle();
-  const { tooltip, tooltipPlacement, ...otherProps } = props;
+  const { tooltip, tooltipPlacement, disabled, ...otherProps } = props;
+
+  // wrap a span to let disabled elements show tooltip
+
+  const btn = (
+    <Button
+      classes={{
+        root: classes.button,
+        text: classes.textBtn,
+        contained: classes.containedBtn,
+        containedSecondary: classes.containedSecondary,
+        disabled: classes.disabledBtn,
+      }}
+      disabled={disabled}
+      {...otherProps}
+    >
+      {props.children}
+    </Button>
+  );
 
   return (
     <>
@@ -70,20 +88,7 @@ const CustomButton = (
       */}
       {tooltip ? (
         <Tooltip title={tooltip} placement={tooltipPlacement}>
-          <span>
-            <Button
-              classes={{
-                root: classes.button,
-                text: classes.textBtn,
-                contained: classes.containedBtn,
-                containedSecondary: classes.containedSecondary,
-                disabled: classes.disabledBtn,
-              }}
-              {...otherProps}
-            >
-              {props.children}
-            </Button>
-          </span>
+          {disabled ? <span>{btn}</span> : btn}
         </Tooltip>
       ) : (
         <Button

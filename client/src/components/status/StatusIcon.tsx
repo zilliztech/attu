@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'flex-left',
     alignItems: 'center',
-    paddingLeft: theme.spacing(1),
+    paddingLeft: theme.spacing(.5),
   },
   svg: {
     color: theme.palette.primary.light,

@@ -76,6 +76,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   extra: {
     marginLeft: theme.spacing(0.5),
+    display: 'flex',
     '& svg': {
       fontSize: 15,
       color: theme.palette.primary.main,

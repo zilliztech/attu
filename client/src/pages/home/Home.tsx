@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   section: {
-    width: '75%',
+    width: '85%',
     marginBottom: theme.spacing(2),
   },
   cardWrapper: {
