@@ -338,6 +338,11 @@ const DatabasesTab = (props: {
       component: <Collections />,
       path: `collections`,
     },
+    {
+      label: collectionTrans('properties'),
+      component: <Collections />,
+      path: `properties`,
+    },
   ];
   const actionDbTab = dbTab.findIndex(t => t.path === databaseName);
   return (
