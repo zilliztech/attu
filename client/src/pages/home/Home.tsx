@@ -32,7 +32,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export const CREATE_DB = { name: '___new___', collections: [], createdTime: 0 };
+export const CREATE_DB = {
+  name: '___new___',
+  collections: [],
+  createdTime: 0,
+  db_name: '___new___',
+  properties: [],
+  created_timestamp: 0,
+  dbID: 0,
+};
 
 const Home = () => {
   useNavigationHook(ALL_ROUTER_TYPES.HOME);

@@ -100,6 +100,10 @@ export type CronJobObject = {
 
 export type DatabaseObject = {
   name: string;
+  db_name: string;
+  dbID: string | number;
   createdTime: number;
+  created_timestamp: number;
+  properties: KeyValuePair[];
   collections: string[];
 };

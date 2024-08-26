@@ -1,5 +1,5 @@
 import { Theme } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,11 @@ import EditPropertyDialog from '@/pages/dialogs/EditPropertyDialog';
 import ResetPropertyDialog from '@/pages/dialogs/ResetPropertyDialog';
 import { rootContext } from '@/context';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import { CollectionFullObject } from '@server/types';
+import { CollectionFullObject, KeyValuePair } from '@server/types';
 import { formatNumber } from '@/utils';
 import { makeStyles } from '@mui/styles';
+import { DatabaseService } from '@/http';
+import { databaseDefaults, collectionDefaults, Property } from '@/consts';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -27,60 +29,25 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export type Property = { key: string; value: any; desc: string; type: string };
-
-let defaults: Property[] = [
-  { key: 'collection.ttl.seconds', value: '', desc: '', type: 'number' },
-  {
-    key: 'collection.autocompaction.enabled',
-    value: '',
-    desc: '',
-    type: 'boolean',
-  },
-  { key: 'collection.insertRate.max.mb', value: '', desc: '', type: 'number' },
-  { key: 'collection.insertRate.min.mb', value: '', desc: '', type: 'number' },
-  { key: 'collection.upsertRate.max.mb', value: '', desc: '', type: 'number' },
-  { key: 'collection.upsertRate.min.mb', value: '', desc: '', type: 'number' },
-  { key: 'collection.deleteRate.max.mb', value: '', desc: '', type: 'number' },
-  { key: 'collection.deleteRate.min.mb', value: '', desc: '', type: 'number' },
-  {
-    key: 'collection.bulkLoadRate.max.mb',
-    value: '',
-    desc: '',
-    type: 'number',
-  },
-  {
-    key: 'collection.bulkLoadRate.min.mb',
-    value: '',
-    desc: '',
-    type: 'number',
-  },
-  { key: 'collection.queryRate.max.qps', value: '', desc: '', type: 'number' },
-  { key: 'collection.queryRate.min.qps', value: '', desc: '', type: 'number' },
-  { key: 'collection.searchRate.max.vps', value: '', desc: '', type: 'number' },
-  { key: 'collection.searchRate.min.vps', value: '', desc: '', type: 'number' },
-  {
-    key: 'collection.diskProtection.diskQuota.mb',
-    value: '',
-    desc: '',
-    type: 'number',
-  },
-  {
-    key: 'partition.diskProtection.diskQuota.mb',
-    value: '',
-    desc: '',
-    type: 'number',
-  },
-  { key: 'mmap.enabled', value: '', desc: '', type: 'boolean' },
-  { key: 'lazyload.enabled', value: '', desc: '', type: 'boolean' },
-];
+const mergeProperties = (
+  defaults: Property[],
+  custom: KeyValuePair[] | undefined
+) => {
+  return custom
+    ? defaults.map(i => {
+        let prop = custom.find(p => p.key === i.key);
+        return prop ? { ...i, ...prop } : i;
+      })
+    : defaults;
+};
 
 interface PropertiesProps {
-  collection: CollectionFullObject;
+  type: 'collection' | 'database';
+  target?: CollectionFullObject | string;
 }
 
 const Properties = (props: PropertiesProps) => {
-  const { collection } = props;
+  const { target, type } = props;
 
   const classes = useStyles();
   const { t } = useTranslation('properties');
@@ -89,20 +56,35 @@ const Properties = (props: PropertiesProps) => {
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
 
+  const [properties, setProperties] = useState<Property[]>([]);
   const [selected, setSelected] = useState<Property[]>([]);
   const { setDialog, openSnackBar } = useContext(rootContext);
 
-  // combine default properties with collection properties
-  let properties: Property[] = collection
-    ? defaults.map(i => {
-        let prop = collection.properties.find(p => p.key === i.key);
-        if (prop) {
-          return { ...i, ...prop };
-        } else {
-          return i;
+  // setup properties
+  const setupProperties = async () => {
+    let properties: Property[] = [];
+
+    switch (type) {
+      case 'collection':
+        const collection = target as CollectionFullObject;
+        if (!collection || !collection.schema) {
+          return;
         }
-      })
-    : defaults;
+        properties = mergeProperties(collectionDefaults, collection.properties);
+        break;
+
+      case 'database':
+        const db = await DatabaseService.describeDatabase(target as string);
+        properties = mergeProperties(databaseDefaults, db.properties);
+        break;
+    }
+
+    setProperties(properties);
+  };
+
+  useEffect(() => {
+    setupProperties();
+  }, [type, target]);
 
   const {
     pageSize,
@@ -129,12 +111,14 @@ const Properties = (props: PropertiesProps) => {
           params: {
             component: (
               <EditPropertyDialog
-                collection={collection}
+                target={target!}
+                type={type}
                 property={selected[0]}
                 cb={() => {
                   openSnackBar(
                     successTrans('update', { name: selected[0].key })
                   );
+                  setupProperties();
                 }}
               />
             ),
@@ -156,12 +140,14 @@ const Properties = (props: PropertiesProps) => {
           params: {
             component: (
               <ResetPropertyDialog
-                collection={collection}
+                target={target!}
+                type={type}
                 property={selected[0]}
                 cb={() => {
                   openSnackBar(
                     successTrans('reset', { name: selected[0].key })
                   );
+                  setupProperties();
                 }}
               />
             ),
@@ -221,7 +207,7 @@ const Properties = (props: PropertiesProps) => {
   };
 
   // collection is not found or collection full object is not ready
-  if (!collection || !collection.schema) {
+  if (!properties || properties.length === 0) {
     return <StatusIcon type={LoadingType.CREATING} />;
   }
 

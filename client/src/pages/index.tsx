@@ -87,7 +87,7 @@ function Index() {
     {
       icon: icons.database,
       label: navTrans('database'),
-      onClick: () => navigate(`/databases/${database}`),
+      onClick: () => navigate(`/databases/${database}/collections`),
     },
     // {
     //   icon: icons.navSearch,

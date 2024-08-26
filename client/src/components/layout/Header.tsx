@@ -138,7 +138,7 @@ const Header: FC = () => {
 
                   // if url contains databases, go to the database page
                   if (window.location.hash.includes('databases')) {
-                    navigate(`/databases/${database}`);
+                    navigate(`/databases/${database}/collections`);
                   }
                 }}
                 options={dbOptions}

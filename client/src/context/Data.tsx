@@ -71,7 +71,7 @@ export const dataContext = createContext<DataContextType>({
   dropAlias: async () => {
     return {} as CollectionFullObject;
   },
-  setProperty: async () => {
+  setCollectionProperty: async () => {
     return {} as CollectionFullObject;
   },
   ui: {
@@ -348,7 +348,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   };
 
   // API: set property
-  const setProperty = async (
+  const setCollectionProperty = async (
     collectionName: string,
     key: string,
     value: any
@@ -482,7 +482,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         dropIndex,
         createAlias,
         dropAlias,
-        setProperty,
+        setCollectionProperty,
         ui,
         setUIPref,
       }}
