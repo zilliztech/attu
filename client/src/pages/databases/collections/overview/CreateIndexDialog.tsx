@@ -102,7 +102,7 @@ const CreateIndex = (props: {
     candidatePoolSize: '',
     searchLength: '',
     knng: '',
-    drop_ratio_build: '0.5',
+    drop_ratio_build: '0.32',
     with_raw_data: 'true',
     intermediate_graph_degree: '128',
     graph_degree: '64',
