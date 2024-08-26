@@ -26,7 +26,9 @@ export class DatabasesController {
       this.createDatabase.bind(this)
     );
 
+    this.router.get('/:name', this.describeDatabase.bind(this));
     this.router.delete('/:name', this.dropDatabase.bind(this));
+    this.router.put('/:name/properties', this.alterDatabase.bind(this));
 
     return this.router;
   }
@@ -67,6 +69,35 @@ export class DatabasesController {
     try {
       const result = await this.databasesService.dropDatabase(req.clientId, {
         db_name,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async describeDatabase(req: Request, res: Response, next: NextFunction) {
+    const db_name = req.params?.name;
+    try {
+      const result = await this.databasesService.describeDatabase(
+        req.clientId,
+        {
+          db_name,
+        }
+      );
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async alterDatabase(req: Request, res: Response, next: NextFunction) {
+    const db_name = req.params?.name;
+    const properties = req.body;
+    try {
+      const result = await this.databasesService.alterDatabase(req.clientId, {
+        db_name,
+        properties,
       });
       res.send(result);
     } catch (error) {

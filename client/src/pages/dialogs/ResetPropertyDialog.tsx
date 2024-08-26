@@ -3,26 +3,48 @@ import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { CollectionObject } from '@server/types';
-import { Property } from '../databases/collections/properties/Properties';
+import { Property } from '@/consts';
+import { DatabaseService } from '@/http';
 
 export interface EditPropertyProps {
-  collection: CollectionObject;
+  target: CollectionObject | string;
+  type: 'collection' | 'database';
   property: Property;
-  cb?: (collection: CollectionObject) => void;
+  cb?: (target: CollectionObject | string) => void;
 }
 
 const ResetPropertyDialog: FC<EditPropertyProps> = props => {
   // context
-  const { setProperty } = useContext(dataContext);
+  const { setCollectionProperty } = useContext(dataContext);
   const { handleCloseDialog } = useContext(rootContext);
   // props
-  const { cb, collection, property } = props;
+  const { cb, target, type, property } = props;
 
   // UI handlers
   const handleDelete = async () => {
-    await setProperty(collection.collection_name, property.key, '');
+    switch (type) {
+      case 'collection':
+        const collection = target as CollectionObject;
+        if (!collection || !collection.schema) {
+          return;
+        }
+        await setCollectionProperty(
+          collection.collection_name,
+          property.key,
+          ''
+        );
+        break;
+
+      case 'database':
+        await DatabaseService.setProperty({
+          db_name: target as string,
+          properties: { [property.key]: '' },
+        });
+        break;
+    }
+
     handleCloseDialog();
-    cb && (await cb(collection));
+    cb && (await cb(target));
   };
 
   // i18n

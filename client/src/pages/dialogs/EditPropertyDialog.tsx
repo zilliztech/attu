@@ -8,8 +8,9 @@ import { formatForm } from '@/utils';
 import { IForm, useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { CollectionObject } from '@server/types';
-import { Property } from '../databases/collections/properties/Properties';
+import { Property } from '@/consts';
 import { makeStyles } from '@mui/styles';
+import { DatabaseService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -18,16 +19,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export interface EditPropertyProps {
-  collection: CollectionObject;
+  target: CollectionObject | string;
+  type: 'collection' | 'database';
   property: Property;
-  cb?: (collection: CollectionObject) => void;
+  cb?: (target: CollectionObject | string) => void;
 }
 
 const EditPropertyDialog: FC<EditPropertyProps> = props => {
-  const { setProperty } = useContext(dataContext);
+  const { setCollectionProperty } = useContext(dataContext);
   const { handleCloseDialog } = useContext(rootContext);
 
-  const { cb, collection, property } = props;
+  const { cb, target, property } = props;
   const [form, setForm] = useState<IForm>({
     key: 'property',
     value: property.value,
@@ -65,9 +67,24 @@ const EditPropertyDialog: FC<EditPropertyProps> = props => {
       }
     }
 
-    await setProperty(collection.collection_name, property.key, value);
+    switch (props.type) {
+      case 'collection':
+        await setCollectionProperty(
+          (target as CollectionObject).collection_name,
+          property.key,
+          value
+        );
+        break;
+      case 'database':
+        await DatabaseService.setProperty({
+          db_name: target as string,
+          properties: { [property.key]: value },
+        });
+        break;
+    }
+
     handleCloseDialog();
-    cb && (await cb(collection));
+    cb && (await cb(target));
   };
 
   const propertyInputConfig: ITextfieldConfig = {

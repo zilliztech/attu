@@ -1,7 +1,10 @@
 import {
   CreateDatabaseRequest,
   ListDatabasesRequest,
+  DescribeDatabaseRequest,
+  DescribeDatabaseResponse,
   DropDatabasesRequest,
+  AlterDatabaseRequest,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import { clientCache } from '../app';
@@ -15,6 +18,14 @@ export class DatabasesService {
     const res = await milvusClient.createDatabase(data);
     throwErrorFromSDK(res);
     return res;
+  }
+
+  async describeDatabase(clientId: string, data: DescribeDatabaseRequest) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.describeDatabase(data);
+    throwErrorFromSDK(res.status);
+    return res as DescribeDatabaseResponse;
   }
 
   async listDatabase(
@@ -34,10 +45,18 @@ export class DatabasesService {
         await milvusClient.use({ db_name: res.db_names[i] });
         await milvusClient.listDatabases(data);
         const collections = await milvusClient.showCollections();
+
+        const dbName = res.db_names[i];
+
+        const dbObject = await this.describeDatabase(clientId, {
+          db_name: dbName,
+        });
+
         availableDatabases.push({
           name: res.db_names[i],
           collections: collections.data.map(c => c.name),
           createdTime: (res as any).created_timestamp[i] || -1,
+          ...dbObject,
         });
       } catch (e) {
         // ignore
@@ -72,5 +91,13 @@ export class DatabasesService {
   async hasDatabase(clientId: string, data: string) {
     const dbs = await this.listDatabase(clientId);
     return dbs.map(d => d.name).indexOf(data) !== -1;
+  }
+
+  async alterDatabase(clientId: string, data: AlterDatabaseRequest) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.alterDatabase(data);
+    throwErrorFromSDK(res);
+    return res;
   }
 }

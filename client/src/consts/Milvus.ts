@@ -392,3 +392,63 @@ export const NONE_INDEXABLE_DATA_TYPES = [
   DataTypeStringEnum.JSON,
   DataTypeStringEnum.Array,
 ];
+
+export type Property = { key: string; value: any; desc: string; type: string };
+
+export const collectionDefaults: Property[] = [
+  { key: 'collection.ttl.seconds', value: '', desc: '', type: 'number' },
+  {
+    key: 'collection.autocompaction.enabled',
+    value: '',
+    desc: '',
+    type: 'boolean',
+  },
+  { key: 'collection.insertRate.max.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.insertRate.min.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.upsertRate.max.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.upsertRate.min.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.deleteRate.max.mb', value: '', desc: '', type: 'number' },
+  { key: 'collection.deleteRate.min.mb', value: '', desc: '', type: 'number' },
+  {
+    key: 'collection.bulkLoadRate.max.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  {
+    key: 'collection.bulkLoadRate.min.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  { key: 'collection.queryRate.max.qps', value: '', desc: '', type: 'number' },
+  { key: 'collection.queryRate.min.qps', value: '', desc: '', type: 'number' },
+  { key: 'collection.searchRate.max.vps', value: '', desc: '', type: 'number' },
+  { key: 'collection.searchRate.min.vps', value: '', desc: '', type: 'number' },
+  {
+    key: 'collection.diskProtection.diskQuota.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  { key: 'collection.replica.number', value: '', desc: '', type: 'number' },
+  { key: 'collection.resource_groups', value: '', desc: '', type: 'string' },
+  {
+    key: 'partition.diskProtection.diskQuota.mb',
+    value: '',
+    desc: '',
+    type: 'number',
+  },
+  { key: 'mmap.enabled', value: '', desc: '', type: 'boolean' },
+  { key: 'lazyload.enabled', value: '', desc: '', type: 'boolean' },
+  { key: 'partitionkey.isolation', value: '', desc: '', type: 'boolean' },
+  { key: 'indexoffsetcache.enabled', value: '', desc: '', type: 'boolean' },
+];
+
+export const databaseDefaults: Property[] = [
+  { key: 'database.replica.number', value: '', desc: '', type: 'number' },
+  { key: 'database.resource_groups', value: '', desc: '', type: 'string' },
+  { key: 'database.diskQuota.mb', value: '', desc: '', type: 'number' },
+  { key: 'database.max.collections', value: '', desc: '', type: 'number' },
+  { key: 'database.force.deny.writing', value: '', desc: '', type: 'boolean' },
+];

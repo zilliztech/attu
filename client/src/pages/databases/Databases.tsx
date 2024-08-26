@@ -240,6 +240,7 @@ const Databases = () => {
     databaseName = '',
     collectionName = '',
     collectionPage = '',
+    databasePage = '',
   } = params;
 
   // get style
@@ -304,7 +305,11 @@ const Databases = () => {
         ></div>
       </section>
       {!collectionName && (
-        <DatabasesTab databaseName={databaseName} tabClass={classes.tab} />
+        <DatabasesTab
+          databasePage={databasePage}
+          databaseName={databaseName}
+          tabClass={classes.tab}
+        />
       )}
       {collectionName && (
         <CollectionTabs
@@ -326,10 +331,11 @@ const Databases = () => {
 
 // Database tab pages
 const DatabasesTab = (props: {
+  databasePage: string; // current database page
   databaseName: string;
   tabClass: string; // tab class
 }) => {
-  const { databaseName, tabClass } = props;
+  const { databaseName, tabClass, databasePage } = props;
   const { t: collectionTrans } = useTranslation('collection');
 
   const dbTab: ITab[] = [
@@ -340,11 +346,13 @@ const DatabasesTab = (props: {
     },
     {
       label: collectionTrans('properties'),
-      component: <Collections />,
+      component: <Properties type="database" target={databaseName} />,
       path: `properties`,
     },
   ];
-  const actionDbTab = dbTab.findIndex(t => t.path === databaseName);
+
+  const actionDbTab = dbTab.findIndex(t => t.path === databasePage);
+
   return (
     <RouteTabList
       tabs={dbTab}
@@ -424,7 +432,7 @@ const CollectionTabs = (props: {
       },
       {
         label: collectionTrans('propertiesTab'),
-        component: <Properties collection={collection} />,
+        component: <Properties type="collection" target={collection} />,
         path: `properties`,
       }
     );

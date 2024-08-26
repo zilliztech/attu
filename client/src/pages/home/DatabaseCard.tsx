@@ -128,7 +128,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     setDatabase(database.name);
 
     // navigate to database detail page
-    const targetPath = `/databases/${database.name}`;
+    const targetPath = `/databases/${database.name}/colletions`;
 
     navigate(targetPath);
   };
