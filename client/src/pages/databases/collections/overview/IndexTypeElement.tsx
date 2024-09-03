@@ -172,7 +172,7 @@ const IndexTypeElement: FC<{
     );
 
     return tooltip ? (
-      <Tooltip interactive arrow title={tooltip} placement="top">
+      <Tooltip arrow title={tooltip} placement="top">
         <div>
           <IndexElem />
         </div>
@@ -184,7 +184,6 @@ const IndexTypeElement: FC<{
 
   const generateElement = () => {
     if (
-      field.is_primary_key ||
       NONE_INDEXABLE_DATA_TYPES.indexOf(
         field.data_type as DataTypeStringEnum
       ) !== -1
