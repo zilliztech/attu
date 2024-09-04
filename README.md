@@ -27,7 +27,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                         |
 | -------------- | ---------------------------------------------------------------- |
-| 2.4.x          | [v2.4.7](https://github.com/zilliztech/attu/releases/tag/v2.4.7) |
+| 2.4.x          | [v2.4.8](https://github.com/zilliztech/attu/releases/tag/v2.4.8) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
 | 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
 | 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
