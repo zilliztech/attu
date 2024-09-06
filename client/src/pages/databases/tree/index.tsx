@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SimpleTreeView, TreeItem } from '@mui/x-tree-view';
 import icons from '@/components/icons/Icons';
-import { Theme, Tooltip, Typography } from '@mui/material';
+import { Theme, Tooltip, Typography, Menu, MenuItem } from '@mui/material';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
@@ -184,6 +185,12 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
 };
 
 const DatabaseTree: React.FC<DatabaseToolProps> = props => {
+  // state
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+    nodeId: string | null;
+  } | null>(null);
   // props
   const { database, collections, params } = props;
 
@@ -225,6 +232,31 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
     );
   };
 
+  const handleContextMenu = (event: any, nodeId: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX - 2,
+            mouseY: event.clientY - 4,
+            nodeId,
+          }
+        : null
+    );
+  };
+
+  const handleClose = () => {
+    setContextMenu(null);
+  };
+
+  const handleMenuClick = (action: string) => {
+    if (contextMenu?.nodeId) {
+      console.log(`Action ${action} on node ${contextMenu.nodeId}`);
+    }
+    handleClose();
+  };
+
   // render children
   const renderTree = (nodes: DatabaseTreeItem[]) => {
     return nodes.map(node => {
@@ -258,6 +290,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             icon: CollectionIcon,
           }}
           label={<CollectionNode data={node.data!} />}
+          onContextMenu={event => handleContextMenu(event, node.id)}
           className={classes.treeItem}
           onClick={(event: any) => {
             event.stopPropagation();
@@ -271,45 +304,61 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
   };
 
   return (
-    <SimpleTreeView
-      expandedItems={[database]}
-      multiSelect={false}
-      disableSelection={false}
-      selectedItems={
-        params.collectionName
-          ? `c_${params.collectionName}`
-          : params.databaseName
-      }
-      className={classes.root}
-    >
-      {
-        <TreeItem
-          key={tree.id}
-          itemId={tree.id}
-          label={
-            <Tooltip title={tree.name}>
-              <Typography noWrap className={classes.dbName}>
-                {tree.name}
-              </Typography>
-            </Tooltip>
-          }
-          className={classes.treeItem}
-          slots={{
-            icon: DatabaseIcon,
-          }}
-          onClick={(event: any) => {
-            event.stopPropagation();
-            if (onNodeClick) {
-              onNodeClick(tree);
+    <>
+      <SimpleTreeView
+        expandedItems={[database]}
+        multiSelect={false}
+        disableSelection={false}
+        selectedItems={
+          params.collectionName
+            ? `c_${params.collectionName}`
+            : params.databaseName
+        }
+        className={classes.root}
+      >
+        {
+          <TreeItem
+            key={tree.id}
+            itemId={tree.id}
+            label={
+              <Tooltip title={tree.name}>
+                <Typography noWrap className={classes.dbName}>
+                  {tree.name}
+                </Typography>
+              </Tooltip>
             }
-          }}
-        >
-          {tree.children && tree.children.length > 0
-            ? renderTree(tree.children)
-            : [<div key="stub" />]}
-        </TreeItem>
-      }
-    </SimpleTreeView>
+            className={classes.treeItem}
+            slots={{
+              icon: DatabaseIcon,
+            }}
+            onClick={(event: any) => {
+              event.stopPropagation();
+              if (onNodeClick) {
+                onNodeClick(tree);
+              }
+            }}
+            onContextMenu={event => handleContextMenu(event, tree.id)}
+          >
+            {tree.children && tree.children.length > 0
+              ? renderTree(tree.children)
+              : [<div key="stub" />]}
+          </TreeItem>
+        }
+      </SimpleTreeView>
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={() => handleMenuClick('Rename')}>Rename</MenuItem>
+        <MenuItem onClick={() => handleMenuClick('Delete')}>Delete</MenuItem>
+      </Menu>
+    </>
   );
 };
 
