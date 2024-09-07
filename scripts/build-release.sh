@@ -8,7 +8,7 @@ source scripts/prepare.sh
 
 # Build and push Docker images with both tags
 command docker buildx build \
-  --platform linux/arm64,linux/amd64 \
+  --platform linux/arm64,linux/arm/v7,linux/amd64 \
   --tag zilliz/attu:${TAG_NAME} \
   --tag zilliz/attu:${MAJOR_MINOR} \
   --tag zilliz/attu:latest \
