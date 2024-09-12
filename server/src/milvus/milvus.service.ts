@@ -37,6 +37,7 @@ export class MilvusService {
         username,
         password,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
+        database: database || this.DEFAULT_DATABASE,
       };
 
       if (process.env.ROOT_CERT_PATH) {
@@ -54,10 +55,6 @@ export class MilvusService {
 
         if (process.env.SERVER_NAME) {
           clientConfig.tls.serverName = process.env.SERVER_NAME;
-        }
-
-        if (process.env.DB_NAME) {
-          clientConfig.database = process.env.DB_NAME;
         }
       }
       // create the client
