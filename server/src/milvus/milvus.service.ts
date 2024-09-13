@@ -37,6 +37,7 @@ export class MilvusService {
         username,
         password,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
+        database: database || this.DEFAULT_DATABASE,
       };
 
       if (process.env.ROOT_CERT_PATH) {
