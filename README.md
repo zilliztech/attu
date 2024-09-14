@@ -18,7 +18,7 @@ Attu is designed to manage and interact with Milvus, offering features such as:
 - **Performing Vector Search:** Rapidly validate your results using the vector search feature.
 - **User and Role Management:** Easily manage Milvus permissions and security.
 - **Viewing System Topology:** Visualize Milvus system architecture for better management and optimization.
-  
+
 ## Installation Guides
 
 Before you begin, make sure that you have Milvus installed on either [Zilliz Cloud](https://cloud.zilliz.com/signup) or [your own server](https://milvus.io/docs/install_standalone-docker.md).
@@ -47,6 +47,7 @@ Make sure that the Attu container can access the Milvus IP address. After starti
 | Parameter        | Example              | Required | Description                             |
 | :--------------- | :------------------- | :------: | --------------------------------------- |
 | MILVUS_URL       | 192.168.0.1:19530    |  false   | Optional, Milvus server URL             |
+| DATABASE         | your database        |  false   | Optional, default database name         |
 | ATTU_LOG_LEVEL   | info                 |  false   | Optional, sets the log level for Attu   |
 | ROOT_CERT_PATH   | /path/to/root/cert   |  false   | Optional, path to the root certificate  |
 | PRIVATE_KEY_PATH | /path/to/private/key |  false   | Optional, path to the private key       |
