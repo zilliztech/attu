@@ -69,7 +69,11 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     return res;
   };
   // logout API
-  const logout = () => {
+  const logout = async (pass?: boolean) => {
+    if (!pass) {
+      // close connetion
+      await MilvusService.closeConnection();
+    }
     // clear client id
     setClientId('');
     // remove client id from local storage

@@ -193,6 +193,14 @@ export class CollectionsService {
     return data.collection_name;
   }
 
+  async loadCollectionAsync(clientId: string, data: LoadCollectionReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.loadCollectionAsync(data);
+    throwErrorFromSDK(res);
+
+    return data.collection_name;
+  }
+
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.releaseCollection(data);
@@ -250,7 +258,6 @@ export class CollectionsService {
     throwErrorFromSDK(res.status);
     return res;
   }
-
 
   async deleteEntities(clientId: string, data: DeleteEntitiesReq) {
     const { milvusClient } = clientCache.get(clientId);
@@ -525,7 +532,7 @@ export class CollectionsService {
 
       // emit event to current client
       if (socketClient) {
-        socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, res);
+        socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, { collections: res });
       }
     } catch (e) {
       console.log('ignore queue error');

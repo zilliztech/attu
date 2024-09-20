@@ -275,7 +275,7 @@ export class CollectionController {
       param.replica_number = Number(data.replica_number);
     }
     try {
-      const result = await this.collectionsService.loadCollection(
+      const result = await this.collectionsService.loadCollectionAsync(
         req.clientId,
         param
       );

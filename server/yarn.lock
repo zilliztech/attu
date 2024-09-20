@@ -1397,10 +1397,10 @@
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.9.tgz#b6ef7457e826be8049667ae673eda7876eb049be"
   integrity sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA==
 
-"@zilliz/milvus2-sdk-node@^2.4.8":
-  version "2.4.8"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.4.8.tgz#806437620707e7ca5d17f4355b58a44090e76177"
-  integrity sha512-mLwe1Q8YX/gNHT2tK9v3GB9hPlcpdQwnabdsu/txSp+KI/wv5ZCP098NX0dGcR62TGuhx6htA4AVj6Y9OuMIoA==
+"@zilliz/milvus2-sdk-node@^2.4.9":
+  version "2.4.9"
+  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.4.9.tgz#760f78b44a720426aad775746254d23eb4e7dfc8"
+  integrity sha512-EuCwEE5jENkxk7JVCNxLjtw4BgxcucquzIOalqxhOBQ10P28wU+jFU1ETJpAen4g5FbNwlMCO9rwDaORKjlwSA==
   dependencies:
     "@grpc/grpc-js" "^1.8.22"
     "@grpc/proto-loader" "^0.7.10"

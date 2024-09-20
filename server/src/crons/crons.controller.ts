@@ -30,7 +30,7 @@ export class CronsController {
 
   async toggleCronJobByName(req: Request, res: Response, next: NextFunction) {
     const cronData = req.body;
-    // console.log(cronData, milvusAddress);
+
     try {
       const result = await this.cronsService.toggleCronJobByName(req.clientId, {
         ...cronData,
@@ -39,5 +39,10 @@ export class CronsController {
     } catch (error) {
       next(error);
     }
+  }
+
+  deleteCronJob(clientId: string) {
+    console.info(`Deleting all cron jobs for client: ${clientId}`);
+    this.schedulerRegistry.deleteAllCronJobs(clientId);
   }
 }
