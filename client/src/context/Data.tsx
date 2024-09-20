@@ -119,6 +119,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
       // trigger cron if it has to
       if (LoadingOrBuildingCollections.length > 0) {
+        console.log('trigger cron');
         MilvusService.triggerCron({
           name: WS_EVENTS.COLLECTION_UPDATE,
           type: WS_EVENTS_TYPE.START,
@@ -143,6 +144,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database !== undefined &&
         remote !== undefined
       ) {
+        console.log('database not matched', remote, database);
         return;
       }
       // check state to see if it is loading or building index, if so, start server cron job

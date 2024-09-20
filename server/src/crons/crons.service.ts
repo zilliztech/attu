@@ -54,6 +54,7 @@ export class CronsService {
   }
 
   async execCollectionUpdateTask(clientId: string, data: CronJobObject) {
+    console.log('execCollectionUpdateTask', clientId, data);
     const task = async () => {
       const currentJob: CronJob = this.schedulerRegistry.getCronJob(
         clientId,
@@ -89,7 +90,10 @@ export class CronsService {
 
         if (socketClient) {
           // emit event to current client, loading and indexing events are indetified as collection update
-          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, {collections, database: currentDatabase});
+          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, {
+            collections,
+            database: currentJob.data.payload.database,
+          });
 
           // if all collections are loaded, stop cron
           const LoadingOrBuildingCollections = collections.filter(v => {
@@ -141,6 +145,8 @@ export class SchedulerRegistry {
       this.cronJobMap.get(targetId)?.task?.stop();
       this.cronJobMap.delete(targetId);
     }
+
+    console.log('Deleted cron job:', targetId, this.cronJobMap);
   }
 
   deleteAllCronJobs(clientId: string) {
@@ -177,21 +183,24 @@ export class SchedulerRegistry {
       // create task id
       const id = getId(clientId, data);
 
-      // create task
-      const task = schedule(cronExpression, () => {
-        console.log(
-          `[cronExpression:${cronExpression}] ${data.name} ${id}: running a task.`
-        );
-        func();
-      });
+      if (!this.cronJobMap.has(id)) {
+        console.log('create task:', id);
+        // create task
+        const task = schedule(cronExpression, () => {
+          console.log(
+            `[cronExpression:${cronExpression}] ${data.name} ${id}: running a task.`
+          );
+          func();
+        });
 
-      // save task
-      this.cronJobMap.set(id, {
-        id,
-        clientId,
-        task,
-        data,
-      });
+        // save task
+        this.cronJobMap.set(id, {
+          id,
+          clientId,
+          task,
+          data,
+        });
+      }
     }
   }
 }
