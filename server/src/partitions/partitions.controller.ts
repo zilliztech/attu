@@ -43,6 +43,7 @@ export class PartitionController {
         req.clientId,
         {
           collection_name: collectionName,
+          db_name: req.db_name,
         }
       );
       res.send(result);

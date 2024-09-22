@@ -14,6 +14,7 @@ interface CronJob {
   task: ScheduledTask;
   data: CronJobObject;
 }
+import { clientCache } from '../app';
 
 const getId = (clientId: string, data: CronJobObject) => {
   return `${clientId}/${data.name}/${
@@ -53,26 +54,47 @@ export class CronsService {
   }
 
   async execCollectionUpdateTask(clientId: string, data: CronJobObject) {
+    console.log('execCollectionUpdateTask', clientId, data);
     const task = async () => {
       const currentJob: CronJob = this.schedulerRegistry.getCronJob(
         clientId,
         data
       );
 
+      // if currentJob is not exist
       if (!currentJob) {
+        // if client not connected, stop cron
+        this.schedulerRegistry.deleteCronJob(clientId, data);
         return;
       }
+
       try {
+        // get client cache data
+        const { milvusClient } = clientCache.get(clientId);
+        const currentDatabase = (milvusClient as any).metadata.get('dbname');
+
+        // if database is not matched, return
+        if (currentDatabase !== data.payload.database) {
+          // if client not connected, stop cron
+          this.schedulerRegistry.deleteCronJob(clientId, data);
+          console.info('Database is not matched, stop cron.', clientId);
+          return;
+        }
+
         const collections = await this.collectionService.getAllCollections(
           currentJob.clientId,
-          currentJob.data.payload.collections
+          currentJob.data.payload.collections,
+          currentJob.data.payload.database
         );
         // get current socket
         const socketClient = clients.get(currentJob.clientId);
 
         if (socketClient) {
           // emit event to current client, loading and indexing events are indetified as collection update
-          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, collections);
+          socketClient.emit(WS_EVENTS.COLLECTION_UPDATE, {
+            collections,
+            database: currentJob.data.payload.database,
+          });
 
           // if all collections are loaded, stop cron
           const LoadingOrBuildingCollections = collections.filter(v => {
@@ -87,6 +109,15 @@ export class CronsService {
           }
         }
       } catch (error) {
+        if (error.message.includes('pool is draining')) {
+          // Handle the pool draining error, possibly by logging and avoiding retry
+          console.error(
+            'The pool is shutting down and cannot accept new work.'
+          );
+          this.schedulerRegistry.deleteCronJob(clientId, data);
+          return;
+        }
+
         // When user not connect milvus, stop cron
         this.schedulerRegistry.deleteCronJob(clientId, data);
 
@@ -115,6 +146,17 @@ export class SchedulerRegistry {
       this.cronJobMap.get(targetId)?.task?.stop();
       this.cronJobMap.delete(targetId);
     }
+
+  }
+
+  deleteAllCronJobs(clientId: string) {
+    console.log('Deleting all cron jobs in service for client:', clientId);
+    this.cronJobMap.forEach((v, k) => {
+      if (v.clientId === clientId) {
+        v.task.stop();
+        this.cronJobMap.delete(k);
+      }
+    });
   }
 
   // ┌────────────── second (optional)
@@ -141,21 +183,24 @@ export class SchedulerRegistry {
       // create task id
       const id = getId(clientId, data);
 
-      // create task
-      const task = schedule(cronExpression, () => {
-        console.log(
-          `[cronExpression:${cronExpression}] ${data.name} ${id}: running a task.`
-        );
-        func();
-      });
+      if (!this.cronJobMap.has(id)) {
+        console.log('create task:', id);
+        // create task
+        const task = schedule(cronExpression, () => {
+          console.log(
+            `[cronExpression:${cronExpression}] ${data.name} ${id}: running a task.`
+          );
+          func();
+        });
 
-      // save task
-      this.cronJobMap.set(id, {
-        id,
-        clientId,
-        task,
-        data,
-      });
+        // save task
+        this.cronJobMap.set(id, {
+          id,
+          clientId,
+          task,
+          data,
+        });
+      }
     }
   }
 }

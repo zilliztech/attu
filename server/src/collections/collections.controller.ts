@@ -135,8 +135,15 @@ export class CollectionController {
     try {
       const result =
         type === 1
-          ? await this.collectionsService.getLoadedCollections(req.clientId)
-          : await this.collectionsService.getAllCollections(req.clientId);
+          ? await this.collectionsService.getLoadedCollections(
+              req.clientId,
+              req.db_name
+            )
+          : await this.collectionsService.getAllCollections(
+              req.clientId,
+              [],
+              req.db_name
+            );
       res.send(result);
     } catch (error) {
       next(error);
@@ -145,7 +152,10 @@ export class CollectionController {
 
   async getStatistics(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.collectionsService.getStatistics(req.clientId);
+      const result = await this.collectionsService.getStatistics(
+        req.clientId,
+        req.db_name
+      );
       res.send(result);
     } catch (error) {
       next(error);
@@ -227,6 +237,7 @@ export class CollectionController {
         req.clientId,
         {
           collection_name: name,
+          db_name: req.db_name,
         }
       );
       res.send(result);
@@ -240,7 +251,8 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.getAllCollections(
         req.clientId,
-        [name]
+        [name],
+        req.db_name
       );
       res.send(result[0]);
     } catch (error) {
@@ -259,6 +271,7 @@ export class CollectionController {
         req.clientId,
         {
           collection_name: name,
+          db_name: req.db_name,
         }
       );
       res.send(result);
@@ -270,12 +283,12 @@ export class CollectionController {
   async loadCollection(req: Request, res: Response, next: NextFunction) {
     const collection_name = req.params?.name;
     const data = req.body;
-    const param: LoadCollectionReq = { collection_name };
+    const param: LoadCollectionReq = { collection_name, db_name: req.db_name };
     if (data.replica_number) {
       param.replica_number = Number(data.replica_number);
     }
     try {
-      const result = await this.collectionsService.loadCollection(
+      const result = await this.collectionsService.loadCollectionAsync(
         req.clientId,
         param
       );
@@ -292,6 +305,7 @@ export class CollectionController {
         req.clientId,
         {
           collection_name: name,
+          db_name: req.db_name,
         }
       );
       res.send(result);
@@ -415,6 +429,7 @@ export class CollectionController {
         name,
         {
           alias,
+          db_name: req.db_name,
         }
       );
       res.send(result);
@@ -442,6 +457,7 @@ export class CollectionController {
         req.clientId,
         {
           collectionName: name,
+          dbName: req.db_name,
         }
       );
       res.send(result.infos);
@@ -457,6 +473,7 @@ export class CollectionController {
         req.clientId,
         {
           collectionName: name,
+          dbName: req.db_name,
         }
       );
       res.send(result.infos);
@@ -470,6 +487,7 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.compact(req.clientId, {
         collection_name: name,
+        db_name: req.db_name,
       });
       res.send(result);
     } catch (error) {
@@ -482,6 +500,7 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.count(req.clientId, {
         collection_name: name,
+        db_name: req.db_name,
       });
 
       res.send(result);
@@ -497,6 +516,7 @@ export class CollectionController {
         req.clientId,
         {
           collection_name: name,
+          db_name: req.db_name,
         }
       );
 
@@ -517,11 +537,13 @@ export class CollectionController {
               extra_params,
               field_name,
               index_name,
+              db_name: req.db_name,
             })
           : await this.collectionsService.dropIndex(req.clientId, {
               collection_name,
               field_name,
               index_name,
+              db_name: req.db_name,
             });
       res.send(result);
     } catch (error) {
@@ -534,6 +556,7 @@ export class CollectionController {
     try {
       const result = await this.collectionsService.describeIndex(req.clientId, {
         collection_name: data,
+        db_name: req.db_name,
       });
 
       res.send(result);

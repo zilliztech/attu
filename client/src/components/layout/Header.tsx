@@ -106,7 +106,7 @@ const Header: FC = () => {
   };
 
   const handleLogout = async () => {
-    logout();
+    logout(false);
   };
 
   const useDatabase = async (database: string) => {
