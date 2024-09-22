@@ -143,7 +143,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database !== undefined &&
         remote !== undefined
       ) {
-        console.log('database not matched', remote, database);
+        // console.log('database not matched', remote, database);
         return;
       }
       // check state to see if it is loading or building index, if so, start server cron job
