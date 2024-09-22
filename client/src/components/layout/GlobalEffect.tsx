@@ -1,56 +1,78 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import axiosInstance from '@/http/Axios';
-import { rootContext, authContext } from '@/context';
+import { rootContext, authContext, dataContext } from '@/context';
 import { HTTP_STATUS_CODE } from '@server/utils/Const';
 
 let axiosResInterceptor: number | null = null;
-// let timer: Record<string, ReturnType<typeof setTimeout> | number>[] = [];
-// we only take side effect here, nothing else
-const GlobalEffect = (props: { children: React.ReactNode }) => {
+
+const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
   const { openSnackBar } = useContext(rootContext);
   const { logout } = useContext(authContext);
+  const { database } = useContext(dataContext);
 
-  // catch axios error here
-  if (axiosResInterceptor === null) {
-    axiosResInterceptor = axiosInstance.interceptors.response.use(
-      function (res: any) {
-        if (res.statusCode && res.statusCode !== HTTP_STATUS_CODE.OK) {
-          openSnackBar(res.data.message, 'warning');
-          return Promise.reject(res.data);
-        }
-
-        return res;
+  useEffect(() => {
+    // Add database header to all axios requests
+    const requestInterceptor = axiosInstance.interceptors.request.use(
+      config => {
+        config.headers['x-attu-database'] = database;
+        return config;
       },
-      function (error: any) {
-        const { response = {} } = error;
+      error => Promise.reject(error)
+    );
 
-        switch (response.status) {
-          case HTTP_STATUS_CODE.UNAUTHORIZED:
-          case HTTP_STATUS_CODE.FORBIDDEN:
-            setTimeout(() => {
-              logout(true);
-            }, 1000);
-            break;
-          default:
-            break;
-        }
-        if (response.data) {
-          const { message: errMsg } = response.data;
-          // We need check status 401 in login page
-          // So server will return 500 when change the user password.
-          errMsg && openSnackBar(errMsg, 'error');
+    // Clean up interceptor on unmount
+    return () => {
+      axiosInstance.interceptors.request.eject(requestInterceptor);
+    };
+  }, [database]);
+
+  useEffect(() => {
+    if (axiosResInterceptor === null) {
+      axiosResInterceptor = axiosInstance.interceptors.response.use(
+        (response: any) => {
+          if (
+            response.statusCode &&
+            response.statusCode !== HTTP_STATUS_CODE.OK
+          ) {
+            openSnackBar(response.data.message, 'warning');
+            return Promise.reject(response.data);
+          }
+          return response;
+        },
+        error => {
+          const { response } = error;
+          if (response) {
+            switch (response.status) {
+              case HTTP_STATUS_CODE.UNAUTHORIZED:
+              case HTTP_STATUS_CODE.FORBIDDEN:
+                setTimeout(() => logout(true), 1000);
+                break;
+              default:
+                break;
+            }
+            const errorMessage = response.data?.message;
+            if (errorMessage) {
+              openSnackBar(errorMessage, 'error');
+              return Promise.reject(error);
+            }
+          }
+          // Handle other error cases
+          openSnackBar(error.message, 'error');
           return Promise.reject(error);
         }
-        if (error.message) {
-          openSnackBar(error.message, 'error');
-        }
-        return Promise.reject(error);
-      }
-    );
-  }
-  // get global data
+      );
+    }
 
-  return <>{props.children}</>;
+    // Clean up response interceptor on unmount
+    return () => {
+      if (axiosResInterceptor !== null) {
+        axiosInstance.interceptors.response.eject(axiosResInterceptor);
+        axiosResInterceptor = null;
+      }
+    };
+  }, [logout, openSnackBar]);
+
+  return <>{children}</>;
 };
 
 export default GlobalEffect;

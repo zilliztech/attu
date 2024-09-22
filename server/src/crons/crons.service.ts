@@ -83,7 +83,8 @@ export class CronsService {
 
         const collections = await this.collectionService.getAllCollections(
           currentJob.clientId,
-          currentJob.data.payload.collections
+          currentJob.data.payload.collections,
+          currentJob.data.payload.database
         );
         // get current socket
         const socketClient = clients.get(currentJob.clientId);
@@ -146,7 +147,6 @@ export class SchedulerRegistry {
       this.cronJobMap.delete(targetId);
     }
 
-    console.log('Deleted cron job:', targetId, this.cronJobMap);
   }
 
   deleteAllCronJobs(clientId: string) {

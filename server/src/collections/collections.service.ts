@@ -71,9 +71,11 @@ export class CollectionsService {
   async createCollection(clientId: string, data: CreateCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.createCollection(data);
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [data.collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     throwErrorFromSDK(res);
     return newCollection[0];
@@ -159,9 +161,11 @@ export class CollectionsService {
     const res = await milvusClient.renameCollection(data);
     throwErrorFromSDK(res);
 
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.new_collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [data.new_collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     return newCollection[0];
   }
@@ -171,9 +175,11 @@ export class CollectionsService {
     const res = await milvusClient.alterCollection(data);
     throwErrorFromSDK(res);
 
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [data.collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     return newCollection[0];
   }
@@ -207,7 +213,11 @@ export class CollectionsService {
     throwErrorFromSDK(res);
 
     // emit update to client
-    this.updateCollectionsDetails(clientId, [data.collection_name]);
+    this.updateCollectionsDetails(
+      clientId,
+      [data.collection_name],
+      data.db_name
+    );
 
     return data.collection_name;
   }
@@ -305,9 +315,11 @@ export class CollectionsService {
     const res = await milvusClient.createAlias(data);
     throwErrorFromSDK(res);
 
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [data.collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     return newCollection[0];
   }
@@ -319,23 +331,21 @@ export class CollectionsService {
     return res;
   }
 
-  async dropAlias(
-    clientId: string,
-    collection_name: string,
-    data: DropAliasReq
-  ) {
+  async dropAlias(clientId: string, collection_name: string, data: any) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.dropAlias(data);
     throwErrorFromSDK(res);
 
-    const newCollection = (await this.getAllCollections(clientId, [
-      collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     return newCollection[0];
   }
 
-  async getReplicas(clientId: string, data: GetReplicasDto) {
+  async getReplicas(clientId: string, data: any) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.getReplicas(data);
     return res;
@@ -363,7 +373,8 @@ export class CollectionsService {
     clientId: string,
     collection: CollectionData,
     loadCollection: CollectionData,
-    lazy: boolean = false
+    lazy: boolean = false,
+    database?: string
   ) {
     const { collectionsQueue } = clientCache.get(clientId);
     if (lazy) {
@@ -389,6 +400,7 @@ export class CollectionsService {
     // get collection schema and properties
     const collectionInfo = await this.describeCollection(clientId, {
       collection_name: collection.name,
+      db_name: database,
     });
 
     // get collection statistic data
@@ -397,6 +409,7 @@ export class CollectionsService {
     try {
       const res = await this.count(clientId, {
         collection_name: collection.name,
+        db_name: database,
       });
       count = res.rowCount;
     } catch (e) {
@@ -414,6 +427,7 @@ export class CollectionsService {
       replicas = loadCollection
         ? await this.getReplicas(clientId, {
             collectionID: collectionInfo.collectionID,
+            db_name: database,
           })
         : replicas;
     } catch (e) {
@@ -453,7 +467,8 @@ export class CollectionsService {
   // get all collections details
   async getAllCollections(
     clientId: string,
-    collections: string[] = []
+    collections: string[] = [],
+    database?: string
   ): Promise<CollectionObject[]> {
     const currentClient = clientCache.get(clientId);
 
@@ -464,10 +479,13 @@ export class CollectionsService {
     }
 
     // get all collections(name, timestamp, id)
-    const allCollections = await this.showCollections(clientId);
+    const allCollections = await this.showCollections(clientId, {
+      db_name: database,
+    });
     // get all loaded collection
     const loadedCollections = await this.showCollections(clientId, {
       type: ShowCollectionsType.Loaded,
+      db_name: database,
     });
 
     // data container
@@ -498,7 +516,8 @@ export class CollectionsService {
           clientId,
           collection,
           loadedCollection,
-          !notLazy
+          !notLazy,
+          database
         )
       );
     }
@@ -511,7 +530,11 @@ export class CollectionsService {
           if (q.isObseleted) {
             return;
           }
-          await this.updateCollectionsDetails(clientId, collectionsToGet);
+          await this.updateCollectionsDetails(
+            clientId,
+            collectionsToGet,
+            database
+          );
         },
         5
       );
@@ -523,12 +546,16 @@ export class CollectionsService {
 
   // update collections details
   // send new info to the client
-  async updateCollectionsDetails(clientId: string, collections: string[]) {
+  async updateCollectionsDetails(
+    clientId: string,
+    collections: string[],
+    database: string
+  ) {
     try {
       // get current socket
       const socketClient = clients.get(clientId);
       // get collections
-      const res = await this.getAllCollections(clientId, collections);
+      const res = await this.getAllCollections(clientId, collections, database);
 
       // emit event to current client
       if (socketClient) {
@@ -539,16 +566,17 @@ export class CollectionsService {
     }
   }
 
-  async getLoadedCollections(clientId: string) {
+  async getLoadedCollections(clientId: string, db_name?: string) {
     const data = [];
     const res = await this.showCollections(clientId, {
       type: ShowCollectionsType.Loaded,
+      db_name,
     });
     if (res.data.length > 0) {
       for (const item of res.data) {
         const { id, name } = item;
 
-        const count = this.count(clientId, { collection_name: name });
+        const count = this.count(clientId, { collection_name: name, db_name });
         data.push({
           id,
           collection_name: name,
@@ -564,12 +592,12 @@ export class CollectionsService {
    * Get collections statistics data
    * @returns {collectionCount:number, totalData:number}
    */
-  async getStatistics(clientId: string) {
+  async getStatistics(clientId: string, db_name?: string) {
     const data = {
       collectionCount: 0,
       totalData: 0,
     } as StatisticsObject;
-    const res = await this.showCollections(clientId);
+    const res = await this.showCollections(clientId, { db_name });
     data.collectionCount = res.data.length;
     if (res.data.length > 0) {
       for (const item of res.data) {
@@ -577,6 +605,7 @@ export class CollectionsService {
           clientId,
           {
             collection_name: item.name,
+            db_name,
           }
         );
         const rowCount = findKeyValue(collectionStatistics.stats, ROW_COUNT);
@@ -591,10 +620,11 @@ export class CollectionsService {
    */
   async importSample(
     clientId: string,
-    { collection_name, size, download, format }: ImportSampleDto
+    { collection_name, size, download, format, db_name }: ImportSampleDto
   ) {
     const collectionInfo = await this.describeCollection(clientId, {
       collection_name,
+      db_name,
     });
     const fields_data = genRows(
       collectionInfo.schema.fields,
@@ -612,7 +642,11 @@ export class CollectionsService {
       return { sampleFile };
     } else {
       // Otherwise, insert the data into the collection
-      return await this.insert(clientId, { collection_name, fields_data });
+      return await this.insert(clientId, {
+        collection_name,
+        fields_data,
+        db_name,
+      });
     }
   }
 
@@ -657,6 +691,7 @@ export class CollectionsService {
   async duplicateCollection(clientId: string, data: RenameCollectionReq) {
     const collection = await this.describeCollection(clientId, {
       collection_name: data.collection_name,
+      db_name: data.db_name,
     });
 
     const createCollectionParams: CreateCollectionReq = {
@@ -685,6 +720,7 @@ export class CollectionsService {
       collection_name: data.collection_name,
       filter:
         pkType === 'Int64' ? `${pkField} >= ${MIN_INT64}` : `${pkField} != ''`,
+      db_name: data.db_name,
     });
 
     return res;
@@ -699,9 +735,11 @@ export class CollectionsService {
     indexCache.delete(key);
 
     // fetch new collections
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [data.collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     throwErrorFromSDK(res);
     return newCollection[0];
@@ -767,9 +805,11 @@ export class CollectionsService {
     // clear cache;
     indexCache.delete(key);
     // fetch new collections
-    const newCollection = (await this.getAllCollections(clientId, [
-      data.collection_name,
-    ])) as CollectionFullObject[];
+    const newCollection = (await this.getAllCollections(
+      clientId,
+      [data.collection_name],
+      data.db_name
+    )) as CollectionFullObject[];
 
     return newCollection[0];
   }

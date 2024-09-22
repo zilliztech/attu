@@ -70,6 +70,10 @@ export class ImportSampleDto {
   @IsString()
   @IsOptional()
   readonly format?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly db_name?: string;
 }
 
 export class GetReplicasDto {
