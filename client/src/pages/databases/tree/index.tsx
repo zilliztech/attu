@@ -6,7 +6,6 @@ import {
   Theme,
   Tooltip,
   Typography,
-  Menu,
   MenuItem,
   Grow,
   Popover,
@@ -68,28 +67,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiTreeItem-content': {
       width: 'auto',
       padding: '0',
+      '&.Mui-focused': {
+        backgroundColor: 'rgba(10, 206, 130, 0.08)',
+      },
+      '&.Mui-selected': {
+        backgroundColor: 'rgba(10, 206, 130, 0.28)',
+      },
+      '&.Mui-focused.Mui-selected': {
+        backgroundColor: 'rgba(10, 206, 130, 0.28) !important',
+      },
 
       '&:hover': {
         backgroundColor: 'rgba(10, 206, 130, 0.08)',
       },
       '& .MuiTreeItem-label': {
         background: 'none',
-      },
-    },
-    '& .Mui-selected': {
-      '& > .MuiTreeItem-content': {
-        backgroundColor: 'rgba(10, 206, 130, 0.08)',
-
-        '& .MuiTreeItem-label': {
-          background: 'none',
-        },
-      },
-      '&:focus': {
-        '& .MuiTreeItem-content': {
-          '& .MuiTreeItem-label': {
-            background: 'none',
-          },
-        },
       },
     },
   },
@@ -100,6 +92,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .right-selected-on': {
       '& .MuiTreeItem-content': {
         backgroundColor: 'rgba(10, 206, 130, 0.08)',
+        '&.Mui-selected': {
+          backgroundColor: 'rgba(10, 206, 130, 0.28) !important',
+        },
       },
     },
   },
