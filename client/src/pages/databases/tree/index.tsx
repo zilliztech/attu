@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SimpleTreeView, TreeItem } from '@mui/x-tree-view';
 import icons from '@/components/icons/Icons';
-import { Theme, Tooltip, Typography, Menu, MenuItem } from '@mui/material';
+import {
+  Theme,
+  Tooltip,
+  Typography,
+  Menu,
+  MenuItem,
+  Grow,
+  Popover,
+} from '@mui/material';
 import { useNavigate, Params } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
@@ -88,6 +96,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   treeItem: {
     '& .MuiTreeItem-iconContainer': {
       color: '#888',
+    },
+    '& .right-selected-on': {
+      '& .MuiTreeItem-content': {
+        backgroundColor: 'rgba(10, 206, 130, 0.08)',
+      },
     },
   },
   collectionNode: {
@@ -230,20 +243,18 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             params.collectionPage || 'overview'
           }`
     );
+    // close context menu
+    setContextMenu(null);
   };
 
   const handleContextMenu = (event: any, nodeId: string) => {
     event.preventDefault();
     event.stopPropagation();
-    setContextMenu(
-      contextMenu === null
-        ? {
-            mouseX: event.clientX - 2,
-            mouseY: event.clientY - 4,
-            nodeId,
-          }
-        : null
-    );
+    setContextMenu({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY - 4,
+      nodeId,
+    });
   };
 
   const handleClose = () => {
@@ -269,7 +280,9 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
               icon: CollectionIcon,
             }}
             label={node.name}
-            className={classes.treeItem}
+            className={clcx(classes.treeItem, {
+              ['right-selected-on']: contextMenu?.nodeId === node.id,
+            })}
             onClick={(event: any) => {
               event.stopPropagation();
               if (onNodeClick) {
@@ -291,7 +304,9 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
           }}
           label={<CollectionNode data={node.data!} />}
           onContextMenu={event => handleContextMenu(event, node.id)}
-          className={classes.treeItem}
+          className={clcx(classes.treeItem, {
+            ['right-selected-on']: contextMenu?.nodeId === node.id,
+          })}
           onClick={(event: any) => {
             event.stopPropagation();
             if (onNodeClick) {
@@ -302,6 +317,16 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       );
     });
   };
+
+  // useEffect
+  useEffect(() => {
+    // register click event on document, close context menu if click outside
+    document.addEventListener('click', handleClose);
+
+    return () => {
+      document.removeEventListener('click', handleClose);
+    };
+  }, []);
 
   return (
     <>
@@ -345,8 +370,8 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
           </TreeItem>
         }
       </SimpleTreeView>
-      <Menu
-        open={contextMenu !== null}
+      <Popover
+        open={Boolean(contextMenu)}
         onClose={handleClose}
         anchorReference="anchorPosition"
         anchorPosition={
@@ -354,10 +379,21 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
             : undefined
         }
+        TransitionComponent={Grow}
+        transitionDuration={0}
+        // disableAutoFocusItem
+        sx={{ pointerEvents: 'none' }} // 使 Popover 外部不可交互
+        PaperProps={{
+          sx: { pointerEvents: 'auto', boxShadow: 3 },
+        }}
       >
-        <MenuItem onClick={() => handleMenuClick('Rename')}>Rename</MenuItem>
-        <MenuItem onClick={() => handleMenuClick('Delete')}>Delete</MenuItem>
-      </Menu>
+        <MenuItem onClick={() => handleMenuClick('Rename')}>
+          Rename Collection
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuClick('Delete')}>
+          Delete Collection
+        </MenuItem>
+      </Popover>
     </>
   );
 };
