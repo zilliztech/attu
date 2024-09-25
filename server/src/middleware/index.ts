@@ -10,6 +10,7 @@ declare global {
   namespace Express {
     interface Request {
       clientId?: string;
+      db_name?: string;
     }
   }
 }
@@ -23,6 +24,12 @@ export const ReqHeaderMiddleware = (
   // server will set active address in milvus service.
   const milvusClientId = (req.headers[MILVUS_CLIENT_ID] as string) || '';
   req.clientId = req.headers[MILVUS_CLIENT_ID] as string;
+
+  // merge database from header
+  const database = req.headers['x-attu-database'] as string;
+  if (database) {
+    req.db_name = database;
+  }
 
   const bypassURLs = [`/api/v1/milvus/connect`, `/api/v1/milvus/version`];
 

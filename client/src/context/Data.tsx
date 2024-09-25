@@ -136,14 +136,23 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // Websocket Callback: update single collection
   const updateCollections = useCallback(
-    (updateCollections: CollectionFullObject[]) => {
+    (props: { collections: CollectionFullObject[]; database?: string }) => {
+      const { collections, database: remote } = props;
+      if (
+        remote !== database &&
+        database !== undefined &&
+        remote !== undefined
+      ) {
+        // console.log('database not matched', remote, database);
+        return;
+      }
       // check state to see if it is loading or building index, if so, start server cron job
-      detectLoadingIndexing(updateCollections);
+      detectLoadingIndexing(collections);
       // update single collection
       setCollections(prev => {
         // update exist collection
         const newCollections = prev.map(v => {
-          const collectionToUpdate = updateCollections.find(c => c.id === v.id);
+          const collectionToUpdate = collections.find(c => c.id === v.id);
 
           if (collectionToUpdate) {
             return collectionToUpdate;
@@ -215,7 +224,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     const res = await CollectionService.getCollection(name);
 
     // update collection
-    updateCollections([res]);
+    updateCollections({ collections: [res] });
 
     return res;
   };
@@ -260,7 +269,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     }
 
     // update collection, and trigger cron job
-    updateCollections([collection]);
+    updateCollections({ collections: [collection] });
   };
 
   // API: release collection
@@ -275,7 +284,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     const newCollection = await CollectionService.renameCollection(name, {
       new_collection_name: newName,
     });
-    updateCollections([newCollection]);
+    updateCollections({ collections: [newCollection] });
 
     return newCollection;
   };
@@ -307,7 +316,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     // create index
     const newCollection = await CollectionService.createIndex(param);
     // update collection
-    updateCollections([newCollection]);
+    updateCollections({ collections: [newCollection] });
 
     return newCollection;
   };
@@ -317,7 +326,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     // drop index
     const { data } = await CollectionService.dropIndex(params);
     // update collection
-    updateCollections([data]);
+    updateCollections({ collections: [data] });
 
     return data;
   };
@@ -329,7 +338,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       alias,
     });
     // update collection
-    updateCollections([newCollection]);
+    updateCollections({ collections: [newCollection] });
 
     return newCollection;
   };
@@ -342,7 +351,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     });
 
     // update collection
-    updateCollections([data]);
+    updateCollections({ collections: [data] });
 
     return data;
   };
@@ -359,7 +368,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     });
 
     // update existing collection
-    updateCollections([newCollection]);
+    updateCollections({ collections: [newCollection] });
 
     return newCollection;
   };

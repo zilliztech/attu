@@ -9,6 +9,7 @@ import { LRUCache } from 'lru-cache';
 import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
 import { clientCache } from '../app';
 import { DescribeIndexRes, AuthReq, AuthObject } from '../types';
+import { cronsManager } from '../crons';
 
 export class MilvusService {
   private DEFAULT_DATABASE = 'default';
@@ -37,6 +38,7 @@ export class MilvusService {
         username,
         password,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
+        database: database || this.DEFAULT_DATABASE,
       };
 
       if (process.env.ROOT_CERT_PATH) {
@@ -73,6 +75,7 @@ export class MilvusService {
 
       // If the server is not healthy, throw an error
       if (!res.isHealthy) {
+        clientCache.delete(milvusClient.clientId);
         throw new Error('Milvus is not ready yet.');
       }
 
@@ -109,8 +112,6 @@ export class MilvusService {
         database: db,
       };
     } catch (error) {
-      // If any error occurs, clear the cache and throw the error
-      clientCache.dump();
       throw error;
     }
   }
@@ -137,6 +138,8 @@ export class MilvusService {
     const res = await milvusClient.closeConnection();
     // clear cache on disconnect
     clientCache.delete(milvusClient.clientId);
+    // clear crons
+    cronsManager.deleteCronJob(clientId);
 
     return res;
   }
@@ -144,13 +147,22 @@ export class MilvusService {
   async useDatabase(clientId: string, db: string) {
     const { milvusClient } = clientCache.get(clientId);
 
-    const res = milvusClient.use({
-      db_name: db,
-    });
-
-    // update the database in the cache
+    // get the database from the cache
     const cache = clientCache.get(clientId);
-    cache.database = db;
-    return res;
+    const currentDatabase = cache.database;
+
+    if (currentDatabase !== db) {
+      // use the database
+      const res = milvusClient.use({
+        db_name: db,
+      });
+
+      // clear crons
+      cronsManager.deleteCronJob(clientId);
+
+      // update the database in the cache
+      cache.database = db;
+      return res;
+    }
   }
 }

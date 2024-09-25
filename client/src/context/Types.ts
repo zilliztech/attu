@@ -70,7 +70,7 @@ export type AuthContextType = {
   clientId: string;
   isManaged: boolean;
   isAuth: boolean;
-  logout: () => void;
+  logout: (pass?: boolean) => void;
   login: (params: AuthReq) => Promise<AuthObject>;
 };
 
