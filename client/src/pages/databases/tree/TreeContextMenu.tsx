@@ -28,7 +28,14 @@ export const TreeContextMenu = (props: {
             className={classes.menuItem}
             onClick={() => handleMenuClick('Delete')}
           >
-            Delete Database
+            Add Collection
+          </MenuItem>
+
+          <MenuItem
+            className={classes.menuItem}
+            onClick={() => handleMenuClick('Delete')}
+          >
+            Drop Database
           </MenuItem>
         </>
       );
@@ -42,20 +49,13 @@ export const TreeContextMenu = (props: {
               handleMenuClick('Rename');
             }}
           >
-            Rename Collection
+            Load Collection
           </MenuItem>
           <MenuItem
             className={classes.menuItem}
             onClick={() => handleMenuClick('Delete')}
           >
-            Delete Collection
-          </MenuItem>
-          <Divider />
-          <MenuItem
-            className={classes.menuItem}
-            onClick={() => handleMenuClick('Delete')}
-          >
-            Delete Collection
+            Release Collection
           </MenuItem>
           <MenuItem
             className={classes.menuItem}
@@ -63,17 +63,42 @@ export const TreeContextMenu = (props: {
           >
             Rename Collection
           </MenuItem>
+
           <MenuItem
             className={classes.menuItem}
-            onClick={() => handleMenuClick('Delete')}
+            onClick={() => handleMenuClick('Rename')}
           >
-            Delete Collection
+            Drop Collection
           </MenuItem>
+
+          <MenuItem
+            className={classes.menuItem}
+            onClick={() => handleMenuClick('Rename')}
+          >
+            Duplicate Collection
+          </MenuItem>
+
+          <Divider />
+
           <MenuItem
             className={classes.menuItem}
             onClick={() => handleMenuClick('Delete')}
           >
-            Delete Collection
+            Import File
+          </MenuItem>
+
+          <MenuItem
+            className={classes.menuItem}
+            onClick={() => handleMenuClick('Delete')}
+          >
+            Insert Sample Data
+          </MenuItem>
+
+          <MenuItem
+            className={classes.menuItem}
+            onClick={() => handleMenuClick('Delete')}
+          >
+            Empty Collection
           </MenuItem>
         </>
       );
