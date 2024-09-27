@@ -13,6 +13,7 @@ import {
   TreeNodeType,
   DatabaseToolProps,
   ContextMenu,
+  TreeNodeObject,
 } from './types';
 import { TreeContextMenu } from './TreeContextMenu';
 
@@ -119,7 +120,12 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
     setContextMenu(null);
   };
 
-  const handleContextMenu = (event: any, nodeId: string, nodeType: string) => {
+  const handleContextMenu = (
+    event: any,
+    nodeId: string,
+    nodeType: string,
+    object: TreeNodeObject
+  ) => {
     // prevent default
     event.preventDefault();
     event.stopPropagation();
@@ -129,6 +135,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       mouseY: event.clientY - 4,
       nodeId,
       nodeType: nodeType as TreeNodeType,
+      object: object,
     });
   };
 
@@ -171,7 +178,9 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             icon: CollectionIcon,
           }}
           label={<CollectionNode data={node.data!} />}
-          onContextMenu={event => handleContextMenu(event, node.id, node.type)}
+          onContextMenu={event =>
+            handleContextMenu(event, node.id, node.type, node.data!)
+          }
           className={clcx(classes.treeItem, {
             ['right-selected-on']: contextMenu?.nodeId === node.id,
           })}
@@ -231,7 +240,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
               }
             }}
             onContextMenu={event =>
-              handleContextMenu(event, tree.id, tree.type)
+              handleContextMenu(event, tree.id, tree.type, null)
             }
           >
             {tree.children && tree.children.length > 0

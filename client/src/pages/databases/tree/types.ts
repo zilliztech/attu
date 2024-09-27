@@ -1,7 +1,8 @@
-import { CollectionObject } from '@server/types';
+import { CollectionObject, DatabaseObject } from '@server/types';
 import { Params } from 'react-router-dom';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
+export type TreeNodeObject = CollectionObject | DatabaseObject | null;
 
 export interface DatabaseTreeItem {
   children?: DatabaseTreeItem[];
@@ -23,4 +24,5 @@ export type ContextMenu = {
   mouseY: number; // y position
   nodeId: string | null; // node id
   nodeType: TreeNodeType; // node type
+  object: TreeNodeObject; // object
 };
