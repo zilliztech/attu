@@ -66,6 +66,7 @@ export const TreeContextMenu = (props: {
         <>
           <MenuItem
             className={classes.menuItem}
+            disabled={(contextMenu.object as CollectionObject).loaded}
             onClick={() => {
               setDialog({
                 open: true,
@@ -85,6 +86,7 @@ export const TreeContextMenu = (props: {
           </MenuItem>
           <MenuItem
             className={classes.menuItem}
+            disabled={!(contextMenu.object as CollectionObject).loaded}
             onClick={() => {
               setDialog({
                 open: true,
