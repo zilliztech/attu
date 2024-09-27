@@ -1,29 +1,21 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SimpleTreeView, TreeItem } from '@mui/x-tree-view';
 import icons from '@/components/icons/Icons';
-import { Theme, Tooltip, Typography } from '@mui/material';
-import { useNavigate, Params } from 'react-router-dom';
+import { Tooltip, Typography, Grow, Popover } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
 import clcx from 'clsx';
 import { formatNumber } from '@/utils';
-import { makeStyles } from '@mui/styles';
-
-export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
-
-export interface DatabaseTreeItem {
-  children?: DatabaseTreeItem[];
-  id: string;
-  name: string;
-  type: TreeNodeType;
-  expanded?: boolean;
-  data?: CollectionObject;
-}
-
-interface DatabaseToolProps {
-  database: string;
-  collections: CollectionObject[];
-  params: Readonly<Params<string>>;
-}
+import { useStyles } from './style';
+import {
+  DatabaseTreeItem,
+  TreeNodeType,
+  DatabaseToolProps,
+  ContextMenu,
+  TreeNodeObject,
+} from './types';
+import { TreeContextMenu } from './TreeContextMenu';
 
 // get expanded nodes from data
 const getExpanded = (nodes: DatabaseTreeItem[]) => {
@@ -38,107 +30,6 @@ const getExpanded = (nodes: DatabaseTreeItem[]) => {
   });
   return expanded;
 };
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    fontSize: '15px',
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.default,
-    '& .MuiTreeItem-iconContainer': {
-      width: 'auto',
-    },
-    '& .MuiTreeItem-group': {
-      marginLeft: 0,
-      '& .MuiTreeItem-content': {
-        padding: '0 0 0 8px',
-      },
-    },
-    '& .MuiTreeItem-label:hover': {
-      backgroundColor: 'none',
-    },
-    '& .MuiTreeItem-content': {
-      width: 'auto',
-      padding: '0',
-
-      '&:hover': {
-        backgroundColor: 'rgba(10, 206, 130, 0.08)',
-      },
-      '& .MuiTreeItem-label': {
-        background: 'none',
-      },
-    },
-    '& .Mui-selected': {
-      '& > .MuiTreeItem-content': {
-        backgroundColor: 'rgba(10, 206, 130, 0.08)',
-
-        '& .MuiTreeItem-label': {
-          background: 'none',
-        },
-      },
-      '&:focus': {
-        '& .MuiTreeItem-content': {
-          '& .MuiTreeItem-label': {
-            background: 'none',
-          },
-        },
-      },
-    },
-  },
-  treeItem: {
-    '& .MuiTreeItem-iconContainer': {
-      color: '#888',
-    },
-  },
-  collectionNode: {
-    minHeight: '24px',
-    lineHeight: '24px',
-    position: 'relative',
-  },
-  collectionName: {
-    display: 'flex',
-    alignItems: 'center',
-    width: 'calc(100% - 45px)',
-    '& .collectionName': {
-      minWidth: 36,
-    },
-  },
-  dbName: {
-    width: 'calc(100% - 30px)',
-  },
-  count: {
-    fontSize: '13px',
-    fontWeight: 500,
-    marginLeft: theme.spacing(0.5),
-    color: theme.palette.text.secondary,
-    pointerEvents: 'none',
-  },
-  dot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    position: 'absolute',
-    left: 160,
-    top: 8,
-    zIndex: 1,
-    pointerEvents: 'none',
-  },
-  loaded: {
-    border: `1px solid ${theme.palette.primary.main}`,
-    backgroundColor: theme.palette.primary.main,
-  },
-  unloaded: {
-    border: `1px solid ${theme.palette.primary.main}`,
-    background: '#fff !important',
-  },
-  loading: {
-    border: `1px solid ${theme.palette.primary.light}`,
-    backgroundColor: `${theme.palette.primary.light} !important`,
-  },
-  noIndex: {
-    border: `1px solid ${theme.palette.text.disabled}`,
-    backgroundColor: theme.palette.text.disabled,
-  },
-}));
 
 const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   // i18n collectionTrans
@@ -184,6 +75,8 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
 };
 
 const DatabaseTree: React.FC<DatabaseToolProps> = props => {
+  // state
+  const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   // props
   const { database, collections, params } = props;
 
@@ -223,6 +116,31 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             params.collectionPage || 'overview'
           }`
     );
+    // close context menu
+    setContextMenu(null);
+  };
+
+  const handleContextMenu = (
+    event: any,
+    nodeId: string,
+    nodeType: string,
+    object: TreeNodeObject
+  ) => {
+    // prevent default
+    event.preventDefault();
+    event.stopPropagation();
+
+    setContextMenu({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY - 4,
+      nodeId,
+      nodeType: nodeType as TreeNodeType,
+      object: object,
+    });
+  };
+
+  const handleClose = () => {
+    setContextMenu(null);
   };
 
   // render children
@@ -237,7 +155,9 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
               icon: CollectionIcon,
             }}
             label={node.name}
-            className={classes.treeItem}
+            className={clcx(classes.treeItem, {
+              ['right-selected-on']: contextMenu?.nodeId === node.id,
+            })}
             onClick={(event: any) => {
               event.stopPropagation();
               if (onNodeClick) {
@@ -258,7 +178,12 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
             icon: CollectionIcon,
           }}
           label={<CollectionNode data={node.data!} />}
-          className={classes.treeItem}
+          onContextMenu={event =>
+            handleContextMenu(event, node.id, node.type, node.data!)
+          }
+          className={clcx(classes.treeItem, {
+            ['right-selected-on']: contextMenu?.nodeId === node.id,
+          })}
           onClick={(event: any) => {
             event.stopPropagation();
             if (onNodeClick) {
@@ -270,46 +195,79 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
     });
   };
 
+  // useEffect
+  useEffect(() => {
+    // register click event on document, close context menu if click outside
+    document.addEventListener('click', handleClose);
+
+    return () => {
+      document.removeEventListener('click', handleClose);
+    };
+  }, []);
+
   return (
-    <SimpleTreeView
-      expandedItems={[database]}
-      multiSelect={false}
-      disableSelection={false}
-      selectedItems={
-        params.collectionName
-          ? `c_${params.collectionName}`
-          : params.databaseName
-      }
-      className={classes.root}
-    >
-      {
-        <TreeItem
-          key={tree.id}
-          itemId={tree.id}
-          label={
-            <Tooltip title={tree.name}>
-              <Typography noWrap className={classes.dbName}>
-                {tree.name}
-              </Typography>
-            </Tooltip>
-          }
-          className={classes.treeItem}
-          slots={{
-            icon: DatabaseIcon,
-          }}
-          onClick={(event: any) => {
-            event.stopPropagation();
-            if (onNodeClick) {
-              onNodeClick(tree);
+    <>
+      <SimpleTreeView
+        expandedItems={[database]}
+        multiSelect={false}
+        disableSelection={false}
+        selectedItems={
+          params.collectionName
+            ? `c_${params.collectionName}`
+            : params.databaseName
+        }
+        className={classes.root}
+      >
+        {
+          <TreeItem
+            key={tree.id}
+            itemId={tree.id}
+            label={
+              <Tooltip title={tree.name}>
+                <Typography noWrap className={classes.dbName}>
+                  {tree.name}
+                </Typography>
+              </Tooltip>
             }
-          }}
-        >
-          {tree.children && tree.children.length > 0
-            ? renderTree(tree.children)
-            : [<div key="stub" />]}
-        </TreeItem>
-      }
-    </SimpleTreeView>
+            className={classes.treeItem}
+            slots={{
+              icon: DatabaseIcon,
+            }}
+            onClick={(event: any) => {
+              event.stopPropagation();
+              if (onNodeClick) {
+                onNodeClick(tree);
+              }
+            }}
+            onContextMenu={event =>
+              handleContextMenu(event, tree.id, tree.type, null)
+            }
+          >
+            {tree.children && tree.children.length > 0
+              ? renderTree(tree.children)
+              : [<div key="stub" />]}
+          </TreeItem>
+        }
+      </SimpleTreeView>
+      <Popover
+        open={Boolean(contextMenu)}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+        TransitionComponent={Grow}
+        transitionDuration={0}
+        sx={{ pointerEvents: 'none' }}
+        PaperProps={{
+          sx: { pointerEvents: 'auto', boxShadow: 4, borderRadius: 2 },
+        }}
+      >
+        <TreeContextMenu onClick={handleClose} contextMenu={contextMenu!} />
+      </Popover>
+    </>
   );
 };
 

@@ -12,15 +12,23 @@ export interface EmptyDataProps {
 
 const EmptyDataDialog: FC<EmptyDataProps> = props => {
   const { cb, collection } = props;
+  // UI functions
+  const { openSnackBar } = useContext(rootContext);
 
   const { handleCloseDialog } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: successTrans } = useTranslation('success');
 
   const handleDelete = async () => {
     // duplicate
     await DataService.emptyData(collection.collection_name);
+    openSnackBar(
+      successTrans('empty', {
+        name: collectionTrans('collection'),
+      })
+    );
     // close dialog
     handleCloseDialog();
     cb && cb();
