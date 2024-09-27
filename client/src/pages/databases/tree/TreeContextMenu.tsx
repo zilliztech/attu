@@ -1,14 +1,18 @@
-import { useCallback, useContext, useMemo, useState } from 'react';
-import { rootContext, authContext, dataContext } from '@/context';
+import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
+import { rootContext, dataContext } from '@/context';
 import CreateCollectionDialog from '@/pages/dialogs/CreateCollectionDialog';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
+import InsertDialog from '@/pages/dialogs/insert/Dialog';
+import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
+import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import { MenuItem, Divider } from '@mui/material';
 import { ContextMenu } from './types';
 import { useStyles } from './style';
-import { CollectionObject, DatabaseObject } from '@server/types';
+import { CollectionObject } from '@server/types';
 
 export const TreeContextMenu = (props: {
   onClick: Function;
@@ -16,17 +20,12 @@ export const TreeContextMenu = (props: {
 }) => {
   // hooks
   const { setDialog } = useContext(rootContext);
+  const { fetchCollection } = useContext(dataContext);
   const classes = useStyles();
   // props
   const { contextMenu, onClick } = props;
-
-  // handle menu click
-  const handleMenuClick = (action: string) => {
-    if (contextMenu?.nodeId) {
-      console.log(`Action ${action} on node ${contextMenu.nodeId}`);
-    }
-    onClick();
-  };
+  // i18n
+  const { t: actionTrans } = useTranslation('action');
 
   // render menu
   if (!contextMenu) {
@@ -49,16 +48,16 @@ export const TreeContextMenu = (props: {
               });
             }}
           >
-            Create Collection
+            {actionTrans('createCollection')}
           </MenuItem>
-
+          {/* 
           <MenuItem
             className={classes.menuItem}
             disabled={true}
             onClick={() => handleMenuClick('Delete')}
           >
-            Drop Database
-          </MenuItem>
+            {actionTrans('dropDatabase')}
+          </MenuItem> */}
         </>
       );
 
@@ -75,16 +74,14 @@ export const TreeContextMenu = (props: {
                   component: (
                     <LoadCollectionDialog
                       collection={contextMenu.object as CollectionObject}
-                      onLoad={async () => {
-                        console.log('loaded');
-                      }}
+                      onLoad={async () => {}}
                     />
                   ),
                 },
               });
             }}
           >
-            Load Collection
+            {actionTrans('loadCollection')}
           </MenuItem>
           <MenuItem
             className={classes.menuItem}
@@ -96,16 +93,14 @@ export const TreeContextMenu = (props: {
                   component: (
                     <ReleaseCollectionDialog
                       collection={contextMenu.object as CollectionObject}
-                      onRelease={async () => {
-                        console.log('released');
-                      }}
+                      onRelease={async () => {}}
                     />
                   ),
                 },
               });
             }}
           >
-            Release Collection
+            {actionTrans('releaseCollection')}
           </MenuItem>
           <MenuItem
             className={classes.menuItem}
@@ -117,16 +112,14 @@ export const TreeContextMenu = (props: {
                   component: (
                     <RenameCollectionDialog
                       collection={contextMenu.object as CollectionObject}
-                      cb={async () => {
-                        console.log('renamed');
-                      }}
+                      cb={async () => {}}
                     />
                   ),
                 },
               });
             }}
           >
-            Rename Collection
+            {actionTrans('renameCollection')}
           </MenuItem>
 
           <MenuItem
@@ -146,30 +139,81 @@ export const TreeContextMenu = (props: {
               });
             }}
           >
-            Drop Collection
+            {actionTrans('dropCollection')}
           </MenuItem>
 
           <Divider />
 
           <MenuItem
             className={classes.menuItem}
-            onClick={() => handleMenuClick('Delete')}
+            onClick={() => {
+              const collection = contextMenu.object as CollectionObject;
+              setDialog({
+                open: true,
+                type: 'custom',
+                params: {
+                  component: (
+                    <InsertDialog
+                      defaultSelectedCollection={collection.collection_name}
+                      // user can't select partition on collection page, so default value is ''
+                      defaultSelectedPartition={''}
+                      collections={[collection!]}
+                      onInsert={async () => {
+                        fetchCollection(collection.collection_name);
+                      }}
+                    />
+                  ),
+                },
+              });
+            }}
           >
-            Import File
+            {actionTrans('importFile')}
           </MenuItem>
 
           <MenuItem
             className={classes.menuItem}
-            onClick={() => handleMenuClick('Delete')}
+            onClick={() => {
+              const collection = contextMenu.object as CollectionObject;
+              setDialog({
+                open: true,
+                type: 'custom',
+                params: {
+                  component: (
+                    <ImportSampleDialog
+                      collection={collection}
+                      cb={async () => {
+                        fetchCollection(collection.collection_name);
+                      }}
+                    />
+                  ),
+                },
+              });
+            }}
           >
-            Insert Sample Data
+            {actionTrans('insertSampleData')}
           </MenuItem>
 
           <MenuItem
             className={classes.menuItem}
-            onClick={() => handleMenuClick('Delete')}
+            onClick={() => {
+              const collection = contextMenu.object as CollectionObject;
+              setDialog({
+                open: true,
+                type: 'custom',
+                params: {
+                  component: (
+                    <EmptyDataDialog
+                      collection={collection}
+                      cb={async () => {
+                        fetchCollection(collection.collection_name);
+                      }}
+                    />
+                  ),
+                },
+              });
+            }}
           >
-            Empty Collection
+            {actionTrans('emptyCollection')}
           </MenuItem>
         </>
       );

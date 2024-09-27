@@ -240,11 +240,6 @@ const CollectionData = (props: CollectionDataProps) => {
             component: (
               <EmptyDataDialog
                 cb={async () => {
-                  openSnackBar(
-                    successTrans('empty', {
-                      name: collectionTrans('collection'),
-                    })
-                  );
                   await onDelete();
                 }}
                 collection={collection!}
