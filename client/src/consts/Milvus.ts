@@ -332,7 +332,7 @@ export enum ConsistencyLevelEnum {
   Customized = 'Customized', // Users pass their own `guarantee_timestamp`.
 }
 
-export const TOP_K_OPTIONS = [50, 100, 150, 200, 250].map(v => ({
+export const TOP_K_OPTIONS = [15, 50, 100, 150, 200, 250].map(v => ({
   value: v,
   label: String(v),
 }));

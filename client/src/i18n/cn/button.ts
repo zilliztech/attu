@@ -37,6 +37,7 @@ const btnTrans = {
   applyFilter: '应用过滤器',
   createIndex: '创建索引',
   edit: '编辑',
+  explore: '探索',
 
   // tips
   loadColTooltip: '加载Collection',

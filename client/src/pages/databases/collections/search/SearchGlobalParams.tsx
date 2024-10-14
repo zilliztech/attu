@@ -1,4 +1,4 @@
-import { useCallback, ChangeEvent } from 'react';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Slider } from '@mui/material';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -234,7 +234,7 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
                     }}
                     aria-labelledby="weight-slider"
                     valueLabelDisplay="auto"
-                    size='small'
+                    size="small"
                     step={0.1}
                     min={0}
                     max={1}

@@ -7,7 +7,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { DataService } from '@/http';
+import { DataService, CollectionService } from '@/http';
 import { rootContext } from '@/context';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
@@ -32,6 +32,11 @@ import {
   getColumnWidth,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
+import DataExplorer, {
+  GraphData,
+  GraphNode,
+  formatMilvusData,
+} from './DataExplorer';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
@@ -50,6 +55,11 @@ export interface CollectionDataProps {
   setSearchParams: (params: SearchParamsType) => void;
 }
 
+const emptyExplorerData: GraphData = {
+  nodes: [],
+  links: [],
+};
+
 const Search = (props: CollectionDataProps) => {
   // props
   const { collections, collectionName, searchParams, setSearchParams } = props;
@@ -63,6 +73,9 @@ const Search = (props: CollectionDataProps) => {
   // UI states
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [highlightField, setHighlightField] = useState<string>('');
+  const [explorerOpen, setExplorerOpen] = useState<boolean>(false);
+  const [explorerData, setExplorerData] =
+    useState<GraphData>(emptyExplorerData);
 
   // translations
   const { t: searchTrans } = useTranslation('search');
@@ -170,6 +183,7 @@ const Search = (props: CollectionDataProps) => {
   // execute search
   const onSearchClicked = useCallback(async () => {
     const params = buildSearchParams(searchParams);
+    setExplorerOpen(false);
 
     setTableLoading(true);
     try {
@@ -184,6 +198,73 @@ const Search = (props: CollectionDataProps) => {
       setTableLoading(false);
     }
   }, [JSON.stringify(searchParams)]);
+
+  // execute explore
+  const onExploreClicked = useCallback(async () => {
+    setExplorerOpen(true);
+    setTableLoading(false);
+
+    // if nodes exists, do not execute
+    if (explorerData.nodes.length > 0) {
+      return;
+    }
+
+    const params = buildSearchParams(searchParams);
+
+    try {
+      const res = await DataService.vectorSearchData(
+        searchParams.collection.collection_name,
+        params
+      );
+
+      const newGraphData = formatMilvusData(
+        emptyExplorerData,
+        { id: 'root', vector: params.data[0].data },
+        res.results
+      );
+
+      setExplorerData(newGraphData);
+    } catch (err) {
+      console.log('err', err);
+    }
+  }, [JSON.stringify(searchParams), explorerData]);
+
+  const onNodeClicked = useCallback(
+    async (node: GraphNode) => {
+      setExplorerOpen(true);
+      setTableLoading(false);
+
+      const params = cloneObj(buildSearchParams(searchParams));
+
+      try {
+        const query = await CollectionService.queryData(collectionName, {
+          expr: 'id == ' + node.id,
+          output_fields: ['*'],
+        });
+
+        // replace the vector data
+        params.data[0].data = query.data[0][params.data[0].anns_field];
+
+        const search = await DataService.vectorSearchData(
+          searchParams.collection.collection_name,
+          params
+        );
+
+        const newGraphData = formatMilvusData(
+          explorerData,
+          { id: node.id, data: params.data[0].data },
+          search.results
+        );
+
+        console.log('newGraphData', newGraphData);
+
+        setExplorerData(newGraphData);
+      } catch (err) {
+        console.log('err', err);
+      }
+    },
+    [JSON.stringify(searchParams), explorerData]
+  );
 
   const searchResultMemo = useSearchResult(
     (searchParams && (searchParams.searchResult as SearchResultView[])) || []
@@ -418,6 +499,7 @@ const Search = (props: CollectionDataProps) => {
             <CustomButton
               variant="contained"
               size="small"
+              className={classes.genBtn}
               disabled={disableSearch}
               tooltip={disableSearchTooltip}
               tooltipPlacement="top"
@@ -430,129 +512,142 @@ const Search = (props: CollectionDataProps) => {
                     : '',
               })}
             </CustomButton>
+
+            <CustomButton
+              onClick={onExploreClicked}
+              size="small"
+              disabled={false}
+              className={classes.genBtn}
+            >
+              {btnTrans('explore')}
+            </CustomButton>
           </div>
 
-          <div className={classes.searchResults}>
-            <section className={classes.toolbar}>
-              <div className="left">
-                <CustomInput
-                  type="text"
-                  textConfig={{
-                    label: searchTrans('filterExpr'),
-                    key: 'advFilter',
-                    className: 'textarea',
-                    onChange: onFilterChange,
-                    value: searchParams.globalParams.filter,
-                    disabled: false,
-                    variant: 'filled',
-                    required: false,
-                    InputLabelProps: { shrink: true },
-                    InputProps: {
-                      endAdornment: (
-                        <Filter
-                          title={''}
-                          showTitle={false}
-                          fields={collection.schema.scalarFields}
-                          filterDisabled={false}
-                          onSubmit={(value: string) => {
-                            onFilterChange(value);
-                          }}
-                          showTooltip={false}
-                        />
-                      ),
-                    },
-                    onKeyDown: (e: any) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        onSearchClicked();
-                      }
-                    },
-                  }}
-                  checkValid={() => true}
-                />
-              </div>
-              <div className="right">
-                <CustomButton
-                  className={classes.btn}
-                  disabled={disableSearch}
-                  onClick={() => {
-                    // open code dialog
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <CodeDialog
-                            data={buildSearchCode(searchParams, collection)}
+          {explorerOpen ? (
+            <DataExplorer data={explorerData} onNodeClick={onNodeClicked} />
+          ) : (
+            <div className={classes.searchResults}>
+              <section className={classes.toolbar}>
+                <div className="left">
+                  <CustomInput
+                    type="text"
+                    textConfig={{
+                      label: searchTrans('filterExpr'),
+                      key: 'advFilter',
+                      className: 'textarea',
+                      onChange: onFilterChange,
+                      value: searchParams.globalParams.filter,
+                      disabled: false,
+                      variant: 'filled',
+                      required: false,
+                      InputLabelProps: { shrink: true },
+                      InputProps: {
+                        endAdornment: (
+                          <Filter
+                            title={''}
+                            showTitle={false}
+                            fields={collection.schema.scalarFields}
+                            filterDisabled={false}
+                            onSubmit={(value: string) => {
+                              onFilterChange(value);
+                            }}
+                            showTooltip={false}
                           />
                         ),
                       },
-                    });
-                  }}
-                  startIcon={<Icons.code classes={{ root: 'icon' }} />}
-                >
-                  {btnTrans('Code')}
-                </CustomButton>
+                      onKeyDown: (e: any) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          onSearchClicked();
+                        }
+                      },
+                    }}
+                    checkValid={() => true}
+                  />
+                </div>
+                <div className="right">
+                  <CustomButton
+                    className={classes.btn}
+                    disabled={disableSearch}
+                    onClick={() => {
+                      // open code dialog
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <CodeDialog
+                              data={buildSearchCode(searchParams, collection)}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                    startIcon={<Icons.code classes={{ root: 'icon' }} />}
+                  >
+                    {btnTrans('Code')}
+                  </CustomButton>
 
-                <CustomButton
-                  className={classes.btn}
-                  disabled={result.length === 0}
-                  onClick={() => {
-                    saveCsvAs(
-                      searchParams.searchResult,
-                      `search_result_${searchParams.collection.collection_name}`
-                    );
-                  }}
-                  startIcon={<Icons.download classes={{ root: 'icon' }} />}
-                >
-                  {btnTrans('export')}
-                </CustomButton>
-                <CustomButton
-                  className={classes.btn}
-                  onClick={onResetClicked}
-                  startIcon={<Icons.clear classes={{ root: 'icon' }} />}
-                >
-                  {btnTrans('reset')}
-                </CustomButton>
-              </div>
-            </section>
+                  <CustomButton
+                    className={classes.btn}
+                    disabled={result.length === 0}
+                    onClick={() => {
+                      saveCsvAs(
+                        searchParams.searchResult,
+                        `search_result_${searchParams.collection.collection_name}`
+                      );
+                    }}
+                    startIcon={<Icons.download classes={{ root: 'icon' }} />}
+                  >
+                    {btnTrans('export')}
+                  </CustomButton>
+                  <CustomButton
+                    className={classes.btn}
+                    onClick={onResetClicked}
+                    startIcon={<Icons.clear classes={{ root: 'icon' }} />}
+                  >
+                    {btnTrans('reset')}
+                  </CustomButton>
+                </div>
+              </section>
 
-            {(searchParams.searchResult &&
-              searchParams.searchResult.length > 0) ||
-            tableLoading ? (
-              <AttuGrid
-                toolbarConfigs={[]}
-                colDefinitions={colDefinitions}
-                rows={result}
-                rowCount={total}
-                primaryKey="rank"
-                page={currentPage}
-                tableHeaderHeight={46}
-                rowHeight={39}
-                onPageChange={handlePageChange}
-                rowsPerPage={pageSize}
-                setRowsPerPage={handlePageSize}
-                openCheckBox={false}
-                isLoading={tableLoading}
-                orderBy={orderBy}
-                order={order}
-                labelDisplayedRows={getLabelDisplayedRows(
-                  `(${searchParams.searchLatency} ms)`
-                )}
-                handleSort={handleGridSort}
-              />
-            ) : (
-              <EmptyCard
-                wrapperClass={`page-empty-card`}
-                icon={<Icons.search />}
-                text={
-                  searchParams.searchResult !== null
-                    ? searchTrans('empty')
-                    : searchTrans('startTip')
-                }
-              />
-            )}
-          </div>
+              {(searchParams.searchResult &&
+                searchParams.searchResult.length > 0) ||
+              tableLoading ? (
+                <AttuGrid
+                  toolbarConfigs={[]}
+                  colDefinitions={colDefinitions}
+                  rows={result}
+                  rowCount={total}
+                  primaryKey="rank"
+                  page={currentPage}
+                  tableHeaderHeight={46}
+                  rowHeight={39}
+                  onPageChange={handlePageChange}
+                  rowsPerPage={pageSize}
+                  setRowsPerPage={handlePageSize}
+                  openCheckBox={false}
+                  isLoading={tableLoading}
+                  orderBy={orderBy}
+                  order={order}
+                  labelDisplayedRows={getLabelDisplayedRows(
+                    `(${searchParams.searchLatency} ms)`
+                  )}
+                  handleSort={handleGridSort}
+                />
+              ) : (
+                <EmptyCard
+                  wrapperClass={`page-empty-card`}
+                  icon={<Icons.search />}
+                  text={
+                    searchParams.searchResult !== null
+                      ? searchTrans('empty')
+                      : searchTrans('startTip')
+                  }
+                />
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
