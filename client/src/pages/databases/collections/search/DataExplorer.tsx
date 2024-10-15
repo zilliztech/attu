@@ -180,10 +180,10 @@ const DataExplorer = ({
         // calcuate the position of the hovered node, place the tooltip accordingly, it should
         // get parent node's position and the mouse position
         const parentPosition = rootRef.current?.getBoundingClientRect();
-        const x = event.clientX - parentPosition!.left;
-        const y = event.clientY - parentPosition!.top;
+        const nodeX = event.clientX - parentPosition!.left;
+        const nodeY = event.clientY - parentPosition!.top;
 
-        setHoveredNode({ x, y, d });
+        setHoveredNode({ nodeX, nodeY, d });
       })
       .on('mouseout', () => {
         // Revert the hover stroke without affecting the selected node
@@ -253,24 +253,54 @@ const DataExplorer = ({
         <g ref={gRef} />
       </svg>
       {selectedNode && (
-        <div className={classes.nodeInfo}>
-          <pre>{JSON.stringify(selectedNode.data, null, 2)}</pre>
-        </div>
+        <DataPanel data={selectedNode.data} node={selectedNode} />
       )}
       {hoveredNode && (
-        <div
-          className={classes.nodeInfo}
-          style={{
-            top: hoveredNode.y + 16,
-            left: hoveredNode.x + 16,
-            right: 'auto',
-          }}
-        >
-          <pre>{JSON.stringify(hoveredNode.d.data, null, 2)}</pre>
-        </div>
+        <DataPanel data={hoveredNode.d.data} node={hoveredNode} />
       )}
     </div>
   );
 };
 
 export default DataExplorer;
+
+const DataPanel = (props: any) => {
+  const classes = getDataExplorerStyle();
+  const { data, node } = props;
+
+  const json = JSON.stringify(data, null, 2);
+  const image = [
+    'https://randomuser.me/api/portraits/men/50.jpg',
+    'https://randomuser.me/api/portraits/men/40.jpg',
+  ];
+
+  // loop through the object find any value is an image url, add it into an image array;
+  for (const key in data) {
+    if (
+      typeof data[key] === 'string' &&
+      data[key].match(/\.(jpeg|jpg|gif|png)$/) != null
+    ) {
+      image.push(data[key]);
+    }
+  }
+
+  console.log('node', node.nodeY, node.nodeX);
+
+  return (
+    <div
+      key={node.id}
+      className={classes.nodeInfo}
+      style={{
+        top: node.nodeY ? node.nodeY + 16 : 8,
+        right: node.nodeX ? node.nodeX + 16 : 8,
+      }}
+    >
+      <div className="wrapper">
+        {image.map((url, i) => (
+          <img key={i} src={url} />
+        ))}
+      </div>
+      <pre>{json}</pre>
+    </div>
+  );
+};

@@ -1,5 +1,6 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { max } from 'd3';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -201,13 +202,14 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     height: '100%',
     position: 'relative',
+    flexGrow: 1
   },
   closeBtn: {
     position: 'absolute',
     top: 8,
     left: 8,
     zIndex: 1,
-  }
+  },
 }));
 
 export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
@@ -220,10 +222,21 @@ export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
     boxShadow: theme.shadows[2],
     borderRadius: 8,
     position: 'absolute',
-    top: 8,
-    right: 8,
+
     zIndex: 1,
     maxHeight: '100%',
     overflow: 'auto',
+    '& .wrapper': {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+      maxWidth: 380,
+      '& img': {
+        maxWidth: 120,
+        maxHeight: 120,
+        objectFit: 'contain',
+      },
+    },
   },
 }));
