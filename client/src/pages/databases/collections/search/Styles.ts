@@ -195,4 +195,35 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     height: 56,
     width: 80,
   },
+
+  explorer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    position: 'relative',
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    zIndex: 1,
+  }
+}));
+
+export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
+  root: {},
+  nodeInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '8px',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[2],
+    borderRadius: 8,
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
+    maxHeight: '100%',
+    overflow: 'auto',
+  },
 }));

@@ -1,15 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useTheme } from '@mui/material';
 import { cloneObj } from '@/utils';
-
-export type GraphNode = { id: string; data: any; x?: number; y?: number }; // Add optional x, y for SimulationNodeDatum
-export type GraphLink = { source: string; target: string; score: number };
-
-export type GraphData = {
-  nodes: GraphNode[];
-  links: GraphLink[];
-};
+import { getDataExplorerStyle } from './Styles';
+import { GraphData } from '../../types';
 
 interface DataExplorerProps {
   data: GraphData;
@@ -19,14 +13,17 @@ interface DataExplorerProps {
 }
 
 // Helper function to check if node already exists
-function nodeExists(nodes: any[], vector: any) {
-  return nodes.some(node => node.id === `${vector.id || 'root'}`);
+function findNodes(nodes: any[], vector: any) {
+  return nodes.filter(node => node.id === vector.id);
 }
 
 // Helper function to check if a link already exists
 function linkExists(links: any[], source: string, target: string) {
   return links.some(link => link.source === source && link.target === target);
 }
+
+// d3 color scale for node color
+const color = d3.scaleOrdinal(d3.schemeCategory10);
 
 // Format Milvus search result to graph data
 export const formatMilvusData = (
@@ -40,25 +37,43 @@ export const formatMilvusData = (
   const graphDataCopy = cloneObj(graphData);
 
   // Add searched vector as a node if not present
-  if (!nodeExists(graphDataCopy.nodes, searchedVector)) {
+  const existingNodes = findNodes(graphDataCopy.nodes, searchedVector);
+  if (!existingNodes.length) {
     graphDataCopy.nodes.push({
-      id: `${searchedVector.id || 'root'}`,
+      id: searchedVector.id,
       data: searchedVector,
+      searchIds: [searchedVector.id],
+    });
+  } else {
+    // Update existing node with new data
+    existingNodes.forEach(node => {
+      if (!node.searchIds.includes(searchedVector.id)) {
+        node.searchIds.push(searchedVector.id);
+      }
     });
   }
 
   results.forEach(result => {
     // Add result vector as a node if not present
-    if (!nodeExists(graphDataCopy.nodes, result)) {
+    const existingNodes = findNodes(graphDataCopy.nodes, result);
+    if (!existingNodes.length) {
       graphDataCopy.nodes.push({
-        id: `${result.id}`,
+        id: result.id,
         data: result,
+        searchIds: [searchedVector.id],
+      });
+    } else {
+      // Update existing node with new data
+      existingNodes.forEach(node => {
+        if (!node.searchIds.includes(searchedVector.id)) {
+          node.searchIds.push(searchedVector.id);
+        }
       });
     }
 
     // Create a link between the searched vector and the result vector if not present
-    const sourceId = `${searchedVector.id || 'root'}`;
-    const targetId = `${result.id}`;
+    const sourceId = searchedVector.id;
+    const targetId = result.id;
     if (!linkExists(graphDataCopy.links, sourceId, targetId)) {
       graphDataCopy.links.push({
         source: sourceId,
@@ -78,11 +93,20 @@ const DataExplorer = ({
   height = 600,
   onNodeClick,
 }: DataExplorerProps) => {
+  // states
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [hoveredNode, setHoveredNode] = useState<any>(null);
+  // theme
   const theme = useTheme();
+  // classes
+  const classes = getDataExplorerStyle();
 
+  // ref
+  const rootRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
 
+  // d3 effect
   useEffect(() => {
     if (!svgRef.current || !gRef.current) return;
 
@@ -102,7 +126,7 @@ const DataExplorer = ({
       });
 
     // Apply zoom behavior to the svg
-    svg.call(zoom as any);
+    svg.call(zoom as any).on('dblclick.zoom', null);
 
     // clone data to avoid mutating the original data
     const links = cloneObj(data.links);
@@ -121,8 +145,8 @@ const DataExplorer = ({
             return maxDistance - d.score * (maxDistance - minDistance);
           })
       )
-      .force('charge', d3.forceManyBody().strength(-150))
-      .force('center', d3.forceCenter(width / 2, height / 2));
+      .force('charge', d3.forceManyBody().strength(-200))
+      .force('center', d3.forceCenter(width / 3, height / 3));
 
     // Draw links
     const link = g
@@ -131,7 +155,7 @@ const DataExplorer = ({
       .enter()
       .append('line')
       .attr('class', 'link')
-      .attr('stroke-width', 1)
+      .attr('stroke-width', 2)
       .attr('stroke', theme.palette.divider);
 
     // Draw nodes
@@ -141,10 +165,56 @@ const DataExplorer = ({
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('r', 8)
-      .attr('fill', theme.palette.primary.main)
+      .attr('r', (d: any) => (d.id === selectedNode?.id ? 16 : 8))
+      .attr('fill', (d: any) => color(d.searchIds[d.searchIds.length - 1]))
       .attr('cursor', 'pointer')
-      .on('click', (event, d) => {
+      .attr('stroke', (d: any) =>
+        d.id === selectedNode?.id
+          ? color(d.searchIds[d.searchIds.length - 1])
+          : 'transparent'
+      )
+      .attr('stroke-width', (d: any) => (d.id === selectedNode?.id ? 2 : 0))
+      .on('mouseover', (event, d) => {
+        // Highlight the hovered node, keeping selected node unaffected
+        d3.select(event.target).attr('stroke', 'black').attr('stroke-width', 2);
+        // calcuate the position of the hovered node, place the tooltip accordingly, it should
+        // get parent node's position and the mouse position
+        const parentPosition = rootRef.current?.getBoundingClientRect();
+        const x = event.clientX - parentPosition!.left;
+        const y = event.clientY - parentPosition!.top;
+
+        setHoveredNode({ x, y, d });
+      })
+      .on('mouseout', () => {
+        // Revert the hover stroke without affecting the selected node
+        g.selectAll('.node')
+          .attr('stroke', (d: any) =>
+            d.id === selectedNode?.id
+              ? color(d.searchIds[d.searchIds.length - 1])
+              : 'transparent'
+          )
+          .attr('stroke-width', (d: any) =>
+            d.id === selectedNode?.id ? 2 : 0
+          );
+        setHoveredNode(null);
+      })
+      .on('click', (event, d: any) => {
+        // Add circle around the selected node, reset others
+        g.selectAll('.selected')
+          .classed('selected', false)
+          .attr('r', 8)
+          .attr('stroke', 'transparent')
+          .attr('stroke-width', 0);
+
+        d3.select(event.target)
+          .classed('selected', true)
+          .attr('r', 16)
+          .attr('stroke', color(d.searchIds[d.searchIds.length - 1]))
+          .attr('stroke-width', 2);
+
+        setSelectedNode(d);
+      })
+      .on('dblclick', (event, d) => {
         onNodeClick && onNodeClick(d);
       })
       .call(
@@ -175,12 +245,31 @@ const DataExplorer = ({
 
       node.attr('cx', d => (d as any).x).attr('cy', d => (d as any).y);
     });
-  }, [data, width, height]);
+  }, [data, width, height, theme]);
 
   return (
-    <svg ref={svgRef} width={width} height={height}>
-      <g ref={gRef} />
-    </svg>
+    <div className={classes.root} ref={rootRef}>
+      <svg ref={svgRef} width={width} height={height}>
+        <g ref={gRef} />
+      </svg>
+      {selectedNode && (
+        <div className={classes.nodeInfo}>
+          <pre>{JSON.stringify(selectedNode.data, null, 2)}</pre>
+        </div>
+      )}
+      {hoveredNode && (
+        <div
+          className={classes.nodeInfo}
+          style={{
+            top: hoveredNode.y + 16,
+            left: hoveredNode.x + 16,
+            right: 'auto',
+          }}
+        >
+          <pre>{JSON.stringify(hoveredNode.d.data, null, 2)}</pre>
+        </div>
+      )}
+    </div>
   );
 };
 

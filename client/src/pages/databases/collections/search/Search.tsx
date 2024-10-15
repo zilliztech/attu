@@ -32,11 +32,8 @@ import {
   getColumnWidth,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
-import DataExplorer, {
-  GraphData,
-  GraphNode,
-  formatMilvusData,
-} from './DataExplorer';
+import DataExplorer, { formatMilvusData } from './DataExplorer';
+import { GraphData, GraphNode } from '../../types';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
@@ -74,8 +71,6 @@ const Search = (props: CollectionDataProps) => {
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [highlightField, setHighlightField] = useState<string>('');
   const [explorerOpen, setExplorerOpen] = useState<boolean>(false);
-  const [explorerData, setExplorerData] =
-    useState<GraphData>(emptyExplorerData);
 
   // translations
   const { t: searchTrans } = useTranslation('search');
@@ -204,8 +199,10 @@ const Search = (props: CollectionDataProps) => {
     setExplorerOpen(true);
     setTableLoading(false);
 
+    const s = cloneObj(searchParams);
+
     // if nodes exists, do not execute
-    if (explorerData.nodes.length > 0) {
+    if (s.graphData.nodes.length > 0) {
       return;
     }
 
@@ -219,21 +216,25 @@ const Search = (props: CollectionDataProps) => {
 
       const newGraphData = formatMilvusData(
         emptyExplorerData,
-        { id: 'root', vector: params.data[0].data },
+        { id: 'root' },
         res.results
       );
-
-      setExplorerData(newGraphData);
+      s.graphData = newGraphData;
+      setSearchParams({ ...s });
     } catch (err) {
       console.log('err', err);
     }
-  }, [JSON.stringify(searchParams), explorerData]);
+  }, [JSON.stringify(searchParams)]);
 
   const onNodeClicked = useCallback(
     async (node: GraphNode) => {
+      if (node.id === 'root') {
+        return;
+      }
       setExplorerOpen(true);
       setTableLoading(false);
 
+      const s = cloneObj(searchParams);
       const params = cloneObj(buildSearchParams(searchParams));
 
       try {
@@ -246,24 +247,23 @@ const Search = (props: CollectionDataProps) => {
         params.data[0].data = query.data[0][params.data[0].anns_field];
 
         const search = await DataService.vectorSearchData(
-          searchParams.collection.collection_name,
+          s.collection.collection_name,
           params
         );
 
         const newGraphData = formatMilvusData(
-          explorerData,
+          s.graphData,
           { id: node.id, data: params.data[0].data },
           search.results
         );
 
-        console.log('newGraphData', newGraphData);
-
-        setExplorerData(newGraphData);
+        s.graphData = newGraphData;
+        setSearchParams({ ...s });
       } catch (err) {
         console.log('err', err);
       }
     },
-    [JSON.stringify(searchParams), explorerData]
+    [JSON.stringify(searchParams)]
   );
 
   const searchResultMemo = useSearchResult(
@@ -512,19 +512,25 @@ const Search = (props: CollectionDataProps) => {
                     : '',
               })}
             </CustomButton>
-
-            <CustomButton
-              onClick={onExploreClicked}
-              size="small"
-              disabled={false}
-              className={classes.genBtn}
-            >
-              {btnTrans('explore')}
-            </CustomButton>
           </div>
 
           {explorerOpen ? (
-            <DataExplorer data={explorerData} onNodeClick={onNodeClicked} />
+            <div className={classes.explorer}>
+              <DataExplorer
+                data={searchParams.graphData}
+                onNodeClick={onNodeClicked}
+              />
+              <CustomButton
+                onClick={() => {
+                  setExplorerOpen(false);
+                }}
+                size="small"
+                startIcon={<Icons.clear classes={{ root: 'icon' }} />}
+                className={classes.closeBtn}
+              >
+                Close
+              </CustomButton>
+            </div>
           ) : (
             <div className={classes.searchResults}>
               <section className={classes.toolbar}>
@@ -566,6 +572,15 @@ const Search = (props: CollectionDataProps) => {
                   />
                 </div>
                 <div className="right">
+                  <CustomButton
+                    onClick={onExploreClicked}
+                    size="small"
+                    disabled={false}
+                    className={classes.btn}
+                    startIcon={<Icons.magic classes={{ root: 'icon' }} />}
+                  >
+                    {btnTrans('explore')}
+                  </CustomButton>
                   <CustomButton
                     className={classes.btn}
                     disabled={disableSearch}

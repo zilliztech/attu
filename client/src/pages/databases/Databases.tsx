@@ -195,6 +195,7 @@ const Databases = () => {
                   : scalarFields,
               },
               searchResult: null,
+              graphData: { nodes: [], links: [] },
               searchLatency: 0,
             },
           ];
