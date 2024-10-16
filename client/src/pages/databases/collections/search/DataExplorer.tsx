@@ -119,6 +119,8 @@ const DataExplorer = ({
   // d3 effect
   useEffect(() => {
     if (!svgRef.current || !gRef.current) return;
+    // states
+    let _isDragging = false;
 
     const svg = d3.select(svgRef.current);
     const g = d3.select(gRef.current);
@@ -191,7 +193,9 @@ const DataExplorer = ({
         const nodeX = event.clientX - parentPosition!.left;
         const nodeY = event.clientY - parentPosition!.top;
 
-        setHoveredNode({ nodeX, nodeY, d });
+        if (!_isDragging) {
+          setHoveredNode({ nodeX, nodeY, d });
+        }
       })
       .on('mouseout', () => {
         // Revert the hover stroke without affecting the selected node
@@ -229,11 +233,13 @@ const DataExplorer = ({
         d3
           .drag<SVGCircleElement, any>()
           .on('start', (event, d) => {
+            _isDragging = true;
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
             d.fy = d.y;
           })
           .on('drag', (event, d) => {
+            _isDragging = true;
             d.fx = event.x;
             d.fy = event.y;
           })
@@ -241,6 +247,7 @@ const DataExplorer = ({
             if (!event.active) simulation.alphaTarget(0);
             d.fx = null;
             d.fy = null;
+            _isDragging = false;
           })
       );
 
