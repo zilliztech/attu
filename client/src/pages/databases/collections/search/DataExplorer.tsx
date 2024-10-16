@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { cloneObj } from '@/utils';
 import { getDataExplorerStyle } from './Styles';
 import { GraphData } from '../../types';
@@ -41,8 +41,6 @@ export const formatMilvusData = (
     searchedVector.id === 'root'
       ? 0
       : Math.max(...graphDataCopy.nodes.map(node => node.color)) + 1;
-
-  console.log('color', color);
 
   // Add searched vector as a node if not present
   const existingNodes = findNodes(graphDataCopy.nodes, searchedVector);
@@ -104,7 +102,6 @@ const DataExplorer = ({
   onNodeClick,
 }: DataExplorerProps) => {
   // states
-  const [selectedNode, setSelectedNode] = useState<any>(null);
   const [hoveredNode, setHoveredNode] = useState<any>(null);
   // theme
   const theme = useTheme();
@@ -115,10 +112,16 @@ const DataExplorer = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
+  const selectedNodes = useRef<any[]>([]);
 
   // d3 effect
   useEffect(() => {
     if (!svgRef.current || !gRef.current) return;
+    // if no data, clear selectedNodes and hoveredNode
+    if (!data.nodes.length) {
+      selectedNodes.current = [];
+      setHoveredNode(null);
+    }
     // states
     let _isDragging = false;
 
@@ -177,16 +180,20 @@ const DataExplorer = ({
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('r', (d: any) => (d.id === selectedNode?.id ? 16 : 8))
+      .attr('r', (d: any) =>
+        selectedNodes.current.some(n => n.id === d.id) ? 16 : 8
+      )
       .attr('fill', (d: any) => color(d.color))
       .attr('cursor', 'pointer')
       .attr('stroke', (d: any) =>
-        d.id === selectedNode?.id ? color(d.color) : 'transparent'
+        selectedNodes.current.some(n => n.id === d.id) ? 'black' : 'transparent'
       )
-      .attr('stroke-width', (d: any) => (d.id === selectedNode?.id ? 2 : 0))
+      .attr('stroke-width', (d: any) =>
+        selectedNodes.current.some(n => n.id === d.id) ? 2 : 0
+      )
       .on('mouseover', (event, d) => {
         // Highlight the hovered node, keeping selected node unaffected
-        d3.select(event.target).attr('stroke', 'black').attr('stroke-width', 2);
+        // d3.select(event.target).attr('stroke', 'black').attr('stroke-width', 2);
         // calcuate the position of the hovered node, place the tooltip accordingly, it should
         // get parent node's position and the mouse position
         const parentPosition = rootRef.current?.getBoundingClientRect();
@@ -199,30 +206,34 @@ const DataExplorer = ({
       })
       .on('mouseout', () => {
         // Revert the hover stroke without affecting the selected node
-        g.selectAll('.node')
-          .attr('stroke', (d: any) =>
-            d.id === selectedNode?.id ? color(d.color) : 'transparent'
-          )
-          .attr('stroke-width', (d: any) =>
-            d.id === selectedNode?.id ? 2 : 0
-          );
+        // g.selectAll('.node')
+        //   .attr('stroke', (d: any) =>
+        //     selectedNodes.includes(d) ? color(d.color) : 'transparent'
+        //   )
+        //   .attr('stroke-width', (d: any) =>
+        //     selectedNodes.includes(d) ? 2 : 0
+        //   );
         setHoveredNode(null);
       })
-      .on('click', (event, d: any) => {
-        // Add circle around the selected node, reset others
-        g.selectAll('.selected')
-          .classed('selected', false)
-          .attr('r', 8)
-          .attr('stroke', 'transparent')
-          .attr('stroke-width', 0);
+      .on('click', function (event, d: any) {
+        const isAlreadySelected = selectedNodes.current.some(
+          node => node.id === d.id
+        );
 
-        d3.select(event.target)
-          .classed('selected', true)
-          .attr('r', 16)
-          .attr('stroke', color(d.color))
-          .attr('stroke-width', 2);
+        // Update selected nodes
+        if (isAlreadySelected) {
+          selectedNodes.current = selectedNodes.current.filter(
+            node => node.id !== d.id
+          );
+        } else {
+          selectedNodes.current = [...selectedNodes.current, d];
+        }
 
-        setSelectedNode(d);
+        // Add circle around the selected node and remove it when unselected
+        d3.select(this)
+          .attr('r', isAlreadySelected ? 8 : 16)
+          .attr('stroke', isAlreadySelected ? 'transparent' : 'black')
+          .attr('stroke-width', isAlreadySelected ? 0 : 2);
       })
       .on('dblclick', (event, d) => {
         onNodeClick && onNodeClick(d);
@@ -267,8 +278,12 @@ const DataExplorer = ({
       <svg ref={svgRef} width={width} height={height}>
         <g ref={gRef} />
       </svg>
-      {selectedNode && (
-        <DataPanel data={selectedNode.data} node={selectedNode} />
+      {selectedNodes.current.length > 0 && (
+        <div className={classes.selectedNodes}>
+          {selectedNodes.current.map(node => (
+            <DataPanel key={node.id} data={node.data} node={node} />
+          ))}
+        </div>
       )}
       {hoveredNode && (
         <DataPanel data={hoveredNode.d.data} node={hoveredNode} />
@@ -280,8 +295,6 @@ const DataExplorer = ({
 export default DataExplorer;
 
 const DataPanel = (props: any) => {
-  // styles
-  const classes = getDataExplorerStyle();
   // props
   const { data, node } = props;
 
@@ -307,20 +320,20 @@ const DataPanel = (props: any) => {
         top: node.nodeY + 16,
         left: node.nodeX + 16,
         right: 'auto',
+        position: 'absolute',
       }
-    : {
-        top: 8,
-        right: 8,
-      };
+    : undefined;
 
   return (
-    <div key={node.id} className={classes.nodeInfo} style={styleObj}>
+    <div key={node.id} className="nodeInfo" style={styleObj as any}>
       <div className="wrapper">
         {image.map((url, i) => (
           <img key={i} src={url} />
         ))}
       </div>
-      <pre>{json}</pre>
+      <Typography>
+        <pre>{json}</pre>
+      </Typography>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { max } from 'd3';
 
 export const getQueryStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -209,42 +208,56 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     top: 8,
     left: 8,
     zIndex: 1,
-    padding: '4px 8px'
+    padding: '4px 8px',
   },
   resetBtn: {
     position: 'absolute',
     top: 8,
     left: 90,
     zIndex: 1,
-    padding: '4px 8px'
+    padding: '4px 8px',
   },
 }));
 
 export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
-  root: {},
-  nodeInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '8px',
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[2],
-    borderRadius: 8,
-    position: 'absolute',
-
-    zIndex: 1,
-    maxHeight: '100%',
-    overflow: 'auto',
-    '& .wrapper': {
+  root: {
+    '& .nodeInfo': {
       display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 8,
-      maxWidth: 380,
-      '& img': {
-        maxWidth: 120,
-        maxHeight: 120,
-        objectFit: 'contain',
+      flexDirection: 'column',
+      padding: '8px',
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.shadows[2],
+      borderRadius: 8,
+
+      zIndex: 1,
+      '& .wrapper': {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+        maxWidth: 380,
+        '& img': {
+          maxWidth: 120,
+          maxHeight: 120,
+          objectFit: 'contain',
+        },
       },
     },
+  },
+  selectedNodes: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
+    top: 8,
+    right: 8,
+    maxHeight: '100%',
+    overflow: 'auto',
+    gap: 4,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[2],
+    '& .nodeInfo': {
+      boxShadow: 'none',
+      borderRadius: 0,
+    }
   },
 }));
