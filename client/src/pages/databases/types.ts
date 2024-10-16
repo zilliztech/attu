@@ -28,7 +28,14 @@ export type SearchResultView = {
   distance: number;
 };
 
-export type GraphNode = { id: string; data: any; x?: number; y?: number }; // Add optional x, y for SimulationNodeDatum
+export type GraphNode = {
+  id: string;
+  data: any;
+  x?: number;
+  y?: number;
+  searchIds: string[];
+  color: number;
+}; // Add optional x, y for SimulationNodeDatum
 export type GraphLink = { source: string; target: string; score: number };
 
 export type GraphData = {

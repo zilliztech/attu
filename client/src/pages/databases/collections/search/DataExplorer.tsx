@@ -34,7 +34,15 @@ export const formatMilvusData = (
   },
   results: any[]
 ) => {
-  const graphDataCopy = cloneObj(graphData);
+  const graphDataCopy = cloneObj(graphData) as GraphData;
+  // if searchedVector's id is 'root', color = 0
+  // otherwise, find the largest color in the graphDataCopy.nodes, and color = largest color + 1
+  const color =
+    searchedVector.id === 'root'
+      ? 0
+      : Math.max(...graphDataCopy.nodes.map(node => node.color)) + 1;
+
+  console.log('color', color);
 
   // Add searched vector as a node if not present
   const existingNodes = findNodes(graphDataCopy.nodes, searchedVector);
@@ -43,6 +51,7 @@ export const formatMilvusData = (
       id: searchedVector.id,
       data: searchedVector,
       searchIds: [searchedVector.id],
+      color: color,
     });
   } else {
     // Update existing node with new data
@@ -61,6 +70,7 @@ export const formatMilvusData = (
         id: result.id,
         data: result,
         searchIds: [searchedVector.id],
+        color: color,
       });
     } else {
       // Update existing node with new data
@@ -166,12 +176,10 @@ const DataExplorer = ({
       .append('circle')
       .attr('class', 'node')
       .attr('r', (d: any) => (d.id === selectedNode?.id ? 16 : 8))
-      .attr('fill', (d: any) => color(d.searchIds[d.searchIds.length - 1]))
+      .attr('fill', (d: any) => color(d.color))
       .attr('cursor', 'pointer')
       .attr('stroke', (d: any) =>
-        d.id === selectedNode?.id
-          ? color(d.searchIds[d.searchIds.length - 1])
-          : 'transparent'
+        d.id === selectedNode?.id ? color(d.color) : 'transparent'
       )
       .attr('stroke-width', (d: any) => (d.id === selectedNode?.id ? 2 : 0))
       .on('mouseover', (event, d) => {
@@ -180,8 +188,6 @@ const DataExplorer = ({
         // calcuate the position of the hovered node, place the tooltip accordingly, it should
         // get parent node's position and the mouse position
         const parentPosition = rootRef.current?.getBoundingClientRect();
-        const svg = svgRef.current!.getBoundingClientRect();
-        console.log(event.clientX - parentPosition!.left);
         const nodeX = event.clientX - parentPosition!.left;
         const nodeY = event.clientY - parentPosition!.top;
 
@@ -191,9 +197,7 @@ const DataExplorer = ({
         // Revert the hover stroke without affecting the selected node
         g.selectAll('.node')
           .attr('stroke', (d: any) =>
-            d.id === selectedNode?.id
-              ? color(d.searchIds[d.searchIds.length - 1])
-              : 'transparent'
+            d.id === selectedNode?.id ? color(d.color) : 'transparent'
           )
           .attr('stroke-width', (d: any) =>
             d.id === selectedNode?.id ? 2 : 0
@@ -211,7 +215,7 @@ const DataExplorer = ({
         d3.select(event.target)
           .classed('selected', true)
           .attr('r', 16)
-          .attr('stroke', color(d.searchIds[d.searchIds.length - 1]))
+          .attr('stroke', color(d.color))
           .attr('stroke-width', 2);
 
         setSelectedNode(d);
