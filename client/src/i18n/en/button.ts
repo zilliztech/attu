@@ -38,6 +38,7 @@ const btnTrans = {
   createIndex: 'Create Index',
   edit: 'Edit',
   explore: 'Explore',
+  close: 'Close',
 
   // tips
   loadColTooltip: 'Load Collection',

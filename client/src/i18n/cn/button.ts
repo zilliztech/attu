@@ -38,6 +38,7 @@ const btnTrans = {
   createIndex: '创建索引',
   edit: '编辑',
   explore: '探索',
+  close: '关闭',
 
   // tips
   loadColTooltip: '加载Collection',
