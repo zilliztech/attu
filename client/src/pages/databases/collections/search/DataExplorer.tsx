@@ -216,6 +216,8 @@ const DataExplorer = ({
       })
       .on('dblclick', (event, d) => {
         onNodeClick && onNodeClick(d);
+        // remove the selected node
+        setHoveredNode(null);
       })
       .call(
         d3
@@ -245,7 +247,7 @@ const DataExplorer = ({
 
       node.attr('cx', d => (d as any).x).attr('cy', d => (d as any).y);
     });
-  }, [data, width, height, theme]);
+  }, [JSON.stringify(data), width, height, theme]);
 
   return (
     <div className={classes.root} ref={rootRef}>
@@ -283,8 +285,6 @@ const DataPanel = (props: any) => {
       image.push(data[key]);
     }
   }
-
-  console.log('node', node.nodeY, node.nodeX);
 
   return (
     <div

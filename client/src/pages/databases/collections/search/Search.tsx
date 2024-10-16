@@ -195,36 +195,32 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams)]);
 
   // execute explore
-  const onExploreClicked = useCallback(async () => {
-    setExplorerOpen(true);
-    setTableLoading(false);
+  const onExploreClicked = useCallback(
+    async (reset?: boolean) => {
+      setExplorerOpen(true);
+      setTableLoading(false);
 
-    const s = cloneObj(searchParams);
+      const s = cloneObj(searchParams);
 
-    // if nodes exists, do not execute
-    if (s.graphData.nodes.length > 0) {
-      return;
-    }
+      // if nodes exists, do not execute
+      if (s.graphData.nodes.length > 0 && !reset) {
+        return;
+      }
 
-    const params = buildSearchParams(searchParams);
-
-    try {
-      const res = await DataService.vectorSearchData(
-        searchParams.collection.collection_name,
-        params
-      );
-
-      const newGraphData = formatMilvusData(
-        emptyExplorerData,
-        { id: 'root' },
-        res.results
-      );
-      s.graphData = newGraphData;
-      setSearchParams({ ...s });
-    } catch (err) {
-      console.log('err', err);
-    }
-  }, [JSON.stringify(searchParams)]);
+      try {
+        const newGraphData = formatMilvusData(
+          emptyExplorerData,
+          { id: 'root' },
+          s.searchResult
+        );
+        s.graphData = newGraphData;
+        setSearchParams({ ...s });
+      } catch (err) {
+        console.log('err', err);
+      }
+    },
+    [JSON.stringify(searchParams)]
+  );
 
   const onNodeClicked = useCallback(
     async (node: GraphNode) => {
@@ -293,6 +289,13 @@ const Search = (props: CollectionDataProps) => {
     setSearchParams({ ...s });
     setCurrentPage(0);
   }, [JSON.stringify(searchParams), setCurrentPage]);
+
+  const onExplorerResetClicked = useCallback(() => {
+    const s = cloneObj(searchParams) as SearchParamsType;
+    s.graphData = emptyExplorerData;
+    setSearchParams({ ...s });
+    onExploreClicked(true);
+  }, [JSON.stringify(searchParams), onExploreClicked]);
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     if (!searchParams || !searchParams.collection) {
@@ -527,8 +530,18 @@ const Search = (props: CollectionDataProps) => {
                 size="small"
                 startIcon={<Icons.clear classes={{ root: 'icon' }} />}
                 className={classes.closeBtn}
+                variant="contained"
               >
-                Close
+                {btnTrans('close')}
+              </CustomButton>
+
+              <CustomButton
+                onClick={onExplorerResetClicked}
+                size="small"
+                startIcon={<Icons.reset classes={{ root: 'icon' }} />}
+                className={classes.resetBtn}
+              >
+                {btnTrans('reset')}
               </CustomButton>
             </div>
           ) : (
@@ -573,7 +586,9 @@ const Search = (props: CollectionDataProps) => {
                 </div>
                 <div className="right">
                   <CustomButton
-                    onClick={onExploreClicked}
+                    onClick={() => {
+                      onExploreClicked();
+                    }}
                     size="small"
                     disabled={false}
                     className={classes.btn}

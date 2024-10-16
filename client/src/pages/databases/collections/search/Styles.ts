@@ -202,13 +202,21 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     height: '100%',
     position: 'relative',
-    flexGrow: 1
+    flexGrow: 1,
   },
   closeBtn: {
     position: 'absolute',
     top: 8,
     left: 8,
     zIndex: 1,
+    padding: '4px 8px'
+  },
+  resetBtn: {
+    position: 'absolute',
+    top: 8,
+    left: 90,
+    zIndex: 1,
+    padding: '4px 8px'
   },
 }));
 
