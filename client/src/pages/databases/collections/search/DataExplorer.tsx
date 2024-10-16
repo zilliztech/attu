@@ -180,6 +180,8 @@ const DataExplorer = ({
         // calcuate the position of the hovered node, place the tooltip accordingly, it should
         // get parent node's position and the mouse position
         const parentPosition = rootRef.current?.getBoundingClientRect();
+        const svg = svgRef.current!.getBoundingClientRect();
+        console.log(event.clientX - parentPosition!.left);
         const nodeX = event.clientX - parentPosition!.left;
         const nodeY = event.clientY - parentPosition!.top;
 
@@ -267,9 +269,12 @@ const DataExplorer = ({
 export default DataExplorer;
 
 const DataPanel = (props: any) => {
+  // styles
   const classes = getDataExplorerStyle();
+  // props
   const { data, node } = props;
 
+  // format data to json
   const json = JSON.stringify(data, null, 2);
   const image = [
     'https://randomuser.me/api/portraits/men/50.jpg',
@@ -286,15 +291,19 @@ const DataPanel = (props: any) => {
     }
   }
 
+  const styleObj = node.nodeY
+    ? {
+        top: node.nodeY + 16,
+        left: node.nodeX + 16,
+        right: 'auto',
+      }
+    : {
+        top: 8,
+        right: 8,
+      };
+
   return (
-    <div
-      key={node.id}
-      className={classes.nodeInfo}
-      style={{
-        top: node.nodeY ? node.nodeY + 16 : 8,
-        right: node.nodeX ? node.nodeX + 16 : 8,
-      }}
-    >
+    <div key={node.id} className={classes.nodeInfo} style={styleObj}>
       <div className="wrapper">
         {image.map((url, i) => (
           <img key={i} src={url} />
