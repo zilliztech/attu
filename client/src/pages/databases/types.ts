@@ -1,4 +1,4 @@
-import { FieldObject, CollectionObject, RerankerObj } from '@server/types';
+import { FieldObject, CollectionObject } from '@server/types';
 
 export type SearchSingleParams = {
   anns_field: string;
@@ -28,10 +28,32 @@ export type SearchResultView = {
   distance: number;
 };
 
+export type GraphNode = {
+  id: string;
+  data: any;
+  x?: number;
+  y?: number;
+  searchIds: string[];
+  color: number;
+  nodeY?: number;
+  nodeX?: number;
+}; // Add optional x, y for SimulationNodeDatum
+export type GraphLink = {
+  source: string;
+  target: string;
+  score: number;
+};
+
+export type GraphData = {
+  nodes: GraphNode[];
+  links: GraphLink[];
+};
+
 export type SearchParams = {
   collection: CollectionObject;
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
   searchResult: SearchResultView[] | null;
+  graphData: GraphData;
   searchLatency: number;
 };

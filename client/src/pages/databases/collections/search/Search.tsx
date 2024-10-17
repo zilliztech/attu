@@ -7,7 +7,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { DataService } from '@/http';
+import { DataService, CollectionService } from '@/http';
 import { rootContext } from '@/context';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
@@ -32,6 +32,8 @@ import {
   getColumnWidth,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
+import DataExplorer, { formatMilvusData } from './DataExplorer';
+import { GraphData, GraphNode } from '../../types';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
@@ -50,6 +52,11 @@ export interface CollectionDataProps {
   setSearchParams: (params: SearchParamsType) => void;
 }
 
+const emptyExplorerData: GraphData = {
+  nodes: [],
+  links: [],
+};
+
 const Search = (props: CollectionDataProps) => {
   // props
   const { collections, collectionName, searchParams, setSearchParams } = props;
@@ -63,6 +70,7 @@ const Search = (props: CollectionDataProps) => {
   // UI states
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [highlightField, setHighlightField] = useState<string>('');
+  const [explorerOpen, setExplorerOpen] = useState<boolean>(false);
 
   // translations
   const { t: searchTrans } = useTranslation('search');
@@ -162,6 +170,13 @@ const Search = (props: CollectionDataProps) => {
       const s = cloneObj(searchParams) as SearchParamsType;
       s.searchResult = results;
       s.searchLatency = latency;
+      const newGraphData = formatMilvusData(
+        emptyExplorerData,
+        { id: 'root' },
+        s.searchResult
+      );
+      s.graphData = newGraphData;
+
       setSearchParams({ ...s });
     },
     [JSON.stringify(searchParams)]
@@ -170,6 +185,7 @@ const Search = (props: CollectionDataProps) => {
   // execute search
   const onSearchClicked = useCallback(async () => {
     const params = buildSearchParams(searchParams);
+    setExplorerOpen(false);
 
     setTableLoading(true);
     try {
@@ -184,6 +200,51 @@ const Search = (props: CollectionDataProps) => {
       setTableLoading(false);
     }
   }, [JSON.stringify(searchParams)]);
+
+  // execute explore
+  const onExploreClicked = () => {
+    setExplorerOpen(explorerOpen => !explorerOpen);
+  };
+
+  const onNodeClicked = useCallback(
+    async (node: GraphNode) => {
+      if (node.id === 'root') {
+        return;
+      }
+      setExplorerOpen(true);
+      setTableLoading(false);
+
+      const s = cloneObj(searchParams);
+      const params = cloneObj(buildSearchParams(searchParams));
+
+      try {
+        const query = await CollectionService.queryData(collectionName, {
+          expr: 'id == ' + node.id,
+          output_fields: ['*'],
+        });
+
+        // replace the vector data
+        params.data[0].data = query.data[0][params.data[0].anns_field];
+
+        const search = await DataService.vectorSearchData(
+          s.collection.collection_name,
+          params
+        );
+
+        const newGraphData = formatMilvusData(
+          s.graphData,
+          { id: node.id, data: params.data[0].data },
+          search.results
+        );
+
+        s.graphData = newGraphData;
+        setSearchParams({ ...s });
+      } catch (err) {
+        console.log('err', err);
+      }
+    },
+    [JSON.stringify(searchParams)]
+  );
 
   const searchResultMemo = useSearchResult(
     (searchParams && (searchParams.searchResult as SearchResultView[])) || []
@@ -212,6 +273,11 @@ const Search = (props: CollectionDataProps) => {
     setSearchParams({ ...s });
     setCurrentPage(0);
   }, [JSON.stringify(searchParams), setCurrentPage]);
+
+  const onExplorerResetClicked = useCallback(() => {
+    onSearchClicked();
+    onExploreClicked();
+  }, [onSearchClicked, onSearchClicked]);
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     if (!searchParams || !searchParams.collection) {
@@ -418,6 +484,7 @@ const Search = (props: CollectionDataProps) => {
             <CustomButton
               variant="contained"
               size="small"
+              className={classes.genBtn}
               disabled={disableSearch}
               tooltip={disableSearchTooltip}
               tooltipPlacement="top"
@@ -443,7 +510,7 @@ const Search = (props: CollectionDataProps) => {
                     className: 'textarea',
                     onChange: onFilterChange,
                     value: searchParams.globalParams.filter,
-                    disabled: false,
+                    disabled: explorerOpen,
                     variant: 'filled',
                     required: false,
                     InputLabelProps: { shrink: true },
@@ -453,7 +520,7 @@ const Search = (props: CollectionDataProps) => {
                           title={''}
                           showTitle={false}
                           fields={collection.schema.scalarFields}
-                          filterDisabled={false}
+                          filterDisabled={explorerOpen}
                           onSubmit={(value: string) => {
                             onFilterChange(value);
                           }}
@@ -472,6 +539,20 @@ const Search = (props: CollectionDataProps) => {
                 />
               </div>
               <div className="right">
+                <CustomButton
+                  onClick={() => {
+                    onExploreClicked();
+                  }}
+                  size="small"
+                  disabled={
+                    !searchParams.searchResult ||
+                    searchParams.searchResult!.length === 0
+                  }
+                  className={classes.btn}
+                  startIcon={<Icons.magic classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('explore')}
+                </CustomButton>
                 <CustomButton
                   className={classes.btn}
                   disabled={disableSearch}
@@ -509,7 +590,9 @@ const Search = (props: CollectionDataProps) => {
                 </CustomButton>
                 <CustomButton
                   className={classes.btn}
-                  onClick={onResetClicked}
+                  onClick={
+                    explorerOpen ? onExplorerResetClicked : onResetClicked
+                  }
                   startIcon={<Icons.clear classes={{ root: 'icon' }} />}
                 >
                   {btnTrans('reset')}
@@ -517,9 +600,27 @@ const Search = (props: CollectionDataProps) => {
               </div>
             </section>
 
-            {(searchParams.searchResult &&
-              searchParams.searchResult.length > 0) ||
-            tableLoading ? (
+            {explorerOpen ? (
+              <div className={classes.explorer}>
+                <DataExplorer
+                  data={searchParams.graphData}
+                  onNodeClick={onNodeClicked}
+                />
+                <CustomButton
+                  onClick={() => {
+                    setExplorerOpen(false);
+                  }}
+                  size="small"
+                  startIcon={<Icons.clear classes={{ root: 'icon' }} />}
+                  className={classes.closeBtn}
+                  variant="contained"
+                >
+                  {btnTrans('close')}
+                </CustomButton>
+              </div>
+            ) : (searchParams.searchResult &&
+                searchParams.searchResult.length > 0) ||
+              tableLoading ? (
               <AttuGrid
                 toolbarConfigs={[]}
                 colDefinitions={colDefinitions}

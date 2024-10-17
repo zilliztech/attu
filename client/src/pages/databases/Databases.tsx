@@ -182,7 +182,7 @@ const Databases = () => {
                 };
               }),
               globalParams: {
-                topK: 50,
+                topK: 15,
                 consistency_level: ConsistencyLevelEnum.Bounded,
                 filter: '',
                 rerank: 'rrf',
@@ -195,6 +195,7 @@ const Databases = () => {
                   : scalarFields,
               },
               searchResult: null,
+              graphData: { nodes: [], links: [] },
               searchLatency: 0,
             },
           ];

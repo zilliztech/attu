@@ -37,6 +37,8 @@ const btnTrans = {
   applyFilter: 'Apply Filters',
   createIndex: 'Create Index',
   edit: 'Edit',
+  explore: 'Explore',
+  close: 'Close',
 
   // tips
   loadColTooltip: 'Load Collection',

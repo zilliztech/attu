@@ -27,6 +27,7 @@ const searchTrans = {
   groupBy: '分组',
   outputFields: '输出字段',
   consistency: '一致性',
+  graphNodeHoverTip: '双击以查看更多',
 };
 
 export default searchTrans;
