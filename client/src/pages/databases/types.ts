@@ -36,7 +36,11 @@ export type GraphNode = {
   searchIds: string[];
   color: number;
 }; // Add optional x, y for SimulationNodeDatum
-export type GraphLink = { source: string; target: string; score: number };
+export type GraphLink = {
+  source: string;
+  target: string;
+  score: number;
+};
 
 export type GraphData = {
   nodes: GraphNode[];

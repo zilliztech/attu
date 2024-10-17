@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { Typography, useTheme } from '@mui/material';
 import { cloneObj } from '@/utils';
 import { getDataExplorerStyle } from './Styles';
-import { GraphData } from '../../types';
+import { GraphData, GraphNode, GraphLink } from '../../types';
 
 interface DataExplorerProps {
   data: GraphData;
@@ -102,7 +102,13 @@ const DataExplorer = ({
   onNodeClick,
 }: DataExplorerProps) => {
   // states
-  const [hoveredNode, setHoveredNode] = useState<any>(null);
+  const [hoveredNode, setHoveredNode] = useState<{
+    d: GraphNode;
+    nodeX: number;
+    nodeY: number;
+  } | null>(null);
+  //  we use ref to store the selected nodes, so that we need to re-render the component by this state withouth affacting the d3 effect
+  const [render, setRender] = useState<number>(0);
   // theme
   const theme = useTheme();
   // classes
@@ -112,14 +118,14 @@ const DataExplorer = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
-  const selectedNodes = useRef<any[]>([]);
+  const selectedNodesRef = useRef<any[]>([]);
 
   // d3 effect
   useEffect(() => {
     if (!svgRef.current || !gRef.current) return;
     // if no data, clear selectedNodes and hoveredNode
     if (!data.nodes.length) {
-      selectedNodes.current = [];
+      selectedNodesRef.current = [];
       setHoveredNode(null);
     }
     // states
@@ -144,8 +150,8 @@ const DataExplorer = ({
     svg.call(zoom as any).on('dblclick.zoom', null);
 
     // clone data to avoid mutating the original data
-    const links = cloneObj(data.links);
-    const nodes = cloneObj(data.nodes);
+    const links = cloneObj(data.links) as GraphLink[];
+    const nodes = cloneObj(data.nodes) as GraphNode[];
 
     const simulation = d3
       .forceSimulation(nodes as d3.SimulationNodeDatum[])
@@ -154,7 +160,7 @@ const DataExplorer = ({
         d3
           .forceLink(links)
           .id((d: any) => d.id)
-          .distance((d: any) => {
+          .distance(d => {
             const maxDistance = 150;
             const minDistance = 50;
             return maxDistance - d.score * (maxDistance - minDistance);
@@ -180,16 +186,18 @@ const DataExplorer = ({
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('r', (d: any) =>
-        selectedNodes.current.some(n => n.id === d.id) ? 16 : 8
+      .attr('r', d =>
+        selectedNodesRef.current.some(n => n.id === d.id) ? 16 : 8
       )
-      .attr('fill', (d: any) => color(d.color))
+      .attr('fill', d => color(String(d.color)))
       .attr('cursor', 'pointer')
-      .attr('stroke', (d: any) =>
-        selectedNodes.current.some(n => n.id === d.id) ? 'black' : 'transparent'
+      .attr('stroke', d =>
+        selectedNodesRef.current.some(n => n.id === d.id)
+          ? 'black'
+          : 'transparent'
       )
-      .attr('stroke-width', (d: any) =>
-        selectedNodes.current.some(n => n.id === d.id) ? 2 : 0
+      .attr('stroke-width', d =>
+        selectedNodesRef.current.some(n => n.id === d.id) ? 2 : 0
       )
       .on('mouseover', (event, d) => {
         // Highlight the hovered node, keeping selected node unaffected
@@ -201,32 +209,24 @@ const DataExplorer = ({
         const nodeY = event.clientY - parentPosition!.top;
 
         if (!_isDragging) {
-          setHoveredNode({ nodeX, nodeY, d });
+          setHoveredNode({ nodeX, nodeY, d: d });
         }
       })
       .on('mouseout', () => {
-        // Revert the hover stroke without affecting the selected node
-        // g.selectAll('.node')
-        //   .attr('stroke', (d: any) =>
-        //     selectedNodes.includes(d) ? color(d.color) : 'transparent'
-        //   )
-        //   .attr('stroke-width', (d: any) =>
-        //     selectedNodes.includes(d) ? 2 : 0
-        //   );
         setHoveredNode(null);
       })
-      .on('click', function (event, d: any) {
-        const isAlreadySelected = selectedNodes.current.some(
+      .on('click', function (event, d) {
+        const isAlreadySelected = selectedNodesRef.current.some(
           node => node.id === d.id
         );
 
         // Update selected nodes
         if (isAlreadySelected) {
-          selectedNodes.current = selectedNodes.current.filter(
+          selectedNodesRef.current = selectedNodesRef.current.filter(
             node => node.id !== d.id
           );
         } else {
-          selectedNodes.current = [...selectedNodes.current, d];
+          selectedNodesRef.current = [...selectedNodesRef.current, d];
         }
 
         // Add circle around the selected node and remove it when unselected
@@ -234,6 +234,9 @@ const DataExplorer = ({
           .attr('r', isAlreadySelected ? 8 : 16)
           .attr('stroke', isAlreadySelected ? 'transparent' : 'black')
           .attr('stroke-width', isAlreadySelected ? 0 : 2);
+
+        // Render the selected nodes
+        setRender(prev => prev + 1);
       })
       .on('dblclick', (event, d) => {
         onNodeClick && onNodeClick(d);
@@ -278,9 +281,9 @@ const DataExplorer = ({
       <svg ref={svgRef} width={width} height={height}>
         <g ref={gRef} />
       </svg>
-      {selectedNodes.current.length > 0 && (
-        <div className={classes.selectedNodes}>
-          {selectedNodes.current.map(node => (
+      {selectedNodesRef.current.length > 0 && (
+        <div className={classes.selectedNodes} data-render={render}>
+          {selectedNodesRef.current.map(node => (
             <DataPanel key={node.id} data={node.data} node={node} />
           ))}
         </div>
