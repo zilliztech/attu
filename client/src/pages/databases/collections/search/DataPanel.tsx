@@ -12,7 +12,7 @@ const DataPanel = (props: { node: GraphNode; color: any }) => {
 
   // format data to json
   const json = JSON.stringify(data, null, 2);
-  const image = ['https://randomuser.me/api/portraits/men/40.jpg'];
+  const image = [];
 
   // loop through the object find any value is an image url, add it into an image array;
   for (const key in data) {
@@ -47,6 +47,8 @@ const DataPanel = (props: { node: GraphNode; color: any }) => {
         language="json"
         style={theme.palette.mode === 'dark' ? vs2015 : github}
         customStyle={{ fontSize: 11, margin: 0 }}
+        wrapLines={true}
+        wrapLongLines={true}
         showLineNumbers={false}
       >
         {json}
