@@ -226,17 +226,20 @@ export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
       flexDirection: 'column',
       padding: '8px',
       backgroundColor: theme.palette.background.paper,
-      boxShadow: theme.shadows[2],
+      border: `1px solid ${theme.palette.divider}`,
       borderRadius: 8,
+      boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
 
       zIndex: 1,
       '& .wrapper': {
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 8,
+        gap: 4,
         maxWidth: 380,
+        justifyContent: 'center',
         '& img': {
+          display: 'inline-block',
           maxWidth: 120,
           maxHeight: 120,
           objectFit: 'contain',
@@ -250,14 +253,13 @@ export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     top: 8,
     right: 8,
+    borderRadius: 8,
+    gap: 8,
     maxHeight: '100%',
     overflow: 'auto',
-    gap: 4,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[2],
     '& .nodeInfo': {
       boxShadow: 'none',
-      borderRadius: 0,
-    }
+    },
   },
 }));

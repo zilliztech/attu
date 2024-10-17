@@ -170,6 +170,13 @@ const Search = (props: CollectionDataProps) => {
       const s = cloneObj(searchParams) as SearchParamsType;
       s.searchResult = results;
       s.searchLatency = latency;
+      const newGraphData = formatMilvusData(
+        emptyExplorerData,
+        { id: 'root' },
+        s.searchResult
+      );
+      s.graphData = newGraphData;
+
       setSearchParams({ ...s });
     },
     [JSON.stringify(searchParams)]
@@ -195,32 +202,9 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams)]);
 
   // execute explore
-  const onExploreClicked = useCallback(
-    async (reset?: boolean) => {
-      setExplorerOpen(true);
-      setTableLoading(false);
-
-      const s = cloneObj(searchParams);
-
-      // if nodes exists, do not execute
-      if (s.graphData.nodes.length > 0 && !reset) {
-        return;
-      }
-
-      try {
-        const newGraphData = formatMilvusData(
-          emptyExplorerData,
-          { id: 'root' },
-          s.searchResult
-        );
-        s.graphData = newGraphData;
-        setSearchParams({ ...s });
-      } catch (err) {
-        console.log('err', err);
-      }
-    },
-    [JSON.stringify(searchParams)]
-  );
+  const onExploreClicked = () => {
+    setExplorerOpen(explorerOpen => !explorerOpen);
+  };
 
   const onNodeClicked = useCallback(
     async (node: GraphNode) => {
@@ -291,11 +275,9 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams), setCurrentPage]);
 
   const onExplorerResetClicked = useCallback(() => {
-    const s = cloneObj(searchParams) as SearchParamsType;
-    s.graphData = emptyExplorerData;
-    setSearchParams({ ...s });
-    onExploreClicked(true);
-  }, [JSON.stringify(searchParams), onExploreClicked]);
+    onSearchClicked();
+    onExploreClicked();
+  }, [onSearchClicked, onSearchClicked]);
 
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     if (!searchParams || !searchParams.collection) {
@@ -517,167 +499,161 @@ const Search = (props: CollectionDataProps) => {
             </CustomButton>
           </div>
 
-          {explorerOpen ? (
-            <div className={classes.explorer}>
-              <DataExplorer
-                data={searchParams.graphData}
-                onNodeClick={onNodeClicked}
-              />
-              <CustomButton
-                onClick={() => {
-                  setExplorerOpen(false);
-                }}
-                size="small"
-                startIcon={<Icons.clear classes={{ root: 'icon' }} />}
-                className={classes.closeBtn}
-                variant="contained"
-              >
-                {btnTrans('close')}
-              </CustomButton>
-
-              <CustomButton
-                onClick={onExplorerResetClicked}
-                size="small"
-                startIcon={<Icons.reset classes={{ root: 'icon' }} />}
-                className={classes.resetBtn}
-              >
-                {btnTrans('reset')}
-              </CustomButton>
-            </div>
-          ) : (
-            <div className={classes.searchResults}>
-              <section className={classes.toolbar}>
-                <div className="left">
-                  <CustomInput
-                    type="text"
-                    textConfig={{
-                      label: searchTrans('filterExpr'),
-                      key: 'advFilter',
-                      className: 'textarea',
-                      onChange: onFilterChange,
-                      value: searchParams.globalParams.filter,
-                      disabled: false,
-                      variant: 'filled',
-                      required: false,
-                      InputLabelProps: { shrink: true },
-                      InputProps: {
-                        endAdornment: (
-                          <Filter
-                            title={''}
-                            showTitle={false}
-                            fields={collection.schema.scalarFields}
-                            filterDisabled={false}
-                            onSubmit={(value: string) => {
-                              onFilterChange(value);
-                            }}
-                            showTooltip={false}
+          <div className={classes.searchResults}>
+            <section className={classes.toolbar}>
+              <div className="left">
+                <CustomInput
+                  type="text"
+                  textConfig={{
+                    label: searchTrans('filterExpr'),
+                    key: 'advFilter',
+                    className: 'textarea',
+                    onChange: onFilterChange,
+                    value: searchParams.globalParams.filter,
+                    disabled: explorerOpen,
+                    variant: 'filled',
+                    required: false,
+                    InputLabelProps: { shrink: true },
+                    InputProps: {
+                      endAdornment: (
+                        <Filter
+                          title={''}
+                          showTitle={false}
+                          fields={collection.schema.scalarFields}
+                          filterDisabled={explorerOpen}
+                          onSubmit={(value: string) => {
+                            onFilterChange(value);
+                          }}
+                          showTooltip={false}
+                        />
+                      ),
+                    },
+                    onKeyDown: (e: any) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        onSearchClicked();
+                      }
+                    },
+                  }}
+                  checkValid={() => true}
+                />
+              </div>
+              <div className="right">
+                <CustomButton
+                  onClick={() => {
+                    onExploreClicked();
+                  }}
+                  size="small"
+                  disabled={
+                    !searchParams.searchResult ||
+                    searchParams.searchResult!.length === 0
+                  }
+                  className={classes.btn}
+                  startIcon={<Icons.magic classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('explore')}
+                </CustomButton>
+                <CustomButton
+                  className={classes.btn}
+                  disabled={disableSearch}
+                  onClick={() => {
+                    // open code dialog
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <CodeDialog
+                            data={buildSearchCode(searchParams, collection)}
                           />
                         ),
                       },
-                      onKeyDown: (e: any) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          onSearchClicked();
-                        }
-                      },
-                    }}
-                    checkValid={() => true}
-                  />
-                </div>
-                <div className="right">
-                  <CustomButton
-                    onClick={() => {
-                      onExploreClicked();
-                    }}
-                    size="small"
-                    disabled={false}
-                    className={classes.btn}
-                    startIcon={<Icons.magic classes={{ root: 'icon' }} />}
-                  >
-                    {btnTrans('explore')}
-                  </CustomButton>
-                  <CustomButton
-                    className={classes.btn}
-                    disabled={disableSearch}
-                    onClick={() => {
-                      // open code dialog
-                      setDialog({
-                        open: true,
-                        type: 'custom',
-                        params: {
-                          component: (
-                            <CodeDialog
-                              data={buildSearchCode(searchParams, collection)}
-                            />
-                          ),
-                        },
-                      });
-                    }}
-                    startIcon={<Icons.code classes={{ root: 'icon' }} />}
-                  >
-                    {btnTrans('Code')}
-                  </CustomButton>
+                    });
+                  }}
+                  startIcon={<Icons.code classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('Code')}
+                </CustomButton>
 
-                  <CustomButton
-                    className={classes.btn}
-                    disabled={result.length === 0}
-                    onClick={() => {
-                      saveCsvAs(
-                        searchParams.searchResult,
-                        `search_result_${searchParams.collection.collection_name}`
-                      );
-                    }}
-                    startIcon={<Icons.download classes={{ root: 'icon' }} />}
-                  >
-                    {btnTrans('export')}
-                  </CustomButton>
-                  <CustomButton
-                    className={classes.btn}
-                    onClick={onResetClicked}
-                    startIcon={<Icons.clear classes={{ root: 'icon' }} />}
-                  >
-                    {btnTrans('reset')}
-                  </CustomButton>
-                </div>
-              </section>
+                <CustomButton
+                  className={classes.btn}
+                  disabled={result.length === 0}
+                  onClick={() => {
+                    saveCsvAs(
+                      searchParams.searchResult,
+                      `search_result_${searchParams.collection.collection_name}`
+                    );
+                  }}
+                  startIcon={<Icons.download classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('export')}
+                </CustomButton>
+                <CustomButton
+                  className={classes.btn}
+                  onClick={
+                    explorerOpen ? onExplorerResetClicked : onResetClicked
+                  }
+                  startIcon={<Icons.clear classes={{ root: 'icon' }} />}
+                >
+                  {btnTrans('reset')}
+                </CustomButton>
+              </div>
+            </section>
 
-              {(searchParams.searchResult &&
+            {explorerOpen ? (
+              <div className={classes.explorer}>
+                <DataExplorer
+                  data={searchParams.graphData}
+                  onNodeClick={onNodeClicked}
+                />
+                <CustomButton
+                  onClick={() => {
+                    setExplorerOpen(false);
+                  }}
+                  size="small"
+                  startIcon={<Icons.clear classes={{ root: 'icon' }} />}
+                  className={classes.closeBtn}
+                  variant="contained"
+                >
+                  {btnTrans('close')}
+                </CustomButton>
+              </div>
+            ) : (searchParams.searchResult &&
                 searchParams.searchResult.length > 0) ||
               tableLoading ? (
-                <AttuGrid
-                  toolbarConfigs={[]}
-                  colDefinitions={colDefinitions}
-                  rows={result}
-                  rowCount={total}
-                  primaryKey="rank"
-                  page={currentPage}
-                  tableHeaderHeight={46}
-                  rowHeight={39}
-                  onPageChange={handlePageChange}
-                  rowsPerPage={pageSize}
-                  setRowsPerPage={handlePageSize}
-                  openCheckBox={false}
-                  isLoading={tableLoading}
-                  orderBy={orderBy}
-                  order={order}
-                  labelDisplayedRows={getLabelDisplayedRows(
-                    `(${searchParams.searchLatency} ms)`
-                  )}
-                  handleSort={handleGridSort}
-                />
-              ) : (
-                <EmptyCard
-                  wrapperClass={`page-empty-card`}
-                  icon={<Icons.search />}
-                  text={
-                    searchParams.searchResult !== null
-                      ? searchTrans('empty')
-                      : searchTrans('startTip')
-                  }
-                />
-              )}
-            </div>
-          )}
+              <AttuGrid
+                toolbarConfigs={[]}
+                colDefinitions={colDefinitions}
+                rows={result}
+                rowCount={total}
+                primaryKey="rank"
+                page={currentPage}
+                tableHeaderHeight={46}
+                rowHeight={39}
+                onPageChange={handlePageChange}
+                rowsPerPage={pageSize}
+                setRowsPerPage={handlePageSize}
+                openCheckBox={false}
+                isLoading={tableLoading}
+                orderBy={orderBy}
+                order={order}
+                labelDisplayedRows={getLabelDisplayedRows(
+                  `(${searchParams.searchLatency} ms)`
+                )}
+                handleSort={handleGridSort}
+              />
+            ) : (
+              <EmptyCard
+                wrapperClass={`page-empty-card`}
+                icon={<Icons.search />}
+                text={
+                  searchParams.searchResult !== null
+                    ? searchTrans('empty')
+                    : searchTrans('startTip')
+                }
+              />
+            )}
+          </div>
         </div>
       )}
     </div>

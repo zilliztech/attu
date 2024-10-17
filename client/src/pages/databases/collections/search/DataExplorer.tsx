@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { Typography, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { cloneObj } from '@/utils';
 import { getDataExplorerStyle } from './Styles';
 import { GraphData, GraphNode, GraphLink } from '../../types';
+import DataPanel from './DataPanel';
 
 interface DataExplorerProps {
   data: GraphData;
@@ -102,11 +103,7 @@ const DataExplorer = ({
   onNodeClick,
 }: DataExplorerProps) => {
   // states
-  const [hoveredNode, setHoveredNode] = useState<{
-    d: GraphNode;
-    nodeX: number;
-    nodeY: number;
-  } | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null);
   //  we use ref to store the selected nodes, so that we need to re-render the component by this state withouth affacting the d3 effect
   const [render, setRender] = useState<number>(0);
   // theme
@@ -119,6 +116,14 @@ const DataExplorer = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const gRef = useRef<SVGGElement>(null);
   const selectedNodesRef = useRef<any[]>([]);
+
+  // filter out data from selectedNodesRef when data changes
+  useEffect(() => {
+    selectedNodesRef.current = selectedNodesRef.current.filter(node =>
+      data.nodes.some(n => n.id === node.id)
+    );
+    setRender(prev => prev + 1);
+  }, [JSON.stringify(data)]);
 
   // d3 effect
   useEffect(() => {
@@ -189,7 +194,9 @@ const DataExplorer = ({
       .attr('r', d =>
         selectedNodesRef.current.some(n => n.id === d.id) ? 16 : 8
       )
-      .attr('fill', d => color(String(d.color)))
+      .attr('fill', d => {
+        return color(d.color + '');
+      })
       .attr('cursor', 'pointer')
       .attr('stroke', d =>
         selectedNodesRef.current.some(n => n.id === d.id)
@@ -209,7 +216,7 @@ const DataExplorer = ({
         const nodeY = event.clientY - parentPosition!.top;
 
         if (!_isDragging) {
-          setHoveredNode({ nodeX, nodeY, d: d });
+          setHoveredNode({ ...cloneObj(d), nodeX, nodeY });
         }
       })
       .on('mouseout', () => {
@@ -284,59 +291,15 @@ const DataExplorer = ({
       {selectedNodesRef.current.length > 0 && (
         <div className={classes.selectedNodes} data-render={render}>
           {selectedNodesRef.current.map(node => (
-            <DataPanel key={node.id} data={node.data} node={node} />
+            <DataPanel key={node.id} node={node} color={color} />
           ))}
         </div>
       )}
       {hoveredNode && (
-        <DataPanel data={hoveredNode.d.data} node={hoveredNode} />
+        <DataPanel key={hoveredNode.id} node={hoveredNode} color={color} />
       )}
     </div>
   );
 };
 
 export default DataExplorer;
-
-const DataPanel = (props: any) => {
-  // props
-  const { data, node } = props;
-
-  // format data to json
-  const json = JSON.stringify(data, null, 2);
-  const image = [
-    'https://randomuser.me/api/portraits/men/50.jpg',
-    'https://randomuser.me/api/portraits/men/40.jpg',
-  ];
-
-  // loop through the object find any value is an image url, add it into an image array;
-  for (const key in data) {
-    if (
-      typeof data[key] === 'string' &&
-      data[key].match(/\.(jpeg|jpg|gif|png)$/) != null
-    ) {
-      image.push(data[key]);
-    }
-  }
-
-  const styleObj = node.nodeY
-    ? {
-        top: node.nodeY + 16,
-        left: node.nodeX + 16,
-        right: 'auto',
-        position: 'absolute',
-      }
-    : undefined;
-
-  return (
-    <div key={node.id} className="nodeInfo" style={styleObj as any}>
-      <div className="wrapper">
-        {image.map((url, i) => (
-          <img key={i} src={url} />
-        ))}
-      </div>
-      <Typography>
-        <pre>{json}</pre>
-      </Typography>
-    </div>
-  );
-};
