@@ -27,6 +27,7 @@ const searchTrans = {
   groupBy: 'Group By',
   outputFields: 'Outputs',
   consistency: 'Consistency',
+  graphNodeHoverTip: 'Double click to explore more',
 };
 
 export default searchTrans;

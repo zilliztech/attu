@@ -246,6 +246,11 @@ export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
           objectFit: 'contain',
         },
       },
+      '& .tip': {
+        color: theme.palette.text.secondary,
+        fontSize: 12,
+        textAlign: 'center',
+      }
     },
   },
   selectedNodes: {
