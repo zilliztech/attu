@@ -69,9 +69,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       cursor: 'ew-resize',
       background: theme.palette.divider,
     },
-    '&.tree-collapsed': {
-      background: theme.palette.divider,
-    },
   },
   tab: {
     flexGrow: 1,
@@ -114,18 +111,15 @@ const Databases = () => {
 
         // set tree width
         setUIPref({ tree: { width: treeWidth } });
-        // set dragging true
-        setIsDragging(true);
       });
     };
 
     const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      // set dragging false
+      setIsDragging(false);
       // highlight dragger alwasy if width === 1
       draggerRef.current!.classList.toggle('tree-collapsed', treeWidth === 1);
-      // set dragging true
-      setIsDragging(false);
+      document.removeEventListener('mousemove', handleMouseMove);
     };
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -135,6 +129,7 @@ const Databases = () => {
         setIsDragging(true);
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
+        e.stopPropagation();
       }
     };
 
@@ -146,7 +141,7 @@ const Databases = () => {
       // set dragging false
       setIsDragging(false);
     };
-  }, []);
+  }, [isDragging]);
 
   // double click on the dragger, recover default
   const handleDoubleClick = () => {
