@@ -14,7 +14,7 @@
   "dependencies": {
     "@json2csv/plainjs": "^7.0.3",
     "@zilliz/milvus2-sdk-node": "^2.4.9",
-    "axios": "^1.7.4",
+    "axios": "^1.7.7",
     "chalk": "4.1.2",
     "class-sanitizer": "^1.0.1",
     "class-transformer": "^0.5.1",
@@ -22,13 +22,13 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "csv-writer": "^1.6.0",
-    "express": "^4.21.0",
+    "express": "^4.21.1",
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
     "lru-cache": "^10.2.0",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.8.0"
   },
   "jest": {
     "testEnvironment": "node",
@@ -58,8 +58,8 @@
     "@types/node-cron": "^3.0.8",
     "@types/supertest": "^6.0.2",
     "@types/ws": "^8.5.10",
-    "electron": "^30.0.8",
-    "electron-builder": "^24.13.3",
+    "electron": "^33.0.1",
+    "electron-builder": "^25.1.8",
     "jest": "^29.7.0",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
@@ -78,7 +78,6 @@
     "build-electron": "node electron-prebuild && yarn build",
     "prestart": "rm -rf dist && yarn build",
     "start": "nodemon src/app.ts",
-    "start:plugin": "yarn build && cross-env PLUGIN_DEV=1 node dist/attu/express/src/app.js",
     "start:prod": "node dist/src/app.js",
     "start:debug": "DEBUG=express:* nodemon src/app.ts",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",
