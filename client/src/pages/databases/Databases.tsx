@@ -111,6 +111,7 @@ const Databases = () => {
 
         // set tree width
         setUIPref({ tree: { width: treeWidth } });
+        setIsDragging(true);
       });
     };
 
