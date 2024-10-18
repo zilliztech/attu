@@ -69,9 +69,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       cursor: 'ew-resize',
       background: theme.palette.divider,
     },
-    // '&.tree-collapsed': {
-    //   background: theme.palette.divider,
-    // },
   },
   tab: {
     flexGrow: 1,
