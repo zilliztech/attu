@@ -2,7 +2,7 @@
 import { Server, Socket } from 'socket.io';
 import * as http from 'http';
 import chalk from 'chalk';
-import { WS_EVENTS } from './utils';
+import { WS_EVENTS, isElectron } from './utils';
 
 export let io: Server;
 export let clients = new Map<string, Socket>();
@@ -19,23 +19,31 @@ export function initWebSocket(server: http.Server) {
     // register client
     socket.on(WS_EVENTS.REGISTER, (clientId: string) => {
       clients.set(clientId, socket);
-      console.info(chalk.green(`ws client connected ${clientId}`));
+      if (!isElectron()) {
+        console.info(chalk.green(`ws client connected ${clientId}`));
+      }
 
       socket.on('disconnect', () => {
-        console.info(chalk.green(`ws client disconnected ${clientId}`));
+        if (!isElectron()) {
+          console.info(chalk.green(`ws client disconnected ${clientId}`));
+        }
         clients.delete(clientId);
       });
 
       socket.on('error', (error: Error) => {
-        console.error(
-          chalk.red(`ws client error ${clientId}: ${error.message}`)
-        );
+        if (!isElectron()) {
+          console.error(
+            chalk.red(`ws client error ${clientId}: ${error.message}`)
+          );
+        }
       });
     });
   });
 
   // Handle server-level errors
   io.on('error', (error: Error) => {
-    console.error(chalk.red(`ws server error: ${error.message}`));
+    if (!isElectron()) {
+      console.error(chalk.red(`ws server error: ${error.message}`));
+    }
   });
 }

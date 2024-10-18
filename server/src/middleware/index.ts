@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import chalk from 'chalk';
-import { MILVUS_CLIENT_ID, HTTP_STATUS_CODE } from '../utils';
+import { MILVUS_CLIENT_ID, HTTP_STATUS_CODE, isElectron } from '../utils';
 import { HttpError } from 'http-errors';
 import HttpErrors from 'http-errors';
 import { clientCache } from '../app';
@@ -77,11 +77,13 @@ export const ErrorMiddleware = (
   next: NextFunction
 ) => {
   const statusCode = err.statusCode || 500;
-  console.log(
-    chalk.blue.bold(req.method, req.url),
-    chalk.magenta.bold(statusCode),
-    chalk.red.bold(err)
-  );
+  if (!isElectron()) {
+    console.log(
+      chalk.blue.bold(req.method, req.url),
+      chalk.magenta.bold(statusCode),
+      chalk.red.bold(err)
+    );
+  }
   // Boolean property that indicates if the app sent HTTP headers for the response.
   // Here to prevent sending response after header has been sent.
   if (res.headersSent) {

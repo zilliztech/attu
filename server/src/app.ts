@@ -18,7 +18,7 @@ import {
   ErrorMiddleware,
   ReqHeaderMiddleware,
 } from './middleware';
-import { CLIENT_TTL, SimpleQueue } from './utils';
+import { CLIENT_TTL, SimpleQueue, isElectron } from './utils';
 import { getIp } from './utils/Network';
 import { DescribeIndexRes, MilvusClient } from './types';
 import { initWebSocket } from './socket';
@@ -73,7 +73,9 @@ app.use(express.json({ limit: '150MB' }));
 // TransformResInterceptor
 app.use(TransformResMiddleware);
 // LoggingInterceptor
-app.use(LoggingMiddleware);
+if (!isElectron()) {
+  app.use(LoggingMiddleware);
+}
 // All headers operations
 app.use(ReqHeaderMiddleware);
 // use router
@@ -96,8 +98,12 @@ const PORT = process.env.SERVER_PORT || 3000;
 
 // start server
 server.listen(PORT, () => {
-  const ips = getIp();
-  ips.forEach(ip => {
-    console.info(chalk.cyanBright(`Attu server started: http://${ip}:${PORT}`));
-  });
+  if (!isElectron()) {
+    const ips = getIp();
+    ips.forEach(ip => {
+      console.info(
+        chalk.cyanBright(`Attu server started: http://${ip}:${PORT}`)
+      );
+    });
+  }
 });

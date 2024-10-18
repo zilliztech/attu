@@ -170,3 +170,7 @@ export const getKeyValueListFromJsonString = (json: string): KeyValuePair[] => {
 };
 
 export const cloneObj = (obj: any) => JSON.parse(JSON.stringify(obj));
+
+export const isElectron = () => {
+  return process.versions && !!process.versions.electron;
+};
