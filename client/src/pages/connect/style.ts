@@ -28,6 +28,20 @@ export const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     justifyContent: 'flex-start',
   },
+  checkHealth: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 4,
+    '& .MuiCheckbox-root': {
+      margin: 0,
+      padding: '8px 4px 8px 0',
+    },
+    '& span': {
+      cursor: 'pointer',
+      fontSize: 12,
+      fontStyle: 'italic',
+    },
+  },
   star: {
     position: 'absolute',
     top: -48,

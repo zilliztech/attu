@@ -41,7 +41,8 @@ export class MilvusController {
   }
 
   async connectMilvus(req: Request, res: Response, next: NextFunction) {
-    const { address, username, password, database, token } = req.body;
+    const { address, username, password, database, token, checkHealth } =
+      req.body;
     try {
       const result = await this.milvusService.connectMilvus({
         address,
@@ -49,6 +50,7 @@ export class MilvusController {
         username,
         password,
         database,
+        checkHealth,
       });
 
       res.send(result);

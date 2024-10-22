@@ -26,7 +26,7 @@ export class MilvusService {
 
   async connectMilvus(data: AuthReq): Promise<AuthObject> {
     // Destructure the data object to get the connection details
-    const { address, token, username, password, database } = data;
+    const { address, token, username, password, database, checkHealth } = data;
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
@@ -71,12 +71,14 @@ export class MilvusService {
       }
 
       // Check the health of the Milvus server
-      const res = await milvusClient.checkHealth();
+      if (checkHealth) {
+        const res = await milvusClient.checkHealth();
 
-      // If the server is not healthy, throw an error
-      if (!res.isHealthy) {
-        clientCache.delete(milvusClient.clientId);
-        throw new Error('Milvus is not ready yet.');
+        // If the server is not healthy, throw an error
+        if (!res.isHealthy) {
+          clientCache.delete(milvusClient.clientId);
+          throw new Error('Milvus is not ready yet.');
+        }
       }
 
       // database
