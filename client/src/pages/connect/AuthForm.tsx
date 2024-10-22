@@ -72,9 +72,9 @@ export const AuthForm = () => {
     value: string | boolean
   ) => {
     // set database to default if empty
-    if (key === 'database' && value === '') {
-      value = MILVUS_DATABASE;
-    }
+    // if (key === 'database' && value === '') {
+    //   value = MILVUS_DATABASE;
+    // }
     setAuthReq(v => ({ ...v, [key]: value }));
   };
   // handle menu clicked
