@@ -9,8 +9,10 @@ Attu 是一个全方位的 Milvus 管理工具。
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-<img src="./.github/images/screenshot.png" width="800" alt="attu home view" />
-
+<div style="display: flex; justify-content: space-between; gap: 8px;">
+  <img src="./.github/images/screenshot.png" width="50%" alt="attu home view" />
+  <img src="./.github/images/data_explorer.png" width="50%" alt="attu data explorer" />
+</div>
 Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统，提供以下功能：
 
 - **数据库、集合和分区管理：** 只需点击几下鼠标即可高效地组织和管理您的数据库、集合和分区，帮助用户快速构建和导航 Milvus 设置。
@@ -28,7 +30,7 @@ Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统�
 
 | Milvus 版本 | 推荐的 Attu 版本                                                 |
 | ----------- | ---------------------------------------------------------------- |
-| 2.4.x       | [v2.4.4](https://github.com/zilliztech/attu/releases/tag/v2.4.4) |
+| 2.4.x       | [v2.4.9](https://github.com/zilliztech/attu/releases/tag/v2.4.9) |
 | 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
 | 2.2.x       | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
 | 2.1.x       | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |

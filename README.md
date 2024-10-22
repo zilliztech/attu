@@ -9,7 +9,10 @@ Attu is an all-in-one milvus administration tool.
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-<img src="./.github/images/screenshot.png" width="800" alt="attu home view" />
+<div style="display: flex; justify-content: space-between; gap: 8px;">
+  <img src="./.github/images/screenshot.png" width="50%" alt="attu home view" />
+  <img src="./.github/images/data_explorer.png" width="50%" alt="attu home view" />
+</div>
 
 Attu is designed to manage and interact with Milvus, offering features such as:
 
@@ -27,7 +30,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                         |
 | -------------- | ---------------------------------------------------------------- |
-| 2.4.x          | [v2.4.8](https://github.com/zilliztech/attu/releases/tag/v2.4.8) |
+| 2.4.x          | [v2.4.9](https://github.com/zilliztech/attu/releases/tag/v2.4.9) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
 | 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
 | 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
@@ -105,6 +108,14 @@ Make sure that the Attu pod can access the Milvus service. In the example provid
 ### Install Desktop application
 
 If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
+
+> Note:
+>
+> - Mac M chip install app failed: attu.app is damaged and cannot be opened.
+
+```shell
+  sudo xattr -rd com.apple.quarantine /Applications/attu.app
+```
 
 ### Build Docker Image Locally
 
