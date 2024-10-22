@@ -10,8 +10,8 @@ Attu 是一个全方位的 Milvus 管理工具。
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
 <div style="display: flex; justify-content: space-between; gap: 8px;">
-  <img src="./.github/images/screenshot.png" width="50%" alt="attu home view" />
-  <img src="./.github/images/data_explorer.png" width="50%" alt="attu data explorer" />
+  <img src="./.github/images/screenshot.png" width="45%" alt="attu home view" />
+  <img src="./.github/images/data_explorer.png" width="45%" alt="attu data explorer" />
 </div>
 Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统，提供以下功能：
 
