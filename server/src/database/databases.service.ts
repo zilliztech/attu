@@ -48,9 +48,15 @@ export class DatabasesService {
 
         const dbName = res.db_names[i];
 
-        const dbObject = await this.describeDatabase(clientId, {
-          db_name: dbName,
-        });
+        let dbObject = {} as DescribeDatabaseResponse;
+        try {
+          dbObject = await this.describeDatabase(clientId, {
+            db_name: dbName,
+          });
+        } catch (e) {
+          // ignore
+          console.log('error', e);
+        }
 
         availableDatabases.push({
           name: res.db_names[i],
@@ -60,6 +66,7 @@ export class DatabasesService {
         });
       } catch (e) {
         // ignore
+        console.log('error', e);
       }
     }
 
