@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Typography, Menu } from '@mui/material';
+import { Typography, Menu, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -30,6 +30,7 @@ const DEFAULT_CONNECTION = {
   token: '',
   username: '',
   password: '',
+  checkHealth: true,
   time: -1,
 };
 
@@ -68,7 +69,13 @@ export const AuthForm = () => {
   // UI handlers
   // handle input change
   const handleInputChange = (
-    key: 'address' | 'username' | 'password' | 'database' | 'token',
+    key:
+      | 'address'
+      | 'username'
+      | 'password'
+      | 'database'
+      | 'token'
+      | 'checkHealth',
     value: string | boolean
   ) => {
     // set database to default if empty
@@ -128,6 +135,7 @@ export const AuthForm = () => {
           password: authReq.password,
           token: authReq.token,
           time: Date.now(),
+          checkHealth: authReq.checkHealth,
         },
       ];
 
@@ -363,6 +371,19 @@ export const AuthForm = () => {
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans(isConnecting ? 'connecting' : 'connect')}
         </CustomButton>
+
+        <div className={classes.checkHealth}>
+          <label>
+            <Checkbox
+              size="small"
+              checked={authReq.checkHealth}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                handleInputChange('checkHealth', e.target.checked);
+              }}
+            />
+            <Typography component="span">{attuTrans.checkHealth}</Typography>
+          </label>
+        </div>
       </section>
 
       <Menu

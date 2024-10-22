@@ -16,6 +16,7 @@ export type AuthReq = {
   address: string;
   token: string;
   database: string;
+  checkHealth: boolean;
 };
 
 export type AuthObject = {

@@ -17,6 +17,7 @@ export const authContext = createContext<AuthContextType>({
     address: '',
     token: '',
     database: '',
+    checkHealth: true,
   },
   setAuthReq: () => {},
   isManaged: false,
@@ -38,6 +39,7 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         address: MILVUS_URL,
         token: '',
         database: MILVUS_DATABASE,
+        checkHealth: true,
       })
   );
 
