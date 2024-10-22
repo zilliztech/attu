@@ -233,7 +233,7 @@ const DataExplorer = ({
             node => node.id !== d.id
           );
         } else {
-          selectedNodesRef.current = [...selectedNodesRef.current, d];
+          selectedNodesRef.current = [d, ...selectedNodesRef.current];
         }
 
         // Add circle around the selected node and remove it when unselected
