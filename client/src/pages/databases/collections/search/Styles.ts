@@ -237,7 +237,7 @@ export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 4,
-    
+
         justifyContent: 'center',
         '& img': {
           display: 'inline-block',
@@ -250,22 +250,23 @@ export const getDataExplorerStyle = makeStyles((theme: Theme) => ({
         color: theme.palette.text.secondary,
         fontSize: 12,
         textAlign: 'center',
-      }
+      },
     },
   },
   selectedNodes: {
-    position: 'absolute',
+    position: 'fixed',
     display: 'flex',
     flexDirection: 'column',
-    top: 8,
-    right: 8,
+    top: 200,
+    right: 36,
     borderRadius: 8,
     gap: 8,
-    maxHeight: '100%',
+    height: '70%',
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
     '& .nodeInfo': {
       boxShadow: 'none',
+      flexShrink: 0,
     },
   },
 }));
