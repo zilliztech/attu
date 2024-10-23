@@ -57,12 +57,10 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
 
   return (
     <div className={classes.collectionNode}>
-      <div className={classes.collectionName}>
-        <Tooltip title={data.collection_name} placement="top">
-          <Typography noWrap className="collectionName">
-            {data.collection_name}
-          </Typography>
-        </Tooltip>
+      <div className={classes.collectionName} title={data.collection_name}>
+        <Typography noWrap className="collectionName">
+          {data.collection_name}
+        </Typography>
         <span className={classes.count}>
           ({formatNumber(data.rowCount || 0)})
         </span>
@@ -222,12 +220,11 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
           <TreeItem
             key={tree.id}
             itemId={tree.id}
+            title={tree.name}
             label={
-              <Tooltip title={tree.name}>
-                <Typography noWrap className={classes.dbName}>
-                  {tree.name}
-                </Typography>
-              </Tooltip>
+              <Typography noWrap className={classes.dbName}>
+                {tree.name}
+              </Typography>
             }
             className={classes.treeItem}
             slots={{
