@@ -428,6 +428,7 @@ const Search = (props: CollectionDataProps) => {
                     <VectorInputBox
                       searchParams={s}
                       onChange={onVectorInputChange}
+                      collection={collection}
                     />
 
                     <Typography className="text">

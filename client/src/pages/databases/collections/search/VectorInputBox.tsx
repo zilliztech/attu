@@ -6,7 +6,8 @@ import { indentUnit } from '@codemirror/language';
 import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { linter, Diagnostic } from '@codemirror/lint';
-import { FieldObject } from '@server/types';
+import { CollectionFullObject, FieldObject } from '@server/types';
+import { CollectionService } from '@/http';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
 import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
@@ -106,13 +107,14 @@ const Validator = {
 export type VectorInputBoxProps = {
   onChange: (anns_field: string, value: string) => void;
   searchParams: SearchSingleParams;
+  collection: CollectionFullObject;
 };
 
 export default function VectorInputBox(props: VectorInputBoxProps) {
   const theme = useTheme();
 
   // props
-  const { searchParams, onChange } = props;
+  const { searchParams, onChange, collection } = props;
   const { field, data } = searchParams;
 
   // UI states
@@ -215,9 +217,29 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
               const text = update.state.doc.toString();
+
               const { valid } = validator(text, fieldRef.current);
               if (valid || text === '') {
                 onChangeRef.current(searchParams.anns_field, text);
+              } else {
+                try {
+                  CollectionService.queryData(collection.collection_name, {
+                    expr:
+                      collection!.schema.primaryField.data_type ===
+                      DataTypeStringEnum.VarChar
+                        ? `${collection.schema.primaryField.name} == '${text}'`
+                        : `${collection.schema.primaryField.name} == ${text}`,
+                    output_fields: ['*'],
+                  }).then(res => {
+                    if (res.data.length === 1) {
+                      const value = res.data[0][searchParams.anns_field];
+                      onChangeRef.current(
+                        searchParams.anns_field,
+                        JSON.stringify(value)
+                      );
+                    }
+                  });
+                } catch (e) {}
               }
             }
             if (update.focusChanged) {
@@ -246,7 +268,9 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     if (editor.current) {
       editor.current.dispatch({
         effects: themeCompartment.reconfigure(
-          themeCompartment.of(theme.palette.mode === 'light' ? githubLight : githubDark)
+          themeCompartment.of(
+            theme.palette.mode === 'light' ? githubLight : githubDark
+          )
         ),
       });
     }
