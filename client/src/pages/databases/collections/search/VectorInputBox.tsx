@@ -293,7 +293,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
       editor.current.dispatch({
         selection: { anchor: endPos },
       });
-      editor.current.focus(); // 聚焦到编辑器
+      editor.current.focus();
 
       return () => {
         view.destroy();
