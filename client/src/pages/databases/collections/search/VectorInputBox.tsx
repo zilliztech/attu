@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
@@ -110,6 +110,8 @@ export type VectorInputBoxProps = {
   collection: CollectionFullObject;
 };
 
+let queryTimeout: NodeJS.Timeout;
+
 export default function VectorInputBox(props: VectorInputBoxProps) {
   const theme = useTheme();
 
@@ -129,6 +131,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const onChangeRef = useRef(onChange);
   const dataRef = useRef(data);
   const fieldRef = useRef(field);
+  const searchParamsRef = useRef(searchParams);
 
   const themeCompartment = new Compartment();
 
@@ -140,6 +143,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     dataRef.current = data;
     onChangeRef.current = onChange;
     fieldRef.current = field;
+    searchParamsRef.current = searchParams;
 
     if (editor.current) {
       // only data replace should trigger this, otherwise, let cm handle the state
@@ -147,13 +151,47 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         editor.current.dispatch({
           changes: {
             from: 0,
-            to: editor.current.state.doc.length,
+            to: data.length+1,
             insert: data,
           },
         });
       }
     }
-  }, [JSON.stringify(searchParams)]);
+  }, [JSON.stringify(searchParams), onChange]);
+
+  const getVectorById = (text: string) => {
+    // only search for text that doesn't have space, comma, or brackets or curly brackets
+    if (!text.trim().match(/[\s,{}]/)) {
+      if (queryTimeout) {
+        clearTimeout(queryTimeout);
+      }
+      queryTimeout = setTimeout(() => {
+        try {
+          CollectionService.queryData(collection.collection_name, {
+            expr:
+              collection!.schema.primaryField.data_type ===
+              DataTypeStringEnum.VarChar
+                ? `${collection.schema.primaryField.name} == '${text}'`
+                : `${collection.schema.primaryField.name} == ${text}`,
+            output_fields: [searchParamsRef.current.anns_field],
+          })
+            .then(res => {
+              onChangeRef.current(
+                searchParamsRef.current.anns_field,
+                res.data && res.data.length === 1
+                  ? JSON.stringify(
+                      res.data[0][searchParamsRef.current.anns_field]
+                    )
+                  : text
+              );
+            })
+            .catch(e => {
+              console.log(0, e);
+            });
+        } catch (e) {}
+      }, 550);
+    }
+  };
 
   // create editor
   useEffect(() => {
@@ -216,30 +254,16 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
           EditorView.lineWrapping,
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
+              if (queryTimeout) {
+                clearTimeout(queryTimeout);
+              }
               const text = update.state.doc.toString();
 
               const { valid } = validator(text, fieldRef.current);
               if (valid || text === '') {
                 onChangeRef.current(searchParams.anns_field, text);
               } else {
-                try {
-                  CollectionService.queryData(collection.collection_name, {
-                    expr:
-                      collection!.schema.primaryField.data_type ===
-                      DataTypeStringEnum.VarChar
-                        ? `${collection.schema.primaryField.name} == '${text}'`
-                        : `${collection.schema.primaryField.name} == ${text}`,
-                    output_fields: ['*'],
-                  }).then(res => {
-                    if (res.data.length === 1) {
-                      const value = res.data[0][searchParams.anns_field];
-                      onChangeRef.current(
-                        searchParams.anns_field,
-                        JSON.stringify(value)
-                      );
-                    }
-                  });
-                } catch (e) {}
+                getVectorById(text);
               }
             }
             if (update.focusChanged) {
@@ -255,13 +279,18 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
       });
 
       editor.current = view;
+      editor.current!.focus();
+
+      editorEl.current!.onclick = () => {
+        editor.current!.focus();
+      };
 
       return () => {
         view.destroy();
         editor.current = undefined;
       };
     }
-  }, [JSON.stringify(field)]);
+  }, [JSON.stringify(field), getVectorById]);
 
   useEffect(() => {
     // dispatch dark mode change to editor
@@ -280,9 +309,6 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     <div
       className={`${classes.vectorInputBox} ${isFocused ? 'focused' : ''}`}
       ref={editorEl}
-      onClick={() => {
-        if (editor.current) editor.current.focus();
-      }}
     ></div>
   );
 }
