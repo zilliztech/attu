@@ -28,6 +28,7 @@ const searchTrans = {
   outputFields: 'Outputs',
   consistency: 'Consistency',
   graphNodeHoverTip: 'Double click to explore more',
+  inputVectorTip: 'Vector or entity id',
 };
 
 export default searchTrans;

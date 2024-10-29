@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EditorState, Compartment } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
 import { minimalSetup } from 'codemirror';
@@ -114,6 +115,7 @@ let queryTimeout: NodeJS.Timeout;
 
 export default function VectorInputBox(props: VectorInputBoxProps) {
   const theme = useTheme();
+  const { t: searchTrans } = useTranslation('search');
 
   // props
   const { searchParams, onChange, collection } = props;
@@ -151,7 +153,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         editor.current.dispatch({
           changes: {
             from: 0,
-            to: data.length+1,
+            to: data.length + 1,
             insert: data,
           },
         });
@@ -160,36 +162,41 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   }, [JSON.stringify(searchParams), onChange]);
 
   const getVectorById = (text: string) => {
+    if (queryTimeout) {
+      clearTimeout(queryTimeout);
+    }
     // only search for text that doesn't have space, comma, or brackets or curly brackets
     if (!text.trim().match(/[\s,{}]/)) {
-      if (queryTimeout) {
-        clearTimeout(queryTimeout);
+      const isVarChar =
+        collection.schema.primaryField.data_type === DataTypeStringEnum.VarChar;
+
+      if (!isVarChar && isNaN(Number(text))) {
+        return;
       }
+
       queryTimeout = setTimeout(() => {
         try {
           CollectionService.queryData(collection.collection_name, {
-            expr:
-              collection!.schema.primaryField.data_type ===
-              DataTypeStringEnum.VarChar
-                ? `${collection.schema.primaryField.name} == '${text}'`
-                : `${collection.schema.primaryField.name} == ${text}`,
+            expr: isVarChar
+              ? `${collection.schema.primaryField.name} == '${text}'`
+              : `${collection.schema.primaryField.name} == ${text}`,
             output_fields: [searchParamsRef.current.anns_field],
           })
             .then(res => {
-              onChangeRef.current(
-                searchParamsRef.current.anns_field,
-                res.data && res.data.length === 1
-                  ? JSON.stringify(
-                      res.data[0][searchParamsRef.current.anns_field]
-                    )
-                  : text
-              );
+              if (res.data && res.data.length === 1) {
+                onChangeRef.current(
+                  searchParamsRef.current.anns_field,
+                  JSON.stringify(
+                    res.data[0][searchParamsRef.current.anns_field]
+                  )
+                );
+              }
             })
             .catch(e => {
               console.log(0, e);
             });
         } catch (e) {}
-      }, 550);
+      }, 300);
     }
   };
 
@@ -201,6 +208,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         extensions: [
           minimalSetup,
           javascript(),
+          placeholder('vector or entity id'),
           linter(view => {
             const text = view.state.doc.toString();
 
@@ -279,11 +287,13 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
       });
 
       editor.current = view;
-      editor.current!.focus();
 
-      editorEl.current!.onclick = () => {
-        editor.current!.focus();
-      };
+      // focus editor, the cursor will be at the end of the text
+      const endPos = editor.current.state.doc.length;
+      editor.current.dispatch({
+        selection: { anchor: endPos },
+      });
+      editor.current.focus(); // 聚焦到编辑器
 
       return () => {
         view.destroy();
