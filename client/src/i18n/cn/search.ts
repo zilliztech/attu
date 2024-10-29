@@ -28,6 +28,7 @@ const searchTrans = {
   outputFields: '输出字段',
   consistency: '一致性',
   graphNodeHoverTip: '双击以查看更多',
+  inputVectorTip: '向量或实体ID',
 };
 
 export default searchTrans;
