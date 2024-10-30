@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
@@ -121,9 +121,6 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const { searchParams, onChange, collection } = props;
   const { field, data } = searchParams;
 
-  // UI states
-  const [isFocused, setIsFocused] = useState(false);
-
   // classes
   const classes = getQueryStyles();
 
@@ -208,7 +205,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         extensions: [
           minimalSetup,
           javascript(),
-          placeholder('vector or entity id'),
+          placeholder(searchTrans('inputVectorPlaceHolder')),
           linter(view => {
             const text = view.state.doc.toString();
 
@@ -275,7 +272,10 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
               }
             }
             if (update.focusChanged) {
-              setIsFocused(update.view.hasFocus);
+              editorEl.current?.classList.toggle(
+                'focused',
+                update.view.hasFocus
+              );
             }
           }),
         ],
@@ -315,10 +315,5 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     }
   }, [theme.palette.mode]);
 
-  return (
-    <div
-      className={`${classes.vectorInputBox} ${isFocused ? 'focused' : ''}`}
-      ref={editorEl}
-    ></div>
-  );
+  return <div className={classes.vectorInputBox} ref={editorEl}></div>;
 }
