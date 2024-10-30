@@ -1,4 +1,4 @@
-import { FieldObject, CollectionObject } from '@server/types';
+import { FieldObject, CollectionObject, PartitionData } from '@server/types';
 
 export type SearchSingleParams = {
   anns_field: string;
@@ -51,6 +51,7 @@ export type GraphData = {
 
 export type SearchParams = {
   collection: CollectionObject;
+  partitions: PartitionData[];
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
   searchResult: SearchResultView[] | null;

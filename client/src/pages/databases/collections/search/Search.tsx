@@ -22,6 +22,7 @@ import VectorInputBox from './VectorInputBox';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CustomInput from '@/components/customInput/CustomInput';
+import PartitionsSelector from './PartitionsSelector';
 import {
   formatFieldType,
   cloneObj,
@@ -159,6 +160,16 @@ const Search = (props: CollectionDataProps) => {
       setSearchParams({ ...s });
 
       return s;
+    },
+    [JSON.stringify(searchParams)]
+  );
+
+  // on partitions change
+  const onPartitionsChange = useCallback(
+    (value: any) => {
+      const s = cloneObj(searchParams) as SearchParamsType;
+      s.partitions = value;
+      setSearchParams({ ...s });
     },
     [JSON.stringify(searchParams)]
   );
@@ -380,6 +391,9 @@ const Search = (props: CollectionDataProps) => {
     disableSearchTooltip = searchTrans('noVectorToSearch');
   }
 
+  // enable partition filter
+  const enablePartitionsFilter = !collection.schema.enablePartitionKey;
+
   return (
     <div className={classes.root}>
       {collection && (
@@ -456,6 +470,14 @@ const Search = (props: CollectionDataProps) => {
                 </Accordion>
               );
             })}
+
+            {enablePartitionsFilter && (
+              <PartitionsSelector
+                collectionName={collectionName}
+                selected={searchParams.partitions}
+                setSelected={onPartitionsChange}
+              />
+            )}
           </div>
 
           <div className={classes.searchControls}>
