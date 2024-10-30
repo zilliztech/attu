@@ -43,6 +43,10 @@ export const buildSearchParams = (searchParams: SearchParams) => {
     consistency_level: searchParams.globalParams.consistency_level,
   };
 
+  if (searchParams.partitions.length > 0) {
+    params.partition_names = searchParams.partitions.map(p => p.name);
+  }
+
   // group_by_field if exists
   if (searchParams.globalParams.group_by_field) {
     params.group_by_field = searchParams.globalParams.group_by_field;

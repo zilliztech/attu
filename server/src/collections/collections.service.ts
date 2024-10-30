@@ -131,6 +131,9 @@ export class CollectionsService {
 
     // add extra data to schema
     res.schema.hasVectorIndex = vectorFields.every(v => v.index);
+    res.schema.enablePartitionKey = res.schema.fields.some(
+      v => v.is_partition_key
+    );
     res.schema.scalarFields = scalarFields;
     res.schema.vectorFields = vectorFields;
     res.schema.dynamicFields = res.schema.enable_dynamic_field

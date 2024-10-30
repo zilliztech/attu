@@ -31,6 +31,7 @@ export interface SchemaObject extends CollectionSchema {
   scalarFields: FieldObject[];
   dynamicFields: FieldObject[];
   hasVectorIndex: boolean;
+  enablePartitionKey: boolean;
 }
 
 export interface DescribeCollectionRes extends DescribeCollectionResponse {

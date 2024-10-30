@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { PartitionService } from '@/http';
 import { PartitionData } from '@server/types';
 import CustomInput from '@/components/customInput/CustomInput';
+import { useTranslation } from 'react-i18next';
 
 interface PartitionsSelectorProps {
   collectionName: string;
@@ -12,11 +13,20 @@ interface PartitionsSelectorProps {
 }
 
 export default function PartitionsSelector(props: PartitionsSelectorProps) {
+  // i18n
+  const { t: searchTrans } = useTranslation('search');
+  // default loading
+  const DEFAULT_LOADING_OPTIONS: readonly PartitionData[] = [
+    { name: searchTrans('loading'), id: -1, rowCount: -1, createdTime: '' },
+  ];
+
   // props
   const { collectionName, selected, setSelected } = props;
   // state
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<readonly PartitionData[]>([]);
+  const [options, setOptions] = useState<readonly PartitionData[]>(
+    DEFAULT_LOADING_OPTIONS
+  );
   const [loading, setLoading] = useState(false);
 
   const handleOpen = () => {
@@ -34,7 +44,7 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
 
   const handleClose = () => {
     setOpen(false);
-    setOptions([]);
+    setOptions(DEFAULT_LOADING_OPTIONS);
   };
 
   return (
@@ -63,8 +73,8 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
           <CustomInput
             textConfig={{
               ...params,
-              label: 'partitions',
-              key: 'topK',
+              label: searchTrans('partitionFilter'),
+              key: 'partitionFilter',
               className: 'input',
               value: params.inputProps.value,
               disabled: false,

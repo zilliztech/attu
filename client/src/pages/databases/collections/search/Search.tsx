@@ -5,7 +5,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Checkbox,
-  Autocomplete,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { DataService, CollectionService } from '@/http';
@@ -392,6 +391,9 @@ const Search = (props: CollectionDataProps) => {
     disableSearchTooltip = searchTrans('noVectorToSearch');
   }
 
+  // enable partition filter
+  const enablePartitionsFilter = !collection.schema.enablePartitionKey;
+
   return (
     <div className={classes.root}>
       {collection && (
@@ -443,12 +445,6 @@ const Search = (props: CollectionDataProps) => {
                       collection={collection}
                     />
 
-                    <PartitionsSelector
-                      collectionName={collectionName}
-                      selected={searchParams.partitions}
-                      setSelected={onPartitionsChange}
-                    />
-
                     <Typography className="text">
                       {searchTrans('thirdTip')}
                     </Typography>
@@ -474,6 +470,14 @@ const Search = (props: CollectionDataProps) => {
                 </Accordion>
               );
             })}
+
+            {enablePartitionsFilter && (
+              <PartitionsSelector
+                collectionName={collectionName}
+                selected={searchParams.partitions}
+                setSelected={onPartitionsChange}
+              />
+            )}
           </div>
 
           <div className={classes.searchControls}>
