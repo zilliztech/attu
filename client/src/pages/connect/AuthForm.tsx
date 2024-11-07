@@ -7,12 +7,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import {
-  MILVUS_CLIENT_ID,
-  ATTU_AUTH_HISTORY,
-  MILVUS_DATABASE,
-  MILVUS_URL,
-} from '@/consts';
+import { ATTU_AUTH_HISTORY, MILVUS_DATABASE, MILVUS_URL } from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
@@ -32,6 +27,7 @@ const DEFAULT_CONNECTION = {
   password: '',
   checkHealth: true,
   time: -1,
+  clientId: '',
 };
 
 export const AuthForm = () => {
@@ -108,14 +104,13 @@ export const AuthForm = () => {
 
     try {
       // login
-      const result = await login(authReq);
+      await login(authReq);
 
       // set database
       setDatabase(authReq.database);
       // success message
       openSnackBar(successTrans('connect'));
-      // save clientId to local storage
-      window.localStorage.setItem(MILVUS_CLIENT_ID, result.clientId);
+
       // get connection history
       const history = JSON.parse(
         window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'

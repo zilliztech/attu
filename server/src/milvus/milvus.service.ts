@@ -26,7 +26,15 @@ export class MilvusService {
 
   async connectMilvus(data: AuthReq): Promise<AuthObject> {
     // Destructure the data object to get the connection details
-    const { address, token, username, password, database, checkHealth } = data;
+    const {
+      address,
+      token,
+      username,
+      password,
+      database,
+      checkHealth,
+      clientId,
+    } = data;
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
@@ -39,6 +47,10 @@ export class MilvusService {
         password,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
         database: database || this.DEFAULT_DATABASE,
+        id: clientId,
+        pool: {
+          max: 10,
+        },
       };
 
       if (process.env.ROOT_CERT_PATH) {

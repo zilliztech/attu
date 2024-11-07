@@ -18,6 +18,7 @@ export const authContext = createContext<AuthContextType>({
     token: '',
     database: '',
     checkHealth: true,
+    clientId: '',
   },
   setAuthReq: () => {},
   isManaged: false,
@@ -31,6 +32,7 @@ export const authContext = createContext<AuthContextType>({
 const { Provider } = authContext;
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   // get data from local storage
+  const localClientId = window.localStorage.getItem(MILVUS_CLIENT_ID) || '';
   const localAuthReq = JSON.parse(
     window.localStorage.getItem(ATTU_AUTH_REQ) ||
       JSON.stringify({
@@ -40,14 +42,13 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         token: '',
         database: MILVUS_DATABASE,
         checkHealth: true,
+        clientId: localClientId,
       })
   );
 
   // state
   const [authReq, setAuthReq] = useState<AuthReq>(localAuthReq);
-  const [clientId, setClientId] = useState<string>(
-    window.localStorage.getItem(MILVUS_CLIENT_ID) || ''
-  );
+  const [clientId, setClientId] = useState<string>(localClientId);
 
   // update local storage when authReq changes
   useEffect(() => {
@@ -62,11 +63,16 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
 
   // login API
   const login = async (params: AuthReq) => {
+    // create a new client id
+    params.clientId = Math.random().toString(36).substring(16);
     // connect to Milvus
     const res = await MilvusService.connect(params);
     // update auth request
     setAuthReq({ ...params, database: res.database });
     setClientId(res.clientId);
+
+    // save clientId to local storage
+    window.localStorage.setItem(MILVUS_CLIENT_ID, res.clientId);
 
     return res;
   };
