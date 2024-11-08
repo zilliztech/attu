@@ -16,7 +16,7 @@ export function initWebSocket(server: http.Server) {
   });
 
   io.on('connection', (socket: Socket) => {
-    const clientId = socket.handshake.headers['milvus-client-id'] as string;
+    const clientId = socket.handshake.query['milvus-client-id'] as string;
 
     if (clientId) {
       clients.set(clientId, socket);

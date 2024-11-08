@@ -412,12 +412,11 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
       const extraHeaders = {
         'milvus-client-id': clientId,
-        'x-attu-database': authReq.database,
       };
 
-      socket.current = isElectron
-        ? io(url as string, { extraHeaders })
-        : io({ extraHeaders });
+      const ioParams = { extraHeaders, query: extraHeaders };
+
+      socket.current = isElectron ? io(url as string, ioParams) : io(ioParams);
 
       socket.current.on('connect', async () => {
         // console.info('--- ws connected ---', clientId);
