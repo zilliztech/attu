@@ -74,6 +74,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     setAuthReq({ ...params, database: res.database });
     setClientId(res.clientId);
 
+    // save clientId to local storage
+    window.localStorage.setItem(MILVUS_CLIENT_ID, res.clientId);
+
     return res;
   };
   // logout API

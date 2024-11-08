@@ -167,6 +167,7 @@ const Databases = () => {
             ...prevParams,
             {
               collection: c,
+              partitions: [],
               searchParams: c.schema.vectorFields.map(v => {
                 return {
                   anns_field: v.name,

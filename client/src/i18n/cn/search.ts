@@ -28,6 +28,9 @@ const searchTrans = {
   outputFields: '输出字段',
   consistency: '一致性',
   graphNodeHoverTip: '双击以查看更多',
+  inputVectorPlaceHolder: '向量或实体ID',
+  partitionFilter: '分区过滤',
+  loading: '加载中...',
 };
 
 export default searchTrans;

@@ -1,12 +1,14 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EditorState, Compartment } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
+import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
 import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { linter, Diagnostic } from '@codemirror/lint';
-import { FieldObject } from '@server/types';
+import { CollectionFullObject, FieldObject } from '@server/types';
+import { CollectionService } from '@/http';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
 import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
@@ -106,17 +108,18 @@ const Validator = {
 export type VectorInputBoxProps = {
   onChange: (anns_field: string, value: string) => void;
   searchParams: SearchSingleParams;
+  collection: CollectionFullObject;
 };
+
+let queryTimeout: NodeJS.Timeout;
 
 export default function VectorInputBox(props: VectorInputBoxProps) {
   const theme = useTheme();
+  const { t: searchTrans } = useTranslation('search');
 
   // props
-  const { searchParams, onChange } = props;
+  const { searchParams, onChange, collection } = props;
   const { field, data } = searchParams;
-
-  // UI states
-  const [isFocused, setIsFocused] = useState(false);
 
   // classes
   const classes = getQueryStyles();
@@ -127,6 +130,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   const onChangeRef = useRef(onChange);
   const dataRef = useRef(data);
   const fieldRef = useRef(field);
+  const searchParamsRef = useRef(searchParams);
 
   const themeCompartment = new Compartment();
 
@@ -138,6 +142,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     dataRef.current = data;
     onChangeRef.current = onChange;
     fieldRef.current = field;
+    searchParamsRef.current = searchParams;
 
     if (editor.current) {
       // only data replace should trigger this, otherwise, let cm handle the state
@@ -145,13 +150,52 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         editor.current.dispatch({
           changes: {
             from: 0,
-            to: editor.current.state.doc.length,
+            to: data.length + 1,
             insert: data,
           },
         });
       }
     }
-  }, [JSON.stringify(searchParams)]);
+  }, [JSON.stringify(searchParams), onChange]);
+
+  const getVectorById = (text: string) => {
+    if (queryTimeout) {
+      clearTimeout(queryTimeout);
+    }
+    // only search for text that doesn't have space, comma, or brackets or curly brackets
+    if (!text.trim().match(/[\s,{}]/)) {
+      const isVarChar =
+        collection.schema.primaryField.data_type === DataTypeStringEnum.VarChar;
+
+      if (!isVarChar && isNaN(Number(text))) {
+        return;
+      }
+
+      queryTimeout = setTimeout(() => {
+        try {
+          CollectionService.queryData(collection.collection_name, {
+            expr: isVarChar
+              ? `${collection.schema.primaryField.name} == '${text}'`
+              : `${collection.schema.primaryField.name} == ${text}`,
+            output_fields: [searchParamsRef.current.anns_field],
+          })
+            .then(res => {
+              if (res.data && res.data.length === 1) {
+                onChangeRef.current(
+                  searchParamsRef.current.anns_field,
+                  JSON.stringify(
+                    res.data[0][searchParamsRef.current.anns_field]
+                  )
+                );
+              }
+            })
+            .catch(e => {
+              console.log(0, e);
+            });
+        } catch (e) {}
+      }, 300);
+    }
+  };
 
   // create editor
   useEffect(() => {
@@ -161,6 +205,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         extensions: [
           minimalSetup,
           javascript(),
+          placeholder(searchTrans('inputVectorPlaceHolder')),
           linter(view => {
             const text = view.state.doc.toString();
 
@@ -214,14 +259,23 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
           EditorView.lineWrapping,
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
+              if (queryTimeout) {
+                clearTimeout(queryTimeout);
+              }
               const text = update.state.doc.toString();
+
               const { valid } = validator(text, fieldRef.current);
               if (valid || text === '') {
                 onChangeRef.current(searchParams.anns_field, text);
+              } else {
+                getVectorById(text);
               }
             }
             if (update.focusChanged) {
-              setIsFocused(update.view.hasFocus);
+              editorEl.current?.classList.toggle(
+                'focused',
+                update.view.hasFocus
+              );
             }
           }),
         ],
@@ -234,31 +288,32 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
 
       editor.current = view;
 
+      // focus editor, the cursor will be at the end of the text
+      const endPos = editor.current.state.doc.length;
+      editor.current.dispatch({
+        selection: { anchor: endPos },
+      });
+      editor.current.focus();
+
       return () => {
         view.destroy();
         editor.current = undefined;
       };
     }
-  }, [JSON.stringify(field)]);
+  }, [JSON.stringify(field), getVectorById]);
 
   useEffect(() => {
     // dispatch dark mode change to editor
     if (editor.current) {
       editor.current.dispatch({
         effects: themeCompartment.reconfigure(
-          themeCompartment.of(theme.palette.mode === 'light' ? githubLight : githubDark)
+          themeCompartment.of(
+            theme.palette.mode === 'light' ? githubLight : githubDark
+          )
         ),
       });
     }
   }, [theme.palette.mode]);
 
-  return (
-    <div
-      className={`${classes.vectorInputBox} ${isFocused ? 'focused' : ''}`}
-      ref={editorEl}
-      onClick={() => {
-        if (editor.current) editor.current.focus();
-      }}
-    ></div>
-  );
+  return <div className={classes.vectorInputBox} ref={editorEl}></div>;
 }

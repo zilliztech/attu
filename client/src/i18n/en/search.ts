@@ -28,6 +28,9 @@ const searchTrans = {
   outputFields: 'Outputs',
   consistency: 'Consistency',
   graphNodeHoverTip: 'Double click to explore more',
+  inputVectorPlaceHolder: 'Vector or entity id',
+  partitionFilter: 'Partition Filter',
+  loading: 'Loading...',
 };
 
 export default searchTrans;
