@@ -64,7 +64,10 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
   // login API
   const login = async (params: AuthReq) => {
     // create a new client id
-    params.clientId = Math.random().toString(36).substring(16);
+    params.clientId = Math.random().toString(36).substring(7);
+    // save clientId to local storage
+    // console.log('params.clientId', params.clientId);
+    window.localStorage.setItem(MILVUS_CLIENT_ID, params.clientId);
     // connect to Milvus
     const res = await MilvusService.connect(params);
     // update auth request
