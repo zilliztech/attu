@@ -54,7 +54,7 @@ export class MilvusService {
         token,
         username,
         password,
-        logLevel: process.env.ATTU_LOG_LEVEL || 'debug',
+        logLevel: process.env.ATTU_LOG_LEVEL || 'info',
         database: database || this.DEFAULT_DATABASE,
         id: clientId,
         pool: {
