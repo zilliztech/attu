@@ -162,10 +162,12 @@ export class MilvusService {
       console.info('Deleting client', clientId);
 
       const res = await milvusClient.closeConnection();
-      // clear cache on disconnect
-      clientCache.delete(milvusClient.clientId);
+
       // clear crons
       cronsManager.deleteCronJob(clientId);
+
+      // clear cache on disconnect
+      clientCache.delete(milvusClient.clientId);
       return res;
     }
   }

@@ -68,6 +68,13 @@ export class CronsService {
         return;
       }
 
+      if (!clientCache.has(clientId)) {
+        // if client not connected, stop cron
+        this.schedulerRegistry.deleteCronJob(clientId, data);
+        console.info('Client is not connected, stop cron.', clientId);
+        return;
+      }
+
       try {
         // get client cache data
         const { milvusClient } = clientCache.get(clientId);
