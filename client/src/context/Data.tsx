@@ -410,10 +410,14 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // update database get from auth
       setDatabase(authReq.database);
 
-      // create socket
-      socket.current = isElectron ? io(url as string) : io();
-      // register client
-      socket.current.emit(WS_EVENTS.REGISTER, clientId);
+      const extraHeaders = {
+        'milvus-client-id': clientId,
+        'x-attu-database': authReq.database,
+      };
+
+      socket.current = isElectron
+        ? io(url as string, { extraHeaders })
+        : io({ extraHeaders });
 
       socket.current.on('connect', async () => {
         // console.info('--- ws connected ---', clientId);

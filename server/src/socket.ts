@@ -2,7 +2,7 @@
 import { Server, Socket } from 'socket.io';
 import * as http from 'http';
 import chalk from 'chalk';
-import { WS_EVENTS, isElectron } from './utils';
+import { isElectron } from './utils';
 
 export let io: Server;
 export let clients = new Map<string, Socket>();
@@ -16,8 +16,9 @@ export function initWebSocket(server: http.Server) {
   });
 
   io.on('connection', (socket: Socket) => {
-    // register client
-    socket.on(WS_EVENTS.REGISTER, (clientId: string) => {
+    const clientId = socket.handshake.headers['milvus-client-id'] as string;
+
+    if (clientId) {
       clients.set(clientId, socket);
       if (!isElectron()) {
         console.info(chalk.green(`ws client connected ${clientId}`));
@@ -37,7 +38,7 @@ export function initWebSocket(server: http.Server) {
           );
         }
       });
-    });
+    }
   });
 
   // Handle server-level errors

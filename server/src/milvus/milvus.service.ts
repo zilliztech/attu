@@ -38,6 +38,15 @@ export class MilvusService {
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
+    // if client exists, return the client
+    if (clientCache.has(clientId)) {
+      const cache = clientCache.get(clientId);
+      return {
+        clientId: cache.milvusClient.clientId,
+        database: cache.database,
+      };
+    }
+
     try {
       // Create a new Milvus client with the provided connection details
       const clientConfig: ClientConfig = {
@@ -45,7 +54,7 @@ export class MilvusService {
         token,
         username,
         password,
-        logLevel: process.env.ATTU_LOG_LEVEL || 'info',
+        logLevel: process.env.ATTU_LOG_LEVEL || 'debug',
         database: database || this.DEFAULT_DATABASE,
         id: clientId,
         pool: {
@@ -147,15 +156,18 @@ export class MilvusService {
   }
 
   async closeConnection(clientId: string): Promise<CONNECT_STATUS> {
-    const { milvusClient } = clientCache.get(clientId);
+    if (clientCache.has(clientId)) {
+      const { milvusClient } = clientCache.get(clientId);
 
-    const res = await milvusClient.closeConnection();
-    // clear cache on disconnect
-    clientCache.delete(milvusClient.clientId);
-    // clear crons
-    cronsManager.deleteCronJob(clientId);
+      console.info('Deleting client', clientId);
 
-    return res;
+      const res = await milvusClient.closeConnection();
+      // clear cache on disconnect
+      clientCache.delete(milvusClient.clientId);
+      // clear crons
+      cronsManager.deleteCronJob(clientId);
+      return res;
+    }
   }
 
   async useDatabase(clientId: string, db: string) {
