@@ -104,7 +104,14 @@ export const AuthForm = () => {
 
     try {
       // login
-      await login(authReq);
+      const loginParams = { ...authReq };
+
+      if (!withPass) {
+        loginParams.username = '';
+        loginParams.password = '';
+        loginParams.token = '';
+      }
+      await login(loginParams);
 
       // set database
       setDatabase(authReq.database);
