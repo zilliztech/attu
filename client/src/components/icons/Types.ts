@@ -57,4 +57,5 @@ export type IconsType =
   | 'link'
   | 'cross'
   | 'day'
-  | 'night';
+  | 'night'
+  | 'img';
