@@ -31,6 +31,7 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 import CollectionColHeader from '../CollectionColHeader';
+import MediaPreview from '@/components/MediaPreview/MediaPreview';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -511,6 +512,8 @@ const CollectionData = (props: CollectionDataProps) => {
                     case 'bool':
                       const res = JSON.stringify(cellData);
                       return <Typography title={res}>{res}</Typography>;
+                    case 'string':
+                      return <MediaPreview value={cellData} />;
                     default:
                       return cellData;
                   }
