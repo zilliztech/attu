@@ -329,17 +329,15 @@ const Search = (props: CollectionDataProps) => {
                 return <CollectionColHeader def={v} collection={collection} />;
               },
               formatter(_: any, cellData: any) {
-                const itemType = detectItemType(cellData);
-                switch (itemType) {
-                  case 'json':
-                  case 'array':
-                  case 'bool':
-                    const res = JSON.stringify(cellData);
-                    return <Typography title={res}>{res}</Typography>;
-                  case 'string':
+                const field = collection.schema.fields.find(
+                  f => f.name === key
+                );
+
+                switch (field?.data_type) {
+                  case 'VarChar':
                     return <MediaPreview value={cellData} />;
                   default:
-                    return cellData;
+                    return <Typography title={cellData}>{cellData}</Typography>;
                 }
               },
               getStyle: d => {

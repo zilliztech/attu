@@ -29,34 +29,48 @@ const MediaPreview = (props: { value: string }) => {
 
   const handleMouseOver = (e: React.MouseEvent) => {
     // Use dynamic image dimensions instead of fixed values
-    const imageWidth =
-      imageDimensions.width > 200 ? 200 : imageDimensions.width;
-    const imageHeight =
-      imageDimensions.height > 200
-        ? imageDimensions.height * (200 / imageDimensions.width)
-        : imageDimensions.height;
-    const offset = 10; // Small offset to position the image beside the cursor
+    const maxDimension = 200;
+    const aspectRatio = imageDimensions.width / imageDimensions.height;
 
-    console.log('imageHeight', imageHeight);
+    let imageWidth, imageHeight;
+
+    if (
+      imageDimensions.width > maxDimension ||
+      imageDimensions.height > maxDimension
+    ) {
+      if (aspectRatio > 1) {
+        // Landscape orientation
+        imageWidth = maxDimension;
+        imageHeight = maxDimension / aspectRatio;
+      } else {
+        // Portrait or square orientation
+        imageHeight = maxDimension;
+        imageWidth = maxDimension * aspectRatio;
+      }
+    } else {
+      // Use original dimensions if they're within the limit
+      imageWidth = imageDimensions.width;
+      imageHeight = imageDimensions.height;
+    }
+
+    const offset = 10; // Small offset to position the image beside the cursor
 
     // Calculate preliminary position
     let left = e.clientX + offset - imageWidth / 2;
     let top = e.clientY - imageHeight - 20;
 
-    console.log(top);
-
     // Ensure the image stays within viewport boundaries
     if (left + imageWidth > window.innerWidth) {
-      left = e.clientX - imageWidth - offset; // Move to the left side of the cursor if it exceeds the right boundary
+      left = e.clientX - imageWidth - offset;
     }
     if (left < 0) {
-      left = offset; // Move right if it goes off the left edge
+      left = offset;
     }
     if (top + imageHeight > window.innerHeight) {
-      top = window.innerHeight - imageHeight - offset; // Adjust to stay within the bottom boundary
+      top = window.innerHeight - imageHeight - offset;
     }
     if (top < 0) {
-      top = offset; // Adjust to stay within the top boundary
+      top = offset;
     }
 
     if (image) {
@@ -84,14 +98,26 @@ const MediaPreview = (props: { value: string }) => {
         onMouseOut={handleMouseOut}
         style={{ cursor: 'pointer' }}
       >
-        {isImg && <icons.img />} {value}
+        {isImg ? (
+          <>
+            <icons.img />{' '}
+            <a href={value} target="_blank">
+              {value}
+            </a>
+          </>
+        ) : (
+          value
+        )}
       </div>
       {showImage && (
         <div style={showImageStyle}>
           <img
             src={image}
             alt="preview"
-            style={{ width: 'auto', maxWidth: '200px', borderRadius: '4px' }}
+            style={{
+              width: imageDimensions.width > 200 ? 200 : imageDimensions.width,
+              borderRadius: '4px',
+            }}
           />
         </div>
       )}

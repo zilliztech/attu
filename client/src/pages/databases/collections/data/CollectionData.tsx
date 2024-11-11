@@ -25,7 +25,6 @@ import {
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
-import { detectItemType } from '@/utils';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -505,17 +504,22 @@ const CollectionData = (props: CollectionDataProps) => {
                 disablePadding: false,
                 needCopy: true,
                 formatter(_: any, cellData: any) {
-                  const itemType = detectItemType(cellData);
-                  switch (itemType) {
-                    case 'json':
-                    case 'array':
-                    case 'bool':
-                      const res = JSON.stringify(cellData);
-                      return <Typography title={res}>{res}</Typography>;
-                    case 'string':
+                  const field = collection.schema.fields.find(
+                    f => f.name === i
+                  );
+
+                  const fieldType = field?.data_type || 'JSON'; // dynamic
+
+                  switch (fieldType) {
+                    case 'VarChar':
                       return <MediaPreview value={cellData} />;
+                    case 'JSON':
+                      const value = JSON.stringify(cellData);
+                      return <Typography title={value}>{value}</Typography>;
                     default:
-                      return cellData;
+                      return (
+                        <Typography title={cellData}>{cellData}</Typography>
+                      );
                   }
                 },
                 headerFormatter: v => {
