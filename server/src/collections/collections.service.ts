@@ -243,17 +243,19 @@ export class CollectionsService {
   }
 
   async count(clientId: string, data: CountReq) {
-    const { milvusClient } = clientCache.get(clientId);
     let count = 0;
     try {
-      const countRes = await milvusClient.count(data);
-      count = countRes.data;
-    } catch (error) {
       const collectionStatisticsRes = await this.getCollectionStatistics(
         clientId,
         data
       );
+      throwErrorFromSDK(collectionStatisticsRes.status);
       count = collectionStatisticsRes.data.row_count;
+    } catch (error) {
+      console.error(`Failed to get collection statistics: ${error.message}`, {
+        data
+      });
+      count = 0;
     }
     return { rowCount: Number(count) } as CountObject;
   }
@@ -491,9 +493,6 @@ export class CollectionsService {
       db_name: database,
     });
 
-    // data container
-    const data: CollectionObject[] = [];
-
     // get target collections details
     const targetCollections = allCollections.data.filter(
       d => collections.indexOf(d.name) !== -1
@@ -506,24 +505,23 @@ export class CollectionsService {
     targets.sort((a, b) => a.name.localeCompare(b.name));
 
     // get all collection details
-    for (let i = 0; i < targets.length; i++) {
-      const collection = targets[i];
+    // data container
+    const data = await Promise.all(targets.map((target, idx) => {
+      const collection = target;
       const loadedCollection = loadedCollections.data.find(
         v => v.name === collection.name
       );
 
-      const notLazy = i <= 5; // lazy is true, only load full details for the first 10 collections
+      const notLazy = idx <= 5; // lazy is true, only load full details for the first 10 collections
 
-      data.push(
-        await this.getCollection(
-          clientId,
-          collection,
-          loadedCollection,
-          !notLazy,
-          database
-        )
-      );
-    }
+      return this.getCollection(
+        clientId,
+        collection,
+        loadedCollection,
+        !notLazy,
+        database
+      )
+    }))
 
     // start the queue
     if (currentClient.collectionsQueue.size() > 0) {
