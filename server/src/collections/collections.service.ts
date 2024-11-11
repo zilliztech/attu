@@ -260,7 +260,9 @@ export class CollectionsService {
         );
         count = collectionStatisticsRes.data.row_count;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log('ignore count error');
+    }
 
     return { rowCount: Number(count) } as CountObject;
   }
