@@ -28,6 +28,7 @@ import {
   DataType,
   HybridSearchReq,
   SearchSimpleReq,
+  LoadState,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -246,15 +247,21 @@ export class CollectionsService {
     const { milvusClient } = clientCache.get(clientId);
     let count = 0;
     try {
-      const countRes = await milvusClient.count(data);
-      count = countRes.data;
-    } catch (error) {
-      const collectionStatisticsRes = await this.getCollectionStatistics(
-        clientId,
-        data
-      );
-      count = collectionStatisticsRes.data.row_count;
-    }
+      // check if the collection is loaded
+      const loadStateRes = await milvusClient.getLoadState(data);
+
+      if (loadStateRes.state === LoadState.LoadStateLoaded) {
+        const countRes = await milvusClient.count(data);
+        count = countRes.data;
+      } else {
+        const collectionStatisticsRes = await this.getCollectionStatistics(
+          clientId,
+          data
+        );
+        count = collectionStatisticsRes.data.row_count;
+      }
+    } catch (error) {}
+
     return { rowCount: Number(count) } as CountObject;
   }
 
