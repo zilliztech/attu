@@ -13,16 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            name: "linux-amd64"
-            platform: "linux/amd64"
-          - os: ubuntu-latest
-            name: "linux-arm64"
-            platform: "linux/arm64"
-          - os: ubuntu-latest
-            name: "linux-arm-v7"
-            platform: "linux/arm/v7"
+        platform: 
+          - linux/amd64
+          - linux/arm64
+          - linux/arm/v7
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +42,8 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: zilliz/attu:dev-${{ matrix.name }}
+          tags: |
+            zilliz/attu:dev
           cache-from: type=registry,ref=zilliz/attu:cache
           cache-to: type=inline
           build-args: |
@@ -76,7 +71,7 @@ jobs:
       - name: Create and Push Docker Manifest
         run: |
           docker manifest create zilliz/attu:dev \
-            zilliz/attu:dev-linux-amd64 \
-            zilliz/attu:dev-linux-arm64 \
-            zilliz/attu:dev-linux-arm-v7
+            zilliz/attu:dev-linux/amd64 \
+            zilliz/attu:dev-linux/arm64 \
+            zilliz/attu:dev-linux/arm/v7
           docker manifest push zilliz/attu:dev
