@@ -43,7 +43,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           tags: |
-            zilliz/attu:dev
+            zilliz/attu:dev-${{ matrix.platform }}
           cache-from: type=registry,ref=zilliz/attu:cache
           cache-to: type=inline
           build-args: |
