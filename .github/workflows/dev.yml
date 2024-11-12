@@ -13,10 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-          - linux/arm/v7
+        include:
+          - os: ubuntu-latest
+            name: "linux-amd64"
+            platform: "linux/amd64"
+          - os: ubuntu-latest
+            name: "linux-arm64"
+            platform: "linux/arm64"
+          - os: ubuntu-latest
+            name: "linux-arm-v7"
+            platform: "linux/arm/v7"
 
     steps:
       - uses: actions/checkout@v4
@@ -42,8 +48,7 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: |
-            zilliz/attu:dev-${{ matrix.platform | replace('/', '-') }}
+          tags: zilliz/attu:dev-${{ matrix.name }}
           cache-from: type=registry,ref=zilliz/attu:cache
           cache-to: type=inline
           build-args: |
