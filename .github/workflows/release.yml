@@ -71,7 +71,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: |
             zilliz/attu:${{ github.ref_name }}
-            zilliz/attu:v${{ env.MAJOR_MINOR_TAG }}.${{ env.MINOR }}
+            zilliz/attu:v${{ env.MAJOR }}.${{ env.MINOR }}
           cache-from: type=registry,ref=zilliz/attu:cache
           cache-to: type=inline
           build-args: |
