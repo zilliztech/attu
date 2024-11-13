@@ -26,6 +26,14 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
+      - name: Extract Major.Minor tag
+        id: extract_version
+        run: |
+          # Remove the leading 'v' and split the version into major.minor (e.g., v2.4.11 -> 2.4)
+          VERSION="${GITHUB_REF##*/}"
+          MAJOR_MINOR_TAG="$(echo $VERSION | cut -d. -f1,2)"
+          echo "MAJOR_MINOR_TAG=$MAJOR_MINOR_TAG" >> $GITHUB_ENV
+
       - name: Install Node.js, NPM, and Yarn
         uses: actions/setup-node@v4
         with:
@@ -67,6 +75,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: |
             zilliz/attu:${{ github.ref_name }}
+            zilliz/attu:${{ env.MAJOR_MINOR_TAG }}
           cache-from: type=registry,ref=zilliz/attu:cache
           cache-to: type=inline
           build-args: |
