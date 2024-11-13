@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useContext } from 'react';
-import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import { DataService } from '@/http';
@@ -30,7 +29,7 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 import CollectionColHeader from '../CollectionColHeader';
-import MediaPreview from '@/components/MediaPreview/MediaPreview';
+import DataView from '@/components/DataView/DataView';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -510,17 +509,7 @@ const CollectionData = (props: CollectionDataProps) => {
 
                   const fieldType = field?.data_type || 'JSON'; // dynamic
 
-                  switch (fieldType) {
-                    case 'VarChar':
-                      return <MediaPreview value={cellData} />;
-                    case 'JSON':
-                      const value = JSON.stringify(cellData);
-                      return <Typography title={value}>{value}</Typography>;
-                    default:
-                      return (
-                        <Typography title={cellData}>{cellData}</Typography>
-                      );
-                  }
+                  return <DataView type={fieldType} value={cellData} />;
                 },
                 headerFormatter: v => {
                   return (
