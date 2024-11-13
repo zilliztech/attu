@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Typography } from '@mui/material';
 import icons from '../icons/Icons';
 
 const MediaPreview = (props: { value: string }) => {
@@ -100,13 +101,15 @@ const MediaPreview = (props: { value: string }) => {
       >
         {isImg ? (
           <>
-            <icons.img />{' '}
-            <a href={value} target="_blank">
-              {value}
-            </a>
+            <icons.img />
+            <Typography title={value}>
+              <a href={value} target="_blank">
+                {value}
+              </a>
+            </Typography>
           </>
         ) : (
-          value
+          <Typography title={value}>{value}</Typography>
         )}
       </div>
       {showImage && (
