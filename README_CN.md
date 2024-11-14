@@ -28,12 +28,12 @@ Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统�
 
 ### 兼容性
 
-| Milvus 版本 | 推荐的 Attu 版本                                                 |
-| ----------- | ---------------------------------------------------------------- |
-| 2.4.x       | [v2.4.9](https://github.com/zilliztech/attu/releases/tag/v2.4.9) |
-| 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
-| 2.2.x       | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8) |
-| 2.1.x       | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2) |
+| Milvus 版本 | 推荐的 Attu 版本                                                   |
+| ----------- | ------------------------------------------------------------------ |
+| 2.4.x       | [v2.4.11](https://github.com/zilliztech/attu/releases/tag/v2.4.11) |
+| 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
+| 2.2.x       | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
+| 2.1.x       | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2)   |
 
 ### 从 Docker 运行 Attu
 
