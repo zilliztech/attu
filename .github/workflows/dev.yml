@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: attu-dev-release-main
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
