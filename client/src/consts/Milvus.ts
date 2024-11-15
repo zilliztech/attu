@@ -136,11 +136,13 @@ export type indexConfigType = {
 };
 
 // index
-export const FLOAT_INDEX_CONFIG: indexConfigType = {
+const AUTOINDEX_CONFIG: indexConfigType = {
   AUTOINDEX: {
     create: [],
     search: ['level'],
   },
+};
+export const FLOAT_INDEX_CONFIG: indexConfigType = {
   HNSW: {
     create: ['M', 'efConstruction'],
     search: ['ef'],
@@ -227,6 +229,7 @@ export const SPARSE_INDEX_CONFIG: indexConfigType = {
 };
 
 export const INDEX_CONFIG: indexConfigType = {
+  ...AUTOINDEX_CONFIG,
   ...FLOAT_INDEX_CONFIG,
   ...BINARY_INDEX_CONFIG,
   ...SPARSE_INDEX_CONFIG,
@@ -245,6 +248,7 @@ export const m_OPTIONS = [
 ];
 
 export const INDEX_OPTIONS_MAP = {
+  ['AUTOINDEX']: [{ label: 'AUTOINDEX', value: INDEX_TYPES_ENUM.AUTOINDEX }],
   [DataTypeEnum.FloatVector]: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({
     label: v,
     value: v,
@@ -258,6 +262,10 @@ export const INDEX_OPTIONS_MAP = {
     value: v,
   })),
   [DataTypeEnum.VarChar]: [
+    {
+      label: 'INVERTED',
+      value: INDEX_TYPES_ENUM.INVERTED,
+    },
     {
       label: 'marisa-trie',
       value: INDEX_TYPES_ENUM.MARISA_TRIE,
