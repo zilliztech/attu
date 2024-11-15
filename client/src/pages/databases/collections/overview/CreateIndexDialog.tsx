@@ -48,27 +48,7 @@ const CreateIndex = (props: {
   const { t: commonTrans } = useTranslation();
 
   // https://milvus.io/docs/index.md#In-memory-Index
-  const defaultIndexType = useMemo(() => {
-    switch (fieldType) {
-      case DataTypeStringEnum.BinaryVector:
-        return INDEX_TYPES_ENUM.BIN_IVF_FLAT;
-      case DataTypeStringEnum.FloatVector:
-      case DataTypeStringEnum.Float16Vector:
-      case DataTypeStringEnum.BFloat16Vector:
-        return INDEX_TYPES_ENUM.AUTOINDEX;
-      case DataTypeStringEnum.SparseFloatVector:
-        return INDEX_TYPES_ENUM.SPARSE_WAND;
-      case DataTypeStringEnum.VarChar:
-        return INDEX_TYPES_ENUM.MARISA_TRIE;
-      case DataTypeStringEnum.Int8:
-      case DataTypeStringEnum.Int16:
-      case DataTypeStringEnum.Int32:
-      case DataTypeStringEnum.Int64:
-        return INDEX_TYPES_ENUM.INVERTED;
-      default:
-        return INDEX_TYPES_ENUM.INVERTED;
-    }
-  }, [fieldType]);
+  const defaultIndexType = INDEX_TYPES_ENUM.AUTOINDEX;
 
   const defaultMetricType = useMemo(() => {
     switch (fieldType) {
@@ -148,25 +128,31 @@ const CreateIndex = (props: {
   ];
 
   const indexOptions = useMemo(() => {
+    const autoOption = getOptions('AUTOINDEX', INDEX_OPTIONS_MAP['AUTOINDEX']);
+    let options = [];
+
     if (VectorTypes.includes(dataType)) {
       switch (fieldType) {
         case DataTypeStringEnum.BinaryVector:
-          return [
+          options = [
             ...getOptions(
               indexTrans('inMemory'),
               INDEX_OPTIONS_MAP[DataTypeEnum.BinaryVector]
             ),
           ];
+          break;
+
         case DataTypeStringEnum.SparseFloatVector:
-          return [
+          options = [
             ...getOptions(
               indexTrans('inMemory'),
               INDEX_OPTIONS_MAP[DataTypeEnum.SparseFloatVector]
             ),
           ];
+          break;
 
         default:
-          return [
+          options = [
             ...getOptions(
               indexTrans('inMemory'),
               INDEX_OPTIONS_MAP[DataTypeEnum.FloatVector]
@@ -174,21 +160,29 @@ const CreateIndex = (props: {
             ...getOptions(indexTrans('disk'), INDEX_OPTIONS_MAP['DISK']),
             ...getOptions(indexTrans('gpu'), INDEX_OPTIONS_MAP['GPU']),
           ];
+          break;
       }
     } else {
       switch (fieldType) {
         case DataTypeStringEnum.VarChar:
-          return getOptions(
-            indexTrans('scalar'),
-            INDEX_OPTIONS_MAP[DataTypeEnum.VarChar]
-          );
+          options = [
+            ...getOptions(
+              indexTrans('scalar'),
+              INDEX_OPTIONS_MAP[DataTypeEnum.VarChar]
+            ),
+          ];
+          break;
         default:
-          return getOptions(indexTrans('scalar'), [
-            { label: 'INVERTED', value: INDEX_TYPES_ENUM.INVERTED },
-            { label: 'STL sort', value: INDEX_TYPES_ENUM.SORT },
-          ]);
+          options = [
+            ...getOptions(indexTrans('scalar'), [
+              { label: 'INVERTED', value: INDEX_TYPES_ENUM.INVERTED },
+              { label: 'STL sort', value: INDEX_TYPES_ENUM.SORT },
+            ]),
+          ];
       }
     }
+
+    return [...autoOption, ...options];
   }, [fieldType, dataType, fieldName]);
 
   const checkedForm = useMemo(() => {
