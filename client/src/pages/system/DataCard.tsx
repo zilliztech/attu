@@ -173,15 +173,15 @@ const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
         label: t('thMemUsage'),
         value: `${memUsage.value} ${memUsage.unit}`,
       });
-      hardwareContent.push({
-        label: t('thDiskUsage'),
-        value: (
-          <DataProgress
-            percent={diskUsage / disk}
-            desc={getByteString(diskUsage, disk, capacityTrans)}
-          />
-        ),
-      });
+      // hardwareContent.push({
+      //   label: t('thDiskUsage'),
+      //   value: (
+      //     <DataProgress
+      //       percent={diskUsage / disk}
+      //       desc={getByteString(diskUsage, disk, capacityTrans)}
+      //     />
+      //   ),
+      // });
     }
 
     if (system_configurations) {
