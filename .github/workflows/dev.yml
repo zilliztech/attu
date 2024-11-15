@@ -4,9 +4,6 @@ on:
   pull_request_target:
     branches: [main]
     types: [closed]
-  push:
-    branches:
-      - main
 
 concurrency:
   group: attu-dev-release-main
