@@ -143,19 +143,6 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     onChangeRef.current = onChange;
     fieldRef.current = field;
     searchParamsRef.current = searchParams;
-
-    if (editor.current) {
-      // only data replace should trigger this, otherwise, let cm handle the state
-      if (editor.current.state.doc.toString() !== data) {
-        editor.current.dispatch({
-          changes: {
-            from: 0,
-            to: data.length + 1,
-            insert: data,
-          },
-        });
-      }
-    }
   }, [JSON.stringify(searchParams), onChange]);
 
   const getVectorById = (text: string) => {
@@ -293,6 +280,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
       editor.current.dispatch({
         selection: { anchor: endPos },
       });
+
       editor.current.focus();
 
       return () => {
@@ -300,7 +288,7 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
         editor.current = undefined;
       };
     }
-  }, [JSON.stringify(field), getVectorById]);
+  }, [JSON.stringify({ field, data })]);
 
   useEffect(() => {
     // dispatch dark mode change to editor

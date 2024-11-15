@@ -216,7 +216,6 @@ const SearchParams: FC<SearchParamsProps> = ({
           isInt: false,
           required: false,
           handleChange: value => {
-            console.log(value, typeof value);
             handleInputChange('radius', value);
           },
           className: classes.inlineInput,
