@@ -1,4 +1,4 @@
-import { IndexExtraParam } from '../../pages/databases/collections/overview/Types';
+import { IndexExtraParam } from '../../pages/databases/collections/schema/Types';
 export interface CreateIndexCodeParam {
   collectionName: string;
   fieldName: string;

@@ -67,6 +67,7 @@ const collectionTrans = {
   loadContent:
     'All search and query operations within Milvus are executed in memory, only loaded collection can be searched.',
   loadConfirmLabel: 'Load',
+  replica: 'Replica',
   replicaNum: 'Replica number',
   replicaDes: `With in-memory replicas, Milvus can load the same segment on multiple query nodes. The replica number can not exceed query node count.`,
   enableRepica: `Enable in-memory replica`,
@@ -134,7 +135,7 @@ const collectionTrans = {
   clickToLoad: 'Click to load the collection.',
   clickToRelease: 'Click to release the collection.',
   clickToSearch: 'Click to execute vector search.',
-  clickToCreateVectorIndex: 'Click to create an vector index.',
+  clickToCreateVectorIndex: 'Click to create the vector index.',
   collectionIsLoading: 'The collection is loading...',
 };
 

@@ -469,7 +469,7 @@ export class CollectionsService {
       id: collectionInfo.collectionID,
       loadedPercentage,
       consistency_level: collectionInfo.consistency_level,
-      replicas: replicas && replicas.replicas,
+      replicas: replicas && replicas.replicas || [],
       loaded: status === LOADING_STATE.LOADED,
       status,
       properties: collectionInfo.properties,

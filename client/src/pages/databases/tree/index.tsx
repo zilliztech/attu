@@ -111,7 +111,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
       node.type === 'db'
         ? `/databases/${database}/${params.databasePage || 'collections'}`
         : `/databases/${database}/${node.name}/${
-            params.collectionPage || 'overview'
+            params.collectionPage || 'schema'
           }`
     );
     // close context menu

@@ -12,6 +12,7 @@ import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 import { makeStyles } from '@mui/styles';
 
+// Define styles using MUI's makeStyles
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
@@ -19,15 +20,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   chip: {
     border: 'none',
-    background: `rgba(0, 0, 0, 0.04)`,
     marginRight: theme.spacing(0.5),
     paddingLeft: theme.spacing(0.5),
   },
   circle: {
-    width: '8px',
-    height: '8px',
+    width: 8,
+    height: 8,
     borderRadius: '50%',
-    backgroundColor: theme.palette.primary.main,
   },
   loaded: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -41,68 +40,53 @@ const useStyles = makeStyles((theme: Theme) => ({
     border: `1px solid ${theme.palette.text.disabled}`,
     backgroundColor: '#fff',
   },
-
   loading: {
-    marginRight: '10px',
-  },
-  icon: {
-    marginTop: theme.spacing(0.5),
-  },
-  flash: {
-    animation: '$bgColorChange 1.5s infinite',
+    marginRight: theme.spacing(1.25),
   },
   extraBtn: {
     height: 24,
   },
-
-  '@keyframes bgColorChange': {
-    '0%': {
-      backgroundColor: (props: any) => props.color,
-    },
-    '50%': {
-      backgroundColor: 'transparent',
-    },
-    '100%': {
-      backgroundColor: (props: any) => props.color,
-    },
-  },
 }));
 
 const StatusAction: FC<StatusActionType> = props => {
+  const {
+    status,
+    percentage = 0,
+    collection,
+    action = () => {},
+    showExtraAction,
+    createIndexElement,
+  } = props;
+
+  // Theme and styles
   const theme = useTheme();
+  const classes = useStyles();
+
+  // Context
   const { setDialog } = useContext(rootContext);
 
-  const classes = useStyles({ color: theme.palette.primary.main });
-  const ReleaseIcon = Icons.release;
-  const LoadIcon = Icons.load;
-
-  const { status, percentage = 0, collection, action = () => {} } = props;
+  // Translations
   const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
-  const statusTrans = commonTrans('status');
-  const {
-    label,
-    tooltip,
-    icon = <span></span>,
-    deleteIcon = <ReleaseIcon />,
-  } = useMemo(() => {
+  // Determine status-related labels and icons
+  const { label, tooltip, icon, deleteIcon } = useMemo(() => {
+    const statusTrans = commonTrans('status');
     switch (status) {
       case LOADING_STATE.UNLOADED:
         return {
           label: statusTrans.unloaded,
-          icon: <div className={`${classes.circle} ${classes.unloaded}`}></div>,
           tooltip: collectionTrans('clickToLoad'),
-          deleteIcon: <LoadIcon />,
+          icon: <div className={`${classes.circle} ${classes.unloaded}`}></div>,
+          deleteIcon: <Icons.load />,
         };
-
       case LOADING_STATE.LOADED:
         return {
           label: statusTrans.loaded,
-          icon: <div className={`${classes.circle} ${classes.loaded}`}></div>,
           tooltip: collectionTrans('clickToRelease'),
-          deleteIcon: <ReleaseIcon />,
+          icon: <div className={`${classes.circle} ${classes.loaded}`}></div>,
+          deleteIcon: <Icons.release />,
         };
       case LOADING_STATE.LOADING:
         return {
@@ -114,58 +98,57 @@ const StatusAction: FC<StatusActionType> = props => {
               className={classes.loading}
             />
           ),
+          deleteIcon: null, // No delete icon during loading
         };
-
       default:
         return {
           label: status,
-          icon: <span></span>,
           tooltip: '',
-          deleteIcon: <ReleaseIcon />,
+          icon: <span></span>,
+          deleteIcon: <Icons.release />,
         };
     }
-  }, [status, statusTrans, percentage]);
+  }, [status, percentage, classes, commonTrans, collectionTrans]);
 
+  // Handle missing vector index
   const noIndex = collection.schema && !collection.schema.hasVectorIndex;
-  const noVectorIndexTooltip = collectionTrans('noVectorIndexTooltip');
   const noIndexIcon = (
     <div className={`${classes.circle} ${classes.noIndex}`}></div>
   );
+  const noIndexTooltip = collectionTrans('noVectorIndexTooltip');
+
+  // Handle chip click
+  const handleChipClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component:
+          status === LOADING_STATE.UNLOADED ? (
+            <LoadCollectionDialog collection={collection} />
+          ) : (
+            <ReleaseCollectionDialog collection={collection} />
+          ),
+      },
+    });
+  };
 
   return (
     <div className={classes.root}>
-      <CustomToolTip
-        title={noIndex ? noVectorIndexTooltip : tooltip}
-        placement={'top'}
-      >
+      <CustomToolTip title={noIndex ? noIndexTooltip : tooltip} placement="top">
         <Chip
           className={classes.chip}
-          variant="outlined"
           label={<Typography>{label}</Typography>}
-          onDelete={() => action()}
-          onClick={(e: MouseEvent<HTMLDivElement>) => {
-            e.stopPropagation();
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component:
-                  collection.status === LOADING_STATE.UNLOADED ? (
-                    <LoadCollectionDialog collection={collection} />
-                  ) : (
-                    <ReleaseCollectionDialog collection={collection} />
-                  ),
-              },
-            });
-          }}
+          onClick={handleChipClick}
           disabled={noIndex}
-          deleteIcon={deleteIcon}
+          deleteIcon={<Icons.release />}
           size="small"
           icon={noIndex ? noIndexIcon : icon}
         />
       </CustomToolTip>
 
-      {props.showExtraAction && collection.schema && (
+      {showExtraAction && collection.schema && (
         <>
           {status === LOADING_STATE.LOADED && (
             <CustomButton
@@ -173,19 +156,17 @@ const StatusAction: FC<StatusActionType> = props => {
               className={classes.extraBtn}
               tooltip={collectionTrans('clickToSearch')}
               onClick={() => {
-                const currentHash = window.location.hash;
-                const newHash = currentHash.replace('overview', 'search');
-
+                const newHash = window.location.hash.replace(
+                  'schema',
+                  'search'
+                );
                 window.location.hash = newHash;
               }}
             >
               {btnTrans('vectorSearch')}
             </CustomButton>
           )}
-
-          {collection.schema &&
-            !collection.schema.hasVectorIndex &&
-            props.createIndexElement}
+          {!collection.schema.hasVectorIndex && createIndexElement}
         </>
       )}
     </div>

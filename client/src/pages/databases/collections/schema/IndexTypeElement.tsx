@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   chip: {
-    background: `rgba(0, 0, 0, 0.04)`,
     padding: theme.spacing(0.5),
 
     '& .icon': {

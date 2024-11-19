@@ -65,6 +65,7 @@ const collectionTrans = {
   loadContent:
     'Milvus中的所有搜索和查询操作都在内存中执行，只有加载的Collection可以被搜索。',
   loadConfirmLabel: '加载',
+  replica: '副本',
   replicaNum: '副本数量',
   replicaDes: `有了内存副本，Milvus可以在多个查询节点上加载相同的段。副本数量不能超过查询节点数量。`,
   enableRepica: `启用内存副本`,

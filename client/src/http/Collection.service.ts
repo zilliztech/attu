@@ -15,7 +15,7 @@ import { ManageRequestMethods } from '../types/Common';
 import {
   IndexCreateParam,
   IndexManageParam,
-} from '@/pages/databases/collections/overview/Types';
+} from '@/pages/databases/collections/schema/Types';
 
 export class CollectionService extends BaseModel {
   static getCollections(data?: {
