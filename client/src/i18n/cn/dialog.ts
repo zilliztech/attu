@@ -11,6 +11,7 @@ const dialogTrans = {
   flush: `为 {{type}} 的数据落盘`,
   loadTitle: `加载 {{type}}`,
   editEntityTitle: `编辑 Entity`,
+  modifyReplicaTitle: `修改 {{type}} 的副本`,
 
   loadContent: `您正在尝试加载带有数据的 {{type}}。只有已加载的 {{type}} 可以被搜索。`,
   releaseContent: `您正在尝试发布带有数据的 {{type}}。请注意，数据将不再可用于搜索。`,

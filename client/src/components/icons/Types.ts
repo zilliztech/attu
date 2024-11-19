@@ -58,4 +58,5 @@ export type IconsType =
   | 'cross'
   | 'day'
   | 'night'
-  | 'img';
+  | 'img'
+  | 'fileplus';

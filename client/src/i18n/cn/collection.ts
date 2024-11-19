@@ -29,6 +29,8 @@ const collectionTrans = {
     '一致性是指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
   entityCountInfo:
     '这个计数是一个近似值，并可能因为Milvus的独特机制而稍有延迟。实际的计数可能会有所变化，并会定期更新。请注意，这个数字应该被用作参考，而不是精确的计数。',
+  replicaTooltip: 'Collection的副本数量, 不能超过查询节点的数量。',
+  modifyReplicaTooltip: '调整副本数量',
 
   // create dialog
   createTitle: '创建Collection',

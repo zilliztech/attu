@@ -189,7 +189,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         wrapperClass={classes.select}
         options={_options}
         size="small"
-        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+        onChange={e => {
           onChange(e.target.value as DataTypeEnum);
         }}
         value={value}
