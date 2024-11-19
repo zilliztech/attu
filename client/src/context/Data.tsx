@@ -18,7 +18,7 @@ import {
 import {
   IndexCreateParam,
   IndexManageParam,
-} from '@/pages/databases/collections/overview/Types';
+} from '@/pages/databases/collections/schema/Types';
 import { DataContextType } from './Types';
 import {
   CollectionObject,

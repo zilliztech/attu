@@ -9,7 +9,7 @@ import { NavInfo } from '@/router/Types';
 import {
   IndexCreateParam,
   IndexManageParam,
-} from '@/pages/databases/collections/overview/Types';
+} from '@/pages/databases/collections/schema/Types';
 import { AuthObject } from '@server/types';
 
 export type RootContextType = {

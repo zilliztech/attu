@@ -19,7 +19,7 @@ const getCommonThemes = (mode: PaletteMode) => ({
     mode,
     primary: {
       main: '#0ACE82',
-      light: mode === 'light' ? '#65BA74' : '#4caf9f',
+      light: mode === 'light' ? '#f0fdf4' : '#1b4332',
       dark: mode === 'light' ? '#08a568' : '#078b63',
     },
     secondary: {
@@ -35,6 +35,7 @@ const getCommonThemes = (mode: PaletteMode) => ({
     background: {
       default: mode === 'light' ? '#f5f5f5' : '#121212',
       paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
+      light: mode === 'light' ? '#f5f5f5' : '#121212',
     },
   },
   spacing: (factor: number) => `${8 * factor}px`,
@@ -173,6 +174,31 @@ export const getAttuTheme = (mode: PaletteMode) => {
             },
             borderWidth: 1,
             borderColor: 'transparent',
+          },
+        },
+      },
+      MuiChip: {
+        styleOverrides: {
+          root: {
+            backgroundColor: mode === 'light' ? '#f0fdf4' : '#1b4332',
+            color: mode === 'light' ? '#2a6f4e' : '#d8f3dc',
+            '& .MuiChip-label': {
+              fontWeight: 500,
+            },
+          },
+          outlined: {
+            borderColor: mode === 'light' ? '#94d2bd' : '#74c69d',
+          },
+          clickable: {
+            '&:hover': {
+              backgroundColor: mode === 'light' ? '#d1fae5' : '#2d6a4f',
+            },
+          },
+          deleteIcon: {
+            color: mode === 'light' ? '#40916c' : '#b7e4c7',
+            '&:hover': {
+              color: mode === 'light' ? '#1b4332' : '#95d5b2',
+            },
           },
         },
       },
