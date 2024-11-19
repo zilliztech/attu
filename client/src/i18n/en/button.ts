@@ -39,6 +39,7 @@ const btnTrans = {
   edit: 'Edit',
   explore: 'Explore',
   close: 'Close',
+  modify: 'Modify',
 
   // tips
   loadColTooltip: 'Load Collection',

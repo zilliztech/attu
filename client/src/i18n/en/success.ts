@@ -9,6 +9,7 @@ const successTrans = {
   duplicate: `{{name}} has been duplicated.`,
   empty: `Emptying data for {{name}} has started.`,
   reset: `{{name}} has been reset.`,
+  modifyReplica: `Replica number for {{name}} has been modified.`,
 };
 
 export default successTrans;

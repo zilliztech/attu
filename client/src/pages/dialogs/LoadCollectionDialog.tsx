@@ -35,10 +35,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 const LoadCollectionDialog = (props: {
   collection: CollectionObject;
   onLoad?: (collection: CollectionObject) => void;
+  isModifyReplica?: boolean;
 }) => {
   const { loadCollection } = useContext(dataContext);
   const classes = useStyles();
-  const { collection, onLoad } = props;
+  const { collection, onLoad, isModifyReplica } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: successTrans } = useTranslation('success');
@@ -46,12 +47,14 @@ const LoadCollectionDialog = (props: {
   const { t: warningTrans } = useTranslation('warning');
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const [form, setForm] = useState({
-    replica: 1,
+    replica: collection.replicas?.length || 1,
   });
   const { isManaged } = useContext(authContext);
 
   const [enableRelica, setEnableRelica] = useState(false);
-  const [replicaToggle, setReplicaToggle] = useState(false);
+  const [replicaToggle, setReplicaToggle] = useState(
+    collection.replicas!.length > 1
+  );
   const [maxQueryNode, setMaxQueryNode] = useState(1);
   const [btnDisabled, setBtnDisabled] = useState(false);
 
@@ -108,7 +111,7 @@ const LoadCollectionDialog = (props: {
 
       // show success message
       openSnackBar(
-        successTrans('load', {
+        successTrans(isModifyReplica ? 'modifyReplica' : 'load', {
           name: collectionTrans('collection'),
         })
       );
@@ -180,14 +183,14 @@ const LoadCollectionDialog = (props: {
 
   return (
     <DialogTemplate
-      title={dialogTrans('loadTitle', {
+      title={dialogTrans(isModifyReplica ? 'modifyReplicaTitle' : 'loadTitle', {
         type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={
         <>
           <Typography variant="body1" component="p" className={classes.desc}>
-            {collectionTrans('loadContent')}
+            {collectionTrans(isModifyReplica ? 'replicaDes' : 'loadContent')}
           </Typography>
           {enableRelica ? (
             <>
@@ -219,7 +222,7 @@ const LoadCollectionDialog = (props: {
           ) : null}
         </>
       }
-      confirmLabel={btnTrans('load')}
+      confirmLabel={btnTrans(isModifyReplica ? 'confirm' : 'load')}
       handleConfirm={handleConfirm}
       confirmDisabled={replicaToggle ? disabled || btnDisabled : btnDisabled}
     />

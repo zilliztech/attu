@@ -9,6 +9,7 @@ const successTrans = {
   duplicate: `{{name}}复制成功.`,
   empty: `{{name}}清空已经开始.`,
   reset: `{{name}}重置成功。`,
+  modifyReplica: `{{name}}修改副本数量成功。`,
 };
 
 export default successTrans;

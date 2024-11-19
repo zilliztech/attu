@@ -15,6 +15,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
       fontWeight: 400,
     },
     '& h6': {
+      fontSize: 14,
       color: theme.palette.text.primary,
       marginBottom: theme.spacing(1),
     },
@@ -47,8 +48,11 @@ export const useStyles = makeStyles((theme: Theme) => ({
   extraBtn: {
     height: 24,
   },
+  addReplicaBtn: {
+    width: 15,
+  },
   questionIcon: {
-    width: 14,
+    width: 12,
     position: 'relative',
     top: '6px',
     right: '-2px',

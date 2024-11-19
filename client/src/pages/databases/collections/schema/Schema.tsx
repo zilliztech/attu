@@ -6,16 +6,21 @@ import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
 import { formatFieldType, formatNumber } from '@/utils';
-import { dataContext } from '@/context';
+import { dataContext, rootContext, systemContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { FieldObject } from '@server/types';
 import { useStyles } from './Styles';
+import CustomIconButton from '@/components/customButton/CustomIconButton';
+import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 
 const Overview = () => {
   const { fetchCollection, collections, loading } = useContext(dataContext);
+  const { data } = useContext(systemContext);
+  const { setDialog } = useContext(rootContext);
+
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
@@ -171,6 +176,10 @@ const Overview = () => {
     );
   }
 
+  // enable modify replica if there are more than one query node
+  const enableModifyReplica =
+    data && data.queryNodes && data.queryNodes.length > 1;
+
   // get loading state label
   return (
     <section className={classes.wrapper}>
@@ -196,18 +205,42 @@ const Overview = () => {
 
             <div className={classes.card}>
               <Typography variant="h5">{collectionTrans('status')}</Typography>
-              <Typography variant="h6">
-                <StatusAction
-                  status={collection.status}
-                  percentage={collection.loadedPercentage}
-                  collection={collection}
-                  showExtraAction={true}
-                  createIndexElement={CreateIndexElement}
-                />
+              <StatusAction
+                status={collection.status}
+                percentage={collection.loadedPercentage}
+                collection={collection}
+                showExtraAction={true}
+                createIndexElement={CreateIndexElement}
+              />
+              <Typography variant="h5">
+                {collectionTrans('replica')}
+                <CustomToolTip title={collectionTrans('replicaTooltip')}>
+                  <Icons.question classes={{ root: classes.questionIcon }} />
+                </CustomToolTip>
               </Typography>
-              <Typography variant="h5">{collectionTrans('replica')}</Typography>
               <Typography variant="h6">
-                {collection.replicas?.length}
+                {collection.loaded ? collection.replicas?.length : '...'}
+                {collection.loaded && enableModifyReplica && (
+                  <CustomIconButton
+                    tooltip={collectionTrans('modifyReplicaTooltip')}
+                    onClick={() => {
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <LoadCollectionDialog
+                              collection={collection}
+                              isModifyReplica={true}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                  >
+                    <Icons.settings className={classes.addReplicaBtn} />
+                  </CustomIconButton>
+                )}
               </Typography>
 
               <Typography variant="h5">
