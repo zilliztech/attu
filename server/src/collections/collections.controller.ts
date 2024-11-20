@@ -44,6 +44,10 @@ export class CollectionController {
 
     // get collection with index info
     this.router.get('/:name', this.describeCollection.bind(this));
+    this.router.get(
+      '/:name/unformatted',
+      this.describeUnformattedCollection.bind(this)
+    );
     // get count
     this.router.get('/:name/count', this.count.bind(this));
     // create collection
@@ -255,6 +259,25 @@ export class CollectionController {
         req.db_name
       );
       res.send(result[0]);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async describeUnformattedCollection(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const name = req.params?.name;
+    try {
+      const result =
+        await this.collectionsService.describeUnformattedCollection(
+          req.clientId,
+          name,
+          req.db_name
+        );
+      res.send(result);
     } catch (error) {
       next(error);
     }

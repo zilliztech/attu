@@ -16,8 +16,19 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
     '& h6': {
       fontSize: 14,
+      lineHeight: '20px',
+      display: 'flex',
       color: theme.palette.text.primary,
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(0.5),
+
+      '& p': {
+        margin: 0,
+        marginRight: 8,
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        maxWidth: 140,
+        fontWeight: 700,
+      },
     },
   },
   infoWrapper: {
@@ -46,11 +57,14 @@ export const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: theme.spacing(0.5),
   },
   extraBtn: {
-    height: 24,
+    position: 'relative',
+    top: -6,
+    '& svg': {
+      width: 15,
+      color: theme.palette.text.primary,
+    },
   },
-  addReplicaBtn: {
-    width: 15,
-  },
+
   questionIcon: {
     width: 12,
     position: 'relative',

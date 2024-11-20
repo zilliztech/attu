@@ -19,11 +19,7 @@ const CustomIconButton = (props: IconButtonProps & { tooltip?: string }) => {
       {tooltip ? (
         <Tooltip title={tooltip} arrow>
           <span>
-            <IconButton
-              classes={{ root: classes.iconBtn }}
-              {...otherProps}
-              size="large"
-            >
+            <IconButton classes={{ root: classes.iconBtn }} {...otherProps}>
               {props.children}
             </IconButton>
           </span>
