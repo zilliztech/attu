@@ -59,4 +59,5 @@ export type IconsType =
   | 'day'
   | 'night'
   | 'img'
-  | 'fileplus';
+  | 'fileplus'
+  | 'file';

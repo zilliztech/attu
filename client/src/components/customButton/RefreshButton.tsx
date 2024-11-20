@@ -4,9 +4,14 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { IconButtonProps } from '@mui/material';
 import icons from '@/components/icons/Icons';
 
-const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
+const RefreshButton = (
+  props: IconButtonProps & {
+    tooltip?: string;
+    icon?: React.ReactNode;
+  }
+) => {
   // props
-  const { onClick, ...otherProps } = props;
+  const { onClick, icon, ...otherProps } = props;
   // UI states
   const [isLoading, setIsLoading] = useState(false);
 
@@ -19,8 +24,17 @@ const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
     setIsLoading(false);
   };
 
+  const styleObj = {
+    display: 'flex',
+    width: '23px',
+  };
+
   if (isLoading) {
-    return <StatusIcon type={LoadingType.CREATING} size={16} />;
+    return (
+      <div className={props.className} style={styleObj}>
+        <StatusIcon type={LoadingType.CREATING} />
+      </div>
+    );
   }
 
   return (
@@ -28,10 +42,9 @@ const RefreshButton = (props: IconButtonProps & { tooltip?: string }) => {
       className={props.className}
       {...otherProps}
       onClick={onBtnClicked}
-      style={{}}
       disabled={isLoading}
     >
-      <RefreshIcon />
+      {icon ? icon : <RefreshIcon />}
     </CustomIconButton>
   );
 };

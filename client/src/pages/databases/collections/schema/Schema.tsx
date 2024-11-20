@@ -15,6 +15,9 @@ import { FieldObject } from '@server/types';
 import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
+import CopyButton from '@/components/advancedSearch/CopyButton';
+import RefreshButton from '@/components/customButton/RefreshButton';
+import { CollectionService } from '@/http';
 
 const Overview = () => {
   const { fetchCollection, collections, loading } = useContext(dataContext);
@@ -25,6 +28,7 @@ const Overview = () => {
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
+  const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
   const gridTrans = commonTrans('grid');
 
@@ -188,7 +192,43 @@ const Overview = () => {
           <div className={classes.cardWrapper}>
             <div className={classes.card}>
               <Typography variant="h5">{collectionTrans('name')}</Typography>
-              <Typography variant="h6">{collection.collection_name}</Typography>
+              <Typography variant="h6">
+                <p title={collection.collection_name}>
+                  {collection.collection_name}
+                </p>
+                <CopyButton
+                  className={classes.extraBtn}
+                  label={collection.collection_name}
+                  value={collection.collection_name}
+                />
+                <RefreshButton
+                  className={classes.extraBtn}
+                  onClick={async () => {
+                    const res =
+                      await CollectionService.describeCollectionUnformatted(
+                        collection.collection_name
+                      );
+
+                    // download json file
+                    const json = JSON.stringify(res, null, 2);
+                    const blob = new Blob([json], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${collection.collection_name}.json`;
+                    a.click();
+                  }}
+                  tooltip={btnTrans('downloadSchema')}
+                  icon={<Icons.download />}
+                />
+                <RefreshButton
+                  className={classes.extraBtn}
+                  tooltip={btnTrans('refresh')}
+                  onClick={async () => {
+                    await fetchCollection(collectionName);
+                  }}
+                />
+              </Typography>
               <Typography variant="h5">
                 {collectionTrans('description')}
               </Typography>
@@ -222,6 +262,7 @@ const Overview = () => {
                 {collection.loaded ? collection.replicas?.length : '...'}
                 {collection.loaded && enableModifyReplica && (
                   <CustomIconButton
+                    className={classes.extraBtn}
                     tooltip={collectionTrans('modifyReplicaTooltip')}
                     onClick={() => {
                       setDialog({
@@ -238,7 +279,7 @@ const Overview = () => {
                       });
                     }}
                   >
-                    <Icons.settings className={classes.addReplicaBtn} />
+                    <Icons.settings />
                   </CustomIconButton>
                 )}
               </Typography>

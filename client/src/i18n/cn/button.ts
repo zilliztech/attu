@@ -40,6 +40,7 @@ const btnTrans = {
   explore: '探索',
   close: '关闭',
   modify: '修改',
+  downloadSchema: '下载 Schema',
 
   // tips
   loadColTooltip: '加载Collection',

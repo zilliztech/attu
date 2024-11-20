@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(.5),
   },
   svg: {
-    color: theme.palette.primary.light,
+    color: theme.palette.primary.main,
   },
 }));
 

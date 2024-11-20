@@ -17,8 +17,6 @@ import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { ConsistencyLevelEnum, DYNAMIC_FIELD } from '@/consts';
-import RefreshButton from './RefreshButton';
-import CopyButton from '@/components/advancedSearch/CopyButton';
 import { SearchParams } from './types';
 import { CollectionObject, CollectionFullObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
@@ -248,16 +246,6 @@ const Databases = () => {
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
     collectionName,
     databaseName,
-    extra: (
-      <>
-        <CopyButton label="" value={collectionName} />
-        <RefreshButton
-          onClick={async () => {
-            await fetchCollection(collectionName);
-          }}
-        />
-      </>
-    ),
   });
 
   const setCollectionSearchParams = (params: SearchParams) => {

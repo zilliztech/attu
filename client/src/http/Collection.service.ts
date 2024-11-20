@@ -24,6 +24,13 @@ export class CollectionService extends BaseModel {
     return super.findAll({ path: `/collections`, params: data || {} });
   }
 
+  static describeCollectionUnformatted(collectionName: string) {
+    return super.search({
+      path: `/collections/${collectionName}/unformatted`,
+      params: {},
+    });
+  }
+
   static getCollection(collectionName: string) {
     return super.search<CollectionFullObject>({
       path: `/collections/${collectionName}`,
