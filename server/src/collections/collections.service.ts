@@ -167,6 +167,8 @@ export class CollectionsService {
             fieldID: '',
             state: '',
             dataType: DataType.JSON,
+            is_function_output: false,
+            is_primary_key: false,
           },
         ]
       : [];
