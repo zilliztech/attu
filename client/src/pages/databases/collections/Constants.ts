@@ -108,3 +108,18 @@ export const PRIMARY_FIELDS_OPTIONS: LabelValuePair[] = [
     value: DataTypeEnum.VarChar,
   },
 ];
+
+export const ANALYZER_OPTIONS: LabelValuePair[] = [
+  {
+    label: 'Standard',
+    value: 'standard',
+  },
+  {
+    label: 'English',
+    value: 'english',
+  },
+  {
+    label: 'Chinese',
+    value: 'chinese',
+  },
+];

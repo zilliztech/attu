@@ -4,6 +4,7 @@ import {
   IconButton,
   Switch,
   FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { FC, Fragment, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +22,7 @@ import {
   ALL_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
+  ANALYZER_OPTIONS,
 } from './Constants';
 import { CreateFieldsProps, CreateFieldType, FieldType } from './Types';
 import { DataTypeEnum, VectorTypes } from '@/consts';
@@ -31,6 +33,7 @@ import {
   DEFAULT_ATTU_ELEMENT_TYPE,
 } from '@/consts';
 import { makeStyles } from '@mui/styles';
+import CustomIconButton from '@/components/customButton/CustomIconButton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
@@ -44,33 +47,40 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     gap: '8px',
     flex: '1 0 auto',
-  },
-  input: {
-    fontSize: '14px',
+    marginBottom: 4,
+    '& .MuiFormLabel-root': {
+      fontSize: 13,
+    },
+    '& .MuiInputBase-root': {
+      fontSize: 13,
+    },
+    '& .MuiSelect-filled': {
+      fontSize: 13,
+    },
+    '& .MuiCheckbox-root': {},
+    '& .MuiFormControlLabel-label': {
+      fontSize: 13,
+    },
   },
   fieldInput: {
-    width: '170px',
+    width: '130px',
   },
   select: {
-    width: '180px',
+    width: '150px',
     marginTop: '-20px',
-
-    '&:first-child': {
-      marginLeft: 0,
-    },
   },
   autoIdSelect: {
     width: '120px',
     marginTop: '-20px',
   },
   numberBox: {
-    width: '97px',
+    width: '80px',
   },
   maxLength: {
     maxWidth: '80px',
   },
   descInput: {
-    width: '120px',
+    width: '60px',
   },
   btnTxt: {
     textTransform: 'uppercase',
@@ -78,10 +88,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   iconBtn: {
     marginLeft: 0,
     padding: 0,
-    width: '16px',
-    height: '16px',
     position: 'relative',
     top: '-8px',
+    width: 15,
   },
   helperText: {
     lineHeight: '20px',
@@ -90,7 +99,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: '11px',
   },
   toggle: {
-    marginBottom: theme.spacing(2),
     marginLeft: theme.spacing(0.5),
     marginRight: theme.spacing(0.5),
   },
@@ -98,6 +106,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '14px',
     marginLeft: theme.spacing(0.5),
   },
+  paramsGrp: {
+    border: `1px dashed ${theme.palette.divider}`,
+    borderRadius: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
+    padding: 8,
+    paddingLeft: 0,
+    paddingTop: 0,
+  },
+
+  analyzerInput: {
+    paddingTop: 8,
+    '& .select': {
+      width: '104px',
+    },
+  },
+  matchInput: { fontSize: 13 },
 }));
 
 type inputType = {
@@ -252,7 +278,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return getInput({
       label: label || defaultLabal,
       value: field.name,
-      className: className || classes.fieldInput,
+      className: `${classes.fieldInput} ${className}`,
       handleChange: (value: string) => {
         const isValid = checkEmptyValid(value);
         setFieldsValidation(v =>
@@ -311,7 +337,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     };
     return getInput({
       label: collectionTrans('dimension'),
-      value: field.dimension as number,
+      value: field.dim as number,
       inputClassName: classes.numberBox,
       handleChange: (value: string) => {
         const { isPositive, isMultiple } = validateDimension(value);
@@ -320,11 +346,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
             ? !!isMultiple && isPositive
             : isPositive;
 
-        changeFields(field.id!, 'dimension', `${value}`);
+        changeFields(field.id!, 'dim', `${value}`);
 
         setFieldsValidation(v =>
           v.map(item =>
-            item.id === field.id! ? { ...item, dimension: isValid } : item
+            item.id === field.id! ? { ...item, dim: isValid } : item
           )
         );
       },
@@ -429,14 +455,60 @@ const CreateFields: FC<CreateFieldsProps> = ({
             title={collectionTrans('partitionKeyTooltip')}
             placement="top"
           >
-            <>
-              {collectionTrans('partitionKey')}
-              {/* <InfoIcon classes={{ root: classes.icon }} /> */}
-            </>
+            {collectionTrans('partitionKey')}
           </CustomToolTip>
         }
         className={classes.toggle}
       />
+    );
+  };
+
+  const generateTextMatchCheckBox = (field: FieldType, fields: FieldType[]) => {
+    return (
+      <div className={classes.matchInput}>
+        <Checkbox
+          checked={!!field.enable_match}
+          size="small"
+          onChange={() => {
+            changeFields(field.id!, 'enable_match', !field.enable_match);
+          }}
+        />
+        <CustomToolTip
+          title={collectionTrans('textMatchTooltip')}
+          placement="top"
+        >
+          <>{collectionTrans('enableMatch')}</>
+        </CustomToolTip>
+      </div>
+    );
+  };
+
+  const generateAnalyzerCheckBox = (field: FieldType, fields: FieldType[]) => {
+    return (
+      <div className={classes.analyzerInput}>
+        <Checkbox
+          checked={!!field.enable_analyzer}
+          size="small"
+          onChange={() => {
+            changeFields(field.id!, 'enable_analyzer', !field.enable_analyzer);
+          }}
+        />
+        <CustomSelector
+          wrapperClass="select"
+          options={ANALYZER_OPTIONS}
+          size="small"
+          onChange={e => {
+            changeFields(field.id!, 'analyzer_params', e.target.value);
+          }}
+          disabled={!field.enable_analyzer}
+          value={field.analyzer_params || 'standard'}
+          variant="filled"
+          label={collectionTrans('analyzer')}
+        />
+        <CustomIconButton disabled={!field.enable_analyzer}>
+          <icons.settings className={classes.icon} />
+        </CustomIconButton>
+      </div>
     );
   };
 
@@ -470,12 +542,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
         !VectorTypes.includes(updatedField.data_type) ||
         updatedField.data_type === DataTypeEnum.SparseFloatVector
       ) {
-        delete updatedField.dimension;
+        delete updatedField.dim;
       } else {
         // add dimension if not exist
-        updatedField.dimension = Number(
-          updatedField.dimension || DEFAULT_ATTU_DIM
-        );
+        updatedField.dim = Number(updatedField.dim || DEFAULT_ATTU_DIM);
       }
 
       return updatedField;
@@ -492,13 +562,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
       is_primary_key: false,
       description: '',
       isDefault: false,
-      dimension: DEFAULT_ATTU_DIM,
+      dim: DEFAULT_ATTU_DIM,
       id,
     };
     const newValidation = {
       id,
       name: false,
-      dimension: true,
+      dim: true,
     };
 
     fields.splice(index + 1, 0, newDefaultItem);
@@ -631,9 +701,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         {generateDesc(field)}
 
-        {isVarChar || isInt64
-          ? generatePartitionKeyToggle(field, fields)
-          : null}
+        {isInt64 ? generatePartitionKeyToggle(field, fields) : null}
+
+        {isVarChar ? (
+          <div className={classes.paramsGrp}>
+            {generateAnalyzerCheckBox(field, fields)}
+            {generateTextMatchCheckBox(field, fields)}
+            {generatePartitionKeyToggle(field, fields)}
+          </div>
+        ) : null}
         <IconButton
           onClick={() => {
             handleAddNewField(index);
