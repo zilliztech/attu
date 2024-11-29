@@ -12,7 +12,7 @@ import {
   DataTypeEnum,
   ConsistencyLevelEnum,
   DEFAULT_ATTU_DIM,
-  VectorTypes,
+  DEFAULT_ANALYZER_PARAMS,
 } from '@/consts';
 import CreateFields from '../databases/collections/CreateFields';
 import {
@@ -219,6 +219,17 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         }
         if (typeof v.max_capacity !== 'undefined') {
           data.max_capacity = Number(v.max_capacity);
+        }
+
+        if (v.analyzer_params && v.enable_analyzer) {
+          if (v.analyzer_params !== 'customized') {
+            data.analyzer_params =
+              DEFAULT_ANALYZER_PARAMS[
+                v.analyzer_params as 'standard' | 'english' | 'chinese'
+              ];
+          } else {
+            data.analyzer_params = v.analyzer_params;
+          }
         }
 
         v.is_primary_key && (data.autoID = form.autoID);
