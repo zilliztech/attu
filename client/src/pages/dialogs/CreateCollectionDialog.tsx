@@ -7,13 +7,8 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
-import { formatForm, TypeEnum } from '@/utils';
-import {
-  DataTypeEnum,
-  ConsistencyLevelEnum,
-  DEFAULT_ATTU_DIM,
-  DEFAULT_ANALYZER_PARAMS,
-} from '@/consts';
+import { formatForm, getAnalyzerParams, TypeEnum } from '@/utils';
+import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
 import CreateFields from '../databases/collections/CreateFields';
 import {
   CollectionCreateParam,
@@ -222,14 +217,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         }
 
         if (v.analyzer_params && v.enable_analyzer) {
-          if (v.analyzer_params !== 'customized') {
-            data.analyzer_params =
-              DEFAULT_ANALYZER_PARAMS[
-                v.analyzer_params as 'standard' | 'english' | 'chinese'
-              ];
-          } else {
-            data.analyzer_params = v.analyzer_params;
-          }
+          // if analyzer_params is string, we need to use default value
+          data.analyzer_params = getAnalyzerParams(v.analyzer_params);
         }
 
         v.is_primary_key && (data.autoID = form.autoID);

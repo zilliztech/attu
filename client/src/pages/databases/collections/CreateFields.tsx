@@ -6,7 +6,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import { FC, Fragment, ReactElement, useMemo } from 'react';
+import { FC, Fragment, ReactElement, useMemo, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '@/components/icons/Icons';
@@ -17,7 +17,9 @@ import {
   checkEmptyValid,
   checkRange,
   getCheckResult,
+  getAnalyzerParams,
 } from '@/utils';
+import { rootContext } from '@/context';
 import {
   ALL_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,
@@ -34,6 +36,7 @@ import {
 } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
+import EditAnalyzerDialog from '@/pages/dialogs/EditAnalyzerDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   optionalWrapper: {
@@ -144,6 +147,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
   autoID,
   setFieldsValidation,
 }) => {
+  const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
+
   const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
 
@@ -271,12 +276,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
     label?: string,
     className?: string
   ) => {
-    const defaultLabal = collectionTrans(
+    const defaultLabel = collectionTrans(
       VectorTypes.includes(field.data_type) ? 'vectorFieldName' : 'fieldName'
     );
 
     return getInput({
-      label: label || defaultLabal,
+      label: label || defaultLabel,
       value: field.name,
       className: `${classes.fieldInput} ${className}`,
       handleChange: (value: string) => {
@@ -484,6 +489,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateAnalyzerCheckBox = (field: FieldType, fields: FieldType[]) => {
+    let analyzer = '';
+    if (typeof field.analyzer_params === 'object') {
+      analyzer = field.analyzer_params.tokenizer || field.analyzer_params.type;
+    } else {
+      analyzer = field.analyzer_params || 'standard';
+    }
+
     return (
       <div className={classes.analyzerInput}>
         <Checkbox
@@ -501,11 +513,32 @@ const CreateFields: FC<CreateFieldsProps> = ({
             changeFields(field.id!, 'analyzer_params', e.target.value);
           }}
           disabled={!field.enable_analyzer}
-          value={field.analyzer_params || 'standard'}
+          value={analyzer}
           variant="filled"
           label={collectionTrans('analyzer')}
         />
-        <CustomIconButton disabled={!field.enable_analyzer}>
+        <CustomIconButton
+          disabled={!field.enable_analyzer}
+          onClick={() => {
+            setDialog2({
+              open: true,
+              type: 'custom',
+              params: {
+                component: (
+                  <EditAnalyzerDialog
+                    data={getAnalyzerParams(
+                      field.analyzer_params || 'standard'
+                    )}
+                    handleConfirm={data => {
+                      changeFields(field.id!, 'analyzer_params', data);
+                    }}
+                    handleCloseDialog={handleCloseDialog2}
+                  />
+                ),
+              },
+            });
+          }}
+        >
           <icons.settings className={classes.icon} />
         </CustomIconButton>
       </div>

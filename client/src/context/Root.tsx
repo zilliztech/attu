@@ -1,8 +1,5 @@
 import { useState, useCallback, useEffect, useContext } from 'react';
 import React from 'react';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { SwipeableDrawer } from '@mui/material';
 import { authContext } from '@/context';
 import {
   RootContextType,
@@ -33,30 +30,21 @@ export const rootContext = React.createContext<RootContextType>({
     position = { vertical: 'top', horizontal: 'right' }
   ) => {},
   dialog: DefaultDialogConfigs,
+  dialog2: DefaultDialogConfigs,
   setDialog: params => {},
+  setDialog2: params => {},
   handleCloseDialog: () => {},
-  setDrawer: (params: any) => {},
+  handleCloseDialog2: () => {},
   versionInfo: { attu: '', sdk: '' },
 });
 
 const { Provider } = rootContext;
-
-const useStyles = makeStyles((theme: Theme) => ({
-  paper: {
-    minWidth: '300px',
-  },
-  paperAnchorRight: {
-    width: '40vw',
-  },
-}));
 
 // Dialog has two type : normal | custom;
 // notice type mean it's a notice dialog you need to set props like title, content, actions
 // custom type could have own state, you could set a complete component in dialog.
 export const RootProvider = (props: { children: React.ReactNode }) => {
   const { isAuth } = useContext(authContext);
-
-  const classes = useStyles();
 
   const [snackBar, setSnackBar] = useState<SnackBarType>({
     open: false,
@@ -67,11 +55,8 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
     autoHideDuration: 1000,
   });
   const [dialog, setDialog] = useState<DialogType>(DefaultDialogConfigs);
-  const [drawer, setDrawer]: any = useState({
-    anchor: 'right',
-    open: false,
-    child: <></>,
-  });
+  const [dialog2, setDialog2] = useState<DialogType>(DefaultDialogConfigs);
+
   const [versionInfo, setVersionInfo] = useState({ attu: '', sdk: '' });
 
   const handleSnackBarClose = () => {
@@ -101,19 +86,12 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
       open: false,
     });
   };
-
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
-
-      setDrawer({ ...drawer, open: open });
-    };
+  const handleCloseDialog2 = () => {
+    setDialog2({
+      ...dialog2,
+      open: false,
+    });
+  };
 
   useEffect(() => {
     if (isAuth) {
@@ -144,25 +122,19 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
       value={{
         openSnackBar,
         dialog,
+        dialog2,
         setDialog,
+        setDialog2,
         handleCloseDialog,
-        setDrawer,
+        handleCloseDialog2,
         versionInfo,
       }}
     >
-      <CustomSnackBar {...snackBar} onClose={handleSnackBarClose} />
       {props.children}
-      <CustomDialog {...dialog} onClose={handleCloseDialog} />
 
-      <SwipeableDrawer
-        anchor={drawer.anchor}
-        open={drawer.open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        classes={{ paperAnchorRight: classes.paperAnchorRight }}
-      >
-        {drawer.child}
-      </SwipeableDrawer>
+      <CustomSnackBar {...snackBar} onClose={handleSnackBarClose} />
+      <CustomDialog {...dialog} onClose={handleCloseDialog} />
+      <CustomDialog {...dialog2} onClose={handleCloseDialog2} />
     </Provider>
   );
 };

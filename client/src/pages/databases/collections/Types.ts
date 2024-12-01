@@ -13,6 +13,8 @@ export interface CollectionCreateParam {
   consistency_level: string;
 }
 
+export type AnalyzerType = 'standard' | 'english' | 'chinese';
+
 export interface CreateField {
   name: string | null;
   data_type: DataTypeEnum;
@@ -29,7 +31,7 @@ export interface CreateField {
   autoID?: boolean;
   enable_analyzer?: boolean;
   enable_match?: boolean;
-  analyzer_params?: any;
+  analyzer_params?: AnalyzerType | Record<AnalyzerType, any>;
 }
 
 export type CreateFieldType =
