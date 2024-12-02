@@ -94,6 +94,20 @@ const Overview = () => {
                   className={classes.chip}
                   size="small"
                   label={collectionTrans('analyzer')}
+                  onClick={() => {
+                    const textToCopy = findKeyValue(
+                      f.type_params,
+                      'analyzer_params'
+                    );
+                    navigator.clipboard
+                      .writeText(textToCopy as string)
+                      .then(() => {
+                        alert('Copied to clipboard!');
+                      })
+                      .catch(err => {
+                        alert('Failed to copy: ' + err);
+                      });
+                  }}
                 />
               </Tooltip>
             ) : null}
