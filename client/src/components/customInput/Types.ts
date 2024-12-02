@@ -77,7 +77,7 @@ export interface ITextfieldConfig {
   validations?: IValidation[];
   fullWidth?: boolean;
   className?: string;
-  type?: 'text' | 'number' | 'password';
+  type?: 'text' | 'number' | 'password' | 'bool';
   onBlur?: (event: any) => void;
   onChange?: (event: any) => void;
   onKeyDown?: (event: any) => void;

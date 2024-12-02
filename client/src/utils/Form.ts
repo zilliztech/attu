@@ -1,5 +1,11 @@
 import { Option } from '@/components/customSelector/Types';
-import { METRIC_TYPES_VALUES, DataTypeEnum } from '@/consts';
+import {
+  METRIC_TYPES_VALUES,
+  DataTypeEnum,
+  SCALAR_INDEX_OPTIONS,
+  DataTypeStringEnum,
+  INDEX_TYPES_ENUM,
+} from '@/consts';
 import { IForm } from '@/hooks';
 import { IndexType } from '@/pages/databases/collections/schema/Types';
 
@@ -87,4 +93,56 @@ export const getMetricOptions = (
     default:
       return [];
   }
+};
+
+export const getScalarIndexOption = (
+  fieldType: DataTypeStringEnum,
+  elementType?: DataTypeStringEnum
+): Option[] => {
+  // Helper function to check if a type is numeric
+  const isNumericType = (type: DataTypeStringEnum): boolean =>
+    ['Int8', 'Int16', 'Int32', 'Int64', 'Float', 'Double'].includes(type);
+
+  // Helper function to check if a type is valid for bitmap
+  const isBitmapSupportedType = (type: DataTypeStringEnum): boolean =>
+    ['Bool', 'Int8', 'Int16', 'Int32', 'Int64', 'VarChar'].includes(type);
+
+  // Initialize the options array
+  const options: Option[] = [];
+
+  // Add options based on fieldType
+  if (fieldType === DataTypeStringEnum.VarChar) {
+    options.push(
+      SCALAR_INDEX_OPTIONS.find(
+        opt => opt.value === INDEX_TYPES_ENUM.MARISA_TRIE
+      )!
+    );
+  }
+
+  if (isNumericType(fieldType)) {
+    options.push(
+      SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.SORT)!
+    );
+  }
+
+  if (
+    fieldType === DataTypeStringEnum.Array &&
+    elementType &&
+    isBitmapSupportedType(elementType)
+  ) {
+    options.push(
+      SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.BITMAP)!
+    );
+  } else if (isBitmapSupportedType(fieldType)) {
+    options.push(
+      SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.BITMAP)!
+    );
+  }
+
+  // INVERTED index is a general-purpose index for all scalar fields
+  options.push(
+    SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.INVERTED)!
+  );
+
+  return options;
 };

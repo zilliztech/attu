@@ -111,6 +111,7 @@ const IndexTypeElement: FC<{
             fieldName={field.name}
             dataType={field.dataType as unknown as DataTypeEnum}
             fieldType={field.data_type as DataTypeStringEnum}
+            elementType={field.element_type as DataTypeStringEnum}
             dimension={Number(field.dimension)}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}

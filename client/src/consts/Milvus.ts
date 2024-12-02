@@ -52,6 +52,7 @@ export enum INDEX_TYPES_ENUM {
   SPARSE_WAND = 'SPARSE_WAND',
   // inverted
   INVERTED = 'INVERTED',
+  BITMAP = 'BITMAP',
 }
 
 export enum METRIC_TYPES_VALUES {
@@ -261,16 +262,6 @@ export const INDEX_OPTIONS_MAP = {
     label: v,
     value: v,
   })),
-  [DataTypeEnum.VarChar]: [
-    {
-      label: 'INVERTED',
-      value: INDEX_TYPES_ENUM.INVERTED,
-    },
-    {
-      label: 'marisa-trie',
-      value: INDEX_TYPES_ENUM.MARISA_TRIE,
-    },
-  ],
   ['DISK']: Object.keys(DISK_INDEX_CONFIG).map(v => ({
     label: v,
     value: v,
@@ -280,6 +271,13 @@ export const INDEX_OPTIONS_MAP = {
     value: v,
   })),
 };
+
+export const SCALAR_INDEX_OPTIONS = [
+  { label: INDEX_TYPES_ENUM.INVERTED, value: INDEX_TYPES_ENUM.INVERTED },
+  { label: INDEX_TYPES_ENUM.SORT, value: INDEX_TYPES_ENUM.SORT },
+  { label: INDEX_TYPES_ENUM.MARISA_TRIE, value: INDEX_TYPES_ENUM.MARISA_TRIE },
+  { label: INDEX_TYPES_ENUM.BITMAP, value: INDEX_TYPES_ENUM.BITMAP },
+];
 
 // search params default value map
 export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
@@ -395,11 +393,7 @@ export enum DataTypeStringEnum {
   None = 'None',
 }
 
-export const NONE_INDEXABLE_DATA_TYPES = [
-  DataTypeStringEnum.Bool,
-  DataTypeStringEnum.JSON,
-  DataTypeStringEnum.Array,
-];
+export const NONE_INDEXABLE_DATA_TYPES = [DataTypeStringEnum.JSON];
 
 export type Property = { key: string; value: any; desc: string; type: string };
 

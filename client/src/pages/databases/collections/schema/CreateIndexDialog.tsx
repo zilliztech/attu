@@ -17,13 +17,14 @@ import { useFormValidation } from '@/hooks';
 import { getCreateIndexJSCode } from '@/utils/code/Js';
 import { getCreateIndexPYCode } from '@/utils/code/Py';
 import { getCreateIndexJavaCode } from '@/utils/code/Java';
-import { formatForm, getMetricOptions } from '@/utils';
+import { formatForm, getMetricOptions, getScalarIndexOption } from '@/utils';
 import CreateForm from './CreateForm';
 import { IndexType, IndexExtraParam } from './Types';
 
 const CreateIndex = (props: {
   collectionName: string;
   fieldType: DataTypeStringEnum;
+  elementType?: DataTypeStringEnum;
   dataType: DataTypeEnum;
   handleCreate: (params: IndexExtraParam, index_name: string) => void;
   handleCancel: () => void;
@@ -36,6 +37,7 @@ const CreateIndex = (props: {
   const {
     collectionName,
     fieldType,
+    elementType,
     handleCreate,
     handleCancel,
     fieldName,
@@ -163,23 +165,12 @@ const CreateIndex = (props: {
           break;
       }
     } else {
-      switch (fieldType) {
-        case DataTypeStringEnum.VarChar:
-          options = [
-            ...getOptions(
-              indexTrans('scalar'),
-              INDEX_OPTIONS_MAP[DataTypeEnum.VarChar]
-            ),
-          ];
-          break;
-        default:
-          options = [
-            ...getOptions(indexTrans('scalar'), [
-              { label: 'INVERTED', value: INDEX_TYPES_ENUM.INVERTED },
-              { label: 'STL sort', value: INDEX_TYPES_ENUM.SORT },
-            ]),
-          ];
-      }
+      options = [
+        ...getOptions(
+          indexTrans('scalar'),
+          getScalarIndexOption(fieldType, elementType)
+        ),
+      ];
     }
 
     return [...autoOption, ...options];
@@ -253,7 +244,7 @@ const CreateIndex = (props: {
     // reset index params
     let paramsForm: { [key in string]: string } = {};
     // m is selector not input
-    (INDEX_CONFIG[type].create || [])
+    ((INDEX_CONFIG[type] && INDEX_CONFIG[type].create) || [])
       .filter(t => t !== 'm')
       .forEach(item => {
         paramsForm[item] = '';
@@ -280,7 +271,7 @@ const CreateIndex = (props: {
     <DialogTemplate
       title={dialogTrans('createTitle', {
         type: indexTrans('index'),
-        name: collectionName,
+        name: fieldName,
       })}
       handleClose={handleCancel}
       confirmLabel={btnTrans('create')}

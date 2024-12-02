@@ -56,7 +56,7 @@ const CreateForm = (
       key: string;
       min?: number;
       max?: number;
-      type?: string;
+      type?: 'number' | 'text' | 'password' | 'bool';
     }) => {
       const { label, key, min, max, type = 'number' } = props;
       const config: ITextfieldConfig = {
@@ -220,7 +220,9 @@ const CreateForm = (
           const type = e.target.value;
           updateForm('index_type', type as string);
           // reset metric type value
-          updateForm('metric_type', metricOptions[0].value as string);
+          if (metricOptions[0]) {
+            updateForm('metric_type', metricOptions[0].value as string);
+          }
           indexTypeChange && indexTypeChange(type as string);
         }}
         className={classes.select}
