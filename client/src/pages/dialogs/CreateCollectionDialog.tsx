@@ -48,7 +48,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   consistencySelect: {
     marginTop: theme.spacing(2),
   },
-  dialog: {},
+  dialog: {
+    width: 800,
+  },
 }));
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
