@@ -43,6 +43,10 @@ export const LOGICAL_OPERATORS = [
     label: 'like',
   },
   {
+    value: 'TEXT_MATCH',
+    label: 'TEXT_MATCH',
+  },
+  {
     value: 'JSON_CONTAINS',
     label: 'JSON_CONTAINS',
   },

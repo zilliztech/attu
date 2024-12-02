@@ -81,6 +81,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '12px',
     color: theme.palette.text.primary,
     border: 'none',
+    cursor: 'normal',
   },
   featureChip: {
     marginRight: 4,

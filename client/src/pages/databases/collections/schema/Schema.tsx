@@ -5,7 +5,7 @@ import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
-import { formatFieldType, formatNumber } from '@/utils';
+import { formatFieldType, formatNumber, findKeyValue } from '@/utils';
 import { dataContext, rootContext, systemContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
@@ -72,7 +72,44 @@ const Overview = () => {
               />
             ) : null}
             {f.autoID ? (
-              <Chip className={classes.chip} size="small" label="auto id" />
+              <Chip
+                className={classes.chip}
+                size="small"
+                label={collectionTrans('autoId')}
+              />
+            ) : null}
+            {findKeyValue(f.type_params, 'enable_match') ? (
+              <Chip
+                className={classes.chip}
+                size="small"
+                label={collectionTrans('enableMatch')}
+              />
+            ) : null}
+            {findKeyValue(f.type_params, 'enable_analyzer') ? (
+              <Tooltip
+                title={findKeyValue(f.type_params, 'analyzer_params')}
+                arrow
+              >
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={collectionTrans('analyzer')}
+                  onClick={() => {
+                    const textToCopy = findKeyValue(
+                      f.type_params,
+                      'analyzer_params'
+                    );
+                    navigator.clipboard
+                      .writeText(textToCopy as string)
+                      .then(() => {
+                        alert('Copied to clipboard!');
+                      })
+                      .catch(err => {
+                        alert('Failed to copy: ' + err);
+                      });
+                  }}
+                />
+              </Tooltip>
             ) : null}
           </div>
         );

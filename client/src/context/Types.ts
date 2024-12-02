@@ -15,9 +15,11 @@ import { AuthObject } from '@server/types';
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;
   dialog: DialogType;
+  dialog2: DialogType;
   setDialog: (params: DialogType) => void;
+  setDialog2: (params: DialogType) => void;
   handleCloseDialog: () => void;
-  setDrawer: (params: any) => void;
+  handleCloseDialog2: () => void;
   versionInfo: { attu: string; sdk: string };
 };
 

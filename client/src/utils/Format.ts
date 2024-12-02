@@ -4,6 +4,7 @@ import {
   DEFAULT_PROMETHEUS_PORT,
   VectorTypes,
   DataTypeStringEnum,
+  DEFAULT_ANALYZER_PARAMS,
 } from '@/consts';
 import {
   CreateFieldType,
@@ -11,6 +12,7 @@ import {
 } from '@/pages/databases/collections/Types';
 import { FieldObject } from '@server/types';
 import { generateVector } from '.';
+import { AnalyzerType } from '@/pages/databases/collections/Types';
 
 /**
  * transform large capacity to capacity in b.
@@ -335,4 +337,14 @@ export const getColumnWidth = (field: FieldObject): number => {
     default:
       return 350;
   }
+};
+
+export const getAnalyzerParams = (
+  analyzerParams: AnalyzerType | Record<AnalyzerType, any>
+): Record<string, any> => {
+  if (typeof analyzerParams === 'string') {
+    return DEFAULT_ANALYZER_PARAMS[analyzerParams as AnalyzerType];
+  }
+
+  return analyzerParams;
 };

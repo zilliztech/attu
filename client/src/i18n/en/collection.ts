@@ -63,6 +63,9 @@ const collectionTrans = {
   partitionKeyTooltip:
     ' Milvus will store entities in a partition according to the values in the partition key field. Only one Int64 or VarChar field is supported.',
   enableDynamicSchema: 'Dynamic Schema',
+  analyzer: 'Analyzer',
+  enableMatch: 'Enable Match',
+  textMatchTooltip: 'Text match in Milvus enables precise document retrieval based on specific terms.',
 
   // load dialog
   loadTitle: 'Load Collection',

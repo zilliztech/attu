@@ -61,6 +61,9 @@ const collectionTrans = {
   partitionKeyTooltip:
     'Milvus将根据分区键字段中的值在分区中存储entities。只支持一个Int64或VarChar字段。',
   enableDynamicSchema: '启用动态Schema',
+  analyzer: '分词器',
+  enableMatch: '启用匹配',
+  textMatchTooltip: 'Milvus中的文本匹配能够基于特定术语实现精确的文档检索。',
 
   // load dialog
   loadTitle: '加载Collection',

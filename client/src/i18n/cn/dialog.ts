@@ -1,3 +1,5 @@
+import { Edit } from '@mui/icons-material';
+
 const dialogTrans = {
   value: '值',
   deleteTipAction: '输入',
@@ -12,6 +14,7 @@ const dialogTrans = {
   loadTitle: `加载 {{type}}`,
   editEntityTitle: `编辑 Entity`,
   modifyReplicaTitle: `修改 {{type}} 的副本`,
+  editAnalyzerTitle: `编辑 {{type}} 分析器`,
 
   loadContent: `您正在尝试加载带有数据的 {{type}}。只有已加载的 {{type}} 可以被搜索。`,
   releaseContent: `您正在尝试发布带有数据的 {{type}}。请注意，数据将不再可用于搜索。`,
@@ -28,6 +31,7 @@ const dialogTrans = {
   emptyDataDialogInfo: `您正在尝试清空数据。此操作无法撤销，请谨慎操作。`,
   resetPropertyInfo: '您确定要重置属性吗？',
   editEntityInfo: `注意：编辑id字段将创建一个新的实体。`,
+  editAnalyzerInfo: `分析器以JSON格式定义，请参考milvus.io 了解<a href='https://milvus.io/docs/analyzer-overview.md' target='_blank'>更多信息</a>。`,
 };
 
 export default dialogTrans;

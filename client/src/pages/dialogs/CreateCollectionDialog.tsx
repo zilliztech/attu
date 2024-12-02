@@ -7,13 +7,8 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
-import { formatForm, TypeEnum } from '@/utils';
-import {
-  DataTypeEnum,
-  ConsistencyLevelEnum,
-  DEFAULT_ATTU_DIM,
-  VectorTypes,
-} from '@/consts';
+import { formatForm, getAnalyzerParams, TypeEnum } from '@/utils';
+import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
 import CreateFields from '../databases/collections/CreateFields';
 import {
   CollectionCreateParam,
@@ -28,16 +23,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '16px',
     '&:nth-last-child(3)': {
       flexDirection: 'column',
       alignItems: 'flex-start',
       marginBottom: '0',
     },
-
     '& legend': {
       marginBottom: theme.spacing(1),
-      color: theme.palette.text.secondary,
       lineHeight: '20px',
       fontSize: '14px',
     },
@@ -45,23 +37,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   generalInfo: {
     gap: 8,
   },
-
   input: {
     width: '100%',
   },
   select: {
-    width: '170px',
-
     '&:first-child': {
       marginLeft: 0,
     },
   },
   consistencySelect: {
-    '& .MuiSelect-filled': {
-      padding: 12,
-    },
+    marginTop: theme.spacing(2),
   },
-  dialog: {},
+  dialog: {
+    width: 800,
+  },
 }));
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
@@ -96,7 +85,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
       name: null,
-      dimension: DEFAULT_ATTU_DIM,
+      dim: DEFAULT_ATTU_DIM,
       description: '',
       isDefault: true,
       id: '2',
@@ -109,7 +98,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     }[]
   >([
     { id: '1', name: false },
-    { id: '2', name: false, dimension: true },
+    { id: '2', name: false, dim: true },
   ]);
 
   const allFieldsValid = useMemo(() => {
@@ -206,17 +195,19 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       ...form,
       fields: fields.map(v => {
         let data: CreateField = {
+          ...v,
           name: v.name,
           description: v.description,
-          is_primary_key: v.is_primary_key,
-          is_partition_key: v.is_partition_key,
+          is_primary_key: !!v.is_primary_key,
+          is_partition_key: !!v.is_partition_key,
           data_type: v.data_type,
         };
 
         // if we need
-        if (typeof v.dimension !== undefined) {
-          data.dimension = Number(v.dimension);
+        if (typeof v.dim !== undefined && !isNaN(Number(v.dim))) {
+          data.dim = Number(v.dim);
         }
+
         if (typeof v.max_length === 'number') {
           data.max_length = Number(v.max_length);
         }
@@ -227,32 +218,19 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           data.max_capacity = Number(v.max_capacity);
         }
 
-        v.is_primary_key && (data.autoID = form.autoID);
-
-        const param = VectorTypes.includes(v.data_type)
-          ? {
-              ...data,
-              type_params: {
-                // if data type is vector, dimension must exist.
-                dim: Number(data.dimension!),
-              },
-            }
-          : v.data_type === DataTypeEnum.VarChar ||
-            v.element_type === DataTypeEnum.VarChar
-          ? {
-              ...v,
-              type_params: {
-                max_length: Number(v.max_length!),
-              },
-            }
-          : { ...data };
-
-        // delete sparse vector dime
-        if (param.data_type === DataTypeEnum.SparseFloatVector) {
-          delete param.type_params!.dim;
+        if (v.analyzer_params && v.enable_analyzer) {
+          // if analyzer_params is string, we need to use default value
+          data.analyzer_params = getAnalyzerParams(v.analyzer_params);
         }
 
-        return param;
+        v.is_primary_key && (data.autoID = form.autoID);
+
+        // delete sparse vector dime
+        if (data.data_type === DataTypeEnum.SparseFloatVector) {
+          delete data.dim;
+        }
+
+        return data;
       }),
       consistency_level: consistencyLevel,
     };
@@ -317,14 +295,14 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         </fieldset>
 
         <fieldset className={classes.fieldset}>
-          <legend>{collectionTrans('consistency')}</legend>
           <CustomSelector
             wrapperClass={`${classes.select} ${classes.consistencySelect}`}
             size="small"
             options={CONSISTENCY_LEVEL_OPTIONS}
-            onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
+            onChange={e => {
               setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
             }}
+            label={collectionTrans('consistency')}
             value={consistencyLevel}
             variant="filled"
           />

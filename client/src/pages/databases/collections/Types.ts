@@ -13,24 +13,25 @@ export interface CollectionCreateParam {
   consistency_level: string;
 }
 
+export type AnalyzerType = 'standard' | 'english' | 'chinese';
+
 export interface CreateField {
   name: string | null;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
   is_partition_key?: boolean;
   description: string;
-  dimension?: number | string;
   isDefault?: boolean;
   id?: string;
-  type_params?: {
-    dim?: string | number;
-    max_length?: string | number;
-  };
+  dim?: string | number;
+  max_length?: string | number;
   createType?: CreateFieldType;
   element_type?: DataTypeEnum;
-  max_length?: string | number;
   max_capacity?: string | number;
   autoID?: boolean;
+  enable_analyzer?: boolean;
+  enable_match?: boolean;
+  analyzer_params?: AnalyzerType | Record<AnalyzerType, any>;
 }
 
 export type CreateFieldType =
@@ -46,7 +47,7 @@ export type FieldType = {
   is_primary_key: boolean;
   is_partition_key?: boolean;
   description: string;
-  dimension?: number | string;
+  dim?: number | string;
   isDefault?: boolean;
   id?: string;
   type_params?: {
@@ -57,6 +58,9 @@ export type FieldType = {
   max_length?: string | number;
   max_capacity?: string | number;
   autoID?: boolean;
+  enable_analyzer?: boolean;
+  enable_match?: boolean;
+  analyzer_params?: any;
 };
 
 export interface CreateFieldsProps {
