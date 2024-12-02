@@ -41,6 +41,47 @@ export const makeRandomSparse = (dim: number) => {
   return sparseObject;
 };
 
+export const makeRandomVarChar = (maxLength: number) => {
+  const words = [
+    'quick',
+    'brown',
+    'fox',
+    'jumps',
+    'over',
+    'lazy',
+    'dog',
+    'runs',
+    'forest',
+    'grace',
+    'speed',
+    'bright',
+    'sky',
+    'beautiful',
+    'day',
+    'adventure',
+    'beyond',
+    'horizon',
+    'silent',
+  ];
+
+  let text = '';
+  const space = ' ';
+
+  while (text.length < maxLength) {
+    // Pick a random word from the list
+    const nextWord = words[Math.floor(Math.random() * words.length)];
+    const newLength = text.length + nextWord.length + (text ? space.length : 0);
+
+    if (newLength <= maxLength) {
+      text += (text ? space : '') + nextWord;
+    } else {
+      break; // Stop adding words when the limit is reached
+    }
+  }
+
+  return text;
+};
+
 export const genDataByType = (field: FieldSchema): any => {
   const { data_type, type_params, element_type } = field;
   switch (data_type) {
@@ -68,7 +109,8 @@ export const genDataByType = (field: FieldSchema): any => {
     case 'SparseFloatVector':
       return makeRandomSparse(16);
     case 'VarChar':
-      return makeRandomId(Number(findKeyValue(type_params, 'max_length')));
+      const len = Number(findKeyValue(type_params, 'max_length'));
+      return makeRandomVarChar(len) || makeRandomId(len);
     case 'JSON':
       return makeRandomJSON();
     case 'Array':
