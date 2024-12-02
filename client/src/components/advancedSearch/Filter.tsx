@@ -96,7 +96,7 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       let newExpr = `${n} ${op} ${value}`;
 
       // rewrite expression if the op is JSON_CONTAINS/ARRAY_CONTAINS
-      if (op === 'JSON_CONTAINS' || op === 'ARRAY_CONTAINS') {
+      if (op === 'JSON_CONTAINS' || op === 'ARRAY_CONTAINS' || op ==='TEXT_MATCH') {
         newExpr = `${op}(${n}, ${value})`;
       }
       // rewrite expression if the op is ARRAY_CONTAINS_ALL/ARRAY_CONTAINS_ANY
