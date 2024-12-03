@@ -143,6 +143,9 @@ export const genRow = (
   const result: any = {};
   fields.forEach(field => {
     if (!field.autoID) {
+      if ((field.nullable || field.default_value) && Math.random() < 0.5) {
+        return;
+      }
       result[field.name] = genDataByType(field);
     }
   });
