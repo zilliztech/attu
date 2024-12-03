@@ -29,7 +29,8 @@ const collectionTrans = {
     'Consistency refers to the property that ensures every node or replica has the same view of data when writing or reading data at a given time.',
   entityCountInfo:
     'This count is an approximation and may be slightly delayed due to the unique mechanisms of Milvus. The actual count may vary and is updated periodically. Please note that this number should be used as a reference and not as an exact count.',
-  replicaTooltip: 'The number of replicas for the collection, it can not exceed the number of query nodes.',
+  replicaTooltip:
+    'The number of replicas for the collection, it can not exceed the number of query nodes.',
   modifyReplicaTooltip: 'Modify Replica Number',
 
   // create dialog
@@ -65,7 +66,14 @@ const collectionTrans = {
   enableDynamicSchema: 'Dynamic Schema',
   analyzer: 'Analyzer',
   enableMatch: 'Enable Match',
-  textMatchTooltip: 'Text match in Milvus enables precise document retrieval based on specific terms.',
+  textMatchTooltip:
+    'Text match in Milvus enables precise document retrieval based on specific terms.',
+  nullable: 'Nullable',
+  nullableTooltip:
+    'Whether the field can be null, nullable field cannot be used as partition keys.',
+  defaultValue: 'Default',
+  defaultValueTooltip:
+    'Default value of the field, JSON and Array types are not supported.',
 
   // load dialog
   loadTitle: 'Load Collection',

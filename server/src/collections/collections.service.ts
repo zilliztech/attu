@@ -45,7 +45,7 @@ import {
   VectorTypes,
   cloneObj,
 } from '../utils';
-import { QueryDto, ImportSampleDto, GetReplicasDto } from './dto';
+import { QueryDto, ImportSampleDto } from './dto';
 import {
   CollectionObject,
   CollectionLazyObject,

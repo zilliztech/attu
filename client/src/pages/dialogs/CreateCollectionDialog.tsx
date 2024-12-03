@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(2),
   },
   dialog: {
-    width: 800,
+    minWidth: 820,
   },
 }));
 

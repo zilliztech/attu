@@ -127,6 +127,24 @@ const Overview = () => {
       label: collectionTrans('fieldType'),
     },
     {
+      id: 'nullable',
+      align: 'left',
+      disablePadding: false,
+      label: collectionTrans('nullable'),
+      formatter(f) {
+        return f.nullable ? commonTrans('yes') : commonTrans('no');
+      },
+    },
+    {
+      id: 'default_value',
+      align: 'left',
+      disablePadding: false,
+      label: collectionTrans('defaultValue'),
+      formatter(f) {
+        return f.default_value || '--';
+      },
+    },
+    {
       id: 'name',
       align: 'left',
       disablePadding: true,

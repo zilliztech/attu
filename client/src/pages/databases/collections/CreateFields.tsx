@@ -60,7 +60,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiSelect-filled': {
       fontSize: 14,
     },
-    '& .MuiCheckbox-root': {},
+    '& .MuiCheckbox-root': {
+      padding: 4,
+    },
     '& .MuiFormControlLabel-label': {
       fontSize: 14,
     },
@@ -83,17 +85,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: '80px',
   },
   descInput: {
-    width: '60px',
+    width: '64px',
   },
   btnTxt: {
     textTransform: 'uppercase',
   },
   iconBtn: {
-    marginLeft: 0,
     padding: 0,
     position: 'relative',
     top: '-8px',
-    width: 15,
+    '& svg': {
+      width: 15,
+    },
   },
   helperText: {
     lineHeight: '20px',
@@ -114,10 +117,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: 4,
     display: 'flex',
     flexDirection: 'column',
-    gap: 8,
-    padding: 8,
     paddingLeft: 0,
     paddingTop: 0,
+    paddingRight: 8,
+    minHeight: 44,
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   analyzerInput: {
     paddingTop: 8,
@@ -125,7 +131,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '110px',
     },
   },
-  matchInput: { fontSize: 13 },
+  setting: { fontSize: 12, alignItems: 'center', display: 'flex' },
 }));
 
 type inputType = {
@@ -312,6 +318,35 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
+  const generateDefaultValue = (field: FieldType) => {
+    let type: 'number' | 'text' = 'number';
+    switch (field.data_type) {
+      case DataTypeEnum.Int8:
+      case DataTypeEnum.Int16:
+      case DataTypeEnum.Int32:
+      case DataTypeEnum.Int64:
+      case DataTypeEnum.Float:
+      case DataTypeEnum.Double:
+        type = 'number';
+        break;
+      case DataTypeEnum.Bool:
+        type = 'text';
+        break;
+      default:
+        type = 'text';
+        break;
+    }
+
+    return getInput({
+      label: collectionTrans('defaultValue'),
+      value: field.default_value,
+      type: type,
+      handleChange: (value: string) =>
+        changeFields(field.id!, { default_value: value }),
+      inputClassName: classes.descInput,
+    });
+  };
+
   const generateDimension = (field: FieldType) => {
     // sparse dont support dimension
     if (field.data_type === DataTypeEnum.SparseFloatVector) {
@@ -432,36 +467,55 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generatePartitionKeyToggle = (
+  const generatePartitionKeyCheckbox = (
     field: FieldType,
     fields: FieldType[]
   ) => {
     return (
-      <FormControlLabel
-        control={
-          <Switch
-            checked={!!field.is_partition_key}
-            disabled={
-              fields.some(f => f.is_partition_key) && !field.is_partition_key
-            }
-            size="small"
-            onChange={() => {
-              changeFields(field.id!, {
-                is_partition_key: !field.is_partition_key,
-              });
-            }}
-          />
-        }
-        label={
-          <CustomToolTip
-            title={collectionTrans('partitionKeyTooltip')}
-            placement="top"
-          >
-            {collectionTrans('partitionKey')}
-          </CustomToolTip>
-        }
-        className={classes.toggle}
-      />
+      <div className={classes.setting}>
+        <Checkbox
+          checked={!!field.is_partition_key}
+          size="small"
+          disabled={
+            (fields.some(f => f.is_partition_key) && !field.is_partition_key) ||
+            field.nullable
+          }
+          onChange={() => {
+            changeFields(field.id!, {
+              is_partition_key: !field.is_partition_key,
+            });
+          }}
+        />
+        <CustomToolTip
+          title={collectionTrans('partitionKeyTooltip')}
+          placement="top"
+        >
+          <>{collectionTrans('partitionKey')}</>
+        </CustomToolTip>
+      </div>
+    );
+  };
+
+  const generateNullableCheckbox = (field: FieldType, fields: FieldType[]) => {
+    return (
+      <div className={classes.setting}>
+        <Checkbox
+          checked={!!field.nullable}
+          size="small"
+          onChange={() => {
+            changeFields(field.id!, {
+              nullable: !field.nullable,
+              is_partition_key: false,
+            });
+          }}
+        />
+        <CustomToolTip
+          title={collectionTrans('nullableTooltip')}
+          placement="top"
+        >
+          <>{collectionTrans('nullable')}</>
+        </CustomToolTip>
+      </div>
     );
   };
 
@@ -474,7 +528,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       update.enable_analyzer = true;
     }
     return (
-      <div className={classes.matchInput}>
+      <div className={classes.setting}>
         <Checkbox
           checked={!!field.enable_match}
           size="small"
@@ -706,6 +760,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
     const isInt64 = field.data_type === DataTypeEnum.Int64;
     const isArray = field.data_type === DataTypeEnum.Array;
     const isElementVarChar = field.element_type === DataTypeEnum.VarChar;
+    const showDefaultValue =
+      field.data_type !== DataTypeEnum.Array &&
+      field.data_type !== DataTypeEnum.JSON;
 
     // handle default values
     if (isArray && typeof field.element_type === 'undefined') {
@@ -738,17 +795,23 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {isArray ? generateMaxCapacity(field) : null}
         {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
 
+        {showDefaultValue && generateDefaultValue(field)}
+
         {generateDesc(field)}
 
-        {isInt64 ? generatePartitionKeyToggle(field, fields) : null}
+        <div className={classes.paramsGrp}>
+          {isInt64 ? generatePartitionKeyCheckbox(field, fields) : null}
 
-        {isVarChar ? (
-          <div className={classes.paramsGrp}>
-            {generateAnalyzerCheckBox(field, fields)}
-            {generateTextMatchCheckBox(field, fields)}
-            {generatePartitionKeyToggle(field, fields)}
-          </div>
-        ) : null}
+          {isVarChar ? (
+            <>
+              {generateAnalyzerCheckBox(field, fields)}
+              {generateTextMatchCheckBox(field, fields)}
+              {generatePartitionKeyCheckbox(field, fields)}
+            </>
+          ) : null}
+          {generateNullableCheckbox(field, fields)}
+        </div>
+
         <IconButton
           onClick={() => {
             handleAddNewField(index);

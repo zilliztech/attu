@@ -6,7 +6,7 @@ const DataView = (props: { type: string; value: any }) => {
 
   switch (type) {
     case 'VarChar':
-      return <MediaPreview value={value} />;
+      return <MediaPreview value={JSON.stringify(value)} />;
     case 'JSON':
     case 'Array':
     case 'SparseFloatVector':
@@ -25,7 +25,11 @@ const DataView = (props: { type: string; value: any }) => {
       return <Typography title={trimmedValue}>{trimmedValue}</Typography>;
 
     default:
-      return <Typography title={value}>{value}</Typography>;
+      return (
+        <Typography title={value}>
+          {JSON.stringify(value).replace(/^"|"$/g, '')}
+        </Typography>
+      );
   }
 };
 

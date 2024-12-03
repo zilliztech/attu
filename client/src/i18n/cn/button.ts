@@ -41,6 +41,7 @@ const btnTrans = {
   close: '关闭',
   modify: '修改',
   downloadSchema: '下载 Schema',
+  editDefaultValue: '编辑默认值',
 
   // tips
   loadColTooltip: '加载Collection',

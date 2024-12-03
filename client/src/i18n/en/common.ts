@@ -84,6 +84,8 @@ const commonTrans = {
   tip: 'Use 100k vectors and 1024 segment file size as example',
   disk: 'Disk',
   memory: 'Memory',
+  yes: 'Yes',
+  no: 'No',
 };
 
 export default commonTrans;
