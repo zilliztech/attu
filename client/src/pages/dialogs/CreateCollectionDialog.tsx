@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginBottom: '0',
     },
     '& legend': {
-      marginBottom: theme.spacing(1),
       lineHeight: '20px',
       fontSize: '14px',
     },
@@ -276,7 +275,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         </fieldset>
 
         <fieldset className={classes.fieldset}>
-          <legend>{collectionTrans('schema')}</legend>
+          {/* <legend>{collectionTrans('schema')}</legend> */}
           <CreateFields
             fields={fields}
             setFields={setFields}

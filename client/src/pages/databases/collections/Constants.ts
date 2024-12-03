@@ -44,7 +44,6 @@ export const VECTOR_FIELDS_OPTIONS: LabelValuePair[] = [
 ];
 
 export const ALL_OPTIONS: LabelValuePair[] = [
-  ...VECTOR_FIELDS_OPTIONS,
   {
     label: 'Int8',
     value: DataTypeEnum.Int8,

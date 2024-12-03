@@ -34,6 +34,8 @@ const collectionTrans = {
 
   // create dialog
   createTitle: '创建Collection',
+  idAndVectorFields: '主键ID和向量字段',
+  scalarFields: '标量字段',
   general: '一般信息',
   schema: 'schema',
   consistency: '一致性',

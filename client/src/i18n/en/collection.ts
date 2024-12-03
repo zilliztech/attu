@@ -35,6 +35,8 @@ const collectionTrans = {
 
   // create dialog
   createTitle: 'Create Collection',
+  idAndVectorFields: 'Primary Key and Vector Fields',
+  scalarFields: 'Scalar Fields',
   general: 'General information',
   schema: 'Schema',
   consistency: 'Consistency',

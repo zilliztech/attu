@@ -39,10 +39,17 @@ import CustomIconButton from '@/components/customButton/CustomIconButton';
 import EditAnalyzerDialog from '@/pages/dialogs/EditAnalyzerDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  optionalWrapper: {
+  scalarFieldsWrapper: {
     width: '100%',
     paddingRight: theme.spacing(1),
     overflowY: 'auto',
+  },
+  title: {
+    '& button': {
+      position: 'relative',
+      top: '-1px',
+      marginLeft: 4,
+    },
   },
   rowWrapper: {
     display: 'flex',
@@ -162,7 +169,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
 
-  const { requiredFields, optionalFields } = useMemo(
+  const { requiredFields, scalarFields } = useMemo(
     () =>
       fields.reduce(
         (acc, field) => {
@@ -170,10 +177,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           const requiredTypes: CreateFieldType[] = [
             'primaryKey',
             'defaultVector',
+            'vector',
           ];
           const key = requiredTypes.includes(createType)
             ? 'requiredFields'
-            : 'optionalFields';
+            : 'scalarFields';
 
           acc[key].push({
             ...field,
@@ -184,7 +192,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         },
         {
           requiredFields: [] as FieldType[],
-          optionalFields: [] as FieldType[],
+          scalarFields: [] as FieldType[],
         }
       ),
 
@@ -192,7 +200,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   );
 
   const getSelector = (
-    type: 'all' | 'vector' | 'element' | 'primaryKey',
+    type: 'scalar' | 'vector' | 'element' | 'primaryKey',
     label: string,
     value: number,
     onChange: (value: DataTypeEnum) => void
@@ -202,7 +210,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       case 'primaryKey':
         _options = PRIMARY_FIELDS_OPTIONS;
         break;
-      case 'all':
+      case 'scalar':
         _options = ALL_OPTIONS;
         break;
       case 'vector':
@@ -647,11 +655,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
     setFields(newFields);
   };
 
-  const handleAddNewField = (index: number) => {
+  const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
     const id = generateId();
     const newDefaultItem: FieldType = {
       name: '',
-      data_type: DataTypeEnum.Int16,
+      data_type: type,
       is_primary_key: false,
       description: '',
       isDefault: false,
@@ -740,7 +748,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {generateDimension(field)}
         {generateDesc(field)}
         <IconButton
-          onClick={() => handleAddNewField(index)}
+          onClick={() => handleAddNewField(index, field.data_type)}
           classes={{ root: classes.iconBtn }}
           aria-label="add"
           size="large"
@@ -751,7 +759,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateNonRequiredRow = (
+  const generateScalarFieldRow = (
     field: FieldType,
     index: number,
     fields: FieldType[]
@@ -776,7 +784,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       <div className={`${classes.rowWrapper}`}>
         {generateFieldName(field)}
         {getSelector(
-          'all',
+          'scalar',
           collectionTrans('fieldType'),
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
@@ -814,7 +822,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         <IconButton
           onClick={() => {
-            handleAddNewField(index);
+            handleAddNewField(index, field.data_type);
           }}
           classes={{ root: classes.iconBtn }}
           aria-label="add"
@@ -842,8 +850,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
       <div className={`${classes.rowWrapper}`}>
         {generateFieldName(field)}
         {getSelector(
-          'all',
-          collectionTrans('fieldType'),
+          'vector',
+          `${collectionTrans('vectorType')} `,
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
@@ -852,9 +860,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {generateDesc(field)}
 
         <IconButton
-          onClick={() => {
-            handleAddNewField(index);
-          }}
+          onClick={() => handleAddNewField(index, field.data_type)}
           classes={{ root: classes.iconBtn }}
           aria-label="add"
           size="large"
@@ -885,38 +891,43 @@ const CreateFields: FC<CreateFieldsProps> = ({
     if (field.createType === 'primaryKey') {
       return generatePrimaryKeyRow(field, autoID);
     }
-    // use defaultVector as default return type
-    return generateDefaultVectorRow(field, index);
-  };
 
-  const generateOptionalFieldRow = (
-    field: FieldType,
-    index: number,
-    fields: FieldType[]
-  ) => {
-    // optional type is vector or number
-    if (field.createType === 'vector') {
-      return generateVectorRow(field, index);
+    if (field.createType === 'defaultVector') {
+      return generateDefaultVectorRow(field, index);
     }
 
-    // use number as default createType
-    return generateNonRequiredRow(field, index, fields);
+    // generate other vector rows
+    return generateVectorRow(field, index);
   };
 
   return (
     <>
+      <h4 className={classes.title}>{collectionTrans('idAndVectorFields')}</h4>
       {requiredFields.map((field, index) => (
         <Fragment key={field.id}>
           {generateRequiredFieldRow(field, autoID, index)}
         </Fragment>
       ))}
-      <div className={classes.optionalWrapper}>
-        {optionalFields.map((field, index) => (
+      <h4 className={classes.title}>
+        {collectionTrans('scalarFields')}
+        <IconButton
+          onClick={() => {
+            handleAddNewField(requiredFields.length + 1);
+          }}
+          classes={{ root: classes.iconBtn }}
+          aria-label="add"
+          size="large"
+        >
+          <AddIcon />
+        </IconButton>
+      </h4>
+      <div className={classes.scalarFieldsWrapper}>
+        {scalarFields.map((field, index) => (
           <Fragment key={field.id}>
-            {generateOptionalFieldRow(
+            {generateScalarFieldRow(
               field,
               index + requiredFields.length,
-              optionalFields
+              scalarFields
             )}
           </Fragment>
         ))}
