@@ -64,7 +64,7 @@ const collectionTrans = {
   analyzer: '分词器',
   enableMatch: '启用匹配',
   textMatchTooltip: 'Milvus中的文本匹配能够基于特定术语实现精确的文档检索。',
-  nullable: 'nullable',
+  nullable: 'Nullable',
   nullableTooltip: '字段是否可以为 null，nullable 字段不能用作分区键。',
   defaultValue: '默认值',
   defaultValueTooltip: '字段的默认值, 不支持JSON 和 Array。',
