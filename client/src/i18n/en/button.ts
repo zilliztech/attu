@@ -41,6 +41,7 @@ const btnTrans = {
   close: 'Close',
   modify: 'Modify',
   downloadSchema: 'Download Schema',
+  EditDefaultValue: 'Edit Default Value',
 
   // tips
   loadColTooltip: 'Load Collection',

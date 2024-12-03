@@ -32,6 +32,8 @@ export interface CreateField {
   enable_analyzer?: boolean;
   enable_match?: boolean;
   analyzer_params?: AnalyzerType | Record<AnalyzerType, any>;
+  nullable?: boolean;
+  default_value?: any;
 }
 
 export type CreateFieldType =
@@ -61,6 +63,8 @@ export type FieldType = {
   enable_analyzer?: boolean;
   enable_match?: boolean;
   analyzer_params?: any;
+  nullable?: boolean;
+  default_value?: any;
 };
 
 export interface CreateFieldsProps {

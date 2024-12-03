@@ -109,13 +109,13 @@ export const genDataByType = (field: FieldSchema): any => {
     case 'SparseFloatVector':
       return makeRandomSparse(16);
     case 'VarChar':
-      const len = Number(findKeyValue(type_params, 'max_length'));
+      const len = Number(field.max_length);
       return makeRandomVarChar(len) || makeRandomId(len);
     case 'JSON':
       return makeRandomJSON();
     case 'Array':
       return Array.from({
-        length: Number(findKeyValue(type_params, 'max_capacity')),
+        length: Number(field.max_capacity),
       }).map(() => genDataByType({ ...field, data_type: element_type }));
   }
 };

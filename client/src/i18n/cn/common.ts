@@ -16,7 +16,7 @@ const commonTrans = {
     prometheusInstance: 'Prometheus实例',
     prometheusNamespace: 'Prometheus命名空间',
     connectionTip: '支持自托管Milvus或Zilliz云专用集群。',
-    checkHealth:  '检查健康状态',
+    checkHealth: '检查健康状态',
   },
   status: {
     loaded: '已加载',
@@ -83,6 +83,8 @@ const commonTrans = {
   tip: '以100k向量和1024段文件大小为例',
   disk: '磁盘',
   memory: '内存',
+  yes: '是',
+  no: '否',
 };
 
 export default commonTrans;
