@@ -574,7 +574,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return (
       <div className={classes.analyzerInput}>
         <Checkbox
-          checked={!!field.enable_analyzer || field.data_type === DataTypeEnum.VarCharBM25}
+          checked={
+            !!field.enable_analyzer ||
+            field.data_type === DataTypeEnum.VarCharBM25
+          }
           size="small"
           onChange={() => {
             changeFields(field.id!, {
@@ -590,13 +593,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
           onChange={e => {
             changeFields(field.id!, { analyzer_params: e.target.value });
           }}
-          disabled={!field.enable_analyzer && field.data_type !== DataTypeEnum.VarCharBM25}
+          disabled={
+            !field.enable_analyzer &&
+            field.data_type !== DataTypeEnum.VarCharBM25
+          }
           value={analyzer}
           variant="filled"
           label={collectionTrans('analyzer')}
         />
         <CustomIconButton
-          disabled={!field.enable_analyzer && field.data_type !== DataTypeEnum.VarCharBM25}
+          disabled={
+            !field.enable_analyzer &&
+            field.data_type !== DataTypeEnum.VarCharBM25
+          }
           onClick={() => {
             setDialog2({
               open: true,

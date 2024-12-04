@@ -65,6 +65,7 @@ export enum METRIC_TYPES_VALUES {
   TANIMOTO = 'TANIMOTO',
   SUBSTRUCTURE = 'SUBSTRUCTURE',
   SUPERSTRUCTURE = 'SUPERSTRUCTURE',
+  BM25 = 'BM25',
 }
 
 export const METRIC_TYPES = [
@@ -100,6 +101,10 @@ export const METRIC_TYPES = [
     value: METRIC_TYPES_VALUES.TANIMOTO,
     label: 'TANIMOTO',
   },
+  {
+    value: METRIC_TYPES_VALUES.BM25,
+    label: 'BM25',
+  }
 ];
 
 export type MetricType =

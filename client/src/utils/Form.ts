@@ -70,6 +70,10 @@ export const getMetricOptions = (
           value: METRIC_TYPES_VALUES.IP,
           label: 'IP',
         },
+        {
+          value: METRIC_TYPES_VALUES.BM25,
+          label: 'BM25',
+        },
       ];
     case DataTypeEnum.BinaryVector:
       switch (indexType) {
