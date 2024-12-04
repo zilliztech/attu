@@ -886,7 +886,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
 
-        {generateMaxCapacity(field)}
         {generateMaxLength(field)}
         {generateDefaultValue(field)}
         {generateDesc(field)}
