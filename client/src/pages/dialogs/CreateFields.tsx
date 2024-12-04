@@ -25,8 +25,12 @@ import {
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
   ANALYZER_OPTIONS,
-} from './Constants';
-import { CreateFieldsProps, CreateFieldType, FieldType } from './Types';
+} from './create/Constants';
+import {
+  CreateFieldsProps,
+  CreateFieldType,
+  FieldType,
+} from '../databases/collections/Types';
 import { DataTypeEnum, VectorTypes } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,
@@ -56,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexWrap: 'nowrap',
     alignItems: 'center',
     gap: '8px',
-    flex: '1 0 auto',
     marginBottom: 4,
     '& .MuiFormLabel-root': {
       fontSize: 14,
@@ -79,6 +82,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   select: {
     width: '150px',
+    marginTop: '-20px',
+  },
+  smallSelect: {
+    width: '105px',
     marginTop: '-20px',
   },
   autoIdSelect: {
@@ -203,7 +210,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
     type: 'scalar' | 'vector' | 'element' | 'primaryKey',
     label: string,
     value: number,
-    onChange: (value: DataTypeEnum) => void
+    onChange: (value: DataTypeEnum) => void,
+    className: string = classes.select
   ) => {
     let _options = ALL_OPTIONS;
     switch (type) {
@@ -221,6 +229,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           d =>
             d.label !== 'Array' &&
             d.label !== 'JSON' &&
+            d.label !== 'VarChar(BM25)' &&
             !d.label.includes('Vector')
         );
         break;
@@ -230,7 +239,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
     return (
       <CustomSelector
-        wrapperClass={classes.select}
+        wrapperClass={className}
         options={_options}
         size="small"
         onChange={e => {
@@ -565,13 +574,14 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return (
       <div className={classes.analyzerInput}>
         <Checkbox
-          checked={!!field.enable_analyzer}
+          checked={!!field.enable_analyzer || field.data_type === DataTypeEnum.VarCharBM25}
           size="small"
           onChange={() => {
             changeFields(field.id!, {
               enable_analyzer: !field.enable_analyzer,
             });
           }}
+          disabled={field.data_type === DataTypeEnum.VarCharBM25}
         />
         <CustomSelector
           wrapperClass="select"
@@ -580,13 +590,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
           onChange={e => {
             changeFields(field.id!, { analyzer_params: e.target.value });
           }}
-          disabled={!field.enable_analyzer}
+          disabled={!field.enable_analyzer && field.data_type !== DataTypeEnum.VarCharBM25}
           value={analyzer}
           variant="filled"
           label={collectionTrans('analyzer')}
         />
         <CustomIconButton
-          disabled={!field.enable_analyzer}
+          disabled={!field.enable_analyzer && field.data_type !== DataTypeEnum.VarCharBM25}
           onClick={() => {
             setDialog2({
               open: true,
@@ -633,6 +643,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       // remove varchar params, if not varchar
       if (
         updatedField.data_type !== DataTypeEnum.VarChar &&
+        updatedField.data_type !== DataTypeEnum.VarCharBM25 &&
         updatedField.element_type !== DataTypeEnum.VarChar
       ) {
         delete updatedField.max_length;
@@ -664,6 +675,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
       description: '',
       isDefault: false,
       dim: DEFAULT_ATTU_DIM,
+      max_length: DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
+      enable_analyzer: type === DataTypeEnum.VarCharBM25,
       id,
     };
     const newValidation = {
@@ -787,7 +800,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
           'scalar',
           collectionTrans('fieldType'),
           field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
+          (value: DataTypeEnum) =>
+            changeFields(field.id!, { data_type: value }),
+          classes.smallSelect
         )}
 
         {isArray
@@ -796,7 +811,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
               collectionTrans('elementType'),
               field.element_type || DEFAULT_ATTU_ELEMENT_TYPE,
               (value: DataTypeEnum) =>
-                changeFields(field.id!, { element_type: value })
+                changeFields(field.id!, { element_type: value }),
+              classes.smallSelect
             )
           : null}
 
@@ -845,6 +861,62 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
+  const generateFunctionRow = (
+    field: FieldType,
+    index: number,
+    fields: FieldType[],
+    requiredFields: FieldType[]
+  ) => {
+    return (
+      <div className={`${classes.rowWrapper}`}>
+        {generateFieldName(field)}
+        {getSelector(
+          'vector',
+          collectionTrans('fieldType'),
+          field.data_type,
+          (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
+        )}
+
+        {generateMaxCapacity(field)}
+        {generateMaxLength(field)}
+        {generateDefaultValue(field)}
+        {generateDesc(field)}
+
+        <div className={classes.paramsGrp}>
+          {generateAnalyzerCheckBox(field, fields)}
+          {generateTextMatchCheckBox(field, fields)}
+          {generatePartitionKeyCheckbox(field, fields)}
+          {generateNullableCheckbox(field, fields)}
+        </div>
+
+        <IconButton
+          onClick={() => {
+            handleAddNewField(index, field.data_type);
+          }}
+          classes={{ root: classes.iconBtn }}
+          aria-label="add"
+          size="large"
+        >
+          <AddIcon />
+        </IconButton>
+
+        {requiredFields.length !== 2 && (
+          <IconButton
+            onClick={() => {
+              const id = field.id || '';
+              handleRemoveField(id);
+            }}
+            classes={{ root: classes.iconBtn }}
+            aria-label="delete"
+            size="large"
+          >
+            <RemoveIcon />
+          </IconButton>
+        )}
+      </div>
+    );
+  };
+
   const generateVectorRow = (field: FieldType, index: number) => {
     return (
       <div className={`${classes.rowWrapper}`}>
@@ -867,17 +939,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
         >
           <AddIcon />
         </IconButton>
-        <IconButton
-          onClick={() => {
-            const id = field.id || '';
-            handleRemoveField(id);
-          }}
-          classes={{ root: classes.iconBtn }}
-          aria-label="delete"
-          size="large"
-        >
-          <RemoveIcon />
-        </IconButton>
+        {requiredFields.length !== 2 && (
+          <IconButton
+            onClick={() => {
+              const id = field.id || '';
+              handleRemoveField(id);
+            }}
+            classes={{ root: classes.iconBtn }}
+            aria-label="delete"
+            size="large"
+          >
+            <RemoveIcon />
+          </IconButton>
+        )}
       </div>
     );
   };
@@ -885,11 +959,17 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateRequiredFieldRow = (
     field: FieldType,
     autoID: boolean,
-    index: number
+    index: number,
+    fields: FieldType[],
+    requiredFields: FieldType[]
   ) => {
     // required type is primaryKey or defaultVector
     if (field.createType === 'primaryKey') {
       return generatePrimaryKeyRow(field, autoID);
+    }
+
+    if (field.data_type === DataTypeEnum.VarCharBM25) {
+      return generateFunctionRow(field, index, fields, requiredFields);
     }
 
     if (field.createType === 'defaultVector') {
@@ -902,14 +982,22 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   return (
     <>
-      <h4 className={classes.title}>{collectionTrans('idAndVectorFields')}</h4>
+      <h4 className={classes.title}>
+        {`${collectionTrans('idAndVectorFields')}(${requiredFields.length})`}
+      </h4>
       {requiredFields.map((field, index) => (
         <Fragment key={field.id}>
-          {generateRequiredFieldRow(field, autoID, index)}
+          {generateRequiredFieldRow(
+            field,
+            autoID,
+            index,
+            fields,
+            requiredFields
+          )}
         </Fragment>
       ))}
       <h4 className={classes.title}>
-        {collectionTrans('scalarFields')}
+        {`${collectionTrans('scalarFields')}(${scalarFields.length})`}
         <IconButton
           onClick={() => {
             handleAddNewField(requiredFields.length + 1);
@@ -927,7 +1015,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
             {generateScalarFieldRow(
               field,
               index + requiredFields.length,
-              scalarFields
+              fields
             )}
           </Fragment>
         ))}

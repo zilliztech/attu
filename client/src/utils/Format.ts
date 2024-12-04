@@ -5,6 +5,7 @@ import {
   VectorTypes,
   DataTypeStringEnum,
   DEFAULT_ANALYZER_PARAMS,
+  DataTypeEnum,
 } from '@/consts';
 import {
   CreateFieldType,
@@ -102,16 +103,19 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
   return metricLabel === 'Superstructure' || metricLabel === 'Substructure';
 };
 
-export const getCreateFieldType = (config: CreateField): CreateFieldType => {
-  if (config.is_primary_key) {
+export const getCreateFieldType = (field: CreateField): CreateFieldType => {
+  if (field.is_primary_key) {
     return 'primaryKey';
   }
 
-  if (config.isDefault) {
+  if (field.isDefault) {
     return 'defaultVector';
   }
 
-  if (VectorTypes.includes(config.data_type)) {
+  if (
+    VectorTypes.includes(field.data_type) ||
+    field.data_type === DataTypeEnum.VarCharBM25
+  ) {
     return 'vector';
   }
 

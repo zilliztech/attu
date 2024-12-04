@@ -16,6 +16,7 @@ export enum DataTypeEnum {
   Double = 11,
   String = 20,
   VarChar = 21,
+  VarCharBM25 = 1000,
   JSON = 23,
   BinaryVector = 100,
   FloatVector = 101,
@@ -454,3 +455,8 @@ export const databaseDefaults: Property[] = [
   { key: 'database.max.collections', value: '', desc: '', type: 'number' },
   { key: 'database.force.deny.writing', value: '', desc: '', type: 'boolean' },
 ];
+
+export enum FunctionType {
+  Unknown = 0,
+  BM25 = 1,
+}
