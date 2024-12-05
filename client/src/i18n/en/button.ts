@@ -25,7 +25,7 @@ const btnTrans = {
   importSampleData: 'Insert Sample Data',
   loading: 'Loading...',
   importing: 'Importing...',
-  example: 'Generate Random Vector',
+  example: 'Generate Random Data',
   rename: 'Rename',
   duplicate: 'Duplicate',
   export: 'Export',

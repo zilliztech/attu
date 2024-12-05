@@ -111,6 +111,28 @@ export class CollectionsService {
 
     const vectorFields: FieldObject[] = [];
     const scalarFields: FieldObject[] = [];
+    const functionFields: FieldObject[] = [];
+
+    // assign function to field
+    const fieldMap = new Map(
+      res.schema.fields.map(field => [field.name, field])
+    );
+    res.schema.functions.forEach(fn => {
+      const assignFunction = (fieldName: string) => {
+        const field = fieldMap.get(fieldName);
+        if (field) {
+          field.function = fn;
+        }
+      };
+
+      fn.output_field_names.forEach(assignFunction);
+      fn.input_field_names.forEach(assignFunction);
+    });
+
+    // get function input fields
+    const inputFieldNames = res.schema.functions.reduce((acc, cur) => {
+      return acc.concat(cur.input_field_names);
+    }, []);
 
     // append index info to each field
     res.schema.fields.forEach((field: FieldObject) => {
@@ -119,18 +141,11 @@ export class CollectionsService {
         index => index.field_name === field.name
       ) as IndexObject;
       // add dimension
-      field.dimension =
-        Number(field.type_params.find(item => item.key === 'dim')?.value) || -1;
+      field.dimension = Number(field.dim) || -1;
       // add max capacity
-      field.maxCapacity =
-        Number(
-          field.type_params.find(item => item.key === 'max_capacity')?.value
-        ) || -1;
+      field.maxCapacity = Number(field.max_capacity) || -1;
       // add max length
-      field.maxLength =
-        Number(
-          field.type_params.find(item => item.key === 'max_length')?.value
-        ) || -1;
+      field.maxLength = Number(field.max_length) || -1;
 
       // classify fields
       if (VectorTypes.includes(field.data_type)) {
@@ -142,6 +157,11 @@ export class CollectionsService {
       if (field.is_primary_key) {
         res.schema.primaryField = field;
       }
+
+      // add functionFields if field name included in inputFieldNames
+      if (inputFieldNames.includes(field.name)) {
+        functionFields.push(field);
+      }
     });
 
     // add extra data to schema
@@ -151,6 +171,7 @@ export class CollectionsService {
     );
     res.schema.scalarFields = scalarFields;
     res.schema.vectorFields = vectorFields;
+    res.schema.functionFields = functionFields;
     res.schema.dynamicFields = res.schema.enable_dynamic_field
       ? [
           {

@@ -18,7 +18,7 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
 
   accordions: {
     display: 'flex',
-    width: '220px',
+    width: '230px',
     flexDirection: 'column',
     flexShrink: 0,
     padding: '0 8px 8px 0',
@@ -107,12 +107,12 @@ export const getQueryStyles = makeStyles((theme: Theme) => ({
         marginLeft: '4px',
         fontSize: '10px',
         fontWeight: 600,
-        color: theme.palette.primary.light,
+        color: theme.palette.secondary.main,
       },
     },
   },
 
-  vectorInputBox: {
+  searchInputBox: {
     height: '124px',
     margin: '0 0 8px 0',
     overflow: 'auto',

@@ -230,6 +230,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         if (data.data_type === DataTypeEnum.VarCharBM25) {
           data.data_type = DataTypeEnum.VarChar;
           data.enable_analyzer = true;
+          data.analyzer_params = data.analyzer_params || 'standard';
           // create sparse field
           const sparseField = {
             name: `${data.name}_embeddings`,
@@ -267,7 +268,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     sparseFields.forEach(field => {
       const [input] = (field.name as string).split('_');
       const functionParam = {
-        name: `${input}_bm25_function`,
+        name: `${input}_BM25`,
         description: `${input} BM25 function`,
         type: FunctionType.BM25,
         input_field_names: [input],

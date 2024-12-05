@@ -288,10 +288,12 @@ export const generateVectorsByField = (field: FieldObject) => {
           ? field.dimension / 8
           : field.dimension;
       return JSON.stringify(generateVector(dim));
-    case 'SparseFloatVector':
-      return transformObjToStr({
-        [Math.floor(Math.random() * 10)]: Math.random(),
-      });
+    case DataTypeStringEnum.SparseFloatVector:
+      return field.is_function_output
+        ? 'fox'
+        : transformObjToStr({
+            [Math.floor(Math.random() * 10)]: Math.random(),
+          });
     default:
       return [1, 2, 3];
   }

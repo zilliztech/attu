@@ -8,6 +8,7 @@ import {
   DescribeCollectionResponse,
   QuerySegmentInfo,
   PersistentSegmentInfo,
+  Function,
 } from '@zilliz/milvus2-sdk-node';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '../utils';
 
@@ -22,6 +23,8 @@ export interface FieldObject extends FieldSchema {
   dimension: number;
   maxCapacity: number;
   maxLength: number;
+  function?: Function;
+
 }
 
 export interface SchemaObject extends CollectionSchema {
@@ -30,6 +33,7 @@ export interface SchemaObject extends CollectionSchema {
   vectorFields: FieldObject[];
   scalarFields: FieldObject[];
   dynamicFields: FieldObject[];
+  functionFields: FieldObject[];
   hasVectorIndex: boolean;
   enablePartitionKey: boolean;
 }

@@ -25,7 +25,7 @@ const btnTrans = {
   importSampleData: '插入样本数据',
   loading: '加载中...',
   importing: '导入中...',
-  example: '生成随机向量',
+  example: '生成随机数据',
   rename: '重命名',
   duplicate: '复制',
   export: '导出',

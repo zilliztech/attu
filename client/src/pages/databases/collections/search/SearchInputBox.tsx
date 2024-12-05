@@ -105,20 +105,21 @@ const Validator = {
   [DataTypeStringEnum.SparseFloatVector]: sparseVectorValidator,
 };
 
-export type VectorInputBoxProps = {
+export type SearchInputBoxProps = {
   onChange: (anns_field: string, value: string) => void;
   searchParams: SearchSingleParams;
   collection: CollectionFullObject;
+  type?: 'vector' | 'text';
 };
 
 let queryTimeout: NodeJS.Timeout;
 
-export default function VectorInputBox(props: VectorInputBoxProps) {
+export default function SearchInputBox(props: SearchInputBoxProps) {
   const theme = useTheme();
   const { t: searchTrans } = useTranslation('search');
 
   // props
-  const { searchParams, onChange, collection } = props;
+  const { searchParams, onChange, collection, type } = props;
   const { field, data } = searchParams;
 
   // classes
@@ -187,12 +188,55 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   // create editor
   useEffect(() => {
     if (!editor.current) {
-      const startState = EditorState.create({
-        doc: data,
-        extensions: [
-          minimalSetup,
+      let extensions = [
+        minimalSetup,
+        placeholder(
+          searchTrans(
+            type === 'text' ? 'textPlaceHolder' : 'inputVectorPlaceHolder'
+          )
+        ),
+        keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
+        indentUnit.of('    '), // fix tab indentation
+        EditorView.theme({
+          '&.cm-editor': {
+            '&.cm-focused': {
+              outline: 'none',
+            },
+          },
+          '.cm-content': {
+            fontSize: '12px',
+            minHeight: '124px',
+          },
+          '.cm-gutters': {
+            display: 'none',
+          },
+        }),
+        EditorView.lineWrapping,
+        EditorView.updateListener.of(update => {
+          if (update.docChanged) {
+            if (queryTimeout) {
+              clearTimeout(queryTimeout);
+            }
+            const text = update.state.doc.toString();
+
+            const { valid } = validator(text, fieldRef.current);
+            if (valid || text === '' || type === 'text') {
+              onChangeRef.current(searchParams.anns_field, text);
+            } else {
+              getVectorById(text);
+            }
+          }
+          if (update.focusChanged) {
+            editorEl.current?.classList.toggle('focused', update.view.hasFocus);
+          }
+        }),
+      ];
+
+      if (type === 'vector') {
+        extensions = [
+          ...extensions,
           javascript(),
-          placeholder(searchTrans('inputVectorPlaceHolder')),
+
           linter(view => {
             const text = view.state.doc.toString();
 
@@ -227,52 +271,22 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
               return [];
             }
           }),
-          keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
-          indentUnit.of('    '), // fix tab indentation
-          EditorView.theme({
-            '&.cm-editor': {
-              '&.cm-focused': {
-                outline: 'none',
-              },
-            },
-            '.cm-content': {
-              fontSize: '12px',
-              minHeight: '124px',
-            },
-            '.cm-gutters': {
-              display: 'none',
-            },
-          }),
-          EditorView.lineWrapping,
-          EditorView.updateListener.of(update => {
-            if (update.docChanged) {
-              if (queryTimeout) {
-                clearTimeout(queryTimeout);
-              }
-              const text = update.state.doc.toString();
+        ];
+      }
 
-              const { valid } = validator(text, fieldRef.current);
-              if (valid || text === '') {
-                onChangeRef.current(searchParams.anns_field, text);
-              } else {
-                getVectorById(text);
-              }
-            }
-            if (update.focusChanged) {
-              editorEl.current?.classList.toggle(
-                'focused',
-                update.view.hasFocus
-              );
-            }
-          }),
-        ],
+      // create editor
+      const startState = EditorState.create({
+        doc: data,
+        extensions,
       });
 
+      // create editor view
       const view = new EditorView({
         state: startState,
         parent: editorEl.current!,
       });
 
+      // set editor ref
       editor.current = view;
 
       // focus editor, the cursor will be at the end of the text
@@ -303,5 +317,5 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     }
   }, [theme.palette.mode]);
 
-  return <div className={classes.vectorInputBox} ref={editorEl}></div>;
+  return <div className={classes.searchInputBox} ref={editorEl}></div>;
 }
