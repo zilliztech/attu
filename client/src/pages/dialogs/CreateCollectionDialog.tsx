@@ -14,7 +14,7 @@ import {
   DEFAULT_ATTU_DIM,
   FunctionType,
 } from '@/consts';
-import CreateFields from './CreateFields';
+import CreateFields from './create/CreateFields';
 import {
   CollectionCreateParam,
   CollectionCreateProps,

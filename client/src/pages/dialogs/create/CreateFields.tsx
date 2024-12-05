@@ -25,12 +25,12 @@ import {
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
   ANALYZER_OPTIONS,
-} from './create/Constants';
+} from './Constants';
 import {
   CreateFieldsProps,
   CreateFieldType,
   FieldType,
-} from '../databases/collections/Types';
+} from '../../databases/collections/Types';
 import { DataTypeEnum, VectorTypes } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,

@@ -29,7 +29,7 @@ const CreateIndex = (props: {
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  console.log(field);
+
   // https://milvus.io/docs/index.md#In-memory-Index
   const defaultIndexType = INDEX_TYPES_ENUM.AUTOINDEX;
 
