@@ -254,6 +254,12 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         if (data.data_type === DataTypeEnum.SparseFloatVector) {
           delete data.dim;
         }
+        // delete analyzer if not varchar
+        if (data.data_type !== DataTypeEnum.VarChar) {
+          delete data.enable_analyzer;
+          delete data.analyzer_params;
+          delete data.max_length;
+        }
 
         return data;
       }),

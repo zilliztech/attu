@@ -8,11 +8,7 @@ import Icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { IndexState } from '@/types/Milvus';
-import {
-  NONE_INDEXABLE_DATA_TYPES,
-  DataTypeStringEnum,
-  DataTypeEnum,
-} from '@/consts';
+import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndexDialog from './CreateIndexDialog';
 import { FieldObject } from '@server/types';
 import CustomButton from '@/components/customButton/CustomButton';
@@ -108,11 +104,7 @@ const IndexTypeElement: FC<{
         component: (
           <CreateIndexDialog
             collectionName={collectionName}
-            fieldName={field.name}
-            dataType={field.dataType as unknown as DataTypeEnum}
-            fieldType={field.data_type as DataTypeStringEnum}
-            elementType={field.element_type as DataTypeStringEnum}
-            dimension={Number(field.dimension)}
+            field={field}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}
           />

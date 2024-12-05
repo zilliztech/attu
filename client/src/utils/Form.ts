@@ -1,13 +1,13 @@
 import { Option } from '@/components/customSelector/Types';
 import {
   METRIC_TYPES_VALUES,
-  DataTypeEnum,
   SCALAR_INDEX_OPTIONS,
   DataTypeStringEnum,
   INDEX_TYPES_ENUM,
 } from '@/consts';
 import { IForm } from '@/hooks';
 import { IndexType } from '@/pages/databases/collections/schema/Types';
+import { FieldObject } from '@server/types';
 
 interface IInfo {
   [key: string]: any;
@@ -27,7 +27,7 @@ export const formatForm = (info: IInfo): IForm[] => {
 
 export const getMetricOptions = (
   indexType: IndexType,
-  fieldType: DataTypeEnum
+  field: FieldObject
 ): Option[] => {
   const baseFloatOptions = [
     {
@@ -59,23 +59,26 @@ export const getMetricOptions = (
     },
   ];
 
-  switch (fieldType) {
-    case DataTypeEnum.FloatVector:
-    case DataTypeEnum.Float16Vector:
-    case DataTypeEnum.BFloat16Vector:
+  switch (field.data_type) {
+    case DataTypeStringEnum.FloatVector:
+    case DataTypeStringEnum.Float16Vector:
+    case DataTypeStringEnum.BFloat16Vector:
       return baseFloatOptions;
-    case DataTypeEnum.SparseFloatVector:
-      return [
-        {
-          value: METRIC_TYPES_VALUES.IP,
-          label: 'IP',
-        },
-        {
-          value: METRIC_TYPES_VALUES.BM25,
-          label: 'BM25',
-        },
-      ];
-    case DataTypeEnum.BinaryVector:
+    case DataTypeStringEnum.SparseFloatVector:
+      return field.is_function_output
+        ? [
+            {
+              value: METRIC_TYPES_VALUES.BM25,
+              label: 'BM25',
+            },
+          ]
+        : [
+            {
+              value: METRIC_TYPES_VALUES.IP,
+              label: 'IP',
+            },
+          ];
+    case DataTypeStringEnum.BinaryVector:
       switch (indexType) {
         case 'BIN_FLAT':
           return [
@@ -99,10 +102,7 @@ export const getMetricOptions = (
   }
 };
 
-export const getScalarIndexOption = (
-  fieldType: DataTypeStringEnum,
-  elementType?: DataTypeStringEnum
-): Option[] => {
+export const getScalarIndexOption = (field: FieldObject): Option[] => {
   // Helper function to check if a type is numeric
   const isNumericType = (type: DataTypeStringEnum): boolean =>
     ['Int8', 'Int16', 'Int32', 'Int64', 'Float', 'Double'].includes(type);
@@ -115,7 +115,7 @@ export const getScalarIndexOption = (
   const options: Option[] = [];
 
   // Add options based on fieldType
-  if (fieldType === DataTypeStringEnum.VarChar) {
+  if (field.data_type === DataTypeStringEnum.VarChar) {
     options.push(
       SCALAR_INDEX_OPTIONS.find(
         opt => opt.value === INDEX_TYPES_ENUM.MARISA_TRIE
@@ -123,21 +123,21 @@ export const getScalarIndexOption = (
     );
   }
 
-  if (isNumericType(fieldType)) {
+  if (isNumericType(field.data_type as DataTypeStringEnum)) {
     options.push(
       SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.SORT)!
     );
   }
 
   if (
-    fieldType === DataTypeStringEnum.Array &&
-    elementType &&
-    isBitmapSupportedType(elementType)
+    field.data_type === 'Array' &&
+    field.data_type &&
+    isBitmapSupportedType(field.element_type as DataTypeStringEnum)
   ) {
     options.push(
       SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.BITMAP)!
     );
-  } else if (isBitmapSupportedType(fieldType)) {
+  } else if (isBitmapSupportedType(field.data_type as DataTypeStringEnum)) {
     options.push(
       SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.BITMAP)!
     );
