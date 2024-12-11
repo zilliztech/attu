@@ -8,9 +8,18 @@ import {
   DescribeCollectionResponse,
   QuerySegmentInfo,
   PersistentSegmentInfo,
-  Function,
+  FunctionType,
 } from '@zilliz/milvus2-sdk-node';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '../utils';
+
+export type FunctionObject = {
+  name: string;
+  description?: string;
+  type: FunctionType;
+  input_field_names: string[];
+  output_field_names?: string[];
+  params: Record<string, any>;
+};
 
 export interface IndexObject extends IndexDescription {
   indexType: string;
@@ -23,8 +32,7 @@ export interface FieldObject extends FieldSchema {
   dimension: number;
   maxCapacity: number;
   maxLength: number;
-  function?: Function;
-
+  function?: FunctionObject;
 }
 
 export interface SchemaObject extends CollectionSchema {
