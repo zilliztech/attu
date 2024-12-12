@@ -330,7 +330,7 @@ const Overview = () => {
                 status={collection.status}
                 percentage={collection.loadedPercentage}
                 collection={collection}
-                showExtraAction={true}
+                showExtraAction={false}
                 createIndexElement={CreateIndexElement}
               />
               <Typography variant="h5">

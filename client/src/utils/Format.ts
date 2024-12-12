@@ -103,6 +103,10 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
   return metricLabel === 'Superstructure' || metricLabel === 'Substructure';
 };
 
+export const isVectorType = (field: FieldObject): boolean => {
+  return VectorTypes.includes(field.dataType as any);
+}
+
 export const getCreateFieldType = (field: CreateField): CreateFieldType => {
   if (field.is_primary_key) {
     return 'primaryKey';

@@ -36,6 +36,8 @@ const btnTrans = {
   star: 'Give me a Star',
   applyFilter: 'Apply Filters',
   createIndex: 'Create Index',
+  createVectorIndex: 'Vector Index',
+  createScalarIndex: 'Scalar Index',
   edit: 'Edit',
   explore: 'Explore',
   close: 'Close',

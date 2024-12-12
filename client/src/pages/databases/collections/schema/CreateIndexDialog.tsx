@@ -12,7 +12,12 @@ import {
   VectorTypesString,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
-import { formatForm, getMetricOptions, getScalarIndexOption } from '@/utils';
+import {
+  formatForm,
+  getMetricOptions,
+  getScalarIndexOption,
+  isVectorType,
+} from '@/utils';
 import CreateForm from './CreateForm';
 import { IndexType, IndexExtraParam } from './Types';
 import { FieldObject } from '@server/types';
@@ -83,7 +88,7 @@ const CreateIndex = (props: {
   }, [indexSetting.index_type]);
 
   const metricOptions = useMemo(() => {
-    return VectorTypesString.includes(field.data_type as DataTypeStringEnum)
+    return isVectorType(field)
       ? getMetricOptions(indexSetting.index_type, field)
       : [];
   }, [indexSetting.index_type, field]);
@@ -113,7 +118,7 @@ const CreateIndex = (props: {
     const autoOption = getOptions('AUTOINDEX', INDEX_OPTIONS_MAP['AUTOINDEX']);
     let options = [];
 
-    if (VectorTypesString.includes(field.data_type as DataTypeStringEnum)) {
+    if (isVectorType(field)) {
       switch (field.data_type) {
         case DataTypeStringEnum.BinaryVector:
           options = [
@@ -154,7 +159,7 @@ const CreateIndex = (props: {
   }, [field]);
 
   const checkedForm = useMemo(() => {
-    if (!VectorTypesString.includes(field.data_type as DataTypeStringEnum)) {
+    if (!isVectorType(field)) {
       return [];
     }
     const paramsForm: any = { metric_type: indexSetting.metric_type };

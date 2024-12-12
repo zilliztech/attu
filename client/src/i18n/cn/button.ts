@@ -36,6 +36,8 @@ const btnTrans = {
   star: '给我一颗小星星',
   applyFilter: '应用过滤器',
   createIndex: '创建索引',
+  createVectorIndex: '创建向量索引',
+  createScalarIndex: '创建标量索引',
   edit: '编辑',
   explore: '探索',
   close: '关闭',
