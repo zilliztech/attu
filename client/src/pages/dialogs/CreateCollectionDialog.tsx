@@ -195,7 +195,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   ];
 
   const handleCreateCollection = async () => {
-    const sparseFields: CreateField[] = [];
+    // function output fields
+    const fnOutputFields: CreateField[] = [];
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
@@ -240,7 +241,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             is_function_output: true,
           };
           // push sparse field to fields
-          sparseFields.push(sparseField);
+          fnOutputFields.push(sparseField);
         }
 
         if (data.analyzer_params && data.enable_analyzer) {
@@ -268,13 +269,13 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     };
 
     // push sparse fields to param.fields
-    param.fields.push(...sparseFields);
+    param.fields.push(...fnOutputFields);
 
     // build functions
-    sparseFields.forEach(field => {
+    fnOutputFields.forEach((field, index) => {
       const [input] = (field.name as string).split('_');
       const functionParam = {
-        name: `${input}_BM25`,
+        name: `BM25_${index}`,
         description: `${input} BM25 function`,
         type: FunctionType.BM25,
         input_field_names: [input],

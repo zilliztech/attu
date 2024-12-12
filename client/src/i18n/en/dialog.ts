@@ -11,7 +11,7 @@ const dialogTrans = {
   flush: `Flush data for {{type}}`,
   loadTitle: `Load {{type}}`,
   editEntityTitle: `Edit Entity(JSON)`,
-  editAnalyzerTitle: `Edit analyzer for {{type}}`,
+  editAnalyzerTitle: `Edit Analyzer`,
   modifyReplicaTitle: `Modify replica for {{type}}`,
 
   loadContent: `You are trying to load a {{type}} with data. Only loaded {{type}} can be searched.`,

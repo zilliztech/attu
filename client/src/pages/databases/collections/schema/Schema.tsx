@@ -111,6 +111,32 @@ const Overview = () => {
                 />
               </Tooltip>
             ) : null}
+
+            {f.function ? (
+              <Tooltip title={JSON.stringify(f.function)} arrow>
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={`
+                    ${
+                      f.is_function_output
+                        ? `<- ${f.function.type}(${f.function.input_field_names})`
+                        : ` ${collectionTrans('function')}: ${f.function.type}`
+                    }`}
+                  onClick={() => {
+                    const textToCopy = JSON.stringify(f.function);
+                    navigator.clipboard
+                      .writeText(textToCopy as string)
+                      .then(() => {
+                        alert('Copied to clipboard!');
+                      })
+                      .catch(err => {
+                        alert('Failed to copy: ' + err);
+                      });
+                  }}
+                />
+              </Tooltip>
+            ) : null}
           </div>
         );
       },
