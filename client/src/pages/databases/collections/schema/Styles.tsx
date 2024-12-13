@@ -73,9 +73,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   primaryKeyChip: {
     fontSize: '8px',
-    position: 'relative',
-    top: '3px',
-    color: 'grey',
   },
   chip: {
     fontSize: '12px',
@@ -86,8 +83,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: 4,
   },
   featureChip: {
-    marginRight: 4,
     border: 'none',
+    marginLeft: 0,
   },
   nameWrapper: {
     display: 'flex',

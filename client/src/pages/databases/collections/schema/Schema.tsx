@@ -61,7 +61,7 @@ const Overview = () => {
                 className={classes.primaryKeyChip}
                 title={collectionTrans('idFieldName')}
               >
-                <Icons.key classes={{ root: 'key' }} />
+                <Chip className={classes.chip} size="small" label="ID" />
               </div>
             ) : null}
             {f.is_partition_key ? (
@@ -69,13 +69,6 @@ const Overview = () => {
                 className={classes.chip}
                 size="small"
                 label="Partition key"
-              />
-            ) : null}
-            {f.autoID ? (
-              <Chip
-                className={classes.chip}
-                size="small"
-                label={collectionTrans('autoId')}
               />
             ) : null}
             {findKeyValue(f.type_params, 'enable_match') ? (
@@ -265,6 +258,11 @@ const Overview = () => {
   const enableModifyReplica =
     data && data.queryNodes && data.queryNodes.length > 1;
 
+  // if is autoID enabled
+  const isAutoIDEnabled = collection?.schema?.fields.some(
+    f => f.autoID === true
+  );
+
   // get loading state label
   return (
     <section className={classes.wrapper}>
@@ -388,6 +386,13 @@ const Overview = () => {
                 {collectionTrans('features')}
               </Typography>
               <Typography variant="h6">
+                {isAutoIDEnabled ? (
+                  <Chip
+                    className={`${classes.chip} ${classes.featureChip}`}
+                    label={collectionTrans('autoId')}
+                    size="small"
+                  />
+                ) : null}
                 <Tooltip
                   title={
                     consistencyTooltipsMap[collection.consistency_level!] || ''

@@ -247,6 +247,9 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         if (data.analyzer_params && data.enable_analyzer) {
           // if analyzer_params is string, we need to use default value
           data.analyzer_params = getAnalyzerParams(data.analyzer_params);
+        } else {
+          delete data.analyzer_params;
+          delete data.enable_analyzer;
         }
 
         data.is_primary_key && (data.autoID = form.autoID);
@@ -256,7 +259,11 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           delete data.dim;
         }
         // delete analyzer if not varchar
-        if (data.data_type !== DataTypeEnum.VarChar) {
+        if (
+          data.data_type !== DataTypeEnum.VarChar &&
+          data.data_type === DataTypeEnum.Array &&
+          data.element_type !== DataTypeEnum.VarChar
+        ) {
           delete data.enable_analyzer;
           delete data.analyzer_params;
           delete data.max_length;

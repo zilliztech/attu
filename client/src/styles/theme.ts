@@ -1,5 +1,6 @@
 import { PaletteMode } from '@mui/material';
 
+
 const getCommonThemes = (mode: PaletteMode) => ({
   typography: {
     fontFamily: [
