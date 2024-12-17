@@ -21,6 +21,8 @@ export type RootContextType = {
   handleCloseDialog: () => void;
   handleCloseDialog2: () => void;
   versionInfo: { attu: string; sdk: string };
+  drawer: DrawerType;
+  setDrawer: (params: DrawerType) => void;
 };
 
 // this is for any custom dialog
@@ -151,3 +153,16 @@ export type DataContextType = {
   };
   setUIPref: (pref: DataContextType['ui']) => void;
 };
+
+export interface DrawerAction {
+  label: string;
+  onClick: () => void;
+}
+
+export interface DrawerType {
+  open: boolean;
+  title: string;
+  content: React.ReactNode;
+  hasActionBar: boolean;
+  actions?: DrawerAction[];
+}
