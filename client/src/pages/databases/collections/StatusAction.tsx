@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   extraBtn: {
     height: 24,
+    padding: '0 8px',
   },
 }));
 
@@ -55,6 +56,7 @@ const StatusAction: FC<StatusActionType> = props => {
     collection,
     action = () => {},
     showExtraAction,
+    showLoadButton,
     createIndexElement,
   } = props;
 
@@ -134,6 +136,33 @@ const StatusAction: FC<StatusActionType> = props => {
     });
   };
 
+  if (
+    collection.schema &&
+    status === LOADING_STATE.UNLOADED &&
+    collection.schema.hasVectorIndex &&
+    showLoadButton
+  ) {
+    return (
+      <CustomButton
+        startIcon={<Icons.load />}
+        className={classes.extraBtn}
+        variant="contained"
+        tooltip={collectionTrans('clickToLoad')}
+        onClick={() => {
+          setDialog({
+            open: true,
+            type: 'custom',
+            params: {
+              component: <LoadCollectionDialog collection={collection} />,
+            },
+          });
+        }}
+      >
+        {collectionTrans('loadTitle')}
+      </CustomButton>
+    );
+  }
+
   return (
     <div className={classes.root}>
       <CustomToolTip title={noIndex ? noIndexTooltip : tooltip} placement="top">
@@ -166,6 +195,7 @@ const StatusAction: FC<StatusActionType> = props => {
               {btnTrans('vectorSearch')}
             </CustomButton>
           )}
+
           {!collection.schema.hasVectorIndex && createIndexElement}
         </>
       )}

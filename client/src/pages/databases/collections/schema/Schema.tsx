@@ -329,6 +329,7 @@ const Overview = () => {
                 percentage={collection.loadedPercentage}
                 collection={collection}
                 showExtraAction={false}
+                showLoadButton={true}
                 createIndexElement={CreateIndexElement}
               />
               <Typography variant="h5">
