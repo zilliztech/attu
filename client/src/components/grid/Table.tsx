@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.paper,
   },
-  box: {},
   table: {
     minWidth: '100%',
   },
@@ -125,7 +124,7 @@ const EnhancedTable: FC<TableType> = props => {
 
   return (
     <TableContainer className={classes.root}>
-      <Box height="100%" className={classes.box}>
+      <Box height="100%">
         {!isLoading && (
           <Table
             stickyHeader
