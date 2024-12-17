@@ -18,7 +18,7 @@ import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { useSearchResult, usePaginationHook } from '@/hooks';
 import { getQueryStyles } from './Styles';
 import SearchGlobalParams from './SearchGlobalParams';
-import VectorInputBox from './VectorInputBox';
+import VectorInputBox from './SearchInputBox';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -138,7 +138,7 @@ const Search = (props: CollectionDataProps) => {
   }, [JSON.stringify(searchParams)]);
 
   // on vector input change, update the search params
-  const onVectorInputChange = useCallback(
+  const onSearchInputChange = useCallback(
     (anns_field: string, value: string) => {
       const s = cloneObj(searchParams) as SearchParamsType;
       const target = s.searchParams.find((sp: SearchSingleParams) => {
@@ -442,7 +442,11 @@ const Search = (props: CollectionDataProps) => {
                             s.data.length > 0 ? 'bold' : ''
                           }`}
                         >
-                          {field.name}
+                          {field.is_function_output
+                            ? `${field.name}<=${
+                                field.function!.input_field_names[0]
+                              }`
+                            : field.name}
                         </Typography>
                         <Typography className="vector-type">
                           {formatFieldType(field)}
@@ -454,8 +458,9 @@ const Search = (props: CollectionDataProps) => {
                   <AccordionDetails className={classes.accordionDetail}>
                     <VectorInputBox
                       searchParams={s}
-                      onChange={onVectorInputChange}
+                      onChange={onSearchInputChange}
                       collection={collection}
+                      type={field.is_function_output ? 'text' : 'vector'}
                     />
 
                     <Typography className="text">

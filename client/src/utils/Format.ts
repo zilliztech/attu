@@ -5,6 +5,7 @@ import {
   VectorTypes,
   DataTypeStringEnum,
   DEFAULT_ANALYZER_PARAMS,
+  DataTypeEnum,
 } from '@/consts';
 import {
   CreateFieldType,
@@ -102,16 +103,23 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
   return metricLabel === 'Superstructure' || metricLabel === 'Substructure';
 };
 
-export const getCreateFieldType = (config: CreateField): CreateFieldType => {
-  if (config.is_primary_key) {
+export const isVectorType = (field: FieldObject): boolean => {
+  return VectorTypes.includes(field.dataType as any);
+}
+
+export const getCreateFieldType = (field: CreateField): CreateFieldType => {
+  if (field.is_primary_key) {
     return 'primaryKey';
   }
 
-  if (config.isDefault) {
+  if (field.isDefault) {
     return 'defaultVector';
   }
 
-  if (VectorTypes.includes(config.data_type)) {
+  if (
+    VectorTypes.includes(field.data_type) ||
+    field.data_type === DataTypeEnum.VarCharBM25
+  ) {
     return 'vector';
   }
 
@@ -284,10 +292,12 @@ export const generateVectorsByField = (field: FieldObject) => {
           ? field.dimension / 8
           : field.dimension;
       return JSON.stringify(generateVector(dim));
-    case 'SparseFloatVector':
-      return transformObjToStr({
-        [Math.floor(Math.random() * 10)]: Math.random(),
-      });
+    case DataTypeStringEnum.SparseFloatVector:
+      return field.is_function_output
+        ? 'fox'
+        : transformObjToStr({
+            [Math.floor(Math.random() * 10)]: Math.random(),
+          });
     default:
       return [1, 2, 3];
   }

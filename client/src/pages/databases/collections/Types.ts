@@ -1,9 +1,18 @@
 import { Dispatch, SetStateAction } from 'react';
-import { DataTypeEnum } from '@/consts';
+import { DataTypeEnum, FunctionType } from '@/consts';
 
 export interface CollectionCreateProps {
   onCreate?: () => void;
 }
+
+export type FunctionConfig = {
+  name: string;
+  description: string;
+  type: FunctionType;
+  input_field_names: string[];
+  output_field_names: string[];
+  params: Record<string, unknown>;
+};
 
 export interface CollectionCreateParam {
   collection_name: string;
@@ -11,6 +20,7 @@ export interface CollectionCreateParam {
   autoID: boolean;
   fields: CreateField[];
   consistency_level: string;
+  functions: FunctionConfig[];
 }
 
 export type AnalyzerType = 'standard' | 'english' | 'chinese';

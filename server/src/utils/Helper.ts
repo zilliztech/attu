@@ -142,7 +142,7 @@ export const genRow = (
 ) => {
   const result: any = {};
   fields.forEach(field => {
-    if (!field.autoID) {
+    if (!field.autoID && !field.is_function_output) {
       if ((field.nullable || field.default_value) && Math.random() < 0.5) {
         return;
       }

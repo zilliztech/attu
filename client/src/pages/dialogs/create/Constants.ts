@@ -41,10 +41,13 @@ export const VECTOR_FIELDS_OPTIONS: LabelValuePair[] = [
     label: 'Sparse Vector',
     value: DataTypeEnum.SparseFloatVector,
   },
+  {
+    label: 'VarChar(BM25)',
+    value: DataTypeEnum.VarCharBM25,
+  },
 ];
 
 export const ALL_OPTIONS: LabelValuePair[] = [
-  ...VECTOR_FIELDS_OPTIONS,
   {
     label: 'Int8',
     value: DataTypeEnum.Int8,

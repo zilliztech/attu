@@ -8,15 +8,12 @@ import Icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { IndexState } from '@/types/Milvus';
-import {
-  NONE_INDEXABLE_DATA_TYPES,
-  DataTypeStringEnum,
-  DataTypeEnum,
-} from '@/consts';
+import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndexDialog from './CreateIndexDialog';
 import { FieldObject } from '@server/types';
 import CustomButton from '@/components/customButton/CustomButton';
 import { makeStyles } from '@mui/styles';
+import { isVectorType } from '@/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -31,9 +28,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     whiteSpace: 'nowrap',
     color: theme.palette.primary.main,
-    height: 24,
+    height: 26,
+    fontSize: 13,
+    border: `1px solid transparent`,
     '&:hover': {
       cursor: 'pointer',
+    },
+    '&.outline': {
+      border: `1px dashed ${theme.palette.primary.main}`,
+    },
+    '& svg': {
+      width: 15,
     },
   },
   btnDisabled: {
@@ -67,7 +72,7 @@ const IndexTypeElement: FC<{
   disabled?: boolean;
   disabledTooltip?: string;
   cb?: (collectionName: string) => void;
-}> = ({ field, collectionName, cb, disabled, disabledTooltip }) => {
+}> = ({ field, collectionName, cb, disabled }) => {
   const { createIndex, dropIndex } = useContext(dataContext);
 
   const classes = useStyles();
@@ -75,7 +80,6 @@ const IndexTypeElement: FC<{
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: successTrans } = useTranslation('success');
-  const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
 
   const { setDialog, handleCloseDialog, openSnackBar } =
@@ -108,11 +112,7 @@ const IndexTypeElement: FC<{
         component: (
           <CreateIndexDialog
             collectionName={collectionName}
-            fieldName={field.name}
-            dataType={field.dataType as unknown as DataTypeEnum}
-            fieldType={field.data_type as DataTypeStringEnum}
-            elementType={field.element_type as DataTypeStringEnum}
-            dimension={Number(field.dimension)}
+            field={field}
             handleCancel={handleCloseDialog}
             handleCreate={requestCreateIndex}
           />
@@ -192,14 +192,14 @@ const IndexTypeElement: FC<{
     }
 
     if (!field.index) {
+      const isVector = isVectorType(field);
       return (
         <CustomButton
-          startIcon={<Icons.add />}
-          className={classes.btn}
-          tooltip={collectionTrans('clickToCreateVectorIndex')}
+          startIcon={<Icons.addOutline />}
+          className={`${classes.btn}${isVector ? ' outline' : ''}`}
           onClick={e => handleCreate(e)}
         >
-          {btnTrans('createIndex')}
+          {btnTrans(isVector ? 'createVectorIndex' : 'createScalarIndex')}
         </CustomButton>
       );
     }

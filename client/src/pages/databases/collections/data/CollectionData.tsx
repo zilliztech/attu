@@ -152,7 +152,7 @@ const CollectionData = (props: CollectionDataProps) => {
   } = useQuery({
     collection,
     consistencyLevel,
-    fields,
+    fields: fields.filter(f => !f.is_function_output),
     onQueryStart: (expr: string = '') => {
       setTableLoading(true);
       if (expr === '') {
@@ -422,15 +422,17 @@ const CollectionData = (props: CollectionDataProps) => {
             <div className="right">
               <CustomMultiSelector
                 className={classes.outputs}
-                options={fields.map(f => {
-                  return {
-                    label:
-                      f.name === DYNAMIC_FIELD
-                        ? searchTrans('dynamicFields')
-                        : f.name,
-                    value: f.name,
-                  };
-                })}
+                options={fields
+                  .filter(f => !f.is_function_output)
+                  .map(f => {
+                    return {
+                      label:
+                        f.name === DYNAMIC_FIELD
+                          ? searchTrans('dynamicFields')
+                          : f.name,
+                      value: f.name,
+                    };
+                  })}
                 values={outputFields}
                 renderValue={selected => (
                   <span>{`${(selected as string[]).length} ${

@@ -22,6 +22,9 @@ const collectionTrans = {
   createdTime: '创建时间',
   maxLength: '最大长度',
   dynamicSchema: '动态schema',
+  function: 'Function',
+  functionInput: 'Function输入',
+  functionOutput: 'Function输出',
 
   // table tooltip
   aliasInfo: '别名可以在向量搜索中用作Collection名称。',
@@ -34,7 +37,8 @@ const collectionTrans = {
 
   // create dialog
   createTitle: '创建Collection',
-  general: '一般信息',
+  idAndVectorFields: 'ID、向量或可用 BM25 算法处理的文本字段',
+  scalarFields: '标量字段',
   schema: 'schema',
   consistency: '一致性',
   consistencyLevel: '一致性级别',

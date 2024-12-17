@@ -61,7 +61,7 @@ const Overview = () => {
                 className={classes.primaryKeyChip}
                 title={collectionTrans('idFieldName')}
               >
-                <Icons.key classes={{ root: 'key' }} />
+                <Chip className={classes.chip} size="small" label="ID" />
               </div>
             ) : null}
             {f.is_partition_key ? (
@@ -69,13 +69,6 @@ const Overview = () => {
                 className={classes.chip}
                 size="small"
                 label="Partition key"
-              />
-            ) : null}
-            {f.autoID ? (
-              <Chip
-                className={classes.chip}
-                size="small"
-                label={collectionTrans('autoId')}
               />
             ) : null}
             {findKeyValue(f.type_params, 'enable_match') ? (
@@ -99,6 +92,32 @@ const Overview = () => {
                       f.type_params,
                       'analyzer_params'
                     );
+                    navigator.clipboard
+                      .writeText(textToCopy as string)
+                      .then(() => {
+                        alert('Copied to clipboard!');
+                      })
+                      .catch(err => {
+                        alert('Failed to copy: ' + err);
+                      });
+                  }}
+                />
+              </Tooltip>
+            ) : null}
+
+            {f.function ? (
+              <Tooltip title={JSON.stringify(f.function)} arrow>
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={`
+                    ${
+                      f.is_function_output
+                        ? `<- ${f.function.type}(${f.function.input_field_names})`
+                        : ` ${collectionTrans('function')}: ${f.function.type}`
+                    }`}
+                  onClick={() => {
+                    const textToCopy = JSON.stringify(f.function);
                     navigator.clipboard
                       .writeText(textToCopy as string)
                       .then(() => {
@@ -239,6 +258,11 @@ const Overview = () => {
   const enableModifyReplica =
     data && data.queryNodes && data.queryNodes.length > 1;
 
+  // if is autoID enabled
+  const isAutoIDEnabled = collection?.schema?.fields.some(
+    f => f.autoID === true
+  );
+
   // get loading state label
   return (
     <section className={classes.wrapper}>
@@ -304,7 +328,8 @@ const Overview = () => {
                 status={collection.status}
                 percentage={collection.loadedPercentage}
                 collection={collection}
-                showExtraAction={true}
+                showExtraAction={false}
+                showLoadButton={true}
                 createIndexElement={CreateIndexElement}
               />
               <Typography variant="h5">
@@ -362,6 +387,13 @@ const Overview = () => {
                 {collectionTrans('features')}
               </Typography>
               <Typography variant="h6">
+                {isAutoIDEnabled ? (
+                  <Chip
+                    className={`${classes.chip} ${classes.featureChip}`}
+                    label={collectionTrans('autoId')}
+                    size="small"
+                  />
+                ) : null}
                 <Tooltip
                   title={
                     consistencyTooltipsMap[collection.consistency_level!] || ''

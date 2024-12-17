@@ -7,118 +7,31 @@ import { indentUnit } from '@codemirror/language';
 import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { linter, Diagnostic } from '@codemirror/lint';
-import { CollectionFullObject, FieldObject } from '@server/types';
+import { CollectionFullObject } from '@server/types';
 import { CollectionService } from '@/http';
 import { DataTypeStringEnum } from '@/consts';
 import { SearchSingleParams } from '../../types';
-import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
 import { getQueryStyles } from './Styles';
 import { useTheme } from '@mui/material';
 import { githubLight } from '@ddietr/codemirror-themes/github-light';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
+import { Validator } from './utils';
 
-const floatVectorValidator = (text: string, field: FieldObject) => {
-  try {
-    const value = JSON.parse(text);
-    const dim = field.dimension;
-    if (!Array.isArray(value)) {
-      return {
-        valid: false,
-        message: `Not an array`,
-      };
-    }
-
-    if (Array.isArray(value) && value.length !== dim) {
-      return {
-        valid: false,
-        value: undefined,
-        message: `Dimension ${value.length} is not equal to ${dim} `,
-      };
-    }
-
-    return { valid: true, message: ``, value: value };
-  } catch (e: any) {
-    return {
-      valid: false,
-      message: `Wrong Float Vector format, it should be an array of ${field.dimension} numbers`,
-    };
-  }
-};
-
-const binaryVectorValidator = (text: string, field: FieldObject) => {
-  try {
-    const value = JSON.parse(text);
-    const dim = field.dimension;
-    if (!Array.isArray(value)) {
-      return {
-        valid: false,
-        message: `Not an array`,
-      };
-    }
-
-    if (Array.isArray(value) && value.length !== dim / 8) {
-      return {
-        valid: false,
-        value: undefined,
-        message: `Dimension ${value.length} is not equal to ${dim / 8} `,
-      };
-    }
-
-    return { valid: true, message: ``, value: value };
-  } catch (e: any) {
-    return {
-      valid: false,
-      message: `Wrong Binary Vector format, it should be an array of ${
-        field.dimension / 8
-      } numbers`,
-    };
-  }
-};
-
-const sparseVectorValidator = (text: string, field: FieldObject) => {
-  if (!isSparseVector(text)) {
-    return {
-      valid: false,
-      value: undefined,
-      message: `Incorrect Sparse Vector format, it should be like {1: 0.1, 3: 0.2}`,
-    };
-  }
-  try {
-    JSON.parse(transformObjStrToJSONStr(text));
-    return {
-      valid: true,
-      message: ``,
-    };
-  } catch (e: any) {
-    return {
-      valid: false,
-      message: `Wrong Sparse Vector format`,
-    };
-  }
-};
-
-const Validator = {
-  [DataTypeStringEnum.FloatVector]: floatVectorValidator,
-  [DataTypeStringEnum.BinaryVector]: binaryVectorValidator,
-  [DataTypeStringEnum.Float16Vector]: floatVectorValidator,
-  [DataTypeStringEnum.BFloat16Vector]: floatVectorValidator,
-  [DataTypeStringEnum.SparseFloatVector]: sparseVectorValidator,
-};
-
-export type VectorInputBoxProps = {
+export type SearchInputBoxProps = {
   onChange: (anns_field: string, value: string) => void;
   searchParams: SearchSingleParams;
   collection: CollectionFullObject;
+  type?: 'vector' | 'text';
 };
 
 let queryTimeout: NodeJS.Timeout;
 
-export default function VectorInputBox(props: VectorInputBoxProps) {
+export default function SearchInputBox(props: SearchInputBoxProps) {
   const theme = useTheme();
   const { t: searchTrans } = useTranslation('search');
 
   // props
-  const { searchParams, onChange, collection } = props;
+  const { searchParams, onChange, collection, type } = props;
   const { field, data } = searchParams;
 
   // classes
@@ -187,12 +100,64 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
   // create editor
   useEffect(() => {
     if (!editor.current) {
-      const startState = EditorState.create({
-        doc: data,
-        extensions: [
-          minimalSetup,
+      // update outside data timeout handler
+      let updateTimeout: NodeJS.Timeout;
+
+      let extensions = [
+        minimalSetup,
+        placeholder(
+          searchTrans(
+            type === 'text' ? 'textPlaceHolder' : 'inputVectorPlaceHolder'
+          )
+        ),
+        keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
+        indentUnit.of('    '), // fix tab indentation
+        EditorView.theme({
+          '&.cm-editor': {
+            '&.cm-focused': {
+              outline: 'none',
+            },
+          },
+          '.cm-content': {
+            fontSize: '12px',
+            minHeight: '124px',
+          },
+          '.cm-gutters': {
+            display: 'none',
+          },
+        }),
+        EditorView.lineWrapping,
+        EditorView.updateListener.of(update => {
+          if (update.docChanged) {
+            if (queryTimeout || updateTimeout) {
+              clearTimeout(queryTimeout);
+              clearTimeout(updateTimeout);
+            }
+
+            updateTimeout = setTimeout(() => {
+              // get text
+              const text = update.state.doc.toString();
+              // validate text
+              const { valid } = validator(text, fieldRef.current);
+              // if valid, update search params
+              if (valid || text === '' || type === 'text') {
+                onChangeRef.current(searchParams.anns_field, text);
+              } else {
+                getVectorById(text);
+              }
+            }, 500);
+          }
+          if (update.focusChanged) {
+            editorEl.current?.classList.toggle('focused', update.view.hasFocus);
+          }
+        }),
+      ];
+
+      if (type === 'vector') {
+        extensions = [
+          ...extensions,
           javascript(),
-          placeholder(searchTrans('inputVectorPlaceHolder')),
+
           linter(view => {
             const text = view.state.doc.toString();
 
@@ -227,67 +192,37 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
               return [];
             }
           }),
-          keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
-          indentUnit.of('    '), // fix tab indentation
-          EditorView.theme({
-            '&.cm-editor': {
-              '&.cm-focused': {
-                outline: 'none',
-              },
-            },
-            '.cm-content': {
-              fontSize: '12px',
-              minHeight: '124px',
-            },
-            '.cm-gutters': {
-              display: 'none',
-            },
-          }),
-          EditorView.lineWrapping,
-          EditorView.updateListener.of(update => {
-            if (update.docChanged) {
-              if (queryTimeout) {
-                clearTimeout(queryTimeout);
-              }
-              const text = update.state.doc.toString();
+        ];
+      }
 
-              const { valid } = validator(text, fieldRef.current);
-              if (valid || text === '') {
-                onChangeRef.current(searchParams.anns_field, text);
-              } else {
-                getVectorById(text);
-              }
-            }
-            if (update.focusChanged) {
-              editorEl.current?.classList.toggle(
-                'focused',
-                update.view.hasFocus
-              );
-            }
-          }),
-        ],
+      // create editor
+      const startState = EditorState.create({
+        doc: data,
+        extensions,
       });
 
+      // create editor view
       const view = new EditorView({
         state: startState,
         parent: editorEl.current!,
       });
 
+      // set editor ref
       editor.current = view;
-
-      // focus editor, the cursor will be at the end of the text
-      const endPos = editor.current.state.doc.length;
-      editor.current.dispatch({
-        selection: { anchor: endPos },
-      });
-
-      editor.current.focus();
-
-      return () => {
-        view.destroy();
-        editor.current = undefined;
-      };
+    } else {
+      if (editor.current.state.doc.toString() !== data) {
+        console.log('not equal');
+        editor.current.dispatch({
+          changes: {
+            from: 0,
+            to: editor.current.state.doc.length,
+            insert: data,
+          },
+        });
+      }
     }
+
+    return () => {};
   }, [JSON.stringify({ field, data })]);
 
   useEffect(() => {
@@ -303,5 +238,5 @@ export default function VectorInputBox(props: VectorInputBoxProps) {
     }
   }, [theme.palette.mode]);
 
-  return <div className={classes.vectorInputBox} ref={editorEl}></div>;
+  return <div className={classes.searchInputBox} ref={editorEl}></div>;
 }

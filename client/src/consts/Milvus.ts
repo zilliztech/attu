@@ -7,29 +7,34 @@ export const MILVUS_DATABASE =
 export const DYNAMIC_FIELD = `$meta`;
 
 export enum DataTypeEnum {
+  None = 0,
   Bool = 1,
   Int8 = 2,
   Int16 = 3,
   Int32 = 4,
   Int64 = 5,
+
   Float = 10,
   Double = 11,
-  String = 20,
-  VarChar = 21,
+
+  // String = 20,
+  VarChar = 21, // variable-length strings with a specified maximum length
+  Array = 22,
   JSON = 23,
+
   BinaryVector = 100,
   FloatVector = 101,
   Float16Vector = 102,
-  SparseFloatVector = 104,
   BFloat16Vector = 103,
-  Array = 22,
+  SparseFloatVector = 104,
+  VarCharBM25 = 1000,
 }
 
 export const VectorTypes = [
-  DataTypeEnum.BinaryVector,
   DataTypeEnum.FloatVector,
-  DataTypeEnum.BFloat16Vector,
+  DataTypeEnum.BinaryVector,
   DataTypeEnum.Float16Vector,
+  DataTypeEnum.BFloat16Vector,
   DataTypeEnum.SparseFloatVector,
 ];
 
@@ -64,6 +69,7 @@ export enum METRIC_TYPES_VALUES {
   TANIMOTO = 'TANIMOTO',
   SUBSTRUCTURE = 'SUBSTRUCTURE',
   SUPERSTRUCTURE = 'SUPERSTRUCTURE',
+  BM25 = 'BM25',
 }
 
 export const METRIC_TYPES = [
@@ -98,6 +104,10 @@ export const METRIC_TYPES = [
   {
     value: METRIC_TYPES_VALUES.TANIMOTO,
     label: 'TANIMOTO',
+  },
+  {
+    value: METRIC_TYPES_VALUES.BM25,
+    label: 'BM25',
   },
 ];
 
@@ -392,6 +402,13 @@ export enum DataTypeStringEnum {
   Array = 'Array',
   None = 'None',
 }
+export const VectorTypesString: DataTypeStringEnum[] = [
+  DataTypeStringEnum.BinaryVector,
+  DataTypeStringEnum.FloatVector,
+  DataTypeStringEnum.BFloat16Vector,
+  DataTypeStringEnum.Float16Vector,
+  DataTypeStringEnum.SparseFloatVector,
+];
 
 export const NONE_INDEXABLE_DATA_TYPES = [DataTypeStringEnum.JSON];
 
@@ -454,3 +471,8 @@ export const databaseDefaults: Property[] = [
   { key: 'database.max.collections', value: '', desc: '', type: 'number' },
   { key: 'database.force.deny.writing', value: '', desc: '', type: 'boolean' },
 ];
+
+export enum FunctionType {
+  Unknown = 0,
+  BM25 = 1,
+}

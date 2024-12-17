@@ -8,6 +8,7 @@ export type StatusActionType = {
   action?: Function;
   onIndexCreate?: Function;
   showExtraAction?: boolean;
+  showLoadButton?: boolean;
   collection: CollectionObject;
   createIndexElement?: React.ReactNode;
 };

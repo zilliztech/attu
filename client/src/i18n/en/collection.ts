@@ -22,6 +22,9 @@ const collectionTrans = {
   createdTime: 'Created Time',
   maxLength: 'Max Length',
   dynamicSchema: 'Dynamic Schema',
+  function: 'Function',
+  functionInput: 'Input',
+  functionOutput: 'Output',
 
   // table tooltip
   aliasInfo: 'Alias can be used as collection name in vector search.',
@@ -35,7 +38,8 @@ const collectionTrans = {
 
   // create dialog
   createTitle: 'Create Collection',
-  general: 'General information',
+  idAndVectorFields: 'ID, Vector, or VarChar Fields for BM25 Processing',
+  scalarFields: 'Scalar Fields',
   schema: 'Schema',
   consistency: 'Consistency',
   consistencyLevel: 'Consistency Level',

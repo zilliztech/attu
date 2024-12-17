@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CodeLanguageEnum, CodeViewData } from '@/components/code/Types';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import CustomSwitch from '@/components/customSwitch/CustomSwitch';
 import { Option } from '@/components/customSelector/Types';
 import {
   INDEX_CONFIG,
@@ -11,38 +9,26 @@ import {
   INDEX_TYPES_ENUM,
   DataTypeEnum,
   DataTypeStringEnum,
-  VectorTypes,
+  VectorTypesString,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
-import { getCreateIndexJSCode } from '@/utils/code/Js';
-import { getCreateIndexPYCode } from '@/utils/code/Py';
-import { getCreateIndexJavaCode } from '@/utils/code/Java';
-import { formatForm, getMetricOptions, getScalarIndexOption } from '@/utils';
+import {
+  formatForm,
+  getMetricOptions,
+  getScalarIndexOption,
+  isVectorType,
+} from '@/utils';
 import CreateForm from './CreateForm';
 import { IndexType, IndexExtraParam } from './Types';
+import { FieldObject } from '@server/types';
 
 const CreateIndex = (props: {
   collectionName: string;
-  fieldType: DataTypeStringEnum;
-  elementType?: DataTypeStringEnum;
-  dataType: DataTypeEnum;
+  field: FieldObject;
   handleCreate: (params: IndexExtraParam, index_name: string) => void;
   handleCancel: () => void;
-
-  // used for code mode
-  fieldName: string;
-  // used for sizing info
-  dimension: number;
 }) => {
-  const {
-    collectionName,
-    fieldType,
-    elementType,
-    handleCreate,
-    handleCancel,
-    fieldName,
-    dataType,
-  } = props;
+  const { collectionName, handleCreate, handleCancel, field } = props;
 
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
@@ -53,7 +39,7 @@ const CreateIndex = (props: {
   const defaultIndexType = INDEX_TYPES_ENUM.AUTOINDEX;
 
   const defaultMetricType = useMemo(() => {
-    switch (fieldType) {
+    switch (field.data_type) {
       case DataTypeStringEnum.BinaryVector:
         return METRIC_TYPES_VALUES.HAMMING;
       case DataTypeStringEnum.FloatVector:
@@ -61,11 +47,13 @@ const CreateIndex = (props: {
       case DataTypeStringEnum.BFloat16Vector:
         return METRIC_TYPES_VALUES.COSINE;
       case DataTypeStringEnum.SparseFloatVector:
-        return METRIC_TYPES_VALUES.IP;
+        return field.is_function_output
+          ? METRIC_TYPES_VALUES.BM25
+          : METRIC_TYPES_VALUES.IP;
       default:
         return '';
     }
-  }, [fieldType]);
+  }, [field.data_type]);
 
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
@@ -92,9 +80,6 @@ const CreateIndex = (props: {
     cache_dataset_on_device: 'false',
   });
 
-  // control whether show code mode
-  const [showCode, setShowCode] = useState<boolean>(false);
-
   const indexCreateParams = useMemo(() => {
     if (!INDEX_CONFIG[indexSetting.index_type]) {
       return [];
@@ -103,10 +88,10 @@ const CreateIndex = (props: {
   }, [indexSetting.index_type]);
 
   const metricOptions = useMemo(() => {
-    return VectorTypes.includes(dataType)
-      ? getMetricOptions(indexSetting.index_type, dataType)
+    return isVectorType(field)
+      ? getMetricOptions(indexSetting.index_type, field)
       : [];
-  }, [indexSetting.index_type, fieldType]);
+  }, [indexSetting.index_type, field]);
 
   const extraParams = useMemo(() => {
     const params: { [x: string]: string } = {};
@@ -133,8 +118,8 @@ const CreateIndex = (props: {
     const autoOption = getOptions('AUTOINDEX', INDEX_OPTIONS_MAP['AUTOINDEX']);
     let options = [];
 
-    if (VectorTypes.includes(dataType)) {
-      switch (fieldType) {
+    if (isVectorType(field)) {
+      switch (field.data_type) {
         case DataTypeStringEnum.BinaryVector:
           options = [
             ...getOptions(
@@ -166,18 +151,15 @@ const CreateIndex = (props: {
       }
     } else {
       options = [
-        ...getOptions(
-          indexTrans('scalar'),
-          getScalarIndexOption(fieldType, elementType)
-        ),
+        ...getOptions(indexTrans('scalar'), getScalarIndexOption(field)),
       ];
     }
 
     return [...autoOption, ...options];
-  }, [fieldType, dataType, fieldName]);
+  }, [field]);
 
   const checkedForm = useMemo(() => {
-    if (!VectorTypes.includes(dataType)) {
+    if (!isVectorType(field)) {
       return [];
     }
     const paramsForm: any = { metric_type: indexSetting.metric_type };
@@ -186,47 +168,7 @@ const CreateIndex = (props: {
     });
     const form = formatForm(paramsForm);
     return form;
-  }, [indexSetting, indexCreateParams, fieldType]);
-
-  /**
-   * create index code mode
-   */
-  const codeBlockData: CodeViewData[] = useMemo(() => {
-    const isScalarField = !VectorTypes.includes(dataType);
-    const getCodeParams = {
-      collectionName,
-      fieldName,
-      extraParams,
-      isScalarField,
-      indexName: indexSetting.index_name,
-      metricType: indexSetting.metric_type,
-      indexType: indexSetting.index_type,
-    };
-    return [
-      {
-        label: commonTrans('py'),
-        language: CodeLanguageEnum.python,
-        code: getCreateIndexPYCode(getCodeParams),
-      },
-      {
-        label: commonTrans('java'),
-        language: CodeLanguageEnum.java,
-        code: getCreateIndexJavaCode(getCodeParams),
-      },
-      {
-        label: commonTrans('js'),
-        language: CodeLanguageEnum.javascript,
-        code: getCreateIndexJSCode(getCodeParams),
-      },
-    ];
-  }, [
-    commonTrans,
-    extraParams,
-    collectionName,
-    fieldName,
-    indexSetting.index_name,
-    fieldType,
-  ]);
+  }, [indexSetting, indexCreateParams, field]);
 
   const {
     validation,
@@ -262,24 +204,16 @@ const CreateIndex = (props: {
     await handleCreate(extraParams, indexSetting.index_name);
   };
 
-  const handleShowCode = (event: React.ChangeEvent<{ checked: boolean }>) => {
-    const isChecked = event.target.checked;
-    setShowCode(isChecked);
-  };
-
   return (
     <DialogTemplate
       title={dialogTrans('createTitle', {
         type: indexTrans('index'),
-        name: fieldName,
+        name: field.name,
       })}
       handleClose={handleCancel}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateIndex}
       confirmDisabled={disabled}
-      leftActions={<CustomSwitch onChange={handleShowCode} />}
-      showCode={showCode}
-      codeBlocksData={codeBlockData}
     >
       <>
         <CreateForm

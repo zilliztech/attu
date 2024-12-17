@@ -8,14 +8,19 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, getAnalyzerParams, TypeEnum } from '@/utils';
-import { DataTypeEnum, ConsistencyLevelEnum, DEFAULT_ATTU_DIM } from '@/consts';
-import CreateFields from '../databases/collections/CreateFields';
+import {
+  DataTypeEnum,
+  ConsistencyLevelEnum,
+  DEFAULT_ATTU_DIM,
+  FunctionType,
+} from '@/consts';
+import CreateFields from './create/CreateFields';
 import {
   CollectionCreateParam,
   CollectionCreateProps,
   CreateField,
 } from '../databases/collections/Types';
-import { CONSISTENCY_LEVEL_OPTIONS } from '../databases/collections/Constants';
+import { CONSISTENCY_LEVEL_OPTIONS } from './create/Constants';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -29,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       marginBottom: '0',
     },
     '& legend': {
-      marginBottom: theme.spacing(1),
       lineHeight: '20px',
       fontSize: '14px',
     },
@@ -49,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(2),
   },
   dialog: {
-    minWidth: 820,
+    minWidth: 880,
   },
 }));
 
@@ -191,6 +195,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   ];
 
   const handleCreateCollection = async () => {
+    // function output fields
+    const fnOutputFields: CreateField[] = [];
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
@@ -202,6 +208,9 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           is_partition_key: !!v.is_partition_key,
           data_type: v.data_type,
         };
+
+        // remove unused id
+        delete data.id;
 
         // if we need
         if (typeof v.dim !== undefined && !isNaN(Number(v.dim))) {
@@ -218,22 +227,70 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           data.max_capacity = Number(v.max_capacity);
         }
 
-        if (v.analyzer_params && v.enable_analyzer) {
-          // if analyzer_params is string, we need to use default value
-          data.analyzer_params = getAnalyzerParams(v.analyzer_params);
+        // handle BM25 row
+        if (data.data_type === DataTypeEnum.VarCharBM25) {
+          data.data_type = DataTypeEnum.VarChar;
+          data.enable_analyzer = true;
+          data.analyzer_params = data.analyzer_params || 'standard';
+          // create sparse field
+          const sparseField = {
+            name: `${data.name}_embeddings`,
+            is_primary_key: false,
+            data_type: DataTypeEnum.SparseFloatVector,
+            description: `fn BM25(${data.name}) -> embeddings`,
+            is_function_output: true,
+          };
+          // push sparse field to fields
+          fnOutputFields.push(sparseField);
         }
 
-        v.is_primary_key && (data.autoID = form.autoID);
+        if (data.analyzer_params && data.enable_analyzer) {
+          // if analyzer_params is string, we need to use default value
+          data.analyzer_params = getAnalyzerParams(data.analyzer_params);
+        } else {
+          delete data.analyzer_params;
+          delete data.enable_analyzer;
+        }
+
+        data.is_primary_key && (data.autoID = form.autoID);
 
         // delete sparse vector dime
         if (data.data_type === DataTypeEnum.SparseFloatVector) {
           delete data.dim;
         }
+        // delete analyzer if not varchar
+        if (
+          data.data_type !== DataTypeEnum.VarChar &&
+          data.data_type === DataTypeEnum.Array &&
+          data.element_type !== DataTypeEnum.VarChar
+        ) {
+          delete data.enable_analyzer;
+          delete data.analyzer_params;
+          delete data.max_length;
+        }
 
         return data;
       }),
+      functions: [],
       consistency_level: consistencyLevel,
     };
+
+    // push sparse fields to param.fields
+    param.fields.push(...fnOutputFields);
+
+    // build functions
+    fnOutputFields.forEach((field, index) => {
+      const [input] = (field.name as string).split('_');
+      const functionParam = {
+        name: `BM25_${index}`,
+        description: `${input} BM25 function`,
+        type: FunctionType.BM25,
+        input_field_names: [input],
+        output_field_names: [field.name as string],
+        params: {},
+      };
+      param.functions.push(functionParam);
+    });
 
     // create collection
     await createCollection({
@@ -276,7 +333,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         </fieldset>
 
         <fieldset className={classes.fieldset}>
-          <legend>{collectionTrans('schema')}</legend>
+          {/* <legend>{collectionTrans('schema')}</legend> */}
           <CreateFields
             fields={fields}
             setFields={setFields}

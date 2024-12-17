@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 // Databases page(tree and tabs)
 const Databases = () => {
   // context
-  const { database, collections, loading, fetchCollection, ui, setUIPref } =
+  const { database, collections, loading, ui, setUIPref } =
     useContext(dataContext);
 
   // UI state
