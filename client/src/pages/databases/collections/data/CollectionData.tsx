@@ -30,6 +30,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
+import DataListView from '@/components/DataListView/DataListView';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -63,7 +64,7 @@ const CollectionData = (props: CollectionDataProps) => {
   ];
 
   // UI functions
-  const { setDialog, handleCloseDialog, openSnackBar } =
+  const { setDialog, handleCloseDialog, openSnackBar, setDrawer } =
     useContext(rootContext);
   const { fetchCollection } = useContext(dataContext);
   // icons
@@ -250,6 +251,26 @@ const CollectionData = (props: CollectionDataProps) => {
       label: btnTrans('empty'),
       tooltip: btnTrans('emptyTooltip'),
       disabled: () => selectedData?.length > 0 || total == 0,
+    },
+    {
+      icon: 'eye',
+      type: 'button',
+      btnVariant: 'text',
+      onClick: () => {
+        setDrawer({
+          open: true,
+          title: 'custom',
+          content: <DataListView collection={collection} data={selectedData} />,
+          hasActionBar: true,
+          actions: [],
+        });
+      },
+      label: btnTrans('viewData'),
+      tooltip: btnTrans('viewDataTooltip'),
+      disabled: () => selectedData?.length !== 1,
+      hideOnDisable() {
+        return selectedData?.length === 0;
+      },
     },
     {
       type: 'button',

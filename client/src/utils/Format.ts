@@ -105,7 +105,7 @@ export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
 
 export const isVectorType = (field: FieldObject): boolean => {
   return VectorTypes.includes(field.dataType as any);
-}
+};
 
 export const getCreateFieldType = (field: CreateField): CreateFieldType => {
   if (field.is_primary_key) {
@@ -218,7 +218,12 @@ export const formatUtcToMilvus = (bigNumber: number) => {
  * @returns
  */
 export const formatFieldType = (field: FieldObject) => {
-  const { data_type, element_type, maxLength, maxCapacity, dimension } = field;
+  const { name, data_type, element_type, maxLength, maxCapacity, dimension } =
+    field;
+
+  if (name === '$meta') {
+    return `${data_type}`;
+  }
 
   const elementType =
     element_type !== 'None'

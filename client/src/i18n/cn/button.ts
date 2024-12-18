@@ -44,6 +44,7 @@ const btnTrans = {
   modify: '修改',
   downloadSchema: '下载 Schema',
   editDefaultValue: '编辑默认值',
+  viewData: '查看数据',
 
   // tips
   loadColTooltip: '加载Collection',
@@ -58,6 +59,7 @@ const btnTrans = {
   duplicateTooltip: '复制collection，不包含数据',
   renameTooltip: '重命名collection',
   editEntityTooltip: '编辑entity',
+  viewDataTooltip: '查看详细数据',
 
   // disable tooltip
   downloadDisabledTooltip: '导出前请先选择数据。',

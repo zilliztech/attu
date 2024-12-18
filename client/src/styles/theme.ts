@@ -1,5 +1,10 @@
 import { PaletteMode } from '@mui/material';
 
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    mono: true; // Custom variant
+  }
+}
 
 const getCommonThemes = (mode: PaletteMode) => ({
   typography: {
@@ -100,6 +105,11 @@ export const getAttuTheme = (mode: PaletteMode) => {
           caption: {
             fontSize: '10px',
             lineHeight: '12px',
+          },
+          mono: {
+            fontFamily: 'monospace',
+            fontSize: '12px',
+            lineHeight: 1.5,
           },
         },
       },

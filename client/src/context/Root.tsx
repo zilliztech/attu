@@ -6,9 +6,11 @@ import {
   DialogType,
   SnackBarType,
   OpenSnackBarType,
+  DrawerType,
 } from './Types';
 import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
 import CustomDialog from '@/components/customDialog/CustomDialog';
+import CustomDrawer from '@/components/customDrawer/CustomDrawer';
 import { MilvusService } from '@/http';
 
 const DefaultDialogConfigs: DialogType = {
@@ -20,6 +22,14 @@ const DefaultDialogConfigs: DialogType = {
     confirm: () => new Promise((res, rej) => res(true)),
     cancel: () => new Promise((res, rej) => res(true)),
   },
+};
+
+const DefaultDrawerConfigs: DrawerType = {
+  open: false,
+  title: '',
+  content: <></>,
+  hasActionBar: false,
+  actions: [],
 };
 
 export const rootContext = React.createContext<RootContextType>({
@@ -36,6 +46,8 @@ export const rootContext = React.createContext<RootContextType>({
   handleCloseDialog: () => {},
   handleCloseDialog2: () => {},
   versionInfo: { attu: '', sdk: '' },
+  drawer: DefaultDrawerConfigs, // Add drawer to context
+  setDrawer: () => {}, // Function to set drawer state
 });
 
 const { Provider } = rootContext;
@@ -56,6 +68,14 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
   });
   const [dialog, setDialog] = useState<DialogType>(DefaultDialogConfigs);
   const [dialog2, setDialog2] = useState<DialogType>(DefaultDialogConfigs);
+
+  const [drawer, setDrawer] = useState<DrawerType>({
+    open: false,
+    title: '',
+    content: <></>,
+    hasActionBar: false,
+    actions: [],
+  });
 
   const [versionInfo, setVersionInfo] = useState({ attu: '', sdk: '' });
 
@@ -128,6 +148,8 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         handleCloseDialog,
         handleCloseDialog2,
         versionInfo,
+        drawer,
+        setDrawer,
       }}
     >
       {props.children}
@@ -135,6 +157,8 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
       <CustomSnackBar {...snackBar} onClose={handleSnackBarClose} />
       <CustomDialog {...dialog} onClose={handleCloseDialog} />
       <CustomDialog {...dialog2} onClose={handleCloseDialog2} />
+
+      <CustomDrawer />
     </Provider>
   );
 };

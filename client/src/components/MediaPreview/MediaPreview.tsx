@@ -97,19 +97,21 @@ const MediaPreview = (props: { value: string }) => {
       <div
         onMouseMove={handleMouseOver}
         onMouseOut={handleMouseOut}
-        style={{ cursor: 'pointer' }}
+        style={isImg ? { cursor: 'pointer' } : {}}
       >
         {isImg ? (
           <>
             <icons.img />
-            <Typography title={value}>
+            <Typography variant="mono" component="p" title={value}>
               <a href={value} target="_blank">
                 {value}
               </a>
             </Typography>
           </>
         ) : (
-          <Typography title={value}>{value}</Typography>
+          <Typography variant="mono" component="p" title={value}>
+            {value}
+          </Typography>
         )}
       </div>
       {showImage && (
