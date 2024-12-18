@@ -44,6 +44,7 @@ const btnTrans = {
   modify: 'Modify',
   downloadSchema: 'Download Schema',
   EditDefaultValue: 'Edit Default Value',
+  viewData: 'View Data',
 
   // tips
   loadColTooltip: 'Load Collection',
@@ -58,6 +59,7 @@ const btnTrans = {
   duplicateTooltip: 'Duplicate selected collection without data',
   renameTooltip: 'Rename collection',
   editEntityTooltip: 'Edit entity(JSON)',
+  viewDataTooltip: 'View data detail',
 
   // disable tooltip
   downloadDisabledTooltip: 'Please select data before exporting',

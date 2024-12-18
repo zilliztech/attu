@@ -265,8 +265,8 @@ const CollectionData = (props: CollectionDataProps) => {
           actions: [],
         });
       },
-      label: btnTrans('View'),
-      tooltip: btnTrans('View Data'),
+      label: btnTrans('viewData'),
+      tooltip: btnTrans('viewDataTooltip'),
       disabled: () => selectedData?.length !== 1,
       hideOnDisable() {
         return selectedData?.length === 0;
