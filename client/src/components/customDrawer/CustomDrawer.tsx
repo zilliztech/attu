@@ -14,13 +14,8 @@ const CustomDrawer = () => {
   };
 
   return (
-    <Drawer
-      open={drawer.open}
-      onClose={handleCloseDrawer}
-      anchor="right" // You can customize the anchor if needed
-    >
-      <Box sx={{ width: 250 }}>
-        <Typography variant="h6">{drawer.title}</Typography>
+    <Drawer open={drawer.open} onClose={handleCloseDrawer} anchor="right">
+      <Box sx={{ width: '33vw' }}>
         <div>{drawer.content}</div>
 
         {drawer.hasActionBar && (

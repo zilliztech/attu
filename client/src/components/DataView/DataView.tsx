@@ -22,11 +22,15 @@ const DataView = (props: { type: string; value: any }) => {
 
       // remove first and last double quotes if present
       const trimmedValue = formattedValue.replace(/^"|"$/g, '');
-      return <Typography title={trimmedValue}>{trimmedValue}</Typography>;
+      return (
+        <Typography variant="mono" component="p" title={trimmedValue}>
+          {trimmedValue}
+        </Typography>
+      );
 
     default:
       return (
-        <Typography title={value}>
+        <Typography variant="mono" component="p" title={value}>
           {JSON.stringify(value).replace(/^"|"$/g, '')}
         </Typography>
       );
