@@ -1,11 +1,11 @@
 import { Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { CollectionFullObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
 import { formatFieldType } from '@/utils';
 import DataView from '@/components/DataView/DataView';
 import { DYNAMIC_FIELD } from '@/consts';
+import CopyButton from '@/components/advancedSearch/CopyButton';
 
 interface DataListViewProps {
   collection: CollectionFullObject;
@@ -19,16 +19,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   dataTitleContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: 4,
   },
   title: {
     fontSize: 14,
-    fontWeight: 800,
+    fontWeight: 600,
   },
   type: {
     color: theme.palette.text.secondary,
     fontSize: 11,
     marginLeft: 4,
+    marginTop: 8,
   },
   dataContainer: {
     display: 'flex',
@@ -40,6 +40,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxHeight: 400,
     overflow: 'auto',
   },
+  copy: {
+    marginLeft: 0,
+    '& svg': {
+      width: 15,
+    },
+  },
 }));
 
 const DataListView = (props: DataListViewProps) => {
@@ -47,16 +53,19 @@ const DataListView = (props: DataListViewProps) => {
   const { collection, data } = props;
   // styles
   const classes = useStyles();
-  // i18n
-  const { t: searchTrans } = useTranslation('search');
 
   // page data
-  const row = data[0];
+  let row = data[0];
 
-  const fields = [
-    ...collection.schema.fields,
-    ...collection.schema.dynamicFields,
-  ];
+  // merge dymaic fields into row
+  row = {
+    ...row,
+    ...row[DYNAMIC_FIELD],
+  };
+
+  if (row[DYNAMIC_FIELD]) {
+    delete row[DYNAMIC_FIELD];
+  }
 
   if (!row) {
     return <Typography>No data</Typography>;
@@ -64,23 +73,32 @@ const DataListView = (props: DataListViewProps) => {
 
   return (
     <div className={classes.root}>
-      {fields
-        .filter(f => !f.is_function_output)
-        .map((field, index) => (
+      {Object.keys(row).map((name: string, index: number) => {
+        const field = collection.schema.fields.find(f => f.name === name);
+        return (
           <div key={index}>
             <div className={classes.dataTitleContainer}>
               <span className={classes.title}>
-                {field.name === DYNAMIC_FIELD
-                  ? searchTrans('dynamicFields')
-                  : field.name}
+                {name}
+                <CopyButton
+                  className={classes.copy}
+                  value={row[name]}
+                  label={name}
+                />
               </span>
-              <span className={classes.type}>{formatFieldType(field)}</span>
+              <span className={classes.type}>
+                {(field && formatFieldType(field)) || 'meta'}
+              </span>
             </div>
             <div className={classes.dataContainer}>
-              <DataView type={field.data_type} value={row[field.name]} />
+              <DataView
+                type={(field && field.data_type) || 'any'}
+                value={row[name]}
+              />
             </div>
           </div>
-        ))}
+        );
+      })}
     </div>
   );
 };

@@ -222,7 +222,7 @@ export const formatFieldType = (field: FieldObject) => {
     field;
 
   if (name === '$meta') {
-    return `${data_type}<Dynamic>`;
+    return `${data_type}`;
   }
 
   const elementType =

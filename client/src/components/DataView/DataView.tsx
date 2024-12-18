@@ -13,7 +13,7 @@ const DataView = (props: { type: string; value: any }) => {
     case 'BFloat16Vector':
     case 'FloatVector':
     case 'Float16Vector':
-      const stringValue = JSON.stringify(value, null, 2);
+      const stringValue = JSON.stringify(value, null);
       // remove escape characters
       const formattedValue = stringValue
         .replace(/\\n/g, '\n')
