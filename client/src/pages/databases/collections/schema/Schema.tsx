@@ -1,6 +1,6 @@
 import { Typography, Chip, Tooltip } from '@mui/material';
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
@@ -15,16 +15,19 @@ import { FieldObject } from '@server/types';
 import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
+import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
 
 const Overview = () => {
-  const { fetchCollection, collections, loading } = useContext(dataContext);
+  const { fetchCollection, collections, loading, database } =
+    useContext(dataContext);
   const { data } = useContext(systemContext);
   const { setDialog } = useContext(rootContext);
 
   const { collectionName = '' } = useParams<{ collectionName: string }>();
+  const navigate = useNavigate();
   const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
@@ -275,6 +278,32 @@ const Overview = () => {
                 <p title={collection.collection_name}>
                   {collection.collection_name}
                 </p>
+                <RefreshButton
+                  className={classes.extraBtn}
+                  onClick={async () => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <RenameCollectionDialog
+                            collection={collection}
+                            cb={async newName => {
+                              await fetchCollection(newName);
+
+                              // update collection name in the route url;
+                              navigate(
+                                `/databases/${database}/${newName}/schema`
+                              );
+                            }}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                  tooltip={btnTrans('rename')}
+                  icon={<Icons.edit />}
+                />
                 <CopyButton
                   className={classes.extraBtn}
                   label={collection.collection_name}
