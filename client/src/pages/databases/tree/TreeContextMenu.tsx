@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { rootContext, dataContext } from '@/context';
 import CreateCollectionDialog from '@/pages/dialogs/CreateCollectionDialog';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
@@ -20,7 +21,9 @@ export const TreeContextMenu = (props: {
 }) => {
   // hooks
   const { setDialog } = useContext(rootContext);
-  const { fetchCollection } = useContext(dataContext);
+  const { fetchCollection, database } = useContext(dataContext);
+  const navigate = useNavigate();
+
   const classes = useStyles();
   // props
   const { contextMenu, onClick } = props;
@@ -114,7 +117,12 @@ export const TreeContextMenu = (props: {
                   component: (
                     <RenameCollectionDialog
                       collection={contextMenu.object as CollectionObject}
-                      cb={async () => {}}
+                      cb={async newName => {
+                        await fetchCollection(newName);
+
+                        // update collection name in the route url;
+                        navigate(`/databases/${database}/${newName}/schema`);
+                      }}
                     />
                   ),
                 },
