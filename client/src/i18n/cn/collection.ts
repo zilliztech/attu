@@ -36,7 +36,7 @@ const collectionTrans = {
   modifyReplicaTooltip: '调整副本数量',
 
   // create dialog
-  createTitle: '创建Collection',
+  createTitle: '创建Collection {{name}}',
   idAndVectorFields: 'ID、向量或可用 BM25 算法处理的文本字段',
   scalarFields: '标量字段',
   schema: 'schema',

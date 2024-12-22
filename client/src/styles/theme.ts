@@ -1,8 +1,19 @@
 import { PaletteMode } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     mono: true; // Custom variant
+  }
+}
+
+declare module '@mui/material/styles' {
+  interface TypeBackground {
+    light?: string; // Adding the light property to the TypeBackground interface
+    grey?: string;
+  }
+  interface Palette {
+    background: TypeBackground; // Ensure the background interface uses the updated TypeBackground
   }
 }
 
@@ -41,7 +52,7 @@ const getCommonThemes = (mode: PaletteMode) => ({
     background: {
       default: mode === 'light' ? '#f5f5f5' : '#121212',
       paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
-      light: mode === 'light' ? '#f5f5f5' : '#121212',
+      grey: mode === 'light' ? grey[200] : grey[800],
     },
   },
   spacing: (factor: number) => `${8 * factor}px`,

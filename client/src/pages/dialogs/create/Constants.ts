@@ -42,7 +42,7 @@ export const VECTOR_FIELDS_OPTIONS: LabelValuePair[] = [
     value: DataTypeEnum.SparseFloatVector,
   },
   {
-    label: 'VarChar(BM25)',
+    label: 'BM25(VarChar)',
     value: DataTypeEnum.VarCharBM25,
   },
 ];

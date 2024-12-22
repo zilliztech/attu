@@ -37,8 +37,8 @@ const collectionTrans = {
   modifyReplicaTooltip: 'Modify Replica Number',
 
   // create dialog
-  createTitle: 'Create Collection',
-  idAndVectorFields: 'ID, Vector, or VarChar Fields for BM25 Processing',
+  createTitle: 'Create Collection {{name}}',
+  idAndVectorFields: 'Primary Key, Vector, or BM25(VarChar) Fields',
   scalarFields: 'Scalar Fields',
   schema: 'Schema',
   consistency: 'Consistency',
