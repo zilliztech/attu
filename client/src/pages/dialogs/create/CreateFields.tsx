@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowY: 'auto',
   },
   title: {
+    marginTop: theme.spacing(2),
     '& button': {
       position: 'relative',
       top: '-1px',
@@ -365,7 +366,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateDimension = (field: FieldType) => {
-    // sparse dont support dimension
+    // sparse doesn't support dimension
     if (field.data_type === DataTypeEnum.SparseFloatVector) {
       return null;
     }

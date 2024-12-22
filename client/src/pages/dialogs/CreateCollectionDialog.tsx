@@ -5,6 +5,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '@/components/customInput/Types';
+import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, getAnalyzerParams, TypeEnum } from '@/utils';
@@ -24,36 +25,49 @@ import { CONSISTENCY_LEVEL_OPTIONS } from './create/Constants';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  fieldset: {
-    width: '100%',
+  dialog: {
+    minWidth: 880,
+  },
+  container: {
     display: 'flex',
-    alignItems: 'center',
-    '&:nth-last-child(3)': {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      marginBottom: '0',
-    },
-    '& legend': {
-      lineHeight: '20px',
-      fontSize: '14px',
+    flexDirection: 'column',
+
+    '& section': {
+      display: 'flex',
+      '& fieldset': {},
     },
   },
   generalInfo: {
+    '& fieldset': {
+      gap: 16,
+      display: 'flex',
+      width: '100%',
+    },
+  },
+  schemaInfo: {
+    background: theme.palette.background.grey,
+    padding: '16px',
+    borderRadius: 8,
+  },
+  extraInfo: {
+    marginTop: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
     gap: 8,
+
+    '& input': {
+      marginLeft: 0,
+    },
   },
   input: {
     width: '100%',
   },
-  select: {
-    '&:first-child': {
-      marginLeft: 0,
-    },
+  dynamicField: {
+    fontSize: 14,
+    marginLeft: -8,
   },
   consistencySelect: {
-    marginTop: theme.spacing(2),
-  },
-  dialog: {
-    minWidth: 880,
+    width: '50%',
   },
 }));
 
@@ -307,7 +321,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
   return (
     <DialogTemplate
-      title={collectionTrans('createTitle')}
+      title={collectionTrans('createTitle', { name: form.collection_name })}
       handleClose={() => {
         handleCloseDialog();
       }}
@@ -316,52 +330,62 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       confirmDisabled={disabled || !allFieldsValid}
       dialogClass={classes.dialog}
     >
-      <>
-        <fieldset className={`${classes.fieldset} ${classes.generalInfo}`}>
-          {generalInfoConfigs.map(config => (
-            <CustomInput
-              key={config.key}
-              type="text"
-              textConfig={config}
-              checkValid={checkIsValid}
-              validInfo={validation}
+      <div className={classes.container}>
+        <section className={classes.generalInfo}>
+          <fieldset>
+            {generalInfoConfigs.map(config => (
+              <CustomInput
+                key={config.key}
+                type="text"
+                textConfig={config}
+                checkValid={checkIsValid}
+                validInfo={validation}
+              />
+            ))}
+          </fieldset>
+        </section>
+
+        <section className={classes.schemaInfo}>
+          <fieldset>
+            {/* <legend>{collectionTrans('schema')}</legend> */}
+            <CreateFields
+              fields={fields}
+              setFields={setFields}
+              setFieldsValidation={setFieldsValidation}
+              autoID={form.autoID}
+              setAutoID={changeIsAutoID}
             />
-          ))}
-        </fieldset>
+          </fieldset>
+        </section>
 
-        <fieldset className={classes.fieldset}>
-          {/* <legend>{collectionTrans('schema')}</legend> */}
-          <CreateFields
-            fields={fields}
-            setFields={setFields}
-            setFieldsValidation={setFieldsValidation}
-            autoID={form.autoID}
-            setAutoID={changeIsAutoID}
-          />
-        </fieldset>
-        <fieldset className={classes.fieldset}>
-          <FormControlLabel
-            checked={form.enableDynamicField}
-            control={<Checkbox size="small" />}
-            onChange={changeEnableDynamicField}
-            label={collectionTrans('enableDynamicSchema')}
-          />
-        </fieldset>
-
-        <fieldset className={classes.fieldset}>
-          <CustomSelector
-            wrapperClass={`${classes.select} ${classes.consistencySelect}`}
-            size="small"
-            options={CONSISTENCY_LEVEL_OPTIONS}
-            onChange={e => {
-              setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
-            }}
-            label={collectionTrans('consistency')}
-            value={consistencyLevel}
-            variant="filled"
-          />
-        </fieldset>
-      </>
+        <section className={classes.extraInfo}>
+          <fieldset>
+            <CustomSelector
+              wrapperClass={classes.consistencySelect}
+              size="small"
+              options={CONSISTENCY_LEVEL_OPTIONS}
+              onChange={e => {
+                setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
+              }}
+              label={collectionTrans('consistency')}
+              value={consistencyLevel}
+              variant="filled"
+            />
+          </fieldset>
+          <fieldset className={classes.dynamicField}>
+            <CustomToolTip title={collectionTrans('partitionKeyTooltip')}>
+              <>
+                <Checkbox
+                  checked={!!form.enableDynamicField}
+                  size="small"
+                  onChange={changeEnableDynamicField}
+                />
+                {collectionTrans('enableDynamicSchema')}
+              </>
+            </CustomToolTip>
+          </fieldset>
+        </section>
+      </div>
     </DialogTemplate>
   );
 };

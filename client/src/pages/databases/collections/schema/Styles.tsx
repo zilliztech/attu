@@ -77,10 +77,12 @@ export const useStyles = makeStyles((theme: Theme) => ({
   chip: {
     fontSize: '12px',
     color: theme.palette.text.primary,
-    border: 'none',
     cursor: 'normal',
     marginRight: 4,
     marginLeft: 4,
+  },
+  dataTypeChip: {
+    backgroundColor: theme.palette.background.grey,
   },
   featureChip: {
     border: 'none',
