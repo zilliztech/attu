@@ -5,6 +5,7 @@ import {
   Switch,
   FormControlLabel,
   Checkbox,
+  Typography,
 } from '@mui/material';
 import { FC, Fragment, ReactElement, useMemo, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +50,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflowY: 'auto',
   },
   title: {
-    marginTop: theme.spacing(2),
+    fontSize: 14,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
     '& button': {
       position: 'relative',
       top: '-1px',
@@ -991,9 +994,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   return (
     <>
-      <h4 className={classes.title}>
+      <Typography variant="h4" className={classes.title}>
         {`${collectionTrans('idAndVectorFields')}(${requiredFields.length})`}
-      </h4>
+      </Typography>
       {requiredFields.map((field, index) => (
         <Fragment key={field.id}>
           {generateRequiredFieldRow(
@@ -1005,7 +1008,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           )}
         </Fragment>
       ))}
-      <h4 className={classes.title}>
+      <Typography variant="h4" className={classes.title}>
         {`${collectionTrans('scalarFields')}(${scalarFields.length})`}
         <IconButton
           onClick={() => {
@@ -1017,7 +1020,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         >
           <AddIcon />
         </IconButton>
-      </h4>
+      </Typography>
       <div className={classes.scalarFieldsWrapper}>
         {scalarFields.map((field, index) => (
           <Fragment key={field.id}>
