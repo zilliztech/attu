@@ -1,8 +1,3 @@
-/**
- * we usually use Material makeStyles to write component and page style
- * this file is used for some global scope reusable style
- */
-
 /* reset some elements styles */
 fieldset {
   border: 0;

@@ -120,6 +120,7 @@ export default function SearchInputBox(props: SearchInputBoxProps) {
           },
           '.cm-content': {
             fontSize: '12px',
+            fontFamily: 'IBM Plex Mono, monospace',
             minHeight: '124px',
           },
           '.cm-gutters': {

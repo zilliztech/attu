@@ -33,7 +33,7 @@ export interface IBlurParam {
 }
 
 export interface IChangeParam extends IBlurParam {
-  type: 'text' | 'number' | 'password';
+  type: 'text' | 'number' | 'password' | 'bool';
 }
 
 export interface ICustomInputProps {

@@ -118,8 +118,8 @@ export const getAttuTheme = (mode: PaletteMode) => {
             lineHeight: '12px',
           },
           mono: {
-            fontFamily: 'monospace',
-            fontSize: '12px',
+            fontFamily: 'IBM Plex Mono, monospace',
+            fontSize: 12,
             lineHeight: 1.5,
           },
         },
