@@ -64,6 +64,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.text.primary,
     },
   },
+  smallIcon: {
+    fontSize: '13px',
+    marginLeft: theme.spacing(0.5),
+  },
 
   questionIcon: {
     width: 12,

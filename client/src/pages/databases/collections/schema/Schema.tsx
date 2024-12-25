@@ -160,7 +160,11 @@ const Overview = () => {
       disablePadding: false,
       label: collectionTrans('nullable'),
       formatter(f) {
-        return f.nullable && <Icons.check />;
+        return f.nullable ? (
+          <Icons.check className={classes.smallIcon} />
+        ) : (
+          <Icons.cross2 className={classes.smallIcon} />
+        );
       },
     },
     {

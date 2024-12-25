@@ -56,6 +56,7 @@ export type IconsType =
   | 'reset'
   | 'link'
   | 'cross'
+  | 'cross2'
   | 'day'
   | 'night'
   | 'img'

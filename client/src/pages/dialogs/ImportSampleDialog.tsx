@@ -52,9 +52,7 @@ const getStyles = makeStyles((theme: Theme) => {
         display: 'flex',
         flexDirection: 'row',
       },
-      '& .selector': {
-        maxWidth: '35vw',
-      },
+      '& .selector': {},
     },
   };
 });
