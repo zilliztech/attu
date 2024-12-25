@@ -5,6 +5,7 @@ import * as http from 'http';
 import { LRUCache } from 'lru-cache';
 import * as path from 'path';
 import chalk from 'chalk';
+import compression from 'compression';
 import { router as connectRouter } from './milvus';
 import { router as collectionsRouter } from './collections';
 import { router as databasesRouter } from './database';
@@ -25,6 +26,8 @@ import { initWebSocket } from './socket';
 
 // initialize express app
 export const app = express();
+// use compression
+app.use(compression());
 
 // initialize cache store
 export const clientCache = new LRUCache<
