@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Typography, Chip } from '@mui/material';
 import { CollectionFullObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
@@ -26,9 +26,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   type: {
     color: theme.palette.text.secondary,
-    fontSize: 11,
     marginLeft: 4,
-    marginTop: 8,
+    marginTop: 2,
   },
   dataContainer: {
     display: 'flex',
@@ -45,6 +44,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& svg': {
       width: 15,
     },
+  },
+  dataTypeChip: {
+    fontSize: 11,
+    color: theme.palette.text.primary,
+    cursor: 'normal',
+    marginRight: 4,
+    marginLeft: 4,
+    backgroundColor: theme.palette.background.grey,
   },
 }));
 
@@ -87,7 +94,13 @@ const DataListView = (props: DataListViewProps) => {
                 />
               </span>
               <span className={classes.type}>
-                {(field && formatFieldType(field)) || 'meta'}
+                {field && (
+                  <Chip
+                    className={classes.dataTypeChip}
+                    size="small"
+                    label={formatFieldType(field) || 'meta'}
+                  />
+                )}
               </span>
             </div>
             <div className={classes.dataContainer}>

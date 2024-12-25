@@ -102,14 +102,14 @@ const MediaPreview = (props: { value: string }) => {
         {isImg ? (
           <>
             <icons.img />
-            <Typography variant="mono" component="p" title={value}>
+            <Typography variant="mono" component="p" title={String(value)}>
               <a href={value} target="_blank">
                 {value}
               </a>
             </Typography>
           </>
         ) : (
-          <Typography variant="mono" component="p" title={value}>
+          <Typography variant="mono" component="p" title={String(value)}>
             {value}
           </Typography>
         )}

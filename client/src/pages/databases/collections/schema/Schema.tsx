@@ -5,12 +5,7 @@ import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
-import {
-  formatFieldType,
-  formatNumber,
-  findKeyValue,
-  isVectorType,
-} from '@/utils';
+import { formatFieldType, formatNumber, findKeyValue } from '@/utils';
 import { dataContext, rootContext, systemContext } from '@/context';
 import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
@@ -165,7 +160,7 @@ const Overview = () => {
       disablePadding: false,
       label: collectionTrans('nullable'),
       formatter(f) {
-        return f.nullable ? commonTrans('yes') : commonTrans('no');
+        return f.nullable && <Icons.check />;
       },
     },
     {

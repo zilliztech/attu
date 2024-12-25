@@ -26,7 +26,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
         marginRight: 8,
         textOverflow: 'ellipsis',
         overflow: 'hidden',
-        maxWidth: 140,
+        maxWidth: 150,
         fontWeight: 700,
       },
     },

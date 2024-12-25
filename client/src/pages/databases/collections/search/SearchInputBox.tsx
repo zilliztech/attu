@@ -211,7 +211,6 @@ export default function SearchInputBox(props: SearchInputBoxProps) {
       editor.current = view;
     } else {
       if (editor.current.state.doc.toString() !== data) {
-        console.log('not equal');
         editor.current.dispatch({
           changes: {
             from: 0,
