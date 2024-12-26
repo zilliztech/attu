@@ -64,6 +64,7 @@ const collectionTrans = {
   partitionKey: '分区键',
   partitionKeyTooltip:
     'Milvus将根据分区键字段中的值在分区中存储entities。只支持一个Int64或VarChar字段。',
+  paritionKeyDisabledTooltip: '只允许一个分区字段，同时分区键字段不能用作主键字段。',
   enableDynamicSchema: '启用动态Schema',
   analyzer: '分词器',
   enableMatch: '启用匹配',
@@ -73,7 +74,8 @@ const collectionTrans = {
   defaultValue: '默认值',
   defaultValueTooltip: '字段的默认值, 不支持JSON 和 Array。',
   loadCollectionAfterCreate: '创建后加载collection',
-  loadCollectionAfterCreateTooltip: 'Attu 将使用 AUTOINDEX 为所有字段创建索引，然后加载Collection。',
+  loadCollectionAfterCreateTooltip:
+    'Attu 将使用 AUTOINDEX 为所有字段创建索引，然后加载Collection。',
 
   // load dialog
   loadTitle: '加载Collection',

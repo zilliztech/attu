@@ -67,6 +67,8 @@ const collectionTrans = {
   partitionKey: 'Partition Key',
   partitionKeyTooltip:
     ' Milvus will store entities in a partition according to the values in the partition key field. Only one Int64 or VarChar field is supported.',
+  paritionKeyDisabledTooltip:
+    'Only one field can be marked as paritition key and field marked as nullable cannot be used as partition key.',
   enableDynamicSchema: 'Dynamic Schema',
   analyzer: 'Analyzer',
   enableMatch: 'Enable Match',
@@ -78,8 +80,9 @@ const collectionTrans = {
   defaultValue: 'Default',
   defaultValueTooltip:
     'Default value of the field, JSON and Array types are not supported.',
-  loadCollectionAfterCreate: 'Load collection after creating',
-  loadCollectionAfterCreateTip: 'Attu will create indexes for fields using AUTOINDEX and then load the collection.',
+  loadCollectionAfterCreate: 'Load collection immediately after creation',
+  loadCollectionAfterCreateTip:
+    'Attu will create indexes for fields using AUTOINDEX and then load the collection.',
 
   // load dialog
   loadTitle: 'Load Collection',

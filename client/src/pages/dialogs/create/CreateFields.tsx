@@ -492,15 +492,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
     field: FieldType,
     fields: FieldType[]
   ) => {
+    const disabled =
+      (fields.some(f => f.is_partition_key) && !field.is_partition_key) ||
+      field.nullable;
     return (
       <div className={classes.setting}>
         <Checkbox
           checked={!!field.is_partition_key}
           size="small"
-          disabled={
-            (fields.some(f => f.is_partition_key) && !field.is_partition_key) ||
-            field.nullable
-          }
+          disabled={disabled}
           onChange={() => {
             changeFields(field.id!, {
               is_partition_key: !field.is_partition_key,
@@ -508,7 +508,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
           }}
         />
         <CustomToolTip
-          title={collectionTrans('partitionKeyTooltip')}
+          title={collectionTrans(disabled ? 'paritionKeyDisabledTooltip' :'partitionKeyTooltip')}
           placement="top"
         >
           <>{collectionTrans('partitionKey')}</>
