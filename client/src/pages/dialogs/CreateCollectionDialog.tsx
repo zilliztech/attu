@@ -62,12 +62,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   input: {
     width: '100%',
   },
-  dynamicField: {
+  chexBoxArea: {
     fontSize: 14,
     marginLeft: -8,
+    '& label': {
+      display: 'inline-block',
+    },
+    borderTop: `1px solid ${theme.palette.divider}`,
   },
   consistencySelect: {
     width: '50%',
+    marginBottom: 16,
   },
 }));
 
@@ -85,6 +90,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     description: '',
     autoID: true,
     enableDynamicField: false,
+    loadAfterCreate: true,
   });
 
   const [consistencyLevel, setConsistencyLevel] =
@@ -137,13 +143,14 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     });
   };
 
-  const changeEnableDynamicField = (
+  const updateCheckBox = (
     event: ChangeEvent<any>,
+    key: string,
     value: boolean
   ) => {
     setForm({
       ...form,
-      enableDynamicField: value,
+      [key]: value,
     });
   };
 
@@ -372,17 +379,48 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
               variant="filled"
             />
           </fieldset>
-          <fieldset className={classes.dynamicField}>
-            <CustomToolTip title={collectionTrans('partitionKeyTooltip')}>
-              <>
-                <Checkbox
-                  checked={!!form.enableDynamicField}
-                  size="small"
-                  onChange={changeEnableDynamicField}
-                />
-                {collectionTrans('enableDynamicSchema')}
-              </>
-            </CustomToolTip>
+          <fieldset className={classes.chexBoxArea}>
+            <div>
+              <CustomToolTip title={collectionTrans('partitionKeyTooltip')}>
+                <label htmlFor="enableDynamicField">
+                  <Checkbox
+                    id="enableDynamicField"
+                    checked={!!form.enableDynamicField}
+                    size="small"
+                    onChange={event => {
+                      updateCheckBox(
+                        event,
+                        'enableDynamicField',
+                        !form.enableDynamicField
+                      );
+                    }}
+                  />
+                  {collectionTrans('enableDynamicSchema')}
+                </label>
+              </CustomToolTip>
+            </div>
+
+            <div>
+              <CustomToolTip
+                title={collectionTrans('loadCollectionAfterCreateTip')}
+              >
+                <label htmlFor="loadAfterCreate">
+                  <Checkbox
+                    id="loadAfterCreate"
+                    checked={!!form.loadAfterCreate}
+                    size="small"
+                    onChange={event => {
+                      updateCheckBox(
+                        event,
+                        'loadAfterCreate',
+                        !form.loadAfterCreate
+                      );
+                    }}
+                  />
+                  {collectionTrans('loadCollectionAfterCreate')}
+                </label>
+              </CustomToolTip>
+            </div>
           </fieldset>
         </section>
       </div>

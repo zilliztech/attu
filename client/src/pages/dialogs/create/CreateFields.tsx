@@ -51,8 +51,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     fontSize: 14,
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(0),
+    marginBottom: theme.spacing(1.5),
     '& button': {
       position: 'relative',
       top: '-1px',

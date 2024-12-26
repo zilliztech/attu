@@ -72,6 +72,8 @@ const collectionTrans = {
   nullableTooltip: '字段是否可以为 null，nullable 字段不能用作分区键。',
   defaultValue: '默认值',
   defaultValueTooltip: '字段的默认值, 不支持JSON 和 Array。',
+  loadCollectionAfterCreate: '创建后加载collection',
+  loadCollectionAfterCreateTooltip: 'Attu 将使用 AUTOINDEX 为向量字段创建索引，然后加载Collection。',
 
   // load dialog
   loadTitle: '加载Collection',
