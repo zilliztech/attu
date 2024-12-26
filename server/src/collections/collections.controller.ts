@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { CollectionsService } from './collections.service';
-import { LoadCollectionReq } from '@zilliz/milvus2-sdk-node';
+import {
+  LoadCollectionReq,
+  IndexType,
+  MetricType,
+} from '@zilliz/milvus2-sdk-node';
 import {
   CreateAliasDto,
   CreateCollectionDto,
@@ -168,11 +172,38 @@ export class CollectionController {
 
   async createCollection(req: Request, res: Response, next: NextFunction) {
     const createCollectionData = req.body;
+
+    if (createCollectionData.loadAfterCreate) {
+      // build index_params for all fields
+      const fields = createCollectionData.fields;
+      const index_params = fields.map((field: any) => {
+        const params: any = {
+          field_name: field.name,
+          index_type: IndexType.AUTOINDEX,
+        };
+
+        if (field.is_function_output) {
+          params.metric_type = MetricType.BM25;
+        }
+
+        return params;
+      });
+      createCollectionData.index_params = index_params;
+    }
+
     try {
       const result = await this.collectionsService.createCollection(
         req.clientId,
         createCollectionData
       );
+
+      // load collection after create
+      if (createCollectionData.loadAfterCreate) {
+        await this.collectionsService.loadCollectionAsync(req.clientId, {
+          collection_name: createCollectionData.collection_name,
+          db_name: req.db_name,
+        });
+      }
       res.send(result);
     } catch (error) {
       next(error);

@@ -73,7 +73,7 @@ const collectionTrans = {
   defaultValue: '默认值',
   defaultValueTooltip: '字段的默认值, 不支持JSON 和 Array。',
   loadCollectionAfterCreate: '创建后加载collection',
-  loadCollectionAfterCreateTooltip: 'Attu 将使用 AUTOINDEX 为向量字段创建索引，然后加载Collection。',
+  loadCollectionAfterCreateTooltip: 'Attu 将使用 AUTOINDEX 为所有字段创建索引，然后加载Collection。',
 
   // load dialog
   loadTitle: '加载Collection',

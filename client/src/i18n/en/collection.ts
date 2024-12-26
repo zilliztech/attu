@@ -79,7 +79,7 @@ const collectionTrans = {
   defaultValueTooltip:
     'Default value of the field, JSON and Array types are not supported.',
   loadCollectionAfterCreate: 'Load collection after creating',
-  loadCollectionAfterCreateTip: 'Attu will create an index for the vector fields using AUTOINDEX and then load the collection.',
+  loadCollectionAfterCreateTip: 'Attu will create indexes for fields using AUTOINDEX and then load the collection.',
 
   // load dialog
   loadTitle: 'Load Collection',

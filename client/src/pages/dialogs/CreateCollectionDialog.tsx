@@ -26,7 +26,7 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialog: {
-    minWidth: 880,
+    minWidth: 720,
   },
   container: {
     display: 'flex',
@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
   },
   chexBoxArea: {
+    paddingTop: 8,
     fontSize: 14,
     marginLeft: -8,
     '& label': {

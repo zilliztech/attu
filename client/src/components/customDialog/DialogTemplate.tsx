@@ -1,6 +1,11 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, DialogActions, Theme } from '@mui/material';
+import {
+  DialogContent,
+  DialogActions,
+  Theme,
+  CircularProgress,
+} from '@mui/material';
 import { DialogContainerProps } from './Types';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
@@ -39,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingBottom: theme.spacing(2),
     justifyContent: 'space-between',
     '& .btn': {
-      margin: theme.spacing(.5),
+      margin: theme.spacing(0.5),
     },
   },
 }));
@@ -62,6 +67,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   codeBlocksData = [],
   dialogClass = '',
 }) => {
+  const [confirming, setConfirming] = useState(false);
   const { t } = useTranslation('btn');
   const cancel = cancelLabel || t('cancel');
   const confirm = confirmLabel || t('confirm');
@@ -70,9 +76,15 @@ const DialogTemplate: FC<DialogContainerProps> = ({
 
   const dialogRef = useRef(null);
 
-  const _handleConfirm = (event: React.FormEvent<HTMLFormElement>) => {
-    handleConfirm();
+  const _handleConfirm = async (event: React.FormEvent<HTMLFormElement>) => {
+    setConfirming(true);
     event.preventDefault();
+    try {
+      await handleConfirm();
+    } catch (error) {
+    } finally {
+      setConfirming(false);
+    }
   };
 
   return (
@@ -98,6 +110,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                     onClick={onCancel}
                     name="cancel"
                     className="btn"
+                    disabled={confirming}
                   >
                     {cancel}
                   </CustomButton>
@@ -106,11 +119,11 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={confirmDisabled}
+                  disabled={confirming || confirmDisabled}
                   name="confirm"
                   className="btn"
                 >
-                  {confirm}
+                  {confirming ? <CircularProgress size={16} /> : confirm}
                 </CustomButton>
               </div>
             </DialogActions>
