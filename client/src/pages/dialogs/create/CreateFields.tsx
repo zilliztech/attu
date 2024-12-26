@@ -497,22 +497,27 @@ const CreateFields: FC<CreateFieldsProps> = ({
       field.nullable;
     return (
       <div className={classes.setting}>
-        <Checkbox
-          checked={!!field.is_partition_key}
-          size="small"
-          disabled={disabled}
-          onChange={() => {
-            changeFields(field.id!, {
-              is_partition_key: !field.is_partition_key,
-            });
-          }}
-        />
-        <CustomToolTip
-          title={collectionTrans(disabled ? 'paritionKeyDisabledTooltip' :'partitionKeyTooltip')}
-          placement="top"
-        >
-          <>{collectionTrans('partitionKey')}</>
-        </CustomToolTip>
+        <label htmlFor="partitionKey">
+          <Checkbox
+            id="partitionKey"
+            checked={!!field.is_partition_key}
+            size="small"
+            disabled={disabled}
+            onChange={() => {
+              changeFields(field.id!, {
+                is_partition_key: !field.is_partition_key,
+              });
+            }}
+          />
+          <CustomToolTip
+            title={collectionTrans(
+              disabled ? 'paritionKeyDisabledTooltip' : 'partitionKeyTooltip'
+            )}
+            placement="top"
+          >
+            <>{collectionTrans('partitionKey')}</>
+          </CustomToolTip>
+        </label>
       </div>
     );
   };
@@ -520,22 +525,25 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateNullableCheckbox = (field: FieldType, fields: FieldType[]) => {
     return (
       <div className={classes.setting}>
-        <Checkbox
-          checked={!!field.nullable}
-          size="small"
-          onChange={() => {
-            changeFields(field.id!, {
-              nullable: !field.nullable,
-              is_partition_key: false,
-            });
-          }}
-        />
-        <CustomToolTip
-          title={collectionTrans('nullableTooltip')}
-          placement="top"
-        >
-          <>{collectionTrans('nullable')}</>
-        </CustomToolTip>
+        <label htmlFor="nullable">
+          <Checkbox
+            id="nullable"
+            checked={!!field.nullable}
+            size="small"
+            onChange={() => {
+              changeFields(field.id!, {
+                nullable: !field.nullable,
+                is_partition_key: false,
+              });
+            }}
+          />
+          <CustomToolTip
+            title={collectionTrans('nullableTooltip')}
+            placement="top"
+          >
+            <>{collectionTrans('nullable')}</>
+          </CustomToolTip>
+        </label>
       </div>
     );
   };
@@ -550,19 +558,22 @@ const CreateFields: FC<CreateFieldsProps> = ({
     }
     return (
       <div className={classes.setting}>
-        <Checkbox
-          checked={!!field.enable_match}
-          size="small"
-          onChange={() => {
-            changeFields(field.id!, update);
-          }}
-        />
-        <CustomToolTip
-          title={collectionTrans('textMatchTooltip')}
-          placement="top"
-        >
-          <>{collectionTrans('enableMatch')}</>
-        </CustomToolTip>
+        <label htmlFor="enableMatch">
+          <Checkbox
+            id="enableMatch"
+            checked={!!field.enable_match}
+            size="small"
+            onChange={() => {
+              changeFields(field.id!, update);
+            }}
+          />
+          <CustomToolTip
+            title={collectionTrans('textMatchTooltip')}
+            placement="top"
+          >
+            <>{collectionTrans('enableMatch')}</>
+          </CustomToolTip>
+        </label>
       </div>
     );
   };
