@@ -82,6 +82,10 @@ export const makeRandomVarChar = (maxLength: number) => {
   return text;
 };
 
+export const makeVarCharId = (length: number) => {
+  return makeRandomId(length);
+};
+
 export const genDataByType = (field: FieldSchema): any => {
   const { data_type, type_params, element_type } = field;
   switch (data_type) {
@@ -146,6 +150,13 @@ export const genRow = (
       if ((field.nullable || field.default_value) && Math.random() < 0.5) {
         return;
       }
+
+      // if field is VarChar, and it is primary key, use makeVarCharId
+      if (field.data_type === 'VarChar' && field.is_primary_key) {
+        result[field.name] = makeVarCharId(Number(field.max_length));
+        return;
+      }
+
       result[field.name] = genDataByType(field);
     }
   });
