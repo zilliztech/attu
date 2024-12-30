@@ -293,12 +293,8 @@ const CollectionData = (props: CollectionDataProps) => {
       label: btnTrans('edit'),
       icon: 'edit',
       tooltip: btnTrans('editEntityTooltip'),
-      disabledTooltip: btnTrans(
-        collection.autoID
-          ? 'editEntityDisabledTooltipAutoId'
-          : 'editEntityDisabledTooltip'
-      ),
-      disabled: () => collection.autoID || selectedData?.length !== 1,
+      disabledTooltip: btnTrans('editEntityDisabledTooltip'),
+      disabled: () => selectedData?.length !== 1,
       hideOnDisable() {
         return selectedData?.length === 0;
       },
