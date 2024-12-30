@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@json2csv/plainjs": "^7.0.3",
-    "@zilliz/milvus2-sdk-node": "2.5.2",
+    "@zilliz/milvus2-sdk-node": "2.5.3",
     "axios": "^1.7.7",
     "chalk": "4.1.2",
     "class-sanitizer": "^1.0.1",
