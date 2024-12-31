@@ -167,4 +167,81 @@ export class UserService {
       });
     }
   }
+
+  // create privilege group
+  async createPrivilegeGroup(clientId: string, data: { name: string }) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.createPrivilegeGroup({
+      group_name: data.name,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // get privilege groups
+  async getPrivilegeGroups(clientId: string) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.listPrivilegeGroups();
+
+    throwErrorFromSDK(res.status);
+
+    return res;
+  }
+
+  // get privilege groups and find the one with the name
+  async getPrivilegeGroup(clientId: string, data: { name: string }) {
+    const res = await this.getPrivilegeGroups(clientId);
+
+    const group = res.privilege_groups.find(g => g.group_name === data.name);
+
+    throwErrorFromSDK(res.status);
+    return group;
+  }
+
+  // delete privilege group
+  async deletePrivilegeGroup(clientId: string, data: { name: string }) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.dropPrivilegeGroup({
+      group_name: data.name,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // update privilege group
+  async addPrivilegeToGroup(
+    clientId: string,
+    data: { name: string; priviliges: string[] }
+  ) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.addPrivilegesToGroup({
+      group_name: data.name,
+      privileges: data.priviliges,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // remove privilege from group
+  async removePrivilegeFromGroup(
+    clientId: string,
+    data: { name: string; priviliges: string[] }
+  ) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.removePrivilegesFromGroup({
+      group_name: data.name,
+      privileges: data.priviliges,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
 }
