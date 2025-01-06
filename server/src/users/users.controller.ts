@@ -11,6 +11,7 @@ import {
   CreatePrivilegeGroupDto,
   PrivilegeToRoleDto,
 } from './dto';
+import { OperateRolePrivilegeReq } from '@zilliz/milvus2-sdk-node';
 
 export class UserController {
   private router: Router;
@@ -92,7 +93,11 @@ export class UserController {
     }
   }
 
-  async createUsers(req: Request, res: Response, next: NextFunction) {
+  async createUsers(
+    req: Request<{}, {}, CreateUserDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username, password } = req.body;
     try {
       const result = await this.userService.createUser(req.clientId, {
@@ -105,7 +110,11 @@ export class UserController {
     }
   }
 
-  async updateUsers(req: Request, res: Response, next: NextFunction) {
+  async updateUsers(
+    req: Request<{}, {}, UpdateUserDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username, oldPassword, newPassword } = req.body;
     try {
       const result = await this.userService.updateUser(req.clientId, {
@@ -119,7 +128,11 @@ export class UserController {
     }
   }
 
-  async deleteUser(req: Request, res: Response, next: NextFunction) {
+  async deleteUser(
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username } = req.params;
     try {
       const result = await this.userService.deleteUser(req.clientId, {
@@ -148,7 +161,11 @@ export class UserController {
     }
   }
 
-  async createRole(req: Request, res: Response, next: NextFunction) {
+  async createRole(
+    req: Request<{}, {}, CreateRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { roleName } = req.body;
     try {
       const result = await this.userService.createRole(req.clientId, {
@@ -160,7 +177,11 @@ export class UserController {
     }
   }
 
-  async deleteRole(req: Request, res: Response, next: NextFunction) {
+  async deleteRole(
+    req: Request<{ roleName: string }, {}, { force?: boolean }>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { roleName } = req.params;
     const { force } = req.body;
 
@@ -179,9 +200,13 @@ export class UserController {
     }
   }
 
-  async updateUserRole(req: Request, res: Response, next: NextFunction) {
-    const { roles } = req.body;
+  async updateUserRole(
+    req: Request<{ username: string }, {}, AssignUserRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username } = req.params;
+    const { roles } = req.body;
 
     const results = [];
 
@@ -218,9 +243,13 @@ export class UserController {
     }
   }
 
-  async unassignUserRole(req: Request, res: Response, next: NextFunction) {
-    const { roleName } = req.body;
+  async unassignUserRole(
+    req: Request<{ username: string }, {}, UnassignUserRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username } = req.params;
+    const { roleName } = req.body;
 
     try {
       const result = await this.userService.unassignUserRole(req.clientId, {
@@ -242,7 +271,11 @@ export class UserController {
     }
   }
 
-  async listGrant(req: Request, res: Response, next: NextFunction) {
+  async listGrant(
+    req: Request<{ roleName: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { roleName } = req.params;
     try {
       const result = await this.userService.listGrants(req.clientId, {
@@ -254,7 +287,15 @@ export class UserController {
     }
   }
 
-  async updateRolePrivileges(req: Request, res: Response, next: NextFunction) {
+  async updateRolePrivileges(
+    req: Request<
+      { roleName: string },
+      {},
+      { privileges: OperateRolePrivilegeReq[] }
+    >,
+    res: Response,
+    next: NextFunction
+  ) {
     const { privileges } = req.body;
     const { roleName } = req.params;
 
@@ -282,7 +323,7 @@ export class UserController {
   }
 
   async createPrivilegeGrp(
-    req: Request<{}, CreatePrivilegeGroupDto>,
+    req: Request<{}, {}, CreatePrivilegeGroupDto>,
     res: Response,
     next: NextFunction
   ) {
@@ -347,7 +388,7 @@ export class UserController {
   }
 
   async updatePrivilegeGrp(
-    req: Request<{ name: string }, UpdatePrivilegeGroupDto>,
+    req: Request<{ name: string }, {}, UpdatePrivilegeGroupDto>,
     res: Response,
     next: NextFunction
   ) {
@@ -384,7 +425,7 @@ export class UserController {
   }
 
   async assignRolePrivilege(
-    req: Request<{}, PrivilegeToRoleDto>,
+    req: Request<{}, {}, PrivilegeToRoleDto>,
     res: Response,
     next: NextFunction
   ) {
