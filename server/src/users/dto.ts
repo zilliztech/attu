@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsString, IsOptional } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -52,20 +52,25 @@ export class CreatePrivilegeGroupDto {
 
 // get privilege group
 export class GetPrivilegeGroupDto {
-  @IsString()
+  @IsString({ message: 'name is required.' })
   readonly name: string;
 }
 
 export class UpdatePrivilegeGroupDto {
-  @IsString()
-  readonly name: string;
-
-  @IsString()
+  @IsString({ message: 'privileges[] is required.' })
   @IsArray()
   readonly privileges: string[];
 }
 
-export class DeletePrivilegeGroupDto {
+// grant/revoke privilege to role
+export class PrivilegeToRoleDto {
+  @IsString({ message: 'roleName is empty.' })
+  readonly role: string;
+
   @IsString()
-  readonly name: string;
+  @IsOptional()
+  readonly collection: string;
+
+  @IsString()
+  readonly privilege: string;
 }

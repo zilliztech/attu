@@ -11,6 +11,8 @@ import {
   SelectUserReq,
   ListGrantsReq,
   OperateRolePrivilegeReq,
+  GrantPrivilegeV2Request,
+  RevokePrivilegeV2Request,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import {
@@ -240,6 +242,26 @@ export class UserService {
       group_name: data.name,
       privileges: data.priviliges,
     });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // grantPrivilegeV2
+  async grantPrivilegeV2(clientId: string, data: GrantPrivilegeV2Request) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.grantPrivilegeV2(data);
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // revokePrivilegeV2
+  async revokePrivilegeV2(clientId: string, data: RevokePrivilegeV2Request) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.revokePrivilegeV2(data);
 
     throwErrorFromSDK(res);
     return res;

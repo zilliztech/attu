@@ -8,9 +8,8 @@ import {
   AssignUserRoleDto,
   UnassignUserRoleDto,
   UpdatePrivilegeGroupDto,
-  GetPrivilegeGroupDto,
   CreatePrivilegeGroupDto,
-  DeletePrivilegeGroupDto,
+  PrivilegeToRoleDto,
 } from './dto';
 
 export class UserController {
@@ -60,6 +59,24 @@ export class UserController {
     this.router.put(
       '/roles/:roleName/updatePrivileges',
       this.updateRolePrivileges.bind(this)
+    );
+
+    // privilege group
+    this.router.get('/privilege-groups', this.getPrivilegeGrps.bind(this));
+    this.router.get('/privilege-groups/:name', this.getPrivilegeGrp.bind(this));
+    this.router.post(
+      '/privilege-groups',
+      dtoValidationMiddleware(CreatePrivilegeGroupDto),
+      this.createPrivilegeGrp.bind(this)
+    );
+    this.router.put(
+      '/privilege-groups/:name',
+      dtoValidationMiddleware(UpdatePrivilegeGroupDto),
+      this.updatePrivilegeGrp.bind(this)
+    );
+    this.router.delete(
+      '/privilege-groups/:name',
+      this.deletePrivilegeGrp.bind(this)
     );
 
     return this.router;
@@ -265,11 +282,11 @@ export class UserController {
   }
 
   async createPrivilegeGrp(
-    req: Request<CreatePrivilegeGroupDto>,
+    req: Request<{}, CreatePrivilegeGroupDto>,
     res: Response,
     next: NextFunction
   ) {
-    const { name, privileges } = req.params;
+    const { name, privileges } = req.body;
     try {
       // create the group
       await this.userService.createPrivilegeGroup(req.clientId, {
@@ -289,7 +306,7 @@ export class UserController {
   }
 
   async deletePrivilegeGrp(
-    req: Request<DeletePrivilegeGroupDto>,
+    req: Request<{ name: string }>,
     res: Response,
     next: NextFunction
   ) {
@@ -305,7 +322,7 @@ export class UserController {
   }
 
   async getPrivilegeGrp(
-    req: Request<GetPrivilegeGroupDto>,
+    req: Request<{ name: string }>,
     res: Response,
     next: NextFunction
   ) {
@@ -330,12 +347,13 @@ export class UserController {
   }
 
   async updatePrivilegeGrp(
-    req: Request<UpdatePrivilegeGroupDto>,
+    req: Request<{ name: string }, UpdatePrivilegeGroupDto>,
     res: Response,
     next: NextFunction
   ) {
     // get privilege group
-    const { name, privileges } = req.params;
+    const { name } = req.params;
+    const { privileges } = req.body;
     // get existing group
     const theGroup = await this.userService.getPrivilegeGroup(req.clientId, {
       name: name,
@@ -359,6 +377,44 @@ export class UserController {
         priviliges: privileges,
       });
 
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async assignRolePrivilege(
+    req: Request<{}, PrivilegeToRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { role, collection, privilege } = req.body;
+    try {
+      const result = await this.userService.grantPrivilegeV2(req.clientId, {
+        role: role,
+        collection_name: collection || '*',
+        db_name: req.db_name,
+        privilege: privilege,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async revokeRolePrivilege(
+    req: Request<{}, PrivilegeToRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { role, collection, privilege } = req.body;
+    try {
+      const result = await this.userService.revokePrivilegeV2(req.clientId, {
+        role: role,
+        collection_name: collection || '*',
+        db_name: req.db_name,
+        privilege: privilege,
+      });
       res.send(result);
     } catch (error) {
       next(error);

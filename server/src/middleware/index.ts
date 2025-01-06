@@ -32,18 +32,17 @@ export const ReqHeaderMiddleware = (
   }
 
   const bypassURLs = [`/api/v1/milvus/connect`, `/api/v1/milvus/version`];
+  const bypass = bypassURLs.indexOf(req.url) !== -1;
+  const hasClient = clientCache.get(milvusClientId);
 
-  if (
-    bypassURLs.indexOf(req.url) === -1 &&
-    milvusClientId &&
-    !clientCache.get(milvusClientId)
-  ) {
+  if (!bypass && !hasClient) {
     throw HttpErrors(
       HTTP_STATUS_CODE.FORBIDDEN,
-      'Can not find your connection, please check your connection settings.'
+      'Can not find your connection, please reconnect.'
     );
+  } else {
+    next();
   }
-  next();
 };
 
 export const TransformResMiddleware = (
