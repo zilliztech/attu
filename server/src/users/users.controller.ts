@@ -64,19 +64,19 @@ export class UserController {
 
     // privilege group
     this.router.get('/privilege-groups', this.getPrivilegeGrps.bind(this));
-    this.router.get('/privilege-groups/:name', this.getPrivilegeGrp.bind(this));
+    this.router.get('/privilege-groups/:group_name', this.getPrivilegeGrp.bind(this));
     this.router.post(
       '/privilege-groups',
       dtoValidationMiddleware(CreatePrivilegeGroupDto),
       this.createPrivilegeGrp.bind(this)
     );
     this.router.put(
-      '/privilege-groups/:name',
+      '/privilege-groups/:group_name',
       dtoValidationMiddleware(UpdatePrivilegeGroupDto),
       this.updatePrivilegeGrp.bind(this)
     );
     this.router.delete(
-      '/privilege-groups/:name',
+      '/privilege-groups/:group_name',
       this.deletePrivilegeGrp.bind(this)
     );
 
@@ -327,16 +327,16 @@ export class UserController {
     res: Response,
     next: NextFunction
   ) {
-    const { name, privileges } = req.body;
+    const { group_name, privileges } = req.body;
     try {
       // create the group
       await this.userService.createPrivilegeGroup(req.clientId, {
-        name,
+        group_name,
       });
 
       // add privileges to the group
       const result = await this.userService.addPrivilegeToGroup(req.clientId, {
-        name,
+        group_name,
         priviliges: privileges,
       });
 
@@ -347,14 +347,14 @@ export class UserController {
   }
 
   async deletePrivilegeGrp(
-    req: Request<{ name: string }>,
+    req: Request<{ group_name: string }>,
     res: Response,
     next: NextFunction
   ) {
-    const { name } = req.params;
+    const { group_name } = req.params;
     try {
       const result = await this.userService.deletePrivilegeGroup(req.clientId, {
-        name,
+        group_name,
       });
       res.send(result);
     } catch (error) {
@@ -363,14 +363,14 @@ export class UserController {
   }
 
   async getPrivilegeGrp(
-    req: Request<{ name: string }>,
+    req: Request<{ group_name: string }>,
     res: Response,
     next: NextFunction
   ) {
-    const { name } = req.params;
+    const { group_name } = req.params;
     try {
       const result = await this.userService.getPrivilegeGroup(req.clientId, {
-        name,
+        group_name,
       });
       res.send(result);
     } catch (error) {
@@ -388,16 +388,16 @@ export class UserController {
   }
 
   async updatePrivilegeGrp(
-    req: Request<{ name: string }, {}, UpdatePrivilegeGroupDto>,
+    req: Request<{ group_name: string }, {}, UpdatePrivilegeGroupDto>,
     res: Response,
     next: NextFunction
   ) {
     // get privilege group
-    const { name } = req.params;
+    const { group_name } = req.params;
     const { privileges } = req.body;
     // get existing group
     const theGroup = await this.userService.getPrivilegeGroup(req.clientId, {
-      name: name,
+      group_name: group_name,
     });
 
     // if no group found, return error
@@ -408,13 +408,13 @@ export class UserController {
     try {
       // remove all privileges from the group
       await this.userService.removePrivilegeFromGroup(req.clientId, {
-        name: name,
+        group_name: group_name,
         priviliges: theGroup.privileges.map(p => p.name),
       });
 
       // add new privileges to the group
       const result = await this.userService.addPrivilegeToGroup(req.clientId, {
-        name: name,
+        group_name: group_name,
         priviliges: privileges,
       });
 

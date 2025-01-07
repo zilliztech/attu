@@ -171,11 +171,11 @@ export class UserService {
   }
 
   // create privilege group
-  async createPrivilegeGroup(clientId: string, data: { name: string }) {
+  async createPrivilegeGroup(clientId: string, data: { group_name: string }) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createPrivilegeGroup({
-      group_name: data.name,
+      group_name: data.group_name,
     });
 
     throwErrorFromSDK(res);
@@ -194,21 +194,23 @@ export class UserService {
   }
 
   // get privilege groups and find the one with the name
-  async getPrivilegeGroup(clientId: string, data: { name: string }) {
+  async getPrivilegeGroup(clientId: string, data: { group_name: string }) {
     const res = await this.getPrivilegeGroups(clientId);
 
-    const group = res.privilege_groups.find(g => g.group_name === data.name);
+    const group = res.privilege_groups.find(
+      g => g.group_name === data.group_name
+    );
 
     throwErrorFromSDK(res.status);
     return group;
   }
 
   // delete privilege group
-  async deletePrivilegeGroup(clientId: string, data: { name: string }) {
+  async deletePrivilegeGroup(clientId: string, data: { group_name: string }) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.dropPrivilegeGroup({
-      group_name: data.name,
+      group_name: data.group_name,
     });
 
     throwErrorFromSDK(res);
@@ -218,12 +220,12 @@ export class UserService {
   // update privilege group
   async addPrivilegeToGroup(
     clientId: string,
-    data: { name: string; priviliges: string[] }
+    data: { group_name: string; priviliges: string[] }
   ) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.addPrivilegesToGroup({
-      group_name: data.name,
+      group_name: data.group_name,
       privileges: data.priviliges,
     });
 
@@ -234,12 +236,12 @@ export class UserService {
   // remove privilege from group
   async removePrivilegeFromGroup(
     clientId: string,
-    data: { name: string; priviliges: string[] }
+    data: { group_name: string; priviliges: string[] }
   ) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.removePrivilegesFromGroup({
-      group_name: data.name,
+      group_name: data.group_name,
       privileges: data.priviliges,
     });
 

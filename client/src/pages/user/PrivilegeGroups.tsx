@@ -8,7 +8,7 @@ import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
+import UpdatePrivilegeGroupDialog from './dialogs/UpdatePrivilegeGroupDialog';
 import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
@@ -46,6 +46,14 @@ const PrivilegeGroups = () => {
 
   const onUpdate = async (data: { isEditing: boolean }) => {
     handleCloseDialog();
+    await fetchGroups();
+    // update selected groups
+    setSelectedGroups([]);
+    openSnackBar(
+      successTrans(data.isEditing ? 'update' : 'create', {
+        name: userTrans('privilegeGroup'),
+      })
+    );
   };
 
   const handleDelete = async (force?: boolean) => {
@@ -77,7 +85,7 @@ const PrivilegeGroups = () => {
           type: 'custom',
           params: {
             component: (
-              <UpdateRoleDialog
+              <UpdatePrivilegeGroupDialog
                 onUpdate={onUpdate}
                 handleClose={handleCloseDialog}
               />
@@ -92,7 +100,22 @@ const PrivilegeGroups = () => {
       btnVariant: 'text',
       btnColor: 'secondary',
       label: userTrans('editPrivilegeGroup'),
-      onClick: async () => {},
+      onClick: async () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <UpdatePrivilegeGroupDialog
+                group={selectedGroups[0]}
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+              />
+            ),
+          },
+        });
+      },
+      disabled: () => selectedGroups.length !== 1,
       icon: 'edit',
     },
     {
@@ -180,6 +203,7 @@ const PrivilegeGroups = () => {
         isLoading={loading}
         order={order}
         orderBy={orderBy}
+        rowHeight={49}
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(userTrans('privilegeGroups'))}
       />

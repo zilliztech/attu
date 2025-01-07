@@ -40,6 +40,8 @@ const userTrans = {
   name: '名称',
   editPrivilegeGroup: '编辑权限组',
   deletePrivilegGroupWarning: '您正在尝试删除权限组，请确保没有角色与其绑定。',
+  createPrivilegeGroupTitle: '创建权限组',
+  updatePrivilegeGroupTitle: '更新权限组',
 };
 
 export default userTrans;

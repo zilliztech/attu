@@ -36,8 +36,8 @@ export class UnassignUserRoleDto {
 
 // privilege group
 export class CreatePrivilegeGroupDto {
-  @IsString({ message: 'name is required.' })
-  readonly name: string;
+  @IsString({ message: 'group_name is required.' })
+  readonly group_name: string;
 
   @IsString({ message: 'privileges[] is required.', each: true })
   readonly privileges: string[];
@@ -45,8 +45,8 @@ export class CreatePrivilegeGroupDto {
 
 // get privilege group
 export class GetPrivilegeGroupDto {
-  @IsString({ message: 'name is required.' })
-  readonly name: string;
+  @IsString({ message: 'group_name is required.' })
+  readonly group_name: string;
 }
 
 export class UpdatePrivilegeGroupDto {

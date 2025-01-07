@@ -6,6 +6,7 @@ import {
   DeleteRoleParams,
   AssignRoleParams,
   UnassignRoleParams,
+  CreatePrivilegeGroupParams,
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
 import { Users, UsersWithRoles, PrivilegeGroupsRes } from '@server/types';
@@ -90,5 +91,15 @@ export class UserService extends BaseModel {
       path: `/users/privilege-groups`,
       params: {},
     });
+  }
+
+  // create privilege group
+  static createPrivilegeGroup(data: CreatePrivilegeGroupParams) {
+    return super.create({ path: `/users/privilege-groups`, data });
+  }
+
+  // update privilege group
+  static updatePrivilegeGroup(data: CreatePrivilegeGroupParams) {
+    return super.update({ path: `/users/privilege-groups/${data.group_name}`, data });
   }
 }
