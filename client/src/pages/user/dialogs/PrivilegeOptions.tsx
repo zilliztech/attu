@@ -6,7 +6,7 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { FC } from 'react';
-import { Privilege, PrivilegeOptionsProps } from './Types';
+import { Privilege, PrivilegeOptionsProps } from '../Types';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({

@@ -12,7 +12,7 @@ import {
   CreateRoleParams,
   PrivilegeOptionsProps,
   RBACOptions,
-} from './Types';
+} from '../Types';
 import PrivilegeOptions from './PrivilegeOptions';
 import { makeStyles } from '@mui/styles';
 

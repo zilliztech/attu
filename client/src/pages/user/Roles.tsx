@@ -9,7 +9,7 @@ import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
-import UpdateRoleDialog from './UpdateRoleDialog';
+import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({

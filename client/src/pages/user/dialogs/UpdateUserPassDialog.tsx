@@ -6,7 +6,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { UpdateUserParams, UpdateUserProps } from './Types';
+import { UpdateUserParams, UpdateUserProps } from '../Types';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
