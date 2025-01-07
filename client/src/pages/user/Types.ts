@@ -1,4 +1,5 @@
 import { Option as RoleOption } from '@/components/customSelector/Types';
+import { PrivilegeGroups } from '@server/types';
 
 export interface UserData {
   name: string;
@@ -100,3 +101,6 @@ export type RBACOptions = {
   UserPrivileges: Record<string, unknown>;
   Privileges: Record<string, unknown>;
 };
+
+type ExtractValueType<T, K extends keyof T> = T[K];
+export type PrivilegeGroupData = ExtractValueType<PrivilegeGroups, 'privilege_groups'>;

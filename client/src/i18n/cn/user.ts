@@ -31,6 +31,10 @@ const userTrans = {
   objectUser: '用户',
 
   forceDelLabel: '强制删除，撤销所有权限。',
+
+  // Privilege Groups
+  privilegeGroups: '权限组',
+  name: '名称',
 };
 
 export default userTrans;

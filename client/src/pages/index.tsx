@@ -70,7 +70,8 @@ function Index() {
 
     if (
       location.pathname.includes('users') ||
-      location.pathname.includes('roles')
+      location.pathname.includes('roles') ||
+      location.pathname.includes('privilege-groups')
     ) {
       return navTrans('user');
     }

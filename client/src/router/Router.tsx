@@ -34,6 +34,7 @@ const RouterComponent = () => {
             <>
               <Route path="users" element={<Users />} />
               <Route path="roles" element={<Users />} />
+              <Route path="privilege-groups" element={<Users />} />
               <Route path="system" element={<System />} />
             </>
           )}

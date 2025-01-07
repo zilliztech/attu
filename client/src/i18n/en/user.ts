@@ -32,6 +32,10 @@ const userTrans = {
   objectUser: 'User',
 
   forceDelLabel: 'Force delete, revoke all privileges.',
+
+  // Privilege Groups
+  privilegeGroups: 'Privilege Groups',
+  name: 'Name',
 };
 
 export default userTrans;

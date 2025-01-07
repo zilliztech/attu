@@ -7,6 +7,7 @@ import RouteTabList from '@/components/customTabList/RouteTabList';
 import { ITab } from '@/components/customTabList/Types';
 import User from './User';
 import Roles from './Roles';
+import PrivilegeGroups from './PrivilegeGroups';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -51,6 +52,11 @@ const Users = () => {
       label: userTrans('roles'),
       component: <Roles />,
       path: 'roles',
+    },
+    {
+      label: userTrans('privilegeGroups'),
+      component: <PrivilegeGroups />,
+      path: 'privilege-groups',
     },
   ];
 

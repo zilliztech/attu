@@ -8,7 +8,7 @@ import {
   UnassignRoleParams,
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
-import { Users, UsersWithRoles } from '@server/types';
+import { Users, UsersWithRoles, PrivilegeGroups } from '@server/types';
 
 export class UserService extends BaseModel {
   // get user data
@@ -82,5 +82,13 @@ export class UserService extends BaseModel {
       UserPrivileges: Record<string, unknown>;
       Privileges: Record<string, unknown>;
     }>;
+  }
+
+  // get privilege groups
+  static getPrivilegeGroups() {
+    return super.search<PrivilegeGroups>({
+      path: `/users/privilege-groups`,
+      params: {},
+    });
   }
 }
