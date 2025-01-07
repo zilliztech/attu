@@ -92,14 +92,19 @@ export class UserService extends BaseModel {
       params: {},
     });
   }
-
   // create privilege group
   static createPrivilegeGroup(data: CreatePrivilegeGroupParams) {
     return super.create({ path: `/users/privilege-groups`, data });
   }
-
   // update privilege group
   static updatePrivilegeGroup(data: CreatePrivilegeGroupParams) {
-    return super.update({ path: `/users/privilege-groups/${data.group_name}`, data });
+    return super.update({
+      path: `/users/privilege-groups/${data.group_name}`,
+      data,
+    });
+  }
+  // delete privilege group
+  static deletePrivilegeGroup(data: { group_name: string }) {
+    return super.delete({ path: `/users/privilege-groups/${data.group_name}` });
   }
 }

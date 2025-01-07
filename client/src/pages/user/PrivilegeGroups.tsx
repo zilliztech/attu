@@ -49,6 +49,7 @@ const PrivilegeGroups = () => {
     await fetchGroups();
     // update selected groups
     setSelectedGroups([]);
+    // open snackbar
     openSnackBar(
       successTrans(data.isEditing ? 'update' : 'create', {
         name: userTrans('privilegeGroup'),
@@ -56,7 +57,18 @@ const PrivilegeGroups = () => {
     );
   };
 
-  const handleDelete = async (force?: boolean) => {
+  const handleDelete = async () => {
+    // delete selected groups
+    for (const group of selectedGroups) {
+      await UserService.deletePrivilegeGroup({ group_name: group.group_name });
+    }
+    // open snackbar
+    openSnackBar(successTrans('delete', { name: userTrans('privilegeGroup') }));
+    // update groups
+    await fetchGroups();
+    // update selected groups
+    setSelectedGroups([]);
+    // close dialog
     handleCloseDialog();
   };
 
