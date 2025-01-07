@@ -35,7 +35,11 @@ const userTrans = {
 
   // Privilege Groups
   privilegeGroups: 'Privilege Groups',
+  privilegeGroup: 'Privilege Group',
   name: 'Name',
+  editPrivilegeGroup: 'Edit Privilege Group',
+  deletePrivilegGroupWarning:
+    'You are trying to drop the privilege group, please make sure no role is bound to it.',
 };
 
 export default userTrans;

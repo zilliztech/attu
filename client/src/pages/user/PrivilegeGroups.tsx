@@ -3,14 +3,15 @@ import { Theme, Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import { rootContext } from '@/context';
-import { useNavigationHook } from '@/hooks';
+import { useNavigationHook, usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import { DeleteRoleParams, PrivilegeGroupData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/Types';
 import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
 import { makeStyles } from '@mui/styles';
+import { PrivilegeGroup } from '@server/types';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -25,8 +26,9 @@ const PrivilegeGroups = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
   const classes = useStyles();
 
-  const [groups, setGroups] = useState<PrivilegeGroupData>([]);
-  const [selectedRole, setSelectedRole] = useState<PrivilegeGroupData>([]);
+  const [groups, setGroups] = useState<PrivilegeGroup[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedGroups, setSelectedGroups] = useState<PrivilegeGroup[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const { t: successTrans } = useTranslation('success');
@@ -35,9 +37,11 @@ const PrivilegeGroups = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchGroups = async () => {
+    setLoading(true);
     const res = await UserService.getPrivilegeGroups();
-
     setGroups(res.privilege_groups);
+
+    setLoading(false);
   };
 
   const onUpdate = async (data: { isEditing: boolean }) => {
@@ -52,54 +56,76 @@ const PrivilegeGroups = () => {
     fetchGroups();
   }, []);
 
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data: result,
+    order,
+    orderBy,
+    handleGridSort,
+  } = usePaginationHook(groups || []);
+
   const toolbarConfigs: ToolBarConfig[] = [
-    // {
-    //   label: userTrans('role'),
-    //   onClick: () => {
-    //     setDialog({
-    //       open: true,
-    //       type: 'custom',
-    //       params: {
-    //         component: (
-    //           <UpdateRoleDialog
-    //             onUpdate={onUpdate}
-    //             handleClose={handleCloseDialog}
-    //           />
-    //         ),
-    //       },
-    //     });
-    //   },
-    //   icon: 'add',
-    // },
-    // {
-    //   type: 'button',
-    //   btnVariant: 'text',
-    //   btnColor: 'secondary',
-    //   label: userTrans('editRole'),
-    //   onClick: async () => {
-    //     setDialog({
-    //       open: true,
-    //       type: 'custom',
-    //       params: {
-    //         component: (
-    //           <UpdateRoleDialog
-    //             role={selectedRole[0]}
-    //             onUpdate={onUpdate}
-    //             handleClose={handleCloseDialog}
-    //           />
-    //         ),
-    //       },
-    //     });
-    //   },
-    //   icon: 'edit',
-    //   disabled: () =>
-    //     selectedRole.length === 0 ||
-    //     selectedRole.length > 1 ||
-    //     selectedRole.findIndex(v => v.name === 'admin') > -1 ||
-    //     selectedRole.findIndex(v => v.name === 'public') > -1,
-    //   disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
-    // },
+    {
+      label: userTrans('privilegeGroup'),
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <UpdateRoleDialog
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'add',
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: userTrans('editPrivilegeGroup'),
+      onClick: async () => {},
+      icon: 'edit',
+    },
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      onClick: () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <DeleteTemplate
+                label={btnTrans('drop')}
+                title={dialogTrans('deleteTitle', {
+                  type: userTrans('privilegeGroup'),
+                })}
+                text={userTrans('deletePrivilegGroupWarning')}
+                handleDelete={handleDelete}
+              />
+            ),
+          },
+        });
+      },
+      label: btnTrans('drop'),
+      disabledTooltip: userTrans('deleteTip'),
+      icon: 'delete',
+    },
   ];
+
+  const handlePageChange = (e: any, page: number) => {
+    handleCurrentPage(page);
+  };
 
   const colDefinitions: ColDefinitionsType[] = [
     {
@@ -122,7 +148,7 @@ const PrivilegeGroups = () => {
                 label={privilege.name}
                 className={classes.chip}
                 color="primary"
-                variant='filled'
+                variant="filled"
               />
             ))}
           </div>
@@ -132,27 +158,30 @@ const PrivilegeGroups = () => {
     },
   ];
 
-  const handleSelectChange = (value: any[]) => {};
+  const handleSelectChange = (groups: PrivilegeGroup[]) => {
+    setSelectedGroups(groups);
+  };
 
   return (
     <div className={classes.wrapper}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={groups}
-        rowCount={groups.length}
-        primaryKey="name"
-        showPagination={false}
-        selected={selectedRole}
+        rows={result}
+        rowCount={total}
+        primaryKey="group_name"
+        showPagination={true}
+        selected={selectedGroups}
         setSelected={handleSelectChange}
-        // page={currentPage}
-        // onPageChange={handlePageChange}
-        // rowsPerPage={pageSize}
-        // setRowsPerPage={handlePageSize}
-        // isLoading={loading}
-        // order={order}
-        // orderBy={orderBy}
-        // handleSort={handleGridSort}
+        page={currentPage}
+        onPageChange={handlePageChange}
+        rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
+        isLoading={loading}
+        order={order}
+        orderBy={orderBy}
+        handleSort={handleGridSort}
+        labelDisplayedRows={getLabelDisplayedRows(userTrans('privilegeGroups'))}
       />
     </div>
   );

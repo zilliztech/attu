@@ -1,9 +1,11 @@
 import {
   SelectRoleResponse,
   ListCredUsersResponse,
-  ListPrivilegeGroupsResponse
+  ListPrivilegeGroupsResponse,
+  PrivelegeGroup,
 } from '@zilliz/milvus2-sdk-node';
 
 export type Users = ListCredUsersResponse;
 export type UsersWithRoles = SelectRoleResponse;
-export type PrivilegeGroups = ListPrivilegeGroupsResponse;
+export type PrivilegeGroupsRes = ListPrivilegeGroupsResponse;
+export type PrivilegeGroup = PrivelegeGroup;
