@@ -1,4 +1,12 @@
-import { Theme, Typography } from '@mui/material';
+import {
+  Theme,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Checkbox,
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FC, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -7,11 +15,7 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { UserService } from '@/http';
-import {
-  CreatePrivilegeGroupParams,
-  PrivilegeGrpOptionsProps,
-  RBACOptions,
-} from '../Types';
+import { CreatePrivilegeGroupParams } from '../Types';
 import PrivilegeGroupOptions from './PrivilegeGroupOptions';
 import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';
@@ -32,6 +36,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   subTitle: {
     marginBottom: theme.spacing(0.5),
   },
+  accordionSummary: {
+    backgroundColor: theme.palette.background.default,
+    '& .MuiAccordionSummary-content': {
+      margin: 0,
+      alignItems: 'center',
+      position: 'relative',
+      left: -10,
+    },
+  },
+  accordionDetail: {
+    backgroundColor: theme.palette.background.light,
+  },
 }));
 
 export interface CreatePrivilegeGroupProps {
@@ -51,13 +67,7 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
-  const [rbacOptions, setRbacOptions] = useState<RBACOptions>({
-    GlobalPrivileges: {},
-    CollectionPrivileges: {},
-    RbacObjects: {},
-    UserPrivileges: {},
-    Privileges: {},
-  });
+  const [rbacOptions, setRbacOptions] = useState<PrivilegeGroup[]>([]);
 
   const fetchRBAC = async () => {
     const rbacOptions = await UserService.getRBAC();
@@ -114,13 +124,19 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
   ];
 
   const handleCreatePrivilegeGroup = async () => {
+    // privileges is an array of strings, should be unique
+    const newForm = {
+      ...form,
+      privileges: Array.from(new Set(form.privileges)),
+    };
+
     if (!isEditing) {
-      await UserService.createPrivilegeGroup(form);
+      await UserService.createPrivilegeGroup(newForm);
     }
 
-    await UserService.updatePrivilegeGroup(form);
+    await UserService.updatePrivilegeGroup(newForm);
 
-    onUpdate({ data: form, isEditing: isEditing });
+    onUpdate({ data: newForm, isEditing: isEditing });
   };
 
   const onChange = (newSelection: any) => {
@@ -129,34 +145,28 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
     });
   };
 
-  const optionGroups: PrivilegeGrpOptionsProps[] = [
-    {
-      options: Object.values(rbacOptions.GlobalPrivileges) as string[],
-      object: 'Global',
-      title: userTrans('objectGlobal'),
-      selection: form.privileges,
-      group_name: form.group_name,
-      onChange: onChange,
-    },
+  const handleSelectAll = (
+    groupName: string,
+    privileges: string[],
+    isChecked: boolean
+  ) => {
+    const updatedPrivileges = isChecked
+      ? [...form.privileges, ...privileges]
+      : form.privileges.filter(p => !privileges.includes(p));
 
-    {
-      options: Object.values(rbacOptions.CollectionPrivileges) as string[],
-      title: userTrans('objectCollection'),
-      object: 'Collection',
-      selection: form.privileges,
-      group_name: form.group_name,
-      onChange: onChange,
-    },
+    onChange(updatedPrivileges);
+  };
 
-    {
-      options: Object.values(rbacOptions.UserPrivileges) as string[],
-      title: userTrans('objectUser'),
-      object: 'User',
-      selection: form.privileges,
-      group_name: form.group_name,
-      onChange: onChange,
-    },
-  ];
+  const isGroupAllSelected = (groupName: string, privileges: string[]) => {
+    return privileges.every(p => form.privileges.includes(p));
+  };
+
+  const isGroupPartialSelected = (groupName: string, privileges: string[]) => {
+    return (
+      privileges.some(p => form.privileges.includes(p)) &&
+      !isGroupAllSelected(groupName, privileges)
+    );
+  };
 
   return (
     <DialogTemplate
@@ -183,17 +193,64 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
           {userTrans('privileges')}
         </Typography>
 
-        {optionGroups.map((o, index) => (
-          <PrivilegeGroupOptions
-            key={`${o.object}-${index}`}
-            title={o.title}
-            object={o.object}
-            options={o.options}
-            selection={o.selection}
-            group_name={o.group_name}
-            onChange={o.onChange}
-          />
-        ))}
+        {rbacOptions.map((grp, index) => {
+          const groupPrivileges = grp.privileges.map(p => p.name);
+          const isAllSelected = isGroupAllSelected(
+            grp.group_name,
+            groupPrivileges
+          );
+          const isPartialSelected = isGroupPartialSelected(
+            grp.group_name,
+            groupPrivileges
+          );
+
+          return (
+            <Accordion key={`${grp.group_name}-${index}`}>
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`${grp.group_name}-content`}
+                id={`${grp.group_name}-header`}
+                onClick={e => {
+                  if ((e.target as HTMLElement).closest('.MuiCheckbox-root')) {
+                    e.stopPropagation();
+                  }
+                }}
+              >
+                <Checkbox
+                  checked={isAllSelected}
+                  indeterminate={isPartialSelected}
+                  onChange={e =>
+                    handleSelectAll(
+                      grp.group_name,
+                      groupPrivileges,
+                      e.target.checked
+                    )
+                  }
+                  onClick={e => e.stopPropagation()}
+                  className="privilege-checkbox"
+                />
+                <Typography>
+                  {grp.group_name}(
+                  {
+                    new Set(
+                      form.privileges.filter(p => groupPrivileges.includes(p))
+                    ).size
+                  }
+                  /{new Set(groupPrivileges).size})
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetail}>
+                <PrivilegeGroupOptions
+                  options={groupPrivileges}
+                  selection={form.privileges}
+                  group_name={grp.group_name}
+                  onChange={onChange}
+                />
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
       </>
     </DialogTemplate>
   );

@@ -15,13 +15,7 @@ import {
   RevokePrivilegeV2Request,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
-import {
-  Privileges,
-  GlobalPrivileges,
-  CollectionPrivileges,
-  UserPrivileges,
-  RbacObjects,
-} from '../utils';
+import { Privileges } from '../utils';
 import { clientCache } from '../app';
 
 export class UserService {
@@ -119,14 +113,38 @@ export class UserService {
     return res;
   }
 
-  async getRBAC() {
-    return {
-      Privileges,
-      GlobalPrivileges,
-      CollectionPrivileges,
-      UserPrivileges,
-      RbacObjects,
-    };
+  async getRBAC(clientId: string) {
+    const { milvusClient } = clientCache.get(clientId);
+    const privilegeGrps = await milvusClient.listPrivilegeGroups();
+
+    throwErrorFromSDK(privilegeGrps.status);
+
+    const defaultGrp = [
+      'ClusterAdmin',
+      'ClusterReadOnly',
+      'ClusterReadWrite',
+
+      'DatabaseAdmin',
+      'DatabaseReadOnly',
+      'DatabaseReadWrite',
+
+      'CollectionAdmin',
+      'CollectionReadOnly',
+      'CollectionReadWrite',
+    ];
+
+    // only show default groups
+    const groups = privilegeGrps.privilege_groups.filter(
+      g => defaultGrp.indexOf(g.group_name) !== -1
+    );
+
+    // sort groups by the order in defaultGrp
+    groups.sort(
+      (a, b) =>
+        defaultGrp.indexOf(a.group_name) - defaultGrp.indexOf(b.group_name)
+    );
+
+    return groups;
   }
 
   async listGrants(clientId: string, data: ListGrantsReq) {

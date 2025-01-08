@@ -264,7 +264,7 @@ export class UserController {
 
   async rbac(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getRBAC();
+      const result = await this.userService.getRBAC(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);

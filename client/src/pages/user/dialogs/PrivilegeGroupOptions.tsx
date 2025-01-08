@@ -25,15 +25,11 @@ const PrivilegeGroupOptions: FC<PrivilegeGrpOptionsProps> = ({
   options,
   selection,
   onChange,
-  title,
 }) => {
   const classes = useStyles();
 
   return (
     <>
-      <Typography variant="h6" component="h6" className={classes.subTitle}>
-        {title}
-      </Typography>
       <FormGroup row className={classes.formGrp}>
         {options.map((r: string) => (
           <FormControlLabel

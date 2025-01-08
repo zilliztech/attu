@@ -9,7 +9,12 @@ import {
   CreatePrivilegeGroupParams,
 } from '../pages/user/Types';
 import BaseModel from './BaseModel';
-import { Users, UsersWithRoles, PrivilegeGroupsRes } from '@server/types';
+import {
+  Users,
+  UsersWithRoles,
+  PrivilegeGroupsRes,
+  PrivilegeGroup,
+} from '@server/types';
 
 export class UserService extends BaseModel {
   // get user data
@@ -76,13 +81,7 @@ export class UserService extends BaseModel {
     return super.search({
       path: `/users/rbac`,
       params: {},
-    }) as Promise<{
-      GlobalPrivileges: Record<string, unknown>;
-      CollectionPrivileges: Record<string, unknown>;
-      RbacObjects: Record<string, unknown>;
-      UserPrivileges: Record<string, unknown>;
-      Privileges: Record<string, unknown>;
-    }>;
+    }) as Promise<PrivilegeGroup[]>;
   }
 
   // get privilege groups

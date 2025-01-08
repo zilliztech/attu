@@ -103,9 +103,6 @@ export interface PrivilegeGrpOptionsProps {
   selection: string[];
   onChange: (selection: string[]) => void;
   group_name: string;
-  object: RBACObject;
-  objectName?: string;
-  title: string;
 }
 
 export type RBACOptions = {
@@ -115,4 +112,3 @@ export type RBACOptions = {
   UserPrivileges: Record<string, unknown>;
   Privileges: Record<string, unknown>;
 };
-
