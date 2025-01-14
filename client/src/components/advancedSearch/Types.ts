@@ -1,4 +1,4 @@
-import { FieldObject } from '@server/types';
+import type { FieldObject } from '@server/types';
 
 export interface ConditionProps {
   others?: object;

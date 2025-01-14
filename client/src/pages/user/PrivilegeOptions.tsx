@@ -6,8 +6,8 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { FC } from 'react';
-import { Privilege, PrivilegeOptionsProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { Privilege, PrivilegeOptionsProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   checkBox: {

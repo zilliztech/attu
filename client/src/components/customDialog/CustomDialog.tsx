@@ -6,11 +6,11 @@ import {
   Theme,
   Typography,
 } from '@mui/material';
-import { CustomDialogType } from './Types';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '../customButton/CustomButton';
 import CustomDialogTitle from './CustomDialogTitle';
 import { makeStyles } from '@mui/styles';
+import type { CustomDialogType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {

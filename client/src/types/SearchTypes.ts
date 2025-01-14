@@ -1,5 +1,5 @@
 import { Option } from '@/components/customSelector/Types';
-import { searchKeywordsType, DataTypeEnum, DataTypeStringEnum } from '@/consts';
+import { searchKeywordsType, DataTypeEnum } from '@/consts';
 import { FieldObject } from '@server/types';
 
 export interface SearchParamsProps {

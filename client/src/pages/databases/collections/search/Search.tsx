@@ -34,18 +34,18 @@ import {
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
 import DataExplorer, { formatMilvusData } from './DataExplorer';
-import { GraphData, GraphNode } from '../../types';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
   SearchResultView,
 } from '../../types';
 import { DYNAMIC_FIELD } from '@/consts';
-import { ColDefinitionsType } from '@/components/grid/Types';
-import { CollectionObject, CollectionFullObject } from '@server/types';
 import CodeDialog from '@/pages/dialogs/CodeDialog';
 import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
+import type { GraphData, GraphNode } from '../../types';
+import type { ColDefinitionsType } from '@/components/grid/Types';
+import type { CollectionObject, CollectionFullObject } from '@server/types';
 
 export interface CollectionDataProps {
   collectionName: string;

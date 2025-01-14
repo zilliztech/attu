@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Theme, useTheme } from '@mui/material';
-import { MiniTopoProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { MiniTopoProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   container: {},

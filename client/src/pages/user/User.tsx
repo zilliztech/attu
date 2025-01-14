@@ -14,7 +14,7 @@ import {
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import CreateUser from './CreateUser';
 import UpdateUserRole from './UpdateUserRole';
 import UpdateUser from './Update';

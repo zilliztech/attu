@@ -3,10 +3,10 @@ import React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { generateId } from '../../utils/Common';
-import { SimpleMenuType } from './Types';
 import CustomButton from '../customButton/CustomButton';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import type { SimpleMenuType } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   menuPaper: {

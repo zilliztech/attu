@@ -7,8 +7,8 @@ import {
   Checkbox,
 } from '@mui/material';
 import { withStyles } from '@mui/styles';
-import { CustomMultiSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
+import type { CustomMultiSelectorType } from './Types';
 
 const CustomMenuItem = withStyles({
   root: {

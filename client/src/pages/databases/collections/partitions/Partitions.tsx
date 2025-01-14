@@ -13,10 +13,10 @@ import { CollectionService, PartitionService } from '@/http';
 import InsertContainer from '@/pages/dialogs/insert/Dialog';
 import CreatePartitionDialog from '@/pages/dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
-import { PartitionData } from '@server/types';
 import { formatNumber } from '@/utils';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { makeStyles } from '@mui/styles';
+import type { PartitionData } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

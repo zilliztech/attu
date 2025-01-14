@@ -1,8 +1,8 @@
 import { FormControlLabel, Switch, Theme } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CustomSwitchProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { CustomSwitchProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   label: {

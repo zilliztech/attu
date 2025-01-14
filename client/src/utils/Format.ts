@@ -11,9 +11,9 @@ import {
   CreateFieldType,
   CreateField,
 } from '@/pages/databases/collections/Types';
-import { FieldObject } from '@server/types';
 import { generateVector } from '.';
-import { AnalyzerType } from '@/pages/databases/collections/Types';
+import type { AnalyzerType } from '@/pages/databases/collections/Types';
+import type { FieldObject } from '@server/types';
 
 /**
  * transform large capacity to capacity in b.

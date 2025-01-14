@@ -1,7 +1,7 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import { FC, useState } from 'react';
-import { ITabListProps, ITabPanel } from './Types';
 import { useStyles } from './style';
+import type { ITabListProps, ITabPanel } from './Types';
 
 const TabPanel = (props: ITabPanel) => {
   const { children, value, index, className = '', ...other } = props;

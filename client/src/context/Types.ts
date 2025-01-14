@@ -1,16 +1,16 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
-import {
+import type { NavInfo } from '@/router/Types';
+import type {
+  IndexCreateParam,
+  IndexManageParam,
+} from '@/pages/databases/collections/schema/Types';
+import type {
   CollectionObject,
   CollectionFullObject,
   DatabaseObject,
   AuthReq,
+  AuthObject,
 } from '@server/types';
-import { NavInfo } from '@/router/Types';
-import {
-  IndexCreateParam,
-  IndexManageParam,
-} from '@/pages/databases/collections/schema/Types';
-import { AuthObject } from '@server/types';
 
 export type RootContextType = {
   openSnackBar: OpenSnackBarType;

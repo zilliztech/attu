@@ -15,19 +15,19 @@ import {
   isElectron,
   url,
 } from '@/http';
-import {
+import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
+import { DEFAULT_TREE_WIDTH, ATTU_UI_TREE_WIDTH } from '@/consts';
+import { checkIndexing, checkLoading } from '@server/utils/Shared';
+import type {
   IndexCreateParam,
   IndexManageParam,
 } from '@/pages/databases/collections/schema/Types';
-import { DataContextType } from './Types';
-import {
+import type { DataContextType } from './Types';
+import type {
   CollectionObject,
   CollectionFullObject,
   DatabaseObject,
 } from '@server/types';
-import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
-import { DEFAULT_TREE_WIDTH, ATTU_UI_TREE_WIDTH } from '@/consts';
-import { checkIndexing, checkLoading } from '@server/utils/Shared';
 
 export const dataContext = createContext<DataContextType>({
   loading: true,

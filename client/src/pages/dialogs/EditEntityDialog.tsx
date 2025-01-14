@@ -10,12 +10,12 @@ import { linter } from '@codemirror/lint';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { CollectionFullObject } from '@server/types';
 import { DataService } from '@/http';
 import { DYNAMIC_FIELD } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import { githubLight } from '@ddietr/codemirror-themes/github-light';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
+import type { CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {

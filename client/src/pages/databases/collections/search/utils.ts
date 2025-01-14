@@ -1,6 +1,6 @@
 import { isSparseVector, transformObjStrToJSONStr } from '@/utils';
-import { FieldObject } from '@server/types';
 import { DataTypeStringEnum } from '@/consts';
+import type { FieldObject } from '@server/types';
 
 const floatVectorValidator = (text: string, field: FieldObject) => {
   try {

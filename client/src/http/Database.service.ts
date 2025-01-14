@@ -1,5 +1,5 @@
 import BaseModel from './BaseModel';
-import { DatabaseObject } from '@server/types';
+import type { DatabaseObject } from '@server/types';
 
 // request types
 export interface CreateDatabaseParams {

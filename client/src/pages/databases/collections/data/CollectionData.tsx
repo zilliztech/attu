@@ -24,13 +24,13 @@ import {
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
-import { CollectionObject, CollectionFullObject } from '@server/types';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
 import DataListView from '@/components/DataListView/DataListView';
+import type { CollectionObject, CollectionFullObject } from '@server/types';
 
 export interface CollectionDataProps {
   collectionName: string;

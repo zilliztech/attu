@@ -7,13 +7,13 @@ import { rootContext, dataContext } from '@/context';
 import Icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import { IndexState } from '@/types/Milvus';
+import { IndexState } from '@/consts/Milvus';
 import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndexDialog from './CreateIndexDialog';
-import { FieldObject } from '@server/types';
 import CustomButton from '@/components/customButton/CustomButton';
 import { makeStyles } from '@mui/styles';
 import { isVectorType } from '@/utils';
+import type { FieldObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

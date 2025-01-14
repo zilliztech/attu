@@ -2,9 +2,9 @@ import { Theme, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
 import { UserService } from '@/http';
 import { makeStyles } from '@mui/styles';
+import type { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

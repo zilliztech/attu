@@ -5,8 +5,8 @@ import { rootContext, dataContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import CreateAliasDialog from '@/pages/dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import type { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

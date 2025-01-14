@@ -9,12 +9,12 @@ import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { CreateUserProps, CreateUserParams } from './Types';
-import { Option as RoleOption } from '@/components/customSelector/Types';
 import { makeStyles } from '@mui/styles';
+import type { CreateUserProps, CreateUserParams } from './Types';
+import type { Option as RoleOption } from '@/components/customSelector/Types';
+import type { ITextfieldConfig } from '@/components/customInput/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

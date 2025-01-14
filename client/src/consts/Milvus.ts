@@ -476,3 +476,15 @@ export enum FunctionType {
   Unknown = 0,
   BM25 = 1,
 }
+
+export enum IndexState {
+  IndexStateNone = 'IndexStateNone',
+  Unissued = 'Unissued',
+  InProgress = 'InProgress',
+  Finished = 'Finished',
+  Failed = 'Failed',
+
+  // only used by UI
+  Default = '',
+  Delete = 'Delete',
+}

@@ -7,10 +7,10 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { IForm, useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CollectionObject } from '@server/types';
 import { Property } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import { DatabaseService } from '@/http';
+import type { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

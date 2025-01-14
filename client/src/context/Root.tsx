@@ -1,17 +1,17 @@
 import { useState, useCallback, useEffect, useContext } from 'react';
 import React from 'react';
 import { authContext } from '@/context';
-import {
+import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
+import CustomDialog from '@/components/customDialog/CustomDialog';
+import CustomDrawer from '@/components/customDrawer/CustomDrawer';
+import { MilvusService } from '@/http';
+import type {
   RootContextType,
   DialogType,
   SnackBarType,
   OpenSnackBarType,
   DrawerType,
 } from './Types';
-import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
-import CustomDialog from '@/components/customDialog/CustomDialog';
-import CustomDrawer from '@/components/customDrawer/CustomDrawer';
-import { MilvusService } from '@/http';
 
 const DefaultDialogConfigs: DialogType = {
   open: false,

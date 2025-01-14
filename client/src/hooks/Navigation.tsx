@@ -1,7 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { navContext } from '@/context';
-import { ALL_ROUTER_TYPES, NavInfo } from '@/router/Types';
+import { NavInfo } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 
 export const useNavigationHook = (
   type: ALL_ROUTER_TYPES,

@@ -7,10 +7,10 @@ import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, authContext } from '@/context';
-import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import { CREATE_DB } from './Home';
 import { makeStyles } from '@mui/styles';
+import type { DatabaseObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

@@ -1,5 +1,8 @@
 import BaseModel from './BaseModel';
-import { QuerySegmentObjects, PersistentSegmentObjects } from '@server/types';
+import type {
+  QuerySegmentObjects,
+  PersistentSegmentObjects,
+} from '@server/types';
 
 export class SegmentService extends BaseModel {
   static getQSegments(collectionName: string) {

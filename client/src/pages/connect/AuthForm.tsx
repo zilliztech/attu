@@ -13,7 +13,7 @@ import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useStyles } from './style';
-import { AuthReq } from '@server/types';
+import type { AuthReq } from '@server/types';
 
 type Connection = AuthReq & {
   time: number;

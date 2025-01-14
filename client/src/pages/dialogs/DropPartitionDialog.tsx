@@ -4,7 +4,7 @@ import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { PartitionService } from '@/http';
 import { PartitionManageParam } from '../databases/collections/partitions/Types';
-import { ManageRequestMethods } from '../../types/Common';
+import { ManageRequestMethods } from '@/consts';
 import { DropPartitionProps } from './Types';
 
 const DropPartitionDialog: FC<DropPartitionProps> = props => {

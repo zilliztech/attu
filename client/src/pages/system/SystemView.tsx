@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Theme } from '@mui/material';
 import clsx from 'clsx';
 import { useNavigationHook, useInterval } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import { MilvusService } from '@/http';
 import { parseJson } from '@/utils';
 import Topo from './Topology';

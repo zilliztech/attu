@@ -2,11 +2,11 @@ import React, { useState, useEffect, FC, useMemo } from 'react';
 import { Theme, IconButton, TextField, SelectChangeEvent } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
-import { ConditionProps } from './Types';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS, DataTypeStringEnum } from '@/consts';
 import { formatValue, checkValue } from './utils';
-import { FieldObject } from '@server/types';
+import type { ConditionProps } from './Types';
+import type { FieldObject } from '@server/types';
 
 const Condition: FC<ConditionProps> = props => {
   const {
@@ -161,7 +161,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     minWidth: '466px',
     minHeight: '62px',
-    background:  theme.palette.background.paper,
+    background: theme.palette.background.paper,
     padding: theme.spacing(1.5, 2),
     display: 'flex',
     flexDirection: 'row',

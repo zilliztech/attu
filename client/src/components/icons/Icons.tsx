@@ -1,5 +1,4 @@
 import React from 'react';
-import { IconsType } from './Types';
 import { SvgIcon } from '@mui/material';
 import AppsIcon from '@mui/icons-material/Apps';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -7,6 +6,7 @@ import ConsoleIcon from '@/assets/icons/console.svg?react';
 import KeyIcon from '@/assets/icons/key.svg?react';
 import SearchEmptyIcon from '@/assets/icons/search.svg?react';
 import Compact from '@/assets/icons/compact.svg?react';
+import type { IconsType } from './Types';
 
 const icons: { [x in IconsType]: (props?: any) => React.ReactElement } = {
   search: (props = {}) => (

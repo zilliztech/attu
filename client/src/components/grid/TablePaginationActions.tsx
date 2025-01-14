@@ -3,8 +3,8 @@ import CustomButton from '../customButton/CustomButton';
 import icons from '../icons/Icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TablePaginationActionsProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { TablePaginationActionsProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

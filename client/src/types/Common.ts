@@ -5,11 +5,6 @@ export interface LabelValuePair {
   value: string | number;
 }
 
-export enum ManageRequestMethods {
-  DELETE = 'delete',
-  CREATE = 'create',
-}
-
 export type FormHelperType = {
   formValue: { [x: string]: any };
   updateForm: (type: string, value: string) => void;

@@ -76,3 +76,8 @@ export enum FILE_MIME_TYPE {
   CSV = 'text/csv',
   JSON = 'application/json',
 }
+
+export enum ManageRequestMethods {
+  DELETE = 'delete',
+  CREATE = 'create',
+}

@@ -2,12 +2,12 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import RouteTabList from '@/components/customTabList/RouteTabList';
-import { ITab } from '@/components/customTabList/Types';
 import User from './User';
 import Roles from './Roles';
 import { makeStyles } from '@mui/styles';
+import type { ITab } from '@/components/customTabList/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

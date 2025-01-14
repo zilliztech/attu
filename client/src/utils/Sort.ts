@@ -1,4 +1,4 @@
-import { SortType } from '@/components/grid/Types';
+import type { SortType } from '@/components/grid/Types';
 
 type numberObj = {
   [x: string]: number;

@@ -5,9 +5,9 @@ import { ITextfieldConfig } from '@/components/customInput/Types';
 import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomGroupedSelect from '@/components/customSelector/CustomGroupedSelect';
-import { Option, GroupOption } from '@/components/customSelector/Types';
-import { FormHelperType } from '../../../../types/Common';
+import type { FormHelperType } from '../../../../types/Common';
 import { makeStyles } from '@mui/styles';
+import type { Option, GroupOption } from '@/components/customSelector/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

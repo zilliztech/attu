@@ -1,7 +1,7 @@
-import { FieldOption } from '../types/SearchTypes';
-import { FieldObject, CollectionFullObject } from '@server/types';
 import { VectorStrToObject } from '@/utils';
-import { SearchParams } from '@/pages/databases/types';
+import type { FieldOption } from '../types/SearchTypes';
+import type { FieldObject, CollectionFullObject } from '@server/types';
+import type { SearchParams } from '@/pages/databases/types';
 
 export const getVectorFieldOptions = (fields: FieldObject[]): FieldOption[] => {
   const options: FieldOption[] = fields.map(f => {

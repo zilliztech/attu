@@ -2,14 +2,14 @@ import { FC, useCallback, useMemo } from 'react';
 import { Theme, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
-import { Option } from '@/components/customSelector/Types';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import AttuGrid from '@/components/grid/Grid';
 import { transferCsvArrayToTableData } from '@/utils';
-import { ColDefinitionsType } from '@/components/grid/Types';
 import SimpleMenu from '@/components/menu/SimpleMenu';
 import icons from '@/components/icons/Icons';
 import { makeStyles } from '@mui/styles';
+import type { Option } from '@/components/customSelector/Types';
+import type { ColDefinitionsType } from '@/components/grid/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

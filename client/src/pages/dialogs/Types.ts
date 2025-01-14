@@ -1,4 +1,4 @@
-import { PartitionData, CollectionObject } from '@server/types';
+import type { PartitionData, CollectionObject } from '@server/types';
 
 export interface DropCollectionProps {
   collections: CollectionObject[];

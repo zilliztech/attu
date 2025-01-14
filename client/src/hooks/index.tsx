@@ -5,4 +5,3 @@ export * from './Pagination';
 export * from './Result';
 export * from './SystemView';
 export * from './Query';
-export * from './TimeTravel';
