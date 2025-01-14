@@ -19,6 +19,7 @@ import { CreatePrivilegeGroupParams } from '../Types';
 import PrivilegeGroupOptions from './PrivilegeGroupOptions';
 import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';
+import { Opacity } from '@mui/icons-material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -36,8 +37,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   subTitle: {
     marginBottom: theme.spacing(0.5),
   },
+
+  accordin: {
+    margin: 0,
+    '&.Mui-expanded': {
+      opacity: 1,
+    },
+    border: `1px solid ${theme.palette.divider}`,
+    borderBottom: 'none',
+  },
   accordionSummary: {
     backgroundColor: theme.palette.background.default,
+    minHeight: '48px !important',
     '& .MuiAccordionSummary-content': {
       margin: 0,
       alignItems: 'center',
@@ -47,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   accordionDetail: {
     backgroundColor: theme.palette.background.light,
+    borderTop: 'none',
   },
 }));
 
@@ -205,7 +217,11 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
           );
 
           return (
-            <Accordion key={`${grp.group_name}-${index}`}>
+            <Accordion
+              key={`${grp.group_name}-${index}`}
+              className={classes.accordin}
+              elevation={0}
+            >
               <AccordionSummary
                 className={classes.accordionSummary}
                 expandIcon={<ExpandMoreIcon />}
