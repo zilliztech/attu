@@ -1,6 +1,9 @@
-import { PartitionManageParam, PartitionParam } from '@/pages/databases/collections/partitions/Types';
 import BaseModel from './BaseModel';
-import { PartitionData } from '@server/types';
+import type { PartitionData } from '@server/types';
+import type {
+  PartitionManageParam,
+  PartitionParam,
+} from '@/pages/databases/collections/partitions/Types';
 
 export class PartitionService extends BaseModel {
   static getPartitions(collectionName: string) {

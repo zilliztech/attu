@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState, useContext } from 'react';
 import { Typography, CardContent, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import { useNavigationHook, useSearchResult, usePaginationHook } from '@/hooks';
 import { dataContext } from '@/context';
 import { saveCsvAs } from '@/utils';
@@ -13,7 +13,6 @@ import EmptyCard from '@/components/cards/EmptyCard';
 import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import SimpleMenu from '@/components/menu/SimpleMenu';
-import { Option } from '@/components/customSelector/Types';
 import Filter from '@/components/advancedSearch';
 import { DataService } from '@/http';
 import {
@@ -34,8 +33,9 @@ import { getLabelDisplayedRows } from './Utils';
 import SearchParams from './SearchParams';
 import { getVectorSearchStyles } from './Styles';
 import { TOP_K_OPTIONS } from './Constants';
-import { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 import { FieldObject, CollectionFullObject } from '@server/types';
+import type { Option } from '@/components/customSelector/Types';
+import type { FieldOption, SearchResultView, VectorSearchParam } from './Types';
 
 const VectorSearch = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SEARCH);

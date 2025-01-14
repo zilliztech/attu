@@ -5,10 +5,10 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Tooltip from '@mui/material/Tooltip';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { NavMenuItem, NavMenuType } from './Types';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import icons from '@/components/icons/Icons';
+import type { NavMenuItem, NavMenuType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

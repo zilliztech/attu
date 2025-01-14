@@ -1,8 +1,8 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ITabListProps, ITabPanel } from './Types';
 import { useStyles } from './style';
+import type { ITabListProps, ITabPanel } from './Types';
 
 const TabPanel = (props: ITabPanel) => {
   const { children, value, index, className = '', ...other } = props;

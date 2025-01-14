@@ -5,12 +5,12 @@ import { saveAs } from 'file-saver';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { rootContext } from '@/context';
-import { InsertStatusEnum } from './insert/Types';
+import { InsertStatusEnum } from './insert/consts';
 import { DataService } from '@/http';
 import { LoadSampleParam } from './Types';
 import icons from '@/components/icons/Icons';
-import { CollectionObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import type { CollectionObject } from '@server/types';
 
 const DownloadIcon = icons.download;
 

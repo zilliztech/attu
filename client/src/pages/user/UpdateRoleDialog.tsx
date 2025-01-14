@@ -3,18 +3,18 @@ import { FC, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { UserService } from '@/http';
-import {
+import PrivilegeOptions from './PrivilegeOptions';
+import { makeStyles } from '@mui/styles';
+import type { ITextfieldConfig } from '@/components/customInput/Types';
+import type {
   CreateRoleProps,
   CreateRoleParams,
   PrivilegeOptionsProps,
   RBACOptions,
 } from './Types';
-import PrivilegeOptions from './PrivilegeOptions';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

@@ -1,13 +1,13 @@
 import { createContext, useEffect, useState } from 'react';
 import { AuthContextType } from './Types';
 import { MilvusService } from '@/http';
-import { AuthReq } from '@server/types';
 import {
   MILVUS_CLIENT_ID,
   MILVUS_URL,
   MILVUS_DATABASE,
   ATTU_AUTH_REQ,
 } from '@/consts';
+import type { AuthReq } from '@server/types';
 
 export const authContext = createContext<AuthContextType>({
   clientId: '',

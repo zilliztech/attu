@@ -11,8 +11,8 @@ import {
   DescribeIndexRes,
   IndexObject,
 } from '@server/types';
-import { ManageRequestMethods } from '../types/Common';
-import {
+import { ManageRequestMethods } from '@/consts';
+import type {
   IndexCreateParam,
   IndexManageParam,
 } from '@/pages/databases/collections/schema/Types';

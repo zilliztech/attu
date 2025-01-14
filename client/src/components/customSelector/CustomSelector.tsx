@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { CustomSelectorType } from './Types';
 import { generateId } from '../../utils/Common';
+import type { CustomSelectorType } from './Types';
 
 const CustomSelector: FC<CustomSelectorType> = props => {
   const {

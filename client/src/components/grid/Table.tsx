@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import { makeStyles } from '@mui/styles';
-import { TableType } from './Types';
+import type { TableType } from './Types';
 import { Box, Button, Typography, Theme } from '@mui/material';
 import EnhancedTableHead from './TableHead';
 import EditableTableHead from './TableEditableHead';

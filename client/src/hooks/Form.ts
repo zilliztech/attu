@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { IValidation } from '../components/customInput/Types';
 import { checkEmptyValid, getCheckResult } from '../utils/Validation';
+import type { IValidation } from '../components/customInput/Types';
 
 export interface IForm {
   key: string;

@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { FC } from 'react';
-import { GroupOption, ICustomGroupSelect } from './Types';
+import type { GroupOption, ICustomGroupSelect } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

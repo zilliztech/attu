@@ -1,6 +1,5 @@
 import { LOADING_STATE } from '@/consts';
-import { CollectionObject } from '@server/types';
-import React from 'react';
+import type { CollectionObject } from '@server/types';
 
 export type StatusActionType = {
   status: LOADING_STATE;

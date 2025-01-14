@@ -1,6 +1,6 @@
 import BaseModel from './BaseModel';
 import { CronJobObject } from '@server/types';
-import { AuthReq, AuthObject } from '@server/types';
+import type { AuthReq, AuthObject } from '@server/types';
 
 export class MilvusService extends BaseModel {
   static connect(data: AuthReq) {

@@ -1,6 +1,4 @@
-import { ReactElement } from 'react';
-import { LOADING_STATE } from '@/consts';
-import { ManageRequestMethods } from '../../../../types/Common';
+import { ManageRequestMethods } from '@/consts';
 
 // delete and create
 export interface PartitionManageParam {

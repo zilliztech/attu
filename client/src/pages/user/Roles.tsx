@@ -5,12 +5,12 @@ import { UserService } from '@/http';
 import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
-import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
-import { DeleteRoleParams, RoleData } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import UpdateRoleDialog from './UpdateRoleDialog';
 import { makeStyles } from '@mui/styles';
+import type { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
+import type { DeleteRoleParams, RoleData } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

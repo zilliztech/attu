@@ -1,5 +1,5 @@
 import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
-import { CollectionObject } from '@server/types';
+import type { CollectionObject } from '@server/types';
 
 export type ValidType =
   | 'bool'

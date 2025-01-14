@@ -2,12 +2,12 @@ import { FC, useMemo } from 'react';
 import { Grid, Typography, Theme, IconButton } from '@mui/material';
 import CustomButton from '../customButton/CustomButton';
 import Icons from '../icons/Icons';
-import { ToolBarConfig, ToolBarType } from './Types';
 import SearchInput from '../customInput/SearchInput';
 import TableSwitch from './TableSwitch';
 import { throwErrorForDev } from '../../utils/Common';
 import CustomIconButton from '../customButton/CustomIconButton';
 import { makeStyles } from '@mui/styles';
+import type { ToolBarConfig, ToolBarType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   countLabel: {

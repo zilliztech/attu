@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { DataTypeStringEnum, MIN_INT64 } from '@/consts';
 import { CollectionService } from '@/http';
-import { CollectionFullObject, FieldObject } from '@server/types';
+import type { CollectionFullObject, FieldObject } from '@server/types';
 
 // TODO: refactor this, a little bit messy
 export const useQuery = (params: {

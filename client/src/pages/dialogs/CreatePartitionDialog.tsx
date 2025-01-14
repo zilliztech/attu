@@ -10,7 +10,7 @@ import { formatForm } from '@/utils';
 import { PartitionService } from '@/http';
 import { PartitionCreateProps } from './Types';
 import { PartitionManageParam } from '../databases/collections/partitions/Types';
-import { ManageRequestMethods } from '../../types/Common';
+import { ManageRequestMethods } from '@/consts';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({

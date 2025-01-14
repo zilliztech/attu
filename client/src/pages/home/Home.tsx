@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { dataContext, systemContext } from '@/context';
 import { MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import DatabaseCard from './DatabaseCard';
 import SysCard from './SysCard';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';

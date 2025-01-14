@@ -2,7 +2,7 @@ import { Typography, useTheme } from '@mui/material';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useTranslation } from 'react-i18next';
 import { vs2015, github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { GraphNode } from '../../types';
+import type { GraphNode } from '../../types';
 
 const DataPanel = (props: { node: GraphNode; color: any }) => {
   // i18n

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import { PartitionService } from '@/http';
-import { PartitionData } from '@server/types';
+import type { PartitionData } from '@server/types';
 import CustomInput from '@/components/customInput/CustomInput';
 import { useTranslation } from 'react-i18next';
 

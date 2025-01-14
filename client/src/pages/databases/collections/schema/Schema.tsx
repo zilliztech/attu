@@ -11,7 +11,6 @@ import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { FieldObject } from '@server/types';
 import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
@@ -19,6 +18,7 @@ import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
+import type { FieldObject } from '@server/types';
 
 const Overview = () => {
   const { fetchCollection, collections, loading, database } =

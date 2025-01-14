@@ -3,7 +3,7 @@ import { UserService, MilvusService } from '@/http';
 import { parseJson, getNode, getSystemConfigs } from '@/utils';
 import { MILVUS_NODE_TYPE } from '@/consts';
 import { authContext } from '@/context';
-import { SystemContextType } from './Types';
+import type { SystemContextType } from './Types';
 
 export const systemContext = createContext<SystemContextType>({
   data: {},

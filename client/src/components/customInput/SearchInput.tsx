@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icons from '../icons/Icons';
-import { SearchType } from './Types';
+import type { SearchType } from './Types';
 
 const useSearchStyles = makeStyles((theme: Theme) => ({
   wrapper: {

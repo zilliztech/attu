@@ -11,7 +11,7 @@ import {
   RERANKER_OPTIONS,
   DataTypeStringEnum,
 } from '@/consts';
-import { SearchParams, GlobalParams } from '../../types';
+import type { SearchParams, GlobalParams } from '../../types';
 
 export interface SearchGlobalProps {
   searchParams: SearchParams;

@@ -3,8 +3,9 @@ import * as d3 from 'd3';
 import { useTheme } from '@mui/material';
 import { cloneObj } from '@/utils';
 import { getDataExplorerStyle } from './Styles';
-import { GraphData, GraphNode, GraphLink } from '../../types';
 import DataPanel from './DataPanel';
+import type { GraphData, GraphNode, GraphLink } from '../../types';
+
 
 interface DataExplorerProps {
   data: GraphData;

@@ -1,10 +1,10 @@
-import { CollectionFullObject } from '@server/types';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { formatFieldType } from '@/utils';
 import Icons from '@/components/icons/Icons';
 import { Theme } from '@mui/material';
-import { ColDefinitionsType } from '@/components/grid/Types';
 import { makeStyles } from '@mui/styles';
+import type { CollectionFullObject } from '@server/types';
+import type { ColDefinitionsType } from '@/components/grid/Types';
 
 export const style = makeStyles((theme: Theme) => ({
   icon: {

@@ -7,15 +7,15 @@ import { indentUnit } from '@codemirror/language';
 import { minimalSetup } from 'codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { linter, Diagnostic } from '@codemirror/lint';
-import { CollectionFullObject } from '@server/types';
 import { CollectionService } from '@/http';
 import { DataTypeStringEnum } from '@/consts';
-import { SearchSingleParams } from '../../types';
 import { getQueryStyles } from './Styles';
 import { useTheme } from '@mui/material';
 import { githubLight } from '@ddietr/codemirror-themes/github-light';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 import { Validator } from './utils';
+import type { CollectionFullObject } from '@server/types';
+import type { SearchSingleParams } from '../../types';
 
 export type SearchInputBoxProps = {
   onChange: (anns_field: string, value: string) => void;

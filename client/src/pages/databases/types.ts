@@ -1,4 +1,4 @@
-import { FieldObject, CollectionObject, PartitionData } from '@server/types';
+import type { FieldObject, CollectionObject, PartitionData } from '@server/types';
 
 export type SearchSingleParams = {
   anns_field: string;

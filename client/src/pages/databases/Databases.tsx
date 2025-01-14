@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import DatabaseTree from '@/pages/databases/tree';
 import { ITab } from '@/components/customTabList/Types';

@@ -3,9 +3,9 @@ import { Typography, Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { CompactDialogProps } from './Types';
 import { SegmentService } from '@/http';
 import { makeStyles } from '@mui/styles';
+import type { CompactDialogProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

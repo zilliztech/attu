@@ -15,7 +15,7 @@ import ConditionGroup from './ConditionGroup';
 import icons from '../icons/Icons';
 import CopyBtn from './CopyButton';
 // import DialogTemplate from '../customDialog/DialogTemplate';
-import { DialogProps } from './Types';
+import type { DialogProps } from './Types';
 
 const AdvancedDialog = (props: DialogProps) => {
   // i18n

@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
-import { FilterProps, ConditionData } from './Types';
 import CustomButton from '../customButton/CustomButton';
+import type { FilterProps, ConditionData } from './Types';
 
 const Filter = forwardRef((props: FilterProps, ref) => {
   const {

@@ -6,8 +6,8 @@ import {
   INDEX_TYPES_ENUM,
 } from '@/consts';
 import { IForm } from '@/hooks';
-import { IndexType } from '@/pages/databases/collections/schema/Types';
-import { FieldObject } from '@server/types';
+import type { IndexType } from '@/pages/databases/collections/schema/Types';
+import type { FieldObject } from '@server/types';
 
 interface IInfo {
   [key: string]: any;

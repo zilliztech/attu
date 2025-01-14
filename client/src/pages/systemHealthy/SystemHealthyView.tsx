@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook, useInterval } from '@/hooks';
-import { PrometheusService } from '@/http';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import {
   LAST_TIME_HEALTHY_THRESHOLD_CPU,
   LAST_TIME_HEALTHY_THRESHOLD_MEMORY,
@@ -105,24 +104,6 @@ const SystemHealthyView = () => {
         : [],
     [prometheusData]
   );
-
-  const updateData = async () => {
-    const curT = new Date().getTime();
-    const result = (await PrometheusService.getHealthyData({
-      start: curT - timeRange.value,
-      end: curT,
-      step: timeRange.step,
-    })) as IPrometheusAllData;
-    setPrometheusData(result);
-  };
-
-  useEffect(() => {
-    updateData();
-  }, [timeRange]);
-
-  useInterval(() => {
-    updateData();
-  }, INTERVAL);
 
   const hasDetailServices = [
     ENodeService.index,

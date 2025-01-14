@@ -1,8 +1,8 @@
 import Tooltip from '@mui/material/Tooltip';
-import { CustomToolTipType } from './Types';
 import { FC } from 'react';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import type { CustomToolTipType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   tooltip: {},

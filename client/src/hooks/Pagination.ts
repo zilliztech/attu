@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { stableSort, getComparator } from '../utils/Sort';
-import { ColDefinitionsType, SortType } from '../components/grid/Types';
+import type { ColDefinitionsType, SortType } from '../components/grid/Types';
 
 export const usePaginationHook = (list: any[]) => {
   const [currentPage, setCurrentPage] = useState(0);

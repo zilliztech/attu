@@ -11,9 +11,9 @@ import InsertDialog from '@/pages/dialogs/insert/Dialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import { MenuItem, Divider } from '@mui/material';
-import { ContextMenu } from './types';
 import { useStyles } from './style';
-import { CollectionObject } from '@server/types';
+import type { ContextMenu } from './types';
+import type { CollectionObject } from '@server/types';
 
 export const TreeContextMenu = (props: {
   onClick: Function;

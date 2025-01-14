@@ -1,5 +1,4 @@
 import { Theme, useTheme } from '@mui/material';
-import { useContext } from 'react';
 import {
   TOPO_HEIGHT,
   TOPO_LINK_LENGTH,
@@ -9,8 +8,6 @@ import {
 import { getIcon } from './getIcon';
 import { ENodeService, ENodeType, INodeTreeStructure } from './Types';
 import clsx from 'clsx';
-import { formatPrometheusAddress } from '@/utils';
-import { prometheusContext } from '@/context';
 import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
@@ -135,40 +132,8 @@ const Topology = ({
   const { rootNode, childrenNodes, rootPos, childrenPos, subChildrenPos } =
     nodesLayout(nodeTree.children, width, height);
 
-  const { prometheusAddress, prometheusInstance, prometheusNamespace } =
-    useContext(prometheusContext);
-  const prometheusInfos = [
-    {
-      label: 'Prometheus Address',
-      value: formatPrometheusAddress(prometheusAddress),
-    },
-    {
-      label: 'Namespace',
-      value: prometheusNamespace,
-    },
-    {
-      label: 'Instance',
-      value: prometheusInstance,
-    },
-  ];
-
   return (
     <div className={classes.root}>
-      <div className={classes.prometheusInfoContainer}>
-        {prometheusInfos.map(prometheusInfo => (
-          <div
-            key={prometheusInfo.value}
-            className={classes.prometheusInfoItem}
-          >
-            <div className={classes.prometheusInfoItemLabel}>
-              {prometheusInfo.label}:
-            </div>
-            <div className={classes.prometheusInfoItemText}>
-              {prometheusInfo.value}
-            </div>
-          </div>
-        ))}
-      </div>
       <svg
         className={classes.svg}
         width={width}

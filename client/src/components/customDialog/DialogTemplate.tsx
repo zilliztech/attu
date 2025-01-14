@@ -6,11 +6,11 @@ import {
   Theme,
   CircularProgress,
 } from '@mui/material';
-import { DialogContainerProps } from './Types';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
 import CodeView from '../code/CodeView';
 import { makeStyles } from '@mui/styles';
+import type { DialogContainerProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

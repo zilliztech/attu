@@ -8,7 +8,6 @@ import { CollectionService } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import icons from '@/components/icons/Icons';
 import EmptyCard from '@/components/cards/EmptyCard';
 import StatusAction from '@/pages/databases/collections/StatusAction';
@@ -25,8 +24,12 @@ import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
-import { CollectionObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import type {
+  ColDefinitionsType,
+  ToolBarConfig,
+} from '@/components/grid/Types';
+import type { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
