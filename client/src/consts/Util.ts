@@ -62,6 +62,14 @@ export const LOGICAL_OPERATORS = [
     value: 'ARRAY_CONTAINS_ANY',
     label: 'ARRAY_CONTAINS_ANY',
   },
+  {
+    value: 'JSON_CONTAINS_ALL',
+    label: 'JSON_CONTAINS_ALL',
+  },
+  {
+    value: 'JSON_CONTAINS_ANY',
+    label: 'JSON_CONTAINS_ANY',
+  },
 ];
 
 export enum FILE_MIME_TYPE {
