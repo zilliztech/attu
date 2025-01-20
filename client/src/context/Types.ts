@@ -73,6 +73,7 @@ export type AuthContextType = {
   setAuthReq: Dispatch<SetStateAction<AuthReq>>;
   clientId: string;
   isManaged: boolean;
+  isServerless: boolean;
   isAuth: boolean;
   logout: (pass?: boolean) => void;
   login: (params: AuthReq) => Promise<AuthObject>;

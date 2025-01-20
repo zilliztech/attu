@@ -11,7 +11,7 @@ export const systemContext = createContext<SystemContextType>({
 
 const { Provider } = systemContext;
 export const SystemProvider = (props: { children: React.ReactNode }) => {
-  const { isAuth } = useContext(authContext);
+  const { isAuth, isServerless } = useContext(authContext);
 
   const [data, setData] = useState<any>({});
 
@@ -20,8 +20,8 @@ export const SystemProvider = (props: { children: React.ReactNode }) => {
       // fetch all data
       const [metrics, users, roles] = await Promise.all([
         MilvusService.getMetrics(),
-        UserService.getUsers(),
-        UserService.getRoles(),
+        !isServerless ? UserService.getUsers() : { usernames: [] },
+        !isServerless ? UserService.getRoles() : { results: [] },
       ]);
 
       // parse data
