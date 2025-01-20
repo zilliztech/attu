@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { dtoValidationMiddleware } from '../middleware/validation';
 import { DatabasesService } from './databases.service';
-import { CreateDatabaseDto } from './dto';
+import { DatabaseNameDto, DatabasePropertiesDto } from './dto';
 import { DatabaseObject } from '../types';
 
 export class DatabasesController {
@@ -22,23 +22,26 @@ export class DatabasesController {
     this.router.get('/', this.listDatabases.bind(this));
     this.router.post(
       '/',
-      dtoValidationMiddleware(CreateDatabaseDto),
+      dtoValidationMiddleware(DatabaseNameDto),
       this.createDatabase.bind(this)
     );
 
-    this.router.get('/:name', this.describeDatabase.bind(this));
-    this.router.delete('/:name', this.dropDatabase.bind(this));
-    this.router.put('/:name/properties', this.alterDatabase.bind(this));
+    this.router.get('/:db_name', this.describeDatabase.bind(this));
+    this.router.delete('/:db_name', this.dropDatabase.bind(this));
+    this.router.put('/:db_name/properties', this.alterDatabase.bind(this));
 
     return this.router;
   }
 
-  async createDatabase(req: Request, res: Response, next: NextFunction) {
-    const createDatabaseData = req.body;
+  async createDatabase(
+    req: Request<{}, {}, DatabaseNameDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const result = await this.databasesService.createDatabase(
         req.clientId,
-        createDatabaseData
+        req.body
       );
       res.send(result);
     } catch (error) {
@@ -64,11 +67,14 @@ export class DatabasesController {
     }
   }
 
-  async dropDatabase(req: Request, res: Response, next: NextFunction) {
-    const db_name = req.params?.name;
+  async dropDatabase(
+    req: Request<DatabaseNameDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const result = await this.databasesService.dropDatabase(req.clientId, {
-        db_name,
+        db_name: req.params.db_name,
       });
       res.send(result);
     } catch (error) {
@@ -76,13 +82,16 @@ export class DatabasesController {
     }
   }
 
-  async describeDatabase(req: Request, res: Response, next: NextFunction) {
-    const db_name = req.params?.name;
+  async describeDatabase(
+    req: Request<DatabaseNameDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const result = await this.databasesService.describeDatabase(
         req.clientId,
         {
-          db_name,
+          db_name: req.params.db_name,
         }
       );
       res.send(result);
@@ -91,12 +100,16 @@ export class DatabasesController {
     }
   }
 
-  async alterDatabase(req: Request, res: Response, next: NextFunction) {
-    const db_name = req.params?.name;
-    const properties = req.body;
+  async alterDatabase(
+    req: Request<DatabaseNameDto, {}, DatabasePropertiesDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { properties } = req.body;
+
     try {
       const result = await this.databasesService.alterDatabase(req.clientId, {
-        db_name,
+        db_name: req.params.db_name,
         properties,
       });
       res.send(result);
