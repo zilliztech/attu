@@ -22,6 +22,7 @@ export const authContext = createContext<AuthContextType>({
   },
   setAuthReq: () => {},
   isManaged: false,
+  isServerless: false,
   isAuth: false,
   login: async () => {
     return { clientId: '', database: '' };
@@ -91,6 +92,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
     window.localStorage.removeItem(MILVUS_CLIENT_ID);
   };
 
+  const isManaged = authReq.address.includes('zilliz');
+  const isServerless = isManaged && authReq.address.includes('serverless');
+
   return (
     <Provider
       value={{
@@ -100,7 +104,8 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         logout,
         clientId,
         isAuth: !!clientId,
-        isManaged: authReq.address.includes('zilliz'),
+        isManaged: isManaged,
+        isServerless:isServerless,
       }}
     >
       {props.children}

@@ -321,6 +321,8 @@ const DatabasesTab = (props: {
   databaseName: string;
   tabClass: string; // tab class
 }) => {
+  // context
+  const { isManaged } = useContext(authContext);
   const { databaseName, tabClass, databasePage } = props;
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -330,12 +332,15 @@ const DatabasesTab = (props: {
       component: <Collections />,
       path: `collections`,
     },
-    {
+  ];
+
+  if (!isManaged) {
+    dbTab.push({
       label: collectionTrans('properties'),
       component: <Properties type="database" target={databaseName} />,
       path: `properties`,
-    },
-  ];
+    });
+  }
 
   const actionDbTab = dbTab.findIndex(t => t.path === databasePage);
 
