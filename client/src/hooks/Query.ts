@@ -2,40 +2,32 @@ import { useState, useRef, useEffect } from 'react';
 import { DataTypeStringEnum, MIN_INT64 } from '@/consts';
 import { CollectionService } from '@/http';
 import type { CollectionFullObject } from '@server/types';
+import { QueryState } from '@/pages/databases/types';
 
 // TODO: refactor this, a little bit messy
 export const useQuery = (params: {
   collection: CollectionFullObject;
-  outputFields: string[];
-  consistencyLevel: string;
   onQueryStart: Function;
   onQueryEnd?: Function;
   onQueryFinally?: Function;
-  initialExpr: string;
+  queryState: QueryState;
+  setQueryState: (state: QueryState) => void;
 }) => {
   // params
-  const {
-    collection,
-    outputFields,
-    onQueryStart,
-    onQueryEnd,
-    onQueryFinally,
-    consistencyLevel,
-    initialExpr,
-  } = params;
+  const { collection, onQueryStart, onQueryEnd, onQueryFinally, queryState } =
+    params;
 
   // states
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
-  const [total, setTotal] = useState<number>(collection.rowCount);
-  const [expr, setExpr] = useState<string>(initialExpr);
+  const [total, setTotal] = useState<number>(0);
   const [queryResult, setQueryResult] = useState<any>({ data: [], latency: 0 });
 
   // build local cache for pk ids
   const pageCache = useRef(new Map());
 
   // get next/previous expression
-  const getPageExpr = (page: number) => {
+  const getPageExpr = (page: number, expr = queryState.expr) => {
     const cache = pageCache.current.get(
       page > currentPage ? currentPage : page
     );
@@ -69,11 +61,12 @@ export const useQuery = (params: {
   // query function
   const query = async (
     page: number = currentPage,
-    consistency_level = consistencyLevel,
-    _outputFields = outputFields
+    consistency_level = queryState.consistencyLevel,
+    _outputFields = queryState.outputFields,
+    expr = queryState.expr
   ) => {
     if (!collection || !collection.loaded) return;
-    const _expr = getPageExpr(page);
+    const _expr = getPageExpr(page, expr);
 
     onQueryStart(_expr);
 
@@ -124,7 +117,10 @@ export const useQuery = (params: {
     }
   };
 
-  const count = async (consistency_level = consistencyLevel) => {
+  const count = async (
+    consistency_level = queryState.consistencyLevel,
+    expr = queryState.expr
+  ) => {
     if (!collection || !collection.loaded) {
       setTotal(collection.rowCount);
       return;
@@ -156,15 +152,23 @@ export const useQuery = (params: {
     } // reset
     reset();
     // get count;
-    count();
+    count(queryState.expr);
 
     // do the query
-    query(currentPage, consistencyLevel, outputFields);
+    query(
+      currentPage,
+      queryState.consistencyLevel,
+      queryState.outputFields,
+      queryState.expr
+    );
   }, [
-    expr,
     pageSize,
-    collection.collection_name,
-    JSON.stringify(outputFields),
+    JSON.stringify([
+      queryState.outputFields,
+      queryState.collection,
+      queryState.consistencyLevel,
+      queryState.expr,
+    ]),
   ]);
 
   return {
@@ -178,10 +182,6 @@ export const useQuery = (params: {
     currentPage,
     // query current data page
     setCurrentPage,
-    // expression to query
-    expr,
-    // expression updater
-    setExpr,
     // query result
     queryResult,
     // query

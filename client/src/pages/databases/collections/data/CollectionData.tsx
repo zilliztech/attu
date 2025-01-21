@@ -50,6 +50,7 @@ const CollectionData = (props: CollectionDataProps) => {
   // UI state
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [selectedData, setSelectedData] = useState<any[]>([]);
+  const [exprInput, setExprInput] = useState<string>(queryState.expr);
 
   // UI functions
   const { setDialog, handleCloseDialog, openSnackBar, setDrawer } =
@@ -78,17 +79,22 @@ const CollectionData = (props: CollectionDataProps) => {
     const currentFilter: any = filterRef.current;
     currentFilter?.getReset();
     // update UI expression
-    setQueryState({ ...queryState, expr: '' });
-    // reset query
-    reset();
+    setExprInput('');
+    setQueryState({
+      ...queryState,
+      expr: '',
+      outputFields: [
+        ...collection.schema.fields,
+        ...collection.schema.dynamicFields,
+      ].map(f => f.name),
+    });
+
     // ensure not loading
     setTableLoading(false);
   };
   const handleFilterSubmit = async (expression: string) => {
     // update UI expression
     setQueryState({ ...queryState, expr: expression });
-    // update expression
-    setExpr(expression);
   };
   const handlePageChange = async (e: any, page: number) => {
     // do the query
@@ -131,15 +137,11 @@ const CollectionData = (props: CollectionDataProps) => {
     queryResult,
     setPageSize,
     setCurrentPage,
-    setExpr,
     query,
     reset,
     count,
-    expr,
   } = useQuery({
     collection,
-    consistencyLevel: queryState.consistencyLevel,
-    outputFields: queryState.outputFields,
     onQueryStart: (expr: string = '') => {
       setTableLoading(true);
       if (expr === '') {
@@ -150,7 +152,8 @@ const CollectionData = (props: CollectionDataProps) => {
     onQueryFinally: () => {
       setTableLoading(false);
     },
-    initialExpr: queryState.expr,
+    queryState: queryState,
+    setQueryState: setQueryState,
   });
 
   const onInsert = async (collectionName: string) => {
@@ -158,7 +161,12 @@ const CollectionData = (props: CollectionDataProps) => {
   };
 
   const onEditEntity = async () => {
-    await query(currentPage, ConsistencyLevelEnum.Strong);
+    await query(
+      currentPage,
+      ConsistencyLevelEnum.Strong,
+      queryState.outputFields,
+      queryState.expr
+    );
   };
 
   // Toolbar settings
@@ -355,6 +363,7 @@ const CollectionData = (props: CollectionDataProps) => {
   useEffect(() => {
     // reset selection
     setSelectedData([]);
+    setExprInput(queryState.expr);
   }, [collection.collection_name]);
 
   return (
@@ -367,15 +376,15 @@ const CollectionData = (props: CollectionDataProps) => {
               <CustomInput
                 type="text"
                 textConfig={{
-                  label: queryState.expr
+                  label: exprInput
                     ? collectionTrans('queryExpression')
                     : collectionTrans('exprPlaceHolder'),
                   key: 'advFilter',
                   className: 'textarea',
                   onChange: (value: string) => {
-                    setQueryState({ ...queryState, expr: value });
+                    setExprInput(value);
                   },
-                  value: queryState.expr,
+                  value: exprInput,
                   disabled: !collection.loaded,
                   variant: 'filled',
                   required: false,
@@ -394,14 +403,9 @@ const CollectionData = (props: CollectionDataProps) => {
                   },
                   onKeyDown: (e: any) => {
                     if (e.key === 'Enter') {
+                      setQueryState({ ...queryState, expr: exprInput });
                       // reset page
                       setCurrentPage(0);
-                      if (expr !== queryState.expr) {
-                        setExpr(queryState.expr);
-                      } else {
-                        // ensure query
-                        query();
-                      }
                       e.preventDefault();
                     }
                   },
@@ -493,12 +497,8 @@ const CollectionData = (props: CollectionDataProps) => {
                 variant="contained"
                 onClick={() => {
                   setCurrentPage(0);
-                  if (expr !== queryState.expr) {
-                    setExpr(queryState.expr);
-                  } else {
-                    // ensure query
-                    query();
-                  }
+                  // set expr
+                  setQueryState({ ...queryState, expr: exprInput });
                 }}
                 disabled={!collection.loaded}
               >
