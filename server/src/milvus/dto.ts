@@ -1,25 +1,49 @@
-import { ArrayMinSize, IsArray, IsOptional, IsString } from "class-validator";
+import {
+  ArrayMinSize,
+  IsArray,
+  IsOptional,
+  IsString,
+  IsNotEmpty,
+  IsBoolean,
+} from 'class-validator';
 
 export class ConnectMilvusDto {
-  @IsString()
+  @IsString({ message: 'address must be a string.' })
+  @IsNotEmpty({ message: 'address is required.' })
   readonly address: string;
 
+  @IsString({ message: 'database must be a string.' })
   @IsOptional()
   readonly database: string;
-}
 
-export class CheckMilvusDto {
-  @IsString()
-  readonly address: string;
+  @IsString({ message: 'username must be a string.' })
+  readonly username: string;
+
+  @IsString({ message: 'password must be a string.' })
+  readonly password: string;
+
+  @IsString({ message: 'token must be a string.' })
+  @IsOptional()
+  readonly token: string;
+
+  @IsBoolean({ message: 'checkHealth must be a boolean.' })
+  @IsOptional()
+  readonly checkHealth: boolean;
+
+  @IsOptional({ message: 'clientId is optional.' })
+  readonly clientId: string;
 }
 
 export class UseDatabaseDto {
-  @IsString()
+  @IsString({ message: 'database name must be a string.' })
+  @IsNotEmpty({ message: 'database name is required.' })
   readonly database: string;
 }
 
 export class FlushDto {
-  @IsArray()
-  @ArrayMinSize(1, { message: "At least need one collection name." })
+  @IsArray({ message: 'collection_names must be an array of strings.' })
+  @ArrayMinSize(1, {
+    message: 'collection_names must contains at least 1 item.',
+  })
   readonly collection_names: string[];
 }
