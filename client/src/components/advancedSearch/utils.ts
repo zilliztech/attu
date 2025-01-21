@@ -55,9 +55,9 @@ export const checkValue = (data: any): boolean => {
   let isLegal = false;
 
   const regInt = /^-?\d+$/;
-  const regFloat = /^-?\d+\.\d+$/;
+  const regNumber = /^-?\d+(\.\d+)?$/;
+  const regNumberInterval = /^\[(-?\d+(\.\d+)?)(,(-?\d+(\.\d+)?))*\]$/;
   const regIntInterval = /^\[-?\d+(,-?\d+)*\]$/;
-  const regFloatInterval = /^\[-?\d+\.\d+(,-?\d+\.\d+)*\]$/;
   const isIn = data.operator === 'in' || data.operator === 'not in';
 
   switch (data.type) {
@@ -74,8 +74,8 @@ export const checkValue = (data: any): boolean => {
     case DataTypeStringEnum.Double:
     case DataTypeStringEnum.FloatVector:
       isLegal = isIn
-        ? regFloatInterval.test(data.value)
-        : regFloat.test(data.value);
+        ? regNumberInterval.test(data.value)
+        : regNumber.test(data.value);
       break;
     case DataTypeStringEnum.Bool:
       const legalValues = ['false', 'true'];
