@@ -40,26 +40,13 @@ export class MilvusController {
     return this.router;
   }
 
-  async connectMilvus(req: Request, res: Response, next: NextFunction) {
-    const {
-      address,
-      username,
-      password,
-      database,
-      token,
-      checkHealth,
-      clientId,
-    } = req.body;
+  async connectMilvus(
+    req: Request<{}, {}, ConnectMilvusDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
-      const result = await this.milvusService.connectMilvus({
-        address,
-        token,
-        username,
-        password,
-        database,
-        checkHealth,
-        clientId,
-      });
+      const result = await this.milvusService.connectMilvus(req.body);
 
       res.send(result);
     } catch (error) {
@@ -67,7 +54,11 @@ export class MilvusController {
     }
   }
 
-  async flush(req: Request, res: Response, next: NextFunction) {
+  async flush(
+    req: Request<{}, {}, FlushDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const collectionNames = req.body;
     try {
       const result = await this.milvusService.flush(
@@ -97,7 +88,11 @@ export class MilvusController {
     res.send(data);
   }
 
-  async useDatabase(req: Request, res: Response, next: NextFunction) {
+  async useDatabase(
+    req: Request<{}, {}, UseDatabaseDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { database } = req.body;
 
     try {

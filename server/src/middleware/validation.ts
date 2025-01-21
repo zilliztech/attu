@@ -1,8 +1,8 @@
-import { RequestHandler } from "express";
-import { plainToClass } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
-import { sanitize } from "class-sanitizer";
-import HttpException from "../exception/HttpException";
+import { RequestHandler } from 'express';
+import { plainToInstance } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
+import { sanitize } from 'class-sanitizer';
+import HttpException from '../exception/HttpException';
 
 /**
  * Only check for req.body
@@ -17,7 +17,7 @@ export const dtoValidationMiddleware = (
   skipMissingProperties = false
 ): RequestHandler => {
   return (req, res, next) => {
-    const dtoObj = plainToClass(type, req.body);
+    const dtoObj = plainToInstance(type, req.body);
     validate(dtoObj, { skipMissingProperties }).then(
       (errors: ValidationError[]) => {
         if (errors.length > 0) {
@@ -25,7 +25,7 @@ export const dtoValidationMiddleware = (
             .map((error: ValidationError) =>
               (Object as any).values(error.constraints)
             )
-            .join(", ");
+            .join(', ');
           next(new HttpException(400, dtoErrors));
         } else {
           // sanitize the object and call the next middleware
