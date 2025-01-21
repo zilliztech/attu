@@ -1,4 +1,8 @@
-import type { FieldObject, CollectionObject, PartitionData } from '@server/types';
+import type {
+  FieldObject,
+  CollectionObject,
+  PartitionData,
+} from '@server/types';
 
 export type SearchSingleParams = {
   anns_field: string;
@@ -57,4 +61,12 @@ export type SearchParams = {
   searchResult: SearchResultView[] | null;
   graphData: GraphData;
   searchLatency: number;
+};
+
+export type QueryState = {
+  collection: CollectionObject;
+  expr: string;
+  consistencyLevel: string;
+  fields: FieldObject[];
+  outputFields: string[];
 };

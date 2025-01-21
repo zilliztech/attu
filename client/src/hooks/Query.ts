@@ -1,36 +1,35 @@
 import { useState, useRef, useEffect } from 'react';
 import { DataTypeStringEnum, MIN_INT64 } from '@/consts';
 import { CollectionService } from '@/http';
-import type { CollectionFullObject, FieldObject } from '@server/types';
+import type { CollectionFullObject } from '@server/types';
 
 // TODO: refactor this, a little bit messy
 export const useQuery = (params: {
   collection: CollectionFullObject;
-  fields: FieldObject[];
+  outputFields: string[];
   consistencyLevel: string;
   onQueryStart: Function;
   onQueryEnd?: Function;
   onQueryFinally?: Function;
+  initialExpr: string;
 }) => {
   // params
   const {
     collection,
-    fields,
+    outputFields,
     onQueryStart,
     onQueryEnd,
     onQueryFinally,
     consistencyLevel,
+    initialExpr,
   } = params;
 
   // states
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(0);
   const [total, setTotal] = useState<number>(collection.rowCount);
-  const [expr, setExpr] = useState<string>('');
+  const [expr, setExpr] = useState<string>(initialExpr);
   const [queryResult, setQueryResult] = useState<any>({ data: [], latency: 0 });
-  const [outputFields, setOutputFields] = useState<string[]>(
-    fields.map(i => i.name) || []
-  );
 
   // build local cache for pk ids
   const pageCache = useRef(new Map());
@@ -159,13 +158,14 @@ export const useQuery = (params: {
     // get count;
     count();
 
-    // update output fields, then query again
-    const newOutputFields = fields.map(i => i.name) || [];
-    setOutputFields(newOutputFields);
-
     // do the query
-    query(currentPage, consistencyLevel, newOutputFields);
-  }, [expr, pageSize, collection.collection_name]);
+    query(currentPage, consistencyLevel, outputFields);
+  }, [
+    expr,
+    pageSize,
+    collection.collection_name,
+    JSON.stringify(outputFields),
+  ]);
 
   return {
     // total query count
@@ -192,9 +192,5 @@ export const useQuery = (params: {
     count,
     // get expression
     getPageExpr,
-    // output fields
-    outputFields,
-    // set output fields
-    setOutputFields,
   };
 };
