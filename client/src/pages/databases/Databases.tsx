@@ -235,6 +235,7 @@ const Databases = () => {
               fields: fields,
               outputFields: fields.map(f => f.name),
               consistencyLevel: ConsistencyLevelEnum.Bounded,
+              tick: 0,
             },
           ];
         });
