@@ -451,17 +451,15 @@ const CollectionData = (props: CollectionDataProps) => {
             <div className="right">
               <CustomMultiSelector
                 className={classes.outputs}
-                options={queryState.fields
-                  .filter(f => !f.is_function_output)
-                  .map(f => {
-                    return {
-                      label:
-                        f.name === DYNAMIC_FIELD
-                          ? searchTrans('dynamicFields')
-                          : f.name,
-                      value: f.name,
-                    };
-                  })}
+                options={queryState.fields.map(f => {
+                  return {
+                    label:
+                      f.name === DYNAMIC_FIELD
+                        ? searchTrans('dynamicFields')
+                        : f.name,
+                    value: f.name,
+                  };
+                })}
                 values={queryState.outputFields}
                 renderValue={selected => (
                   <span>{`${(selected as string[]).length} ${
