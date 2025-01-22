@@ -69,4 +69,5 @@ export type QueryState = {
   consistencyLevel: string;
   fields: FieldObject[];
   outputFields: string[];
+  tick: number;
 };

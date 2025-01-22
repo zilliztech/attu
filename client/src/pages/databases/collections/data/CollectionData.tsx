@@ -87,6 +87,7 @@ const CollectionData = (props: CollectionDataProps) => {
         ...collection.schema.fields,
         ...collection.schema.dynamicFields,
       ].map(f => f.name),
+      tick: queryState.tick + 1,
     });
 
     // ensure not loading
@@ -160,13 +161,19 @@ const CollectionData = (props: CollectionDataProps) => {
     await fetchCollection(collectionName);
   };
 
-  const onEditEntity = async () => {
-    await query(
-      currentPage,
-      ConsistencyLevelEnum.Strong,
-      queryState.outputFields,
-      queryState.expr
-    );
+  const onEditEntity = async (id: string) => {
+    // deselect all
+    setSelectedData([]);
+    const newExpr = `${collection.schema.primaryField.name} == ${id}`;
+    // update local expr
+    setExprInput(newExpr);
+    // set expr with id
+    setQueryState({
+      ...queryState,
+      consistencyLevel: ConsistencyLevelEnum.Strong,
+      expr: newExpr,
+      tick: queryState.tick + 1,
+    });
   };
 
   // Toolbar settings
@@ -403,7 +410,11 @@ const CollectionData = (props: CollectionDataProps) => {
                   },
                   onKeyDown: (e: any) => {
                     if (e.key === 'Enter') {
-                      setQueryState({ ...queryState, expr: exprInput });
+                      setQueryState({
+                        ...queryState,
+                        expr: exprInput,
+                        tick: queryState.tick + 1,
+                      });
                       // reset page
                       setCurrentPage(0);
                       e.preventDefault();
@@ -498,7 +509,11 @@ const CollectionData = (props: CollectionDataProps) => {
                 onClick={() => {
                   setCurrentPage(0);
                   // set expr
-                  setQueryState({ ...queryState, expr: exprInput });
+                  setQueryState({
+                    ...queryState,
+                    expr: exprInput,
+                    tick: queryState.tick + 1,
+                  });
                 }}
                 disabled={!collection.loaded}
               >

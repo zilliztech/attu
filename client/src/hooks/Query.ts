@@ -168,6 +168,7 @@ export const useQuery = (params: {
       queryState.collection,
       queryState.consistencyLevel,
       queryState.expr,
+      queryState.tick,
     ]),
   ]);
 
