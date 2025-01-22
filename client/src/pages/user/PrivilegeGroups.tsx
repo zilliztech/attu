@@ -200,7 +200,7 @@ const PrivilegeGroups = () => {
   return (
     <div className={classes.wrapper}>
       <AttuGrid
-        toolbarConfigs={toolbarConfigs}
+        toolbarConfigs={[]}
         colDefinitions={colDefinitions}
         rows={result}
         rowCount={total}
@@ -216,6 +216,7 @@ const PrivilegeGroups = () => {
         order={order}
         orderBy={orderBy}
         rowHeight={49}
+        openCheckBox={false}
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(userTrans('privilegeGroups'))}
       />
