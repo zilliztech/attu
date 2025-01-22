@@ -7,7 +7,11 @@ import {
   CreateRoleDto,
   AssignUserRoleDto,
   UnassignUserRoleDto,
+  UpdatePrivilegeGroupDto,
+  CreatePrivilegeGroupDto,
+  PrivilegeToRoleDto,
 } from './dto';
+import { OperateRolePrivilegeReq } from '@zilliz/milvus2-sdk-node';
 
 export class UserController {
   private router: Router;
@@ -45,6 +49,7 @@ export class UserController {
 
     // role
     this.router.get('/rbac', this.rbac.bind(this));
+    this.router.get('/privilegeGroups', this.allPrivilegeGroups.bind(this));
     this.router.get('/roles', this.getRoles.bind(this));
     this.router.post(
       '/roles',
@@ -56,6 +61,27 @@ export class UserController {
     this.router.put(
       '/roles/:roleName/updatePrivileges',
       this.updateRolePrivileges.bind(this)
+    );
+
+    // privilege group
+    this.router.get('/privilege-groups', this.getPrivilegeGrps.bind(this));
+    this.router.get(
+      '/privilege-groups/:group_name',
+      this.getPrivilegeGrp.bind(this)
+    );
+    this.router.post(
+      '/privilege-groups',
+      dtoValidationMiddleware(CreatePrivilegeGroupDto),
+      this.createPrivilegeGrp.bind(this)
+    );
+    this.router.put(
+      '/privilege-groups/:group_name',
+      dtoValidationMiddleware(UpdatePrivilegeGroupDto),
+      this.updatePrivilegeGrp.bind(this)
+    );
+    this.router.delete(
+      '/privilege-groups/:group_name',
+      this.deletePrivilegeGrp.bind(this)
     );
 
     return this.router;
@@ -71,7 +97,11 @@ export class UserController {
     }
   }
 
-  async createUsers(req: Request, res: Response, next: NextFunction) {
+  async createUsers(
+    req: Request<{}, {}, CreateUserDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username, password } = req.body;
     try {
       const result = await this.userService.createUser(req.clientId, {
@@ -84,7 +114,11 @@ export class UserController {
     }
   }
 
-  async updateUsers(req: Request, res: Response, next: NextFunction) {
+  async updateUsers(
+    req: Request<{}, {}, UpdateUserDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username, oldPassword, newPassword } = req.body;
     try {
       const result = await this.userService.updateUser(req.clientId, {
@@ -98,7 +132,11 @@ export class UserController {
     }
   }
 
-  async deleteUser(req: Request, res: Response, next: NextFunction) {
+  async deleteUser(
+    req: Request<{ username: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username } = req.params;
     try {
       const result = await this.userService.deleteUser(req.clientId, {
@@ -127,7 +165,11 @@ export class UserController {
     }
   }
 
-  async createRole(req: Request, res: Response, next: NextFunction) {
+  async createRole(
+    req: Request<{}, {}, CreateRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { roleName } = req.body;
     try {
       const result = await this.userService.createRole(req.clientId, {
@@ -139,7 +181,11 @@ export class UserController {
     }
   }
 
-  async deleteRole(req: Request, res: Response, next: NextFunction) {
+  async deleteRole(
+    req: Request<{ roleName: string }, {}, { force?: boolean }>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { roleName } = req.params;
     const { force } = req.body;
 
@@ -158,9 +204,13 @@ export class UserController {
     }
   }
 
-  async updateUserRole(req: Request, res: Response, next: NextFunction) {
-    const { roles } = req.body;
+  async updateUserRole(
+    req: Request<{ username: string }, {}, AssignUserRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username } = req.params;
+    const { roles } = req.body;
 
     const results = [];
 
@@ -197,9 +247,13 @@ export class UserController {
     }
   }
 
-  async unassignUserRole(req: Request, res: Response, next: NextFunction) {
-    const { roleName } = req.body;
+  async unassignUserRole(
+    req: Request<{ username: string }, {}, UnassignUserRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { username } = req.params;
+    const { roleName } = req.body;
 
     try {
       const result = await this.userService.unassignUserRole(req.clientId, {
@@ -221,7 +275,20 @@ export class UserController {
     }
   }
 
-  async listGrant(req: Request, res: Response, next: NextFunction) {
+  async allPrivilegeGroups(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.userService.getAllPrivilegeGroups(req.clientId);
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async listGrant(
+    req: Request<{ roleName: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
     const { roleName } = req.params;
     try {
       const result = await this.userService.listGrants(req.clientId, {
@@ -233,7 +300,15 @@ export class UserController {
     }
   }
 
-  async updateRolePrivileges(req: Request, res: Response, next: NextFunction) {
+  async updateRolePrivileges(
+    req: Request<
+      { roleName: string },
+      {},
+      { privileges: OperateRolePrivilegeReq[] }
+    >,
+    res: Response,
+    next: NextFunction
+  ) {
     const { privileges } = req.body;
     const { roleName } = req.params;
 
@@ -255,6 +330,146 @@ export class UserController {
       }
 
       res.send(results);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createPrivilegeGrp(
+    req: Request<{}, {}, CreatePrivilegeGroupDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { group_name, privileges } = req.body;
+    try {
+      // create the group
+      await this.userService.createPrivilegeGroup(req.clientId, {
+        group_name,
+      });
+
+      // add privileges to the group
+      const result = await this.userService.addPrivilegeToGroup(req.clientId, {
+        group_name,
+        priviliges: privileges,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deletePrivilegeGrp(
+    req: Request<{ group_name: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { group_name } = req.params;
+    try {
+      const result = await this.userService.deletePrivilegeGroup(req.clientId, {
+        group_name,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPrivilegeGrp(
+    req: Request<{ group_name: string }>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { group_name } = req.params;
+    try {
+      const result = await this.userService.getPrivilegeGroup(req.clientId, {
+        group_name,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPrivilegeGrps(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.userService.getPrivilegeGroups(req.clientId);
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updatePrivilegeGrp(
+    req: Request<{ group_name: string }, {}, UpdatePrivilegeGroupDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    // get privilege group
+    const { group_name } = req.params;
+    const { privileges } = req.body;
+    // get existing group
+    const theGroup = await this.userService.getPrivilegeGroup(req.clientId, {
+      group_name: group_name,
+    });
+
+    // if no group found, return error
+    if (!theGroup) {
+      return next(new Error('Group not found'));
+    }
+
+    try {
+      // remove all privileges from the group
+      await this.userService.removePrivilegeFromGroup(req.clientId, {
+        group_name: group_name,
+        priviliges: theGroup.privileges.map(p => p.name),
+      });
+
+      // add new privileges to the group
+      const result = await this.userService.addPrivilegeToGroup(req.clientId, {
+        group_name: group_name,
+        priviliges: privileges,
+      });
+
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async assignRolePrivilege(
+    req: Request<{}, {}, PrivilegeToRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { role, collection, privilege } = req.body;
+    try {
+      const result = await this.userService.grantPrivilegeV2(req.clientId, {
+        role: role,
+        collection_name: collection || '*',
+        db_name: req.db_name,
+        privilege: privilege,
+      });
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async revokeRolePrivilege(
+    req: Request<{}, PrivilegeToRoleDto>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { role, collection, privilege } = req.body;
+    try {
+      const result = await this.userService.revokePrivilegeV2(req.clientId, {
+        role: role,
+        collection_name: collection || '*',
+        db_name: req.db_name,
+        privilege: privilege,
+      });
+      res.send(result);
     } catch (error) {
       next(error);
     }

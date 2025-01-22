@@ -6,6 +6,7 @@ import { ALL_ROUTER_TYPES } from '@/router/consts';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import User from './User';
 import Roles from './Roles';
+import PrivilegeGroups from './PrivilegeGroups';
 import { makeStyles } from '@mui/styles';
 import type { ITab } from '@/components/customTabList/Types';
 
@@ -51,6 +52,11 @@ const Users = () => {
       label: userTrans('roles'),
       component: <Roles />,
       path: 'roles',
+    },
+    {
+      label: userTrans('privilegeGroups'),
+      component: <PrivilegeGroups />,
+      path: 'privilege-groups',
     },
   ];
 

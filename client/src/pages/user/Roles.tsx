@@ -3,14 +3,18 @@ import { Theme, Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import { rootContext, dataContext } from '@/context';
-import { useNavigationHook } from '@/hooks';
+import { useNavigationHook, usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import UpdateRoleDialog from './UpdateRoleDialog';
 import { makeStyles } from '@mui/styles';
-import type { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
+import type {
+  ColDefinitionsType,
+  ToolBarConfig,
+} from '@/components/grid/Types';
 import type { DeleteRoleParams, RoleData } from './Types';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -25,6 +29,7 @@ const Roles = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
   const classes = useStyles();
   const { database } = useContext(dataContext);
+  const [loading, setLoading] = useState(false);
 
   const [roles, setRoles] = useState<RoleData[]>([]);
   const [selectedRole, setSelectedRole] = useState<RoleData[]>([]);
@@ -198,25 +203,42 @@ const Roles = () => {
     fetchRoles();
   }, [database]);
 
+  const {
+    pageSize,
+    handlePageSize,
+    currentPage,
+    handleCurrentPage,
+    total,
+    data: result,
+    order,
+    orderBy,
+    handleGridSort,
+  } = usePaginationHook(roles || []);
+
+  const handlePageChange = (e: any, page: number) => {
+    handleCurrentPage(page);
+  };
+
   return (
     <div className={classes.wrapper}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
-        rows={roles}
-        rowCount={roles.length}
+        rows={result}
+        rowCount={total}
         primaryKey="name"
-        showPagination={false}
+        showPagination={true}
         selected={selectedRole}
         setSelected={handleSelectChange}
-        // page={currentPage}
-        // onPageChange={handlePageChange}
-        // rowsPerPage={pageSize}
-        // setRowsPerPage={handlePageSize}
-        // isLoading={loading}
-        // order={order}
-        // orderBy={orderBy}
-        // handleSort={handleGridSort}
+        page={currentPage}
+        onPageChange={handlePageChange}
+        rowsPerPage={pageSize}
+        setRowsPerPage={handlePageSize}
+        isLoading={loading}
+        order={order}
+        orderBy={orderBy}
+        handleSort={handleGridSort}
+        labelDisplayedRows={getLabelDisplayedRows(userTrans('roles'))}
       />
     </div>
   );

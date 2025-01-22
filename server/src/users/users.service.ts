@@ -11,6 +11,8 @@ import {
   SelectUserReq,
   ListGrantsReq,
   OperateRolePrivilegeReq,
+  GrantPrivilegeV2Request,
+  RevokePrivilegeV2Request,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import {
@@ -127,6 +129,40 @@ export class UserService {
     };
   }
 
+  async getAllPrivilegeGroups(clientId: string) {
+    const { milvusClient } = clientCache.get(clientId);
+    const privilegeGrps = await milvusClient.listPrivilegeGroups();
+
+    throwErrorFromSDK(privilegeGrps.status);
+
+    const defaultGrp = [
+      'ClusterAdmin',
+      'ClusterReadOnly',
+      'ClusterReadWrite',
+
+      'DatabaseAdmin',
+      'DatabaseReadOnly',
+      'DatabaseReadWrite',
+
+      'CollectionAdmin',
+      'CollectionReadOnly',
+      'CollectionReadWrite',
+    ];
+
+    // only show default groups
+    const groups = privilegeGrps.privilege_groups.filter(
+      g => defaultGrp.indexOf(g.group_name) !== -1
+    );
+
+    // sort groups by the order in defaultGrp
+    groups.sort(
+      (a, b) =>
+        defaultGrp.indexOf(a.group_name) - defaultGrp.indexOf(b.group_name)
+    );
+
+    return groups;
+  }
+
   async listGrants(clientId: string, data: ListGrantsReq) {
     const { milvusClient } = clientCache.get(clientId);
     const res = await milvusClient.listGrants(data);
@@ -166,5 +202,104 @@ export class UserService {
         roleName: res.role.name,
       });
     }
+  }
+
+  // create privilege group
+  async createPrivilegeGroup(clientId: string, data: { group_name: string }) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.createPrivilegeGroup({
+      group_name: data.group_name,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // get privilege groups
+  async getPrivilegeGroups(clientId: string) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.listPrivilegeGroups();
+
+    throwErrorFromSDK(res.status);
+
+    return res;
+  }
+
+  // get privilege groups and find the one with the name
+  async getPrivilegeGroup(clientId: string, data: { group_name: string }) {
+    const res = await this.getPrivilegeGroups(clientId);
+
+    const group = res.privilege_groups.find(
+      g => g.group_name === data.group_name
+    );
+
+    throwErrorFromSDK(res.status);
+    return group;
+  }
+
+  // delete privilege group
+  async deletePrivilegeGroup(clientId: string, data: { group_name: string }) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.dropPrivilegeGroup({
+      group_name: data.group_name,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // update privilege group
+  async addPrivilegeToGroup(
+    clientId: string,
+    data: { group_name: string; priviliges: string[] }
+  ) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.addPrivilegesToGroup({
+      group_name: data.group_name,
+      privileges: data.priviliges,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // remove privilege from group
+  async removePrivilegeFromGroup(
+    clientId: string,
+    data: { group_name: string; priviliges: string[] }
+  ) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.removePrivilegesFromGroup({
+      group_name: data.group_name,
+      privileges: data.priviliges,
+    });
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // grantPrivilegeV2
+  async grantPrivilegeV2(clientId: string, data: GrantPrivilegeV2Request) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.grantPrivilegeV2(data);
+
+    throwErrorFromSDK(res);
+    return res;
+  }
+
+  // revokePrivilegeV2
+  async revokePrivilegeV2(clientId: string, data: RevokePrivilegeV2Request) {
+    const { milvusClient } = clientCache.get(clientId);
+
+    const res = await milvusClient.revokePrivilegeV2(data);
+
+    throwErrorFromSDK(res);
+    return res;
   }
 }

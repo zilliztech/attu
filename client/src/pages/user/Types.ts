@@ -58,6 +58,11 @@ export interface CreateRoleParams {
   privileges: Privilege[];
 }
 
+export interface CreatePrivilegeGroupParams {
+  group_name: string;
+  privileges: string[];
+}
+
 export interface RoleData {
   name: string;
   privileges: Privilege[];
@@ -91,6 +96,13 @@ export interface PrivilegeOptionsProps {
   object: RBACObject;
   objectName?: string;
   title: string;
+}
+
+export interface PrivilegeGrpOptionsProps {
+  options: string[];
+  selection: string[];
+  onChange: (selection: string[]) => void;
+  group_name: string;
 }
 
 export type RBACOptions = {

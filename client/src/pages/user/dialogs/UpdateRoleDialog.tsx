@@ -6,15 +6,15 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { UserService } from '@/http';
-import PrivilegeOptions from './PrivilegeOptions';
 import { makeStyles } from '@mui/styles';
+import PrivilegeOptions from './PrivilegeOptions';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type {
   CreateRoleProps,
   CreateRoleParams,
   PrivilegeOptionsProps,
   RBACOptions,
-} from './Types';
+} from '../Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

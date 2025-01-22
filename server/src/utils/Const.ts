@@ -83,6 +83,11 @@ export enum RbacObjects {
 
 // RBAC: collection privileges
 export enum CollectionPrivileges {
+  CreateCollection = 'CreateCollection',
+  DropCollection = 'DropCollection',
+  DescribeCollection = 'DescribeCollection',
+  ShowCollections = 'ShowCollections',
+  RenameCollection = 'RenameCollection',
   CreateIndex = 'CreateIndex',
   DropIndex = 'DropIndex',
   IndexDetail = 'IndexDetail',
@@ -105,6 +110,19 @@ export enum CollectionPrivileges {
   DropPartition = 'DropPartition',
   ShowPartitions = 'ShowPartitions',
   HasPartition = 'HasPartition',
+  FlushAll = 'FlushAll',
+  CreateAlias = 'CreateAlias',
+  DropAlias = 'DropAlias',
+  DescribeAlias = 'DescribeAlias',
+  ListAliases = 'ListAliases',
+}
+
+// RBAC: global privileges
+export enum DatabasePrivileges {
+  ListDatabases = 'ListDatabases',
+  DescribeDatabase = 'DescribeDatabase',
+  CreateDatabase = 'CreateDatabase',
+  DropDatabase = 'DropDatabase',
 }
 
 // RBAC: global privileges
@@ -135,17 +153,39 @@ export enum GlobalPrivileges {
   ListAliases = 'ListAliases',
 }
 
+// RBAC: resource group privileges
+export enum ResourceGroupPrivileges {
+  CreateResourceGroup = 'CreateResourceGroup',
+  DropResourceGroup = 'DropResourceGroup',
+  DescribeResourceGroup = 'DescribeResourceGroup',
+  ListResourceGroups = 'ListResourceGroups',
+  UpdateResourceGroups = 'UpdateResourceGroups',
+  TransferNode = 'TransferNode',
+  TransferReplica = 'TransferReplica',
+}
+
 // RBAC: user privileges
 export enum UserPrivileges {
   UpdateUser = 'UpdateUser',
   SelectUser = 'SelectUser',
+  SelectOwnership = 'SelectOwnership',
+  CreateOwnership = 'CreateOwnership',
+  DropOwnership = 'DropOwnership',
+  ManageOwnership = 'ManageOwnership',
+  CreatePrivilegeGroup = 'CreatePrivilegeGroup',
+  DropPrivilegeGroup = 'DropPrivilegeGroup',
+  ListPrivilegeGroups = 'ListPrivilegeGroups',
+  OperatePrivilegeGroup = 'OperatePrivilegeGroup',
+  RestoreRBAC = 'RestoreRBAC',
+  BackupRBAC = 'BackupRBAC',
 }
 
 // RBAC: all privileges
 export const Privileges = {
   ...CollectionPrivileges,
+  ...DatabasePrivileges,
+  ...ResourceGroupPrivileges,
   ...UserPrivileges,
-  ...GlobalPrivileges,
 };
 
 export enum LOADING_STATE {

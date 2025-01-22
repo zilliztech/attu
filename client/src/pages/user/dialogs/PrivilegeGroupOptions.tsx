@@ -6,8 +6,8 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { FC } from 'react';
+import { PrivilegeGrpOptionsProps } from '../Types';
 import { makeStyles } from '@mui/styles';
-import type { Privilege, PrivilegeOptionsProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   checkBox: {
@@ -21,22 +21,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const PrivilegeOptions: FC<PrivilegeOptionsProps> = ({
+const PrivilegeGroupOptions: FC<PrivilegeGrpOptionsProps> = ({
   options,
   selection,
   onChange,
-  title,
-  roleName,
-  object,
-  objectName = '*',
 }) => {
   const classes = useStyles();
 
   return (
     <>
-      <Typography variant="h6" component="h6" className={classes.subTitle}>
-        {title}
-      </Typography>
       <FormGroup row className={classes.formGrp}>
         {options.map((r: string) => (
           <FormControlLabel
@@ -49,17 +42,11 @@ const PrivilegeOptions: FC<PrivilegeOptionsProps> = ({
                   let newSelection = [...selection];
 
                   if (!checked) {
-                    newSelection = newSelection.filter(
-                      (n: Privilege) => n.privilegeName !== r
-                    );
+                    newSelection = newSelection.filter((n: string) => n !== r);
                   } else {
-                    newSelection.push({
-                      privilegeName: r,
-                      object: object,
-                      objectName: objectName,
-                      roleName: roleName,
-                    });
+                    newSelection.push(r);
                   }
+
                   onChange(newSelection);
                 }}
               />
@@ -67,10 +54,7 @@ const PrivilegeOptions: FC<PrivilegeOptionsProps> = ({
             key={r}
             label={r}
             value={r}
-            checked={
-              selection.filter((s: Privilege) => s.privilegeName === r).length >
-              0
-            }
+            checked={selection.filter(s => s === r).length > 0 ? true : false}
             className={classes.checkBox}
           />
         ))}
@@ -79,4 +63,4 @@ const PrivilegeOptions: FC<PrivilegeOptionsProps> = ({
   );
 };
 
-export default PrivilegeOptions;
+export default PrivilegeGroupOptions;

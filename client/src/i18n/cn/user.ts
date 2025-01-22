@@ -1,3 +1,5 @@
+import PrivilegeGroups from '@/pages/user/PrivilegeGroups';
+
 const userTrans = {
   createTitle: '创建用户',
   updateTitle: '更新Milvus用户',
@@ -31,6 +33,15 @@ const userTrans = {
   objectUser: '用户',
 
   forceDelLabel: '强制删除，撤销所有权限。',
+
+  // Privilege Groups
+  privilegeGroups: '权限组',
+  privilegeGroup: '权限组',
+  name: '名称',
+  editPrivilegeGroup: '编辑权限组',
+  deletePrivilegGroupWarning: '您正在尝试删除权限组，请确保没有角色与其绑定。',
+  createPrivilegeGroupTitle: '创建权限组',
+  updatePrivilegeGroupTitle: '更新权限组',
 };
 
 export default userTrans;

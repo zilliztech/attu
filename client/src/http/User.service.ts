@@ -1,5 +1,10 @@
 import BaseModel from './BaseModel';
-import type { Users, UsersWithRoles } from '@server/types';
+import type {
+  Users,
+  UsersWithRoles,
+  PrivilegeGroup,
+  PrivilegeGroupsRes,
+} from '@server/types';
 import type {
   CreateUserParams,
   DeleteUserParams,
@@ -8,6 +13,7 @@ import type {
   DeleteRoleParams,
   AssignRoleParams,
   UnassignRoleParams,
+  CreatePrivilegeGroupParams,
 } from '../pages/user/Types';
 
 export class UserService extends BaseModel {
@@ -71,6 +77,14 @@ export class UserService extends BaseModel {
   }
 
   // get RBAC info
+  static getAllPrivilegeGroups() {
+    return super.search({
+      path: `/users/privilegeGroups`,
+      params: {},
+    }) as Promise<PrivilegeGroup[]>;
+  }
+
+  // get RBAC info
   static getRBAC() {
     return super.search({
       path: `/users/rbac`,
@@ -82,5 +96,27 @@ export class UserService extends BaseModel {
       UserPrivileges: Record<string, unknown>;
       Privileges: Record<string, unknown>;
     }>;
+  }
+  // get privilege groups
+  static getPrivilegeGroups() {
+    return super.search<PrivilegeGroupsRes>({
+      path: `/users/privilege-groups`,
+      params: {},
+    });
+  }
+  // create privilege group
+  static createPrivilegeGroup(data: CreatePrivilegeGroupParams) {
+    return super.create({ path: `/users/privilege-groups`, data });
+  }
+  // update privilege group
+  static updatePrivilegeGroup(data: CreatePrivilegeGroupParams) {
+    return super.update({
+      path: `/users/privilege-groups/${data.group_name}`,
+      data,
+    });
+  }
+  // delete privilege group
+  static deletePrivilegeGroup(data: { group_name: string }) {
+    return super.delete({ path: `/users/privilege-groups/${data.group_name}` });
   }
 }

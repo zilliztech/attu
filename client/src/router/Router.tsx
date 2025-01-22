@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { authContext } from '@/context';
 import Databases from '@/pages/databases/Databases';
 import Connect from '@/pages/connect/Connect';
-import Users from '@/pages/user/Users';
+import Users from '@/pages/user/UsersAndRoles';
 import Index from '@/pages/index';
 import Search from '@/pages/search/VectorSearch';
 import System from '@/pages/system/SystemView';
@@ -34,6 +34,7 @@ const RouterComponent = () => {
             <>
               <Route path="users" element={<Users />} />
               <Route path="roles" element={<Users />} />
+              <Route path="privilege-groups" element={<Users />} />
               <Route path="system" element={<System />} />
             </>
           )}

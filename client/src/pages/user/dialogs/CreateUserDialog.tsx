@@ -12,7 +12,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { makeStyles } from '@mui/styles';
-import type { CreateUserProps, CreateUserParams } from './Types';
+import type { CreateUserProps, CreateUserParams } from '../Types';
 import type { Option as RoleOption } from '@/components/customSelector/Types';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 
