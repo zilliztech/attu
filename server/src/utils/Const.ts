@@ -125,6 +125,34 @@ export enum DatabasePrivileges {
   DropDatabase = 'DropDatabase',
 }
 
+// RBAC: global privileges
+export enum GlobalPrivileges {
+  All = '*',
+  CreateCollection = 'CreateCollection',
+  DropCollection = 'DropCollection',
+  DescribeCollection = 'DescribeCollection',
+  ShowCollections = 'ShowCollections',
+  RenameCollection = 'RenameCollection',
+  FlushAll = 'FlushAll',
+  CreateOwnership = 'CreateOwnership',
+  DropOwnership = 'DropOwnership',
+  SelectOwnership = 'SelectOwnership',
+  ManageOwnership = 'ManageOwnership',
+  CreateResourceGroup = 'CreateResourceGroup',
+  DropResourceGroup = 'DropResourceGroup',
+  DescribeResourceGroup = 'DescribeResourceGroup',
+  ListResourceGroups = 'ListResourceGroups',
+  TransferNode = 'TransferNode',
+  TransferReplica = 'TransferReplica',
+  CreateDatabase = 'CreateDatabase',
+  ListDatabases = 'ListDatabases',
+  DropDatabase = 'DropDatabase',
+  CreateAlias = 'CreateAlias',
+  DropAlias = 'DropAlias',
+  DescribeAlias = 'DescribeAlias',
+  ListAliases = 'ListAliases',
+}
+
 // RBAC: resource group privileges
 export enum ResourceGroupPrivileges {
   CreateResourceGroup = 'CreateResourceGroup',

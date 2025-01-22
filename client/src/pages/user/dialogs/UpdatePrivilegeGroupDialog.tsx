@@ -82,7 +82,7 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
   const [rbacOptions, setRbacOptions] = useState<PrivilegeGroup[]>([]);
 
   const fetchRBAC = async () => {
-    const rbacOptions = await UserService.getRBAC();
+    const rbacOptions = await UserService.getAllPrivilegeGroups();
 
     setRbacOptions(rbacOptions);
   };

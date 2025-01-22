@@ -49,6 +49,7 @@ export class UserController {
 
     // role
     this.router.get('/rbac', this.rbac.bind(this));
+    this.router.get('/privilegeGroups', this.allPrivilegeGroups.bind(this));
     this.router.get('/roles', this.getRoles.bind(this));
     this.router.post(
       '/roles',
@@ -64,7 +65,10 @@ export class UserController {
 
     // privilege group
     this.router.get('/privilege-groups', this.getPrivilegeGrps.bind(this));
-    this.router.get('/privilege-groups/:group_name', this.getPrivilegeGrp.bind(this));
+    this.router.get(
+      '/privilege-groups/:group_name',
+      this.getPrivilegeGrp.bind(this)
+    );
     this.router.post(
       '/privilege-groups',
       dtoValidationMiddleware(CreatePrivilegeGroupDto),
@@ -264,7 +268,16 @@ export class UserController {
 
   async rbac(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getRBAC(req.clientId);
+      const result = await this.userService.getRBAC();
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async allPrivilegeGroups(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.userService.getAllPrivilegeGroups(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);

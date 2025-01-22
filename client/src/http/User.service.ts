@@ -77,13 +77,26 @@ export class UserService extends BaseModel {
   }
 
   // get RBAC info
-  static getRBAC() {
+  static getAllPrivilegeGroups() {
     return super.search({
-      path: `/users/rbac`,
+      path: `/users/privilegeGroups`,
       params: {},
     }) as Promise<PrivilegeGroup[]>;
   }
 
+  // get RBAC info
+  static getRBAC() {
+    return super.search({
+      path: `/users/rbac`,
+      params: {},
+    }) as Promise<{
+      GlobalPrivileges: Record<string, unknown>;
+      CollectionPrivileges: Record<string, unknown>;
+      RbacObjects: Record<string, unknown>;
+      UserPrivileges: Record<string, unknown>;
+      Privileges: Record<string, unknown>;
+    }>;
+  }
   // get privilege groups
   static getPrivilegeGroups() {
     return super.search<PrivilegeGroupsRes>({

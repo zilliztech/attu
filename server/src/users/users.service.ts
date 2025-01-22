@@ -15,7 +15,13 @@ import {
   RevokePrivilegeV2Request,
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
-import { Privileges } from '../utils';
+import {
+  Privileges,
+  GlobalPrivileges,
+  CollectionPrivileges,
+  UserPrivileges,
+  RbacObjects,
+} from '../utils';
 import { clientCache } from '../app';
 
 export class UserService {
@@ -113,7 +119,17 @@ export class UserService {
     return res;
   }
 
-  async getRBAC(clientId: string) {
+  async getRBAC() {
+    return {
+      Privileges,
+      GlobalPrivileges,
+      CollectionPrivileges,
+      UserPrivileges,
+      RbacObjects,
+    };
+  }
+
+  async getAllPrivilegeGroups(clientId: string) {
     const { milvusClient } = clientCache.get(clientId);
     const privilegeGrps = await milvusClient.listPrivilegeGroups();
 
