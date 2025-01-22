@@ -3,7 +3,7 @@ import { UserService, MilvusService } from '@/http';
 import { parseJson, getNode, getSystemConfigs } from '@/utils';
 import { MILVUS_NODE_TYPE } from '@/consts';
 import { authContext } from '@/context';
-import { SystemContextType } from './Types';
+import type { SystemContextType } from './Types';
 
 export const systemContext = createContext<SystemContextType>({
   data: {},
@@ -11,7 +11,7 @@ export const systemContext = createContext<SystemContextType>({
 
 const { Provider } = systemContext;
 export const SystemProvider = (props: { children: React.ReactNode }) => {
-  const { isAuth } = useContext(authContext);
+  const { isAuth, isServerless } = useContext(authContext);
 
   const [data, setData] = useState<any>({});
 
@@ -20,8 +20,8 @@ export const SystemProvider = (props: { children: React.ReactNode }) => {
       // fetch all data
       const [metrics, users, roles] = await Promise.all([
         MilvusService.getMetrics(),
-        UserService.getUsers(),
-        UserService.getRoles(),
+        !isServerless ? UserService.getUsers() : { usernames: [] },
+        !isServerless ? UserService.getRoles() : { results: [] },
       ]);
 
       // parse data

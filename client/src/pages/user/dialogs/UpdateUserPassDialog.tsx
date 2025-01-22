@@ -3,11 +3,11 @@ import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
-import { ITextfieldConfig } from '@/components/customInput/Types';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { UpdateUserParams, UpdateUserProps } from '../Types';
 import { makeStyles } from '@mui/styles';
+import type { UpdateUserParams, UpdateUserProps } from '../Types';
+import type { ITextfieldConfig } from '@/components/customInput/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

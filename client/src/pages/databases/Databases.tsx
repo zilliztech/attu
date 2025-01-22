@@ -3,10 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import DatabaseTree from '@/pages/databases/tree';
-import { ITab } from '@/components/customTabList/Types';
 import Partitions from './collections/partitions/Partitions';
 import Schema from './collections/schema/Schema';
 import Data from './collections/data/CollectionData';
@@ -17,9 +16,10 @@ import { dataContext, authContext } from '@/context';
 import Collections from './collections/Collections';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import { ConsistencyLevelEnum, DYNAMIC_FIELD } from '@/consts';
-import { SearchParams } from './types';
-import { CollectionObject, CollectionFullObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import type { SearchParams, QueryState } from './types';
+import type { CollectionObject, CollectionFullObject } from '@server/types';
+import type { ITab } from '@/components/customTabList/Types';
 
 const DEFAULT_TREE_WIDTH = 230;
 
@@ -86,9 +86,8 @@ const Databases = () => {
     useContext(dataContext);
 
   // UI state
-  const [searchParams, setSearchParams] = useState<SearchParams[]>(
-    [] as SearchParams[]
-  );
+  const [searchParams, setSearchParams] = useState<SearchParams[]>([]);
+  const [queryState, setQueryState] = useState<QueryState[]>([]);
 
   // tree ref
   const [isDragging, setIsDragging] = useState(false);
@@ -148,7 +147,7 @@ const Databases = () => {
     setUIPref({ tree: { width: DEFAULT_TREE_WIDTH } });
   };
 
-  // init search params
+  // init search params and query state
   useEffect(() => {
     collections.forEach(c => {
       // find search params for the collection
@@ -218,6 +217,41 @@ const Databases = () => {
           });
         });
       }
+
+      // find query state for the collection
+      const query = queryState.find(
+        q => q.collection.collection_name === c.collection_name
+      );
+
+      // if query state not found, and the schema is ready, create new query state
+      if (!query && c.schema) {
+        setQueryState(prevState => {
+          const fields = [...c.schema.fields, ...c.schema.dynamicFields];
+          return [
+            ...prevState,
+            {
+              collection: c,
+              expr: '',
+              fields: fields,
+              outputFields: fields.map(f => f.name),
+              consistencyLevel: ConsistencyLevelEnum.Bounded,
+              tick: 0,
+            },
+          ];
+        });
+      } else {
+        // update collection
+        setQueryState(prevState => {
+          return prevState.map(q => {
+            if (q.collection.collection_name === c.collection_name) {
+              // update collection
+              const collection = c;
+              return { ...q, collection };
+            }
+            return q;
+          });
+        });
+      }
     });
 
     // delete search params for the collection that is not in the collections
@@ -225,6 +259,15 @@ const Databases = () => {
       return prevParams.filter(s =>
         collections.find(
           c => c.collection_name === s.collection.collection_name
+        )
+      );
+    });
+
+    // delete query state for the collection that is not in the collections
+    setQueryState(prevState => {
+      return prevState.filter(q =>
+        collections.find(
+          c => c.collection_name === q.collection.collection_name
         )
       );
     });
@@ -257,6 +300,17 @@ const Databases = () => {
           return { ...params };
         }
         return s;
+      });
+    });
+  };
+
+  const setCollectionQueryState = (state: QueryState) => {
+    setQueryState(prevState => {
+      return prevState.map(q => {
+        if (q.collection.collection_name === state.collection.collection_name) {
+          return { ...state };
+        }
+        return q;
       });
     });
   };
@@ -308,6 +362,12 @@ const Databases = () => {
             )!
           }
           setSearchParams={setCollectionSearchParams}
+          queryState={
+            queryState.find(
+              q => q.collection.collection_name === collectionName
+            )!
+          }
+          setQueryState={setCollectionQueryState}
           collections={collections}
         />
       )}
@@ -321,6 +381,8 @@ const DatabasesTab = (props: {
   databaseName: string;
   tabClass: string; // tab class
 }) => {
+  // context
+  const { isManaged } = useContext(authContext);
   const { databaseName, tabClass, databasePage } = props;
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -330,12 +392,15 @@ const DatabasesTab = (props: {
       component: <Collections />,
       path: `collections`,
     },
-    {
+  ];
+
+  if (!isManaged) {
+    dbTab.push({
       label: collectionTrans('properties'),
       component: <Properties type="database" target={databaseName} />,
       path: `properties`,
-    },
-  ];
+    });
+  }
 
   const actionDbTab = dbTab.findIndex(t => t.path === databasePage);
 
@@ -356,6 +421,8 @@ const CollectionTabs = (props: {
   collections: CollectionObject[]; // collections
   searchParams: SearchParams; // search params
   setSearchParams: (params: SearchParams) => void; // set search params
+  queryState: QueryState; // query state
+  setQueryState: (state: QueryState) => void; // set query state
 }) => {
   // props
   const {
@@ -365,6 +432,8 @@ const CollectionTabs = (props: {
     collections,
     searchParams,
     setSearchParams,
+    queryState,
+    setQueryState,
   } = props;
 
   // context
@@ -397,9 +466,7 @@ const CollectionTabs = (props: {
     },
     {
       label: collectionTrans('dataTab'),
-      component: (
-        <Data collections={collections} collectionName={collectionName} />
-      ),
+      component: <Data queryState={queryState} setQueryState={setQueryState} />,
       path: `data`,
     },
     {

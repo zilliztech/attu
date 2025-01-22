@@ -12,7 +12,7 @@ import {
 import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { SearchParamInputConfig, SearchParamsProps } from './Types';
+import type { SearchParamInputConfig, SearchParamsProps } from './Types';
 import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({

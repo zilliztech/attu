@@ -2,9 +2,9 @@ import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { CollectionObject } from '@server/types';
 import { Property } from '@/consts';
 import { DatabaseService } from '@/http';
+import type { CollectionObject } from '@server/types';
 
 export interface EditPropertyProps {
   target: CollectionObject | string;

@@ -1,7 +1,8 @@
 import { Option } from '@/components/customSelector/Types';
 import { FILE_MIME_TYPE } from '@/consts';
-import { PartitionData, CollectionObject } from '@server/types';
+import type { PartitionData, CollectionObject } from '@server/types';
 import { SchemaObject } from '@server/types';
+import { InsertStatusEnum } from './consts';
 
 export interface InsertContentProps {
   // optional on partition page since its collection is fixed
@@ -20,20 +21,6 @@ export interface InsertContentProps {
   defaultSelectedPartition: string;
 
   onInsert: Function;
-}
-
-export enum InsertStepperEnum {
-  import,
-  preview,
-  status,
-}
-
-export enum InsertStatusEnum {
-  // init means not begin yet
-  init = 'init',
-  loading = 'loading',
-  success = 'success',
-  error = 'error',
 }
 
 export interface InsertImportProps {

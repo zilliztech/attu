@@ -6,7 +6,7 @@ import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
 import ConditionItem from './Condition';
 import icons from '../icons/Icons';
 import CustomButton from '../customButton/CustomButton';
-import {
+import type {
   ConditionGroupProps,
   BinaryLogicalOpProps,
   AddConditionProps,
@@ -219,11 +219,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     '& button.Mui-selected': {
       backgroundColor: theme.palette.background.default,
-      color:  theme.palette.text.primary
+      color: theme.palette.text.primary,
     },
     '& button.Mui-selected:hover': {
       backgroundColor: theme.palette.background.default,
-      color:  theme.palette.text.primary
+      color: theme.palette.text.primary,
     },
   },
 }));

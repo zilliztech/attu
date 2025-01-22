@@ -7,7 +7,7 @@ import { useNavigationHook, usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import UpdatePrivilegeGroupDialog from './dialogs/UpdatePrivilegeGroupDialog';
 import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';

@@ -2,10 +2,10 @@ import { Theme, Typography } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomTabList from '../customTabList/CustomTabList';
-import { ITab } from '../customTabList/Types';
 import CodeBlock from './CodeBlock';
 import { CodeViewProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { ITab } from '../customTabList/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

@@ -159,8 +159,6 @@ export class MilvusService {
     if (clientCache.has(clientId)) {
       const { milvusClient } = clientCache.get(clientId);
 
-      console.info('Deleting client', clientId);
-
       const res = await milvusClient.closeConnection();
 
       // clear crons

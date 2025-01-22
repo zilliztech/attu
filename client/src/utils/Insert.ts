@@ -1,6 +1,6 @@
-import { FieldObject } from '@server/types';
 import { generateId } from './Common';
 import { DataTypeEnum } from '@/consts'
+import type { FieldObject } from '@server/types';
 
 /**
  * function to convert uploaded csv to AttuGrid component accepted data type

@@ -1,7 +1,7 @@
-import { LoadSampleParam } from '@/pages/dialogs/Types';
-import { InsertDataParam, DeleteEntitiesReq } from '@/pages/databases/collections/Types';
-import { VectorSearchParam } from '@/types/SearchTypes';
 import BaseModel from './BaseModel';
+import type { LoadSampleParam } from '@/pages/dialogs/Types';
+import type { InsertDataParam, DeleteEntitiesReq } from '@/pages/databases/collections/Types';
+import type { VectorSearchParam } from '@/types/SearchTypes';
 
 export class DataService extends BaseModel {
   static importSample(collectionName: string, param: LoadSampleParam) {

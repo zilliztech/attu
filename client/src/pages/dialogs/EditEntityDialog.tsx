@@ -10,12 +10,12 @@ import { linter } from '@codemirror/lint';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { CollectionFullObject } from '@server/types';
 import { DataService } from '@/http';
 import { DYNAMIC_FIELD } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import { githubLight } from '@ddietr/codemirror-themes/github-light';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
+import type { CollectionFullObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   code: {
@@ -23,15 +23,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflow: 'auto',
   },
   tip: {
-    fontSize: 12,
-    marginBottom: 8,
+    fontSize: 14,
+    marginBottom: 16,
+    fontWeight: 'bold',
+    color: theme.palette.warning.main,
   },
 }));
 
 type EditEntityDialogProps = {
   data: { [key: string]: any };
   collection: CollectionFullObject;
-  cb?: () => void;
+  cb?: (id: string) => void;
 };
 
 // json linter for cm
@@ -71,7 +73,7 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
     sortedData = { ...sortedData, ...data[DYNAMIC_FIELD] };
   }
 
-  const originalData = JSON.stringify(sortedData, null, 4);
+  const originalData = JSON.stringify(sortedData, null, 2);
 
   // create editor
   useEffect(() => {
@@ -134,11 +136,14 @@ const EditEntityDialog: FC<EditEntityDialogProps> = props => {
 
   // handle confirm
   const handleConfirm = async () => {
-    await DataService.upsert(collection.collection_name, {
+    const result = (await DataService.upsert(collection.collection_name, {
       fields_data: [JSON.parse(editor.current?.state.doc.toString()!)],
-    });
+    })) as any;
 
-    props.cb && props.cb();
+    const idField = result.IDs.id_field;
+    const id = result.IDs[idField].data;
+
+    props.cb && props.cb(id[0]);
     handleCloseDialog();
   };
 

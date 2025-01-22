@@ -4,8 +4,8 @@ import CopyButton from '../advancedSearch/CopyButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015, github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { FC } from 'react';
-import { CodeBlockProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { CodeBlockProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

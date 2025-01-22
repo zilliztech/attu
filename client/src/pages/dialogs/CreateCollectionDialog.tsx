@@ -1,4 +1,4 @@
-import { Theme, Checkbox, FormControlLabel } from '@mui/material';
+import { Theme, Checkbox } from '@mui/material';
 import { FC, useContext, useMemo, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -16,13 +16,13 @@ import {
   FunctionType,
 } from '@/consts';
 import CreateFields from './create/CreateFields';
-import {
+import { CONSISTENCY_LEVEL_OPTIONS } from './create/Constants';
+import { makeStyles } from '@mui/styles';
+import type {
   CollectionCreateParam,
   CollectionCreateProps,
   CreateField,
 } from '../databases/collections/Types';
-import { CONSISTENCY_LEVEL_OPTIONS } from './create/Constants';
-import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialog: {

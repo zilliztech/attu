@@ -14,10 +14,10 @@ import {
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext } from '@/context';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/Types';
 import CreateUser from './dialogs/CreateUserDialog';
 import UpdateUserRole from './dialogs/UpdateUserRole';
 import UpdateUser from './dialogs/UpdateUserPassDialog';
+import { ALL_ROUTER_TYPES } from '@/router/consts';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({

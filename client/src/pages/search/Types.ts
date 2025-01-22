@@ -1,7 +1,7 @@
-import { Option } from '@/components/customSelector/Types';
 import { searchKeywordsType } from '@/consts';
 import { DataTypeEnum } from '@/consts';
-import { FieldObject, KeyValuePair } from '@server/types';
+import type { FieldObject, KeyValuePair } from '@server/types';
+import type { Option } from '@/components/customSelector/Types';
 
 export interface SearchParamsProps {
   // default index type is FLAT

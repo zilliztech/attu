@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { DataService } from '@/http';
-import { CollectionObject } from '@server/types';
+import type { CollectionObject } from '@server/types';
 
 export interface EmptyDataProps {
   collection: CollectionObject;

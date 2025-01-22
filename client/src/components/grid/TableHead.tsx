@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import React from 'react';
-import { TableHeadType } from './Types';
 import {
   TableHead,
   TableRow,
@@ -11,6 +10,7 @@ import {
   Theme,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import type { TableHeadType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   visuallyHidden: {

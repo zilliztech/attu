@@ -1,5 +1,5 @@
 import BaseModel from './BaseModel';
-import { DatabaseObject } from '@server/types';
+import type { DatabaseObject } from '@server/types';
 
 // request types
 export interface CreateDatabaseParams {
@@ -39,9 +39,10 @@ export class DatabaseService extends BaseModel {
   }
 
   static setProperty(data: AlterDatabaseRequest) {
+    const { db_name, ...properties } = data;
     return super.update({
-      path: `/databases/${data.db_name}/properties`,
-      data: data.properties,
+      path: `/databases/${db_name}/properties`,
+      data: properties,
     });
   }
 }

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useTheme } from '@mui/material';
-import { ProgressProps } from './Types';
 import { makeStyles } from '@mui/styles';
+import type { ProgressProps } from './Types';
 
 const getStyles = makeStyles(() => ({
   root: {

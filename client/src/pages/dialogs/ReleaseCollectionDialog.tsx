@@ -3,8 +3,8 @@ import { Typography, Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { rootContext, dataContext } from '@/context';
-import { CollectionObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import type { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

@@ -6,9 +6,9 @@ import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
-import { ITextfieldConfig } from '@/components/customInput/Types';
-import { CollectionObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import type { ITextfieldConfig } from '@/components/customInput/Types';
+import type { CollectionObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {

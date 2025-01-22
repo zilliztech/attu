@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
-import { KeyValuePair } from '@server/types';
+import type { KeyValuePair } from '@server/types';
 
 export const copyToCommand = (
   value: string,

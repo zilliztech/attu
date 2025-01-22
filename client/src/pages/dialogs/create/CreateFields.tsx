@@ -27,11 +27,7 @@ import {
   VECTOR_FIELDS_OPTIONS,
   ANALYZER_OPTIONS,
 } from './Constants';
-import {
-  CreateFieldsProps,
-  CreateFieldType,
-  FieldType,
-} from '../../databases/collections/Types';
+
 import { DataTypeEnum, VectorTypes } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,
@@ -42,6 +38,11 @@ import {
 import { makeStyles } from '@mui/styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import EditAnalyzerDialog from '@/pages/dialogs/EditAnalyzerDialog';
+import type {
+  CreateFieldsProps,
+  CreateFieldType,
+  FieldType,
+} from '../../databases/collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {

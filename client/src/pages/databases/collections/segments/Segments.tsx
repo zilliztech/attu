@@ -5,14 +5,14 @@ import { SegmentService } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import { rootContext } from '@/context';
 import AttuGrid from '@/components/grid/Grid';
-import { ColDefinitionsType } from '@/components/grid/Types';
-import { ToolBarConfig } from '@/components/grid/Types';
 import CustomToolBar from '@/components/grid/ToolBar';
 import CompactDialog from '@/pages/dialogs/CompactDialog';
 import FlushDialog from '@/pages/dialogs/FlushDialog';
 import { getQueryStyles } from '../data/Styles';
-import { Segment } from './Types';
 import { getLabelDisplayedRows } from '../../../search/Utils';
+import type { ColDefinitionsType } from '@/components/grid/Types';
+import type { ToolBarConfig } from '@/components/grid/Types';
+import type { Segment } from './Types';
 
 const Segments = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();

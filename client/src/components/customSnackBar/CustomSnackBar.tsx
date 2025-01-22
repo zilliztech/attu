@@ -1,9 +1,9 @@
 import { forwardRef, FC } from 'react';
-import { CustomSnackBarType } from './Types';
 import MuiAlert from '@mui/material/Alert';
 import { Snackbar, Theme, AlertProps } from '@mui/material';
 import Slide, { SlideProps } from '@mui/material/Slide';
 import { makeStyles } from '@mui/styles';
+import type { CustomSnackBarType } from './Types';
 
 // if we need to use slide component
 // snackbar content must use forwardRef to wrapper it

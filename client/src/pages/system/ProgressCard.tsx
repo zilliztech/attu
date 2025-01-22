@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import BaseCard from './BaseCard';
 import Progress from './Progress';
 import { getByteString } from '@/utils';
-import { ProgressCardProps } from './Types';
+import type { ProgressCardProps } from './Types';
 
 const color1 = '#06F3AF';
 const color2 = '#635DCE';

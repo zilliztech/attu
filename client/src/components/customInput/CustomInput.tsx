@@ -14,7 +14,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import Icons from '../icons/Icons';
 import { ReactElement } from 'react';
-import {
+import type {
   IAdornmentConfig,
   IIconConfig,
   ITextfieldConfig,

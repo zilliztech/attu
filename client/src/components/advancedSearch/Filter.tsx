@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
-import { FilterProps, ConditionData } from './Types';
 import CustomButton from '../customButton/CustomButton';
+import type { FilterProps, ConditionData } from './Types';
 
 const Filter = forwardRef((props: FilterProps, ref) => {
   const {
@@ -103,7 +103,10 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       if (op === 'ARRAY_CONTAINS_ALL' || op === 'ARRAY_CONTAINS_ANY') {
         newExpr = `${op}(${n}, ${value})`;
       }
-
+      // rewrite expression if the op is JSON_CONTAINS_ANY/JSON_CONTAINS_ANY
+      if (op === 'JSON_CONTAINS_ALL' || op === 'JSON_CONTAINS_ANY') {
+        newExpr = `${op}(${n}, ${value})`;
+      }
       return `${prev}${prev && !prev.endsWith('|| ') ? ' && ' : ''}${newExpr}`;
     }, '');
     func(expression);

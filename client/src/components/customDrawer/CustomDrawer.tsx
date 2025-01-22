@@ -1,6 +1,5 @@
-// CustomDrawer.tsx
-import React, { useContext } from 'react';
-import { Drawer, Box, Typography, Button } from '@mui/material';
+import { useContext } from 'react';
+import { Drawer, Box, Button } from '@mui/material';
 import { rootContext } from '@/context';
 
 const CustomDrawer = () => {

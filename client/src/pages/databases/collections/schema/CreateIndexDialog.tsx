@@ -9,7 +9,6 @@ import {
   INDEX_TYPES_ENUM,
   DataTypeEnum,
   DataTypeStringEnum,
-  VectorTypesString,
 } from '@/consts';
 import { useFormValidation } from '@/hooks';
 import {
@@ -19,8 +18,8 @@ import {
   isVectorType,
 } from '@/utils';
 import CreateForm from './CreateForm';
-import { IndexType, IndexExtraParam } from './Types';
-import { FieldObject } from '@server/types';
+import type { IndexType, IndexExtraParam } from './Types';
+import type { FieldObject } from '@server/types';
 
 const CreateIndex = (props: {
   collectionName: string;

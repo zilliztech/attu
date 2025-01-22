@@ -7,12 +7,7 @@ import Header from '@/components/layout/Header';
 import NavMenu from '@/components/menu/NavMenu';
 import { NavMenuItem } from '@/components/menu/Types';
 import icons from '@/components/icons/Icons';
-import {
-  authContext,
-  rootContext,
-  prometheusContext,
-  dataContext,
-} from '@/context';
+import { authContext, rootContext, dataContext } from '@/context';
 import Overview from '@/pages/home/Home';
 import { makeStyles } from '@mui/styles';
 
@@ -48,7 +43,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Index() {
   const navigate = useNavigate();
   const { isAuth, isManaged } = useContext(authContext);
-  const { isPrometheusReady } = useContext(prometheusContext);
   const { database } = useContext(dataContext);
   const { versionInfo } = useContext(rootContext);
   const { t: navTrans } = useTranslation('nav');
@@ -107,8 +101,7 @@ function Index() {
       {
         icon: icons.navSystem,
         label: navTrans('system'),
-        onClick: () =>
-          isPrometheusReady ? navigate('/system_healthy') : navigate('/system'),
+        onClick: () => navigate('/system'),
       }
     );
   }

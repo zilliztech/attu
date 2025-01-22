@@ -9,11 +9,11 @@ import EditPropertyDialog from '@/pages/dialogs/EditPropertyDialog';
 import ResetPropertyDialog from '@/pages/dialogs/ResetPropertyDialog';
 import { rootContext } from '@/context';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import { CollectionFullObject, KeyValuePair } from '@server/types';
 import { formatNumber } from '@/utils';
 import { makeStyles } from '@mui/styles';
 import { DatabaseService } from '@/http';
 import { databaseDefaults, collectionDefaults, Property } from '@/consts';
+import type { CollectionFullObject, KeyValuePair } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {

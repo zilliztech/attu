@@ -1,4 +1,11 @@
-import {
+import BaseModel from './BaseModel';
+import type {
+  Users,
+  UsersWithRoles,
+  PrivilegeGroup,
+  PrivilegeGroupsRes,
+} from '@server/types';
+import type {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
@@ -8,13 +15,6 @@ import {
   UnassignRoleParams,
   CreatePrivilegeGroupParams,
 } from '../pages/user/Types';
-import BaseModel from './BaseModel';
-import {
-  Users,
-  UsersWithRoles,
-  PrivilegeGroupsRes,
-  PrivilegeGroup,
-} from '@server/types';
 
 export class UserService extends BaseModel {
   // get user data

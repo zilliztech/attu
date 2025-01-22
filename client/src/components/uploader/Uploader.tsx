@@ -2,9 +2,9 @@ import { Theme } from '@mui/material';
 import { FC, useContext, useRef } from 'react';
 import { rootContext } from '@/context';
 import CustomButton from '../customButton/CustomButton';
-import { UploaderProps } from './Types';
 import { FILE_MIME_TYPE } from '@/consts';
 import { makeStyles } from '@mui/styles';
+import type { UploaderProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   btn: {},

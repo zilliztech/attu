@@ -7,10 +7,10 @@ import icons from '@/components/icons/Icons';
 import CustomButton from '@/components/customButton/CustomButton';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, authContext } from '@/context';
-import { DatabaseObject } from '@server/types';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import { CREATE_DB } from './Home';
 import { makeStyles } from '@mui/styles';
+import type { DatabaseObject } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -101,7 +101,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   isActive = false,
 }) => {
   // context
-  const { isManaged } = useContext(authContext);
+  const { isManaged, isServerless } = useContext(authContext);
   const { setDialog, openSnackBar, handleCloseDialog } =
     useContext(rootContext);
 
@@ -150,6 +150,11 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
       <section
         className={`${wrapperClass} ${classes.wrapper} ${classes.create}`}
         onClick={() => {
+          if (isManaged) {
+            // go to https://cloud.zilliz.com/orgs/
+            window.open('https://cloud.zilliz.com/', '_blank');
+            return;
+          }
           setDialog({
             open: true,
             type: 'custom',
@@ -201,7 +206,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
               </>
             )}
           </div>
-          {database.name !== 'default' && (
+          {database.name !== 'default' && !isServerless && (
             <CustomButton
               className={classes.delIcon}
               tooltip={`${btnTrans('drop')} ${dbTrans('database')}`}

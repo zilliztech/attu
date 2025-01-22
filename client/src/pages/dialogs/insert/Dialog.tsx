@@ -12,7 +12,6 @@ import { parse } from 'papaparse';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import icons from '@/components/icons/Icons';
-import { Option } from '@/components/customSelector/Types';
 import { PartitionService } from '@/http';
 import { rootContext } from '@/context';
 import { combineHeadsAndData } from '@/utils';
@@ -20,14 +19,12 @@ import { FILE_MIME_TYPE } from '@/consts';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
 import InsertStatus from './Status';
-import {
-  InsertContentProps,
-  InsertStatusEnum,
-  InsertStepperEnum,
-} from './Types';
-import { InsertDataParam } from '@/pages/databases/collections/Types';
+import { InsertStatusEnum, InsertStepperEnum } from './consts';
 import { DataService } from '@/http';
 import { makeStyles } from '@mui/styles';
+import type { InsertContentProps } from './Types';
+import type { Option } from '@/components/customSelector/Types';
+import type { InsertDataParam } from '@/pages/databases/collections/Types';
 
 const getStyles = makeStyles((theme: Theme) => ({
   icon: {

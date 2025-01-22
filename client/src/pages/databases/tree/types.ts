@@ -1,5 +1,5 @@
-import { CollectionObject, DatabaseObject } from '@server/types';
 import { Params } from 'react-router-dom';
+import type { CollectionObject, DatabaseObject } from '@server/types';
 
 export type TreeNodeType = 'db' | 'collection' | 'partition' | 'segment';
 export type TreeNodeObject = CollectionObject | DatabaseObject | null;
