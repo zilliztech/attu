@@ -3,6 +3,7 @@ const dialogTrans = {
   deleteTipAction: 'Type',
   deleteTipPurpose: 'to confirm.',
   deleteTitle: `Drop {{type}}`,
+  deleteEntityTitle: `Delete Entity`,
   renameTitle: `Rename {{type}}`,
   releaseTitle: `Release {{type}}`,
   duplicateTitle: `Duplicate {{type}}`,

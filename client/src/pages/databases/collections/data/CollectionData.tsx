@@ -107,27 +107,14 @@ const CollectionData = (props: CollectionDataProps) => {
     setSelectedData(value);
   };
   const onDelete = async () => {
-    // reset query
-    reset();
-    count(ConsistencyLevelEnum.Strong);
-    await query(0, ConsistencyLevelEnum.Strong);
-  };
-  const handleDelete = async () => {
-    // call delete api
-    await DataService.deleteEntities(collection.collection_name, {
-      expr: `${collection!.schema.primaryField.name} in [${selectedData
-        .map(v =>
-          collection!.schema.primaryField.data_type ===
-          DataTypeStringEnum.VarChar
-            ? `"${v[collection!.schema.primaryField.name]}"`
-            : v[collection!.schema.primaryField.name]
-        )
-        .join(',')}]`,
-    });
-    handleCloseDialog();
-    openSnackBar(successTrans('delete', { name: collectionTrans('entities') }));
+    // clear selection
     setSelectedData([]);
-    await onDelete();
+    // reset();
+    reset();
+    // update count
+    count(ConsistencyLevelEnum.Strong);
+    // update query
+    query(0, ConsistencyLevelEnum.Strong);
   };
 
   // Query hook
@@ -342,12 +329,32 @@ const CollectionData = (props: CollectionDataProps) => {
           params: {
             component: (
               <DeleteTemplate
-                label={btnTrans('drop')}
-                title={dialogTrans('deleteTitle', {
-                  type: collectionTrans('entities'),
-                })}
+                label={btnTrans('delete')}
+                title={dialogTrans('deleteEntityTitle')}
                 text={collectionTrans('deleteDataWarning')}
-                handleDelete={handleDelete}
+                handleDelete={async () => {
+                  // call delete api
+                  await DataService.deleteEntities(collection.collection_name, {
+                    expr: `${
+                      collection!.schema.primaryField.name
+                    } in [${selectedData
+                      .map(v =>
+                        collection!.schema.primaryField.data_type ===
+                        DataTypeStringEnum.VarChar
+                          ? `"${v[collection!.schema.primaryField.name]}"`
+                          : v[collection!.schema.primaryField.name]
+                      )
+                      .join(',')}]`,
+                  });
+                  handleCloseDialog();
+                  openSnackBar(
+                    successTrans('delete', {
+                      name: collectionTrans('entities'),
+                    })
+                  );
+                  setSelectedData([]);
+                  await onDelete();
+                }}
               />
             ),
           },
@@ -357,7 +364,7 @@ const CollectionData = (props: CollectionDataProps) => {
       icon: 'delete',
       tooltip: btnTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteDisabledTooltip'),
-      disabled: () => selectedData.length === 0,
+      disabled: () => !selectedData?.length,
     },
   ];
 
