@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'; // Add useEffect
+import { useState, useEffect } from 'react';
 import { Theme } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
@@ -16,7 +16,7 @@ export type DBOption = {
 };
 
 export type RolePrivileges = {
-  [key: string]: CollectionOption;
+  [key: string]: CollectionOption[];
 };
 
 interface DBCollectionsSelectorProps {
@@ -45,22 +45,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function DBCollectionsSelector(
   props: DBCollectionsSelectorProps
 ) {
-  // styles
   const classes = useStyles();
-
-  // i18n
   const { t: searchTrans } = useTranslation('search');
   const { t: userTrans } = useTranslation('user');
 
-  // props
   const {
-    selectedDB = { name: '', value: '' }, // Default value for selectedDB
+    selectedDB = { name: '', value: '' },
     setSelectedDB,
-    selectedCollections = {}, // Default value for selectedCollections
+    selectedCollections = {},
     setSelectedCollections,
   } = props;
 
-  // state
   const [openCollectionOpen, setCollectionOpen] = useState(false);
   const [dbOptions, setDBOptions] = useState<readonly DBOption[]>([]);
   const [openDbOpen, setDatabaseOpen] = useState(false);
@@ -69,11 +64,9 @@ export default function DBCollectionsSelector(
   >([]);
   const [loading, setLoading] = useState(false);
 
-  // const
   const ALL_DB = { name: userTrans('allDatabases'), value: '*' };
   const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
 
-  // Fetch DB options when the DB selector is opened
   const handleDBsOpen = () => {
     setDatabaseOpen(true);
     setLoading(true);
@@ -95,7 +88,6 @@ export default function DBCollectionsSelector(
     })();
   };
 
-  // Fetch collection options when the collection selector is opened or when selectedDB changes
   const fetchCollections = async () => {
     setLoading(true);
     try {
@@ -111,7 +103,6 @@ export default function DBCollectionsSelector(
 
         options.unshift(ALL_COLLECTIONS);
 
-        // Update collection options
         setCollectionOptions(options);
       }
     } catch (err) {
@@ -121,17 +112,23 @@ export default function DBCollectionsSelector(
     }
   };
 
-  // Automatically fetch collections when selectedDB changes
   useEffect(() => {
     if (selectedDB && selectedDB.value) {
       fetchCollections();
     }
-  }, [selectedDB]); // Add selectedDB as a dependency
+  }, [selectedDB]);
 
   const handleCollectionsOpen = () => {
     setCollectionOpen(true);
-    fetchCollections(); // Fetch collections when the selector is opened
+    fetchCollections();
   };
+
+  // Filter out invalid values from selectedCollections[selectedDB.value]
+  const validSelectedCollections = (
+    selectedCollections[selectedDB.value] || []
+  ).filter(selected =>
+    collectionOptions.some(option => option.value === selected.value)
+  );
 
   return (
     <div className={classes.root}>
@@ -182,6 +179,7 @@ export default function DBCollectionsSelector(
 
       <Autocomplete
         className={classes.selectorCollection}
+        multiple
         open={openCollectionOpen}
         limitTags={2}
         color="primary"
@@ -196,14 +194,10 @@ export default function DBCollectionsSelector(
             ...selectedCollections,
             [selectedDB.value]: value,
           });
+
           setCollectionOpen(false);
         }}
-        value={
-          collectionOptions.find(
-            option =>
-              option.value === selectedCollections[selectedDB.value]?.value
-          ) || null
-        } // Ensure the value exists in the options
+        value={validSelectedCollections} // Use filtered valid values
         isOptionEqualToValue={(option, value) => {
           return option && value && option.value === value.value;
         }}
