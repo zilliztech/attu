@@ -41,7 +41,7 @@ const userTrans = {
   createPrivilegeGroupTitle: '创建权限组',
   updatePrivilegeGroupTitle: '更新权限组',
   allCollections: '所有集合',
-  allDatabases: '所有数据库',
+  allDatabases: '所有数据库及所有集合',
 
   collections: '集合',
   databases: '数据库',

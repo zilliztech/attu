@@ -16,7 +16,7 @@ import type {
   PrivilegeOptionsProps,
   RBACOptions,
 } from '../Types';
-import type { DBOption, CollectionOption } from './DBCollectionSelector';
+import type { DBOption, RolePrivileges } from './DBCollectionSelector';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -57,9 +57,8 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
     name: 'default',
     value: 'default',
   });
-  const [selectedCollections, setSelectedCollections] = useState<{
-    [key: string]: CollectionOption[];
-  }>({});
+  const [selectedCollections, setSelectedCollections] =
+    useState<RolePrivileges>({});
 
   const fetchRBAC = async () => {
     const rbacOptions = await UserService.getRBAC();
