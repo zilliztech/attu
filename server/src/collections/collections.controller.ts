@@ -161,7 +161,7 @@ export class CollectionController {
 
   async getCollectionNames(req: Request, res: Response, next: NextFunction) {
     try {
-      const db_name = req.db_name;
+      const db_name = req.query?.db_name;
       const request = {} as any;
 
       if (db_name) {

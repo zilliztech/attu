@@ -1,5 +1,3 @@
-import { create } from "domain";
-
 const userTrans = {
   createTitle: 'Create User',
   updateTitle: 'Update Milvus User',
@@ -44,6 +42,11 @@ const userTrans = {
     'You are trying to drop the privilege group, please make sure no role is bound to it.',
   createPrivilegeGroupTitle: 'Create Privilege Group',
   updatePrivilegeGroupTitle: 'Update Privilege Group',
+  allCollections: 'All Collections',
+  allDatabases: 'All Databases',
+
+  collections: 'Collections',
+  databases: 'Databases',
 };
 
 export default userTrans;
