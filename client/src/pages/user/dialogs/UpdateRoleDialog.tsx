@@ -8,6 +8,7 @@ import { formatForm } from '@/utils';
 import { UserService } from '@/http';
 import { makeStyles } from '@mui/styles';
 import PrivilegeOptions from './PrivilegeOptions';
+import CollectionsSelector from './CollectionsSelector';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type {
   CreateRoleProps,
@@ -15,6 +16,7 @@ import type {
   PrivilegeOptionsProps,
   RBACOptions,
 } from '../Types';
+import type { CollectionOption } from './CollectionsSelector';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -39,9 +41,11 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   handleClose,
   role = { name: '', privileges: [] },
 }) => {
+  // i18n
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
+  // UI states
   const [rbacOptions, setRbacOptions] = useState<RBACOptions>({
     GlobalPrivileges: {},
     CollectionPrivileges: {},
@@ -49,6 +53,9 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
     UserPrivileges: {},
     Privileges: {},
   });
+  const [selectedCollections, setSelectedCollections] = useState<
+    CollectionOption[]
+  >([]);
 
   const fetchRBAC = async () => {
     const rbacOptions = await UserService.getRBAC();
@@ -173,6 +180,12 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
             key={v.label}
           />
         ))}
+
+        <CollectionsSelector
+          db_name={'Iterator_test_db'}
+          selected={selectedCollections}
+          setSelected={setSelectedCollections}
+        />
         <Typography variant="h5" component="h5" className={classes.subTitle}>
           {userTrans('privileges')}
         </Typography>

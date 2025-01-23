@@ -1,25 +1,28 @@
 import { useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
-import { PartitionService } from '@/http';
-import type { PartitionData } from '@server/types';
+import { CollectionService } from '@/http';
 import CustomInput from '@/components/customInput/CustomInput';
 import { useTranslation } from 'react-i18next';
 
-interface PartitionsSelectorProps {
-  collectionName: string;
-  selected: PartitionData[];
-  setSelected: (value: PartitionData[]) => void;
+interface CollectionsSelectorProps {
+  db_name: string;
+  selected: CollectionOption[];
+  setSelected: (value: CollectionOption[]) => void;
 }
 
-export default function PartitionsSelector(props: PartitionsSelectorProps) {
+export type CollectionOption = {
+  name: string;
+};
+
+export default function CollectionsSelector(props: CollectionsSelectorProps) {
   // i18n
   const { t: searchTrans } = useTranslation('search');
 
   // props
-  const { collectionName, selected, setSelected } = props;
+  const { selected, setSelected } = props;
   // state
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<readonly PartitionData[]>([]);
+  const [options, setOptions] = useState<readonly CollectionOption[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleOpen = () => {
@@ -27,8 +30,14 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
     setLoading(true);
     (async () => {
       try {
-        const res = await PartitionService.getPartitions(collectionName);
-        setOptions([...res]);
+        const res = await CollectionService.getCollectionsNames({
+          db_name: props.db_name,
+        });
+        const options = res.map(c => {
+          return { name: c };
+        });
+
+        setOptions([...options]);
       } catch (err) {
         console.error(err);
       } finally {
@@ -54,25 +63,22 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
         setSelected(value);
       }}
       value={selected}
-      isOptionEqualToValue={(option, value) =>
-        option && value && option.name === value.name
-      }
+      isOptionEqualToValue={(option, value) => {
+        return option && value && option.name === value.name;
+      }}
       getOptionLabel={option => (option && option.name) || ''}
       options={options}
       loading={loading}
-      noOptionsText={
-        loading ? searchTrans('loading') : searchTrans('noOptions')
-      }
       renderInput={params => {
         return (
           <CustomInput
             textConfig={{
               ...params,
-              label: searchTrans('partitionFilter'),
-              key: 'partitionFilter',
+              label: 'collections',
+              key: 'collections',
               className: 'input',
               value: params.inputProps.value,
-              disabled: loading, // 禁用输入
+              disabled: loading,
               variant: 'filled',
               required: false,
               InputLabelProps: { shrink: true },
@@ -82,6 +88,9 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
           />
         );
       }}
+      noOptionsText={
+        loading ? searchTrans('loading') : searchTrans('noOptions')
+      }
     />
   );
 }

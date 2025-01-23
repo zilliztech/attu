@@ -5,8 +5,6 @@ export const ROW_COUNT = 'row_count';
 export const MILVUS_CLIENT_ID = 'milvus-client-id';
 
 // for lru cache
-export const CLIENT_CACHE = 'insight_cache';
-export const INDEX_CACHE = 'index_cache';
 export const CLIENT_TTL = 1000 * 60 * 60 * 24;
 export const INDEX_TTL = 1000 * 60 * 60;
 
@@ -123,6 +121,7 @@ export enum DatabasePrivileges {
   DescribeDatabase = 'DescribeDatabase',
   CreateDatabase = 'CreateDatabase',
   DropDatabase = 'DropDatabase',
+  AlterDatabase = 'AlterDatabase',
 }
 
 // RBAC: global privileges
@@ -131,7 +130,6 @@ export enum GlobalPrivileges {
   CreateCollection = 'CreateCollection',
   DropCollection = 'DropCollection',
   DescribeCollection = 'DescribeCollection',
-  ShowCollections = 'ShowCollections',
   RenameCollection = 'RenameCollection',
   FlushAll = 'FlushAll',
   CreateOwnership = 'CreateOwnership',

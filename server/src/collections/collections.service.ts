@@ -213,7 +213,7 @@ export class CollectionsService {
 
   async alterCollection(clientId: string, data: AlterCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.alterCollection(data);
+    const res = await milvusClient.alterCollectionProperties(data);
     throwErrorFromSDK(res);
 
     const newCollection = (await this.getAllCollections(

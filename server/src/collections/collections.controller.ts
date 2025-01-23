@@ -34,6 +34,7 @@ export class CollectionController {
   generateRoutes() {
     // get all collections
     this.router.get('/', this.showCollections.bind(this));
+    this.router.get('/names', this.getCollectionNames.bind(this));
     // get all collections statistics
     this.router.get('/statistics', this.getStatistics.bind(this));
     // index
@@ -153,6 +154,25 @@ export class CollectionController {
               req.db_name
             );
       res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCollectionNames(req: Request, res: Response, next: NextFunction) {
+    try {
+      const db_name = req.db_name;
+      const request = {} as any;
+
+      if (db_name) {
+        request['db_name'] = db_name;
+      }
+
+      const result = await this.collectionsService.showCollections(
+        req.clientId,
+        request
+      );
+      res.send(result.data.map((item: any) => item.name));
     } catch (error) {
       next(error);
     }
