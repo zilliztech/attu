@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { PartitionService } from '@/http';
 import type { PartitionData } from '@server/types';
-import CustomInput from '@/components/customInput/CustomInput';
 import { useTranslation } from 'react-i18next';
 
 interface PartitionsSelectorProps {
@@ -65,20 +65,10 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
       }
       renderInput={params => {
         return (
-          <CustomInput
-            textConfig={{
-              ...params,
-              label: searchTrans('partitionFilter'),
-              key: 'partitionFilter',
-              className: 'input',
-              value: params.inputProps.value,
-              disabled: loading, // 禁用输入
-              variant: 'filled',
-              required: false,
-              InputLabelProps: { shrink: true },
-            }}
-            checkValid={() => true}
-            type="text"
+          <TextField
+            {...params}
+            label={searchTrans('partitionFilter')}
+            variant="filled"
           />
         );
       }}

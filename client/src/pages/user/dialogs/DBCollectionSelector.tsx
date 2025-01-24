@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Theme } from '@mui/material';
+import { Theme, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
-import CustomInput from '@/components/customInput/CustomInput';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
 
@@ -155,20 +154,10 @@ export default function DBCollectionsSelector(
         loading={loading}
         renderInput={params => {
           return (
-            <CustomInput
-              textConfig={{
-                ...params,
-                label: userTrans('databases'),
-                key: 'databases',
-                className: 'input',
-                value: params.inputProps.value,
-                disabled: loading,
-                variant: 'filled',
-                required: false,
-                InputLabelProps: { shrink: true },
-              }}
-              checkValid={() => true}
-              type="text"
+            <TextField
+              {...params}
+              label={userTrans('databases')}
+              variant="filled"
             />
           );
         }}
@@ -206,20 +195,10 @@ export default function DBCollectionsSelector(
         loading={loading}
         renderInput={params => {
           return (
-            <CustomInput
-              textConfig={{
-                ...params,
-                label: userTrans('collections'),
-                key: 'collections',
-                className: 'input',
-                value: params.inputProps.value,
-                disabled: loading,
-                variant: 'filled',
-                required: false,
-                InputLabelProps: { shrink: true },
-              }}
-              checkValid={() => true}
-              type="text"
+            <TextField
+              {...params}
+              label={userTrans('collections')}
+              variant="filled"
             />
           );
         }}
