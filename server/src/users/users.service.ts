@@ -125,7 +125,6 @@ export class UserService {
       GlobalPrivileges,
       CollectionPrivileges,
       UserPrivileges,
-      RbacObjects,
     };
   }
 

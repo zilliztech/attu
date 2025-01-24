@@ -1,35 +1,24 @@
-import { Theme, Typography } from '@mui/material';
+import { Theme } from '@mui/material';
 import { FC, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { UserService } from '@/http';
+import { UserService, DatabaseService } from '@/http';
 import { makeStyles } from '@mui/styles';
-import PrivilegeOptions from './PrivilegeOptions';
-import CollectionsSelector from './DBCollectionSelector';
+import DBCollectionSelector from './DBCollectionSelector';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
-import type {
-  CreateRoleProps,
-  CreateRoleParams,
-  PrivilegeOptionsProps,
-  RBACOptions,
-} from '../Types';
-import type { DBOption, RolePrivileges } from './DBCollectionSelector';
+import type { CreateRoleProps, CreateRoleParams, RBACOptions } from '../Types';
+import type { DBCollectionsPrivileges, DBOption } from './DBCollectionSelector';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
     margin: theme.spacing(1, 0, 0.5),
   },
   dialogWrapper: {
-    maxWidth: theme.spacing(88),
-  },
-  checkBox: {
-    width: theme.spacing(24),
-  },
-  formGrp: {
-    marginBottom: theme.spacing(2),
+    width: theme.spacing(100),
+    maxWidth: theme.spacing(200),
   },
   subTitle: {
     marginBottom: theme.spacing(0.5),
@@ -45,56 +34,90 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
+
+  // const
+  const ALL_DB = { name: userTrans('allDatabases'), value: '*' };
+
   // UI states
-  const [rbacOptions, setRbacOptions] = useState<RBACOptions>({
-    GlobalPrivileges: {},
-    CollectionPrivileges: {},
-    RbacObjects: {},
-    UserPrivileges: {},
-    Privileges: {},
+  const [options, setOptions] = useState<{
+    rbacOptions: RBACOptions; // Available RBAC options (privileges)
+    dbOptions: DBOption[]; // Available databases
+  }>({ rbacOptions: {} as RBACOptions, dbOptions: [] });
+
+  const [selected, setSelected] = useState<DBCollectionsPrivileges>({
+    '*': {
+      collections: {
+        '*': {},
+      },
+    },
   });
-  const [selectedDB, setSelectedDB] = useState<DBOption>({
-    name: 'default',
-    value: 'default',
-  });
-  const [selectedCollections, setSelectedCollections] =
-    useState<RolePrivileges>({});
 
-  const fetchRBAC = async () => {
-    const rbacOptions = await UserService.getRBAC();
-
-    setRbacOptions(rbacOptions);
-  };
-
-  const isEditing = role.name !== '';
-
-  useEffect(() => {
-    fetchRBAC();
-  }, []);
-
+  // Form state
   const [form, setForm] = useState<CreateRoleParams>({
     roleName: role.name,
     privileges: JSON.parse(JSON.stringify(role.privileges)),
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [dbResponse, rbacResponse] = await Promise.all([
+          DatabaseService.listDatabases(),
+          UserService.getRBAC(),
+        ]);
+
+        const dbOptions = dbResponse.map(db => ({
+          name: db.name,
+          value: db.name,
+        }));
+        dbOptions.unshift(ALL_DB);
+
+        setOptions({
+          rbacOptions: rbacResponse,
+          dbOptions,
+        });
+      } catch (err) {
+        console.error('Failed to fetch data:', err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Check if editing an existing role
+  const isEditing = role.name !== '';
+
+  // Form validation
   const checkedForm = useMemo(() => {
     return formatForm(form);
   }, [form]);
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const classes = useStyles();
-
+  // Handle input change
   const handleInputChange = (key: 'roleName', value: string) => {
-    setForm(v => {
-      const newFrom = { ...v, [key]: value };
-
-      // update roleName
-      newFrom.privileges.forEach(p => (p.roleName = value));
-
-      return newFrom;
-    });
+    setForm(v => ({
+      ...v,
+      [key]: value,
+    }));
   };
 
+  // Handle create/update role
+  const handleCreateRole = async () => {
+    try {
+      if (!isEditing) {
+        await UserService.createRole(form);
+      }
+      await UserService.updateRolePrivileges(form);
+      onUpdate({ data: form, isEditing });
+    } catch (error) {
+      console.error('Error creating/updating role:', error);
+    }
+  };
+
+  // styles
+  const classes = useStyles();
+
+  // Input configurations
   const createConfigs: ITextfieldConfig[] = [
     {
       label: userTrans('role'),
@@ -114,51 +137,6 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
       ],
       defaultValue: form.roleName,
       disabled: isEditing,
-    },
-  ];
-
-  const handleCreateRole = async () => {
-    if (!isEditing) {
-      await UserService.createRole(form);
-    }
-
-    await UserService.updateRolePrivileges(form);
-
-    onUpdate({ data: form, isEditing: isEditing });
-  };
-
-  const onChange = (newSelection: any) => {
-    setForm(v => {
-      return { ...v, privileges: [...newSelection] };
-    });
-  };
-
-  const optionGroups: PrivilegeOptionsProps[] = [
-    {
-      options: Object.values(rbacOptions.GlobalPrivileges) as string[],
-      object: 'Global',
-      title: userTrans('objectGlobal'),
-      selection: form.privileges,
-      roleName: form.roleName,
-      onChange: onChange,
-    },
-
-    {
-      options: Object.values(rbacOptions.CollectionPrivileges) as string[],
-      title: userTrans('objectCollection'),
-      object: 'Collection',
-      selection: form.privileges,
-      roleName: form.roleName,
-      onChange: onChange,
-    },
-
-    {
-      options: Object.values(rbacOptions.UserPrivileges) as string[],
-      title: userTrans('objectUser'),
-      object: 'User',
-      selection: form.privileges,
-      roleName: form.roleName,
-      onChange: onChange,
     },
   ];
 
@@ -184,27 +162,11 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
           />
         ))}
 
-        <CollectionsSelector
-          selectedDB={selectedDB}
-          selectedCollections={selectedCollections}
-          setSelectedCollections={setSelectedCollections}
-          setSelectedDB={setSelectedDB}
+        <DBCollectionSelector
+          selected={selected}
+          setSelected={setSelected}
+          options={options}
         />
-        <Typography variant="h5" component="h5" className={classes.subTitle}>
-          {userTrans('privileges')}
-        </Typography>
-
-        {optionGroups.map(o => (
-          <PrivilegeOptions
-            key={o.object}
-            title={o.title}
-            object={o.object}
-            options={o.options}
-            selection={o.selection}
-            roleName={o.roleName}
-            onChange={o.onChange}
-          />
-        ))}
       </>
     </DialogTemplate>
   );

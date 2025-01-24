@@ -172,7 +172,14 @@ export class CollectionController {
         req.clientId,
         request
       );
-      res.send(result.data.map((item: any) => item.name));
+      res.send(
+        result.data
+          .sort((a, b) => {
+             // sort by name
+            return a.name.localeCompare(b.name);
+          })
+          .map((item: any) => item.name)
+      );
     } catch (error) {
       next(error);
     }
