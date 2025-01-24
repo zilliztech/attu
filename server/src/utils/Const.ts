@@ -72,98 +72,77 @@ export enum HTTP_STATUS_CODE {
   HTTP_VERSION_NOT_SUPPORTED = 505,
 }
 
-// RBAC: default objects
 export enum RbacObjects {
   Collection = 'Collection',
   Global = 'Global',
   User = 'User',
 }
 
-// RBAC: collection privileges
-export enum CollectionPrivileges {
-  CreateCollection = 'CreateCollection',
-  DropCollection = 'DropCollection',
-  DescribeCollection = 'DescribeCollection',
-  ShowCollections = 'ShowCollections',
-  RenameCollection = 'RenameCollection',
-  CreateIndex = 'CreateIndex',
-  DropIndex = 'DropIndex',
-  IndexDetail = 'IndexDetail',
-  Load = 'Load',
-  GetLoadingProgress = 'GetLoadingProgress',
-  GetLoadState = 'GetLoadState',
-  Release = 'Release',
-  Insert = 'Insert',
-  Upsert = 'Upsert',
-  Delete = 'Delete',
-  Search = 'Search',
-  Flush = 'Flush',
-  GetFlushState = 'GetFlushState',
-  Query = 'Query',
-  GetStatistics = 'GetStatistics',
-  Compaction = 'Compaction',
-  Import = 'Import',
-  LoadBalance = 'LoadBalance',
-  CreatePartition = 'CreatePartition',
-  DropPartition = 'DropPartition',
-  ShowPartitions = 'ShowPartitions',
-  HasPartition = 'HasPartition',
-  FlushAll = 'FlushAll',
-  CreateAlias = 'CreateAlias',
-  DropAlias = 'DropAlias',
-  DescribeAlias = 'DescribeAlias',
-  ListAliases = 'ListAliases',
-}
-
-// RBAC: global privileges
 export enum DatabasePrivileges {
-  ListDatabases = 'ListDatabases',
-  DescribeDatabase = 'DescribeDatabase',
   CreateDatabase = 'CreateDatabase',
+  DescribeDatabase = 'DescribeDatabase',
+  ListDatabases = 'ListDatabases',
   DropDatabase = 'DropDatabase',
   AlterDatabase = 'AlterDatabase',
 }
 
-// RBAC: global privileges
-export enum GlobalPrivileges {
-  All = '*',
+export enum CollectionPrivileges {
   CreateCollection = 'CreateCollection',
-  DropCollection = 'DropCollection',
   DescribeCollection = 'DescribeCollection',
+  DropCollection = 'DropCollection',
   RenameCollection = 'RenameCollection',
-  FlushAll = 'FlushAll',
-  CreateOwnership = 'CreateOwnership',
-  DropOwnership = 'DropOwnership',
-  SelectOwnership = 'SelectOwnership',
-  ManageOwnership = 'ManageOwnership',
-  CreateResourceGroup = 'CreateResourceGroup',
-  DropResourceGroup = 'DropResourceGroup',
-  DescribeResourceGroup = 'DescribeResourceGroup',
-  ListResourceGroups = 'ListResourceGroups',
-  TransferNode = 'TransferNode',
-  TransferReplica = 'TransferReplica',
-  CreateDatabase = 'CreateDatabase',
-  ListDatabases = 'ListDatabases',
-  DropDatabase = 'DropDatabase',
   CreateAlias = 'CreateAlias',
   DropAlias = 'DropAlias',
   DescribeAlias = 'DescribeAlias',
   ListAliases = 'ListAliases',
+  ShowCollections = 'ShowCollections',
+  Load = 'Load',
+  GetLoadingProgress = 'GetLoadingProgress',
+  GetLoadState = 'GetLoadState',
+  Release = 'Release',
+  Flush = 'Flush',
+  GetFlushState = 'GetFlushState',
+  GetStatistics = 'GetStatistics',
+  Compaction = 'Compaction',
+  FlushAll = 'FlushAll',
 }
 
-// RBAC: resource group privileges
-export enum ResourceGroupPrivileges {
+export enum PartitionPrivileges {
+  CreatePartition = 'CreatePartition',
+  DropPartition = 'DropPartition',
+  ShowPartitions = 'ShowPartitions',
+  HasPartition = 'HasPartition',
+}
+
+export enum EntityPrivileges {
+  Query = 'Query',
+  Insert = 'Insert',
+  Upsert = 'Upsert',
+  Delete = 'Delete',
+  Search = 'Search',
+  Import = 'Import',
+}
+
+export enum ResourceManagementPrivileges {
+  LoadBalance = 'LoadBalance',
   CreateResourceGroup = 'CreateResourceGroup',
   DropResourceGroup = 'DropResourceGroup',
+  UpdateResourceGroups = 'UpdateResourceGroups',
   DescribeResourceGroup = 'DescribeResourceGroup',
   ListResourceGroups = 'ListResourceGroups',
-  UpdateResourceGroups = 'UpdateResourceGroups',
   TransferNode = 'TransferNode',
   TransferReplica = 'TransferReplica',
+  BackupRBAC = 'BackupRBAC',
+  RestoreRBAC = 'RestoreRBAC',
 }
 
-// RBAC: user privileges
-export enum UserPrivileges {
+export enum IndexPrivileges {
+  CreateIndex = 'CreateIndex',
+  DropIndex = 'DropIndex',
+  IndexDetail = 'IndexDetail',
+}
+
+export enum RBACPrivileges {
   UpdateUser = 'UpdateUser',
   SelectUser = 'SelectUser',
   SelectOwnership = 'SelectOwnership',
@@ -174,16 +153,17 @@ export enum UserPrivileges {
   DropPrivilegeGroup = 'DropPrivilegeGroup',
   ListPrivilegeGroups = 'ListPrivilegeGroups',
   OperatePrivilegeGroup = 'OperatePrivilegeGroup',
-  RestoreRBAC = 'RestoreRBAC',
-  BackupRBAC = 'BackupRBAC',
 }
 
 // RBAC: all privileges
 export const Privileges = {
-  ...CollectionPrivileges,
   ...DatabasePrivileges,
-  ...ResourceGroupPrivileges,
-  ...UserPrivileges,
+  ...CollectionPrivileges,
+  ...PartitionPrivileges,
+  ...IndexPrivileges,
+  ...EntityPrivileges,
+  ...ResourceManagementPrivileges,
+  ...RBACPrivileges,
 };
 
 export enum LOADING_STATE {

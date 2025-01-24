@@ -45,6 +45,14 @@ const userTrans = {
 
   collections: '集合',
   databases: '数据库',
+
+  DatabasePrivileges: 'Database 相关权限',
+  CollectionPrivileges: 'Collection 相关权限',
+  PartitionPrivileges: 'Partition 相关权限',
+  IndexPrivileges: 'Index 相关权限',
+  EntityPrivileges: 'Entity 相关权限',
+  ResourceManagementPrivileges: '资源管理相关权限',
+  RBACPrivileges: 'RBAC相关权限',
 };
 
 export default userTrans;

@@ -47,6 +47,14 @@ const userTrans = {
 
   collections: 'Collections',
   databases: 'Databases',
+
+  DatabasePrivileges: 'Database Privileges',
+  CollectionPrivileges: 'Collection Privileges',
+  PartitionPrivileges: 'Partition Privileges',
+  IndexPrivileges: 'Index Privileges',
+  EntityPrivileges: 'Entity Privileges',
+  ResourceManagementPrivileges: 'Resource Management Privileges',
+  RBACPrivileges: 'RBAC Privileges',
 };
 
 export default userTrans;

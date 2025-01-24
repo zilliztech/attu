@@ -40,36 +40,64 @@ export type DBOption = {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(1, 0, 0.5),
+    margin: theme.spacing(1, 0),
     display: 'flex',
     flexDirection: 'row',
-    gap: theme.spacing(1),
+    gap: theme.spacing(2),
     height: '100%',
+    backgroundColor: theme.palette.background.paper,
   },
   dbCollections: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(1),
-    width: '33%',
+    width: '30%',
     height: '100%',
   },
   selectorDB: {
     flex: 1,
+    marginBottom: theme.spacing(2),
   },
   selectorCollection: {
     flex: 1,
+  },
+  categoryHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0.5),
+    backgroundColor: theme.palette.action.hover,
+    borderRadius: theme.shape.borderRadius,
+    marginBottom: 0,
+  },
+  categoryBody: {
+    padding: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.background.paper,
+  },
+  privilegeTitle: {
+    fontWeight: 'bold',
+    fontSize: '16px',
+    color: theme.palette.text.primary,
+    margin: 0,
+    marginLeft: theme.spacing(-2),
   },
   privileges: {
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
-    gap: theme.spacing(1),
-    width: '66%',
-    height: '340px',
+    gap: theme.spacing(2),
+    width: '70%',
+    height: '42vh',
     overflowY: 'auto',
-    border: `1px solid ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
+  },
+  selectAllCheckbox: {
+    marginLeft: theme.spacing(1),
+  },
+  checkbox: {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -205,6 +233,38 @@ export default function DBCollectionsSelector(
     console.log(newSelected);
   };
 
+  // Handle select all privileges in a category
+  const handleSelectAll = (
+    category: string,
+    collectionValue: string,
+    checked: boolean
+  ) => {
+    const selectedDBValue = selectedDB?.value;
+    if (!selectedDBValue) return;
+
+    // Create a deep copy of the entire selected state
+    const newSelected = { ...selected };
+
+    // Ensure the selected DB exists in the new state
+    if (!newSelected[selectedDBValue]) {
+      newSelected[selectedDBValue] = { collections: {} };
+    }
+
+    // Ensure the selected collection exists in the new state
+    if (!newSelected[selectedDBValue].collections[collectionValue]) {
+      newSelected[selectedDBValue].collections[collectionValue] = {};
+    }
+
+    // Update all privileges in the category
+    Object.keys(rbacOptions[category]).forEach(privilegeName => {
+      newSelected[selectedDBValue].collections[collectionValue][privilegeName] =
+        checked;
+    });
+
+    // Update the state with the new selected state
+    setSelected(newSelected);
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.dbCollections}>
@@ -265,31 +325,66 @@ export default function DBCollectionsSelector(
             {Object.entries(rbacOptions).map(
               ([category, categoryPrivileges]) => (
                 <div key={category}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {category}
-                  </Typography>
-                  {Object.entries(categoryPrivileges).map(([privilegeName]) => (
+                  <div className={classes.categoryHeader}>
                     <FormControlLabel
-                      key={privilegeName}
                       control={
                         <Checkbox
-                          checked={
-                            selected[selectedDB.value].collections[
-                              selectedCollection
-                            ]?.[privilegeName] || false
-                          }
+                          checked={Object.keys(categoryPrivileges).every(
+                            privilegeName =>
+                              selected[selectedDB.value].collections[
+                                selectedCollection
+                              ]?.[privilegeName]
+                          )}
                           onChange={e =>
-                            handlePrivilegeChange(
+                            handleSelectAll(
+                              category,
                               selectedCollection,
-                              privilegeName,
                               e.target.checked
                             )
                           }
+                          size="small"
+                          className={classes.selectAllCheckbox}
+                          title={userTrans('selectAll')}
                         />
                       }
-                      label={privilegeName}
+                      label=""
                     />
-                  ))}
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      className={classes.privilegeTitle}
+                    >
+                      {userTrans(category)}
+                    </Typography>
+                  </div>
+                  <div className={classes.categoryBody}>
+                    {Object.entries(categoryPrivileges).map(
+                      ([privilegeName]) => (
+                        <FormControlLabel
+                          key={privilegeName}
+                          control={
+                            <Checkbox
+                              className={classes.checkbox}
+                              checked={
+                                selected[selectedDB.value].collections[
+                                  selectedCollection
+                                ]?.[privilegeName] || false
+                              }
+                              size="small"
+                              onChange={e =>
+                                handlePrivilegeChange(
+                                  selectedCollection,
+                                  privilegeName,
+                                  e.target.checked
+                                )
+                              }
+                            />
+                          }
+                          label={privilegeName}
+                        />
+                      )
+                    )}
+                  </div>
                 </div>
               )
             )}

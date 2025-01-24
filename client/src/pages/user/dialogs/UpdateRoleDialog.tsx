@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(1, 0, 0.5),
   },
   dialogWrapper: {
-    width: theme.spacing(100),
-    maxWidth: theme.spacing(200),
+    width: '66vw',
+    maxWidth: '66vw',
   },
   subTitle: {
     marginBottom: theme.spacing(0.5),

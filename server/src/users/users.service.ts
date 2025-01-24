@@ -16,11 +16,13 @@ import {
 } from '@zilliz/milvus2-sdk-node';
 import { throwErrorFromSDK } from '../utils/Error';
 import {
-  Privileges,
-  GlobalPrivileges,
+  DatabasePrivileges,
   CollectionPrivileges,
-  UserPrivileges,
-  RbacObjects,
+  PartitionPrivileges,
+  IndexPrivileges,
+  EntityPrivileges,
+  ResourceManagementPrivileges,
+  RBACPrivileges,
 } from '../utils';
 import { clientCache } from '../app';
 
@@ -121,10 +123,13 @@ export class UserService {
 
   async getRBAC() {
     return {
-      Privileges,
-      GlobalPrivileges,
+      DatabasePrivileges,
       CollectionPrivileges,
-      UserPrivileges,
+      PartitionPrivileges,
+      IndexPrivileges,
+      EntityPrivileges,
+      ResourceManagementPrivileges,
+      RBACPrivileges,
     };
   }
 

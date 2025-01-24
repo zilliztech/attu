@@ -106,9 +106,5 @@ export interface PrivilegeGrpOptionsProps {
 }
 
 export type RBACOptions = {
-  GlobalPrivileges: Record<string, unknown>;
-  CollectionPrivileges: Record<string, unknown>;
-  RbacObjects: Record<string, unknown>;
-  UserPrivileges: Record<string, unknown>;
-  Privileges: Record<string, unknown>;
+  [key: string]: Record<string, unknown>;
 };
