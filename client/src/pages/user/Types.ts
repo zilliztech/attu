@@ -86,25 +86,6 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export type RBACObject = 'Global' | 'Collection' | 'User';
-
-export interface PrivilegeOptionsProps {
-  options: string[];
-  selection: Privilege[];
-  onChange: (selection: Privilege[]) => void;
-  roleName: string;
-  object: RBACObject;
-  objectName?: string;
-  title: string;
-}
-
-export interface PrivilegeGrpOptionsProps {
-  options: string[];
-  selection: string[];
-  onChange: (selection: string[]) => void;
-  group_name: string;
-}
-
 export type RBACOptions = {
   [key: string]: Record<string, unknown>;
 };

@@ -10,7 +10,7 @@ import { makeStyles } from '@mui/styles';
 import DBCollectionSelector from './DBCollectionSelector';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type { CreateRoleProps, CreateRoleParams, RBACOptions } from '../Types';
-import type { DBCollectionsPrivileges, DBOption } from './DBCollectionSelector';
+import type { DBCollectionsPrivileges, DBOption } from './types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

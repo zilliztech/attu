@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-  Theme,
   TextField,
   Typography,
   FormControlLabel,
@@ -9,111 +8,13 @@ import {
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@mui/styles';
-import type { RBACOptions } from '../Types';
-
-export type Privilege = {
-  [key: string]: boolean; // key: privilege name, value: whether it's selected
-};
-
-export type CollectionPrivileges = {
-  [collectionValue: string]: Privilege; // key: collection value, value: privileges
-};
-
-export type DBPrivileges = {
-  collections: CollectionPrivileges; // Collection-level privileges
-};
-
-export type DBCollectionsPrivileges = {
-  [dbValue: string]: DBPrivileges; // key: DB value, value: DB privileges and collections
-};
-
-export type CollectionOption = {
-  name: string;
-  value: string;
-};
-
-export type DBOption = {
-  name: string;
-  value: string;
-};
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    margin: theme.spacing(1, 0),
-    display: 'flex',
-    flexDirection: 'row',
-    gap: theme.spacing(2),
-    height: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  dbCollections: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(1),
-    width: '30%',
-    height: '100%',
-  },
-  selectorDB: {
-    flex: 1,
-    marginBottom: theme.spacing(2),
-  },
-  selectorCollection: {
-    flex: 1,
-  },
-  categoryHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0.5),
-    backgroundColor: theme.palette.action.hover,
-    borderRadius: theme.shape.borderRadius,
-    marginBottom: 0,
-  },
-  categoryBody: {
-    padding: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.paper,
-  },
-  privilegeTitle: {
-    fontWeight: 'bold',
-    fontSize: '16px',
-    color: theme.palette.text.primary,
-    margin: 0,
-    marginLeft: theme.spacing(-2),
-  },
-  privileges: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    gap: theme.spacing(2),
-    width: '70%',
-    height: '42vh',
-    overflowY: 'auto',
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(2),
-    backgroundColor: theme.palette.background.default,
-  },
-  selectAllCheckbox: {
-    marginLeft: theme.spacing(1),
-  },
-  checkbox: {
-    padding: theme.spacing(1),
-  },
-}));
-
-interface DBCollectionsSelectorProps {
-  selected: DBCollectionsPrivileges; // Current selected DBs and their collections with privileges
-  setSelected: (
-    value:
-      | DBCollectionsPrivileges
-      | ((prev: DBCollectionsPrivileges) => DBCollectionsPrivileges)
-  ) => void;
-  // Callback to update selected state
-  options: {
-    rbacOptions: RBACOptions; // Available RBAC options (privileges)
-    dbOptions: DBOption[]; // Available databases
-  };
-}
+import { useDBCollectionSelectorStyle } from './styles';
+import type {
+  DBOption,
+  CollectionOption,
+  DBCollectionsPrivileges,
+  DBCollectionsSelectorProps,
+} from './types';
 
 export default function DBCollectionsSelector(
   props: DBCollectionsSelectorProps
@@ -122,7 +23,7 @@ export default function DBCollectionsSelector(
   const { selected, setSelected, options } = props;
   const { rbacOptions, dbOptions } = options;
   // Styles
-  const classes = useStyles();
+  const classes = useDBCollectionSelectorStyle();
   // i18n
   const { t: searchTrans } = useTranslation('search');
   const { t: userTrans } = useTranslation('user');
@@ -149,17 +50,19 @@ export default function DBCollectionsSelector(
   useEffect(() => {
     const fetchCollections = async (dbName: string) => {
       setLoading(true);
+      let options: CollectionOption[] = [];
       try {
         if (dbName === '*') {
-          setCollectionOptions([ALL_COLLECTIONS]);
+          options = [ALL_COLLECTIONS];
         } else {
           const res = await CollectionService.getCollectionsNames({
             db_name: dbName,
           });
-          const options = res.map(c => ({ name: c, value: c }));
+          options = res.map(c => ({ name: c, value: c }));
           options.unshift(ALL_COLLECTIONS);
-          setCollectionOptions(options);
         }
+        // Update the collection options
+        setCollectionOptions(options);
       } catch (err) {
         console.error(err);
       } finally {
@@ -171,6 +74,41 @@ export default function DBCollectionsSelector(
       fetchCollections(selectedDB.value);
     }
   }, [selectedDB]);
+
+  // handle selected change
+  useEffect(() => {
+    // Check if selectedDB is available
+    if (!selectedDB) return;
+
+    // Update collection options label when selected changes
+    setCollectionOptions(prevOptions =>
+      prevOptions.map(option => {
+        // Calculate the total privilege count for the current collection
+        let privilegeCount = 0;
+
+        // Iterate through all privilege categories in rbacOptions
+        Object.values(rbacOptions).forEach(categoryPrivileges => {
+          privilegeCount += Object.keys(categoryPrivileges).filter(
+            privilege => {
+              return selected[selectedDB.value]?.collections[option.value]?.[
+                privilege
+              ];
+            }
+          ).length;
+        });
+
+        // Remove existing parentheses and numbers from the name (if any)
+        const baseName = option.name.replace(/\s*\(\d+\)\s*$/, '');
+
+        // Update the collection name with the privilege count (if count > 0)
+        return {
+          ...option,
+          name:
+            privilegeCount > 0 ? `${baseName} (${privilegeCount})` : baseName,
+        };
+      })
+    );
+  }, [selected, selectedDB, rbacOptions, collectionOptions]);
 
   // Handle DB selection
   const handleDBChange = (db: DBOption) => {
