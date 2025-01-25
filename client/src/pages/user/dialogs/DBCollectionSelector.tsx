@@ -35,6 +35,8 @@ export default function DBCollectionsSelector(
     CollectionOption[]
   >([]);
   const [loading, setLoading] = useState(false);
+  const [updateCollectionOptionTrigger, setUpdateCollectionOptionTrigger] =
+    useState<number>(0);
 
   // const
   const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
@@ -63,6 +65,7 @@ export default function DBCollectionsSelector(
         }
         // Update the collection options
         setCollectionOptions(options);
+        setUpdateCollectionOptionTrigger(prev => prev + 1);
       } catch (err) {
         console.error(err);
       } finally {
@@ -108,7 +111,7 @@ export default function DBCollectionsSelector(
         };
       })
     );
-  }, [selected, selectedDB, rbacOptions, collectionOptions]);
+  }, [selected, selectedDB, rbacOptions, updateCollectionOptionTrigger]);
 
   // Handle DB selection
   const handleDBChange = (db: DBOption) => {
