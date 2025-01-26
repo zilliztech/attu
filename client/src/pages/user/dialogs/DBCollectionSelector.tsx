@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   TextField,
   Typography,
@@ -29,31 +29,51 @@ export default function DBCollectionsSelector(
   const { t: userTrans } = useTranslation('user');
 
   // UI states
-  const [selectedDB, setSelectedDB] = useState<DBOption | null>(null); // Initialize with null or a default DBOption
-  const [selectedCollection, setSelectedCollection] = useState<string>('*'); // Initialize with an empty string
-  const [collectionOptions, setCollectionOptions] = useState<
-    CollectionOption[]
-  >([]);
+  const [selectedDB, setSelectedDB] = useState<DBOption | null>(null);
+  const [selectedCollection, setSelectedCollection] = useState<string>('*');
+  const [collectionOptions, setCollectionOptions] = useState<CollectionOption[]>([]);
   const [loading, setLoading] = useState(false);
-  const [updateCollectionOptionTrigger, setUpdateCollectionOptionTrigger] =
-    useState<number>(0);
 
   // const
   const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
 
-  // select database when options changes
-  useEffect(() => {
-    if (selectedDB === null && dbOptions.length > 0) {
-      setSelectedDB(options.dbOptions[0]);
-    }
-  }, [options]);
+  // Calculate privilege count for a collection
+  const calculatePrivilegeCount = useCallback(
+    (collectionValue: string) => {
+      if (!selectedDB) return 0;
+
+      let privilegeCount = 0;
+      Object.values(rbacOptions).forEach(categoryPrivileges => {
+        privilegeCount += Object.keys(categoryPrivileges).filter(privilege => {
+          return selected[selectedDB.value]?.collections[collectionValue]?.[privilege];
+        }).length;
+      });
+      return privilegeCount;
+    },
+    [selected, selectedDB, rbacOptions]
+  );
+
+  // Update collection options with privilege counts
+  const updateCollectionOptionsWithPrivileges = useCallback(
+    (options: CollectionOption[]) => {
+      return options.map(option => {
+        const privilegeCount = calculatePrivilegeCount(option.value);
+        const baseName = option.name.replace(/\s*\(\d+\)\s*$/, '');
+        return {
+          ...option,
+          name: privilegeCount > 0 ? `${baseName} (${privilegeCount})` : baseName,
+        };
+      });
+    },
+    [calculatePrivilegeCount]
+  );
 
   // Fetch collections when selected DB changes
-  useEffect(() => {
-    const fetchCollections = async (dbName: string) => {
+  const fetchCollections = useCallback(
+    async (dbName: string) => {
       setLoading(true);
-      let options: CollectionOption[] = [];
       try {
+        let options: CollectionOption[] = [];
         if (dbName === '*') {
           options = [ALL_COLLECTIONS];
         } else {
@@ -63,75 +83,47 @@ export default function DBCollectionsSelector(
           options = res.map(c => ({ name: c, value: c }));
           options.unshift(ALL_COLLECTIONS);
         }
-        // Update the collection options
-        setCollectionOptions(options);
-        setUpdateCollectionOptionTrigger(prev => prev + 1);
+        // Update collection options with privilege counts
+        const updatedOptions = updateCollectionOptionsWithPrivileges(options);
+        setCollectionOptions(updatedOptions);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [updateCollectionOptionsWithPrivileges]
+  );
 
-    if (selectedDB) {
-      fetchCollections(selectedDB.value);
-    }
-  }, [selectedDB]);
-
-  // handle selected change
+  // Initialize selectedDB and fetch collections when dbOptions changes
   useEffect(() => {
-    // Check if selectedDB is available
-    if (!selectedDB) return;
+    if (dbOptions.length > 0 && selectedDB === null) {
+      const initialDB = dbOptions[0];
+      setSelectedDB(initialDB);
+      fetchCollections(initialDB.value);
+    }
+  }, [dbOptions, selectedDB, fetchCollections]);
 
-    // Update collection options label when selected changes
-    setCollectionOptions(prevOptions =>
-      prevOptions.map(option => {
-        // Calculate the total privilege count for the current collection
-        let privilegeCount = 0;
-
-        // Iterate through all privilege categories in rbacOptions
-        Object.values(rbacOptions).forEach(categoryPrivileges => {
-          privilegeCount += Object.keys(categoryPrivileges).filter(
-            privilege => {
-              return selected[selectedDB.value]?.collections[option.value]?.[
-                privilege
-              ];
-            }
-          ).length;
-        });
-
-        // Remove existing parentheses and numbers from the name (if any)
-        const baseName = option.name.replace(/\s*\(\d+\)\s*$/, '');
-
-        // Update the collection name with the privilege count (if count > 0)
-        return {
-          ...option,
-          name:
-            privilegeCount > 0 ? `${baseName} (${privilegeCount})` : baseName,
-        };
-      })
-    );
-  }, [selected, selectedDB, rbacOptions, updateCollectionOptionTrigger]);
+  // Update collection options when selected changes
+  useEffect(() => {
+    if (selectedDB) {
+      const updatedOptions = updateCollectionOptionsWithPrivileges(collectionOptions);
+      setCollectionOptions(updatedOptions);
+    }
+  }, [selected, selectedDB, updateCollectionOptionsWithPrivileges, collectionOptions]);
 
   // Handle DB selection
   const handleDBChange = (db: DBOption) => {
     setSelectedDB(db);
-
-    // Update the selected state with the new DB, but preserve existing privileges
     setSelected(prevSelected => {
       const newSelected = { ...prevSelected } as DBCollectionsPrivileges;
-
-      // If the selected DB already exists in the state, keep its collections and privileges
       if (!newSelected[db.value]) {
-        newSelected[db.value] = {
-          collections: {},
-        };
+        newSelected[db.value] = { collections: {} };
       }
-
       setSelectedCollection('*');
-
       return newSelected;
     });
+    fetchCollections(db.value);
   };
 
   // Handle collection selection
@@ -147,31 +139,18 @@ export default function DBCollectionsSelector(
     privilegeName: string,
     checked: boolean
   ) => {
-    // Use the currently selected DB, not the first key in the selected object
     const selectedDBValue = selectedDB?.value;
     if (!selectedDBValue) return;
 
-    // Create a deep copy of the entire selected state
     const newSelected = { ...selected };
-
-    // Ensure the selected DB exists in the new state
     if (!newSelected[selectedDBValue]) {
       newSelected[selectedDBValue] = { collections: {} };
     }
-
-    // Ensure the selected collection exists in the new state
     if (!newSelected[selectedDBValue].collections[collectionValue]) {
       newSelected[selectedDBValue].collections[collectionValue] = {};
     }
-
-    // Update the privilege for the selected collection
-    newSelected[selectedDBValue].collections[collectionValue][privilegeName] =
-      checked;
-
-    // Update the state with the new selected state
+    newSelected[selectedDBValue].collections[collectionValue][privilegeName] = checked;
     setSelected(newSelected);
-
-    console.log(newSelected);
   };
 
   // Handle select all privileges in a category
@@ -183,26 +162,16 @@ export default function DBCollectionsSelector(
     const selectedDBValue = selectedDB?.value;
     if (!selectedDBValue) return;
 
-    // Create a deep copy of the entire selected state
     const newSelected = { ...selected };
-
-    // Ensure the selected DB exists in the new state
     if (!newSelected[selectedDBValue]) {
       newSelected[selectedDBValue] = { collections: {} };
     }
-
-    // Ensure the selected collection exists in the new state
     if (!newSelected[selectedDBValue].collections[collectionValue]) {
       newSelected[selectedDBValue].collections[collectionValue] = {};
     }
-
-    // Update all privileges in the category
     Object.keys(rbacOptions[category]).forEach(privilegeName => {
-      newSelected[selectedDBValue].collections[collectionValue][privilegeName] =
-        checked;
+      newSelected[selectedDBValue].collections[collectionValue][privilegeName] = checked;
     });
-
-    // Update the state with the new selected state
     setSelected(newSelected);
   };
 
