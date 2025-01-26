@@ -350,7 +350,7 @@ export class UserController {
       // add privileges to the group
       const result = await this.userService.addPrivilegeToGroup(req.clientId, {
         group_name,
-        priviliges: privileges,
+        privileges: privileges,
       });
 
       res.send(result);
@@ -410,7 +410,7 @@ export class UserController {
     const { privileges } = req.body;
     // get existing group
     const theGroup = await this.userService.getPrivilegeGroup(req.clientId, {
-      group_name: group_name,
+      group_name,
     });
 
     // if no group found, return error
@@ -421,14 +421,14 @@ export class UserController {
     try {
       // remove all privileges from the group
       await this.userService.removePrivilegeFromGroup(req.clientId, {
-        group_name: group_name,
-        priviliges: theGroup.privileges.map(p => p.name),
+        group_name,
+        privileges: theGroup.privileges.map(p => p.name),
       });
 
       // add new privileges to the group
       const result = await this.userService.addPrivilegeToGroup(req.clientId, {
-        group_name: group_name,
-        priviliges: privileges,
+        group_name,
+        privileges: privileges,
       });
 
       res.send(result);
@@ -445,10 +445,10 @@ export class UserController {
     const { role, collection, privilege } = req.body;
     try {
       const result = await this.userService.grantPrivilegeV2(req.clientId, {
-        role: role,
+        role,
         collection_name: collection || '*',
         db_name: req.db_name,
-        privilege: privilege,
+        privilege,
       });
       res.send(result);
     } catch (error) {
@@ -464,10 +464,10 @@ export class UserController {
     const { role, collection, privilege } = req.body;
     try {
       const result = await this.userService.revokePrivilegeV2(req.clientId, {
-        role: role,
+        role,
         collection_name: collection || '*',
         db_name: req.db_name,
-        privilege: privilege,
+        privilege,
       });
       res.send(result);
     } catch (error) {

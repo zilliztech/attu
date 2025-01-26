@@ -165,7 +165,7 @@ export class CollectionController {
       const request = {} as any;
 
       if (db_name) {
-        request['db_name'] = db_name;
+        request.db_name = db_name;
       }
 
       const result = await this.collectionsService.showCollections(

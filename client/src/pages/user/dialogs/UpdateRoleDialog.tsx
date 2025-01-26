@@ -9,8 +9,13 @@ import { UserService, DatabaseService } from '@/http';
 import { makeStyles } from '@mui/styles';
 import DBCollectionSelector from './DBCollectionSelector';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
-import type { CreateRoleProps, CreateRoleParams, RBACOptions } from '../Types';
-import type { DBCollectionsPrivileges, DBOption } from './types';
+import type {
+  CreateRoleProps,
+  CreateRoleParams,
+  RBACOptions,
+  DBCollectionsPrivileges,
+  DBOption,
+} from '../Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

@@ -258,13 +258,13 @@ export class UserService {
   // update privilege group
   async addPrivilegeToGroup(
     clientId: string,
-    data: { group_name: string; priviliges: string[] }
+    data: { group_name: string; privileges: string[] }
   ) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.addPrivilegesToGroup({
       group_name: data.group_name,
-      privileges: data.priviliges,
+      privileges: data.privileges,
     });
 
     throwErrorFromSDK(res);
@@ -274,13 +274,13 @@ export class UserService {
   // remove privilege from group
   async removePrivilegeFromGroup(
     clientId: string,
-    data: { group_name: string; priviliges: string[] }
+    data: { group_name: string; privileges: string[] }
   ) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.removePrivilegesFromGroup({
       group_name: data.group_name,
-      privileges: data.priviliges,
+      privileges: data.privileges,
     });
 
     throwErrorFromSDK(res);

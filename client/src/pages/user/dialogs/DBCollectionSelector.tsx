@@ -14,7 +14,7 @@ import type {
   CollectionOption,
   DBCollectionsPrivileges,
   DBCollectionsSelectorProps,
-} from './types';
+} from '../Types';
 
 export default function DBCollectionsSelector(
   props: DBCollectionsSelectorProps
@@ -31,7 +31,9 @@ export default function DBCollectionsSelector(
   // UI states
   const [selectedDB, setSelectedDB] = useState<DBOption | null>(null);
   const [selectedCollection, setSelectedCollection] = useState<string>('*');
-  const [collectionOptions, setCollectionOptions] = useState<CollectionOption[]>([]);
+  const [collectionOptions, setCollectionOptions] = useState<
+    CollectionOption[]
+  >([]);
   const [loading, setLoading] = useState(false);
 
   // const
@@ -45,7 +47,9 @@ export default function DBCollectionsSelector(
       let privilegeCount = 0;
       Object.values(rbacOptions).forEach(categoryPrivileges => {
         privilegeCount += Object.keys(categoryPrivileges).filter(privilege => {
-          return selected[selectedDB.value]?.collections[collectionValue]?.[privilege];
+          return selected[selectedDB.value]?.collections[collectionValue]?.[
+            privilege
+          ];
         }).length;
       });
       return privilegeCount;
@@ -61,7 +65,8 @@ export default function DBCollectionsSelector(
         const baseName = option.name.replace(/\s*\(\d+\)\s*$/, '');
         return {
           ...option,
-          name: privilegeCount > 0 ? `${baseName} (${privilegeCount})` : baseName,
+          name:
+            privilegeCount > 0 ? `${baseName} (${privilegeCount})` : baseName,
         };
       });
     },
@@ -107,10 +112,16 @@ export default function DBCollectionsSelector(
   // Update collection options when selected changes
   useEffect(() => {
     if (selectedDB) {
-      const updatedOptions = updateCollectionOptionsWithPrivileges(collectionOptions);
+      const updatedOptions =
+        updateCollectionOptionsWithPrivileges(collectionOptions);
       setCollectionOptions(updatedOptions);
     }
-  }, [selected, selectedDB, updateCollectionOptionsWithPrivileges, collectionOptions]);
+  }, [
+    selected,
+    selectedDB,
+    updateCollectionOptionsWithPrivileges,
+    collectionOptions,
+  ]);
 
   // Handle DB selection
   const handleDBChange = (db: DBOption) => {
@@ -149,7 +160,8 @@ export default function DBCollectionsSelector(
     if (!newSelected[selectedDBValue].collections[collectionValue]) {
       newSelected[selectedDBValue].collections[collectionValue] = {};
     }
-    newSelected[selectedDBValue].collections[collectionValue][privilegeName] = checked;
+    newSelected[selectedDBValue].collections[collectionValue][privilegeName] =
+      checked;
     setSelected(newSelected);
   };
 
@@ -170,7 +182,8 @@ export default function DBCollectionsSelector(
       newSelected[selectedDBValue].collections[collectionValue] = {};
     }
     Object.keys(rbacOptions[category]).forEach(privilegeName => {
-      newSelected[selectedDBValue].collections[collectionValue][privilegeName] = checked;
+      newSelected[selectedDBValue].collections[collectionValue][privilegeName] =
+        checked;
     });
     setSelected(newSelected);
   };
