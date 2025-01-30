@@ -31,7 +31,7 @@ const Roles = () => {
   const { database } = useContext(dataContext);
   const [loading, setLoading] = useState(false);
 
-  const [roles, setRoles] = useState<RoleData[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
   const [selectedRole, setSelectedRole] = useState<RoleData[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -41,21 +41,12 @@ const Roles = () => {
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchRoles = async () => {
+    setLoading(true);
     const roles = await UserService.getRoles();
     setSelectedRole([]);
 
-    setRoles(
-      roles.results.map(v => ({
-        name: v.role.name,
-        privilegeContent: v,
-        privileges: v.entities.map(e => ({
-          roleName: v.role.name,
-          object: e.object.name,
-          objectName: e.object_name,
-          privilegeName: e.grantor.privilege.name,
-        })),
-      }))
-    );
+    setRoles(roles as any);
+    setLoading(false);
   };
 
   const onUpdate = async (data: { isEditing: boolean }) => {
@@ -71,7 +62,7 @@ const Roles = () => {
   const handleDelete = async (force?: boolean) => {
     for (const role of selectedRole) {
       const param: DeleteRoleParams = {
-        roleName: role.name,
+        roleName: role.roleName,
         force,
       };
       await UserService.deleteRole(param);
@@ -126,8 +117,8 @@ const Roles = () => {
       disabled: () =>
         selectedRole.length === 0 ||
         selectedRole.length > 1 ||
-        selectedRole.findIndex(v => v.name === 'admin') > -1 ||
-        selectedRole.findIndex(v => v.name === 'public') > -1,
+        selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.roleName === 'public') > -1,
       disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
     },
 
@@ -155,8 +146,8 @@ const Roles = () => {
       label: btnTrans('drop'),
       disabled: () =>
         selectedRole.length === 0 ||
-        selectedRole.findIndex(v => v.name === 'admin') > -1 ||
-        selectedRole.findIndex(v => v.name === 'public') > -1,
+        selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.roleName === 'public') > -1,
       disabledTooltip: userTrans('deleteTip'),
       icon: 'delete',
     },
@@ -164,7 +155,7 @@ const Roles = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'name',
+      id: 'roleName',
       align: 'left',
       disablePadding: false,
       label: userTrans('role'),
@@ -195,7 +186,7 @@ const Roles = () => {
     },
   ];
 
-  const handleSelectChange = (value: RoleData[]) => {
+  const handleSelectChange = (value: any[]) => {
     setSelectedRole(value);
   };
 
@@ -226,7 +217,7 @@ const Roles = () => {
         colDefinitions={colDefinitions}
         rows={result}
         rowCount={total}
-        primaryKey="name"
+        primaryKey="roleName"
         showPagination={true}
         selected={selectedRole}
         setSelected={handleSelectChange}

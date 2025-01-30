@@ -13,9 +13,9 @@ import type {
   CreateRoleProps,
   CreateRoleParams,
   RBACOptions,
-  DBCollectionsPrivileges,
   DBOption,
 } from '../Types';
+import type { DBCollectionsPrivileges } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -30,11 +30,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const UpdateRoleDialog: FC<CreateRoleProps> = ({
-  onUpdate,
-  handleClose,
-  role = { name: '', privileges: [] },
-}) => {
+const DEFAULT_DB_Privileges: DBCollectionsPrivileges = {
+  '*': {
+    collections: {
+      '*': {},
+    },
+  },
+};
+
+const UpdateRoleDialog: FC<CreateRoleProps> = props => {
+  const {
+    role = {
+      roleName: '',
+      privileges: DEFAULT_DB_Privileges,
+    },
+    handleClose,
+    onUpdate,
+  } = props;
   // i18n
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
@@ -49,19 +61,23 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
     dbOptions: DBOption[]; // Available databases
   }>({ rbacOptions: {} as RBACOptions, dbOptions: [] });
 
-  const [selected, setSelected] = useState<DBCollectionsPrivileges>({
-    '*': {
-      collections: {
-        '*': {},
-      },
-    },
-  });
+  const [selected, setSelected] = useState<DBCollectionsPrivileges>(
+    role.privileges
+  );
 
   // Form state
   const [form, setForm] = useState<CreateRoleParams>({
-    roleName: role.name,
-    privileges: JSON.parse(JSON.stringify(role.privileges)),
+    roleName: role.roleName,
+    privileges: selected,
   });
+
+  // update form if selected changes
+  useEffect(() => {
+    setForm(v => ({
+      ...v,
+      privileges: selected,
+    }));
+  }, [selected]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,7 +106,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   }, []);
 
   // Check if editing an existing role
-  const isEditing = role.name !== '';
+  const isEditing = role.roleName !== '';
 
   // Form validation
   const checkedForm = useMemo(() => {
@@ -109,10 +125,12 @@ const UpdateRoleDialog: FC<CreateRoleProps> = ({
   // Handle create/update role
   const handleCreateRole = async () => {
     try {
-      if (!isEditing) {
-        await UserService.createRole(form);
-      }
-      await UserService.updateRolePrivileges(form);
+      console.log('form:', selected);
+
+      const res = await UserService.updateRolePrivileges(form);
+
+      console.log('res:', res);
+
       onUpdate({ data: form, isEditing });
     } catch (error) {
       console.error('Error creating/updating role:', error);

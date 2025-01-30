@@ -9,7 +9,7 @@ import {
   HasRoleReq,
   listRoleReq,
   SelectUserReq,
-  ListGrantsReq,
+  SelectGrantReq,
   OperateRolePrivilegeReq,
   GrantPrivilegeV2Request,
   RevokePrivilegeV2Request,
@@ -167,9 +167,11 @@ export class UserService {
     return groups;
   }
 
-  async listGrants(clientId: string, data: ListGrantsReq) {
+  async listGrants(clientId: string, roleName: string) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.listGrants(data);
+    const res = await milvusClient.listGrants({
+      roleName,
+    });
     throwErrorFromSDK(res.status);
     return res;
   }
@@ -192,9 +194,7 @@ export class UserService {
 
   async revokeAllRolePrivileges(clientId: string, data: { roleName: string }) {
     // get existing privileges
-    const existingPrivileges = await this.listGrants(clientId, {
-      roleName: data.roleName,
-    });
+    const existingPrivileges = await this.listGrants(clientId, data.roleName);
 
     // revoke all
     for (let i = 0; i < existingPrivileges.entities.length; i++) {

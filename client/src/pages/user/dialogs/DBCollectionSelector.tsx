@@ -12,9 +12,9 @@ import { useDBCollectionSelectorStyle } from './styles';
 import type {
   DBOption,
   CollectionOption,
-  DBCollectionsPrivileges,
   DBCollectionsSelectorProps,
 } from '../Types';
+import type { DBCollectionsPrivileges } from '@server/types/users.type';
 
 export default function DBCollectionsSelector(
   props: DBCollectionsSelectorProps

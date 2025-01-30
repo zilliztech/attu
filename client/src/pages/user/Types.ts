@@ -1,4 +1,5 @@
 import { Option as RoleOption } from '@/components/customSelector/Types';
+import type { DBCollectionsPrivileges } from '@server/types/users.type';
 
 export interface UserData {
   name: string;
@@ -48,7 +49,7 @@ export interface DeleteUserParams {
 
 export interface CreateRoleParams {
   roleName: string;
-  privileges: Privilege[];
+  privileges: DBCollectionsPrivileges;
 }
 
 export interface CreatePrivilegeGroupParams {
@@ -56,10 +57,10 @@ export interface CreatePrivilegeGroupParams {
   privileges: string[];
 }
 
-export interface RoleData {
-  name: string;
-  privileges: Privilege[];
-}
+export type RoleData = {
+  roleName: string;
+  privileges: DBCollectionsPrivileges;
+};
 
 export interface CreateRoleProps {
   onUpdate: (data: { data: CreateRoleParams; isEditing: boolean }) => void;
@@ -81,22 +82,6 @@ export interface UnassignRoleParams extends AssignRoleParams {}
 
 export type RBACOptions = {
   [key: string]: Record<string, unknown>;
-};
-
-export type Privilege = {
-  [key: string]: boolean; // key: privilege name, value: whether it's selected
-};
-
-export type CollectionPrivileges = {
-  [collectionValue: string]: Privilege; // key: collection value, value: privileges
-};
-
-export type DBPrivileges = {
-  collections: CollectionPrivileges; // Collection-level privileges
-};
-
-export type DBCollectionsPrivileges = {
-  [dbValue: string]: DBPrivileges; // key: DB value, value: DB privileges and collections
 };
 
 export type CollectionOption = {

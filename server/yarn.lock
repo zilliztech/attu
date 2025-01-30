@@ -998,6 +998,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@opentelemetry/api@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.npmjs.org/@opentelemetry/api/-/api-1.9.0.tgz#d03eba68273dc0f7509e2a3d5cba21eae10379fe"
+  integrity sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==
+
 "@petamoriken/float16@^3.8.6":
   version "3.8.6"
   resolved "https://registry.yarnpkg.com/@petamoriken/float16/-/float16-3.8.6.tgz#580701cb97a510882342333d31c7cbfd9e14b4f4"
@@ -1476,13 +1481,14 @@
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.9.tgz#b6ef7457e826be8049667ae673eda7876eb049be"
   integrity sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA==
 
-"@zilliz/milvus2-sdk-node@2.5.3":
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.5.3.tgz#3ea5883c584de691eed36eeb602eee472069831e"
-  integrity sha512-8rLs/E0uukHdV1TEe5zMJiL+l6cmqgcYgmprlSbQLvF8ZBDl7rZsxayy94yNMTAxtrzwV5EUCvhd6aPZeO7FSw==
+"@zilliz/milvus2-sdk-node@2.5.5":
+  version "2.5.5"
+  resolved "https://registry.npmjs.org/@zilliz/milvus2-sdk-node/-/milvus2-sdk-node-2.5.5.tgz#86f2d37a44c3b63949bd1be07c33a46b0bf0d73d"
+  integrity sha512-vKDbNu6auOTV0PZSvjKhdXR4wEs+ldREmYA3Ffll2kqJxaljAXmTcDXCw7arFa+/n+xDsg+nP1KTpuZATYDZ8g==
   dependencies:
     "@grpc/grpc-js" "^1.12.1"
     "@grpc/proto-loader" "^0.7.10"
+    "@opentelemetry/api" "^1.9.0"
     "@petamoriken/float16" "^3.8.6"
     dayjs "^1.11.7"
     generic-pool "^3.9.0"
