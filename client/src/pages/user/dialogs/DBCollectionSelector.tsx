@@ -150,10 +150,7 @@ export default function DBCollectionsSelector(
   };
 
   // Check if some privileges in a category are selected
-  const isCategorySomeSelected = (
-    category: string,
-    collectionValue: string
-  ) => {
+  const isCategorySomeSelected = (category: string, collectionValue: string) => {
     const selectedDBValue = selectedDB?.value;
     if (!selectedDBValue) return false;
 
@@ -178,6 +175,14 @@ export default function DBCollectionsSelector(
     return Object.values(collectionPrivileges).filter(Boolean).length;
   };
 
+  // Calculate the number of selected privileges for a DB
+  const getSelectedPrivilegesCountForDB = (dbValue: string) => {
+    const dbPrivileges = selected[dbValue]?.collections || {};
+    return Object.values(dbPrivileges).reduce((total, collection) => {
+      return total + Object.values(collection).filter(Boolean).length;
+    }, 0);
+  };
+
   // Calculate the total number of privileges for a collection
   const getTotalPrivilegesCount = () => {
     return Object.values(rbacOptions).reduce(
@@ -198,15 +203,25 @@ export default function DBCollectionsSelector(
             if (!value) return;
             handleDBChange(value);
           }}
-          getOptionLabel={option => option.name || ''}
+          getOptionLabel={option => {
+            const selectedCount = getSelectedPrivilegesCountForDB(option.value);
+            const totalCount = getTotalPrivilegesCount();
+            return `${option.name} (${selectedCount}/${totalCount})`;
+          }}
           isOptionEqualToValue={(option, value) => option.value === value.value}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label={userTrans('databases')}
-              variant="filled"
-            />
-          )}
+          renderInput={params => {
+            const selectedCount = selectedDB
+              ? getSelectedPrivilegesCountForDB(selectedDB.value)
+              : 0;
+            const totalCount = getTotalPrivilegesCount();
+            return (
+              <TextField
+                {...params}
+                label={`${userTrans('databases')} (${selectedCount}/${totalCount})`}
+                variant="filled"
+              />
+            );
+          }}
           noOptionsText={
             loading ? searchTrans('loading') : searchTrans('noOptions')
           }
@@ -232,15 +247,12 @@ export default function DBCollectionsSelector(
           }}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={params => {
-            const selectedCount =
-              getSelectedPrivilegesCount(selectedCollection);
+            const selectedCount = getSelectedPrivilegesCount(selectedCollection);
             const totalCount = getTotalPrivilegesCount();
             return (
               <TextField
                 {...params}
-                label={`${userTrans(
-                  'collections'
-                )} (${selectedCount}/${totalCount})`}
+                label={`${userTrans('collections')} (${selectedCount}/${totalCount})`}
                 variant="filled"
               />
             );
@@ -261,14 +273,8 @@ export default function DBCollectionsSelector(
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={isCategoryAllSelected(
-                            category,
-                            selectedCollection
-                          )}
-                          indeterminate={isCategorySomeSelected(
-                            category,
-                            selectedCollection
-                          )}
+                          checked={isCategoryAllSelected(category, selectedCollection)}
+                          indeterminate={isCategorySomeSelected(category, selectedCollection)}
                           onChange={e =>
                             handleSelectAll(
                               category,
