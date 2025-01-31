@@ -39,66 +39,27 @@ export default function DBCollectionsSelector(
   // const
   const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
 
-  // Calculate privilege count for a collection
-  const calculatePrivilegeCount = useCallback(
-    (collectionValue: string) => {
-      if (!selectedDB) return 0;
-
-      let privilegeCount = 0;
-      Object.values(rbacOptions).forEach(categoryPrivileges => {
-        privilegeCount += Object.keys(categoryPrivileges).filter(privilege => {
-          return selected[selectedDB.value]?.collections[collectionValue]?.[
-            privilege
-          ];
-        }).length;
-      });
-      return privilegeCount;
-    },
-    [selected, selectedDB, rbacOptions]
-  );
-
-  // Update collection options with privilege counts
-  const updateCollectionOptionsWithPrivileges = useCallback(
-    (options: CollectionOption[]) => {
-      return options.map(option => {
-        const privilegeCount = calculatePrivilegeCount(option.value);
-        const baseName = option.name.replace(/\s*\(\d+\)\s*$/, '');
-        return {
-          ...option,
-          name:
-            privilegeCount > 0 ? `${baseName} (${privilegeCount})` : baseName,
-        };
-      });
-    },
-    [calculatePrivilegeCount]
-  );
-
   // Fetch collections when selected DB changes
-  const fetchCollections = useCallback(
-    async (dbName: string) => {
-      setLoading(true);
-      try {
-        let options: CollectionOption[] = [];
-        if (dbName === '*') {
-          options = [ALL_COLLECTIONS];
-        } else {
-          const res = await CollectionService.getCollectionsNames({
-            db_name: dbName,
-          });
-          options = res.map(c => ({ name: c, value: c }));
-          options.unshift(ALL_COLLECTIONS);
-        }
-        // Update collection options with privilege counts
-        const updatedOptions = updateCollectionOptionsWithPrivileges(options);
-        setCollectionOptions(updatedOptions);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const fetchCollections = useCallback(async (dbName: string) => {
+    setLoading(true);
+    try {
+      let options: CollectionOption[] = [];
+      if (dbName === '*') {
+        options = [ALL_COLLECTIONS];
+      } else {
+        const res = await CollectionService.getCollectionsNames({
+          db_name: dbName,
+        });
+        options = res.map(c => ({ name: c, value: c }));
+        options.unshift(ALL_COLLECTIONS);
       }
-    },
-    [updateCollectionOptionsWithPrivileges]
-  );
+      setCollectionOptions(options);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   // Initialize selectedDB and fetch collections when dbOptions changes
   useEffect(() => {
@@ -108,20 +69,6 @@ export default function DBCollectionsSelector(
       fetchCollections(initialDB.value);
     }
   }, [dbOptions, selectedDB, fetchCollections]);
-
-  // Update collection options when selected changes
-  useEffect(() => {
-    if (selectedDB) {
-      const updatedOptions =
-        updateCollectionOptionsWithPrivileges(collectionOptions);
-      setCollectionOptions(updatedOptions);
-    }
-  }, [
-    selected,
-    selectedDB,
-    updateCollectionOptionsWithPrivileges,
-    collectionOptions,
-  ]);
 
   // Handle DB selection
   const handleDBChange = (db: DBOption) => {
@@ -254,6 +201,8 @@ export default function DBCollectionsSelector(
                         <Checkbox
                           checked={Object.keys(categoryPrivileges).every(
                             privilegeName =>
+                              selected[selectedDB.value] &&
+                              selected[selectedDB.value].collections &&
                               selected[selectedDB.value].collections[
                                 selectedCollection
                               ]?.[privilegeName]
@@ -289,9 +238,12 @@ export default function DBCollectionsSelector(
                             <Checkbox
                               className={classes.checkbox}
                               checked={
-                                selected[selectedDB.value].collections[
-                                  selectedCollection
-                                ]?.[privilegeName] || false
+                                (selected[selectedDB.value] &&
+                                  selected[selectedDB.value].collections &&
+                                  selected[selectedDB.value].collections[
+                                    selectedCollection
+                                  ]?.[privilegeName]) ||
+                                false
                               }
                               size="small"
                               onChange={e =>

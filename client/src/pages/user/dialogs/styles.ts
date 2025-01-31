@@ -5,16 +5,15 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
   root: {
     margin: theme.spacing(1, 0),
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     gap: theme.spacing(2),
     height: '100%',
     backgroundColor: theme.palette.background.paper,
   },
   dbCollections: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     gap: theme.spacing(1),
-    width: '30%',
     height: '100%',
   },
   selectorDB: {
@@ -47,13 +46,11 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
   privileges: {
     display: 'flex',
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: 'row',
     gap: theme.spacing(2),
-    width: '70%',
     height: '42vh',
     overflowY: 'auto',
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(2),
     backgroundColor: theme.palette.background.default,
   },
   selectAllCheckbox: {
