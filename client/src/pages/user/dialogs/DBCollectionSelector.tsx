@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   TextField,
   Typography,
@@ -168,6 +168,24 @@ export default function DBCollectionsSelector(
     return someSelected && !allSelected;
   };
 
+  // Calculate the number of selected privileges for a collection
+  const getSelectedPrivilegesCount = (collectionValue: string) => {
+    const selectedDBValue = selectedDB?.value;
+    if (!selectedDBValue) return 0;
+
+    const collectionPrivileges =
+      selected[selectedDBValue]?.collections?.[collectionValue] || {};
+    return Object.values(collectionPrivileges).filter(Boolean).length;
+  };
+
+  // Calculate the total number of privileges for a collection
+  const getTotalPrivilegesCount = () => {
+    return Object.values(rbacOptions).reduce(
+      (total, category) => total + Object.keys(category).length,
+      0
+    );
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.dbCollections}>
@@ -207,15 +225,26 @@ export default function DBCollectionsSelector(
             if (!value) return;
             handleCollectionChange(value);
           }}
-          getOptionLabel={option => option.name || ''}
+          getOptionLabel={option => {
+            const selectedCount = getSelectedPrivilegesCount(option.value);
+            const totalCount = getTotalPrivilegesCount();
+            return `${option.name} (${selectedCount}/${totalCount})`;
+          }}
           isOptionEqualToValue={(option, value) => option.value === value.value}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label={userTrans('collections')}
-              variant="filled"
-            />
-          )}
+          renderInput={params => {
+            const selectedCount =
+              getSelectedPrivilegesCount(selectedCollection);
+            const totalCount = getTotalPrivilegesCount();
+            return (
+              <TextField
+                {...params}
+                label={`${userTrans(
+                  'collections'
+                )} (${selectedCount}/${totalCount})`}
+                variant="filled"
+              />
+            );
+          }}
           noOptionsText={
             loading ? searchTrans('loading') : searchTrans('noOptions')
           }
