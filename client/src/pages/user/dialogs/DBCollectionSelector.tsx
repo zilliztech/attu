@@ -135,6 +135,39 @@ export default function DBCollectionsSelector(
     setSelected(newSelected);
   };
 
+  // Check if all privileges in a category are selected
+  const isCategoryAllSelected = (category: string, collectionValue: string) => {
+    const selectedDBValue = selectedDB?.value;
+    if (!selectedDBValue) return false;
+
+    const categoryPrivileges = rbacOptions[category];
+    return Object.keys(categoryPrivileges).every(
+      privilegeName =>
+        selected[selectedDBValue] &&
+        selected[selectedDBValue].collections &&
+        selected[selectedDBValue].collections[collectionValue]?.[privilegeName]
+    );
+  };
+
+  // Check if some privileges in a category are selected
+  const isCategorySomeSelected = (
+    category: string,
+    collectionValue: string
+  ) => {
+    const selectedDBValue = selectedDB?.value;
+    if (!selectedDBValue) return false;
+
+    const categoryPrivileges = rbacOptions[category];
+    const someSelected = Object.keys(categoryPrivileges).some(
+      privilegeName =>
+        selected[selectedDBValue] &&
+        selected[selectedDBValue].collections &&
+        selected[selectedDBValue].collections[collectionValue]?.[privilegeName]
+    );
+    const allSelected = isCategoryAllSelected(category, collectionValue);
+    return someSelected && !allSelected;
+  };
+
   return (
     <div className={classes.root}>
       <div className={classes.dbCollections}>
@@ -199,13 +232,13 @@ export default function DBCollectionsSelector(
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={Object.keys(categoryPrivileges).every(
-                            privilegeName =>
-                              selected[selectedDB.value] &&
-                              selected[selectedDB.value].collections &&
-                              selected[selectedDB.value].collections[
-                                selectedCollection
-                              ]?.[privilegeName]
+                          checked={isCategoryAllSelected(
+                            category,
+                            selectedCollection
+                          )}
+                          indeterminate={isCategorySomeSelected(
+                            category,
+                            selectedCollection
                           )}
                           onChange={e =>
                             handleSelectAll(
