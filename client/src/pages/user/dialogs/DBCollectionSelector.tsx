@@ -4,6 +4,8 @@ import {
   Typography,
   FormControlLabel,
   Checkbox,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
@@ -35,12 +37,12 @@ export default function DBCollectionsSelector(
     CollectionOption[]
   >([]);
   const [loading, setLoading] = useState(false);
-
-  // const
-  const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
+  const [tabValue, setTabValue] = useState(0); // Tab index
 
   // Fetch collections when selected DB changes
   const fetchCollections = useCallback(async (dbName: string) => {
+    // const
+    const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
     setLoading(true);
     try {
       let options: CollectionOption[] = [];
@@ -180,42 +182,61 @@ export default function DBCollectionsSelector(
   };
 
   // Calculate the number of selected privileges for a collection
-  const getSelectedPrivilegesCount = (collectionValue: string) => {
+  const getSelectedPrivilegesCount = (
+    collectionValue: string,
+    privileges: [string, Record<string, string>][]
+  ): number => {
     const selectedDBValue = selectedDB?.value;
     if (!selectedDBValue) return 0;
 
     const collectionPrivileges =
       selected[selectedDBValue]?.collections?.[collectionValue] || {};
-    return Object.values(collectionPrivileges).filter(Boolean).length;
+
+    // Count the number of privileges that are selected for the collection
+    const selectedCount = privileges.reduce(
+      (total, [_, categoryPrivileges]) => {
+        return (
+          total +
+          Object.keys(categoryPrivileges).reduce((total, privilegeName) => {
+            return total + (collectionPrivileges[privilegeName] ? 1 : 0);
+          }, 0)
+        );
+      },
+      0
+    );
+
+    return selectedCount;
   };
 
   // Calculate the total number of privileges for a collection
-  const getTotalPrivilegesCount = () => {
-    return Object.values(rbacOptions).reduce(
-      (total, category) => total + Object.keys(category).length,
-      0
-    );
+  const getTotalPrivilegesCount = (
+    privileges: [string, Record<string, string>][]
+  ) => {
+    const total = privileges.reduce((total, [_, categoryPrivileges]) => {
+      return total + Object.keys(categoryPrivileges).length;
+    }, 0);
+
+    return total;
   };
 
+  // extract privileges options
   const globalPrivileges = [
     'DatabasePrivileges',
     'ResourceManagementPrivileges',
     'RBACPrivileges',
   ];
 
-  const databasePrivilegeOptions = Object.entries(rbacOptions).filter(
-    ([category]) => {
-      return category === 'DatabasePrivileges';
-    }
-  );
-
-  const collectionPrivilegeOptions = Object.entries(rbacOptions).filter(
-    ([category]) => {
-      return !globalPrivileges.includes(category);
-    }
-  );
-
-  const clusterPrivileges = Object.entries(rbacOptions).filter(([category]) => {
+  const rbacEntries = Object.entries(rbacOptions) as [
+    string,
+    Record<string, string>
+  ][];
+  const databasePrivilegeOptions = rbacEntries.filter(([category]) => {
+    return category === 'DatabasePrivileges';
+  });
+  const collectionPrivilegeOptions = rbacEntries.filter(([category]) => {
+    return !globalPrivileges.includes(category);
+  });
+  const instancePrivileges = rbacEntries.filter(([category]) => {
     return (
       category === 'ResourceManagementPrivileges' ||
       category === 'RBACPrivileges'
@@ -224,111 +245,139 @@ export default function DBCollectionsSelector(
 
   return (
     <div className={classes.root}>
-      <h3>Cluster Privileges</h3>
-      <PrivilegeSelector
-        privilegeOptions={clusterPrivileges}
-        selected={selected}
-        selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
-        selectedCollection={'*'}
-        handlePrivilegeChange={handlePrivilegeChange}
-        isCategoryAllSelected={isCategoryAllSelected}
-        isCategorySomeSelected={isCategorySomeSelected}
-        handleSelectAll={handleSelectAll}
-      />
+      {/* Tabs for Instance, Database, Collection */}
+      <Tabs
+        value={tabValue}
+        onChange={(event, newValue) => setTabValue(newValue)}
+        aria-label="tabs"
+      >
+        <Tab label={userTrans('collection')} sx={{ textTransform: 'none' }} />
+        <Tab label={userTrans('database')} sx={{ textTransform: 'none' }} />
+        <Tab label={userTrans('instance')} sx={{ textTransform: 'none' }} />
+      </Tabs>
 
-      <h3>Database Privileges</h3>
-      <PrivilegeSelector
-        privilegeOptions={databasePrivilegeOptions}
-        selected={selected}
-        selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
-        selectedCollection={'*'}
-        handlePrivilegeChange={handlePrivilegeChange}
-        isCategoryAllSelected={isCategoryAllSelected}
-        isCategorySomeSelected={isCategorySomeSelected}
-        handleSelectAll={handleSelectAll}
-      />
+      {tabValue === 2 && (
+        <PrivilegeSelector
+          privilegeOptions={instancePrivileges}
+          selected={selected}
+          selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
+          selectedCollection={'*'}
+          handlePrivilegeChange={handlePrivilegeChange}
+          isCategoryAllSelected={isCategoryAllSelected}
+          isCategorySomeSelected={isCategorySomeSelected}
+          handleSelectAll={handleSelectAll}
+        />
+      )}
 
-      <h3>Data Privileges</h3>
+      {tabValue === 1 && (
+        <PrivilegeSelector
+          privilegeOptions={databasePrivilegeOptions}
+          selected={selected}
+          selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
+          selectedCollection={'*'}
+          handlePrivilegeChange={handlePrivilegeChange}
+          isCategoryAllSelected={isCategoryAllSelected}
+          isCategorySomeSelected={isCategorySomeSelected}
+          handleSelectAll={handleSelectAll}
+        />
+      )}
 
-      <div className={classes.dbCollections}>
-        <Autocomplete
-          className={classes.selectorDB}
-          options={dbOptions}
-          loading={loading}
-          value={selectedDB || null}
-          onChange={(_, value) => {
-            if (!value) return;
-            handleDBChange(value);
-          }}
-          getOptionLabel={option => option.name} // Only display the DB name
-          isOptionEqualToValue={(option, value) => option.value === value.value}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label={userTrans('databases')} // Only display the label
-              variant="filled"
+      {tabValue === 0 && (
+        <div>
+          <div className={classes.dbCollections}>
+            <Autocomplete
+              className={classes.selectorDB}
+              options={dbOptions}
+              loading={loading}
+              value={selectedDB || null}
+              onChange={(_, value) => {
+                if (!value) return;
+                handleDBChange(value);
+              }}
+              getOptionLabel={option => option.name}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label={userTrans('databases')}
+                  variant="filled"
+                />
+              )}
+              noOptionsText={
+                loading ? searchTrans('loading') : searchTrans('noOptions')
+              }
             />
-          )}
-          noOptionsText={
-            loading ? searchTrans('loading') : searchTrans('noOptions')
-          }
-        />
-        <Autocomplete
-          className={classes.selectorCollection}
-          options={collectionOptions}
-          loading={loading}
-          value={
-            collectionOptions.find(
-              option => option.value === selectedCollection
-            ) || null
-          }
-          onChange={(_, value) => {
-            if (!value) return;
-            handleCollectionChange(value);
-          }}
-          getOptionLabel={option => {
-            const selectedCount = getSelectedPrivilegesCount(option.value);
-            const totalCount = getTotalPrivilegesCount();
-            return `${option.name} (${selectedCount}/${totalCount})`;
-          }}
-          isOptionEqualToValue={(option, value) => option.value === value.value}
-          renderInput={params => {
-            const selectedCount =
-              getSelectedPrivilegesCount(selectedCollection);
-            const totalCount = getTotalPrivilegesCount();
-            return (
-              <TextField
-                {...params}
-                label={`${userTrans(
-                  'collections'
-                )} (${selectedCount}/${totalCount})`}
-                variant="filled"
-              />
-            );
-          }}
-          noOptionsText={
-            loading ? searchTrans('loading') : searchTrans('noOptions')
-          }
-        />
-      </div>
+            <Autocomplete
+              className={classes.selectorCollection}
+              options={collectionOptions}
+              loading={loading}
+              value={
+                collectionOptions.find(
+                  option => option.value === selectedCollection
+                ) || null
+              }
+              onChange={(_, value) => {
+                if (!value) return;
+                handleCollectionChange(value);
+              }}
+              getOptionLabel={option => {
+                const selectedCount = getSelectedPrivilegesCount(
+                  option.value,
+                  collectionPrivilegeOptions
+                );
+                const totalCount = getTotalPrivilegesCount(
+                  collectionPrivilegeOptions
+                );
+                return `${option.name} (${selectedCount}/${totalCount})`;
+              }}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              renderInput={params => {
+                const selectedCount = getSelectedPrivilegesCount(
+                  selectedCollection,
+                  collectionPrivilegeOptions
+                );
+                const totalCount = getTotalPrivilegesCount(
+                  collectionPrivilegeOptions
+                );
+                return (
+                  <TextField
+                    {...params}
+                    label={`${userTrans(
+                      'collections'
+                    )} (${selectedCount}/${totalCount})`}
+                    variant="filled"
+                  />
+                );
+              }}
+              noOptionsText={
+                loading ? searchTrans('loading') : searchTrans('noOptions')
+              }
+            />
+          </div>
 
-      <PrivilegeSelector
-        privilegeOptions={collectionPrivilegeOptions}
-        selected={selected}
-        selectedDB={selectedDB}
-        selectedCollection={selectedCollection}
-        handlePrivilegeChange={handlePrivilegeChange}
-        isCategoryAllSelected={isCategoryAllSelected}
-        isCategorySomeSelected={isCategorySomeSelected}
-        handleSelectAll={handleSelectAll}
-      />
+          <PrivilegeSelector
+            privilegeOptions={collectionPrivilegeOptions}
+            selected={selected}
+            selectedDB={selectedDB}
+            selectedCollection={selectedCollection}
+            handlePrivilegeChange={handlePrivilegeChange}
+            isCategoryAllSelected={isCategoryAllSelected}
+            isCategorySomeSelected={isCategorySomeSelected}
+            handleSelectAll={handleSelectAll}
+          />
+        </div>
+      )}
     </div>
   );
 }
 
 // PriviligeSelector
 const PrivilegeSelector = (props: {
-  privilegeOptions: [string, Record<string, unknown>][];
+  privilegeOptions: [string, Record<string, string>][];
   selected: DBCollectionsPrivileges;
   selectedDB: DBOption | null;
   selectedCollection: string;

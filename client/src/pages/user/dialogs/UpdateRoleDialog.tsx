@@ -125,11 +125,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
   // Handle create/update role
   const handleCreateRole = async () => {
     try {
-      console.log('form:', selected);
-
       const res = await UserService.updateRolePrivileges(form);
-
-      console.log('res:', res);
 
       onUpdate({ data: form, isEditing });
     } catch (error) {

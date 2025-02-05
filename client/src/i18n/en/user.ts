@@ -46,7 +46,10 @@ const userTrans = {
   allDatabases: 'All Databases',
 
   collections: 'Collections',
+  collection: 'Collection',
   databases: 'Databases',
+  database: 'Database',
+  instance: 'Instance',
 
   DatabasePrivileges: 'Database Privileges',
   CollectionPrivileges: 'Collection Privileges',

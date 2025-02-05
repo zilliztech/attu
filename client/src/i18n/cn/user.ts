@@ -43,8 +43,11 @@ const userTrans = {
   allCollections: '所有集合',
   allDatabases: '所有数据库及所有集合',
 
-  collections: '集合',
+  collections: 'Collection',
+  collection: 'Collection',
   databases: '数据库',
+  database: '数据库',
+  instance: '实例',
 
   DatabasePrivileges: 'Database 相关权限',
   CollectionPrivileges: 'Collection 相关权限',
