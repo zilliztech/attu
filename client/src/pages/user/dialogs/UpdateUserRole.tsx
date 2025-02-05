@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { UserService } from '@/http';
 import { makeStyles } from '@mui/styles';
-import type { UpdateUserRoleProps, UpdateUserRoleParams } from './Types';
+import type { UpdateUserRoleProps, UpdateUserRoleParams } from '../Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -43,7 +43,7 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
   const fetchAllRoles = async () => {
     const roles = await UserService.getRoles();
 
-    setRoleOptions(roles.results.map(r => r.role.name));
+    setRoleOptions(roles.map(role => role.roleName));
   };
 
   useEffect(() => {

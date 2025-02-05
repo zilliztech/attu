@@ -1,12 +1,6 @@
 import { Option as RoleOption } from '@/components/customSelector/Types';
 import type { DBCollectionsPrivileges } from '@server/types/users.type';
 
-export interface UserData {
-  name: string;
-  roleName?: string;
-  roles: string[];
-}
-
 export interface CreateUserParams {
   username: string;
   password: string;

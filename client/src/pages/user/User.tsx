@@ -8,7 +8,6 @@ import {
   CreateUserParams,
   DeleteUserParams,
   UpdateUserParams,
-  UserData,
   UpdateUserRoleParams,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
@@ -19,6 +18,7 @@ import UpdateUserRole from './dialogs/UpdateUserRole';
 import UpdateUser from './dialogs/UpdateUserPassDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import { makeStyles } from '@mui/styles';
+import type { UserWithRoles } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -30,8 +30,8 @@ const Users = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
   const classes = useStyles();
 
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [selectedUser, setSelectedUser] = useState<UserData[]>([]);
+  const [users, setUsers] = useState<UserWithRoles[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserWithRoles[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const { t: successTrans } = useTranslation('success');
@@ -41,23 +41,8 @@ const Users = () => {
 
   const fetchUsers = async () => {
     const res = await UserService.getUsers();
-    const roles = await UserService.getRoles();
 
-    setUsers(
-      res.usernames.map((v: string) => {
-        const name = v;
-        const rolesByName = roles.results.filter(r =>
-          r.users.map((u: any) => u.name).includes(name)
-        );
-        const originRoles =
-          v === 'root' ? ['admin'] : rolesByName.map(r => r.role.name);
-        return {
-          name: v,
-          role: originRoles.join(' , '),
-          roles: originRoles,
-        };
-      })
-    );
+    setUsers(res);
   };
 
   const {
@@ -103,7 +88,7 @@ const Users = () => {
   const handleDelete = async () => {
     for (const user of selectedUser) {
       const param: DeleteUserParams = {
-        username: user.name,
+        username: user.username,
       };
       await UserService.deleteUser(param);
     }
@@ -126,8 +111,8 @@ const Users = () => {
               <CreateUser
                 handleCreate={handleCreate}
                 handleClose={handleCloseDialog}
-                roleOptions={roles.results.map((r: any) => {
-                  return { label: r.role.name, value: r.role.name };
+                roleOptions={roles.map(r => {
+                  return { label: r.roleName, value: r.roleName };
                 })}
               />
             ),
@@ -149,11 +134,12 @@ const Users = () => {
           params: {
             component: (
               <UpdateUserRole
-                username={selectedUser[0]!.name}
+                username={selectedUser[0]!.username}
                 onUpdate={onUpdate}
                 handleClose={handleCloseDialog}
                 roles={
-                  users.filter(u => u.name === selectedUser[0].name)[0].roles
+                  users.filter(u => u.username === selectedUser[0].username)[0]
+                    .roles
                 }
               />
             ),
@@ -164,7 +150,7 @@ const Users = () => {
       disabled: () =>
         selectedUser.length === 0 ||
         selectedUser.length > 1 ||
-        selectedUser.findIndex(v => v.name === 'root') > -1,
+        selectedUser.findIndex(v => v.username === 'root') > -1,
       disabledTooltip: userTrans('deleteEditRoleTip'),
     },
 
@@ -191,7 +177,7 @@ const Users = () => {
       label: btnTrans('drop'),
       disabled: () =>
         selectedUser.length === 0 ||
-        selectedUser.findIndex(v => v.name === 'root') > -1,
+        selectedUser.findIndex(v => v.username === 'root') > -1,
       disabledTooltip: userTrans('deleteTip'),
       icon: 'delete',
     },
@@ -199,18 +185,21 @@ const Users = () => {
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'name',
+      id: 'username',
       align: 'left',
       sortType: 'string',
       disablePadding: false,
       label: userTrans('user'),
     },
     {
-      id: 'role',
+      id: 'roles',
       align: 'left',
       sortType: 'string',
       disablePadding: false,
       label: userTrans('role'),
+      formatter(_, cellData) {
+        return cellData.join(', ');
+      },
     },
     {
       id: 'action',
@@ -220,14 +209,14 @@ const Users = () => {
       sortBy: 'action',
       actionBarConfigs: [
         {
-          onClick: (e: React.MouseEvent, row: UserData) => {
+          onClick: (e: React.MouseEvent, row) => {
             setDialog({
               open: true,
               type: 'custom',
               params: {
                 component: (
                   <UpdateUser
-                    username={row.name}
+                    username={row.username}
                     handleUpdate={handleUpdate}
                     handleClose={handleCloseDialog}
                   />
@@ -242,7 +231,7 @@ const Users = () => {
     },
   ];
 
-  const handleSelectChange = (value: UserData[]) => {
+  const handleSelectChange = (value: UserWithRoles[]) => {
     setSelectedUser(value);
   };
 
@@ -261,7 +250,7 @@ const Users = () => {
         colDefinitions={colDefinitions}
         rows={result}
         rowCount={total}
-        primaryKey="name"
+        primaryKey="username"
         showPagination={true}
         selected={selectedUser}
         setSelected={handleSelectChange}

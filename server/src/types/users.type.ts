@@ -7,6 +7,16 @@ import {
 
 export type Users = ListCredUsersResponse;
 export type UsersWithRoles = SelectRoleResponse;
+export type UserWithRoles = {
+  username: string;
+  roles: string[];
+};
+
+export type RolesWithPrivileges = {
+  roleName: string;
+  privileges: DBCollectionsPrivileges;
+};
+
 export type PrivilegeGroupsRes = ListPrivilegeGroupsResponse;
 export type PrivilegeGroup = PrivelegeGroup;
 

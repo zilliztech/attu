@@ -1,9 +1,9 @@
 import BaseModel from './BaseModel';
 import type {
-  Users,
-  UsersWithRoles,
+  RolesWithPrivileges,
   PrivilegeGroup,
   PrivilegeGroupsRes,
+  UserWithRoles,
 } from '@server/types';
 import type {
   CreateUserParams,
@@ -19,12 +19,15 @@ import type {
 export class UserService extends BaseModel {
   // get user data
   static getUsers() {
-    return super.search<Users>({ path: `/users`, params: {} });
+    return super.search<UserWithRoles[]>({ path: `/users`, params: {} });
   }
 
   // get all roles
   static getRoles() {
-    return super.search<UsersWithRoles>({ path: `/users/roles`, params: {} });
+    return super.search<RolesWithPrivileges[]>({
+      path: `/users/roles`,
+      params: {},
+    });
   }
 
   // create user

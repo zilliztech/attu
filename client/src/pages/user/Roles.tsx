@@ -43,6 +43,8 @@ const Roles = () => {
   const fetchRoles = async () => {
     setLoading(true);
     const roles = await UserService.getRoles();
+
+    console.log(roles);
     setSelectedRole([]);
 
     setRoles(roles as any);
@@ -83,6 +85,7 @@ const Roles = () => {
           params: {
             component: (
               <UpdateRoleDialog
+                role={{ roleName: '', privileges: {} }}
                 onUpdate={onUpdate}
                 handleClose={handleCloseDialog}
               />

@@ -11,7 +11,10 @@ import {
   CreatePrivilegeGroupDto,
   PrivilegeToRoleDto,
 } from './dto';
-import type { DBCollectionsPrivileges } from '../types/users.type';
+import type {
+  DBCollectionsPrivileges,
+  RolesWithPrivileges,
+} from '../types/users.type';
 
 export class UserController {
   private router: Router;
@@ -91,7 +94,20 @@ export class UserController {
     try {
       const result = await this.userService.getUsers(req.clientId);
 
-      res.send(result);
+      const results = [];
+      for (let i = 0; i < result.usernames.length; i++) {
+        const username = result.usernames[i];
+        const roles = await this.userService.selectUser(req.clientId, {
+          username,
+          includeRoleInfo: true,
+        });
+        results.push({
+          username,
+          roles: roles.results[0].roles.map(r => r.name),
+        });
+      }
+
+      res.send(results);
     } catch (error) {
       next(error);
     }
@@ -154,10 +170,7 @@ export class UserController {
       const rolesResult = await this.userService.getRoles(req.clientId);
 
       // Initialize the result array
-      const rolesWithPrivileges: {
-        roleName: string;
-        privileges: DBCollectionsPrivileges;
-      }[] = [];
+      const rolesWithPrivileges: RolesWithPrivileges[] = [];
 
       // Iterate through each role
       for (let i = 0; i < rolesResult.results.length; i++) {
