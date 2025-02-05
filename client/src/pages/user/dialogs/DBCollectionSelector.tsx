@@ -95,9 +95,10 @@ export default function DBCollectionsSelector(
   const handlePrivilegeChange = (
     collectionValue: string,
     privilegeName: string,
-    checked: boolean
+    checked: boolean,
+    dbValue: string
   ) => {
-    const selectedDBValue = selectedDB?.value;
+    const selectedDBValue = dbValue;
     if (!selectedDBValue) return;
 
     const newSelected = { ...selected };
@@ -116,9 +117,10 @@ export default function DBCollectionsSelector(
   const handleSelectAll = (
     category: string,
     collectionValue: string,
-    checked: boolean
+    checked: boolean,
+    dbValue: string
   ) => {
-    const selectedDBValue = selectedDB?.value;
+    const selectedDBValue = dbValue;
     if (!selectedDBValue) return;
 
     const newSelected = { ...selected };
@@ -136,8 +138,12 @@ export default function DBCollectionsSelector(
   };
 
   // Check if all privileges in a category are selected
-  const isCategoryAllSelected = (category: string, collectionValue: string) => {
-    const selectedDBValue = selectedDB?.value;
+  const isCategoryAllSelected = (
+    category: string,
+    collectionValue: string,
+    dbValue: string
+  ) => {
+    const selectedDBValue = dbValue || selectedDB?.value;
     if (!selectedDBValue) return false;
 
     const categoryPrivileges = rbacOptions[category];
@@ -150,8 +156,12 @@ export default function DBCollectionsSelector(
   };
 
   // Check if some privileges in a category are selected
-  const isCategorySomeSelected = (category: string, collectionValue: string) => {
-    const selectedDBValue = selectedDB?.value;
+  const isCategorySomeSelected = (
+    category: string,
+    collectionValue: string,
+    dbValue: string
+  ) => {
+    const selectedDBValue = dbValue;
     if (!selectedDBValue) return false;
 
     const categoryPrivileges = rbacOptions[category];
@@ -161,7 +171,11 @@ export default function DBCollectionsSelector(
         selected[selectedDBValue].collections &&
         selected[selectedDBValue].collections[collectionValue]?.[privilegeName]
     );
-    const allSelected = isCategoryAllSelected(category, collectionValue);
+    const allSelected = isCategoryAllSelected(
+      category,
+      collectionValue,
+      dbValue
+    );
     return someSelected && !allSelected;
   };
 
@@ -175,14 +189,6 @@ export default function DBCollectionsSelector(
     return Object.values(collectionPrivileges).filter(Boolean).length;
   };
 
-  // Calculate the number of selected privileges for a DB
-  const getSelectedPrivilegesCountForDB = (dbValue: string) => {
-    const dbPrivileges = selected[dbValue]?.collections || {};
-    return Object.values(dbPrivileges).reduce((total, collection) => {
-      return total + Object.values(collection).filter(Boolean).length;
-    }, 0);
-  };
-
   // Calculate the total number of privileges for a collection
   const getTotalPrivilegesCount = () => {
     return Object.values(rbacOptions).reduce(
@@ -191,8 +197,59 @@ export default function DBCollectionsSelector(
     );
   };
 
+  const globalPrivileges = [
+    'DatabasePrivileges',
+    'ResourceManagementPrivileges',
+    'RBACPrivileges',
+  ];
+
+  const databasePrivilegeOptions = Object.entries(rbacOptions).filter(
+    ([category]) => {
+      return category === 'DatabasePrivileges';
+    }
+  );
+
+  const collectionPrivilegeOptions = Object.entries(rbacOptions).filter(
+    ([category]) => {
+      return !globalPrivileges.includes(category);
+    }
+  );
+
+  const clusterPrivileges = Object.entries(rbacOptions).filter(([category]) => {
+    return (
+      category === 'ResourceManagementPrivileges' ||
+      category === 'RBACPrivileges'
+    );
+  });
+
   return (
     <div className={classes.root}>
+      <h3>Cluster Privileges</h3>
+      <PrivilegeSelector
+        privilegeOptions={clusterPrivileges}
+        selected={selected}
+        selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
+        selectedCollection={'*'}
+        handlePrivilegeChange={handlePrivilegeChange}
+        isCategoryAllSelected={isCategoryAllSelected}
+        isCategorySomeSelected={isCategorySomeSelected}
+        handleSelectAll={handleSelectAll}
+      />
+
+      <h3>Database Privileges</h3>
+      <PrivilegeSelector
+        privilegeOptions={databasePrivilegeOptions}
+        selected={selected}
+        selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
+        selectedCollection={'*'}
+        handlePrivilegeChange={handlePrivilegeChange}
+        isCategoryAllSelected={isCategoryAllSelected}
+        isCategorySomeSelected={isCategorySomeSelected}
+        handleSelectAll={handleSelectAll}
+      />
+
+      <h3>Data Privileges</h3>
+
       <div className={classes.dbCollections}>
         <Autocomplete
           className={classes.selectorDB}
@@ -203,30 +260,19 @@ export default function DBCollectionsSelector(
             if (!value) return;
             handleDBChange(value);
           }}
-          getOptionLabel={option => {
-            const selectedCount = getSelectedPrivilegesCountForDB(option.value);
-            const totalCount = getTotalPrivilegesCount();
-            return `${option.name} (${selectedCount}/${totalCount})`;
-          }}
+          getOptionLabel={option => option.name} // Only display the DB name
           isOptionEqualToValue={(option, value) => option.value === value.value}
-          renderInput={params => {
-            const selectedCount = selectedDB
-              ? getSelectedPrivilegesCountForDB(selectedDB.value)
-              : 0;
-            const totalCount = getTotalPrivilegesCount();
-            return (
-              <TextField
-                {...params}
-                label={`${userTrans('databases')} (${selectedCount}/${totalCount})`}
-                variant="filled"
-              />
-            );
-          }}
+          renderInput={params => (
+            <TextField
+              {...params}
+              label={userTrans('databases')} // Only display the label
+              variant="filled"
+            />
+          )}
           noOptionsText={
             loading ? searchTrans('loading') : searchTrans('noOptions')
           }
         />
-
         <Autocomplete
           className={classes.selectorCollection}
           options={collectionOptions}
@@ -247,12 +293,15 @@ export default function DBCollectionsSelector(
           }}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={params => {
-            const selectedCount = getSelectedPrivilegesCount(selectedCollection);
+            const selectedCount =
+              getSelectedPrivilegesCount(selectedCollection);
             const totalCount = getTotalPrivilegesCount();
             return (
               <TextField
                 {...params}
-                label={`${userTrans('collections')} (${selectedCount}/${totalCount})`}
+                label={`${userTrans(
+                  'collections'
+                )} (${selectedCount}/${totalCount})`}
                 variant="filled"
               />
             );
@@ -263,77 +312,144 @@ export default function DBCollectionsSelector(
         />
       </div>
 
-      <div className={classes.privileges}>
-        {selectedDB && selectedCollection && (
-          <div>
-            {Object.entries(rbacOptions).map(
-              ([category, categoryPrivileges]) => (
-                <div key={category}>
-                  <div className={classes.categoryHeader}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={isCategoryAllSelected(category, selectedCollection)}
-                          indeterminate={isCategorySomeSelected(category, selectedCollection)}
-                          onChange={e =>
-                            handleSelectAll(
-                              category,
-                              selectedCollection,
-                              e.target.checked
-                            )
-                          }
-                          size="small"
-                          className={classes.selectAllCheckbox}
-                          title={userTrans('selectAll')}
-                        />
-                      }
-                      label=""
-                    />
-                    <Typography
-                      variant="subtitle1"
-                      gutterBottom
-                      className={classes.privilegeTitle}
-                    >
-                      {userTrans(category)}
-                    </Typography>
-                  </div>
-                  <div className={classes.categoryBody}>
-                    {Object.entries(categoryPrivileges).map(
-                      ([privilegeName]) => (
-                        <FormControlLabel
-                          key={privilegeName}
-                          control={
-                            <Checkbox
-                              className={classes.checkbox}
-                              checked={
-                                (selected[selectedDB.value] &&
-                                  selected[selectedDB.value].collections &&
-                                  selected[selectedDB.value].collections[
-                                    selectedCollection
-                                  ]?.[privilegeName]) ||
-                                false
-                              }
-                              size="small"
-                              onChange={e =>
-                                handlePrivilegeChange(
-                                  selectedCollection,
-                                  privilegeName,
-                                  e.target.checked
-                                )
-                              }
-                            />
-                          }
-                          label={privilegeName}
-                        />
-                      )
-                    )}
-                  </div>
-                </div>
-              )
-            )}
-          </div>
-        )}
-      </div>
+      <PrivilegeSelector
+        privilegeOptions={collectionPrivilegeOptions}
+        selected={selected}
+        selectedDB={selectedDB}
+        selectedCollection={selectedCollection}
+        handlePrivilegeChange={handlePrivilegeChange}
+        isCategoryAllSelected={isCategoryAllSelected}
+        isCategorySomeSelected={isCategorySomeSelected}
+        handleSelectAll={handleSelectAll}
+      />
     </div>
   );
 }
+
+// PriviligeSelector
+const PrivilegeSelector = (props: {
+  privilegeOptions: [string, Record<string, unknown>][];
+  selected: DBCollectionsPrivileges;
+  selectedDB: DBOption | null;
+  selectedCollection: string;
+  handlePrivilegeChange: (
+    collectionValue: string,
+    privilegeName: string,
+    checked: boolean,
+    dbValue: string
+  ) => void;
+  isCategoryAllSelected: (
+    category: string,
+    collectionValue: string,
+    dbValue: string
+  ) => boolean;
+  isCategorySomeSelected: (
+    category: string,
+    collectionValue: string,
+    dbValue: string
+  ) => boolean;
+  handleSelectAll: (
+    category: string,
+    collectionValue: string,
+    checked: boolean,
+    dbValue: string
+  ) => void;
+}) => {
+  // props
+  const {
+    selected,
+    selectedDB,
+    selectedCollection,
+    privilegeOptions,
+    handlePrivilegeChange,
+    handleSelectAll,
+    isCategoryAllSelected,
+    isCategorySomeSelected,
+  } = props;
+
+  // style
+  const classes = useDBCollectionSelectorStyle();
+
+  // i18n
+  const { t: userTrans } = useTranslation('user');
+
+  return (
+    <div className={classes.privileges}>
+      {selectedDB && selectedCollection && (
+        <div>
+          {privilegeOptions.map(([category, categoryPrivileges]) => (
+            <div key={category}>
+              <div className={classes.categoryHeader}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isCategoryAllSelected(
+                        category,
+                        selectedCollection,
+                        selectedDB.value
+                      )}
+                      indeterminate={isCategorySomeSelected(
+                        category,
+                        selectedCollection,
+                        selectedDB.value
+                      )}
+                      onChange={e =>
+                        handleSelectAll(
+                          category,
+                          selectedCollection,
+                          e.target.checked,
+                          selectedDB.value
+                        )
+                      }
+                      size="small"
+                      className={classes.selectAllCheckbox}
+                      title={userTrans('selectAll')}
+                    />
+                  }
+                  label=""
+                />
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  className={classes.privilegeTitle}
+                >
+                  {userTrans(category)}
+                </Typography>
+              </div>
+              <div className={classes.categoryBody}>
+                {Object.entries(categoryPrivileges).map(([privilegeName]) => (
+                  <FormControlLabel
+                    key={privilegeName}
+                    control={
+                      <Checkbox
+                        className={classes.checkbox}
+                        checked={
+                          (selected[selectedDB.value] &&
+                            selected[selectedDB.value].collections &&
+                            selected[selectedDB.value].collections[
+                              selectedCollection
+                            ]?.[privilegeName]) ||
+                          false
+                        }
+                        size="small"
+                        onChange={e =>
+                          handlePrivilegeChange(
+                            selectedCollection,
+                            privilegeName,
+                            e.target.checked,
+                            selectedDB.value
+                          )
+                        }
+                      />
+                    }
+                    label={privilegeName}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

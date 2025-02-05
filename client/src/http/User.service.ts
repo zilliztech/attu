@@ -90,11 +90,13 @@ export class UserService extends BaseModel {
       path: `/users/rbac`,
       params: {},
     }) as Promise<{
-      GlobalPrivileges: Record<string, unknown>;
       CollectionPrivileges: Record<string, unknown>;
-      RbacObjects: Record<string, unknown>;
-      UserPrivileges: Record<string, unknown>;
-      Privileges: Record<string, unknown>;
+      DatabasePrivileges: Record<string, unknown>;
+      EntityPrivileges: Record<string, unknown>;
+      IndexPrivileges: Record<string, unknown>;
+      PartitionPrivileges: Record<string, unknown>;
+      RBACPrivileges: Record<string, unknown>;
+      ResourceManagementPrivileges: Record<string, unknown>;
     }>;
   }
   // get privilege groups

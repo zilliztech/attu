@@ -9,7 +9,6 @@ import {
   HasRoleReq,
   listRoleReq,
   SelectUserReq,
-  SelectGrantReq,
   OperateRolePrivilegeReq,
   GrantPrivilegeV2Request,
   RevokePrivilegeV2Request,
@@ -124,12 +123,12 @@ export class UserService {
   async getRBAC() {
     return {
       DatabasePrivileges,
+      ResourceManagementPrivileges,
+      RBACPrivileges,
       CollectionPrivileges,
       PartitionPrivileges,
       IndexPrivileges,
       EntityPrivileges,
-      ResourceManagementPrivileges,
-      RBACPrivileges,
     };
   }
 
@@ -196,15 +195,16 @@ export class UserService {
     // get existing privileges
     const existingPrivileges = await this.listGrants(clientId, data.roleName);
 
-    // revoke all
-    for (let i = 0; i < existingPrivileges.entities.length; i++) {
-      const res = existingPrivileges.entities[i];
-      await this.revokeRolePrivilege(clientId, {
-        object: res.object.name,
-        objectName: res.object_name,
-        privilegeName: res.grantor.privilege.name,
-        roleName: res.role.name,
+    // revoke all existing privileges
+    for (const entity of existingPrivileges.entities) {
+      const res = await this.revokePrivilegeV2(clientId, {
+        db_name: entity.db_name,
+        collection_name: entity.object_name,
+        privilege: entity.grantor.privilege.name,
+        role: entity.role.name,
       });
+
+      throwErrorFromSDK(res);
     }
   }
 
