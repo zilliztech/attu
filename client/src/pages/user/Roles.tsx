@@ -174,6 +174,7 @@ const Roles = () => {
       align: 'left',
       disablePadding: false,
       label: userTrans('role'),
+      sortType: 'string',
     },
 
     {

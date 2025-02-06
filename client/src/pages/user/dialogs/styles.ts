@@ -45,7 +45,7 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
     flex: 1,
     flexDirection: 'column',
     height: 'auto',
-    minHeight: 300,
+    minHeight: 200,
     width: '100%',
     borderRadius: theme.shape.borderRadius,
   },
