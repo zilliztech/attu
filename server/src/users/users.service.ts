@@ -120,8 +120,35 @@ export class UserService {
     return res;
   }
 
-  async getRBAC() {
+  async getRBAC(clientId: string) {
+    const privilegeGrps = await this.getPriviegGroups(clientId);
+
+    const ClusterPrivilegeGroups = {} as any;
+    const DatabasePrivilegeGroups = {} as any;
+    const CollectionPrivilegeGroups = {} as any;
+    const CustomPrivilegeGroups = {} as any;
+
+    privilegeGrps.cluster.forEach((g: any) => {
+      ClusterPrivilegeGroups[g.group_name] = g.group_name;
+    });
+
+    privilegeGrps.db.forEach((g: any) => {
+      DatabasePrivilegeGroups[g.group_name] = g.group_name;
+    });
+
+    privilegeGrps.collection.forEach((g: any) => {
+      CollectionPrivilegeGroups[g.group_name] = g.group_name;
+    });
+
+    privilegeGrps.custom.forEach((g: any) => {
+      CustomPrivilegeGroups[g.group_name] = g.group_name;
+    });
+
     return {
+      ClusterPrivilegeGroups,
+      DatabasePrivilegeGroups,
+      CollectionPrivilegeGroups,
+      CustomPrivilegeGroups,
       DatabasePrivileges,
       ResourceManagementPrivileges,
       RBACPrivileges,
@@ -132,7 +159,7 @@ export class UserService {
     };
   }
 
-  async getAllPrivilegeGroups(clientId: string) {
+  async getPriviegGroups(clientId: string) {
     const { milvusClient } = clientCache.get(clientId);
     const privilegeGrps = await milvusClient.listPrivilegeGroups();
 
@@ -152,18 +179,64 @@ export class UserService {
       'CollectionReadWrite',
     ];
 
-    // only show default groups
-    const groups = privilegeGrps.privilege_groups.filter(
-      g => defaultGrp.indexOf(g.group_name) !== -1
+    const clusterGrp = ['ClusterAdmin', 'ClusterReadOnly', 'ClusterReadWrite'];
+
+    const databaseGrp = [
+      'DatabaseAdmin',
+      'DatabaseReadOnly',
+      'DatabaseReadWrite',
+    ];
+
+    const collectionGrp = [
+      'CollectionAdmin',
+      'CollectionReadOnly',
+      'CollectionReadWrite',
+    ];
+
+    let res: Record<string, any> = {};
+
+    ['cluster', 'db', 'collection', 'default', 'custom', 'all'].forEach(
+      type => {
+        let groups = [] as any[];
+        switch (type) {
+          case 'cluster':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              clusterGrp.includes(g.group_name)
+            );
+            break;
+          case 'db':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              databaseGrp.includes(g.group_name)
+            );
+            break;
+          case 'collection':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              collectionGrp.includes(g.group_name)
+            );
+            break;
+          case 'default':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              defaultGrp.includes(g.group_name)
+            );
+            break;
+          case 'custom':
+            groups = privilegeGrps.privilege_groups.filter(
+              g => !defaultGrp.includes(g.group_name)
+            );
+            break;
+          case 'all':
+            groups = privilegeGrps.privilege_groups;
+            break;
+        }
+
+        res[type] = groups.sort(
+          (a, b) =>
+            defaultGrp.indexOf(a.group_name) - defaultGrp.indexOf(b.group_name)
+        );
+      }
     );
 
-    // sort groups by the order in defaultGrp
-    groups.sort(
-      (a, b) =>
-        defaultGrp.indexOf(a.group_name) - defaultGrp.indexOf(b.group_name)
-    );
-
-    return groups;
+    return res;
   }
 
   async listGrants(clientId: string, roleName: string) {

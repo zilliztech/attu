@@ -88,6 +88,7 @@ export type DBOption = {
   value: string;
 };
 
+
 export interface DBCollectionsSelectorProps {
   selected: DBCollectionsPrivileges; // Current selected DBs and their collections with privileges
   setSelected: (

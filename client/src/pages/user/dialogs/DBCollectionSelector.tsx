@@ -231,15 +231,23 @@ export default function DBCollectionsSelector(
     Record<string, string>
   ][];
   const databasePrivilegeOptions = rbacEntries.filter(([category]) => {
-    return category === 'DatabasePrivileges';
+    return (
+      category === 'DatabasePrivileges' || category == 'DatabasePrivilegeGroups'
+    );
   });
   const collectionPrivilegeOptions = rbacEntries.filter(([category]) => {
-    return !globalPrivileges.includes(category);
+    return (
+      !globalPrivileges.includes(category) &&
+      category !== 'ClusterPrivilegeGroups' &&
+      category !== 'DatabasePrivilegeGroups'
+    );
   });
-  const instancePrivileges = rbacEntries.filter(([category]) => {
+  const clusterPrivileges = rbacEntries.filter(([category]) => {
     return (
       category === 'ResourceManagementPrivileges' ||
-      category === 'RBACPrivileges'
+      category === 'RBACPrivileges' ||
+      category === 'ClusterPrivilegeGroups' ||
+      category === 'CustomPrivilegeGroups'
     );
   });
 
@@ -258,7 +266,7 @@ export default function DBCollectionsSelector(
 
       {tabValue === 2 && (
         <PrivilegeSelector
-          privilegeOptions={instancePrivileges}
+          privilegeOptions={clusterPrivileges}
           selected={selected}
           selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
           selectedCollection={'*'}

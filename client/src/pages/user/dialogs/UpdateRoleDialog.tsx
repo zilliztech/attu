@@ -59,7 +59,10 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
   const [options, setOptions] = useState<{
     rbacOptions: RBACOptions; // Available RBAC options (privileges)
     dbOptions: DBOption[]; // Available databases
-  }>({ rbacOptions: {} as RBACOptions, dbOptions: [] });
+  }>({
+    rbacOptions: {} as RBACOptions,
+    dbOptions: [],
+  });
 
   const [selected, setSelected] = useState<DBCollectionsPrivileges>(
     role.privileges
@@ -82,13 +85,10 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dbResponse, rbacResponse, privilegeGrps] = await Promise.all([
+        const [dbResponse, rbacResponse] = await Promise.all([
           DatabaseService.listDatabases(),
           UserService.getRBAC(),
-          UserService.getAllPrivilegeGroups(),
         ]);
-
-        console.log('privilegeGrps', privilegeGrps);
 
         const dbOptions = dbResponse.map(db => ({
           name: db.name,
