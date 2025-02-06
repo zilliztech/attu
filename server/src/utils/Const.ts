@@ -89,13 +89,13 @@ export enum DatabasePrivileges {
 export enum CollectionPrivileges {
   CreateCollection = 'CreateCollection',
   DescribeCollection = 'DescribeCollection',
+  ShowCollections = 'ShowCollections',
   DropCollection = 'DropCollection',
   RenameCollection = 'RenameCollection',
   CreateAlias = 'CreateAlias',
-  DropAlias = 'DropAlias',
   DescribeAlias = 'DescribeAlias',
+  DropAlias = 'DropAlias',
   ListAliases = 'ListAliases',
-  ShowCollections = 'ShowCollections',
   Load = 'Load',
   GetLoadingProgress = 'GetLoadingProgress',
   GetLoadState = 'GetLoadState',
@@ -124,12 +124,12 @@ export enum EntityPrivileges {
 }
 
 export enum ResourceManagementPrivileges {
-  LoadBalance = 'LoadBalance',
   CreateResourceGroup = 'CreateResourceGroup',
   DropResourceGroup = 'DropResourceGroup',
   UpdateResourceGroups = 'UpdateResourceGroups',
   DescribeResourceGroup = 'DescribeResourceGroup',
   ListResourceGroups = 'ListResourceGroups',
+  LoadBalance = 'LoadBalance',
   TransferNode = 'TransferNode',
   TransferReplica = 'TransferReplica',
   BackupRBAC = 'BackupRBAC',

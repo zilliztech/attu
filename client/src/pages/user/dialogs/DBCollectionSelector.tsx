@@ -17,7 +17,7 @@ import type {
   CollectionOption,
   DBCollectionsSelectorProps,
 } from '../Types';
-import type { DBCollectionsPrivileges } from '@server/types/users.type';
+import type { DBCollectionsPrivileges, RBACOptions } from '@server/types';
 
 export default function DBCollectionsSelector(
   props: DBCollectionsSelectorProps
@@ -46,7 +46,7 @@ export default function DBCollectionsSelector(
   // Fetch collections when selected DB changes
   const fetchCollections = useCallback(async (dbName: string) => {
     // const
-    const ALL_COLLECTIONS = { name: userTrans('allCollections'), value: '*' };
+    const ALL_COLLECTIONS = { name: '*', value: '*' };
     setLoading(true);
     try {
       let options: CollectionOption[] = [];
@@ -121,7 +121,7 @@ export default function DBCollectionsSelector(
 
   // Handle select all privileges in a category
   const handleSelectAll = (
-    category: string,
+    category: keyof RBACOptions,
     collectionValue: string,
     checked: boolean,
     dbValue: string
@@ -145,7 +145,7 @@ export default function DBCollectionsSelector(
 
   // Check if all privileges in a category are selected
   const isCategoryAllSelected = (
-    category: string,
+    category: keyof RBACOptions,
     collectionValue: string,
     dbValue: string
   ) => {
@@ -163,7 +163,7 @@ export default function DBCollectionsSelector(
 
   // Check if some privileges in a category are selected
   const isCategorySomeSelected = (
-    category: string,
+    category: keyof RBACOptions,
     collectionValue: string,
     dbValue: string
   ) => {
@@ -231,7 +231,7 @@ export default function DBCollectionsSelector(
   ];
 
   const rbacEntries = Object.entries(rbacOptions) as [
-    string,
+    keyof RBACOptions,
     Record<string, string>
   ][];
   const databasePrivilegeOptions = rbacEntries.filter(([category]) => {
@@ -265,7 +265,7 @@ export default function DBCollectionsSelector(
     <div className={classes.root}>
       {/* Privilege type toggle */}
       <div className={classes.toggle}>
-        <label className='toggle-label'>
+        <label className="toggle-label">
           <Radio
             checked={privilegeOptionType === 'group'}
             onChange={() => setPrivilegeOptionType('group')}
@@ -276,7 +276,7 @@ export default function DBCollectionsSelector(
           />
           {userTrans('privilegeGroups')}
         </label>
-        <label className='toggle-label'>
+        <label className="toggle-label">
           <Radio
             checked={privilegeOptionType === 'custom'}
             onChange={() => setPrivilegeOptionType('custom')}
@@ -288,7 +288,7 @@ export default function DBCollectionsSelector(
           {userTrans('privileges')}
         </label>
       </div>
-      {/* Tabs for Instance, Database, Collection */}
+      {/* Tabs for cluster, Database, Collection */}
       <Tabs
         value={tabValue}
         onChange={(event, newValue) => setTabValue(newValue)}
@@ -298,8 +298,6 @@ export default function DBCollectionsSelector(
         <Tab label={userTrans('database')} sx={{ textTransform: 'none' }} />
         <Tab label={userTrans('cluster')} sx={{ textTransform: 'none' }} />
       </Tabs>
-
-      
 
       {tabValue === 2 && (
         <PrivilegeSelector
@@ -416,7 +414,7 @@ export default function DBCollectionsSelector(
 
 // PriviligeSelector
 const PrivilegeSelector = (props: {
-  privilegeOptions: [string, Record<string, string>][];
+  privilegeOptions: [keyof RBACOptions, Record<string, string>][];
   selected: DBCollectionsPrivileges;
   selectedDB: DBOption | null;
   selectedCollection: string;
@@ -428,17 +426,17 @@ const PrivilegeSelector = (props: {
     dbValue: string
   ) => void;
   isCategoryAllSelected: (
-    category: string,
+    category: keyof RBACOptions,
     collectionValue: string,
     dbValue: string
   ) => boolean;
   isCategorySomeSelected: (
-    category: string,
+    category: keyof RBACOptions,
     collectionValue: string,
     dbValue: string
   ) => boolean;
   handleSelectAll: (
-    category: string,
+    category: keyof RBACOptions,
     collectionValue: string,
     checked: boolean,
     dbValue: string

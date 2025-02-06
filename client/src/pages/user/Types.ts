@@ -1,5 +1,8 @@
 import { Option as RoleOption } from '@/components/customSelector/Types';
-import type { DBCollectionsPrivileges } from '@server/types/users.type';
+import type {
+  DBCollectionsPrivileges,
+  RBACOptions,
+} from '@server/types/users.type';
 
 export interface CreateUserParams {
   username: string;
@@ -74,10 +77,6 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export type RBACOptions = {
-  [key: string]: Record<string, unknown>;
-};
-
 export type CollectionOption = {
   name: string;
   value: string;
@@ -87,7 +86,6 @@ export type DBOption = {
   name: string;
   value: string;
 };
-
 
 export interface DBCollectionsSelectorProps {
   selected: DBCollectionsPrivileges; // Current selected DBs and their collections with privileges

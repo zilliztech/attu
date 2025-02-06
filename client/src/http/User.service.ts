@@ -4,6 +4,7 @@ import type {
   PrivilegeGroup,
   PrivilegeGroupsRes,
   UserWithRoles,
+  RBACOptions,
 } from '@server/types';
 import type {
   CreateUserParams,
@@ -92,15 +93,7 @@ export class UserService extends BaseModel {
     return super.search({
       path: `/users/rbac`,
       params: {},
-    }) as Promise<{
-      CollectionPrivileges: Record<string, unknown>;
-      DatabasePrivileges: Record<string, unknown>;
-      EntityPrivileges: Record<string, unknown>;
-      IndexPrivileges: Record<string, unknown>;
-      PartitionPrivileges: Record<string, unknown>;
-      RBACPrivileges: Record<string, unknown>;
-      ResourceManagementPrivileges: Record<string, unknown>;
-    }>;
+    }) as Promise<RBACOptions>;
   }
   // get privilege groups
   static getPrivilegeGroups() {

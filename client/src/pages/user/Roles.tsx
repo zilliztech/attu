@@ -13,9 +13,13 @@ import type {
   ColDefinitionsType,
   ToolBarConfig,
 } from '@/components/grid/Types';
-import type { DeleteRoleParams, RBACOptions } from './Types';
+import type { DeleteRoleParams } from './Types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import type { RolesWithPrivileges } from '@server/types';
+import type {
+  RolesWithPrivileges,
+  RBACOptions,
+  DBCollectionsPrivileges,
+} from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -32,8 +36,10 @@ const Roles = () => {
   const { database } = useContext(dataContext);
   const [loading, setLoading] = useState(false);
 
-  const [roles, setRoles] = useState<any[]>([]);
-  const [rbacOptions, setRbacOptions] = useState<RBACOptions>({});
+  const [roles, setRoles] = useState<RolesWithPrivileges[]>([]);
+  const [rbacOptions, setRbacOptions] = useState<RBACOptions>(
+    {} as RBACOptions
+  );
   const [selectedRole, setSelectedRole] = useState<RolesWithPrivileges[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
@@ -174,124 +180,79 @@ const Roles = () => {
       id: 'privileges',
       align: 'left',
       disablePadding: false,
-      formatter({ privileges }) {
-        // Assume rbacOptions is available in this scope or imported from your config.
-        // The global categories defined in your RBAC classification:
-        const globalPrivilegeCategories = [
-          'DatabasePrivileges',
-          'ResourceManagementPrivileges',
-          'RBACPrivileges',
-        ];
+      formatter({ privileges, roleName }) {
+        const isAdmin = roleName === 'admin';
 
         // Derive the options arrays as in DBCollectionSelector.
         const rbacEntries = Object.entries(rbacOptions) as [
           string,
           Record<string, string>
         ][];
-        const databasePrivilegeOptions = rbacEntries.filter(
-          ([category]) => category === 'DatabasePrivileges'
-        );
-        const instancePrivilegeOptions = rbacEntries.filter(
-          ([category]) =>
-            category === 'ResourceManagementPrivileges' ||
-            category === 'RBACPrivileges'
-        );
-        // Collection privileges are those not in the globalPrivilegeCategories.
-        const collectionPrivilegeOptions = rbacEntries.filter(
-          ([category]) => !globalPrivilegeCategories.includes(category)
+
+        // privileges of the privilege groups
+        const privilegeGroups = rbacEntries.filter(([key]) =>
+          key.endsWith('PrivilegeGroups')
         );
 
-        // Build sets of known privilege keys for each category.
-        const dbPrivSet = new Set(
-          databasePrivilegeOptions
-            .map(([_, rec]) => Object.keys(rec))
-            .reduce((acc, val) => acc.concat(val), [])
-        );
-        const instPrivSet = new Set(
-          instancePrivilegeOptions
-            .map(([_, rec]) => Object.keys(rec))
-            .reduce((acc, val) => acc.concat(val), [])
-        );
-        const collPrivSet = new Set(
-          collectionPrivilegeOptions
-            .map(([_, rec]) => Object.keys(rec))
-            .reduce((acc, val) => acc.concat(val), [])
+        const groupPrivileges = new Set(
+          privilegeGroups.reduce(
+            (acc, [_, group]) => acc.concat(Object.values(group)),
+            [] as string[]
+          )
         );
 
-        // Global privileges from the privileges prop.
-        const globalPrivilegesObj = privileges['*']?.collections?.['*'] || {};
+        let groupCount = 0;
+        let privilegeCount = 0;
 
-        let collectionCount = 0;
-        let databaseCount = 0;
-        let instanceCount = 0;
-
-        Object.keys(globalPrivilegesObj).forEach(key => {
-          if (dbPrivSet.has(key)) {
-            databaseCount++;
-          } else if (instPrivSet.has(key)) {
-            instanceCount++;
-          } else if (collPrivSet.has(key)) {
-            collectionCount++;
-          } else {
-            // Fallback: if key is not found in any option list, count it into Collection.
-            collectionCount++;
+        Object.values(privileges as DBCollectionsPrivileges).forEach(
+          dbPrivileges => {
+            Object.values(dbPrivileges.collections).forEach(
+              collectionPrivileges => {
+                Object.keys(collectionPrivileges).forEach(privilege => {
+                  if (groupPrivileges.has(privilege)) {
+                    groupCount++;
+                  } else {
+                    privilegeCount++;
+                  }
+                });
+              }
+            );
           }
-        });
-
-        // Get all database entries excluding the top-level "*"
-        const dbEntries = Object.entries(privileges).filter(
-          ([key]) => key !== '*'
-        ) as any[];
+        );
 
         return (
           <div>
-            {(collectionCount > 0 ||
-              databaseCount > 0 ||
-              instanceCount > 0) && (
-              <div style={{ marginBottom: 4 }}>
-                <Chip
-                  label={`${userTrans('Collection')} (*) (${collectionCount})`}
-                  size="small"
-                  style={{ marginRight: 4 }}
-                />
-                <Chip
-                  label={`${userTrans('Database')} (${databaseCount})`}
-                  size="small"
-                  style={{ marginRight: 4 }}
-                />
-                <Chip
-                  label={`${userTrans('Cluster')} (${instanceCount})`}
-                  size="small"
-                  style={{ marginRight: 4 }}
-                />
-              </div>
-            )}
-            {dbEntries.map(([dbName, dbData]) => {
-              const collections = dbData.collections || {};
-              return (
-                <div key={dbName} style={{ marginTop: 4 }}>
-                  {(Object.entries(collections) as any[]).map(
-                    ([colName, privileges]) => {
-                      const count = Object.keys(privileges).length;
-                      const displayName =
-                        colName === '*' ? 'All Collections' : colName;
-                      return (
-                        <Chip
-                          key={colName}
-                          label={`${dbName}/${displayName} (${count})`}
-                          size="small"
-                          style={{ marginRight: 4, marginTop: 4 }}
-                        />
-                      );
-                    }
-                  )}
+            {
+              <>
+                <div style={{ marginBottom: 2 }}>
+                  <Chip
+                    label={`${userTrans('Group')} (${
+                      isAdmin ? '*' : groupCount
+                    })`}
+                    size="small"
+                    style={{ marginRight: 2 }}
+                  />
                 </div>
-              );
-            })}
+                <div style={{ marginBottom: 2 }}>
+                  <Chip
+                    label={`${userTrans('privileges')} (${
+                      isAdmin ? '*' : privilegeCount
+                    })`}
+                    size="small"
+                    style={{ marginRight: 2 }}
+                  />
+                </div>
+              </>
+            }
           </div>
         );
       },
       label: userTrans('privileges'),
+      getStyle: () => {
+        return {
+          width: '70%',
+        };
+      },
     },
   ];
 
@@ -333,6 +294,7 @@ const Roles = () => {
         page={currentPage}
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
+        rowHeight={52}
         setRowsPerPage={handlePageSize}
         isLoading={loading}
         order={order}

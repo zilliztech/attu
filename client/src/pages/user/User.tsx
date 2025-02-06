@@ -229,7 +229,7 @@ const Users = () => {
         return cellData.join(', ');
       },
       getStyle: () => {
-        return { minWidth: '460px' };
+        return { width: '70%' };
       },
     },
   ];

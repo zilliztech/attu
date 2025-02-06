@@ -35,3 +35,17 @@ export type DBPrivileges = {
 export type DBCollectionsPrivileges = {
   [dbValue: string]: DBPrivileges; // key: DB value, value: DB privileges and collections
 };
+
+export type RBACOptions = {
+  ClusterPrivilegeGroups: Record<string, unknown>;
+  DatabasePrivilegeGroups: Record<string, unknown>;
+  CollectionPrivilegeGroups: Record<string, unknown>;
+  CustomPrivilegeGroups: Record<string, unknown>;
+  CollectionPrivileges: Record<string, unknown>;
+  DatabasePrivileges: Record<string, unknown>;
+  EntityPrivileges: Record<string, unknown>;
+  IndexPrivileges: Record<string, unknown>;
+  PartitionPrivileges: Record<string, unknown>;
+  RBACPrivileges: Record<string, unknown>;
+  ResourceManagementPrivileges: Record<string, unknown>;
+};
