@@ -101,3 +101,10 @@ export interface DBCollectionsSelectorProps {
     dbOptions: DBOption[]; // Available databases
   };
 }
+
+export interface PrivilegeGrpOptionsProps {
+  options: string[];
+  selection: string[];
+  onChange: (data: string[]) => void;
+  group_name: string;
+}

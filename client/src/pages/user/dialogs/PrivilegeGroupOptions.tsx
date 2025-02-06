@@ -25,6 +25,7 @@ const PrivilegeGroupOptions: FC<PrivilegeGrpOptionsProps> = ({
   options,
   selection,
   onChange,
+  group_name,
 }) => {
   const classes = useStyles();
 

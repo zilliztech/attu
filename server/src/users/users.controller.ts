@@ -105,6 +105,11 @@ export class UserController {
           username,
           roles: roles.results[0].roles.map(r => r.name),
         });
+        if (username === 'root') {
+          // Remove the recently pushed "root" user and insert it at the beginning of the results array
+          const rootUser = results.pop();
+          results.unshift(rootUser);
+        }
       }
 
       res.send(results);

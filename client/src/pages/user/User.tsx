@@ -126,6 +126,34 @@ const Users = () => {
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
+      label: userTrans('editPassword'),
+      onClick: async () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <UpdateUser
+                username={selectedUser[0]!.username}
+                handleUpdate={handleUpdate}
+                handleClose={handleCloseDialog}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'edit',
+      disabled: () =>
+        selectedUser.length === 0 ||
+        selectedUser.length > 1 ||
+        selectedUser.findIndex(v => v.username === 'root') > -1,
+      disabledTooltip: userTrans('deleteEditRoleTip'),
+    },
+
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
       label: userTrans('editRole'),
       onClick: async () => {
         setDialog({
@@ -194,40 +222,12 @@ const Users = () => {
     {
       id: 'roles',
       align: 'left',
-      sortType: 'string',
+      notSort: true,
       disablePadding: false,
       label: userTrans('role'),
       formatter(_, cellData) {
         return cellData.join(', ');
       },
-    },
-    {
-      id: 'action',
-      disablePadding: false,
-      label: 'Action',
-      showActionCell: true,
-      sortBy: 'action',
-      actionBarConfigs: [
-        {
-          onClick: (e: React.MouseEvent, row) => {
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component: (
-                  <UpdateUser
-                    username={row.username}
-                    handleUpdate={handleUpdate}
-                    handleClose={handleCloseDialog}
-                  />
-                ),
-              },
-            });
-          },
-          linkButton: true,
-          text: 'Update password',
-        },
-      ],
     },
   ];
 

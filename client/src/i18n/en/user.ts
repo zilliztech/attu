@@ -12,9 +12,10 @@ const userTrans = {
   isNotSame: 'Not same as new password',
   deleteTip:
     'Please select at least one item to drop and the root user can not be dropped.',
+  editPassword: 'Edit Password',
 
   // role
-  deleteEditRoleTip: 'root role is not editable.',
+  deleteEditRoleTip: 'Please select one user to edit, root is not editable.',
   disableEditRolePrivilegeTip: 'admin and public role are not editable.',
 
   role: 'Role',

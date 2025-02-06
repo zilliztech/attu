@@ -11,9 +11,10 @@ const userTrans = {
   update: '更新密码',
   isNotSame: '与新密码不同',
   deleteTip: '请至少选择一个要删除的项目，不能删除root用户。',
+  editPassword: '修改密码',
 
   // role
-  deleteEditRoleTip: 'root角色不可编辑。',
+  deleteEditRoleTip: '请选择一个角色，并且root角色不可编辑。',
   disableEditRolePrivilegeTip: 'admin和public角色不可编辑。',
 
   role: '角色',

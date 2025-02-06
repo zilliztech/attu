@@ -13,8 +13,9 @@ import type {
   ColDefinitionsType,
   ToolBarConfig,
 } from '@/components/grid/Types';
-import type { DeleteRoleParams, RoleData } from './Types';
+import type { DeleteRoleParams, RBACOptions } from './Types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import type { RolesWithPrivileges } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -32,7 +33,8 @@ const Roles = () => {
   const [loading, setLoading] = useState(false);
 
   const [roles, setRoles] = useState<any[]>([]);
-  const [selectedRole, setSelectedRole] = useState<RoleData[]>([]);
+  const [rbacOptions, setRbacOptions] = useState<RBACOptions>({});
+  const [selectedRole, setSelectedRole] = useState<RolesWithPrivileges[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
   const { t: successTrans } = useTranslation('success');
@@ -42,10 +44,14 @@ const Roles = () => {
 
   const fetchRoles = async () => {
     setLoading(true);
-    const roles = await UserService.getRoles();
 
-    console.log(roles);
+    const [roles, rbacs] = await Promise.all([
+      UserService.getRoles(),
+      UserService.getRBAC(),
+    ]);
+
     setSelectedRole([]);
+    setRbacOptions(rbacs);
 
     setRoles(roles as any);
     setLoading(false);
@@ -165,24 +171,124 @@ const Roles = () => {
     },
 
     {
-      id: 'privilegeContent',
+      id: 'privileges',
       align: 'left',
       disablePadding: false,
-      formatter({ privilegeContent }) {
+      formatter({ privileges }) {
+        // Assume rbacOptions is available in this scope or imported from your config.
+        // The global categories defined in your RBAC classification:
+        const globalPrivilegeCategories = [
+          'DatabasePrivileges',
+          'ResourceManagementPrivileges',
+          'RBACPrivileges',
+        ];
+
+        // Derive the options arrays as in DBCollectionSelector.
+        const rbacEntries = Object.entries(rbacOptions) as [
+          string,
+          Record<string, string>
+        ][];
+        const databasePrivilegeOptions = rbacEntries.filter(
+          ([category]) => category === 'DatabasePrivileges'
+        );
+        const instancePrivilegeOptions = rbacEntries.filter(
+          ([category]) =>
+            category === 'ResourceManagementPrivileges' ||
+            category === 'RBACPrivileges'
+        );
+        // Collection privileges are those not in the globalPrivilegeCategories.
+        const collectionPrivilegeOptions = rbacEntries.filter(
+          ([category]) => !globalPrivilegeCategories.includes(category)
+        );
+
+        // Build sets of known privilege keys for each category.
+        const dbPrivSet = new Set(
+          databasePrivilegeOptions
+            .map(([_, rec]) => Object.keys(rec))
+            .reduce((acc, val) => acc.concat(val), [])
+        );
+        const instPrivSet = new Set(
+          instancePrivilegeOptions
+            .map(([_, rec]) => Object.keys(rec))
+            .reduce((acc, val) => acc.concat(val), [])
+        );
+        const collPrivSet = new Set(
+          collectionPrivilegeOptions
+            .map(([_, rec]) => Object.keys(rec))
+            .reduce((acc, val) => acc.concat(val), [])
+        );
+
+        // Global privileges from the privileges prop.
+        const globalPrivilegesObj = privileges['*']?.collections?.['*'] || {};
+
+        let collectionCount = 0;
+        let databaseCount = 0;
+        let instanceCount = 0;
+
+        Object.keys(globalPrivilegesObj).forEach(key => {
+          if (dbPrivSet.has(key)) {
+            databaseCount++;
+          } else if (instPrivSet.has(key)) {
+            instanceCount++;
+          } else if (collPrivSet.has(key)) {
+            collectionCount++;
+          } else {
+            // Fallback: if key is not found in any option list, count it into Collection.
+            collectionCount++;
+          }
+        });
+
+        // Get all database entries excluding the top-level "*"
+        const dbEntries = Object.entries(privileges).filter(
+          ([key]) => key !== '*'
+        ) as any[];
+
         return (
-          <>
-            {privilegeContent.entities.map((e: any) => {
-              return (
+          <div>
+            {(collectionCount > 0 ||
+              databaseCount > 0 ||
+              instanceCount > 0) && (
+              <div style={{ marginBottom: 4 }}>
                 <Chip
-                  key={`${e.object.name}-${e.grantor.privilege.name}`}
-                  className={classes.chip}
+                  label={`Collection (*) (${collectionCount})`}
                   size="small"
-                  label={e.grantor.privilege.name}
-                  variant="outlined"
+                  style={{ marginRight: 4 }}
                 />
+                <Chip
+                  label={`Database (${databaseCount})`}
+                  size="small"
+                  style={{ marginRight: 4 }}
+                />
+                <Chip
+                  label={`Instance (${instanceCount})`}
+                  size="small"
+                  style={{ marginRight: 4 }}
+                />
+              </div>
+            )}
+            {dbEntries.map(([dbName, dbData]) => {
+              const collections = dbData.collections || {};
+              return (
+                <div key={dbName} style={{ marginTop: 4 }}>
+                  {(Object.entries(collections) as any[]).map(
+                    ([colName, privileges]) => {
+                      const count = Object.keys(privileges).length;
+                      const displayName =
+                        colName === '*' ? 'All Collections' : colName;
+                      return (
+                        <Chip
+                          key={colName}
+                          label={`${dbName}/${displayName} (${count})`}
+                          size="small"
+                          style={{ marginRight: 4, marginTop: 4 }}
+                        />
+                      );
+                    }
+                  )}
+                </div>
               );
             })}
-          </>
+          </div>
         );
       },
       label: userTrans('privileges'),
