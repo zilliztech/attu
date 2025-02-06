@@ -223,10 +223,13 @@ const Users = () => {
       id: 'roles',
       align: 'left',
       notSort: true,
-      disablePadding: false,
+      disablePadding: true,
       label: userTrans('role'),
       formatter(_, cellData) {
         return cellData.join(', ');
+      },
+      getStyle: () => {
+        return { minWidth: '460px' };
       },
     },
   ];

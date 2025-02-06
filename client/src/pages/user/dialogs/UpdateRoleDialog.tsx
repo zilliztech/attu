@@ -82,10 +82,13 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [dbResponse, rbacResponse] = await Promise.all([
+        const [dbResponse, rbacResponse, privilegeGrps] = await Promise.all([
           DatabaseService.listDatabases(),
           UserService.getRBAC(),
+          UserService.getAllPrivilegeGroups(),
         ]);
+
+        console.log('privilegeGrps', privilegeGrps);
 
         const dbOptions = dbResponse.map(db => ({
           name: db.name,
