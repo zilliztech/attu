@@ -250,17 +250,17 @@ const Roles = () => {
               instanceCount > 0) && (
               <div style={{ marginBottom: 4 }}>
                 <Chip
-                  label={`Collection (*) (${collectionCount})`}
+                  label={`${userTrans('Collection')} (*) (${collectionCount})`}
                   size="small"
                   style={{ marginRight: 4 }}
                 />
                 <Chip
-                  label={`Database (${databaseCount})`}
+                  label={`${userTrans('Database')} (${databaseCount})`}
                   size="small"
                   style={{ marginRight: 4 }}
                 />
                 <Chip
-                  label={`Instance (${instanceCount})`}
+                  label={`${userTrans('Cluster')} (${instanceCount})`}
                   size="small"
                   style={{ marginRight: 4 }}
                 />

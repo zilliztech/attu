@@ -253,7 +253,7 @@ export default function DBCollectionsSelector(
       >
         <Tab label={userTrans('collection')} sx={{ textTransform: 'none' }} />
         <Tab label={userTrans('database')} sx={{ textTransform: 'none' }} />
-        <Tab label={userTrans('instance')} sx={{ textTransform: 'none' }} />
+        <Tab label={userTrans('cluster')} sx={{ textTransform: 'none' }} />
       </Tabs>
 
       {tabValue === 2 && (

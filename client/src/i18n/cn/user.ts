@@ -48,7 +48,7 @@ const userTrans = {
   collection: 'Collection',
   databases: '数据库',
   database: '数据库',
-  instance: '实例',
+  cluster: '集群',
 
   DatabasePrivileges: 'Database 相关权限',
   CollectionPrivileges: 'Collection 相关权限',

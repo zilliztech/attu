@@ -50,7 +50,7 @@ const userTrans = {
   collection: 'Collection',
   databases: 'Databases',
   database: 'Database',
-  instance: 'Instance',
+  cluster: 'Cluster',
 
   DatabasePrivileges: 'Database Privileges',
   CollectionPrivileges: 'Collection Privileges',
