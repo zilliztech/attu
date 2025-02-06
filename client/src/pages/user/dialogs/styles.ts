@@ -3,10 +3,9 @@ import { Theme } from '@mui/material';
 
 export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(1, 0),
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(2),
+    gap: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
   },
   dbCollections: {
@@ -30,13 +29,13 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
     marginBottom: 0,
   },
   categoryBody: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(0.5, 1.5),
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
   },
   privilegeTitle: {
-    fontWeight: 'bold',
-    fontSize: '16px',
+    fontWeight: 600,
+    fontSize: 14,
     color: theme.palette.text.primary,
     margin: 0,
     marginLeft: theme.spacing(-2),
@@ -49,7 +48,6 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
     minHeight: 300,
     width: '100%',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.default,
   },
 
   selectAllCheckbox: {
@@ -57,5 +55,16 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
   },
   checkbox: {
     padding: theme.spacing(1),
+  },
+  toggle: {
+    fontSize: 13,
+    '& .toggle-label': {
+      padding: 0,
+      marginRight: theme.spacing(1),
+      fontWeight: '400',
+    },
+    '& .MuiRadio-root': {
+      paddingRight: 8,
+    },
   },
 }));

@@ -42,12 +42,12 @@ const userTrans = {
   createPrivilegeGroupTitle: '创建权限组',
   updatePrivilegeGroupTitle: '更新权限组',
   allCollections: '所有集合',
-  allDatabases: '所有数据库及所有集合',
+  allDatabases: '所有Database 及所有集合',
 
   collections: 'Collection',
   collection: 'Collection',
-  databases: '数据库',
-  database: '数据库',
+  databases: 'Database',
+  database: 'Database',
   cluster: '集群',
 
   DatabasePrivileges: 'Database 相关权限',
@@ -57,6 +57,11 @@ const userTrans = {
   EntityPrivileges: 'Entity 相关权限',
   ResourceManagementPrivileges: '资源管理相关权限',
   RBACPrivileges: 'RBAC相关权限',
+
+  CollectionPrivilegeGroups: 'Collection 权限组',
+  DatabasePrivilegeGroups: 'Database 权限组',
+  ClusterPrivilegeGroups: '集群权限组',
+  CustomPrivilegeGroups: '自定义权限组',
 };
 
 export default userTrans;

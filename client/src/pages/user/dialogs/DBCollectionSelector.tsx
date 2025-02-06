@@ -6,6 +6,7 @@ import {
   Checkbox,
   Tabs,
   Tab,
+  Radio,
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
@@ -38,6 +39,9 @@ export default function DBCollectionsSelector(
   >([]);
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0); // Tab index
+  const [privilegeOptionType, setPrivilegeOptionType] = useState<
+    'group' | 'custom'
+  >('group'); // Type of privilege options
 
   // Fetch collections when selected DB changes
   const fetchCollections = useCallback(async (dbName: string) => {
@@ -251,8 +255,39 @@ export default function DBCollectionsSelector(
     );
   });
 
+  const collectionTypeOptions = collectionPrivilegeOptions.filter(c => {
+    return privilegeOptionType === 'group'
+      ? c[0].includes('Groups')
+      : !c[0].includes('Groups');
+  });
+
   return (
     <div className={classes.root}>
+      {/* Privilege type toggle */}
+      <div className={classes.toggle}>
+        <label className='toggle-label'>
+          <Radio
+            checked={privilegeOptionType === 'group'}
+            onChange={() => setPrivilegeOptionType('group')}
+            value="group"
+            name="group"
+            size="small"
+            inputProps={{ 'aria-label': 'group' }}
+          />
+          {userTrans('privilegeGroups')}
+        </label>
+        <label className='toggle-label'>
+          <Radio
+            checked={privilegeOptionType === 'custom'}
+            onChange={() => setPrivilegeOptionType('custom')}
+            value="custom"
+            name="custom"
+            size="small"
+            inputProps={{ 'aria-label': 'custom' }}
+          />
+          {userTrans('privileges')}
+        </label>
+      </div>
       {/* Tabs for Instance, Database, Collection */}
       <Tabs
         value={tabValue}
@@ -264,6 +299,8 @@ export default function DBCollectionsSelector(
         <Tab label={userTrans('cluster')} sx={{ textTransform: 'none' }} />
       </Tabs>
 
+      
+
       {tabValue === 2 && (
         <PrivilegeSelector
           privilegeOptions={clusterPrivileges}
@@ -274,6 +311,7 @@ export default function DBCollectionsSelector(
           isCategoryAllSelected={isCategoryAllSelected}
           isCategorySomeSelected={isCategorySomeSelected}
           handleSelectAll={handleSelectAll}
+          privilegeOptionType={privilegeOptionType}
         />
       )}
 
@@ -287,6 +325,7 @@ export default function DBCollectionsSelector(
           isCategoryAllSelected={isCategoryAllSelected}
           isCategorySomeSelected={isCategorySomeSelected}
           handleSelectAll={handleSelectAll}
+          privilegeOptionType={privilegeOptionType}
         />
       )}
 
@@ -333,10 +372,10 @@ export default function DBCollectionsSelector(
               getOptionLabel={option => {
                 const selectedCount = getSelectedPrivilegesCount(
                   option.value,
-                  collectionPrivilegeOptions
+                  collectionTypeOptions
                 );
                 const totalCount = getTotalPrivilegesCount(
-                  collectionPrivilegeOptions
+                  collectionTypeOptions
                 );
                 return `${option.name} (${selectedCount}/${totalCount})`;
               }}
@@ -344,19 +383,10 @@ export default function DBCollectionsSelector(
                 option.value === value.value
               }
               renderInput={params => {
-                const selectedCount = getSelectedPrivilegesCount(
-                  selectedCollection,
-                  collectionPrivilegeOptions
-                );
-                const totalCount = getTotalPrivilegesCount(
-                  collectionPrivilegeOptions
-                );
                 return (
                   <TextField
                     {...params}
-                    label={`${userTrans(
-                      'collections'
-                    )} (${selectedCount}/${totalCount})`}
+                    label={userTrans('collections')}
                     variant="filled"
                   />
                 );
@@ -376,6 +406,7 @@ export default function DBCollectionsSelector(
             isCategoryAllSelected={isCategoryAllSelected}
             isCategorySomeSelected={isCategorySomeSelected}
             handleSelectAll={handleSelectAll}
+            privilegeOptionType={privilegeOptionType}
           />
         </div>
       )}
@@ -389,6 +420,7 @@ const PrivilegeSelector = (props: {
   selected: DBCollectionsPrivileges;
   selectedDB: DBOption | null;
   selectedCollection: string;
+  privilegeOptionType: 'group' | 'custom';
   handlePrivilegeChange: (
     collectionValue: string,
     privilegeName: string,
@@ -422,6 +454,7 @@ const PrivilegeSelector = (props: {
     handleSelectAll,
     isCategoryAllSelected,
     isCategorySomeSelected,
+    privilegeOptionType,
   } = props;
 
   // style
@@ -434,77 +467,85 @@ const PrivilegeSelector = (props: {
     <div className={classes.privileges}>
       {selectedDB && selectedCollection && (
         <div>
-          {privilegeOptions.map(([category, categoryPrivileges]) => (
-            <div key={category}>
-              <div className={classes.categoryHeader}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={isCategoryAllSelected(
-                        category,
-                        selectedCollection,
-                        selectedDB.value
-                      )}
-                      indeterminate={isCategorySomeSelected(
-                        category,
-                        selectedCollection,
-                        selectedDB.value
-                      )}
-                      onChange={e =>
-                        handleSelectAll(
-                          category,
-                          selectedCollection,
-                          e.target.checked,
-                          selectedDB.value
-                        )
-                      }
-                      size="small"
-                      className={classes.selectAllCheckbox}
-                      title={userTrans('selectAll')}
-                    />
-                  }
-                  label=""
-                />
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  className={classes.privilegeTitle}
-                >
-                  {userTrans(category)}
-                </Typography>
-              </div>
-              <div className={classes.categoryBody}>
-                {Object.entries(categoryPrivileges).map(([privilegeName]) => (
+          {privilegeOptions
+            .filter(v => {
+              if (privilegeOptionType === 'group') {
+                return v[0].includes('Groups');
+              } else {
+                return !v[0].includes('Groups');
+              }
+            })
+            .map(([category, categoryPrivileges]) => (
+              <div key={category}>
+                <div className={classes.categoryHeader}>
                   <FormControlLabel
-                    key={privilegeName}
                     control={
                       <Checkbox
-                        className={classes.checkbox}
-                        checked={
-                          (selected[selectedDB.value] &&
-                            selected[selectedDB.value].collections &&
-                            selected[selectedDB.value].collections[
-                              selectedCollection
-                            ]?.[privilegeName]) ||
-                          false
-                        }
-                        size="small"
+                        checked={isCategoryAllSelected(
+                          category,
+                          selectedCollection,
+                          selectedDB.value
+                        )}
+                        indeterminate={isCategorySomeSelected(
+                          category,
+                          selectedCollection,
+                          selectedDB.value
+                        )}
                         onChange={e =>
-                          handlePrivilegeChange(
+                          handleSelectAll(
+                            category,
                             selectedCollection,
-                            privilegeName,
                             e.target.checked,
                             selectedDB.value
                           )
                         }
+                        size="small"
+                        className={classes.selectAllCheckbox}
+                        title={userTrans('selectAll')}
                       />
                     }
-                    label={privilegeName}
+                    label=""
                   />
-                ))}
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    className={classes.privilegeTitle}
+                  >
+                    {userTrans(category)}
+                  </Typography>
+                </div>
+                <div className={classes.categoryBody}>
+                  {Object.entries(categoryPrivileges).map(([privilegeName]) => (
+                    <FormControlLabel
+                      key={privilegeName}
+                      control={
+                        <Checkbox
+                          className={classes.checkbox}
+                          checked={
+                            (selected[selectedDB.value] &&
+                              selected[selectedDB.value].collections &&
+                              selected[selectedDB.value].collections[
+                                selectedCollection
+                              ]?.[privilegeName]) ||
+                            false
+                          }
+                          size="small"
+                          onChange={e =>
+                            handlePrivilegeChange(
+                              selectedCollection,
+                              privilegeName,
+                              e.target.checked,
+                              selectedDB.value
+                            )
+                          }
+                        />
+                      }
+                      label={privilegeName}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>
