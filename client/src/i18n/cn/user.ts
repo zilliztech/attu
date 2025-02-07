@@ -23,6 +23,7 @@ const userTrans = {
   editRole: '编辑角色',
   roles: '角色',
   createRoleTitle: '创建角色',
+  dupicateRoleTitle: '复制角色',
   updateRolePrivilegeTitle: '更新角色',
   updateRoleSuccess: '用户角色',
   type: '类型',

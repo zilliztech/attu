@@ -32,17 +32,21 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Roles = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
+  // styles
   const classes = useStyles();
+  // context
   const { database } = useContext(dataContext);
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
+  // ui states
   const [loading, setLoading] = useState(false);
-
   const [roles, setRoles] = useState<RolesWithPrivileges[]>([]);
   const [rbacOptions, setRbacOptions] = useState<RBACOptions>(
     {} as RBACOptions
   );
   const [selectedRole, setSelectedRole] = useState<RolesWithPrivileges[]>([]);
-  const { setDialog, handleCloseDialog, openSnackBar } =
-    useContext(rootContext);
+
+  // i18n
   const { t: successTrans } = useTranslation('success');
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
@@ -136,7 +140,38 @@ const Roles = () => {
         selectedRole.findIndex(v => v.roleName === 'public') > -1,
       disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
     },
-
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('duplicate'),
+      onClick: async () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <UpdateRoleDialog
+                role={{
+                  ...selectedRole[0],
+                  roleName: selectedRole[0].roleName + '_copy',
+                }}
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+                sameAs={true}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'copy',
+      disabled: () =>
+        selectedRole.length === 0 ||
+        selectedRole.length > 1 ||
+        selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.roleName === 'public') > -1,
+      disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
+    },
     {
       type: 'button',
       btnVariant: 'text',

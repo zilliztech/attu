@@ -62,7 +62,8 @@ export type RoleData = {
 export interface CreateRoleProps {
   onUpdate: (data: { data: CreateRoleParams; isEditing: boolean }) => void;
   handleClose: () => void;
-  role?: RoleData;
+  role: RoleData;
+  sameAs?: boolean;
 }
 
 export interface DeleteRoleParams {

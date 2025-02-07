@@ -41,6 +41,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
     },
     handleClose,
     onUpdate,
+    sameAs,
   } = props;
   // i18n
   const { t: userTrans } = useTranslation('user');
@@ -104,7 +105,7 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
   }, []);
 
   // Check if editing an existing role
-  const isEditing = role.roleName !== '';
+  const isEditing = role.roleName !== '' && !sameAs;
 
   // Form validation
   const checkedForm = useMemo(() => {
@@ -160,7 +161,11 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
   return (
     <DialogTemplate
       title={userTrans(
-        isEditing ? 'updateRolePrivilegeTitle' : 'createRoleTitle'
+        isEditing
+          ? 'updateRolePrivilegeTitle'
+          : sameAs
+          ? 'dupicateRoleTitle'
+          : 'createRoleTitle'
       )}
       handleClose={handleClose}
       confirmLabel={btnTrans(isEditing ? 'update' : 'create')}
