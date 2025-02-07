@@ -54,8 +54,8 @@ export const SystemProvider = (props: { children: React.ReactNode }) => {
       const systemInfo = rootCoord.infos.system_info;
 
       const data = {
-        users: users.usernames,
-        roles: roles.results,
+        users: users,
+        roles: roles,
         queryNodes,
         dataNodes,
         indexNodes,
