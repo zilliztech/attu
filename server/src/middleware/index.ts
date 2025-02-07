@@ -37,7 +37,7 @@ export const ReqHeaderMiddleware = (
 
   if (!bypass && !hasClient) {
     throw HttpErrors(
-      HTTP_STATUS_CODE.FORBIDDEN,
+      HTTP_STATUS_CODE.UNAUTHORIZED,
       'Can not find your connection, please reconnect.'
     );
   } else {
@@ -52,7 +52,6 @@ export const TransformResMiddleware = (
 ) => {
   const oldSend = res.json;
   res.json = data => {
-    // console.log(data); // do something with the data
     const statusCode = data?.statusCode;
     const message = data?.message;
     const error = data?.error;
@@ -75,7 +74,7 @@ export const ErrorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = err.statusCode || 500;
+  let statusCode = err.statusCode || 500;
   if (!isElectron()) {
     console.log(
       chalk.blue.bold(req.method, req.url),
@@ -89,10 +88,17 @@ export const ErrorMiddleware = (
     return next(err);
   }
 
+  // handle error from milvus service
+  switch (err.code) {
+    case 7:
+      statusCode = HTTP_STATUS_CODE.FORBIDDEN;
+      break;
+  }
+
   if (err) {
     res
       .status(statusCode)
-      .json({ message: `${err}`, error: 'Bad Request', statusCode });
+      .json({ message: `${err.details || err.message}`, statusCode });
   }
   next();
 };

@@ -85,6 +85,8 @@ const commonTrans = {
   memory: '内存',
   yes: '是',
   no: '否',
+
+  noPermissionTip: '您没有权限访问此页面。',
 };
 
 export default commonTrans;

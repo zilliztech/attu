@@ -13,6 +13,7 @@ import type {
   ColDefinitionsType,
   ToolBarConfig,
 } from '@/components/grid/Types';
+import Wrapper from '@/components/layout/Wrapper';
 import type { DeleteRoleParams } from './Types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import type {
@@ -45,6 +46,7 @@ const Roles = () => {
     {} as RBACOptions
   );
   const [selectedRole, setSelectedRole] = useState<RolesWithPrivileges[]>([]);
+  const [hasPermission, setHasPermission] = useState(true);
 
   // i18n
   const { t: successTrans } = useTranslation('success');
@@ -55,16 +57,21 @@ const Roles = () => {
   const fetchRoles = async () => {
     setLoading(true);
 
-    const [roles, rbacs] = await Promise.all([
-      UserService.getRoles(),
-      UserService.getRBAC(),
-    ]);
+    try {
+      const [roles, rbacs] = await Promise.all([
+        UserService.getRoles(),
+        UserService.getRBAC(),
+      ]);
 
-    setSelectedRole([]);
-    setRbacOptions(rbacs);
+      setSelectedRole([]);
+      setRbacOptions(rbacs);
 
-    setRoles(roles as any);
-    setLoading(false);
+      setRoles(roles as any);
+    } catch (error) {
+      setHasPermission(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onUpdate = async (data: { isEditing: boolean }) => {
@@ -116,7 +123,7 @@ const Roles = () => {
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
-      label: userTrans('editRole'),
+      label: btnTrans('edit'),
       onClick: async () => {
         setDialog({
           open: true,
@@ -286,7 +293,7 @@ const Roles = () => {
       label: userTrans('privileges'),
       getStyle: () => {
         return {
-          width: '70%',
+          width: '80%',
         };
       },
     },
@@ -317,7 +324,7 @@ const Roles = () => {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
@@ -338,7 +345,7 @@ const Roles = () => {
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(userTrans('roles'))}
       />
-    </div>
+    </Wrapper>
   );
 };
 

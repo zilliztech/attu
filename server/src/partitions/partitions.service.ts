@@ -6,7 +6,6 @@ import {
   ReleasePartitionsReq,
   ShowPartitionsReq,
 } from '@zilliz/milvus2-sdk-node';
-import { throwErrorFromSDK } from '../utils/Error';
 import { findKeyValue } from '../utils/Helper';
 import { ROW_COUNT } from '../utils';
 import { clientCache } from '../app';
@@ -40,7 +39,6 @@ export class PartitionsService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.showPartitions(data);
-    throwErrorFromSDK(res.status);
     return res;
   }
 
@@ -48,7 +46,6 @@ export class PartitionsService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createPartition(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -56,7 +53,6 @@ export class PartitionsService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.dropPartition(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -67,7 +63,6 @@ export class PartitionsService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.getPartitionStatistics(data);
-    throwErrorFromSDK(res.status);
     return res;
   }
 
@@ -75,7 +70,6 @@ export class PartitionsService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.loadPartitions(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -83,7 +77,6 @@ export class PartitionsService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.releasePartitions(data);
-    throwErrorFromSDK(res);
     return res;
   }
 }

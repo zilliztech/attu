@@ -6,7 +6,6 @@ import {
   DropDatabasesRequest,
   AlterDatabaseRequest,
 } from '@zilliz/milvus2-sdk-node';
-import { throwErrorFromSDK } from '../utils/Error';
 import { clientCache } from '../app';
 import { DatabaseObject } from '../types';
 import { SimpleQueue } from '../utils';
@@ -16,7 +15,6 @@ export class DatabasesService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createDatabase(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -24,7 +22,6 @@ export class DatabasesService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.describeDatabase(data);
-    throwErrorFromSDK(res.status);
     return res as DescribeDatabaseResponse;
   }
 
@@ -55,7 +52,7 @@ export class DatabasesService {
           });
         } catch (e) {
           // ignore
-          console.log('error', e);
+          console.warn('error', e.details);
         }
 
         availableDatabases.push({
@@ -66,14 +63,13 @@ export class DatabasesService {
         });
       } catch (e) {
         // ignore
-        console.log('error', e);
+        console.warn('error', e.details);
       }
     }
 
     // recover current database
     await milvusClient.use({ db_name: database });
 
-    throwErrorFromSDK(res.status);
     return availableDatabases;
   }
 
@@ -81,7 +77,6 @@ export class DatabasesService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.dropDatabase(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -104,7 +99,6 @@ export class DatabasesService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.alterDatabase(data);
-    throwErrorFromSDK(res);
     return res;
   }
 }

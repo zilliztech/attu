@@ -11,6 +11,7 @@ import {
   UpdateUserRoleParams,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
+import Wrapper from '@/components/layout/Wrapper';
 import { rootContext } from '@/context';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import CreateUser from './dialogs/CreateUserDialog';
@@ -28,21 +29,34 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Users = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
+  // styles
   const classes = useStyles();
 
+  // ui states
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserWithRoles[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hasPermission, setHasPermission] = useState(true);
+  // context
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
+  // i18n
   const { t: successTrans } = useTranslation('success');
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchUsers = async () => {
-    const res = await UserService.getUsers();
+    setLoading(true);
+    try {
+      const res = await UserService.getUsers();
 
-    setUsers(res);
+      setUsers(res);
+    } catch (error) {
+      setHasPermission(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const {
@@ -225,11 +239,11 @@ const Users = () => {
       notSort: true,
       disablePadding: true,
       label: userTrans('role'),
-      formatter(_, cellData) {
-        return cellData.join(', ');
+      formatter(rowData, cellData) {
+        return rowData.username === 'root' ? 'admin' : cellData.join(', ');
       },
       getStyle: () => {
-        return { width: '70%' };
+        return { width: '80%' };
       },
     },
   ];
@@ -247,7 +261,7 @@ const Users = () => {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
@@ -261,12 +275,12 @@ const Users = () => {
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
-        // isLoading={loading}
+        isLoading={loading}
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
       />
-    </div>
+    </Wrapper>
   );
 };
 

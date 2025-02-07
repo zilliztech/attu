@@ -15,6 +15,15 @@ import type {
   DBCollectionsPrivileges,
   RolesWithPrivileges,
 } from '../types/users.type';
+import {
+  DatabasePrivileges,
+  CollectionPrivileges,
+  PartitionPrivileges,
+  IndexPrivileges,
+  EntityPrivileges,
+  ResourceManagementPrivileges,
+  RBACPrivileges,
+} from '../utils';
 
 export class UserController {
   private router: Router;
@@ -333,7 +342,45 @@ export class UserController {
 
   async rbac(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getRBAC(req.clientId);
+      const privilegeGrps = await this.userService.getPriviegGroups(
+        req.clientId
+      );
+
+      const ClusterPrivilegeGroups = {} as any;
+      const DatabasePrivilegeGroups = {} as any;
+      const CollectionPrivilegeGroups = {} as any;
+      const CustomPrivilegeGroups = {} as any;
+
+      privilegeGrps.cluster.forEach((g: any) => {
+        ClusterPrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      privilegeGrps.db.forEach((g: any) => {
+        DatabasePrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      privilegeGrps.collection.forEach((g: any) => {
+        CollectionPrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      privilegeGrps.custom.forEach((g: any) => {
+        CustomPrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      const result = {
+        ClusterPrivilegeGroups,
+        DatabasePrivilegeGroups,
+        CollectionPrivilegeGroups,
+        CustomPrivilegeGroups,
+        DatabasePrivileges,
+        ResourceManagementPrivileges,
+        RBACPrivileges,
+        CollectionPrivileges,
+        PartitionPrivileges,
+        IndexPrivileges,
+        EntityPrivileges,
+      };
+
       res.send(result);
     } catch (error) {
       next(error);
