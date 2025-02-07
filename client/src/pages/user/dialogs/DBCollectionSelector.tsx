@@ -502,19 +502,13 @@ const PrivilegeSelector = (props: {
                         title={userTrans('selectAll')}
                       />
                     }
-                    label=""
+                    label={userTrans(category)}
                   />
-                  <Typography
-                    variant="subtitle1"
-                    gutterBottom
-                    className={classes.privilegeTitle}
-                  >
-                    {userTrans(category)}
-                  </Typography>
                 </div>
                 <div className={classes.categoryBody}>
                   {Object.entries(categoryPrivileges).map(([privilegeName]) => (
                     <FormControlLabel
+                      className={classes.privilegeBody}
                       key={privilegeName}
                       control={
                         <Checkbox

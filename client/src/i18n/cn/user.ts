@@ -58,10 +58,10 @@ const userTrans = {
   ResourceManagementPrivileges: '资源管理相关权限',
   RBACPrivileges: 'RBAC相关权限',
 
-  CollectionPrivilegeGroups: 'Collection 权限组',
-  DatabasePrivilegeGroups: 'Database 权限组',
-  ClusterPrivilegeGroups: '集群权限组',
-  CustomPrivilegeGroups: '自定义权限组',
+  CollectionPrivilegeGroups: '内置权限组',
+  DatabasePrivilegeGroups: '内置权限组',
+  ClusterPrivilegeGroups: '内置权限组',
+  CustomPrivilegeGroups: '用户定义权限组',
 };
 
 export default userTrans;

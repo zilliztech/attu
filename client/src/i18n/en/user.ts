@@ -60,10 +60,10 @@ const userTrans = {
   ResourceManagementPrivileges: 'Resource Management Privileges',
   RBACPrivileges: 'RBAC Privileges',
 
-  CollectionPrivilegeGroups: 'Collection Privilege Groups',
-  DatabasePrivilegeGroups: 'Database Privilege Groups',
-  ClusterPrivilegeGroups: 'Cluster Privilege Groups',
-  CustomPrivilegeGroups: 'Custom Privilege Groups',
+  CollectionPrivilegeGroups: 'Built-in Groups',
+  DatabasePrivilegeGroups: 'Built-in Groups',
+  ClusterPrivilegeGroups: 'Built-in Groups',
+  CustomPrivilegeGroups: 'User-defined Groups',
 };
 
 export default userTrans;

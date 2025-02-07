@@ -295,7 +295,7 @@ const Roles = () => {
         page={currentPage}
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
-        rowHeight={52}
+        rowHeight={69}
         setRowsPerPage={handlePageSize}
         isLoading={loading}
         order={order}

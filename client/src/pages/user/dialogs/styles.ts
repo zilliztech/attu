@@ -27,6 +27,11 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.action.hover,
     borderRadius: theme.shape.borderRadius,
     marginBottom: 0,
+    '& .MuiTypography-root': {
+      fontSize: 14,
+      fontWeight: 600,
+      color: theme.palette.text.primary,
+    },
   },
   categoryBody: {
     padding: theme.spacing(0.5, 1.5),
@@ -50,12 +55,14 @@ export const useDBCollectionSelectorStyle = makeStyles((theme: Theme) => ({
     borderRadius: theme.shape.borderRadius,
   },
 
+  privilegeBody: {
+    minWidth: 200,
+  },
+
   selectAllCheckbox: {
-    marginLeft: theme.spacing(1),
+    marginLeft: 8,
   },
-  checkbox: {
-    padding: theme.spacing(1),
-  },
+  checkbox: {},
   toggle: {
     fontSize: 13,
     '& .toggle-label': {
