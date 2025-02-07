@@ -5,6 +5,8 @@ const userTrans = {
   user: 'User',
   users: 'Users',
   deleteWarning: 'You are trying to drop user. This action cannot be undone.',
+  deleteRoleWarning:
+    'You are trying to drop role. This action cannot be undone.',
   oldPassword: 'Current Password',
   newPassword: 'New Password',
   confirmPassword: 'Confirm Password',
@@ -12,6 +14,8 @@ const userTrans = {
   isNotSame: 'Not same as new password',
   deleteTip:
     'Please select at least one item to drop and the root user can not be dropped.',
+  deleteRoleTip:
+    'Please select at least one item to drop and the admin/public role can not be dropped.',
   editPassword: 'Edit Password',
 
   // role

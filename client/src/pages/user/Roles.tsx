@@ -150,7 +150,7 @@ const Roles = () => {
               <DeleteTemplate
                 label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', { type: userTrans('role') })}
-                text={userTrans('deleteWarning')}
+                text={userTrans('deleteRoleWarning')}
                 handleDelete={handleDelete}
                 forceDelLabel={userTrans('forceDelLabel')}
               />
@@ -163,7 +163,7 @@ const Roles = () => {
         selectedRole.length === 0 ||
         selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
         selectedRole.findIndex(v => v.roleName === 'public') > -1,
-      disabledTooltip: userTrans('deleteTip'),
+      disabledTooltip: userTrans('deleteRoleTip'),
       icon: 'delete',
     },
   ];

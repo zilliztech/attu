@@ -5,12 +5,14 @@ const userTrans = {
   user: '用户',
   users: '用户们',
   deleteWarning: '您正在尝试删除用户。此操作无法撤销。',
+  deleteRoleWarning: '您正在尝试删除角色。此操作无法撤销。',
   oldPassword: '当前密码',
   newPassword: '新密码',
   confirmPassword: '确认密码',
   update: '更新密码',
   isNotSame: '与新密码不同',
-  deleteTip: '请至少选择一个要删除的项目，不能删除root用户。',
+  deleteTip: '请至少选择一个要删除的用户，不能删除root用户。',
+  deleteRoleTip: '请至少选择一个要删除的角色，不能删除admin/public 角色。',
   editPassword: '修改密码',
 
   // role
