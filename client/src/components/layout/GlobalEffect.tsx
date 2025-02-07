@@ -41,23 +41,28 @@ const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
         },
         error => {
           const { response } = error;
+          let messageType = 'error';
+
           if (response) {
             switch (response.status) {
               case HTTP_STATUS_CODE.UNAUTHORIZED:
-              case HTTP_STATUS_CODE.FORBIDDEN:
                 setTimeout(() => logout(true), 1000);
+                break;
+
+              case HTTP_STATUS_CODE.FORBIDDEN:
+                messageType = 'warning';
                 break;
               default:
                 break;
             }
             const errorMessage = response.data?.message;
             if (errorMessage) {
-              openSnackBar(errorMessage, 'error');
+              openSnackBar(errorMessage, messageType);
               return Promise.reject(error);
             }
           }
           // Handle other error cases
-          openSnackBar(error.message, 'error');
+          openSnackBar(error.message, messageType);
           return Promise.reject(error);
         }
       );

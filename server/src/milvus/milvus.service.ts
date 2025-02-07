@@ -6,10 +6,16 @@ import {
   CONNECT_STATUS,
 } from '@zilliz/milvus2-sdk-node';
 import { LRUCache } from 'lru-cache';
-import { DEFAULT_MILVUS_PORT, INDEX_TTL, SimpleQueue } from '../utils';
+import {
+  DEFAULT_MILVUS_PORT,
+  INDEX_TTL,
+  SimpleQueue,
+  HTTP_STATUS_CODE,
+} from '../utils';
 import { clientCache } from '../app';
 import { DescribeIndexRes, AuthReq, AuthObject } from '../types';
 import { cronsManager } from '../crons';
+import HttpErrors from 'http-errors';
 
 export class MilvusService {
   private DEFAULT_DATABASE = 'default';
@@ -88,7 +94,7 @@ export class MilvusService {
       } catch (error) {
         // If the connection fails, clear the cache and throw an error
         clientCache.delete(milvusClient.clientId);
-        throw new Error('Failed to connect to Milvus: ' + error);
+        throw HttpErrors(HTTP_STATUS_CODE.UNAUTHORIZED, error);
       }
 
       // Check the health of the Milvus server

@@ -1,10 +1,8 @@
 import { Option as RoleOption } from '@/components/customSelector/Types';
-
-export interface UserData {
-  name: string;
-  roleName?: string;
-  roles: string[];
-}
+import type {
+  DBCollectionsPrivileges,
+  RBACOptions,
+} from '@server/types/users.type';
 
 export interface CreateUserParams {
   username: string;
@@ -46,16 +44,9 @@ export interface DeleteUserParams {
   username: string;
 }
 
-export interface Privilege {
-  roleName: string;
-  object: string;
-  objectName: string;
-  privilegeName: string;
-}
-
 export interface CreateRoleParams {
   roleName: string;
-  privileges: Privilege[];
+  privileges: DBCollectionsPrivileges;
 }
 
 export interface CreatePrivilegeGroupParams {
@@ -63,15 +54,16 @@ export interface CreatePrivilegeGroupParams {
   privileges: string[];
 }
 
-export interface RoleData {
-  name: string;
-  privileges: Privilege[];
-}
+export type RoleData = {
+  roleName: string;
+  privileges: DBCollectionsPrivileges;
+};
 
 export interface CreateRoleProps {
   onUpdate: (data: { data: CreateRoleParams; isEditing: boolean }) => void;
   handleClose: () => void;
-  role?: RoleData;
+  role: RoleData;
+  sameAs?: boolean;
 }
 
 export interface DeleteRoleParams {
@@ -86,29 +78,33 @@ export interface AssignRoleParams {
 
 export interface UnassignRoleParams extends AssignRoleParams {}
 
-export type RBACObject = 'Global' | 'Collection' | 'User';
+export type CollectionOption = {
+  name: string;
+  value: string;
+};
 
-export interface PrivilegeOptionsProps {
-  options: string[];
-  selection: Privilege[];
-  onChange: (selection: Privilege[]) => void;
-  roleName: string;
-  object: RBACObject;
-  objectName?: string;
-  title: string;
+export type DBOption = {
+  name: string;
+  value: string;
+};
+
+export interface DBCollectionsSelectorProps {
+  selected: DBCollectionsPrivileges; // Current selected DBs and their collections with privileges
+  setSelected: (
+    value:
+      | DBCollectionsPrivileges
+      | ((prev: DBCollectionsPrivileges) => DBCollectionsPrivileges)
+  ) => void;
+  // Callback to update selected state
+  options: {
+    rbacOptions: RBACOptions; // Available RBAC options (privileges)
+    dbOptions: DBOption[]; // Available databases
+  };
 }
 
 export interface PrivilegeGrpOptionsProps {
   options: string[];
   selection: string[];
-  onChange: (selection: string[]) => void;
+  onChange: (data: string[]) => void;
   group_name: string;
 }
-
-export type RBACOptions = {
-  GlobalPrivileges: Record<string, unknown>;
-  CollectionPrivileges: Record<string, unknown>;
-  RbacObjects: Record<string, unknown>;
-  UserPrivileges: Record<string, unknown>;
-  Privileges: Record<string, unknown>;
-};

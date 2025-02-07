@@ -9,19 +9,10 @@ import {
   HasRoleReq,
   listRoleReq,
   SelectUserReq,
-  ListGrantsReq,
   OperateRolePrivilegeReq,
   GrantPrivilegeV2Request,
   RevokePrivilegeV2Request,
 } from '@zilliz/milvus2-sdk-node';
-import { throwErrorFromSDK } from '../utils/Error';
-import {
-  Privileges,
-  GlobalPrivileges,
-  CollectionPrivileges,
-  UserPrivileges,
-  RbacObjects,
-} from '../utils';
 import { clientCache } from '../app';
 
 export class UserService {
@@ -29,7 +20,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.listUsers();
-    throwErrorFromSDK(res.status);
 
     return res;
   }
@@ -38,7 +28,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createUser(data);
-    throwErrorFromSDK(res);
 
     return res;
   }
@@ -47,7 +36,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.updateUser(data);
-    throwErrorFromSDK(res);
 
     return res;
   }
@@ -56,7 +44,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.deleteUser(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -64,7 +51,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.listRoles(data);
-    throwErrorFromSDK(res.status);
 
     return res;
   }
@@ -73,7 +59,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.selectUser(data);
-    throwErrorFromSDK(res.status);
 
     return res;
   }
@@ -82,7 +67,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.createRole(data);
-    throwErrorFromSDK(res);
 
     return res;
   }
@@ -91,7 +75,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.dropRole(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -99,7 +82,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.addUserToRole(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -107,7 +89,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.removeUserFromRole(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -115,25 +96,12 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.hasRole(data);
-    throwErrorFromSDK(res.status);
     return res;
   }
 
-  async getRBAC() {
-    return {
-      Privileges,
-      GlobalPrivileges,
-      CollectionPrivileges,
-      UserPrivileges,
-      RbacObjects,
-    };
-  }
-
-  async getAllPrivilegeGroups(clientId: string) {
+  async getPriviegGroups(clientId: string) {
     const { milvusClient } = clientCache.get(clientId);
     const privilegeGrps = await milvusClient.listPrivilegeGroups();
-
-    throwErrorFromSDK(privilegeGrps.status);
 
     const defaultGrp = [
       'ClusterAdmin',
@@ -149,24 +117,71 @@ export class UserService {
       'CollectionReadWrite',
     ];
 
-    // only show default groups
-    const groups = privilegeGrps.privilege_groups.filter(
-      g => defaultGrp.indexOf(g.group_name) !== -1
+    const clusterGrp = ['ClusterAdmin', 'ClusterReadOnly', 'ClusterReadWrite'];
+
+    const databaseGrp = [
+      'DatabaseAdmin',
+      'DatabaseReadOnly',
+      'DatabaseReadWrite',
+    ];
+
+    const collectionGrp = [
+      'CollectionAdmin',
+      'CollectionReadOnly',
+      'CollectionReadWrite',
+    ];
+
+    let res: Record<string, any> = {};
+
+    ['cluster', 'db', 'collection', 'default', 'custom', 'all'].forEach(
+      type => {
+        let groups = [] as any[];
+        switch (type) {
+          case 'cluster':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              clusterGrp.includes(g.group_name)
+            );
+            break;
+          case 'db':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              databaseGrp.includes(g.group_name)
+            );
+            break;
+          case 'collection':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              collectionGrp.includes(g.group_name)
+            );
+            break;
+          case 'default':
+            groups = privilegeGrps.privilege_groups.filter(g =>
+              defaultGrp.includes(g.group_name)
+            );
+            break;
+          case 'custom':
+            groups = privilegeGrps.privilege_groups.filter(
+              g => !defaultGrp.includes(g.group_name)
+            );
+            break;
+          case 'all':
+            groups = privilegeGrps.privilege_groups;
+            break;
+        }
+
+        res[type] = groups.sort(
+          (a, b) =>
+            defaultGrp.indexOf(a.group_name) - defaultGrp.indexOf(b.group_name)
+        );
+      }
     );
 
-    // sort groups by the order in defaultGrp
-    groups.sort(
-      (a, b) =>
-        defaultGrp.indexOf(a.group_name) - defaultGrp.indexOf(b.group_name)
-    );
-
-    return groups;
+    return res;
   }
 
-  async listGrants(clientId: string, data: ListGrantsReq) {
+  async listGrants(clientId: string, roleName: string) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.listGrants(data);
-    throwErrorFromSDK(res.status);
+    const res = await milvusClient.listGrants({
+      roleName,
+    });
     return res;
   }
 
@@ -174,7 +189,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.grantRolePrivilege(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -182,24 +196,20 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.revokeRolePrivilege(data);
-    throwErrorFromSDK(res);
     return res;
   }
 
   async revokeAllRolePrivileges(clientId: string, data: { roleName: string }) {
     // get existing privileges
-    const existingPrivileges = await this.listGrants(clientId, {
-      roleName: data.roleName,
-    });
+    const existingPrivileges = await this.listGrants(clientId, data.roleName);
 
-    // revoke all
-    for (let i = 0; i < existingPrivileges.entities.length; i++) {
-      const res = existingPrivileges.entities[i];
-      await this.revokeRolePrivilege(clientId, {
-        object: res.object.name,
-        objectName: res.object_name,
-        privilegeName: res.grantor.privilege.name,
-        roleName: res.role.name,
+    // revoke all existing privileges
+    for (const entity of existingPrivileges.entities) {
+      const res = await this.revokePrivilegeV2(clientId, {
+        db_name: entity.db_name,
+        collection_name: entity.object_name,
+        privilege: entity.grantor.privilege.name,
+        role: entity.role.name,
       });
     }
   }
@@ -212,7 +222,6 @@ export class UserService {
       group_name: data.group_name,
     });
 
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -221,8 +230,6 @@ export class UserService {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.listPrivilegeGroups();
-
-    throwErrorFromSDK(res.status);
 
     return res;
   }
@@ -235,7 +242,6 @@ export class UserService {
       g => g.group_name === data.group_name
     );
 
-    throwErrorFromSDK(res.status);
     return group;
   }
 
@@ -247,39 +253,36 @@ export class UserService {
       group_name: data.group_name,
     });
 
-    throwErrorFromSDK(res);
     return res;
   }
 
   // update privilege group
   async addPrivilegeToGroup(
     clientId: string,
-    data: { group_name: string; priviliges: string[] }
+    data: { group_name: string; privileges: string[] }
   ) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.addPrivilegesToGroup({
       group_name: data.group_name,
-      privileges: data.priviliges,
+      privileges: data.privileges,
     });
 
-    throwErrorFromSDK(res);
     return res;
   }
 
   // remove privilege from group
   async removePrivilegeFromGroup(
     clientId: string,
-    data: { group_name: string; priviliges: string[] }
+    data: { group_name: string; privileges: string[] }
   ) {
     const { milvusClient } = clientCache.get(clientId);
 
     const res = await milvusClient.removePrivilegesFromGroup({
       group_name: data.group_name,
-      privileges: data.priviliges,
+      privileges: data.privileges,
     });
 
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -289,7 +292,6 @@ export class UserService {
 
     const res = await milvusClient.grantPrivilegeV2(data);
 
-    throwErrorFromSDK(res);
     return res;
   }
 
@@ -299,7 +301,6 @@ export class UserService {
 
     const res = await milvusClient.revokePrivilegeV2(data);
 
-    throwErrorFromSDK(res);
     return res;
   }
 }

@@ -1,9 +1,8 @@
 import { useState } from 'react';
+import { TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
 import { PartitionService } from '@/http';
 import type { PartitionData } from '@server/types';
-import CustomInput from '@/components/customInput/CustomInput';
 import { useTranslation } from 'react-i18next';
 
 interface PartitionsSelectorProps {
@@ -15,28 +14,24 @@ interface PartitionsSelectorProps {
 export default function PartitionsSelector(props: PartitionsSelectorProps) {
   // i18n
   const { t: searchTrans } = useTranslation('search');
-  // default loading
-  const DEFAULT_LOADING_OPTIONS: readonly PartitionData[] = [
-    { name: searchTrans('loading'), id: -1, rowCount: -1, createdTime: '' },
-  ];
 
   // props
   const { collectionName, selected, setSelected } = props;
   // state
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<readonly PartitionData[]>(
-    DEFAULT_LOADING_OPTIONS
-  );
+  const [options, setOptions] = useState<readonly PartitionData[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
+    setLoading(true);
     (async () => {
       try {
         const res = await PartitionService.getPartitions(collectionName);
-        setLoading(false);
         setOptions([...res]);
       } catch (err) {
+        console.error(err);
+      } finally {
         setLoading(false);
       }
     })();
@@ -44,7 +39,6 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
 
   const handleClose = () => {
     setOpen(false);
-    setOptions(DEFAULT_LOADING_OPTIONS);
   };
 
   return (
@@ -66,24 +60,15 @@ export default function PartitionsSelector(props: PartitionsSelectorProps) {
       getOptionLabel={option => (option && option.name) || ''}
       options={options}
       loading={loading}
+      noOptionsText={
+        loading ? searchTrans('loading') : searchTrans('noOptions')
+      }
       renderInput={params => {
-        return loading ? (
-          <CircularProgress color="inherit" size={20} />
-        ) : (
-          <CustomInput
-            textConfig={{
-              ...params,
-              label: searchTrans('partitionFilter'),
-              key: 'partitionFilter',
-              className: 'input',
-              value: params.inputProps.value,
-              disabled: false,
-              variant: 'filled',
-              required: false,
-              InputLabelProps: { shrink: true },
-            }}
-            checkValid={() => true}
-            type="text"
+        return (
+          <TextField
+            {...params}
+            label={searchTrans('partitionFilter')}
+            variant="filled"
           />
         );
       }}

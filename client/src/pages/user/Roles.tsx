@@ -13,8 +13,14 @@ import type {
   ColDefinitionsType,
   ToolBarConfig,
 } from '@/components/grid/Types';
-import type { DeleteRoleParams, RoleData } from './Types';
+import Wrapper from '@/components/layout/Wrapper';
+import type { DeleteRoleParams } from './Types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import type {
+  RolesWithPrivileges,
+  RBACOptions,
+  DBCollectionsPrivileges,
+} from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -27,35 +33,45 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Roles = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
+  // styles
   const classes = useStyles();
+  // context
   const { database } = useContext(dataContext);
-  const [loading, setLoading] = useState(false);
-
-  const [roles, setRoles] = useState<RoleData[]>([]);
-  const [selectedRole, setSelectedRole] = useState<RoleData[]>([]);
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
+  // ui states
+  const [loading, setLoading] = useState(false);
+  const [roles, setRoles] = useState<RolesWithPrivileges[]>([]);
+  const [rbacOptions, setRbacOptions] = useState<RBACOptions>(
+    {} as RBACOptions
+  );
+  const [selectedRole, setSelectedRole] = useState<RolesWithPrivileges[]>([]);
+  const [hasPermission, setHasPermission] = useState(true);
+
+  // i18n
   const { t: successTrans } = useTranslation('success');
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
 
   const fetchRoles = async () => {
-    const roles = await UserService.getRoles();
-    setSelectedRole([]);
+    setLoading(true);
 
-    setRoles(
-      roles.results.map(v => ({
-        name: v.role.name,
-        privilegeContent: v,
-        privileges: v.entities.map(e => ({
-          roleName: v.role.name,
-          object: e.object.name,
-          objectName: e.object_name,
-          privilegeName: e.grantor.privilege.name,
-        })),
-      }))
-    );
+    try {
+      const [roles, rbacs] = await Promise.all([
+        UserService.getRoles(),
+        UserService.getRBAC(),
+      ]);
+
+      setSelectedRole([]);
+      setRbacOptions(rbacs);
+
+      setRoles(roles as any);
+    } catch (error) {
+      setHasPermission(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onUpdate = async (data: { isEditing: boolean }) => {
@@ -71,7 +87,7 @@ const Roles = () => {
   const handleDelete = async (force?: boolean) => {
     for (const role of selectedRole) {
       const param: DeleteRoleParams = {
-        roleName: role.name,
+        roleName: role.roleName,
         force,
       };
       await UserService.deleteRole(param);
@@ -92,6 +108,7 @@ const Roles = () => {
           params: {
             component: (
               <UpdateRoleDialog
+                role={{ roleName: '', privileges: {} }}
                 onUpdate={onUpdate}
                 handleClose={handleCloseDialog}
               />
@@ -106,7 +123,7 @@ const Roles = () => {
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
-      label: userTrans('editRole'),
+      label: btnTrans('edit'),
       onClick: async () => {
         setDialog({
           open: true,
@@ -126,11 +143,42 @@ const Roles = () => {
       disabled: () =>
         selectedRole.length === 0 ||
         selectedRole.length > 1 ||
-        selectedRole.findIndex(v => v.name === 'admin') > -1 ||
-        selectedRole.findIndex(v => v.name === 'public') > -1,
+        selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.roleName === 'public') > -1,
       disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
     },
-
+    {
+      type: 'button',
+      btnVariant: 'text',
+      btnColor: 'secondary',
+      label: btnTrans('duplicate'),
+      onClick: async () => {
+        setDialog({
+          open: true,
+          type: 'custom',
+          params: {
+            component: (
+              <UpdateRoleDialog
+                role={{
+                  ...selectedRole[0],
+                  roleName: selectedRole[0].roleName + '_copy',
+                }}
+                onUpdate={onUpdate}
+                handleClose={handleCloseDialog}
+                sameAs={true}
+              />
+            ),
+          },
+        });
+      },
+      icon: 'copy',
+      disabled: () =>
+        selectedRole.length === 0 ||
+        selectedRole.length > 1 ||
+        selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.roleName === 'public') > -1,
+      disabledTooltip: userTrans('disableEditRolePrivilegeTip'),
+    },
     {
       type: 'button',
       btnVariant: 'text',
@@ -144,7 +192,7 @@ const Roles = () => {
               <DeleteTemplate
                 label={btnTrans('drop')}
                 title={dialogTrans('deleteTitle', { type: userTrans('role') })}
-                text={userTrans('deleteWarning')}
+                text={userTrans('deleteRoleWarning')}
                 handleDelete={handleDelete}
                 forceDelLabel={userTrans('forceDelLabel')}
               />
@@ -155,47 +203,103 @@ const Roles = () => {
       label: btnTrans('drop'),
       disabled: () =>
         selectedRole.length === 0 ||
-        selectedRole.findIndex(v => v.name === 'admin') > -1 ||
-        selectedRole.findIndex(v => v.name === 'public') > -1,
-      disabledTooltip: userTrans('deleteTip'),
+        selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
+        selectedRole.findIndex(v => v.roleName === 'public') > -1,
+      disabledTooltip: userTrans('deleteRoleTip'),
       icon: 'delete',
     },
   ];
 
   const colDefinitions: ColDefinitionsType[] = [
     {
-      id: 'name',
+      id: 'roleName',
       align: 'left',
       disablePadding: false,
       label: userTrans('role'),
+      sortType: 'string',
     },
 
     {
-      id: 'privilegeContent',
+      id: 'privileges',
       align: 'left',
       disablePadding: false,
-      formatter({ privilegeContent }) {
+      formatter({ privileges, roleName }) {
+        const isAdmin = roleName === 'admin';
+
+        // Derive the options arrays as in DBCollectionSelector.
+        const rbacEntries = Object.entries(rbacOptions) as [
+          string,
+          Record<string, string>
+        ][];
+
+        // privileges of the privilege groups
+        const privilegeGroups = rbacEntries.filter(([key]) =>
+          key.endsWith('PrivilegeGroups')
+        );
+
+        const groupPrivileges = new Set(
+          privilegeGroups.reduce(
+            (acc, [_, group]) => acc.concat(Object.values(group)),
+            [] as string[]
+          )
+        );
+
+        let groupCount = 0;
+        let privilegeCount = 0;
+
+        Object.values(privileges as DBCollectionsPrivileges).forEach(
+          dbPrivileges => {
+            Object.values(dbPrivileges.collections).forEach(
+              collectionPrivileges => {
+                Object.keys(collectionPrivileges).forEach(privilege => {
+                  if (groupPrivileges.has(privilege)) {
+                    groupCount++;
+                  } else {
+                    privilegeCount++;
+                  }
+                });
+              }
+            );
+          }
+        );
+
         return (
-          <>
-            {privilegeContent.entities.map((e: any) => {
-              return (
-                <Chip
-                  key={`${e.object.name}-${e.grantor.privilege.name}`}
-                  className={classes.chip}
-                  size="small"
-                  label={e.grantor.privilege.name}
-                  variant="outlined"
-                />
-              );
-            })}
-          </>
+          <div>
+            {
+              <>
+                <div style={{ marginBottom: 2 }}>
+                  <Chip
+                    label={`${userTrans('Group')} (${
+                      isAdmin ? '*' : groupCount
+                    })`}
+                    size="small"
+                    style={{ marginRight: 2 }}
+                  />
+                </div>
+                <div style={{ marginBottom: 2 }}>
+                  <Chip
+                    label={`${userTrans('privileges')} (${
+                      isAdmin ? '*' : privilegeCount
+                    })`}
+                    size="small"
+                    style={{ marginRight: 2 }}
+                  />
+                </div>
+              </>
+            }
+          </div>
         );
       },
       label: userTrans('privileges'),
+      getStyle: () => {
+        return {
+          width: '80%',
+        };
+      },
     },
   ];
 
-  const handleSelectChange = (value: RoleData[]) => {
+  const handleSelectChange = (value: any[]) => {
     setSelectedRole(value);
   };
 
@@ -220,19 +324,20 @@ const Roles = () => {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
         rows={result}
         rowCount={total}
-        primaryKey="name"
+        primaryKey="roleName"
         showPagination={true}
         selected={selectedRole}
         setSelected={handleSelectChange}
         page={currentPage}
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
+        rowHeight={69}
         setRowsPerPage={handlePageSize}
         isLoading={loading}
         order={order}
@@ -240,7 +345,7 @@ const Roles = () => {
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(userTrans('roles'))}
       />
-    </div>
+    </Wrapper>
   );
 };
 

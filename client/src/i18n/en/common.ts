@@ -86,6 +86,8 @@ const commonTrans = {
   memory: 'Memory',
   yes: 'Yes',
   no: 'No',
+
+  noPermissionTip: `You don't have permission to access this content.`,
 };
 
 export default commonTrans;

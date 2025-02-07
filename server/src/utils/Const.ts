@@ -5,8 +5,6 @@ export const ROW_COUNT = 'row_count';
 export const MILVUS_CLIENT_ID = 'milvus-client-id';
 
 // for lru cache
-export const CLIENT_CACHE = 'insight_cache';
-export const INDEX_CACHE = 'index_cache';
 export const CLIENT_TTL = 1000 * 60 * 60 * 24;
 export const INDEX_TTL = 1000 * 60 * 60;
 
@@ -74,98 +72,77 @@ export enum HTTP_STATUS_CODE {
   HTTP_VERSION_NOT_SUPPORTED = 505,
 }
 
-// RBAC: default objects
 export enum RbacObjects {
   Collection = 'Collection',
   Global = 'Global',
   User = 'User',
 }
 
-// RBAC: collection privileges
+export enum DatabasePrivileges {
+  CreateDatabase = 'CreateDatabase',
+  DescribeDatabase = 'DescribeDatabase',
+  ListDatabases = 'ListDatabases',
+  DropDatabase = 'DropDatabase',
+  AlterDatabase = 'AlterDatabase',
+}
+
 export enum CollectionPrivileges {
   CreateCollection = 'CreateCollection',
-  DropCollection = 'DropCollection',
   DescribeCollection = 'DescribeCollection',
   ShowCollections = 'ShowCollections',
+  DropCollection = 'DropCollection',
   RenameCollection = 'RenameCollection',
-  CreateIndex = 'CreateIndex',
-  DropIndex = 'DropIndex',
-  IndexDetail = 'IndexDetail',
+  CreateAlias = 'CreateAlias',
+  DescribeAlias = 'DescribeAlias',
+  DropAlias = 'DropAlias',
+  ListAliases = 'ListAliases',
   Load = 'Load',
   GetLoadingProgress = 'GetLoadingProgress',
   GetLoadState = 'GetLoadState',
   Release = 'Release',
-  Insert = 'Insert',
-  Upsert = 'Upsert',
-  Delete = 'Delete',
-  Search = 'Search',
   Flush = 'Flush',
   GetFlushState = 'GetFlushState',
-  Query = 'Query',
   GetStatistics = 'GetStatistics',
   Compaction = 'Compaction',
-  Import = 'Import',
-  LoadBalance = 'LoadBalance',
+  FlushAll = 'FlushAll',
+}
+
+export enum PartitionPrivileges {
   CreatePartition = 'CreatePartition',
   DropPartition = 'DropPartition',
   ShowPartitions = 'ShowPartitions',
   HasPartition = 'HasPartition',
-  FlushAll = 'FlushAll',
-  CreateAlias = 'CreateAlias',
-  DropAlias = 'DropAlias',
-  DescribeAlias = 'DescribeAlias',
-  ListAliases = 'ListAliases',
 }
 
-// RBAC: global privileges
-export enum DatabasePrivileges {
-  ListDatabases = 'ListDatabases',
-  DescribeDatabase = 'DescribeDatabase',
-  CreateDatabase = 'CreateDatabase',
-  DropDatabase = 'DropDatabase',
+export enum EntityPrivileges {
+  Query = 'Query',
+  Insert = 'Insert',
+  Upsert = 'Upsert',
+  Delete = 'Delete',
+  Search = 'Search',
+  Import = 'Import',
 }
 
-// RBAC: global privileges
-export enum GlobalPrivileges {
-  All = '*',
-  CreateCollection = 'CreateCollection',
-  DropCollection = 'DropCollection',
-  DescribeCollection = 'DescribeCollection',
-  ShowCollections = 'ShowCollections',
-  RenameCollection = 'RenameCollection',
-  FlushAll = 'FlushAll',
-  CreateOwnership = 'CreateOwnership',
-  DropOwnership = 'DropOwnership',
-  SelectOwnership = 'SelectOwnership',
-  ManageOwnership = 'ManageOwnership',
+export enum ResourceManagementPrivileges {
   CreateResourceGroup = 'CreateResourceGroup',
   DropResourceGroup = 'DropResourceGroup',
-  DescribeResourceGroup = 'DescribeResourceGroup',
-  ListResourceGroups = 'ListResourceGroups',
-  TransferNode = 'TransferNode',
-  TransferReplica = 'TransferReplica',
-  CreateDatabase = 'CreateDatabase',
-  ListDatabases = 'ListDatabases',
-  DropDatabase = 'DropDatabase',
-  CreateAlias = 'CreateAlias',
-  DropAlias = 'DropAlias',
-  DescribeAlias = 'DescribeAlias',
-  ListAliases = 'ListAliases',
-}
-
-// RBAC: resource group privileges
-export enum ResourceGroupPrivileges {
-  CreateResourceGroup = 'CreateResourceGroup',
-  DropResourceGroup = 'DropResourceGroup',
-  DescribeResourceGroup = 'DescribeResourceGroup',
-  ListResourceGroups = 'ListResourceGroups',
   UpdateResourceGroups = 'UpdateResourceGroups',
+  DescribeResourceGroup = 'DescribeResourceGroup',
+  ListResourceGroups = 'ListResourceGroups',
+  LoadBalance = 'LoadBalance',
   TransferNode = 'TransferNode',
   TransferReplica = 'TransferReplica',
+  BackupRBAC = 'BackupRBAC',
+  RestoreRBAC = 'RestoreRBAC',
 }
 
-// RBAC: user privileges
-export enum UserPrivileges {
+export enum IndexPrivileges {
+  CreateIndex = 'CreateIndex',
+  DropIndex = 'DropIndex',
+  IndexDetail = 'IndexDetail',
+}
+
+export enum RBACPrivileges {
   UpdateUser = 'UpdateUser',
   SelectUser = 'SelectUser',
   SelectOwnership = 'SelectOwnership',
@@ -176,16 +153,17 @@ export enum UserPrivileges {
   DropPrivilegeGroup = 'DropPrivilegeGroup',
   ListPrivilegeGroups = 'ListPrivilegeGroups',
   OperatePrivilegeGroup = 'OperatePrivilegeGroup',
-  RestoreRBAC = 'RestoreRBAC',
-  BackupRBAC = 'BackupRBAC',
 }
 
 // RBAC: all privileges
 export const Privileges = {
-  ...CollectionPrivileges,
   ...DatabasePrivileges,
-  ...ResourceGroupPrivileges,
-  ...UserPrivileges,
+  ...CollectionPrivileges,
+  ...PartitionPrivileges,
+  ...IndexPrivileges,
+  ...EntityPrivileges,
+  ...ResourceManagementPrivileges,
+  ...RBACPrivileges,
 };
 
 export enum LOADING_STATE {

@@ -1,9 +1,10 @@
 import BaseModel from './BaseModel';
 import type {
-  Users,
-  UsersWithRoles,
+  RolesWithPrivileges,
   PrivilegeGroup,
   PrivilegeGroupsRes,
+  UserWithRoles,
+  RBACOptions,
 } from '@server/types';
 import type {
   CreateUserParams,
@@ -19,12 +20,15 @@ import type {
 export class UserService extends BaseModel {
   // get user data
   static getUsers() {
-    return super.search<Users>({ path: `/users`, params: {} });
+    return super.search<UserWithRoles[]>({ path: `/users`, params: {} });
   }
 
   // get all roles
   static getRoles() {
-    return super.search<UsersWithRoles>({ path: `/users/roles`, params: {} });
+    return super.search<RolesWithPrivileges[]>({
+      path: `/users/roles`,
+      params: {},
+    });
   }
 
   // create user
@@ -89,13 +93,7 @@ export class UserService extends BaseModel {
     return super.search({
       path: `/users/rbac`,
       params: {},
-    }) as Promise<{
-      GlobalPrivileges: Record<string, unknown>;
-      CollectionPrivileges: Record<string, unknown>;
-      RbacObjects: Record<string, unknown>;
-      UserPrivileges: Record<string, unknown>;
-      Privileges: Record<string, unknown>;
-    }>;
+    }) as Promise<RBACOptions>;
   }
   // get privilege groups
   static getPrivilegeGroups() {

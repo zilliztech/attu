@@ -60,7 +60,7 @@ export type SnackBarType = {
 
 export type OpenSnackBarType = (
   message: string | ReactElement,
-  type?: 'error' | 'info' | 'success' | 'warning',
+  type?: 'error' | 'info' | 'success' | 'warning' | string,
   autoHideDuration?: number | null,
   position?: {
     horizontal: 'center' | 'left' | 'right';

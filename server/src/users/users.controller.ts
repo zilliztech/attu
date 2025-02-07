@@ -11,7 +11,19 @@ import {
   CreatePrivilegeGroupDto,
   PrivilegeToRoleDto,
 } from './dto';
-import { OperateRolePrivilegeReq } from '@zilliz/milvus2-sdk-node';
+import type {
+  DBCollectionsPrivileges,
+  RolesWithPrivileges,
+} from '../types/users.type';
+import {
+  DatabasePrivileges,
+  CollectionPrivileges,
+  PartitionPrivileges,
+  IndexPrivileges,
+  EntityPrivileges,
+  ResourceManagementPrivileges,
+  RBACPrivileges,
+} from '../utils';
 
 export class UserController {
   private router: Router;
@@ -49,7 +61,10 @@ export class UserController {
 
     // role
     this.router.get('/rbac', this.rbac.bind(this));
-    this.router.get('/privilegeGroups', this.allPrivilegeGroups.bind(this));
+    this.router.get(
+      '/privilegeGroups',
+      this.getDefaultPriviegGroups.bind(this)
+    );
     this.router.get('/roles', this.getRoles.bind(this));
     this.router.post(
       '/roles',
@@ -91,7 +106,25 @@ export class UserController {
     try {
       const result = await this.userService.getUsers(req.clientId);
 
-      res.send(result);
+      const results = [];
+      for (let i = 0; i < result.usernames.length; i++) {
+        const username = result.usernames[i];
+        const roles = await this.userService.selectUser(req.clientId, {
+          username,
+          includeRoleInfo: true,
+        });
+        results.push({
+          username,
+          roles: roles.results[0].roles.map(r => r.name),
+        });
+        if (username === 'root') {
+          // Remove the recently pushed "root" user and insert it at the beginning of the results array
+          const rootUser = results.pop();
+          results.unshift(rootUser);
+        }
+      }
+
+      res.send(results);
     } catch (error) {
       next(error);
     }
@@ -150,17 +183,58 @@ export class UserController {
 
   async getRoles(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getRoles(req.clientId);
+      // Fetch all roles
+      const rolesResult = await this.userService.getRoles(req.clientId);
 
-      for (let i = 0; i < result.results.length; i++) {
-        const { entities } = await this.userService.listGrants(req.clientId, {
-          roleName: result.results[i].role.name,
+      // Initialize the result array
+      const rolesWithPrivileges: RolesWithPrivileges[] = [];
+
+      // Iterate through each role
+      for (let i = 0; i < rolesResult.results.length; i++) {
+        const roleName = rolesResult.results[i].role.name;
+
+        // Fetch grants for the current role
+        const grantsResponse = await this.userService.listGrants(
+          req.clientId,
+          roleName
+        );
+
+        // Initialize the privileges structure for the current role
+        const dbCollectionsPrivileges: DBCollectionsPrivileges = {};
+
+        // Iterate through each grant entity
+        for (const entity of grantsResponse.entities) {
+          const { db_name, object_name, grantor } = entity;
+
+          // Initialize the database entry if it doesn't exist
+          if (!dbCollectionsPrivileges[db_name]) {
+            dbCollectionsPrivileges[db_name] = {
+              collections: {},
+            };
+          }
+
+          // Initialize the collection entry if it doesn't exist
+          if (!dbCollectionsPrivileges[db_name].collections[object_name]) {
+            dbCollectionsPrivileges[db_name].collections[object_name] = {};
+          }
+
+          // Add the privilege to the collection
+          dbCollectionsPrivileges[db_name].collections[object_name][
+            grantor.privilege.name
+          ] = true;
+        }
+
+        // Add the role and its privileges to the result array
+        rolesWithPrivileges.push({
+          roleName,
+          privileges: dbCollectionsPrivileges,
         });
-        result.results[i].entities = entities;
       }
 
-      res.send(result);
+      // Send the transformed result
+      res.status(200).json(rolesWithPrivileges);
     } catch (error) {
+      // Pass the error to the error-handling middleware
       next(error);
     }
   }
@@ -268,17 +342,59 @@ export class UserController {
 
   async rbac(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.userService.getRBAC();
+      const privilegeGrps = await this.userService.getPriviegGroups(
+        req.clientId
+      );
+
+      const ClusterPrivilegeGroups = {} as any;
+      const DatabasePrivilegeGroups = {} as any;
+      const CollectionPrivilegeGroups = {} as any;
+      const CustomPrivilegeGroups = {} as any;
+
+      privilegeGrps.cluster.forEach((g: any) => {
+        ClusterPrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      privilegeGrps.db.forEach((g: any) => {
+        DatabasePrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      privilegeGrps.collection.forEach((g: any) => {
+        CollectionPrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      privilegeGrps.custom.forEach((g: any) => {
+        CustomPrivilegeGroups[g.group_name] = g.group_name;
+      });
+
+      const result = {
+        ClusterPrivilegeGroups,
+        DatabasePrivilegeGroups,
+        CollectionPrivilegeGroups,
+        CustomPrivilegeGroups,
+        DatabasePrivileges,
+        ResourceManagementPrivileges,
+        RBACPrivileges,
+        CollectionPrivileges,
+        PartitionPrivileges,
+        IndexPrivileges,
+        EntityPrivileges,
+      };
+
       res.send(result);
     } catch (error) {
       next(error);
     }
   }
 
-  async allPrivilegeGroups(req: Request, res: Response, next: NextFunction) {
+  async getDefaultPriviegGroups(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
-      const result = await this.userService.getAllPrivilegeGroups(req.clientId);
-      res.send(result);
+      const result = await this.userService.getPriviegGroups(req.clientId);
+      res.send(result.default);
     } catch (error) {
       next(error);
     }
@@ -293,7 +409,8 @@ export class UserController {
     try {
       const result = await this.userService.listGrants(req.clientId, {
         roleName,
-      });
+        db_name: '*',
+      } as any);
       res.send(result);
     } catch (error) {
       next(error);
@@ -304,33 +421,111 @@ export class UserController {
     req: Request<
       { roleName: string },
       {},
-      { privileges: OperateRolePrivilegeReq[] }
+      { privileges: DBCollectionsPrivileges }
     >,
     res: Response,
     next: NextFunction
   ) {
     const { privileges } = req.body;
     const { roleName } = req.params;
+    const clientId = req.clientId;
 
     const results = [];
+    const rollbackStack = []; // Stack to store actions for rollback in case of failure
 
     try {
-      // revoke all
-      await this.userService.revokeAllRolePrivileges(req.clientId, {
+      // check if role exists
+      const hasRole = await this.userService.hasRole(clientId, {
         roleName,
       });
-
-      // assign new user roles
-      for (let i = 0; i < privileges.length; i++) {
-        const result = await this.userService.grantRolePrivilege(
-          req.clientId,
-          privileges[i]
-        );
-        results.push(result);
+      // if role does not exist, create it
+      if (hasRole.hasRole === false) {
+        await this.userService.createRole(clientId, { roleName });
       }
 
-      res.send(results);
+      // Iterate over each database
+      for (const [dbName, dbPrivileges] of Object.entries(privileges)) {
+        // Iterate over each collection in the database
+        for (const [collectionName, collectionPrivileges] of Object.entries(
+          dbPrivileges.collections
+        )) {
+          // Iterate over each privilege in the collection
+          for (const [privilegeName, isGranted] of Object.entries(
+            collectionPrivileges
+          )) {
+            const requestData = {
+              role: roleName,
+              privilege: privilegeName,
+              db_name: dbName,
+              collection_name: collectionName,
+            };
+
+            let result;
+            try {
+              if (isGranted) {
+                // If the privilege is true, call grantPrivilegeV2
+                result = await this.userService.grantPrivilegeV2(
+                  clientId,
+                  requestData
+                );
+                // Push the reverse action (revoke) to the rollback stack
+                rollbackStack.push({ action: 'revoke', data: requestData });
+              } else {
+                // If the privilege is false, call revokePrivilegeV2
+                result = await this.userService.revokePrivilegeV2(
+                  clientId,
+                  requestData
+                );
+                // Push the reverse action (grant) to the rollback stack
+                rollbackStack.push({ action: 'grant', data: requestData });
+              }
+
+              // Collect the result
+              results.push({
+                dbName,
+                collectionName,
+                privilegeName,
+                isGranted,
+                result,
+              });
+            } catch (error) {
+              // If an error occurs, log it and initiate rollback
+              console.error(
+                `Failed to update privilege: ${privilegeName} for collection: ${collectionName} in database: ${dbName}`,
+                error
+              );
+
+              // Rollback all previously applied changes
+              while (rollbackStack.length > 0) {
+                const { action, data } = rollbackStack.pop();
+                try {
+                  if (action === 'grant') {
+                    await this.userService.grantPrivilegeV2(clientId, data);
+                  } else if (action === 'revoke') {
+                    await this.userService.revokePrivilegeV2(clientId, data);
+                  }
+                } catch (rollbackError) {
+                  console.error(
+                    `Rollback failed for action: ${action} on privilege: ${data.privilege}`,
+                    rollbackError
+                  );
+                }
+              }
+
+              // drop the role if creation fails
+              await this.userService.deleteRole(clientId, { roleName });
+
+              // Propagate the error to the error handler
+              throw error;
+            }
+          }
+        }
+      }
+
+      // Return the results if everything succeeds
+      res.status(200).json({ results });
     } catch (error) {
+      // Pass the error to the error-handling middleware
       next(error);
     }
   }
@@ -350,7 +545,7 @@ export class UserController {
       // add privileges to the group
       const result = await this.userService.addPrivilegeToGroup(req.clientId, {
         group_name,
-        priviliges: privileges,
+        privileges,
       });
 
       res.send(result);
@@ -410,7 +605,7 @@ export class UserController {
     const { privileges } = req.body;
     // get existing group
     const theGroup = await this.userService.getPrivilegeGroup(req.clientId, {
-      group_name: group_name,
+      group_name,
     });
 
     // if no group found, return error
@@ -421,14 +616,14 @@ export class UserController {
     try {
       // remove all privileges from the group
       await this.userService.removePrivilegeFromGroup(req.clientId, {
-        group_name: group_name,
-        priviliges: theGroup.privileges.map(p => p.name),
+        group_name,
+        privileges: theGroup.privileges.map(p => p.name),
       });
 
       // add new privileges to the group
       const result = await this.userService.addPrivilegeToGroup(req.clientId, {
-        group_name: group_name,
-        priviliges: privileges,
+        group_name,
+        privileges,
       });
 
       res.send(result);
@@ -445,10 +640,10 @@ export class UserController {
     const { role, collection, privilege } = req.body;
     try {
       const result = await this.userService.grantPrivilegeV2(req.clientId, {
-        role: role,
+        role,
         collection_name: collection || '*',
         db_name: req.db_name,
-        privilege: privilege,
+        privilege,
       });
       res.send(result);
     } catch (error) {
@@ -464,10 +659,10 @@ export class UserController {
     const { role, collection, privilege } = req.body;
     try {
       const result = await this.userService.revokePrivilegeV2(req.clientId, {
-        role: role,
+        role,
         collection_name: collection || '*',
         db_name: req.db_name,
-        privilege: privilege,
+        privilege,
       });
       res.send(result);
     } catch (error) {

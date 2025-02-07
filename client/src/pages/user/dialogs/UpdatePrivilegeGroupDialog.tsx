@@ -19,7 +19,6 @@ import { CreatePrivilegeGroupParams } from '../Types';
 import PrivilegeGroupOptions from './PrivilegeGroupOptions';
 import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';
-import { Opacity } from '@mui/icons-material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {

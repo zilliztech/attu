@@ -6,6 +6,7 @@ import { rootContext } from '@/context';
 import { useNavigationHook, usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
+import Wrapper from '@/components/layout/Wrapper';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import UpdatePrivilegeGroupDialog from './dialogs/UpdatePrivilegeGroupDialog';
@@ -24,13 +25,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const PrivilegeGroups = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
+  // styles
   const classes = useStyles();
 
+  // ui states
   const [groups, setGroups] = useState<PrivilegeGroup[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState<PrivilegeGroup[]>([]);
+  const [hasPermission, setHasPermission] = useState(true);
+  // context
   const { setDialog, handleCloseDialog, openSnackBar } =
     useContext(rootContext);
+  // i18n
   const { t: successTrans } = useTranslation('success');
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
@@ -38,10 +44,14 @@ const PrivilegeGroups = () => {
 
   const fetchGroups = async () => {
     setLoading(true);
-    const res = await UserService.getPrivilegeGroups();
-    setGroups(res.privilege_groups);
-
-    setLoading(false);
+    try {
+      const res = await UserService.getPrivilegeGroups();
+      setGroups(res.privilege_groups);
+    } catch (error) {
+      setHasPermission(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onUpdate = async (data: { isEditing: boolean }) => {
@@ -198,7 +208,7 @@ const PrivilegeGroups = () => {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
       <AttuGrid
         toolbarConfigs={[]}
         colDefinitions={colDefinitions}
@@ -220,7 +230,7 @@ const PrivilegeGroups = () => {
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(userTrans('privilegeGroups'))}
       />
-    </div>
+    </Wrapper>
   );
 };
 
