@@ -30,7 +30,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                           |
 | -------------- | ------------------------------------------------------------------ |
-| 2.5.x          | [v2.5.0](https://github.com/zilliztech/attu/releases/tag/v2.5.0)   |
+| 2.5.x          | [v2.5.0](https://github.com/zilliztech/attu/releases/tag/v2.5.1)   |
 | 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
 | 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
@@ -41,7 +41,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.4
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.5
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.

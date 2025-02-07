@@ -30,7 +30,7 @@ Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统�
 
 | Milvus 版本 | 推荐的 Attu 版本                                                   |
 | ----------- | ------------------------------------------------------------------ |
-| 2.5.x       | [v2.5.0](https://github.com/zilliztech/attu/releases/tag/v2.5.0)   |
+| 2.5.x       | [v2.5.0](https://github.com/zilliztech/attu/releases/tag/v2.5.1)   |
 | 2.4.x       | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
 | 2.2.x       | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
@@ -41,7 +41,7 @@ Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统�
 以下是运行 Attu 容器的步骤：
 
 ```bash
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.4
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.5
 ```
 
 确保 Attu 容器可以访问 Milvus IP 地址。启动容器后，在您的浏览器中输入 `http://{ Attu IP }:8000` 以查看 Attu GUI。
