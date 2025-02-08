@@ -40,7 +40,7 @@ export const ReqHeaderMiddleware = (
   ) {
     throw HttpErrors(
       HTTP_STATUS_CODE.UNAUTHORIZED,
-      'Can not find your connection, please check your connection settings.'
+      'Can not find your connection, please reconnect.'
     );
   }
   next();
