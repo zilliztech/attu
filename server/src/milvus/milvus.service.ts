@@ -5,15 +5,9 @@ import {
   ClientConfig,
   CONNECT_STATUS,
 } from '@zilliz/milvus2-sdk-node';
-import { LRUCache } from 'lru-cache';
-import {
-  DEFAULT_MILVUS_PORT,
-  INDEX_TTL,
-  SimpleQueue,
-  HTTP_STATUS_CODE,
-} from '../utils';
+import { DEFAULT_MILVUS_PORT, SimpleQueue, HTTP_STATUS_CODE } from '../utils';
 import { clientCache } from '../app';
-import { DescribeIndexRes, AuthReq, AuthObject } from '../types';
+import { AuthReq, AuthObject } from '../types';
 import { cronsManager } from '../crons';
 import HttpErrors from 'http-errors';
 
@@ -115,10 +109,6 @@ export class MilvusService {
       clientCache.set(milvusClient.clientId, {
         milvusClient,
         address,
-        indexCache: new LRUCache<string, DescribeIndexRes>({
-          ttl: INDEX_TTL,
-          ttlAutopurge: true,
-        }),
         database: db,
         collectionsQueue: new SimpleQueue<string>(),
       });

@@ -21,7 +21,7 @@ import {
 } from './middleware';
 import { CLIENT_TTL, SimpleQueue, isElectron } from './utils';
 import { getIp } from './utils/Network';
-import { DescribeIndexRes, MilvusClient } from './types';
+import { MilvusClient } from './types';
 import { initWebSocket } from './socket';
 
 // initialize express app
@@ -35,7 +35,6 @@ export const clientCache = new LRUCache<
   {
     milvusClient: MilvusClient;
     address: string;
-    indexCache: LRUCache<string, DescribeIndexRes>;
     database: string;
     collectionsQueue: SimpleQueue<string>;
   }
