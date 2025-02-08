@@ -131,7 +131,7 @@ export class UserService {
       'CollectionReadWrite',
     ];
 
-    let res: Record<string, any> = {};
+    const res: Record<string, any> = {};
 
     ['cluster', 'db', 'collection', 'default', 'custom', 'all'].forEach(
       type => {

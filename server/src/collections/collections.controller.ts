@@ -45,7 +45,6 @@ export class CollectionController {
     );
 
     this.router.get('/index', this.describeIndex.bind(this));
-    this.router.post('/index/flush', this.clearCache.bind(this));
 
     // get collection with index info
     this.router.get('/:name', this.describeCollection.bind(this));
@@ -175,7 +174,7 @@ export class CollectionController {
       res.send(
         result.data
           .sort((a, b) => {
-             // sort by name
+            // sort by name
             return a.name.localeCompare(b.name);
           })
           .map((item: any) => item.name)
@@ -640,15 +639,6 @@ export class CollectionController {
         db_name: req.db_name,
       });
 
-      res.send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async clearCache(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await this.collectionsService.clearCache(req.clientId);
       res.send(result);
     } catch (error) {
       next(error);

@@ -1,10 +1,9 @@
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
-import { CollectionService } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
@@ -95,10 +94,6 @@ const Collections = () => {
 
   const QuestionIcon = icons.question;
   const SourceIcon = icons.source;
-
-  const clearIndexCache = useCallback(async () => {
-    await CollectionService.flush();
-  }, []);
 
   const formatCollections = useMemo(() => {
     const filteredCollections = search
@@ -319,7 +314,6 @@ const Collections = () => {
             fetchCollection(collection.collection_name);
           }
         } else {
-          clearIndexCache();
           fetchCollections();
         }
       },
