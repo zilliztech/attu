@@ -1,5 +1,8 @@
 const electron = require('electron');
 const fs = require('fs');
+// setup server port in order to avoid port conflict
+process.env.SERVER_PORT = 3080;
+// launch server
 require('./dist/src/app');
 
 // Module to control application life.
