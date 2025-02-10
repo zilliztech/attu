@@ -8,6 +8,7 @@ const navTrans = {
   user: '用户和角色',
   dbAdmin: '数据库管理',
   database: '数据库',
+  play: 'Play',
 };
 
 export default navTrans;

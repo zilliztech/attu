@@ -70,6 +70,10 @@ function Index() {
       return navTrans('user');
     }
 
+    if (location.pathname.includes('play')) {
+      return navTrans('play');
+    }
+
     return navTrans('overview');
   }, [location, navTrans]);
 
@@ -84,11 +88,11 @@ function Index() {
       label: navTrans('database'),
       onClick: () => navigate(`/databases/${database}/collections`),
     },
-    // {
-    //   icon: icons.navSearch,
-    //   label: navTrans('search'),
-    //   onClick: () => navigate('/search'),
-    // },
+    {
+      icon: icons.code,
+      label: navTrans('play'),
+      onClick: () => navigate('/play'),
+    },
   ];
 
   if (!isManaged) {

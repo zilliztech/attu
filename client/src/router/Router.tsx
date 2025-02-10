@@ -8,6 +8,7 @@ import Index from '@/pages/index';
 import Search from '@/pages/search/VectorSearch';
 import System from '@/pages/system/SystemView';
 import SystemHealthy from '@/pages/systemHealthy/SystemHealthyView';
+import Play from '@/pages/play/Play';
 
 const RouterComponent = () => {
   const { isManaged } = useContext(authContext);
@@ -38,6 +39,7 @@ const RouterComponent = () => {
               <Route path="system" element={<System />} />
             </>
           )}
+          <Route path="play" element={<Play />} />
         </Route>
         <Route path="connect" element={<Connect />} />
       </Routes>
