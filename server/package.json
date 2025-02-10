@@ -78,6 +78,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "yarn clean && tsc",
     "build-electron": "node electron-prebuild && yarn build",
+    "electron": "electron .",
     "prestart": "rm -rf dist && yarn build",
     "start": "nodemon src/app.ts",
     "start:prod": "node dist/src/app.js",
