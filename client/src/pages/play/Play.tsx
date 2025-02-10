@@ -106,18 +106,23 @@ const Play: any = () => {
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.text.primary,
         },
+        '.cm-line': { padding: ' 0 4px 0 15px' },
         '.cm-content': {
           fontSize: '13px',
           fontFamily: 'IBM Plex Mono, monospace',
         },
+        '.cm-activeLine': { backgroundColor: 'transparent' },
         '.cm-gutters': {
           fontSize: '13px',
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.primary,
           border: 'none',
         },
+        '.cm-lineNumbers .cm-gutterElement': {
+          padding: '0 22px 0 26px',
+        },
         '.cm-activeLineGutter': {
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: 'transparent',
           color: theme.palette.text.primary,
         },
       });
