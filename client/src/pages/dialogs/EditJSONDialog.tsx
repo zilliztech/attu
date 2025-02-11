@@ -26,17 +26,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-type EditAnalyzerDialogProps = {
+type EditJSONDialogProps = {
   data: { [key: string]: any };
   handleConfirm: (data: { [key: string]: any }) => void;
   handleCloseDialog: () => void;
+  dialogTitle: string;
+  dialogTip: string;
   cb?: () => void;
 };
 
 // json linter for cm
 const linterExtension = linter(jsonParseLinter());
 
-const EditAnalyzerDialog: FC<EditAnalyzerDialogProps> = props => {
+const EditJSONDialog: FC<EditJSONDialogProps> = props => {
+  // hooks
   const theme = useTheme();
   const themeCompartment = new Compartment();
 
@@ -44,17 +47,15 @@ const EditAnalyzerDialog: FC<EditAnalyzerDialogProps> = props => {
   const { data, handleCloseDialog, handleConfirm } = props;
   // UI states
   const [disabled, setDisabled] = useState(true);
-  // context
   // translations
   const { t: btnTrans } = useTranslation('btn');
-  const { t: dialogTrans } = useTranslation('dialog');
   // refs
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<EditorView>();
   // styles
   const classes = useStyles();
 
-  const originalData = JSON.stringify(data, null, 4) + '\n';
+  const originalData = JSON.stringify(data, null, 2) + '\n';
 
   // create editor
   useEffect(() => {
@@ -123,14 +124,14 @@ const EditAnalyzerDialog: FC<EditAnalyzerDialogProps> = props => {
 
   return (
     <DialogTemplate
-      title={dialogTrans('editAnalyzerTitle')}
+      title={props.dialogTitle}
       handleClose={handleCloseDialog}
       children={
         <>
           <div
             className={classes.tip}
             dangerouslySetInnerHTML={{
-              __html: dialogTrans('editAnalyzerInfo'),
+              __html: props.dialogTip,
             }}
           ></div>
           <div
@@ -150,4 +151,4 @@ const EditAnalyzerDialog: FC<EditAnalyzerDialogProps> = props => {
   );
 };
 
-export default EditAnalyzerDialog;
+export default EditJSONDialog;

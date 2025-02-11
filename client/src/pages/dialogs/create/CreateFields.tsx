@@ -37,7 +37,7 @@ import {
 } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
-import EditAnalyzerDialog from '@/pages/dialogs/EditAnalyzerDialog';
+import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import type {
   CreateFieldsProps,
   CreateFieldType,
@@ -171,11 +171,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
   autoID,
   setFieldsValidation,
 }) => {
+  // context
   const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
 
+  // i18n
   const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
+  const { t: dialogTrans } = useTranslation('dialog');
 
+  // styles
   const classes = useStyles();
 
   const AddIcon = icons.addOutline;
@@ -628,10 +632,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
               type: 'custom',
               params: {
                 component: (
-                  <EditAnalyzerDialog
+                  <EditJSONDialog
                     data={getAnalyzerParams(
                       field.analyzer_params || 'standard'
                     )}
+                    dialogTitle={dialogTrans('editAnalyzerTitle')}
+                    dialogTip={dialogTrans('editAnalyzerInfo')}
                     handleConfirm={data => {
                       changeFields(field.id!, { analyzer_params: data });
                     }}
