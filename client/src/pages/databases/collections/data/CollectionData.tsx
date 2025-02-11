@@ -12,7 +12,7 @@ import Filter from '@/components/advancedSearch';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import CustomToolBar from '@/components/grid/ToolBar';
 import InsertDialog from '@/pages/dialogs/insert/Dialog';
-import EditEntityDialog from '@/pages/dialogs/EditEntityDialog';
+import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { getQueryStyles } from './Styles';
 import {
@@ -31,6 +31,7 @@ import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
 import DataListView from '@/components/DataListView/DataListView';
 import type { QueryState } from '../../types';
+import { CollectionFullObject } from '@server/types';
 
 export interface CollectionDataProps {
   queryState: QueryState;
@@ -148,7 +149,13 @@ const CollectionData = (props: CollectionDataProps) => {
     await fetchCollection(collectionName);
   };
 
-  const onEditEntity = async (id: string) => {
+  const handleEditConfirm = async (data: Record<string, any>) => {
+    const result = (await DataService.upsert(collection.collection_name, {
+      fields_data: [data],
+    })) as any;
+
+    const idField = result.IDs.id_field;
+    const id = result.IDs[idField].data;
     // deselect all
     setSelectedData([]);
     const newExpr = `${collection.schema.primaryField.name} == ${id}`;
@@ -161,6 +168,25 @@ const CollectionData = (props: CollectionDataProps) => {
       expr: newExpr,
       tick: queryState.tick + 1,
     });
+  };
+
+  const getEditData = (data: any, collection: CollectionFullObject) => {
+    // sort data by collection schema order
+    const schema = collection.schema;
+    let sortedData: { [key: string]: any } = {};
+    schema.fields.forEach(field => {
+      if (data[field.name] !== undefined) {
+        sortedData[field.name] = data[field.name];
+      }
+    });
+
+    // add dynamic fields if exist
+    const isDynamicSchema = collection.schema.dynamicFields.length > 0;
+    if (isDynamicSchema) {
+      sortedData = { ...sortedData, ...data[DYNAMIC_FIELD] };
+    }
+
+    return sortedData;
   };
 
   // Toolbar settings
@@ -270,10 +296,12 @@ const CollectionData = (props: CollectionDataProps) => {
           type: 'custom',
           params: {
             component: (
-              <EditEntityDialog
-                data={selectedData[0]}
-                collection={collection!}
-                cb={onEditEntity}
+              <EditJSONDialog
+                data={getEditData(selectedData[0], collection)}
+                dialogTitle={dialogTrans('editEntityTitle')}
+                dialogTip={dialogTrans('editEntityInfo')}
+                handleConfirm={handleEditConfirm}
+                handleCloseDialog={handleCloseDialog}
               />
             ),
           },
