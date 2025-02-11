@@ -70,7 +70,7 @@ const Play: any = () => {
           basicSetup,
           placeholder('Write your code here'),
           keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
-          indentUnit.of('    '), // fix tab indentation
+          indentUnit.of('  '), // fix tab indentation
           EditorView.lineWrapping,
           themeCompartment.of([]), // empty theme
         ],
