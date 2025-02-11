@@ -683,6 +683,14 @@
   resolved "https://registry.yarnpkg.com/@lezer/common/-/common-1.2.1.tgz#198b278b7869668e1bebbe687586e12a42731049"
   integrity sha512-yemX0ZD2xS/73llMZIK6KplkjIjf2EvAHcinDi/TfJ9hS25G0388+ClHt6/3but0oOxinTcQHJLDXh6w1crzFQ==
 
+"@lezer/generator@^1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@lezer/generator/-/generator-1.7.2.tgz#a491c91eb9f117ea803e748fa97574514156a2a3"
+  integrity sha512-CwgULPOPPmH54tv4gki18bElLCdJ1+FBC+nGVSVD08vFWDsMjS7KEjNTph9JOypDnet90ujN3LzQiW3CyVODNQ==
+  dependencies:
+    "@lezer/common" "^1.1.0"
+    "@lezer/lr" "^1.3.0"
+
 "@lezer/highlight@^1.0.0", "@lezer/highlight@^1.1.3":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@lezer/highlight/-/highlight-1.2.0.tgz#e5898c3644208b4b589084089dceeea2966f7780"

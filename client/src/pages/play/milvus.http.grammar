@@ -1,0 +1,57 @@
+@top MultipleRequests { Request+ }
+
+Request { HTTPMethod URL Body? }
+
+HTTPMethod {
+  "GET" | "POST" | "PUT" | "DELETE"
+}
+
+URL {
+  "/" VERSION "/" PathSegment ("/" PathSegment)*
+}
+
+Body {
+  "{" (Property ("," Property)*)? "}"
+}
+
+Property {
+  Identifier ":" Value
+}
+
+Value {
+  String
+  | Number
+  | Boolean
+  | "null"
+  | Body
+  | Array
+}
+
+Array {
+  "[" (Value ("," Value)*)? "]"
+}
+
+
+@tokens {
+  LineComment { "#" ![\n]* }
+
+  VERSION { "v1" | "v2" }
+  PathChar { @asciiLetter | @digit | "_" | "-" }
+  PathSegment { PathChar PathRest? }
+  PathRest { PathChar* }
+
+  String {
+    '"' (![\\\n"] | "\\" _)* '"'? |
+    "'" (![\\\n'] | "\\" _)* "'"?
+  }
+  Identifier { (@asciiLetter | "_") (@asciiLetter | @digit | "_")* }
+  Number { @digit+ ("." @digit+)? }
+  Boolean { "true" | "false" }
+
+  space { @whitespace+ }
+}
+
+@skip {
+  space  | LineComment 
+}
+

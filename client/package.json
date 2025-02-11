@@ -42,6 +42,7 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
+    "@lezer/generator": "^1.7.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "12.1.2",
     "@testing-library/react-hooks": "^7.0.1",
@@ -72,6 +73,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watchAll",
+    "milvus-http-parser": "lezer-generator src/pages/play/milvus.http.grammar -o  src/pages/play/milvus.http.parser.js",
     "format": "prettier --write '**/*.{ts,js,tsx,jsx,css}'"
   },
   "eslintConfig": {
