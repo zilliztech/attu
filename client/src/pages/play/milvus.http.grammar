@@ -35,17 +35,23 @@ Array {
 @tokens {
   LineComment { "#" ![\n]* }
 
-  VERSION { "v1" | "v2" }
+  VERSION { "v2" }
   PathChar { @asciiLetter | @digit | "_" | "-" }
   PathSegment { PathChar PathRest? }
   PathRest { PathChar* }
 
   String {
-    '"' (![\\\n"] | "\\" _)* '"'? |
-    "'" (![\\\n'] | "\\" _)* "'"?
+    '"' (![\\\n"] | "\\" _)* '"'?
   }
-  Identifier { (@asciiLetter | "_") (@asciiLetter | @digit | "_")* }
-  Number { @digit+ ("." @digit+)? }
+  Identifier { String }
+  number {
+    (@digit+ ("." @digit*)? | "." @digit+) (("e" | "E") ("+" | "-")? @digit+)? |
+    "0x" (@digit | $[a-fA-F])+ |
+    "0b" $[01]+ |
+    "0o" $[0-7]+
+  }
+
+  Number { number | "-" number }
   Boolean { "true" | "false" }
 
   space { @whitespace+ }
