@@ -54,7 +54,7 @@ const Play: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);
   // styles
   const classes = getStyles();
-  const [code, setCode] = useState('// Write your code here');
+  const [code, setCode] = useState('POST /collections');
   // refs
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<EditorView>();
@@ -125,6 +125,11 @@ const Play: any = () => {
           backgroundColor: 'transparent',
           color: theme.palette.text.primary,
         },
+        '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection':
+          {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+          },
       });
 
       editor.current.dispatch({
