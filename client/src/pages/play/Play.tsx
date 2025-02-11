@@ -10,6 +10,7 @@ import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
 import { autocompletion, CompletionContext } from '@codemirror/autocomplete';
 import { getStyles, getCMStyle } from './style';
+import { ATTU_PLAY_CODE } from '@/consts';
 
 function myCompletions(context: CompletionContext) {
   let word = context.matchBefore(/\w*/)!;
@@ -31,11 +32,19 @@ const Play: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);
   // styles
   const classes = getStyles();
-  const [code, setCode] = useState('POST /collections');
+  const [code, setCode] = useState(() => {
+    const savedCode = localStorage.getItem(ATTU_PLAY_CODE);
+    return savedCode || '';
+  });
   // refs
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<EditorView>();
   const themeCompartment = useRef(new Compartment()).current;
+
+  // save code to local storage
+  useEffect(() => {
+    localStorage.setItem(ATTU_PLAY_CODE, code);
+  }, [code]);
 
   // create editor
   useEffect(() => {
@@ -53,6 +62,11 @@ const Play: any = () => {
           autocompletion({
             override: [myCompletions],
           }), // auto completion
+          EditorView.updateListener.of(update => {
+            if (update.changes) {
+              setCode(update.state.doc.toString());
+            }
+          }),
         ],
       });
 
