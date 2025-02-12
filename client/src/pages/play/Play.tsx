@@ -11,6 +11,7 @@ import { basicSetup } from 'codemirror';
 import { getStyles, getCMStyle } from './style';
 import { ATTU_PLAY_CODE } from '@/consts';
 import { MilvusHTTPAPI, highlights } from './milvus.http';
+import { httpSelectionPlugin } from './extension';
 
 const Play: any = () => {
   // hooks
@@ -52,6 +53,7 @@ const Play: any = () => {
           }),
           MilvusHTTPAPI(),
           highlights,
+          httpSelectionPlugin,
         ],
       });
 

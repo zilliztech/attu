@@ -117,5 +117,10 @@ export const getCMStyle = (theme: Theme) => {
       borderColor: '#e2e3e5',
       borderLeftColor: '#1a6ce7',
     },
+    '.cm-request-highlight': {
+      backgroundColor: '#ffeb3b',
+      borderRadius: '3px',
+      padding: '2px',
+    },
   };
 };
