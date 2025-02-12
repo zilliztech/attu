@@ -7,7 +7,11 @@ HTTPMethod {
 }
 
 URL {
-  "/" VERSION "/" PathSegment ("/" PathSegment)*
+  "/" VERSION PATH
+}
+
+PATH {
+  ("/" PathSegment)*
 }
 
 Body {
@@ -37,8 +41,8 @@ Array {
 
   VERSION { "v2" }
   PathChar { @asciiLetter | @digit | "_" | "-" }
-  PathSegment { PathChar PathRest? }
   PathRest { PathChar* }
+  PathSegment { PathChar PathRest? }
 
   String {
     '"' (![\\\n"] | "\\" _)* '"'?
