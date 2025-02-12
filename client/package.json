@@ -48,6 +48,7 @@
     "@testing-library/react": "12.1.2",
     "@testing-library/react-hooks": "^7.0.1",
     "@testing-library/user-event": "^12.1.10",
+    "@types/codemirror": "^5.60.15",
     "@types/d3": "^7.4.0",
     "@types/file-saver": "^2.0.5",
     "@types/loadable__component": "^5.13.4",

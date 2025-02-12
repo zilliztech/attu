@@ -45,10 +45,11 @@ export const getCMStyle = (theme: Theme) => {
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.text.primary,
     },
-    '.cm-line': { padding: ' 0 4px 0 15px' },
+    '.cm-line': { padding: ' 0 4px 0 2px' },
     '.cm-content': {
       fontSize: '13px',
       fontFamily: 'IBM Plex Mono, monospace',
+      padding: 0,
     },
     '.cm-activeLine': { backgroundColor: 'transparent' },
     '.cm-gutters': {
@@ -118,9 +119,8 @@ export const getCMStyle = (theme: Theme) => {
       borderLeftColor: '#1a6ce7',
     },
     '.cm-request-highlight': {
-      backgroundColor: '#ffeb3b',
+      backgroundColor: 'rgba(255, 255, 0, 0.2)',
       borderRadius: '3px',
-      padding: '2px',
     },
   };
 };

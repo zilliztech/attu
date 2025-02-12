@@ -3,7 +3,7 @@ import { RangeSetBuilder } from '@codemirror/state';
 import { ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
 
-const requestHighlightDecoration = Decoration.mark({
+const requestHighlightLineDecoration = Decoration.line({
   class: 'cm-request-highlight',
 });
 
@@ -34,7 +34,12 @@ export const httpSelectionPlugin = ViewPlugin.fromClass(
           const from = nodeAtCursor.from;
           const to = nodeAtCursor.to;
 
-          builder.add(from, to, requestHighlightDecoration);
+          const lines = this.getLinesInRange(view.state.doc, from, to);
+
+          lines.forEach(line => {
+            builder.add(line.from, line.from, requestHighlightLineDecoration);
+          });
+
           break;
         }
 
@@ -46,6 +51,19 @@ export const httpSelectionPlugin = ViewPlugin.fromClass(
       }
 
       return builder.finish();
+    }
+
+    getLinesInRange(doc: any, from: any, to: any) {
+      const lines = [];
+      let startLine = doc.lineAt(from);
+      let endLine = doc.lineAt(to);
+
+      for (let i = startLine.number; i <= endLine.number; i++) {
+        const line = doc.line(i);
+        lines.push(line);
+      }
+
+      return lines;
     }
   },
   {
