@@ -8,23 +8,9 @@ import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
 import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
-import { autocompletion, CompletionContext } from '@codemirror/autocomplete';
 import { getStyles, getCMStyle } from './style';
 import { ATTU_PLAY_CODE } from '@/consts';
-
-function myCompletions(context: CompletionContext) {
-  let word = context.matchBefore(/\w*/)!;
-  if (word.from == word.to && !context.explicit) return null;
-  return {
-    from: word.from,
-    options: [
-      { label: 'world' },
-      { label: 'hello' },
-      { label: 'hello2' },
-      { label: 'magic', apply: '⠁⭒*.✩.*⭒⠁' },
-    ],
-  };
-}
+import { MilvusHTTPAPI, highlights } from './milvus.http';
 
 const Play: any = () => {
   // hooks
@@ -59,14 +45,13 @@ const Play: any = () => {
           indentUnit.of('  '), // fix tab indentation
           EditorView.lineWrapping,
           themeCompartment.of([]), // empty theme
-          autocompletion({
-            override: [myCompletions],
-          }), // auto completion
           EditorView.updateListener.of(update => {
             if (update.changes) {
               setCode(update.state.doc.toString());
             }
           }),
+          MilvusHTTPAPI(),
+          highlights,
         ],
       });
 
