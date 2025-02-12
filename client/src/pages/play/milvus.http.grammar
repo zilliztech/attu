@@ -7,10 +7,10 @@ HTTPMethod {
 }
 
 URL {
-  "/" VERSION PATH
+  "/" VERSION API
 }
 
-PATH {
+API {
   ("/" PathSegment)*
 }
 
