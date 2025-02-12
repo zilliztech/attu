@@ -23,36 +23,53 @@ export const httpSelectionPlugin = ViewPlugin.fromClass(
 
     computeDecorations(view: EditorView) {
       const state = view.state;
+      const doc = state.doc;
       const tree = syntaxTree(state);
       const cursor = state.selection.main.head;
 
       let nodeAtCursor = tree.resolve(cursor, -1);
+
       const builder = new RangeSetBuilder<Decoration>();
+
+      let requestNode = null;
 
       while (nodeAtCursor) {
         if (nodeAtCursor.name === 'Request') {
-          const from = nodeAtCursor.from;
-          const to = nodeAtCursor.to;
-
-          const lines = this.getLinesInRange(view.state.doc, from, to);
-
-          lines.forEach(line => {
-            builder.add(line.from, line.from, requestHighlightLineDecoration);
-          });
-
+          requestNode = nodeAtCursor;
           break;
         }
-
         if (!nodeAtCursor.parent) {
           break;
         }
-
         nodeAtCursor = nodeAtCursor.parent;
+      }
+
+      if (requestNode) {
+        // get URL and Body nodes
+        const urlNode = requestNode.getChildren('URL')[0];
+        const bodyNode = requestNode.getChildren('Body')[0];
+        const HTTPMethodNode = requestNode.getChildren('HTTPMethod')[0];
+
+        console.log(
+          HTTPMethodNode &&
+            doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
+        );
+        console.log(urlNode && doc.sliceString(urlNode.from, urlNode.to));
+        console.log(bodyNode && doc.sliceString(bodyNode.from, bodyNode.to));
+
+        // get from and to positions of the request node
+        const from = requestNode.from;
+        const to = requestNode.to;
+
+        // highlight the whole request node
+        const lines = this.getLinesInRange(doc, from, to);
+        lines.forEach(line => {
+          builder.add(line.from, line.from, requestHighlightLineDecoration);
+        });
       }
 
       return builder.finish();
     }
-
     getLinesInRange(doc: any, from: any, to: any) {
       const lines = [];
       let startLine = doc.lineAt(from);
