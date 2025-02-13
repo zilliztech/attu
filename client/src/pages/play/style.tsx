@@ -126,5 +126,26 @@ export const getCMStyle = (theme: Theme) => {
       backgroundColor: 'rgba(255, 0, 0, 0.2)',
       borderRadius: '3px',
     },
+    '.playground-toolbar': {
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      borderRadius: '4px',
+    },
+    '.playground-toolbar .run-button': {
+      position: 'absolute',
+      right: '4px',
+      marginTop: '4px',
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.text.primary,
+      borderRadius: '4px',
+      fontSize: '12px',
+      border: 'none',
+      cursor: 'pointer',
+      transition: 'background-color 0.2s ease-in-out',
+      zIndex: 999,
+
+      '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+      },
+    },
   };
 };
