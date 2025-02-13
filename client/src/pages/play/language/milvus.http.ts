@@ -4,6 +4,7 @@ import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
 import { selectionDecoration } from './extensions/selectionDecoration';
 import { highlights } from './extensions/highlights';
+import { milvusHttpLinter } from './extensions/linter';
 // import { autocomplete } from "./completion";
 
 const parserWithMetadata = parser.configure({
@@ -32,5 +33,9 @@ export const milvusHttp = LRLanguage.define({
 // });
 
 export function MilvusHTTP() {
-  return new LanguageSupport(milvusHttp, [highlights, selectionDecoration]);
+  return new LanguageSupport(milvusHttp, [
+    highlights,
+    selectionDecoration,
+    milvusHttpLinter,
+  ]);
 }

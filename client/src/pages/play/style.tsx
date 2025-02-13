@@ -59,7 +59,7 @@ export const getCMStyle = (theme: Theme) => {
       border: 'none',
     },
     '.cm-lineNumbers .cm-gutterElement': {
-      padding: '0 22px 0 26px',
+      padding: '0 2px 0 20px',
     },
     '.cm-activeLineGutter': {
       backgroundColor: 'transparent',
