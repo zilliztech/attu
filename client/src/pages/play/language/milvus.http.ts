@@ -4,6 +4,8 @@ import { styleTags, tags as t } from '@lezer/highlight';
 import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
 import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
+import { httpSelectionPlugin } from './extensions/httpSelectionPlugin';
+
 // import { autocomplete } from "./completion";
 
 const parserWithMetadata = parser.configure({
@@ -46,6 +48,6 @@ export const restLanguage = LRLanguage.define({
 //   autocomplete,
 // });
 
-export function MilvusHTTPAPI() {
-  return new LanguageSupport(restLanguage, []);
+export function MilvusHTTP() {
+  return new LanguageSupport(restLanguage, [highlights, httpSelectionPlugin]);
 }

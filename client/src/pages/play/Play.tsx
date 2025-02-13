@@ -10,8 +10,7 @@ import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
 import { getStyles, getCMStyle } from './style';
 import { ATTU_PLAY_CODE } from '@/consts';
-import { MilvusHTTPAPI, highlights } from './language/milvus.http';
-import { httpSelectionPlugin } from './extensions/httpSelectionPlugin';
+import { MilvusHTTP } from './language/milvus.http';
 
 const Play = () => {
   // hooks
@@ -51,9 +50,7 @@ const Play = () => {
               setCode(update.state.doc.toString());
             }
           }),
-          MilvusHTTPAPI(),
-          highlights,
-          httpSelectionPlugin,
+          MilvusHTTP(),
         ],
       });
 
