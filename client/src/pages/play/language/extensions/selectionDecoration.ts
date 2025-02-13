@@ -8,7 +8,7 @@ const requestHighlightLineDecoration = Decoration.line({
   class: 'milvus-http-request-highlight',
 });
 
-export const httpSelectionPlugin = ViewPlugin.fromClass(
+export const selectionDecoration = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet;
 

@@ -2,7 +2,7 @@ import { parser } from './milvus.http.parser';
 import { styleTags, tags as t } from '@lezer/highlight';
 import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
-import { httpSelectionPlugin } from './extensions/httpSelectionPlugin';
+import { selectionDecoration } from './extensions/selectionDecoration';
 import { highlights } from './extensions/highlights';
 // import { autocomplete } from "./completion";
 
@@ -32,5 +32,5 @@ export const milvusHttp = LRLanguage.define({
 // });
 
 export function MilvusHTTP() {
-  return new LanguageSupport(milvusHttp, [highlights, httpSelectionPlugin]);
+  return new LanguageSupport(milvusHttp, [highlights, selectionDecoration]);
 }
