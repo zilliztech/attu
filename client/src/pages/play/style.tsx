@@ -118,8 +118,12 @@ export const getCMStyle = (theme: Theme) => {
       borderColor: '#e2e3e5',
       borderLeftColor: '#1a6ce7',
     },
-    '.cm-request-highlight': {
+    '.milvus-http-request-highlight': {
       backgroundColor: 'rgba(255, 255, 0, 0.2)',
+      borderRadius: '3px',
+    },
+    '.milvus-http-request-error': {
+      backgroundColor: 'rgba(255, 0, 0, 0.2)',
       borderRadius: '3px',
     },
   };

@@ -10,10 +10,10 @@ import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
 import { getStyles, getCMStyle } from './style';
 import { ATTU_PLAY_CODE } from '@/consts';
-import { MilvusHTTPAPI, highlights } from './milvus.http';
-import { httpSelectionPlugin } from './extension';
+import { MilvusHTTPAPI, highlights } from './language/milvus.http';
+import { httpSelectionPlugin } from './extensions/httpSelectionPlugin';
 
-const Play: any = () => {
+const Play = () => {
   // hooks
   const theme = useTheme();
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);

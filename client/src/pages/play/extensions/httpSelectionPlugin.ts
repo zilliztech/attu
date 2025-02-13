@@ -2,9 +2,10 @@ import { syntaxTree } from '@codemirror/language';
 import { RangeSetBuilder } from '@codemirror/state';
 import { ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
+import { Text } from '@codemirror/state';
 
 const requestHighlightLineDecoration = Decoration.line({
-  class: 'cm-request-highlight',
+  class: 'milvus-http-request-highlight',
 });
 
 export const httpSelectionPlugin = ViewPlugin.fromClass(
@@ -50,12 +51,12 @@ export const httpSelectionPlugin = ViewPlugin.fromClass(
         const bodyNode = requestNode.getChildren('Body')[0];
         const HTTPMethodNode = requestNode.getChildren('HTTPMethod')[0];
 
-        console.log(
-          HTTPMethodNode &&
-            doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
-        );
-        console.log(urlNode && doc.sliceString(urlNode.from, urlNode.to));
-        console.log(bodyNode && doc.sliceString(bodyNode.from, bodyNode.to));
+        // console.log(
+        //   HTTPMethodNode &&
+        //     doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
+        // );
+        // console.log(urlNode && doc.sliceString(urlNode.from, urlNode.to));
+        // console.log(bodyNode && doc.sliceString(bodyNode.from, bodyNode.to));
 
         // get from and to positions of the request node
         const from = requestNode.from;
@@ -70,7 +71,8 @@ export const httpSelectionPlugin = ViewPlugin.fromClass(
 
       return builder.finish();
     }
-    getLinesInRange(doc: any, from: any, to: any) {
+
+    getLinesInRange(doc: Text, from: number, to: number) {
       const lines = [];
       let startLine = doc.lineAt(from);
       let endLine = doc.lineAt(to);
