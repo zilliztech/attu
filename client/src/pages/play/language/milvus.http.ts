@@ -1,11 +1,9 @@
 import { parser } from './milvus.http.parser';
-// import { foldNodeProp, foldInside, indentNodeProp } from "@codemirror/language";
 import { styleTags, tags as t } from '@lezer/highlight';
-import { syntaxHighlighting, HighlightStyle } from '@codemirror/language';
 import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
 import { httpSelectionPlugin } from './extensions/httpSelectionPlugin';
-
+import { highlights } from './extensions/highlights';
 // import { autocomplete } from "./completion";
 
 const parserWithMetadata = parser.configure({
@@ -22,22 +20,7 @@ const parserWithMetadata = parser.configure({
   ],
 });
 
-// highlight color
-export const highlights = syntaxHighlighting(
-  HighlightStyle.define([
-    { tag: t.keyword, color: '#085bd7' },
-    { tag: t.operator, color: 'red' },
-    { tag: t.annotation, color: 'blue' },
-    { tag: t.number, color: '#0c7e5e' },
-    { tag: t.string, color: '#085bd7' },
-    { tag: t.url, color: '#000' },
-    // { tag: t.function, color: "blue" },
-    { tag: t.lineComment, color: '#a2a2a2', fontStyle: 'italic' },
-    { tag: t.comment, color: '#a2a2a2', fontStyle: 'italic' },
-  ])
-);
-
-export const restLanguage = LRLanguage.define({
+export const milvusHttp = LRLanguage.define({
   parser: parserWithMetadata,
   languageData: {
     commentTokens: { line: ';' },
@@ -49,5 +32,5 @@ export const restLanguage = LRLanguage.define({
 // });
 
 export function MilvusHTTP() {
-  return new LanguageSupport(restLanguage, [highlights, httpSelectionPlugin]);
+  return new LanguageSupport(milvusHttp, [highlights, httpSelectionPlugin]);
 }
