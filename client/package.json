@@ -76,7 +76,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watchAll",
-    "lezer": "lezer-generator src/pages/play/language/.http.grammar -o  src/pages/play/language/milvus.http.parser.js",
+    "lezer": "lezer-generator src/pages/play/language/milvus.http.grammar -o  src/pages/play/language/milvus.http.parser.js",
     "format": "prettier --write '**/*.{ts,js,tsx,jsx,css}'"
   },
   "eslintConfig": {

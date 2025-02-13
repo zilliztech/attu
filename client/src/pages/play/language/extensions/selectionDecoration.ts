@@ -46,21 +46,9 @@ export const selectionDecoration = ViewPlugin.fromClass(
       }
 
       if (requestNode) {
-        // get URL and Body nodes
-        const urlNode = requestNode.getChildren('URL')[0];
-        const bodyNode = requestNode.getChildren('Body')[0];
-        const HTTPMethodNode = requestNode.getChildren('HTTPMethod')[0];
-
-        // console.log(
-        //   HTTPMethodNode &&
-        //     doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
-        // );
-        // console.log(urlNode && doc.sliceString(urlNode.from, urlNode.to));
-        // console.log(bodyNode && doc.sliceString(bodyNode.from, bodyNode.to));
-
         // get from and to positions of the request node
         const from = requestNode.from;
-        const to = requestNode.to;
+        const to = requestNode.to - 1;
 
         // highlight the whole request node
         const lines = this.getLinesInRange(doc, from, to);
