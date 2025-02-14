@@ -52,6 +52,12 @@ export const selectionDecoration = ViewPlugin.fromClass(
         // get URL node
         const urlNode = requestNode.getChild('URL')!;
         const bodyNode = requestNode.getChild('Body');
+
+        // if no URL node and no Body node, return
+        if (!urlNode && !bodyNode) {
+          return builder.finish();
+        }
+
         // get to position of the Body node or URL node
         const to = bodyNode ? bodyNode.to : urlNode.to;
 
