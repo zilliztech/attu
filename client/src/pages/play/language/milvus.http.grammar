@@ -1,53 +1,61 @@
 @top MultipleRequests {  Request+ }
 
-Request { (HTTPMethod " " URL space+ Body space+) | HTTPMethod " " URL space+ }
+Request { ( HTTPMethod " " URL space Body space) | HTTPMethod " " URL space+ }
 
 HTTPMethod {
   "GET" | "POST" | "PUT" | "DELETE"
 }
 
 URL {
-  Aliases | Collections | Databases | Partitions |  Jobs |  Indexes | ResourceGroups | Roles | Users | Vectors 
+  Resource API
+}
+
+Resource {
+  "/v2/vectordb/" 
+}
+
+API {
+  Aliases | Collections | Databases | Partitions |  Jobs |  Indexes | ResourceGroups | Roles | Users | Vectors
 }
 
 Aliases {
-  "/v2/vectordb/aliases/" ("alter" | "create" | "describe" | "drop" | "list")
+  "aliases/" ("alter" | "create" | "describe" | "drop" | "list")
 }
 
 Databases {
-  "/v2/vectordb/databases/" ("alter" | "create" | "describe" | "drop_properties" | "drop" | "list")
+  "databases/" ("alter" | "create" | "describe" | "drop_properties" | "drop" | "list")
 }
 
 Collections {
-  "/v2/vectordb/collections/" ("fields/alter_properties" | "alter_properties" | "compact" | "create" | "describe" | "drop_properties" | "drop" | "flush" | "get_load_state" | "get_stats" | "has" | "list" | "load" | "release" | "rename" | "refresh_load")
+  "collections/" ("fields/alter_properties" | "alter_properties" | "compact" | "create" | "describe" | "drop_properties" | "drop" | "flush" | "get_load_state" | "get_stats" | "has" | "list" | "load" | "release" | "rename" | "refresh_load")
 }
 
 Partitions {
-  "/v2/vectordb/partitions/" ("create" | "drop" | "get_stats" | "has" | "list" | "load" | "release")
+  "partitions/" ("create" | "drop" | "get_stats" | "has" | "list" | "load" | "release")
 }
 
 Jobs {
-  "/v2/vectordb/jobs/" ("import/create" | "import/describe" | "import/list")
+  "jobs/" ("import/create" | "import/describe" | "import/list")
 }
 
 Indexes {
-  "/v2/vectordb/indexes/" ("alter_properties" | "create" | "describe" | "drop_properties" | "drop" | "list")
+  "indexes/" ("alter_properties" | "create" | "describe" | "drop_properties" | "drop" | "list")
 }
 
 ResourceGroups {
-  "/v2/vectordb/resource_groups/" ("create" | "describe" | "drop" | "list" | "transfer_replica" | "alter")
+  "resource_groups/" ("create" | "describe" | "drop" | "list" | "transfer_replica" | "alter")
 }
 
 Roles {
-  "/v2/vectordb/roles/" ("create" | "describe" | "drop" | "grant_privilege" | "list" | "revoke_privilege")
+  "roles/" ("create" | "describe" | "drop" | "grant_privilege" | "list" | "revoke_privilege")
 }
 
 Users {
-  "/v2/vectordb/users/" ("create" | "describe" | "drop" | "grant_role" | "list" | "revoke_role" | "update_password")
+  "users/" ("create" | "describe" | "drop" | "grant_role" | "list" | "revoke_role" | "update_password")
 }
 
 Vectors {
-  "/v2/vectordb/entities/" ("delete" | "get" | "hybrid_search" | "insert" | "query" | "search" | "upsert")
+  "entities/" ("delete" | "get" | "hybrid_search" | "insert" | "query" | "search" | "upsert")
 }
 
 Body {
@@ -92,15 +100,6 @@ Array {
   space { @whitespace+ }
 }
 
-
 @skip {
    LineComment 
 }
-
-@skip {
-  LineComment
-} {
-  
-}
-
-

@@ -48,10 +48,15 @@ export const selectionDecoration = ViewPlugin.fromClass(
       if (requestNode) {
         // get from and to positions of the request node
         const from = requestNode.from;
-        const to = requestNode.to - 1;
+
+        // get URL node
+        const urlNode = requestNode.getChild('URL')!;
+        const bodyNode = requestNode.getChild('Body');
+        // get to position of the Body node or URL node
+        const to = bodyNode ? bodyNode.to : urlNode.to;
 
         // highlight the whole request node
-        const lines = this.getLinesInRange(doc, from, to);
+        const lines = this.getLinesInRange(doc, from, to + 1);
         lines.forEach(line => {
           builder.add(line.from, line.from, requestHighlightLineDecoration);
         });

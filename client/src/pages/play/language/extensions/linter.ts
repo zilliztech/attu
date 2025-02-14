@@ -14,11 +14,16 @@ export const milvusHttpLinter = [
     // Iterate through the syntax tree
     tree.iterate({
       enter(node) {
-        // Check if the current node is an error node
         if (node.type.isError) {
           // Get the start and end positions of the error node
           const from = node.from;
           const to = node.to;
+
+          // check if this line is empty
+          const line = state.doc.lineAt(from);
+          if (line.length === 0) {
+            return;
+          }
 
           // Add the error to the diagnostics array
           diagnostics.push({
