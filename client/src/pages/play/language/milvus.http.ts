@@ -3,9 +3,10 @@ import { styleTags, tags as t } from '@lezer/highlight';
 import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
 import { selectionDecoration } from './extensions/selectionDecoration';
-import { toolbarDecorationExtension } from './extensions/toolbarDecoration';
+import { buildToolbarDecorationExtension } from './extensions/toolbarDecoration';
 import { highlights } from './extensions/highlights';
 import { milvusHttpLinter } from './extensions/linter';
+import { PlaygroundExtensionParams } from '../Types';
 // import { autocomplete } from "./completion";
 
 const parserWithMetadata = parser.configure({
@@ -33,11 +34,11 @@ export const milvusHttp = LRLanguage.define({
 //   autocomplete,
 // });
 
-export function MilvusHTTP() {
+export function MilvusHTTP(params: PlaygroundExtensionParams) {
   return new LanguageSupport(milvusHttp, [
     highlights,
     selectionDecoration,
     milvusHttpLinter,
-    toolbarDecorationExtension,
+    buildToolbarDecorationExtension(params),
   ]);
 }

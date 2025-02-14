@@ -5,3 +5,4 @@ export * from './Prometheus';
 export * from './Util';
 export * from './ui';
 export * from './default';
+export * from './link';

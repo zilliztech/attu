@@ -1,8 +1,9 @@
 import { Box, Paper } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, FC } from 'react';
 import { useTheme } from '@mui/material';
+
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { insertTab } from '@codemirror/commands';
@@ -11,11 +12,17 @@ import { basicSetup } from 'codemirror';
 import { getStyles, getCMStyle } from './style';
 import { ATTU_PLAY_CODE } from '@/consts';
 import { MilvusHTTP } from './language/milvus.http';
+import CodeBlock from '@/components/code/CodeBlock';
+import { type PlaygroundExtensionParams, type PlaygroundCustomEventDetail, CustomEventNameEnum } from './Types';
+import { DocumentEventManager } from './utils/event';
 
-const Play = () => {
+type Props = PlaygroundExtensionParams
+
+const Play: FC<Props> = (props) => {
   // hooks
   const theme = useTheme();
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);
+  const [detail, setDetail] = useState<PlaygroundCustomEventDetail>({} as PlaygroundCustomEventDetail);
   // styles
   const classes = getStyles();
   const [code, setCode] = useState(() => {
@@ -26,6 +33,11 @@ const Play = () => {
   const editorEl = useRef<HTMLDivElement>(null);
   const editor = useRef<EditorView>();
   const themeCompartment = useRef(new Compartment()).current;
+
+  const content = detail.error
+    ? JSON.stringify(detail.error, null, 2)
+    : JSON.stringify(detail.response, null, 2)
+  const emptyClass = !detail.response && !detail.error ? classes.empty : '';
 
   // save code to local storage
   useEffect(() => {
@@ -50,7 +62,7 @@ const Play = () => {
               setCode(update.state.doc.toString());
             }
           }),
-          MilvusHTTP(),
+          MilvusHTTP(props),
         ],
       });
 
@@ -87,6 +99,37 @@ const Play = () => {
     }
   }, [theme.palette.mode]);
 
+  useEffect(() => {
+    const handleCodeMirrorResponse = (event: Event) => {
+      const { detail } = event as CustomEvent<PlaygroundCustomEventDetail>
+      setDetail(detail);
+    };
+
+    const unsubscribe = DocumentEventManager.subscribe(
+      CustomEventNameEnum.PlaygroundResponseDetail,
+      handleCodeMirrorResponse
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const renderResponse = () => {
+    if (detail.response || detail.error) {
+      return (
+        <CodeBlock
+          wrapperClass={classes.response}
+          language='json'
+          code={content}
+        />
+      );
+    }
+    return (
+      <p>Response result.</p>
+    )
+  }
+
   return (
     <Box className={classes.root}>
       <Paper elevation={0} className={classes.leftPane}>
@@ -97,8 +140,8 @@ const Play = () => {
         ></div>
       </Paper>
 
-      <Paper elevation={0} className={classes.rightPane}>
-        code response here...
+      <Paper elevation={0} className={`${classes.rightPane} ${emptyClass}`}>
+        {renderResponse()}
       </Paper>
     </Box>
   );
