@@ -19,13 +19,42 @@ export const getStyles = makeStyles((theme: Theme) => ({
     overflow: 'auto',
   },
   rightPane: {
+    position: 'relative',
     flex: 1,
-    padding: theme.spacing(2),
+    padding: `0 ${theme.spacing(2)}`,
     marginLeft: theme.spacing(2),
     display: 'flex',
-    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  empty: {
+    display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.grey,
+  },
+  response: {
+    width: '100%',
+    overflow: 'auto',
+
+    '& pre': {
+      borderRadius: '4px',
+    },
+  },
+  loading: {
+    position: 'absolute',
+    left: '12px',
+    top: '12px',
+    margin: 0,
+    color: theme.palette.text.secondary,
+    opacity: 0,
+    transition: 'opacity 0.3s ease-in-out',
+    zIndex: 999,
+  },
+  visible: {
+    opacity: 1,
   },
   editor: {
     width: '100%',
@@ -127,6 +156,7 @@ export const getCMStyle = (theme: Theme) => {
       borderRadius: '3px',
     },
     '.playground-toolbar': {
+      display: 'inline',
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
       borderRadius: '4px',
     },

@@ -2,20 +2,27 @@ import { syntaxTree } from '@codemirror/language';
 import { RangeSetBuilder } from '@codemirror/state';
 import { Rect, ViewPlugin, ViewUpdate, WidgetType } from '@codemirror/view';
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
-import axios from 'axios';
+import { AxiosError } from 'axios';
+import { EVENT_PLAYGROUND_RESPONSE } from '@/consts';
+import { createPlaygroundRequest } from '@/utils/Playground';
 
-const runButton = document.createElement('button');
-runButton.textContent = 'Run ▶';
-runButton.className = 'run-button';
+const apiPlaygroundRequest = createPlaygroundRequest('frontend');
 
-const toolbar = document.createElement('div');
-toolbar.className = 'playground-toolbar';
-toolbar.appendChild(runButton);
+const createElement = () => {
+  const runButton = document.createElement('button');
+  runButton.textContent = 'Run ▶';
+  runButton.className = 'run-button';
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'playground-toolbar';
+  toolbar.appendChild(runButton);
+  return toolbar;
+};
 
 const toolbarDecoration = Decoration.widget({
   widget: {
     toDOM() {
-      return toolbar;
+      return createElement();
     },
     eq: function (widget: WidgetType): boolean {
       return widget instanceof WidgetType;
@@ -98,25 +105,50 @@ export const toolbarDecorationExtension = ViewPlugin.fromClass(
         ) as HTMLButtonElement;
         if (button) {
           button.onclick = async () => {
-            const url = urlNode
-              ? doc.sliceString(urlNode.from, urlNode.to)
-              : '';
-            const body = bodyNode
-              ? doc.sliceString(bodyNode.from, bodyNode.to)
-              : '{}';
-            const method = HTTPMethodNode
-              ? doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
-              : '';
-
             try {
+              document.dispatchEvent(
+                new CustomEvent(EVENT_PLAYGROUND_RESPONSE, {
+                  detail: { loading: true },
+                })
+              );
+              const url = urlNode
+                ? doc.sliceString(urlNode.from, urlNode.to)
+                : '';
+              const body = bodyNode
+                ? doc.sliceString(bodyNode.from, bodyNode.to)
+                : '{}';
+              const method = HTTPMethodNode
+                ? doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
+                : '';
               const bodyObj = JSON.parse(body);
-              const res = await axios.post('/api/v1/playground', {
+              const host =
+                document
+                  .querySelector('div[data-playground-host]')
+                  ?.getAttribute('data-playground-host') ?? '';
+
+              const res = await apiPlaygroundRequest({
+                host,
                 url,
                 method,
                 body: bodyObj,
               });
-              console.log('Success:', res);
+
+              document.dispatchEvent(
+                new CustomEvent(EVENT_PLAYGROUND_RESPONSE, {
+                  detail: { response: res.data, loading: false },
+                })
+              );
             } catch (err) {
+              document.dispatchEvent(
+                new CustomEvent(EVENT_PLAYGROUND_RESPONSE, {
+                  detail: {
+                    loading: false,
+                    error: (err as AxiosError).response?.data ?? {
+                      message: (err as Error).message,
+                    },
+                  },
+                })
+              );
               console.error('Error:', err);
             }
           };
