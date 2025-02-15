@@ -157,11 +157,8 @@ const Users = () => {
         });
       },
       icon: 'edit',
-      disabled: () =>
-        selectedUser.length === 0 ||
-        selectedUser.length > 1 ||
-        selectedUser.findIndex(v => v.username === 'root') > -1,
-      disabledTooltip: userTrans('deleteEditRoleTip'),
+      disabled: () => selectedUser.length === 0 || selectedUser.length > 1,
+      disabledTooltip: userTrans('editPassDisabledTip'),
     },
 
     {
