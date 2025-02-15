@@ -17,6 +17,7 @@ const userTrans = {
   deleteRoleTip:
     'Please select at least one item to drop and the admin/public role can not be dropped.',
   editPassword: 'Edit Password',
+  editPassDisabledTip: 'Please select one user to edit.',
 
   // role
   deleteEditRoleTip: 'Please select one user to edit, root is not editable.',
