@@ -62,7 +62,8 @@ export const selectionDecoration = ViewPlugin.fromClass(
         const to = bodyNode ? bodyNode.to : urlNode.to;
 
         // highlight the whole request node
-        const lines = this.getLinesInRange(doc, from, to + 1);
+        const lines = this.getLinesInRange(doc, from, to);
+
         lines.forEach(line => {
           builder.add(line.from, line.from, requestHighlightLineDecoration);
         });
@@ -72,16 +73,21 @@ export const selectionDecoration = ViewPlugin.fromClass(
     }
 
     getLinesInRange(doc: Text, from: number, to: number) {
-      const lines = [];
-      let startLine = doc.lineAt(from);
-      let endLine = doc.lineAt(to);
+      try {
+        const lines = [];
 
-      for (let i = startLine.number; i <= endLine.number; i++) {
-        const line = doc.line(i);
-        lines.push(line);
+        let startLine = doc.lineAt(from);
+        let endLine = doc.lineAt(to);
+
+        for (let i = startLine.number; i <= endLine.number; i++) {
+          const line = doc.line(i);
+          lines.push(line);
+        }
+
+        return lines;
+      } catch (error) {
+        return [];
       }
-
-      return lines;
     }
   },
   {
