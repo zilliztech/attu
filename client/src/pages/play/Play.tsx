@@ -4,8 +4,7 @@ import { ALL_ROUTER_TYPES } from '@/router/consts';
 import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '@mui/material';
 import { EditorState, Compartment } from '@codemirror/state';
-import { EditorView, keymap, placeholder } from '@codemirror/view';
-import { insertTab } from '@codemirror/commands';
+import { EditorView, placeholder } from '@codemirror/view';
 import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
 import { getStyles, getCMStyle } from './style';
@@ -41,7 +40,6 @@ const Play = () => {
         extensions: [
           basicSetup,
           placeholder('Write your code here'),
-          keymap.of([{ key: 'Tab', run: insertTab }]), // fix tab behaviour
           indentUnit.of('  '), // fix tab indentation
           EditorView.lineWrapping,
           themeCompartment.of([]), // empty theme
