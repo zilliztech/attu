@@ -18,6 +18,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     right: theme.spacing(1),
     '& svg': {
       width: 16,
+      height: 16,
     },
   },
 }));
