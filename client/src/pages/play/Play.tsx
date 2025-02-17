@@ -15,6 +15,7 @@ import { Autocomplete } from './language/extensions/autocomplete';
 import CodeBlock from '@/components/code/CodeBlock';
 import { type PlaygroundExtensionParams, type PlaygroundCustomEventDetail, CustomEventNameEnum } from './Types';
 import { DocumentEventManager } from './utils/event';
+import { KeyMap } from './language/extensions/keymap';
 
 type Props = PlaygroundExtensionParams
 
@@ -63,6 +64,7 @@ const Play: FC<Props> = (props) => {
           }),
           MilvusHTTP(props),
           Autocomplete(),
+          KeyMap(),
         ],
       });
 
