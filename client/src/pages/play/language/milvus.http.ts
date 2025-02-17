@@ -1,14 +1,15 @@
-import { parser } from './milvus.http.parser';
 import { styleTags, tags as t } from '@lezer/highlight';
 import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
+
+import { parser } from './milvus.http.parser';
 import { selectionDecoration } from './extensions/selectionDecoration';
 import { buildToolbarDecorationExtension } from './extensions/toolbarDecoration';
 import { highlights } from './extensions/highlights';
 import { milvusHttpLinter } from './extensions/linter';
-import { tabCompletion } from './extensions/autocompletion';
+// import { tabCompletion } from './extensions/autocompletion';
+
 import { PlaygroundExtensionParams } from '../Types';
-// import { autocomplete } from "./completion";
 
 const parserWithMetadata = parser.configure({
   props: [
@@ -31,16 +32,12 @@ export const milvusHttp = LRLanguage.define({
   },
 });
 
-// export const restCompletion = restLanguage.data.of({
-//   autocomplete,
-// });d
-
 export function MilvusHTTP(params: PlaygroundExtensionParams) {
   return new LanguageSupport(milvusHttp, [
     highlights,
     selectionDecoration,
     milvusHttpLinter,
-    tabCompletion,
+    // tabCompletion,
     buildToolbarDecorationExtension(params),
   ]);
 }

@@ -125,7 +125,12 @@ export const buildToolbarDecorationExtension = (options: PlaygroundExtensionPara
           const method = HTTPMethodNode
             ? doc.sliceString(HTTPMethodNode.from, HTTPMethodNode.to)
             : '';
-          const bodyObj = JSON.parse(body);
+          let bodyObj: object = {}
+          try {
+            bodyObj = JSON.parse(body);
+          } catch (err) {
+            console.error('Failed to parse body: ', (err as Error).message);
+          }
           const host = options.baseUrl;
 
           const getAuthorization = () => {

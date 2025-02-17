@@ -11,6 +11,7 @@ import { basicSetup } from 'codemirror';
 import { getStyles, getCMStyle } from './style';
 import { ATTU_PLAY_CODE } from '@/consts';
 import { MilvusHTTP } from './language/milvus.http';
+import { Autocomplete } from './language/extensions/autocomplete';
 import CodeBlock from '@/components/code/CodeBlock';
 import { type PlaygroundExtensionParams, type PlaygroundCustomEventDetail, CustomEventNameEnum } from './Types';
 import { DocumentEventManager } from './utils/event';
@@ -61,6 +62,7 @@ const Play: FC<Props> = (props) => {
             }
           }),
           MilvusHTTP(props),
+          Autocomplete(),
         ],
       });
 
