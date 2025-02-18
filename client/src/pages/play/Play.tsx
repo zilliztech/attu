@@ -1,10 +1,10 @@
 import { Box, Paper } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import { useState, useEffect, useRef, FC } from 'react';
+import { useState, useEffect, useRef, FC, useContext } from 'react';
 import { useTheme } from '@mui/material';
 
-import { EditorState, Compartment } from '@codemirror/state';
+import { EditorState, Compartment, StateEffect } from '@codemirror/state';
 import { EditorView, placeholder } from '@codemirror/view';
 import { indentUnit } from '@codemirror/language';
 import { basicSetup } from 'codemirror';
@@ -16,6 +16,7 @@ import CodeBlock from '@/components/code/CodeBlock';
 import { type PlaygroundExtensionParams, type PlaygroundCustomEventDetail, CustomEventNameEnum } from './Types';
 import { DocumentEventManager } from './utils/event';
 import { KeyMap } from './language/extensions/keymap';
+import { dataContext } from '@/context';
 
 type Props = PlaygroundExtensionParams
 
@@ -24,6 +25,7 @@ const Play: FC<Props> = (props) => {
   const theme = useTheme();
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);
   const [detail, setDetail] = useState<PlaygroundCustomEventDetail>({} as PlaygroundCustomEventDetail);
+  const { collections, databases, loading } = useContext(dataContext);
   // styles
   const classes = getStyles();
   const [code, setCode] = useState(() => {
@@ -45,27 +47,31 @@ const Play: FC<Props> = (props) => {
     localStorage.setItem(ATTU_PLAY_CODE, code);
   }, [code]);
 
+  const getExtensions = () => {
+    return [
+      basicSetup,
+      placeholder('Write your code here'),
+      indentUnit.of('  '), // fix tab indentation
+      EditorView.lineWrapping,
+      themeCompartment.of([]), // empty theme
+      EditorView.updateListener.of(update => {
+        if (update.changes) {
+          setCode(update.state.doc.toString());
+        }
+      }),
+      KeyMap(),
+      MilvusHTTP(props),
+      Autocomplete({ databases, collections }),
+    ]
+  }
+
   // create editor
   useEffect(() => {
     if (!editor.current) {
       // create editor
       const startState = EditorState.create({
         doc: code,
-        extensions: [
-          basicSetup,
-          placeholder('Write your code here'),
-          indentUnit.of('  '), // fix tab indentation
-          EditorView.lineWrapping,
-          themeCompartment.of([]), // empty theme
-          EditorView.updateListener.of(update => {
-            if (update.changes) {
-              setCode(update.state.doc.toString());
-            }
-          }),
-          MilvusHTTP(props),
-          Autocomplete(),
-          KeyMap(),
-        ],
+        extensions: getExtensions(),
       });
 
       // create editor view
@@ -90,6 +96,14 @@ const Play: FC<Props> = (props) => {
 
     return () => {};
   }, [code]);
+
+  useEffect(() => {
+    if (!loading) {
+      editor.current?.dispatch({
+        effects: [StateEffect.reconfigure.of(getExtensions())],
+      });
+    }
+  }, [databases, collections, loading]);
 
   useEffect(() => {
     if (editor.current) {

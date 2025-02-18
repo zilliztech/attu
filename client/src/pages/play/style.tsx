@@ -55,6 +55,7 @@ export const getStyles = makeStyles((theme: Theme) => ({
 }));
 
 export const getCMStyle = (theme: Theme) => {
+  const isDark = theme.palette.mode === 'dark';
   return {
     '&.cm-editor': {
       backgroundColor: theme.palette.background.paper,
@@ -89,6 +90,7 @@ export const getCMStyle = (theme: Theme) => {
     '.cm-tooltip.cm-tooltip-autocomplete': {
       border: 'none',
       transform: 'translateX(-20px)', // adjust box position to align with the text
+      backgroundColor: theme.palette.background.paper,
     },
     '.cm-tooltip.cm-tooltip-autocomplete>ul': {
       fontFamily: 'IBM Plex Mono, monospace',
@@ -99,23 +101,28 @@ export const getCMStyle = (theme: Theme) => {
     },
     '.cm-tooltip.cm-tooltip-autocomplete>ul li': {
       display: 'flex',
-      flexDirection: 'column',
+      gap: '12px',
+      flexDirection: 'row',
       maxWidth: '400px',
       minWidth: '300px',
       whiteSpace: 'normal',
       paddingTop: '6px',
       border: 'none',
       borderColor: '#e2e3e5',
-      borderBottom: '1px solid transparent',
       paddingBottom: '8px',
       padding: '6px 12px 8px',
-      borderLeft: '4px solid transparent',
+      transition: 'background 0.2s ease-in-out',
     },
     '.cm-tooltip-autocomplete .cm-completionLabel': {
+      flex: 1,
       display: 'block',
       fontSize: '13.5px',
-      fontWeight: 'bold',
+      fontWeight: 500,
       order: 1,
+    },
+    '.cm-tooltip-autocomplete .cm-completionLabel .cm-completionMatchedText': {
+      textDecoration: 'none',
+      fontWeight: 'bold',
     },
     '.cm-tooltip-autocomplete .cm-completionIcon': {
       display: 'block',
@@ -128,10 +135,27 @@ export const getCMStyle = (theme: Theme) => {
       order: 2,
     },
     '.cm-tooltip-autocomplete>ul>li[aria-selected=true]': {
-      backgroundColor: '#fff',
-      color: '#484D52',
-      borderColor: '#e2e3e5',
-      borderLeftColor: '#1a6ce7',
+      color: theme.palette.text.primary,
+      backgroundColor: isDark
+        ? 'rgba(10, 206, 130, 0.4)'
+        : 'rgba(10, 206, 130, 0.2)',
+    },
+    '.cm-tooltip-autocomplete>ul>li[aria-selected=true] .cm-autocomplete-option-tab-badge':
+      {
+        opacity: 1,
+      },
+    '.cm-tooltip-autocomplete .cm-autocomplete-option-tab-badge': {
+      display: 'inline-block',
+      fontSize: '10px',
+      color: theme.palette.primary.main,
+      border: `1px solid ${theme.palette.primary.main}`,
+      borderRadius: '2px',
+      padding: '0 2px',
+      height: '14px',
+      lineHeight: '14px',
+      opacity: 0,
+      transition: 'opacity 0.2s ease-in-out',
+      order: 3,
     },
     '.milvus-http-request-highlight': {
       backgroundColor: 'rgba(255, 255, 0, 0.2)',
