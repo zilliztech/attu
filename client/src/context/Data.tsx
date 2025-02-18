@@ -137,7 +137,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // Websocket Callback: update single collection
   const updateCollections = useCallback(
     (props: { collections: CollectionFullObject[]; database?: string }) => {
-      console.log('websocket updateCollections', props);
       const { collections, database: remote } = props;
       if (
         remote !== database &&
