@@ -12,7 +12,7 @@ export function initWebSocket(server: http.Server) {
     cors: {
       origin: '*',
       methods: ['GET', 'POST'],
-    },
+    }
   });
 
   io.on('connection', (socket: Socket) => {
