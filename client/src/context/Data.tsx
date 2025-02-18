@@ -137,6 +137,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // Websocket Callback: update single collection
   const updateCollections = useCallback(
     (props: { collections: CollectionFullObject[]; database?: string }) => {
+      console.log('websocket updateCollections', props);
       const { collections, database: remote } = props;
       if (
         remote !== database &&
@@ -450,7 +451,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // clear data
       setCollections([]);
       // remove all listeners
-      socket.current?.offAny();
+      socket.current?.off(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
       // listen to backend collection event
       socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
 
@@ -459,8 +460,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     }
 
     return () => {
-      // remove all listeners when component unmount
-      socket.current?.offAny();
+      socket.current?.off(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
     };
   }, [updateCollections, connected]);
 
