@@ -13,6 +13,12 @@ export function initWebSocket(server: http.Server) {
       origin: '*',
       methods: ['GET', 'POST'],
     },
+    pingInterval: 10000, // 10s interval
+    pingTimeout: 30000, // 30s timeout
+    maxHttpBufferSize: 2e6, // 2MiB
+    perMessageDeflate: {
+      threshold: 1024, // 1KiB threshold
+    },
   });
 
   io.on('connection', (socket: Socket) => {
