@@ -16,7 +16,6 @@ export const getStyles = makeStyles((theme: Theme) => ({
     padding: 0,
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'auto',
   },
   rightPane: {
     flex: 1,
@@ -60,6 +59,10 @@ export const getCMStyle = (theme: Theme) => {
     '&.cm-editor': {
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.text.primary,
+      height: '100%',
+    },
+    '&.cm-editor .cm-scroller': {
+      overflow: 'auto',
     },
     '.cm-line': { padding: ' 0 4px 0 2px' },
     '.cm-content': {

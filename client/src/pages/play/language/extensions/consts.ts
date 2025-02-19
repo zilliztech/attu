@@ -179,6 +179,34 @@ export const IdentifierMapArr: IdentifierMap[] = [
         name: 'get_stats',
         children: [{ name: 'dbName' }, { name: 'collectionName' }],
       },
+      {
+        name: 'has',
+        children: [{ name: 'dbName' }, { name: 'collectionName' }],
+      },
+      {
+        name: 'list',
+        children: [{ name: 'dbName' }],
+      },
+      {
+        name: 'load',
+        children: [{ name: 'dbName' }, { name: 'collectionName' }],
+      },
+      {
+        name: 'release',
+        children: [{ name: 'dbName' }, { name: 'collectionName' }],
+      },
+      {
+        name: 'rename',
+        children: [
+          { name: 'dbName' },
+          { name: 'newDbName' },
+          { name: 'collectionName' },
+        ],
+      },
+      {
+        name: 'refresh_load',
+        children: [{ name: 'dbName' }, { name: 'collectionName' }],
+      },
     ],
   },
   {
