@@ -1,4 +1,8 @@
-@top MultipleRequests {  Request+ }
+@top MultipleRequests { CloudAPIKey? space  Request+ }
+
+CloudAPIKey {
+  "CLOUD_API_KEY" " " UnquotedString
+}
 
 Request { ( HTTPMethod " " URL space Body space) | HTTPMethod " " URL space+ }
 
@@ -11,7 +15,7 @@ URL {
 }
 
 Resource {
-  "/v2/vectordb/" 
+  "/v2/vectordb/"
 }
 
 API {
@@ -86,6 +90,9 @@ Array {
   String {
     '"' (![\\\n"] | "\\" _)* '"'?
   }
+  UnquotedString {
+    $[a-zA-Z0-9_-]+
+  }
   Identifier { String }
   number {
     (@digit+ ("." @digit*)? | "." @digit+) (("e" | "E") ("+" | "-")? @digit+)? |
@@ -101,5 +108,5 @@ Array {
 }
 
 @skip {
-   LineComment 
+   LineComment
 }
