@@ -3,7 +3,10 @@ import { LRLanguage } from '@codemirror/language';
 import { LanguageSupport } from '@codemirror/language';
 
 import { parser } from './milvus.http.parser';
-import { selectionDecoration } from './extensions/selectionDecoration';
+import {
+  selectionDecoration,
+  highlightTokens,
+} from './extensions/selectionDecoration';
 import { buildToolbarDecorationExtension } from './extensions/toolbarDecoration';
 import { highlights } from './extensions/highlights';
 import { milvusHttpLinter } from './extensions/linter';
@@ -36,6 +39,7 @@ export function MilvusHTTP(params: PlaygroundExtensionParams) {
   return new LanguageSupport(milvusHttp, [
     highlights,
     selectionDecoration,
+    highlightTokens,
     milvusHttpLinter,
     // tabCompletion,
     buildToolbarDecorationExtension(params),
