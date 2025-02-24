@@ -8,6 +8,48 @@ import { syntaxTree } from '@codemirror/language';
 import { EditorState, Text } from '@codemirror/state';
 import { CollectionObject, DatabaseObject } from '@server/types';
 import { VersionMap, ObjectMap, IdentifierMapArr } from './consts';
+import { CompletionMacro } from '../../Types';
+
+function getDefaultValue(
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array'
+) {
+  switch (type) {
+    case 'string':
+      return '';
+    case 'number':
+      return 0;
+    case 'boolean':
+      return false;
+    case 'object':
+      return {};
+    case 'array':
+      return [];
+    default:
+      return '';
+  }
+}
+
+function getMilvusMacros(): CompletionMacro[] {
+  const marcos: CompletionMacro[] = [];
+  IdentifierMapArr.forEach(obj => {
+    obj.children?.forEach(operation => {
+      const params = (operation.children ?? []).filter(item => item.required);
+      const body = params.reduce((acc, param) => {
+        acc[param.name] = getDefaultValue(param.type ?? 'string');
+        return acc;
+      }, {} as Record<string, any>);
+      marcos.push({
+        label: `${obj.name}:${operation.name}`,
+        type: 'text',
+        apply: `POST /v2/vectordb/${obj.name}/${operation.name}\n${
+          params.length > 0 ? JSON.stringify(body, null, 2) : ''
+        }`,
+        detail: 'macro',
+      });
+    });
+  });
+  return marcos;
+}
 
 function getContextStack(doc: Text, pos: number, startLine: number = 1) {
   const stack = [];
@@ -60,19 +102,26 @@ function getContextStack(doc: Text, pos: number, startLine: number = 1) {
 function methodCompletions(context: CompletionContext) {
   const nodeBefore = syntaxTree(context.state).resolve(context.pos, -1);
 
+  const line = context.state.doc.lineAt(context.pos);
+  const textBefore = context.state.doc.sliceString(line.from, nodeBefore.from);
+  const isFirstWord = !textBefore.trim();
+
   if (
     nodeBefore.parent?.name === 'MultipleRequests' ||
-    (nodeBefore.parent?.name === 'Request' && nodeBefore.name === 'HTTPMethod')
+    (nodeBefore.parent?.name === 'Request' &&
+      (nodeBefore.name === 'HTTPMethod' || isFirstWord))
   ) {
     const word = context.matchBefore(/\w*/);
     if (!word || (word.from === word.to && !context.explicit)) return null;
     return {
       from: word.from,
       options: [
+        ...getMilvusMacros(),
         { label: 'GET', type: 'keyword' },
         { label: 'POST', type: 'keyword' },
         { label: 'PUT', type: 'keyword' },
         { label: 'DELETE', type: 'keyword' },
+        { label: 'TOKEN', type: 'keyword' },
       ],
     };
   }

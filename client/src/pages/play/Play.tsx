@@ -11,7 +11,7 @@ import {
 } from 'react';
 
 import CodeBlock from '@/components/code/CodeBlock';
-import { ATTU_PLAY_CODE, CLOUD_API_BASE_URL } from '@/consts';
+import { ATTU_PLAY_CODE } from '@/consts';
 import { authContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
@@ -52,9 +52,6 @@ const Play: FC = () => {
   const extensions = useMemo(() => {
     const { address, token, username, password } = authReq;
     const getBaseUrl = () => {
-      if (isManaged) {
-        return CLOUD_API_BASE_URL;
-      }
       return address.startsWith('http') ? address : `http://${address}`;
     };
     return [
@@ -62,7 +59,13 @@ const Play: FC = () => {
       EditorView.lineWrapping,
       EditorView.theme(getCMStyle(theme)),
       KeyMap(),
-      MilvusHTTP({ baseUrl: getBaseUrl(), token, username, password }),
+      MilvusHTTP({
+        baseUrl: getBaseUrl(),
+        token,
+        username,
+        password,
+        isManaged,
+      }),
       Autocomplete({ databases, collections }),
     ];
   }, [databases, collections, authReq, theme.palette.mode]);

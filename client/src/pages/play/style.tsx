@@ -190,5 +190,8 @@ export const getCMStyle = (theme: Theme) => {
         backgroundColor: theme.palette.secondary.dark,
       },
     },
+    '.cm-line .token-node': {
+      color: '#ff79c6',
+    },
   };
 };

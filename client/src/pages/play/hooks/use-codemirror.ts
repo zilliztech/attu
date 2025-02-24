@@ -48,9 +48,7 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
       setView(editorView);
     }
 
-    return () => {
-      setView(undefined);
-    };
+    return () => {};
   }, [container]);
 
   // update value

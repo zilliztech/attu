@@ -1,6 +1,10 @@
-@top MultipleRequests {  Request+ }
+@top MultipleRequests { (Authorization space)? Request+ }
 
 Request { ( HTTPMethod " " URL space Body space) | HTTPMethod " " URL space+ }
+
+Authorization {
+  ("TOKEN" " " UnquotedString) | ("TOKEN=" '"' UnquotedString '"')
+}
 
 HTTPMethod {
   "GET" | "POST" | "PUT" | "DELETE"
@@ -11,7 +15,7 @@ URL {
 }
 
 Resource {
-  "/v2/vectordb/" 
+  "/v2/vectordb/"
 }
 
 API {
@@ -76,7 +80,7 @@ Value {
 }
 
 Array {
-  "[" (Value ("," Value)*)? "]"
+  "[" (space* Value space* ("," space* Value space*)*)? "]"
 }
 
 
@@ -85,6 +89,9 @@ Array {
 
   String {
     '"' (![\\\n"] | "\\" _)* '"'?
+  }
+  UnquotedString {
+    $[a-zA-Z0-9_-]+
   }
   Identifier { String }
   number {
@@ -101,5 +108,5 @@ Array {
 }
 
 @skip {
-   LineComment 
+   LineComment
 }

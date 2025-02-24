@@ -7,7 +7,7 @@ import { AxiosError } from 'axios';
 import { type PlaygroundExtensionParams, CustomEventNameEnum } from '../../Types';
 import { DocumentEventManager, createPlaygroundRequest } from '../../utils';
 
-const apiPlaygroundRequest = createPlaygroundRequest('frontend');
+const apiPlaygroundRequest = createPlaygroundRequest('backend');
 
 const createElement = () => {
   const runButton = document.createElement('button');
@@ -78,6 +78,18 @@ export const buildToolbarDecorationExtension = (options: PlaygroundExtensionPara
         const builder = new RangeSetBuilder<Decoration>();
 
         let requestNode = null;
+        let token = '';
+        // Find the Authorization node at the root level
+        tree.iterate({
+          enter: (node) => {
+            if (node.name === 'Authorization') {
+              const authorizationNode = node.node;
+              const tokenNode = authorizationNode.getChildren('UnquotedString')[0];
+              token = tokenNode ? doc.sliceString(tokenNode.from, tokenNode.to) : '';
+              return false;
+            }
+          }
+        });
 
         while (nodeAtCursor) {
           if (nodeAtCursor.name === 'Request') {
@@ -109,6 +121,9 @@ export const buildToolbarDecorationExtension = (options: PlaygroundExtensionPara
             console.error('Failed to parse body: ', (err as Error).message);
           }
           const host = options.baseUrl;
+          if (options.isManaged) {
+            options.token = token;
+          }
 
           const getAuthorization = () => {
             if (options.token) {

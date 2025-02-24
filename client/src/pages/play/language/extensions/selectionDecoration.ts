@@ -1,5 +1,5 @@
 import { syntaxTree } from '@codemirror/language';
-import { RangeSetBuilder } from '@codemirror/state';
+import { Range, RangeSetBuilder } from '@codemirror/state';
 import { ViewPlugin, ViewUpdate } from '@codemirror/view';
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
 import { Text } from '@codemirror/state';
@@ -92,5 +92,24 @@ export const selectionDecoration = ViewPlugin.fromClass(
   },
   {
     decorations: v => v.decorations,
+  }
+);
+
+const tokenClass = Decoration.mark({ class: 'token-node' });
+export const highlightTokens = EditorView.decorations.compute(
+  ['doc'],
+  state => {
+    const decorations: Range<Decoration>[] = [];
+    const tree = syntaxTree(state);
+
+    tree.iterate({
+      enter(node) {
+        if (node.name === 'Authorization') {
+          decorations.push(tokenClass.range(node.from, node.to));
+        }
+      },
+    });
+
+    return Decoration.set(decorations);
   }
 );
