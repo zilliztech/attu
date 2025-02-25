@@ -16,3 +16,8 @@ export interface PlaygroundExtensionParams {
   username?: string
   password?: string
 }
+
+export type IdentifierMap = {
+  name: string;
+  children?: IdentifierMap[];
+};

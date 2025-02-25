@@ -9,29 +9,10 @@ import { DocumentEventManager, createPlaygroundRequest } from '../../utils';
 
 const apiPlaygroundRequest = createPlaygroundRequest('frontend');
 
-const createElement = (params: Parameters<typeof apiPlaygroundRequest>[0]) => {
+const createElement = () => {
   const runButton = document.createElement('button');
   runButton.textContent = 'Run ▶';
   runButton.className = 'run-button';
-  runButton.onclick = async () => {
-    try {
-      DocumentEventManager.dispatch(
-        CustomEventNameEnum.PlaygroundResponseDetail,
-        { loading: true, response: "running" }
-      );
-      const res = await apiPlaygroundRequest(params);
-      DocumentEventManager.dispatch(
-        CustomEventNameEnum.PlaygroundResponseDetail,
-        { response: res.data, loading: false }
-      );
-    } catch (err) {
-      DocumentEventManager.dispatch(
-        CustomEventNameEnum.PlaygroundResponseDetail,
-        { loading: false, error: (err as AxiosError).response?.data ?? { message: (err as Error).message } }
-      );
-      console.error('Error:', err);
-    }
-  };
 
   const toolbar = document.createElement('div');
   toolbar.className = 'playground-toolbar';
@@ -39,41 +20,37 @@ const createElement = (params: Parameters<typeof apiPlaygroundRequest>[0]) => {
   return toolbar;
 };
 
-const getToolbarDecoration = (
-  params: Parameters<typeof apiPlaygroundRequest>[0]
-) =>
-  Decoration.widget({
-    widget: {
-      toDOM() {
-        return createElement(params);
-      },
-      eq: function (widget: WidgetType): boolean {
-        return widget instanceof WidgetType;
-      },
-      updateDOM: function (dom: HTMLElement, view: EditorView): boolean {
-        return true;
-      },
-      estimatedHeight: 0,
-      lineBreaks: 0,
-      ignoreEvent: function (event: Event): boolean {
-        return false;
-      },
-      coordsAt: function (
-        dom: HTMLElement,
-        pos: number,
-        side: number
-      ): Rect | null {
-        return null;
-      },
-      compare: function (widget: WidgetType): boolean {
-        return this.eq(widget);
-      },
-      destroy: function (dom: HTMLElement): void {
-        const button = dom as HTMLButtonElement;
-        button.onclick = null;
-      },
-    } as WidgetType,
-  });
+const toolbarDecoration = Decoration.widget({
+  widget: {
+    toDOM() {
+      return createElement();
+    },
+    eq: function (widget: WidgetType): boolean {
+      return false;
+    },
+    updateDOM: function (dom: HTMLElement, view: EditorView): boolean {
+      return true;
+    },
+    estimatedHeight: 0,
+    lineBreaks: 0,
+    ignoreEvent: function (event: Event): boolean {
+      return false;
+    },
+    coordsAt: function (
+      dom: HTMLElement,
+      pos: number,
+      side: number
+    ): Rect | null {
+      return null;
+    },
+    compare: function (widget: WidgetType): boolean {
+      return this.eq(widget);
+    },
+    destroy: function (dom: HTMLElement): void {
+      return;
+    },
+  } as WidgetType,
+});
 
 export const buildToolbarDecorationExtension = (options: PlaygroundExtensionParams) =>
   ViewPlugin.fromClass(
@@ -155,7 +132,30 @@ export const buildToolbarDecorationExtension = (options: PlaygroundExtensionPara
 
           const from = requestNode.from;
           // Add run button decoration at the start of the requestNode
-          builder.add(from, from, getToolbarDecoration(params));
+          builder.add(from, from, toolbarDecoration);
+
+          document.body.onclick = async (e) => {
+            const button = e.target as HTMLButtonElement;
+            if (button.className === 'run-button') {
+              try {
+                DocumentEventManager.dispatch(
+                  CustomEventNameEnum.PlaygroundResponseDetail,
+                  { loading: true, response: "running" }
+                );
+                const res = await apiPlaygroundRequest(params);
+                DocumentEventManager.dispatch(
+                  CustomEventNameEnum.PlaygroundResponseDetail,
+                  { response: res.data, loading: false }
+                );
+              } catch (err) {
+                DocumentEventManager.dispatch(
+                  CustomEventNameEnum.PlaygroundResponseDetail,
+                  { loading: false, error: (err as AxiosError).response?.data ?? { message: (err as Error).message } }
+                );
+                console.error('Error:', err);
+              }
+            }
+          }
         }
 
         return builder.finish();

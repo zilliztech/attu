@@ -1,107 +1,91 @@
-import { Box, Paper } from '@mui/material';
+import { EditorView, placeholder } from '@codemirror/view';
+import { Box, Paper, useTheme } from '@mui/material';
+import {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+
+import CodeBlock from '@/components/code/CodeBlock';
+import { ATTU_PLAY_CODE, CLOUD_API_BASE_URL } from '@/consts';
+import { authContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import { useState, useEffect, useRef, FC } from 'react';
-import { useTheme } from '@mui/material';
 
-import { EditorState, Compartment } from '@codemirror/state';
-import { EditorView, placeholder } from '@codemirror/view';
-import { indentUnit } from '@codemirror/language';
-import { basicSetup } from 'codemirror';
-import { getStyles, getCMStyle } from './style';
-import { ATTU_PLAY_CODE } from '@/consts';
-import { MilvusHTTP } from './language/milvus.http';
+import { useCodeMirror } from './hooks/use-codemirror';
 import { Autocomplete } from './language/extensions/autocomplete';
-import CodeBlock from '@/components/code/CodeBlock';
-import { type PlaygroundExtensionParams, type PlaygroundCustomEventDetail, CustomEventNameEnum } from './Types';
+import { KeyMap } from './language/extensions/keymap';
+import { MilvusHTTP } from './language/milvus.http';
+import { getCMStyle, getStyles } from './style';
+import { CustomEventNameEnum, PlaygroundCustomEventDetail } from './Types';
 import { DocumentEventManager } from './utils/event';
 
-type Props = PlaygroundExtensionParams
-
-const Play: FC<Props> = (props) => {
+const Play: FC = () => {
   // hooks
   const theme = useTheme();
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);
-  const [detail, setDetail] = useState<PlaygroundCustomEventDetail>({} as PlaygroundCustomEventDetail);
+  const [detail, setDetail] = useState<PlaygroundCustomEventDetail>(
+    {} as PlaygroundCustomEventDetail
+  );
+  const { collections, databases, loading } = useContext(dataContext);
+  const { isManaged, authReq } = useContext(authContext);
+
   // styles
   const classes = getStyles();
   const [code, setCode] = useState(() => {
     const savedCode = localStorage.getItem(ATTU_PLAY_CODE);
     return savedCode || '';
   });
+
   // refs
-  const editorEl = useRef<HTMLDivElement>(null);
-  const editor = useRef<EditorView>();
-  const themeCompartment = useRef(new Compartment()).current;
+  const container = useRef<HTMLDivElement>(null);
 
   const content = detail.error
     ? JSON.stringify(detail.error, null, 2)
-    : JSON.stringify(detail.response, null, 2)
+    : JSON.stringify(detail.response, null, 2);
   const emptyClass = !detail.response && !detail.error ? classes.empty : '';
+
+  const extensions = useMemo(() => {
+    const { address, token, username, password } = authReq;
+    const getBaseUrl = () => {
+      if (isManaged) {
+        return CLOUD_API_BASE_URL;
+      }
+      return address.startsWith('http') ? address : `http://${address}`;
+    };
+    return [
+      placeholder('Write your code here'),
+      EditorView.lineWrapping,
+      EditorView.theme(getCMStyle(theme)),
+      KeyMap(),
+      MilvusHTTP({ baseUrl: getBaseUrl(), token, username, password }),
+      Autocomplete({ databases, collections }),
+    ];
+  }, [databases, collections, authReq, theme.palette.mode]);
+
+  const handleCodeChange = useCallback((code: string) => {
+    setCode(code);
+  }, []);
+
+  useCodeMirror({
+    container: container.current,
+    value: code,
+    extensions,
+    onChange: handleCodeChange,
+  });
 
   // save code to local storage
   useEffect(() => {
     localStorage.setItem(ATTU_PLAY_CODE, code);
   }, [code]);
 
-  // create editor
-  useEffect(() => {
-    if (!editor.current) {
-      // create editor
-      const startState = EditorState.create({
-        doc: code,
-        extensions: [
-          basicSetup,
-          placeholder('Write your code here'),
-          indentUnit.of('  '), // fix tab indentation
-          EditorView.lineWrapping,
-          themeCompartment.of([]), // empty theme
-          EditorView.updateListener.of(update => {
-            if (update.changes) {
-              setCode(update.state.doc.toString());
-            }
-          }),
-          MilvusHTTP(props),
-          Autocomplete(),
-        ],
-      });
-
-      // create editor view
-      const view = new EditorView({
-        state: startState,
-        parent: editorEl.current!,
-      });
-
-      // set editor ref
-      editor.current = view;
-    } else {
-      if (editor.current.state.doc.toString() !== code) {
-        editor.current.dispatch({
-          changes: {
-            from: 0,
-            to: editor.current.state.doc.length,
-            insert: code,
-          },
-        });
-      }
-    }
-
-    return () => {};
-  }, [code]);
-
-  useEffect(() => {
-    if (editor.current) {
-      const newTheme = EditorView.theme(getCMStyle(theme));
-
-      editor.current.dispatch({
-        effects: themeCompartment.reconfigure(newTheme),
-      });
-    }
-  }, [theme.palette.mode]);
-
   useEffect(() => {
     const handleCodeMirrorResponse = (event: Event) => {
-      const { detail } = event as CustomEvent<PlaygroundCustomEventDetail>
+      const { detail } = event as CustomEvent<PlaygroundCustomEventDetail>;
       setDetail(detail);
     };
 
@@ -120,21 +104,19 @@ const Play: FC<Props> = (props) => {
       return (
         <CodeBlock
           wrapperClass={classes.response}
-          language='json'
+          language="json"
           code={content}
         />
       );
     }
-    return (
-      <p>Response result.</p>
-    )
-  }
+    return <p>Response result.</p>;
+  };
 
   return (
     <Box className={classes.root}>
       <Paper elevation={0} className={classes.leftPane}>
         <div
-          ref={editorEl}
+          ref={container}
           defaultValue={code}
           className={classes.editor}
         ></div>
