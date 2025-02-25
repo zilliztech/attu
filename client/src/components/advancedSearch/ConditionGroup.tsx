@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -6,6 +6,7 @@ import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
 import ConditionItem from './Condition';
 import icons from '../icons/Icons';
 import CustomButton from '../customButton/CustomButton';
+import type { FC } from 'react';
 import type {
   ConditionGroupProps,
   BinaryLogicalOpProps,

@@ -1,19 +1,18 @@
-import {
-  DialogActions,
-  DialogContent,
-  TextField,
-  Theme,
-  Typography,
-  Checkbox,
-  FormControlLabel,
-} from '@mui/material';
-import { ChangeEvent, FC, useContext, useState } from 'react';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomDialogTitle from '@/components/customDialog/CustomDialogTitle';
-import { DeleteDialogContentType } from '@/components/customDialog/Types';
 import { rootContext } from '@/context';
 import { makeStyles } from '@mui/styles';
+import type { ChangeEvent } from 'react';
+import type { Theme } from '@mui/material/styles';
+import type { DeleteDialogContentType } from '@/components/customDialog/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

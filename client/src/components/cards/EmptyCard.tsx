@@ -1,7 +1,9 @@
-import { FC } from 'react';
-import { Theme, Typography, CardContent } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
 import { makeStyles } from '@mui/styles';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import type { FC } from 'react';
+import type { Theme } from '@mui/material/styles';
 import type { EmptyCardProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

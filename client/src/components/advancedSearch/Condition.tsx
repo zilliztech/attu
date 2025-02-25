@@ -1,10 +1,11 @@
-import React, { useState, useEffect, FC, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Theme, IconButton, TextField, SelectChangeEvent } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS, DataTypeStringEnum } from '@/consts';
 import { formatValue, checkValue } from './utils';
+import type { FC } from 'react';
 import type { ConditionProps } from './Types';
 import type { FieldObject } from '@server/types';
 

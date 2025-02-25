@@ -1,10 +1,11 @@
-import { Theme, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import CopyButton from '../advancedSearch/CopyButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs2015, github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { FC } from 'react';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { CodeBlockProps } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({

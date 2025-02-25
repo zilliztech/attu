@@ -1,5 +1,8 @@
-import { Button, ButtonProps, Tooltip, Theme } from '@mui/material';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '@mui/styles';
+import type { ButtonProps } from '@mui/material/Button';
+import type { Theme } from '@mui/material/styles';
 
 const buttonStyle = makeStyles((theme: Theme) => ({
   button: {
