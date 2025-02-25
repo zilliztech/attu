@@ -1,9 +1,12 @@
 import { FC } from 'react';
-import { IconButton, Theme, Button, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import Icons from '../icons/Icons';
-import type { ActionBarType } from './Types';
 import CustomToolTip from '../customToolTip/CustomToolTip';
+import type { Theme } from '@mui/material/styles';
+import type { ActionBarType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

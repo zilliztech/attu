@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import MediaPreview from '../MediaPreview/MediaPreview';
 
 const DataView = (props: { type: string; value: any }) => {

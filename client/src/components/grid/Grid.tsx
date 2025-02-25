@@ -1,7 +1,6 @@
 import { FC, MouseEvent, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
-import { Theme } from '@mui/material/styles/createTheme';
 import Grid from '@mui/material/Grid';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import TablePagination from '@mui/material/TablePagination';
@@ -9,6 +8,7 @@ import { makeStyles } from '@mui/styles';
 import CustomToolbar from './ToolBar';
 import Table from './Table';
 import TablePaginationActions from './TablePaginationActions';
+import type { Theme } from '@mui/material/styles/createTheme';
 import type { AttuGridType } from './Types';
 
 const userStyle = makeStyles((theme: Theme) => ({

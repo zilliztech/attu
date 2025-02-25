@@ -1,6 +1,5 @@
 import { FC, useContext, useState, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
@@ -10,12 +9,13 @@ import { navContext, dataContext, authContext, rootContext } from '@/context';
 import { MilvusService } from '@/http';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import StatusIcon from '@/components/status/StatusIcon';
-import { LoadingType } from '@/components/status/StatusIcon';
 import UpdateUser from '@/pages/user/dialogs/UpdateUserPassDialog';
 import icons from '../icons/Icons';
 import { makeStyles } from '@mui/styles';
 import IconButton from '@mui/material/IconButton';
 import { ColorModeContext } from '@/context';
+import { LoadingType } from '@/components/status/StatusIcon';
+import type { Theme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {

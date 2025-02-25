@@ -1,7 +1,7 @@
-import { Theme } from '@mui/material';
 import { FC, useState } from 'react';
 import Icons from '../icons/Icons';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { TableSwitchType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

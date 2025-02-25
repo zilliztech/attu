@@ -1,9 +1,10 @@
-import { Theme, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import CustomButton from '../customButton/CustomButton';
 import icons from '../icons/Icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { TablePaginationActionsProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

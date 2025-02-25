@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import getCommonThemes from '../styles/theme';
-import { ThemeProvider } from '@mui/material';
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {},
