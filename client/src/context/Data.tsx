@@ -106,6 +106,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const [databases, setDatabases] = useState<DatabaseObject[]>([]);
   // socket ref
   const socket = useRef<Socket | null>(null);
+  // Use a ref to track concurrent requests
+  const requestIdRef = useRef(0);
 
   // collection state test
   const detectLoadingIndexing = useCallback(
@@ -200,6 +202,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API:fetch collections
   const fetchCollections = async () => {
+    const currentRequestId = ++requestIdRef.current;
+
     try {
       // set loading true
       setLoading(true);
@@ -207,14 +211,20 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       setCollections([]);
       // fetch collections
       const res = await CollectionService.getCollections();
-      // check state
-      detectLoadingIndexing(res);
-      // set collections
-      setCollections(res);
-      // set loading false
-      setLoading(false);
-    } finally {
-      setLoading(false);
+      // Only process the response if this is the latest request
+      if (currentRequestId === requestIdRef.current) {
+        // check state
+        detectLoadingIndexing(res);
+        // set collections
+        setCollections(res);
+        // set loading false
+        setLoading(false);
+      }
+    } catch (error) {
+      if (currentRequestId === requestIdRef.current) {
+        setLoading(false);
+      }
+      throw error;
     }
   };
 
