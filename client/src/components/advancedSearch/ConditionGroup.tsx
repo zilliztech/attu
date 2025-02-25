@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import ConditionItem from './Condition';
 import icons from '../icons/Icons';
 import CustomButton from '../customButton/CustomButton';
