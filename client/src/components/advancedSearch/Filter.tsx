@@ -1,11 +1,13 @@
 import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
-import { Theme, Chip, Tooltip } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
 import CustomButton from '../customButton/CustomButton';
+import type { Theme } from '@mui/material/styles';
 import type { FilterProps, ConditionData } from './Types';
 
 const Filter = forwardRef((props: FilterProps, ref) => {

@@ -5,7 +5,7 @@ import { MILVUS_CLIENT_ID } from '@/consts';
 const hostUrl: { [key: string]: string | undefined } = {
   development: ``,
   production: ((window as any)._env_ && (window as any)._env_.HOST_URL) || '',
-  electron: `http://127.0.0.1:3000`,
+  electron: `http://127.0.0.1:3080`,
 };
 
 export const isElectron =

@@ -1,6 +1,7 @@
 const userTrans = {
   createTitle: '创建用户',
   updateTitle: '更新Milvus用户',
+  updateUserPassTitle: `更新 {{username}} 的密码`,
   updateRoleTitle: '更新用户角色',
   user: '用户',
   users: '用户们',
@@ -14,6 +15,7 @@ const userTrans = {
   deleteTip: '请至少选择一个要删除的用户，不能删除root用户。',
   deleteRoleTip: '请至少选择一个要删除的角色，不能删除admin/public 角色。',
   editPassword: '修改密码',
+  editPassDisabledTip: '请选择一个用户进行编辑。',
 
   // role
   deleteEditRoleTip: '请选择一个角色，并且root角色不可编辑。',

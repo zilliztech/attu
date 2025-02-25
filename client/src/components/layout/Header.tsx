@@ -1,15 +1,21 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useState, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme, Typography, Tooltip } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
-import { navContext, dataContext, authContext } from '@/context';
+import { navContext, dataContext, authContext, rootContext } from '@/context';
 import { MilvusService } from '@/http';
 import CustomSelector from '@/components/customSelector/CustomSelector';
-import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import StatusIcon from '@/components/status/StatusIcon';
+import UpdateUser from '@/pages/user/dialogs/UpdateUserPassDialog';
 import icons from '../icons/Icons';
 import { makeStyles } from '@mui/styles';
 import IconButton from '@mui/material/IconButton';
 import { ColorModeContext } from '@/context';
+import { LoadingType } from '@/components/status/StatusIcon';
+import type { Theme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -85,22 +91,34 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Header: FC = () => {
+  // styles
   const classes = useStyles();
   // use context
   const { navInfo } = useContext(navContext);
   const { mode, toggleColorMode } = useContext(ColorModeContext);
   const { database, databases, setDatabase, loading } = useContext(dataContext);
   const { authReq, logout } = useContext(authContext);
+  const { setDialog, handleCloseDialog, openSnackBar } =
+    useContext(rootContext);
+
   const { address, username } = authReq;
   const navigate = useNavigate();
 
+  // UI states
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  // i8n
   const { t: commonTrans } = useTranslation();
   const statusTrans = commonTrans('status');
   const { t: dbTrans } = useTranslation('database');
+  const { t: successTrans } = useTranslation('success');
+
+  // icons
   const BackIcon = icons.back;
   const LogoutIcon = icons.logout;
   const Avatar = icons.avatar;
 
+  // UI handlers
   const handleBack = (path: string) => {
     navigate(path);
   };
@@ -113,6 +131,41 @@ const Header: FC = () => {
     await MilvusService.useDatabase({ database });
   };
 
+  const handleUserMenuClick = (event: MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleChangePassword = () => {
+    setAnchorEl(null);
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component: (
+          <UpdateUser
+            username={username}
+            onUpdate={res => {
+              if (res.error_code === 'Success') {
+                openSnackBar(successTrans('passwordChanged'));
+                handleCloseDialog();
+                setAnchorEl(null);
+                logout();
+              } else {
+                openSnackBar(res.detail, 'error');
+              }
+            }}
+            handleClose={handleCloseDialog}
+          />
+        ),
+      },
+    });
+  };
+
+  // local computes
   const dbOptions = databases.map(d => ({ value: d.name, label: d.name }));
   const isLoadingDb = dbOptions.length === 0;
 
@@ -173,11 +226,33 @@ const Header: FC = () => {
             <Typography className="status">{statusTrans.running}</Typography>
           </div>
           {username && (
-            <Tooltip title={username}>
-              <div>
-                <Avatar classes={{ root: classes.icon }} />
-              </div>
-            </Tooltip>
+            <>
+              <Tooltip title={username}>
+                <div
+                  onClick={handleUserMenuClick}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <Avatar classes={{ root: classes.icon }} />
+                </div>
+              </Tooltip>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleUserMenuClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={handleChangePassword}>
+                  Change Password
+                </MenuItem>
+              </Menu>
+            </>
           )}
           <Tooltip title={'disconnect'}>
             <div>

@@ -92,11 +92,14 @@ const Users = () => {
     handleCloseDialog();
   };
 
-  const handleUpdate = async (data: UpdateUserParams) => {
-    await UserService.updateUser(data);
-    fetchUsers();
-    openSnackBar(successTrans('update', { name: userTrans('user') }));
-    handleCloseDialog();
+  const onUpdateUserPass = async (res: any) => {
+    if (res.error_code === 'Success') {
+      openSnackBar(successTrans('passwordChanged'));
+      fetchUsers();
+      handleCloseDialog();
+    } else {
+      openSnackBar(res.detail, 'error');
+    }
   };
 
   const handleDelete = async () => {
@@ -149,7 +152,7 @@ const Users = () => {
             component: (
               <UpdateUser
                 username={selectedUser[0]!.username}
-                handleUpdate={handleUpdate}
+                onUpdate={onUpdateUserPass}
                 handleClose={handleCloseDialog}
               />
             ),
@@ -157,11 +160,8 @@ const Users = () => {
         });
       },
       icon: 'edit',
-      disabled: () =>
-        selectedUser.length === 0 ||
-        selectedUser.length > 1 ||
-        selectedUser.findIndex(v => v.username === 'root') > -1,
-      disabledTooltip: userTrans('deleteEditRoleTip'),
+      disabled: () => selectedUser.length === 0 || selectedUser.length > 1,
+      disabledTooltip: userTrans('editPassDisabledTip'),
     },
 
     {

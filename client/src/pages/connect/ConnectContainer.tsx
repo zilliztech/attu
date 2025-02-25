@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Theme, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import Icons from '@/components/icons/Icons';
 import { AuthForm } from './AuthForm';
 import CustomButton from '@/components/customButton/CustomButton';
 import { MilvusService } from '@/http';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 
 const getContainerStyles = makeStyles((theme: Theme) => ({
   wrapper: {

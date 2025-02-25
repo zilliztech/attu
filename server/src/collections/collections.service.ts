@@ -28,6 +28,7 @@ import {
   HybridSearchReq,
   SearchSimpleReq,
   LoadState,
+  ErrorCode,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -749,16 +750,20 @@ export class CollectionsService {
 
   async createIndex(clientId: string, data: CreateIndexReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.createIndex(data);
+    const createIndex = await milvusClient.createIndex(data);
 
-    // fetch new collections
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
+    if (createIndex.error_code === ErrorCode.SUCCESS) {
+      // fetch new collections
+      const newCollection = (await this.getAllCollections(
+        clientId,
+        [data.collection_name],
+        data.db_name
+      )) as CollectionFullObject[];
 
-    return newCollection[0];
+      return newCollection[0];
+    } else {
+      throw new Error(createIndex.reason);
+    }
   }
 
   async describeIndex(clientId: string, data: DescribeIndexReq) {
@@ -790,15 +795,19 @@ export class CollectionsService {
 
   async dropIndex(clientId: string, data: DropIndexReq) {
     const { milvusClient, database } = clientCache.get(clientId);
-    await milvusClient.dropIndex(data);
+    const dropIndex = await milvusClient.dropIndex(data);
 
-    // fetch new collections
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
+    if (dropIndex.error_code === ErrorCode.SUCCESS) {
+      // fetch new collections
+      const newCollection = (await this.getAllCollections(
+        clientId,
+        [data.collection_name],
+        data.db_name
+      )) as CollectionFullObject[];
 
-    return newCollection[0];
+      return newCollection[0];
+    } else {
+      throw new Error(dropIndex.reason);
+    }
   }
 }

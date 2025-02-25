@@ -1,15 +1,13 @@
 import { FC } from 'react';
 import React from 'react';
-import {
-  TableHead,
-  TableRow,
-  TableCell,
-  Checkbox,
-  TableSortLabel,
-  Typography,
-  Theme,
-} from '@mui/material';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import Checkbox from '@mui/material/Checkbox';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { TableHeadType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

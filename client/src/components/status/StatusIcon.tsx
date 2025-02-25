@@ -1,6 +1,7 @@
-import { CircularProgress, Theme } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { FC, ReactElement } from 'react';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 
 export enum LoadingType {
   CREATING = 'creating',
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'flex-left',
     alignItems: 'center',
-    paddingLeft: theme.spacing(.5),
+    paddingLeft: theme.spacing(0.5),
   },
   svg: {
     color: theme.palette.primary.main,

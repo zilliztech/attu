@@ -6,43 +6,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '15px',
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.default,
-    '& .MuiTreeItem-iconContainer': {
-      width: 'auto',
-    },
-    '& .MuiTreeItem-group': {
-      marginLeft: 0,
-      '& .MuiTreeItem-content': {
-        padding: '0 0 0 8px',
-      },
-    },
-    '& .MuiTreeItem-label:hover': {
-      backgroundColor: 'none',
-    },
-    '& .MuiTreeItem-content': {
-      width: 'auto',
-      padding: '0',
-      '&.Mui-focused': {
-        backgroundColor: 'rgba(10, 206, 130, 0.08)',
-      },
-      '&.Mui-selected': {
-        backgroundColor: 'rgba(10, 206, 130, 0.28)',
-      },
-      '&.Mui-focused.Mui-selected': {
-        backgroundColor: 'rgba(10, 206, 130, 0.28) !important',
-      },
-
-      '&:hover': {
-        backgroundColor: 'rgba(10, 206, 130, 0.08)',
-      },
-      '& .MuiTreeItem-label': {
-        background: 'none',
-      },
-    },
   },
   treeItem: {
-    '& .MuiTreeItem-iconContainer': {
-      color: '#666',
-    },
     '& .right-selected-on': {
       '& .MuiTreeItem-content': {
         backgroundColor: 'rgba(10, 206, 130, 0.08)',

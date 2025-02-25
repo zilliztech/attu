@@ -1,20 +1,17 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Theme,
-  Typography,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import { makeStyles } from '@mui/styles';
 import CustomButton from '../customButton/CustomButton';
 import ConditionGroup from './ConditionGroup';
 import icons from '../icons/Icons';
 import CopyBtn from './CopyButton';
-// import DialogTemplate from '../customDialog/DialogTemplate';
+import type { Theme } from '@mui/material/styles';
 import type { DialogProps } from './Types';
 
 const AdvancedDialog = (props: DialogProps) => {

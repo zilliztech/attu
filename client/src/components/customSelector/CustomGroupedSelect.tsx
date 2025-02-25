@@ -1,13 +1,11 @@
-import {
-  FormControl,
-  InputLabel,
-  ListSubheader,
-  MenuItem,
-  Select,
-  Theme,
-} from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import ListSubheader from '@mui/material/ListSubheader';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import { makeStyles } from '@mui/styles';
 import { FC } from 'react';
+import type { Theme } from '@mui/material/styles';
 import type { GroupOption, ICustomGroupSelect } from './Types';
 
 const getStyles = makeStyles((theme: Theme) => ({

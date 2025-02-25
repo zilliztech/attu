@@ -1,5 +1,7 @@
 import { useContext } from 'react';
-import { Drawer, Box, Button } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { rootContext } from '@/context';
 
 const CustomDrawer = () => {

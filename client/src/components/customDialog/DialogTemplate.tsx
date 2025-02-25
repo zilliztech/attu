@@ -1,15 +1,13 @@
 import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  DialogContent,
-  DialogActions,
-  Theme,
-  CircularProgress,
-} from '@mui/material';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CircularProgress from '@mui/material/CircularProgress';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
 import CodeView from '../code/CodeView';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { DialogContainerProps } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

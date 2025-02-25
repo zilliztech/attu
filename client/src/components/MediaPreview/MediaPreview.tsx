@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import icons from '../icons/Icons';
 
 const MediaPreview = (props: { value: string }) => {
