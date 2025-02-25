@@ -121,7 +121,7 @@ export const buildToolbarDecorationExtension = (options: PlaygroundExtensionPara
             console.error('Failed to parse body: ', (err as Error).message);
           }
           const host = options.baseUrl;
-          if (options.isManaged) {
+          if (token) {
             options.token = token;
           }
 
