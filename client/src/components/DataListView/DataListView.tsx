@@ -1,10 +1,11 @@
-import { Typography, Chip } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
 import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
 import { formatFieldType } from '@/utils';
 import DataView from '@/components/DataView/DataView';
 import { DYNAMIC_FIELD } from '@/consts';
 import CopyButton from '@/components/advancedSearch/CopyButton';
+import type { Theme } from '@mui/material/styles';
 import type { CollectionFullObject } from '@server/types';
 
 interface DataListViewProps {

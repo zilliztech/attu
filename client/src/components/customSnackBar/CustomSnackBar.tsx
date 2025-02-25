@@ -1,8 +1,11 @@
 import { forwardRef, FC } from 'react';
 import MuiAlert from '@mui/material/Alert';
-import { Snackbar, Theme, AlertProps } from '@mui/material';
-import Slide, { SlideProps } from '@mui/material/Slide';
+import Snackbar from '@mui/material/Snackbar';
+import Slide from '@mui/material/Slide';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
+import type { AlertProps } from '@mui/material/Alert';
+import type { SlideProps } from '@mui/material/Slide';
 import type { CustomSnackBarType } from './Types';
 
 // if we need to use slide component
