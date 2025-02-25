@@ -29,7 +29,7 @@ export interface CreateUserProps {
 }
 
 export interface UpdateUserProps {
-  handleUpdate: (data: UpdateUserParams) => void;
+  onUpdate: (res: any) => void;
   handleClose: () => void;
   username: string;
 }

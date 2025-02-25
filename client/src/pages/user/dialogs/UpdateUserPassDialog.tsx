@@ -6,10 +6,14 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { makeStyles } from '@mui/styles';
+import { UserService } from '@/http';
 import type { UpdateUserParams, UpdateUserProps } from '../Types';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    maxWidth: 480,
+  },
   input: {
     margin: theme.spacing(1, 0, 0.5),
   },
@@ -17,13 +21,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const UpdateUser: FC<UpdateUserProps> = ({
   handleClose,
-  handleUpdate,
+  onUpdate,
   username,
 }) => {
+  // styles
+  const classes = useStyles();
+
+  // i18n
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
 
+  // UI state
   const [form, setForm] = useState<
     Omit<UpdateUserParams, 'username'> & { confirmPassword: string }
   >({
@@ -31,13 +40,13 @@ const UpdateUser: FC<UpdateUserProps> = ({
     newPassword: '',
     confirmPassword: '',
   });
-  const checkedForm = useMemo(() => {
-    const { oldPassword, newPassword } = form;
-    return formatForm({ oldPassword, newPassword });
-  }, [form]);
-  const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const classes = useStyles();
+  // UI handlers
+  const checkedForm = useMemo(() => {
+    const { oldPassword, newPassword, confirmPassword } = form;
+    return formatForm({ oldPassword, newPassword, confirmPassword });
+  }, [JSON.stringify(form)]);
+  const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
   const handleInputChange = (
     key: 'oldPassword' | 'newPassword' | 'confirmPassword',
@@ -46,6 +55,16 @@ const UpdateUser: FC<UpdateUserProps> = ({
     setForm(v => ({ ...v, [key]: value }));
   };
 
+  const handleUpdateUser = async () => {
+    const res = await UserService.updateUser({
+      username,
+      newPassword: form.newPassword,
+      oldPassword: form.oldPassword,
+    });
+    onUpdate(res);
+  };
+
+  // UI configs
   const createConfigs: ITextfieldConfig[] = [
     {
       label: userTrans('oldPassword'),
@@ -95,6 +114,12 @@ const UpdateUser: FC<UpdateUserProps> = ({
       fullWidth: true,
       validations: [
         {
+          rule: 'require',
+          errorText: warningTrans('required', {
+            name: userTrans('newPassword'),
+          }),
+        },
+        {
           rule: 'confirm',
           extraParam: {
             compareValue: form.newPassword,
@@ -107,19 +132,12 @@ const UpdateUser: FC<UpdateUserProps> = ({
     },
   ];
 
-  const handleUpdateUser = () => {
-    handleUpdate({
-      username,
-      newPassword: form.newPassword,
-      oldPassword: form.oldPassword,
-    });
-  };
-
   return (
     <DialogTemplate
-      title={userTrans('updateTitle')}
+      dialogClass={classes.root}
+      title={userTrans('updateUserPassTitle', { username })}
       handleClose={handleClose}
-      confirmLabel={btnTrans('create')}
+      confirmLabel={btnTrans('update')}
       handleConfirm={handleUpdateUser}
       confirmDisabled={disabled}
     >

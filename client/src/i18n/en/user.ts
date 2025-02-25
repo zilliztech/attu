@@ -1,6 +1,7 @@
 const userTrans = {
   createTitle: 'Create User',
   updateTitle: 'Update Milvus User',
+  updateUserPassTitle: `Update {{username}}'s Password`,
   updateRoleTitle: 'Update User Roles',
   user: 'User',
   users: 'Users',

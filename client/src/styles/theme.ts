@@ -224,6 +224,85 @@ export const getAttuTheme = (mode: PaletteMode) => {
           },
         },
       },
+      MuiTreeItem: {
+        styleOverrides: {
+          root: {
+            fontSize: '15px',
+            color: commonThemes.palette.primary,
+            backgroundColor: commonThemes.palette.background.default,
+            '& .MuiTreeItem-iconContainer': {
+              width: 'auto',
+              color: '#666',
+            },
+            '& .MuiTreeItem-group': {
+              marginLeft: 0,
+              '& .MuiTreeItem-content': {
+                padding: '0 0 0 8px',
+              },
+            },
+            '& .MuiTreeItem-label:hover': {
+              backgroundColor: 'none',
+            },
+            '& .MuiTreeItem-content': {
+              width: 'auto',
+              padding: '0',
+              '&.Mui-focused': {
+                backgroundColor: 'rgba(10, 206, 130, 0.08)',
+              },
+              '&.Mui-selected': {
+                backgroundColor: 'rgba(10, 206, 130, 0.28)',
+              },
+              '&.Mui-focused.Mui-selected': {
+                backgroundColor: 'rgba(10, 206, 130, 0.28) !important',
+              },
+              '&:hover': {
+                backgroundColor: 'rgba(10, 206, 130, 0.08)',
+              },
+              '& .MuiTreeItem-label': {
+                background: 'none',
+              },
+            },
+          },
+        },
+      },
+      MuiMenu: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: commonThemes.palette.background.paper,
+            boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.15)',
+            borderRadius: '8px',
+          },
+          list: {
+            padding: '8px 0',
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            fontSize: '14px',
+            padding: '8px 16px',
+            minHeight: '36px',
+            transition: 'background-color 0.2s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(10, 206, 130, 0.08)',
+            },
+            '&.Mui-selected': {
+              backgroundColor: 'rgba(10, 206, 130, 0.16)',
+              '&:hover': {
+                backgroundColor: 'rgba(10, 206, 130, 0.24)',
+              },
+            },
+            '&.Mui-disabled': {
+              opacity: 0.6,
+            },
+            '& .MuiListItemIcon-root': {
+              color: mode === 'light' ? '#666' : '#aaa',
+              minWidth: '36px',
+            },
+          },
+        },
+      },
     },
   };
 };

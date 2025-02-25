@@ -1,6 +1,7 @@
 const userTrans = {
   createTitle: '创建用户',
   updateTitle: '更新Milvus用户',
+  updateUserPassTitle: `更新 {{username}} 的密码`,
   updateRoleTitle: '更新用户角色',
   user: '用户',
   users: '用户们',

@@ -10,6 +10,7 @@ const successTrans = {
   empty: `Emptying data for {{name}} has started.`,
   reset: `{{name}} has been reset.`,
   modifyReplica: `Replica number for {{name}} has been modified.`,
+  passwordChanged: `Password updated successfully`,
 };
 
 export default successTrans;
