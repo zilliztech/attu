@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Typography, Menu, Checkbox } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Checkbox from '@mui/material/Checkbox';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomInput from '@/components/customInput/CustomInput';
@@ -14,7 +16,6 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useStyles } from './style';
 import type { AuthReq } from '@server/types';
-
 type Connection = AuthReq & {
   time: number;
 };
