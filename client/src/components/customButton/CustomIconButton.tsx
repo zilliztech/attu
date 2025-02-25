@@ -1,5 +1,8 @@
-import { IconButtonProps, Tooltip, IconButton, Theme } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
 import { makeStyles } from '@mui/styles';
+import type { IconButtonProps } from '@mui/material/IconButton';
+import type { Theme } from '@mui/material/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   wrapper: {

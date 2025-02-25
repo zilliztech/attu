@@ -1,7 +1,9 @@
-import { DialogTitleProps, Typography, Theme } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import icons from '../icons/Icons';
 import { makeStyles } from '@mui/styles';
+import type { DialogTitleProps } from '@mui/material/DialogTitle';
+import type { Theme } from '@mui/material/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
   root: {

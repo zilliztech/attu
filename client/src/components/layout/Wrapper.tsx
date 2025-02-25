@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import type { Theme } from '@mui/material/styles';
 
 interface WrapperProps {
   hasPermission?: boolean;

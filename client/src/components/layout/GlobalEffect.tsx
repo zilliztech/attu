@@ -41,7 +41,7 @@ const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
         },
         error => {
           const { response } = error;
-          let messageType = 'error';
+          let messageType: 'error' | 'warning' = 'error';
 
           if (response) {
             switch (response.status) {

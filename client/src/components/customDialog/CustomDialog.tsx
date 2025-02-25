@@ -1,15 +1,13 @@
 import { FC } from 'react';
-import {
-  DialogActions,
-  DialogContent,
-  Dialog,
-  Theme,
-  Typography,
-} from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '../customButton/CustomButton';
 import CustomDialogTitle from './CustomDialogTitle';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { CustomDialogType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

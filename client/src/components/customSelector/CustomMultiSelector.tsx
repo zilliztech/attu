@@ -1,11 +1,9 @@
 import { FC } from 'react';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Checkbox,
-} from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
 import { withStyles } from '@mui/styles';
 import { generateId } from '../../utils/Common';
 import type { CustomMultiSelectorType } from './Types';

@@ -1,8 +1,9 @@
-import { useState, MouseEvent } from 'react';
+import { useState } from 'react';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import { IconButtonProps } from '@mui/material';
 import icons from '@/components/icons/Icons';
+import type { MouseEvent } from 'react';
+import type { IconButtonProps } from '@mui/material';
 
 const RefreshButton = (
   props: IconButtonProps & {

@@ -1,5 +1,7 @@
 import { FC, useMemo } from 'react';
-import { Grid, Typography, Theme, IconButton } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import CustomButton from '../customButton/CustomButton';
 import Icons from '../icons/Icons';
 import SearchInput from '../customInput/SearchInput';
@@ -7,6 +9,7 @@ import TableSwitch from './TableSwitch';
 import { throwErrorForDev } from '../../utils/Common';
 import CustomIconButton from '../customButton/CustomIconButton';
 import { makeStyles } from '@mui/styles';
+import type { Theme } from '@mui/material/styles';
 import type { ToolBarConfig, ToolBarType } from './Types';
 
 const useStyles = makeStyles((theme: Theme) => ({

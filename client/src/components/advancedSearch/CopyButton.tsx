@@ -1,9 +1,10 @@
-import React, { useState, FC } from 'react';
+import React, { useState } from 'react';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import icons from '../icons/Icons';
 import CustomIconButton from '../customButton/CustomIconButton';
 import { useTranslation } from 'react-i18next';
+import type { FC } from 'react';
 import type { CopyButtonProps } from './Types';
 
 const CopyIcon = icons.copyExpression;

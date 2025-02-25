@@ -1,8 +1,10 @@
-import { InputAdornment, TextField, Theme } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
 import { makeStyles } from '@mui/styles';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icons from '../icons/Icons';
+import type { Theme } from '@mui/material/styles';
 import type { SearchType } from './Types';
 
 const useSearchStyles = makeStyles((theme: Theme) => ({

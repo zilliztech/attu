@@ -1,4 +1,6 @@
-import { Box, Tab, Tabs } from '@mui/material';
+import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import { FC, useState } from 'react';
 import { useStyles } from './style';
 import type { ITabListProps, ITabPanel } from './Types';

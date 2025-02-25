@@ -1,9 +1,12 @@
 import { FC, useMemo } from 'react';
-import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import StatusIcon from '@/components/status/StatusIcon';
 import { useTranslation } from 'react-i18next';
-import { Theme, Typography, useTheme } from '@mui/material';
-import { LOADING_STATE } from '@/consts';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { LOADING_STATE } from '@/consts';
+import { LoadingType } from '@/components/status/StatusIcon';
+import type { Theme } from '@mui/material/styles';
 
 export type StatusType = {
   status: LOADING_STATE;
