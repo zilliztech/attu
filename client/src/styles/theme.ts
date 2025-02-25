@@ -1,5 +1,7 @@
 import { PaletteMode } from '@mui/material';
 import { grey } from '@mui/material/colors';
+import { Theme } from '@mui/material/styles';
+import { ButtonProps } from '@mui/material/Button';
 
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
@@ -126,17 +128,55 @@ export const getAttuTheme = (mode: PaletteMode) => {
       },
       MuiButton: {
         styleOverrides: {
-          root: {
+          root: ({
+            theme,
+            ownerState,
+          }: {
+            theme: Theme;
+            ownerState: ButtonProps;
+          }) => ({
+            padding: theme.spacing(1, 3),
             textTransform: 'initial',
             fontWeight: 'bold',
-            variants: [],
+            ...(ownerState.variant === 'text' && {
+              padding: theme.spacing(1),
+              color: theme.palette.primary.main,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.background.paper,
+              },
+            }),
+            ...(ownerState.variant === 'contained' && {
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor:
+                  ownerState.color === 'secondary'
+                    ? '#fc4c02'
+                    : theme.palette.primary.dark,
+              },
+            }),
+            ...(ownerState.disabled && {
+              pointerEvents: 'none',
+            }),
+          }),
+        },
+        variants: [
+          {
+            props: { variant: 'contained', color: 'primary' },
+            style: ({ theme }: { theme: Theme }) => ({
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.background.paper,
+            }),
           },
-          text: {
-            '&:hover': {
-              backgroundColor: commonThemes.palette.primary.light,
+          {
+            props: { variant: 'contained', color: 'secondary' },
+            style: {
+              backgroundColor: '#fc4c02',
+              color: '#fff',
             },
           },
-        },
+        ],
       },
       MuiDialog: {
         styleOverrides: {
