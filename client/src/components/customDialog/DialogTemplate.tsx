@@ -1,49 +1,54 @@
 import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import CircularProgress from '@mui/material/CircularProgress';
+import { styled } from '@mui/material/styles';
+import { DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
 import CodeView from '../code/CodeView';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
 import type { DialogContainerProps } from './Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
+const Wrapper = styled('section')({
+  display: 'flex',
+  '& form': {
     display: 'flex',
-    '& form': {
-      display: 'flex',
-    },
-    '& .MuiDialogContent-root': {
-      maxHeight: '60vh',
-    },
   },
-  block: {
+  '& .MuiDialogContent-root': {
+    maxHeight: '60vh',
+  },
+});
+
+const DialogBlock = styled('div')<{ showCode: boolean }>(
+  ({ theme, showCode }) => ({
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.paper,
-  },
-  dialog: {
     minWidth: 540,
-  },
-  codeWrapper: {
-    width: (props: { showCode: boolean }) => (props.showCode ? 540 : 0),
     transition: 'width 0.2s',
-  },
-  code: {
+    width: showCode ? 540 : 'auto',
+  })
+);
+
+const CodeWrapper = styled('div')<{ showCode: boolean }>(
+  ({ theme, showCode }) => ({
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
+    width: showCode ? 540 : 0,
+    transition: 'width 0.2s',
+  })
+);
+
+const CodeContainer = styled('div')<{ showCode: boolean }>(
+  ({ theme, showCode }) => ({
     height: '100%',
-    // set code view padding 0 if not show
-    padding: (props: { showCode: boolean }) =>
-      props.showCode ? theme.spacing(4) : 0,
-  },
-  actions: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(2),
-    justifyContent: 'space-between',
-    '& .btn': {
-      margin: theme.spacing(0.5),
-    },
+    padding: showCode ? theme.spacing(4) : 0,
+  })
+);
+
+const Actions = styled(DialogActions)(({ theme }) => ({
+  paddingTop: theme.spacing(1),
+  paddingBottom: theme.spacing(2),
+  justifyContent: 'space-between',
+  '& .btn': {
+    margin: theme.spacing(0.5),
   },
 }));
 
@@ -60,7 +65,6 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   showCancel = true,
   showCloseIcon = true,
   leftActions,
-  // needed for code mode
   showCode = false,
   codeBlocksData = [],
   dialogClass = '',
@@ -69,7 +73,6 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   const { t } = useTranslation('btn');
   const cancel = cancelLabel || t('cancel');
   const confirm = confirmLabel || t('confirm');
-  const classes = useStyles({ showCode });
   const onCancel = handleCancel || handleClose;
 
   const dialogRef = useRef(null);
@@ -80,17 +83,19 @@ const DialogTemplate: FC<DialogContainerProps> = ({
     try {
       await handleConfirm();
     } catch (error) {
+      console.error(error);
     } finally {
       setConfirming(false);
     }
   };
 
   return (
-    <section className={classes.wrapper}>
+    <Wrapper>
       <form onSubmit={_handleConfirm}>
-        <div
+        <DialogBlock
+          showCode={showCode}
           ref={dialogRef}
-          className={`${classes.dialog} ${classes.block} ${dialogClass}`}
+          className={dialogClass}
         >
           <CustomDialogTitle
             onClose={handleClose}
@@ -100,7 +105,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
           </CustomDialogTitle>
           <DialogContent>{children}</DialogContent>
           {showActions && (
-            <DialogActions className={classes.actions}>
+            <Actions>
               <div>{leftActions}</div>
               <div>
                 {showCancel && (
@@ -124,17 +129,19 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                   {confirming ? <CircularProgress size={16} /> : confirm}
                 </CustomButton>
               </div>
-            </DialogActions>
+            </Actions>
           )}
-        </div>
+        </DialogBlock>
 
-        <div className={`${classes.block} ${classes.codeWrapper}`}>
+        <CodeWrapper showCode={showCode}>
           {showCode && (
-            <CodeView wrapperClass={classes.code} data={codeBlocksData} />
+            <CodeContainer showCode={showCode}>
+              <CodeView data={codeBlocksData} />
+            </CodeContainer>
           )}
-        </div>
+        </CodeWrapper>
       </form>
-    </section>
+    </Wrapper>
   );
 };
 

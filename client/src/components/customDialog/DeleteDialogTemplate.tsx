@@ -1,165 +1,140 @@
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { FC, useContext, useState } from 'react';
+import { FC, useContext, useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { styled } from '@mui/material/styles';
+import {
+  DialogActions,
+  DialogContent,
+  TextField,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+} from '@mui/material';
 import CustomButton from '@/components/customButton/CustomButton';
 import CustomDialogTitle from '@/components/customDialog/CustomDialogTitle';
 import { rootContext } from '@/context';
-import { makeStyles } from '@mui/styles';
-import type { ChangeEvent } from 'react';
-import type { Theme } from '@mui/material/styles';
 import type { DeleteDialogContentType } from '@/components/customDialog/Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    maxWidth: 540,
-    backgroundColor: theme.palette.background.paper,
-  },
-  info: {
-    marginBottom: theme.spacing(0.5),
-    color: theme.palette.text.secondary,
-  },
-  mb: {
-    marginBottom: theme.spacing(2.5),
-  },
-  btnWrapper: {
-    display: 'flex',
-  },
-  label: {
-    display: 'none',
-  },
-  btnLabel: {
-    fontWeight: 'bold',
-  },
-  input: {
-    padding: '10px 12px',
-  },
-  cancelBtn: {
-    color: theme.palette.text.secondary,
-  },
-  checkBox: {},
+const Root = styled('div')(({ theme }) => ({
+  maxWidth: 540,
+  backgroundColor: theme.palette.background.paper,
 }));
 
-const DeleteTemplate: FC<DeleteDialogContentType> = props => {
-  const {
-    title,
-    text,
-    label,
-    compare,
-    handleDelete,
-    handleCancel,
-    forceDelLabel,
-  } = props;
+const DialogSection = styled('div')(({ theme }) => ({
+  marginBottom: theme.spacing(2.5),
+}));
+
+const StyledDialogTitle = styled(CustomDialogTitle)(({ theme }) => ({
+  marginBottom: theme.spacing(2.5),
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(0.5),
+  color: theme.palette.text.secondary,
+}));
+
+const StyledTextField = styled(TextField)({
+  '& .MuiInputBase-input': {
+    padding: '10px 12px',
+  },
+  '& .MuiInputLabel-root': {
+    display: 'none',
+  },
+});
+
+const ActionButtons = styled(DialogActions)({
+  display: 'flex',
+});
+
+const CancelButton = styled(CustomButton)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+}));
+
+const BoldText = styled('strong')({
+  fontWeight: 'bold',
+});
+
+const DeleteTemplate: FC<DeleteDialogContentType> = ({
+  title,
+  text,
+  label,
+  compare,
+  handleDelete,
+  handleCancel,
+  forceDelLabel,
+}) => {
   const { handleCloseDialog } = useContext(rootContext);
-  const classes = useStyles();
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
 
-  const [value, setValue] = useState<string>('');
-  const [force, setForce] = useState<boolean>(false);
-  const [deleteReady, setDeleteReady] = useState<boolean>(false);
+  const [value, setValue] = useState('');
+  const [force, setForce] = useState(false);
+  const deleteReady = value.toLowerCase() === (compare || label).toLowerCase();
 
-  const onCancelClick = () => {
+  const handleCancelClick = () => {
     handleCloseDialog();
-    handleCancel && handleCancel();
-  };
-
-  const onDeleteClick = (event: React.FormEvent<HTMLFormElement>) => {
-    handleDelete(force);
-    event.preventDefault();
-  };
-
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setValue(value);
-
-    setDeleteReady(value.toLowerCase() === (compare || label).toLowerCase());
+    handleCancel?.();
   };
 
   return (
-    <div className={classes.root}>
-      <form onSubmit={onDeleteClick}>
-        <CustomDialogTitle
-          classes={{ root: classes.mb }}
-          onClose={onCancelClick}
-        >
+    <Root>
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          handleDelete(force);
+        }}
+      >
+        <StyledDialogTitle onClose={handleCancelClick}>
           {title}
-        </CustomDialogTitle>
+        </StyledDialogTitle>
 
         <DialogContent>
-          <Typography
-            variant="body1"
-            className={classes.info}
-            dangerouslySetInnerHTML={{ __html: text }}
-          ></Typography>
-          <Typography variant="body1" className={classes.mb}>
-            {dialogTrans('deleteTipAction')}
-            <strong className={classes.btnLabel}>{` ${(
-              compare || label
-            ).toLowerCase()} `}</strong>
-            {dialogTrans('deleteTipPurpose')}
-          </Typography>
-          <TextField
-            value={value}
-            onChange={onChange}
-            InputLabelProps={{
-              classes: {
-                root: classes.label,
-              },
-            }}
-            InputProps={{
-              classes: {
-                input: classes.input,
-              },
-            }}
+          <DialogSection>
+            <StyledTypography
+              variant="body1"
+              dangerouslySetInnerHTML={{ __html: text }}
+            />
+            <Typography variant="body1">
+              {dialogTrans('deleteTipAction')}
+              <BoldText>{` ${(compare || label).toLowerCase()} `}</BoldText>
+              {dialogTrans('deleteTipPurpose')}
+            </Typography>
+          </DialogSection>
+
+          <StyledTextField
+            fullWidth
             variant="filled"
-            fullWidth={true}
+            value={value}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setValue(e.target.value)
+            }
           />
-          {forceDelLabel ? (
+
+          {forceDelLabel && (
             <FormControlLabel
               control={
-                <Checkbox
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>,
-                    checked: boolean
-                  ) => {
-                    setForce(checked);
-                  }}
-                />
+                <Checkbox onChange={(e, checked) => setForce(checked)} />
               }
-              key={'force'}
               label={forceDelLabel}
-              value={true}
               checked={force}
-              className={classes.checkBox}
             />
-          ) : null}
+          )}
         </DialogContent>
 
-        <DialogActions className={classes.btnWrapper}>
-          <CustomButton
-            name="cancel"
-            onClick={onCancelClick}
-            className={classes.cancelBtn}
-          >
+        <ActionButtons>
+          <CancelButton onClick={handleCancelClick}>
             {btnTrans('cancel')}
-          </CustomButton>
+          </CancelButton>
           <CustomButton
             type="submit"
             variant="contained"
             color="secondary"
             disabled={!deleteReady}
-            name="delete"
           >
             {label}
           </CustomButton>
-        </DialogActions>
+        </ActionButtons>
       </form>
-    </div>
+    </Root>
   );
 };
 
