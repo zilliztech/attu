@@ -4,33 +4,34 @@ import DialogContent from '@mui/material/DialogContent';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
+import { styled } from '@mui/material/styles';
 import CustomButton from '../customButton/CustomButton';
 import CustomDialogTitle from './CustomDialogTitle';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
 import type { CustomDialogType } from './Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  paper: {
-    border: `1px solid ${theme.palette.divider}`,
-  },
-  noticePaper: {},
-  paperSm: {
-    maxWidth: '80%',
-  },
-  dialogContent: {
-    // marginTop: theme.spacing(2),
-  },
-  title: {},
-  cancel: {
-    // color: theme.palette.common.black,
-    // opacity: 0.4,
-  },
+const StyledDialog = styled(Dialog, {
+  shouldForwardProp: prop =>
+    !['type', 'containerClass'].includes(prop as string),
+})<{ type?: 'notice' | 'custom'; containerClass?: string }>(
+  ({ theme, type, containerClass }) => ({
+    '& .MuiDialog-paper': {
+      border: `1px solid ${theme.palette.divider}`,
+      ...(type !== 'notice' && { maxWidth: '80%' }),
+    },
+    ...(containerClass && { container: containerClass }),
+  })
+);
+
+const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
+  /* If needed, add dialog content styles here */
+}));
+
+const StyledCancelButton = styled(CustomButton)(({ theme }) => ({
+  color: theme.palette.text.secondary,
 }));
 
 const CustomDialog: FC<CustomDialogType> = props => {
   const { t } = useTranslation('btn');
-  const classes = useStyles();
   const { open, type, params, onClose, containerClass = '' } = props;
   const {
     title,
@@ -41,14 +42,13 @@ const CustomDialog: FC<CustomDialogType> = props => {
     cancelLabel = t('cancel'),
     confirmClass = '',
     handleClose,
-  } = params; // for notice type
-  const { component: CustomComponent } = params; // for custom type
+  } = params;
+  const { component: CustomComponent } = params;
+
   const handleConfirm = async (event: React.FormEvent<HTMLFormElement>) => {
     if (confirm) {
       const res = await confirm();
-      if (!res) {
-        return;
-      }
+      if (!res) return;
     }
     handleClose ? handleClose() : onClose();
     event.preventDefault();
@@ -57,49 +57,30 @@ const CustomDialog: FC<CustomDialogType> = props => {
   const handleCancel = async () => {
     if (cancel) {
       const res = await cancel();
-      if (!res) {
-        return;
-      }
+      if (!res) return;
     }
     handleClose ? handleClose() : onClose();
   };
 
   return (
-    <Dialog
-      classes={{
-        paper: `${classes.paper} ${
-          type === 'notice' ? classes.noticePaper : ''
-        }`,
-        paperWidthSm: type === 'notice' ? '' : classes.paperSm,
-        container: `${containerClass}`,
-      }}
+    <StyledDialog
+      type={type}
+      containerClass={containerClass}
       open={open}
       onClose={(event, reason) => {
-        if (reason !== 'backdropClick') {
-          handleCancel();
-        }
+        if (reason !== 'backdropClick') handleCancel();
       }}
     >
       {type === 'notice' ? (
         <form onSubmit={handleConfirm}>
-          <CustomDialogTitle
-            classes={{ root: classes.title }}
-            onClose={handleCancel}
-          >
+          <CustomDialogTitle onClose={handleCancel}>
             <Typography variant="body1">{title}</Typography>
           </CustomDialogTitle>
-          {component && (
-            <DialogContent classes={{ root: classes.dialogContent }}>
-              {component}
-            </DialogContent>
-          )}
+          {component && <StyledDialogContent>{component}</StyledDialogContent>}
           <DialogActions>
-            <CustomButton
-              onClick={() => handleCancel()}
-              className={classes.cancel}
-            >
+            <StyledCancelButton onClick={handleCancel}>
               {cancelLabel}
-            </CustomButton>
+            </StyledCancelButton>
             <CustomButton
               type="submit"
               color="primary"
@@ -113,7 +94,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
       ) : (
         CustomComponent
       )}
-    </Dialog>
+    </StyledDialog>
   );
 };
 

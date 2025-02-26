@@ -1,71 +1,71 @@
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { formatFieldType } from '@/utils';
 import DataView from '@/components/DataView/DataView';
 import { DYNAMIC_FIELD } from '@/consts';
 import CopyButton from '@/components/advancedSearch/CopyButton';
-import type { Theme } from '@mui/material/styles';
 import type { CollectionFullObject } from '@server/types';
 
 interface DataListViewProps {
   collection: CollectionFullObject;
   data: any;
 }
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    padding: 16,
-    cursor: 'initial',
+
+// Styled components
+const Root = styled('div')(({ theme }) => ({
+  padding: 16,
+  cursor: 'initial',
+}));
+
+const DataTitleContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
+});
+
+const Title = styled('span')({
+  fontSize: 14,
+  fontWeight: 600,
+});
+
+const Type = styled('span')(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  marginLeft: 4,
+  marginTop: 2,
+}));
+
+const DataContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  padding: 8,
+  border: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: 4,
+  marginBottom: 16,
+  maxHeight: 400,
+  overflow: 'auto',
+}));
+
+const StyledCopyButton = styled(CopyButton)({
+  marginLeft: 0,
+  '& svg': {
+    width: 15,
   },
-  dataTitleContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 600,
-  },
-  type: {
-    color: theme.palette.text.secondary,
-    marginLeft: 4,
-    marginTop: 2,
-  },
-  dataContainer: {
-    display: 'flex',
-    padding: 8,
-    border: `1px solid ${theme.palette.divider}`,
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: 4,
-    marginBottom: 16,
-    maxHeight: 400,
-    overflow: 'auto',
-  },
-  copy: {
-    marginLeft: 0,
-    '& svg': {
-      width: 15,
-    },
-  },
-  dataTypeChip: {
-    fontSize: 11,
-    color: theme.palette.text.primary,
-    cursor: 'normal',
-    marginRight: 4,
-    marginLeft: 4,
-    backgroundColor: theme.palette.background.grey,
-  },
+});
+
+const DataTypeChip = styled(Chip)(({ theme }) => ({
+  fontSize: 11,
+  color: theme.palette.text.primary,
+  cursor: 'normal',
+  marginRight: 4,
+  marginLeft: 4,
+  backgroundColor: theme.palette.background.grey,
 }));
 
 const DataListView = (props: DataListViewProps) => {
-  // props
   const { collection, data } = props;
-  // styles
-  const classes = useStyles();
 
-  // page data
+  // Merge dynamic fields into row
   let row = data[0];
-
-  // merge dymaic fields into row
   row = {
     ...row,
     ...row[DYNAMIC_FIELD],
@@ -80,40 +80,35 @@ const DataListView = (props: DataListViewProps) => {
   }
 
   return (
-    <div className={classes.root}>
+    <Root>
       {Object.keys(row).map((name: string, index: number) => {
         const field = collection.schema.fields.find(f => f.name === name);
         return (
           <div key={index}>
-            <div className={classes.dataTitleContainer}>
-              <span className={classes.title}>
+            <DataTitleContainer>
+              <Title>
                 {name}
-                <CopyButton
-                  className={classes.copy}
-                  value={row[name]}
-                  label={name}
-                />
-              </span>
-              <span className={classes.type}>
+                <StyledCopyButton value={row[name]} label={name} />
+              </Title>
+              <Type>
                 {field && (
-                  <Chip
-                    className={classes.dataTypeChip}
+                  <DataTypeChip
                     size="small"
                     label={formatFieldType(field) || 'meta'}
                   />
                 )}
-              </span>
-            </div>
-            <div className={classes.dataContainer}>
+              </Type>
+            </DataTitleContainer>
+            <DataContainer>
               <DataView
                 type={(field && field.data_type) || 'any'}
                 value={row[name]}
               />
-            </div>
+            </DataContainer>
           </div>
         );
       })}
-    </div>
+    </Root>
   );
 };
 

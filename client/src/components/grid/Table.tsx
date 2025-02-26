@@ -119,7 +119,6 @@ const EnhancedTable: FC<TableType> = props => {
     handleSort,
     order,
     orderBy,
-    loadingRowCount,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const { t: commonTrans } = useTranslation();
@@ -286,7 +285,7 @@ const EnhancedTable: FC<TableType> = props => {
           </Table>
         )}
 
-        {isLoading && <LoadingTable count={loadingRowCount} />}
+        {isLoading && <LoadingTable />}
       </Box>
     </TableContainer>
   );

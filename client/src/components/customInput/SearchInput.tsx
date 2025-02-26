@@ -1,51 +1,46 @@
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { useRef, FC, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Icons from '../icons/Icons';
-import type { Theme } from '@mui/material/styles';
 import type { SearchType } from './Types';
 
-const useSearchStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
+const SearchWrapper = styled('div')({
+  display: 'flex',
+});
+
+const StyledTextField = styled(TextField, {
+  shouldForwardProp: prop => prop !== 'searched',
+})<{ searched?: boolean }>(({ theme, searched }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(1),
+  width: '240px',
+  border: `1px solid ${theme.palette.divider}`,
+  fontSize: '14px',
+  transition: 'all 0.2s',
+
+  '& .MuiAutocomplete-endAdornment': {
+    right: theme.spacing(0.5),
   },
-  input: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(1),
-    width: '240px',
-    border: `1px solid ${theme.palette.divider}`,
-    fontSize: '14px',
 
-    transition: 'all 0.2s',
+  '& .MuiInput-underline:before': {
+    border: 'none',
+  },
 
-    '& .MuiAutocomplete-endAdornment': {
-      right: theme.spacing(0.5),
-    },
+  '& .MuiInput-underline:after': {
+    border: 'none',
+  },
 
-    '& .MuiInput-underline:before': {
-      border: 'none',
-    },
+  '&:focus-within': {
+    border: `1px solid ${theme.palette.primary.main}`,
 
-    '& .MuiInput-underline:after': {
-      border: 'none',
-    },
-
-    /**
-     * when input focus
-     * 1. change parent wrapper border color
-     * 2. hide input start search icon
-     */
-    '&:focus-within': {
-      border: `1px solid ${theme.palette.primary.main}`,
-
-      '& $searchIcon': {
-        width: 0,
-      },
+    '& .search-icon': {
+      width: 0,
     },
   },
-  textfield: {
+
+  '& .MuiInputBase-input': {
     padding: 0,
     height: '16px',
 
@@ -53,34 +48,42 @@ const useSearchStyles = makeStyles((theme: Theme) => ({
       caretColor: theme.palette.primary.main,
     },
   },
-  searchIcon: {
+}));
+
+const SearchIconWrapper = styled('span')<{ searched?: boolean }>(
+  ({ theme, searched }) => ({
     color: theme.palette.text.secondary,
     cursor: 'pointer',
     fontSize: '20px',
-    width: (props: { searched: boolean }) => `${props.searched ? 0 : '20px'}`,
-
+    width: searched ? 0 : '20px',
     transition: 'width 0.2s',
-  },
-  clearIcon: {
-    color: theme.palette.primary.main,
-    cursor: 'pointer',
-  },
-  iconWrapper: {
-    opacity: (props: { searched: boolean }) => `${props.searched ? 1 : 0}`,
-    transition: 'opacity 0.2s',
-  },
-  searchWrapper: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+    opacity: searched ? 0 : 1,
+    overflow: 'hidden',
+  })
+);
+
+const IconWrapper = styled('span')<{ searched?: boolean }>(
+  ({ theme, searched }) => ({
+    opacity: searched ? 1 : 0,
+    transition: 'opacity 0.2s',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  })
+);
+
+const ClearIcon = styled(Icons.clear)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  cursor: 'pointer',
 }));
 
 const SearchInput: FC<SearchType> = props => {
   const { searchText = '', onClear = () => {}, onSearch = () => {} } = props;
   const [searchValue, setSearchValue] = useState<string>(searchText || '');
   const searched = useMemo(() => searchValue !== '', [searchValue]);
-  const classes = useSearchStyles({ searched });
   const { t: commonTrans } = useTranslation();
   const inputRef = useRef<any>(null);
 
@@ -90,67 +93,60 @@ const SearchInput: FC<SearchType> = props => {
 
   useEffect(() => {
     let hashPart = window.location.hash.substring(1);
-    // remove search part from hash part, include the '?'
     hashPart = hashPart.replace(/(\?search=)[^&]+(&?)/, '$2');
-
-    let searchPart = !searchValue
+    const searchPart = !searchValue
       ? ''
       : `?search=${encodeURIComponent(searchValue)}`;
-
-    hashPart = `${hashPart}${searchPart}`;
-
-    const newUrl = `${window.location.pathname}#${hashPart}`;
-
-    window.history.replaceState(null, '', newUrl);
-
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}#${hashPart}${searchPart}`
+    );
     handleSearch(searchValue);
   }, [searchValue]);
 
   return (
-    <div className={classes.wrapper}>
-      <TextField
+    <SearchWrapper>
+      <StyledTextField
+        searched={searched}
         inputRef={inputRef}
         variant="standard"
-        classes={{ root: classes.input }}
         InputProps={{
           disableUnderline: true,
-          classes: { input: classes.textfield },
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIconWrapper
+                className="search-icon"
+                searched={searched}
+                onClick={() => handleSearch(searchValue)}
+              >
+                {Icons.search()}
+              </SearchIconWrapper>
+            </InputAdornment>
+          ),
           endAdornment: (
             <InputAdornment position="end">
-              <span
+              <IconWrapper
                 data-testid="clear-icon"
-                className={`flex-center ${classes.iconWrapper}`}
-                onClick={e => {
+                searched={searched}
+                onClick={() => {
                   setSearchValue('');
-                  inputRef.current.focus();
+                  inputRef.current?.focus();
                   onClear();
                 }}
               >
-                {Icons.clear({ classes: { root: classes.clearIcon } })}
-              </span>
-            </InputAdornment>
-          ),
-          startAdornment: (
-            <InputAdornment position="start">
-              <span
-                className={classes.searchWrapper}
-                onClick={() => handleSearch(searchValue)}
-              >
-                {Icons.search({ classes: { root: classes.searchIcon } })}
-              </span>
+                <ClearIcon />
+              </IconWrapper>
             </InputAdornment>
           ),
         }}
         onChange={e => {
           const value = e.target.value.trim();
           setSearchValue(value);
-          if (value === '') {
-            onClear();
-          }
+          if (value === '') onClear();
         }}
         onKeyPress={e => {
           if (e.key === 'Enter') {
-            // Do code here
             handleSearch(searchValue);
             e.preventDefault();
           }
@@ -158,7 +154,7 @@ const SearchInput: FC<SearchType> = props => {
         value={searchValue || ''}
         placeholder={commonTrans('search')}
       />
-    </div>
+    </SearchWrapper>
   );
 };
 

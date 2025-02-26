@@ -3,41 +3,41 @@ import InputLabel from '@mui/material/InputLabel';
 import ListSubheader from '@mui/material/ListSubheader';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { FC } from 'react';
-import type { Theme } from '@mui/material/styles';
 import type { GroupOption, ICustomGroupSelect } from './Types';
 
-const getStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    width: '100%',
-  },
-  formControl: {
-    width: '100%',
-  },
-  groupName: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    lineHeight: '32px',
-    color: theme.palette.text.primary,
-    fontWeight: 'bold',
-    fontSize: '12.8px',
-  },
-  menuItem: {
-    padding: theme.spacing(0, 4),
-    lineHeight: '24px',
+const Wrapper = styled('div')({
+  width: '100%',
+});
 
-    '&:hover': {
-      backgroundColor: 'rgba(18, 195, 244, 0.05)',
-    },
+const StyledFormControl = styled(FormControl)({
+  width: '100%',
+});
+
+const GroupName = styled(ListSubheader)(({ theme }) => ({
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  lineHeight: '32px',
+  color: theme.palette.text.primary,
+  fontWeight: 'bold',
+  fontSize: '12.8px',
+}));
+
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  padding: theme.spacing(0, 4),
+  lineHeight: '24px',
+
+  '&:hover': {
+    backgroundColor: 'rgba(18, 195, 244, 0.05)',
   },
-  menuItemSelected: {
+
+  '&.Mui-selected': {
     backgroundColor: 'rgba(0, 0, 0, 0.03)',
   },
 }));
 
 const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
-  const classes = getStyles();
   const {
     options,
     className = '',
@@ -51,26 +51,17 @@ const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
   const renderSelectGroup = (option: GroupOption) => {
     const items = option.children.map(child => {
       return (
-        <MenuItem
-          classes={{ root: classes.menuItem }}
-          key={child.value}
-          value={child.value}
-        >
+        <StyledMenuItem key={child.value} value={child.value}>
           {child.label}
-        </MenuItem>
+        </StyledMenuItem>
       );
     });
-    return [
-      <ListSubheader key={option.label} classes={{ root: classes.groupName }}>
-        {option.label}
-      </ListSubheader>,
-      items,
-    ];
+    return [<GroupName key={option.label}>{option.label}</GroupName>, items];
   };
 
   return (
-    <div className={`${classes.wrapper} ${className}`}>
-      <FormControl variant="filled" className={classes.formControl}>
+    <Wrapper className={className}>
+      <StyledFormControl variant="filled">
         {haveLabel && <InputLabel htmlFor="grouped-select">{label}</InputLabel>}
         <Select
           displayEmpty={!haveLabel}
@@ -91,8 +82,8 @@ const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
         >
           {options.map(option => renderSelectGroup(option))}
         </Select>
-      </FormControl>
-    </div>
+      </StyledFormControl>
+    </Wrapper>
   );
 };
 

@@ -6,9 +6,9 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import { makeStyles } from '@mui/styles';
 import Icons from '../icons/Icons';
 import { ReactElement } from 'react';
+import { styled } from '@mui/material/styles';
 import type { FilledTextFieldProps } from '@mui/material/TextField';
 import type { StandardTextFieldProps } from '@mui/material/TextField';
 import type { Theme } from '@mui/material/styles';
@@ -69,10 +69,8 @@ const handleOnChange = (param: IChangeParam) => {
   }
 };
 
-const getAdornmentStyles = makeStyles((theme: Theme) => ({
-  icon: {
-    color: theme.palette.text.secondary,
-  },
+const StyledIconButton = styled(IconButton)(({ theme }: { theme: Theme }) => ({
+  color: theme.palette.text.secondary,
 }));
 
 const getAdornmentInput = (
@@ -92,8 +90,6 @@ const getAdornmentInput = (
     onInputBlur,
     onInputChange,
   } = config;
-
-  const classes = getAdornmentStyles();
 
   const param = {
     cb: onInputBlur || (() => {}),
@@ -126,7 +122,7 @@ const getAdornmentInput = (
         }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton
+            <StyledIconButton
               onClick={onIconClick || (() => {})}
               edge="end"
               role="icon-button"
@@ -134,10 +130,10 @@ const getAdornmentInput = (
             >
               {isPasswordType
                 ? showPassword
-                  ? Icons.visible({ classes: { root: classes.icon } })
-                  : Icons.invisible({ classes: { root: classes.icon } })
+                  ? Icons.visible()
+                  : Icons.invisible()
                 : icon}
-            </IconButton>
+            </StyledIconButton>
           </InputAdornment>
         }
         inputProps={{
@@ -255,34 +251,18 @@ const getTextfield = (
   );
 };
 
-const getStyles = makeStyles((theme: Theme) => ({
-  errWrapper: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    color: `${theme.palette.error.main}`,
-    wordWrap: 'break-word',
-    wordBreak: 'break-all',
-    overflow: 'hidden',
-    marginLeft: '12px',
-  },
-  errBtn: {
-    marginRight: `${theme.spacing(1)}`,
-  },
+const ErrWrapper = styled('span')(({ theme }: { theme: Theme }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  color: theme.palette.error.main,
+  wordWrap: 'break-word',
+  wordBreak: 'break-all',
+  overflow: 'hidden',
+  marginLeft: '12px',
 }));
 
 const createHelperTextNode = (hint: string): ReactElement => {
-  const classes = getStyles();
-  return (
-    <span className={classes.errWrapper}>
-      {/* {Icons.error({
-        fontSize: 'small',
-        classes: {
-          root: classes.errBtn,
-        },
-      })} */}
-      {hint}
-    </span>
-  );
+  return <ErrWrapper>{hint}</ErrWrapper>;
 };
 
 const CustomInput = (props: ICustomInputProps) => {
