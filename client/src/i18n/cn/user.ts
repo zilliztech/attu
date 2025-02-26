@@ -11,6 +11,7 @@ const userTrans = {
   newPassword: '新密码',
   confirmPassword: '确认密码',
   update: '更新密码',
+  changePassword: '修改密码',
   isNotSame: '与新密码不同',
   deleteTip: '请至少选择一个要删除的用户，不能删除root用户。',
   deleteRoleTip: '请至少选择一个要删除的角色，不能删除admin/public 角色。',
