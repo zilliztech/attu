@@ -1,7 +1,6 @@
 import CircularProgress from '@mui/material/CircularProgress';
 import { FC, ReactElement } from 'react';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
+import { styled } from '@mui/system';
 
 export enum LoadingType {
   CREATING = 'creating',
@@ -15,32 +14,24 @@ export type StatusIconType = {
   size?: number;
 };
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
-    justifyContent: 'flex-left',
-    alignItems: 'center',
-    paddingLeft: theme.spacing(0.5),
-  },
-  svg: {
-    color: theme.palette.primary.main,
-  },
+const Wrapper = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  paddingLeft: theme.spacing(0.5),
+}));
+
+const StyledCircularProgress = styled(CircularProgress)(({ theme }) => ({
+  color: theme.palette.primary.main,
 }));
 
 const StatusIcon: FC<StatusIconType> = props => {
-  const classes = useStyles();
   const { type, className = '', size = 16 } = props;
 
   const getElement = (type: LoadingType): ReactElement => {
     switch (type) {
       case 'creating':
-        return (
-          <CircularProgress
-            size={size}
-            thickness={4}
-            classes={{ svg: classes.svg }}
-          />
-        );
+        return <StyledCircularProgress size={size} thickness={4} />;
       case 'finish':
         return <></>;
       default:
@@ -48,9 +39,7 @@ const StatusIcon: FC<StatusIconType> = props => {
     }
   };
 
-  return (
-    <div className={`${classes.wrapper} ${className}`}>{getElement(type)}</div>
-  );
+  return <Wrapper className={className}>{getElement(type)}</Wrapper>;
 };
 
 export default StatusIcon;

@@ -3,59 +3,55 @@ import StatusIcon from '@/components/status/StatusIcon';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { styled, keyframes } from '@mui/system';
 import { LOADING_STATE } from '@/consts';
 import { LoadingType } from '@/components/status/StatusIcon';
-import type { Theme } from '@mui/material/styles';
 
 export type StatusType = {
   status: LOADING_STATE;
   percentage?: number;
 };
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  label: {
-    color: theme.palette.text.secondary,
-    textTransform: 'capitalize',
-  },
-  circle: {
-    backgroundColor: (props: any) => props.color,
-    borderRadius: '50%',
-    width: '10px',
-    height: '10px',
-    marginRight: theme.spacing(0.5),
-  },
+const Root = styled('div')({
+  display: 'flex',
+  alignItems: 'center',
+});
 
-  loading: {
-    marginRight: '10px',
-  },
-
-  flash: {
-    animation: '$bgColorChange 1.5s infinite',
-  },
-
-  '@keyframes bgColorChange': {
-    '0%': {
-      backgroundColor: (props: any) => props.color,
-    },
-    '50%': {
-      backgroundColor: 'transparent',
-    },
-    '100%': {
-      backgroundColor: (props: any) => props.color,
-    },
-  },
+const Label = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  textTransform: 'capitalize',
 }));
+
+const Circle = styled('div')(({ color }) => ({
+  backgroundColor: color,
+  borderRadius: '50%',
+  width: '10px',
+  height: '10px',
+  marginRight: '4px', // Equivalent to theme.spacing(0.5)
+}));
+
+const LoadingIconWrapper = styled('div')({
+  marginRight: '10px',
+});
+
+const bgColorChange = keyframes`
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: inherit;
+  }
+`;
 
 const Status: FC<StatusType> = props => {
   const { status, percentage = 0 } = props;
   const { t: commonTrans } = useTranslation();
   const theme = useTheme();
   const statusTrans = commonTrans('status');
+
   const { label, color } = useMemo(() => {
     switch (status) {
       case LOADING_STATE.UNLOADED:
@@ -69,6 +65,7 @@ const Status: FC<StatusType> = props => {
           label: statusTrans.loaded,
           color: '#06f3af',
         };
+
       case LOADING_STATE.LOADING:
         return {
           label: `${percentage}% ${statusTrans.loading}`,
@@ -81,23 +78,19 @@ const Status: FC<StatusType> = props => {
           color: '#f25c06',
         };
     }
-  }, [status, statusTrans, percentage]);
-
-  const classes = useStyles({ color });
+  }, [status, statusTrans, percentage, theme.palette.primary.main]);
 
   return (
-    <div className={classes.root}>
-      {status === LOADING_STATE.LOADED && (
-        <div className={classes.circle}></div>
-      )}
+    <Root>
+      {status === LOADING_STATE.LOADED && <Circle color={color} />}
       {status === LOADING_STATE.LOADING && (
-        <StatusIcon type={LoadingType.CREATING} className={classes.loading} />
+        <LoadingIconWrapper>
+          <StatusIcon type={LoadingType.CREATING} />
+        </LoadingIconWrapper>
       )}
 
-      <Typography variant="body2" className={classes.label}>
-        {label}
-      </Typography>
-    </div>
+      <Label variant="body2">{label}</Label>
+    </Root>
   );
 };
 
