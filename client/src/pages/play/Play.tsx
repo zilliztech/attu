@@ -47,7 +47,6 @@ const Play: FC = () => {
   const content = detail.error
     ? JSON.stringify(detail.error, null, 2)
     : JSON.stringify(detail.response, null, 2);
-  const emptyClass = !detail.response && !detail.error ? classes.empty : '';
 
   const extensions = useMemo(() => {
     const { address, token, username, password } = authReq;
@@ -65,6 +64,7 @@ const Play: FC = () => {
         username,
         password,
         isManaged,
+        isDarkMode: theme.palette.mode === 'dark',
       }),
       Autocomplete({ databases, collections }),
     ];
@@ -103,16 +103,27 @@ const Play: FC = () => {
   }, []);
 
   const renderResponse = () => {
-    if (detail.response || detail.error) {
-      return (
-        <CodeBlock
-          wrapperClass={classes.response}
-          language="json"
-          code={content}
-        />
-      );
-    }
-    return <p>Response result.</p>;
+    const style =
+      theme.palette.mode !== 'dark'
+        ? {
+            hljs: {
+              display: 'block',
+              overflowX: 'auto' as const,
+              padding: '12px 0',
+              color: '#333',
+              margin: 0,
+              background: theme.palette.background.paper,
+            },
+          }
+        : undefined;
+    return (
+      <CodeBlock
+        wrapperClass={classes.response}
+        language="json"
+        code={content || '{}'}
+        style={style}
+      />
+    );
   };
 
   return (
@@ -125,7 +136,7 @@ const Play: FC = () => {
         ></div>
       </Paper>
 
-      <Paper elevation={0} className={`${classes.rightPane} ${emptyClass}`}>
+      <Paper elevation={0} className={classes.rightPane}>
         {renderResponse()}
       </Paper>
     </Box>

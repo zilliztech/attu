@@ -24,18 +24,10 @@ export const getStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     overflow: 'hidden',
   },
-  empty: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.grey,
-  },
   response: {
     width: '100%',
     overflow: 'auto',
+    lineHeight: '18px',
 
     '& pre': {
       borderRadius: '4px',
@@ -60,8 +52,14 @@ export const getCMStyle = (theme: Theme) => {
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.text.primary,
       height: '100%',
+      borderRadius: '4px',
+    },
+    '&.cm-editor .cm-cursor': {
+      borderColor: theme.palette.text.primary,
     },
     '&.cm-editor .cm-scroller': {
+      padding: '12px 0',
+      borderRadius: '4px',
       overflow: 'auto',
     },
     '.cm-line': { padding: ' 0 4px 0 2px' },
@@ -73,7 +71,7 @@ export const getCMStyle = (theme: Theme) => {
     '.cm-activeLine': { backgroundColor: 'transparent' },
     '.cm-gutters': {
       fontSize: '13px',
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: theme.palette.background.paper,
       color: theme.palette.text.primary,
       border: 'none',
     },
@@ -92,8 +90,12 @@ export const getCMStyle = (theme: Theme) => {
     // auto completion box style
     '.cm-tooltip.cm-tooltip-autocomplete': {
       border: 'none',
+      borderRadius: '4px',
       transform: 'translateX(-20px)', // adjust box position to align with the text
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? theme.palette.grey[800]
+          : theme.palette.background.paper,
     },
     '.cm-tooltip.cm-tooltip-autocomplete>ul': {
       fontFamily: 'IBM Plex Mono, monospace',
@@ -161,7 +163,9 @@ export const getCMStyle = (theme: Theme) => {
       order: 3,
     },
     '.milvus-http-request-highlight': {
-      backgroundColor: 'rgba(255, 255, 0, 0.2)',
+      backgroundColor: isDark
+        ? 'rgba(255, 255, 255, 0.15)'
+        : 'rgba(10, 206, 130, 0.08)',
       borderRadius: '3px',
     },
     '.milvus-http-request-error': {
@@ -177,17 +181,16 @@ export const getCMStyle = (theme: Theme) => {
       position: 'absolute',
       right: '4px',
       marginTop: '4px',
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.grey[200],
+      border: `1px solid ${theme.palette.grey[300]}`,
       borderRadius: '4px',
       fontSize: '12px',
-      border: 'none',
       cursor: 'pointer',
       transition: 'background-color 0.2s ease-in-out',
       zIndex: 999,
 
       '&:hover': {
-        backgroundColor: theme.palette.secondary.dark,
+        backgroundColor: theme.palette.grey[300],
       },
     },
     '.cm-line .token-node': {

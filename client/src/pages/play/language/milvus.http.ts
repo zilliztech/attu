@@ -36,12 +36,13 @@ export const milvusHttp = LRLanguage.define({
 });
 
 export function MilvusHTTP(params: PlaygroundExtensionParams) {
+  const { isDarkMode, ...restParams } = params;
   return new LanguageSupport(milvusHttp, [
-    highlights,
+    highlights(isDarkMode),
     selectionDecoration,
     highlightTokens,
     milvusHttpLinter,
     // tabCompletion,
-    buildToolbarDecorationExtension(params),
+    buildToolbarDecorationExtension(restParams),
   ]);
 }

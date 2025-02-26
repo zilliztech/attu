@@ -12,10 +12,11 @@ export interface PlaygroundCustomEventDetail {
 
 export interface PlaygroundExtensionParams {
   baseUrl: string
-  isManaged: boolean
+  isManaged?: boolean
   token?: string
   username?: string
   password?: string
+  isDarkMode?: boolean
 }
 
 export type IdentifierMap = {
