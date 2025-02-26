@@ -2,34 +2,24 @@ import { forwardRef, FC } from 'react';
 import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import type { AlertProps } from '@mui/material/Alert';
 import type { SlideProps } from '@mui/material/Slide';
 import type { CustomSnackBarType } from './Types';
 
-// if we need to use slide component
-// snackbar content must use forwardRef to wrapper it
-const Alert = forwardRef<HTMLDivElement, AlertProps>(
-  (props: { [x: string]: any }, ref) => {
-    return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
-  }
-);
+// Forward ref for Alert component
+const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
+  return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
+});
 
-interface SlideTransitionProps extends SlideProps {
-  direction?: 'left' | 'right' | 'up' | 'down';
-}
-
-const SlideTransition: React.FC<SlideTransitionProps> = props => {
+// SlideTransition component
+const SlideTransition: FC<SlideProps> = props => {
   return <Slide {...props} direction="left" />;
 };
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    maxWidth: '50vh',
-    wordBreak: 'break-all',
-  },
-  topRight: {
+// Styled components
+const StyledSnackbar = styled(Snackbar)(({ theme }) => ({
+  '&.MuiSnackbar-anchorOriginTopRight': {
     [theme.breakpoints.up('md')]: {
       top: '72px',
       right: theme.spacing(4),
@@ -39,6 +29,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const StyledAlert = styled(Alert)({
+  maxWidth: '50vh',
+  wordBreak: 'break-all',
+});
+
+// CustomSnackBar component
 const CustomSnackBar: FC<CustomSnackBarType> = props => {
   const {
     vertical,
@@ -49,14 +45,14 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
     message,
     onClose,
   } = props;
-  const classes = useStyles();
+
   const handleClose = (event: React.SyntheticEvent<any> | Event) => {
     onClose && onClose();
   };
 
   return (
     <div>
-      <Snackbar
+      <StyledSnackbar
         anchorOrigin={{
           vertical: vertical,
           horizontal: horizontal,
@@ -65,19 +61,12 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
         open={open}
         onClose={handleClose}
         autoHideDuration={autoHideDuration}
-        classes={{
-          anchorOriginTopRight: classes.topRight,
-        }}
         TransitionComponent={SlideTransition}
       >
-        <Alert
-          onClose={handleClose}
-          severity={type}
-          classes={{ root: classes.root }}
-        >
+        <StyledAlert onClose={handleClose} severity={type}>
           {message}
-        </Alert>
-      </Snackbar>
+        </StyledAlert>
+      </StyledSnackbar>
     </div>
   );
 };
