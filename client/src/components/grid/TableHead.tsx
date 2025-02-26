@@ -6,37 +6,35 @@ import TableCell from '@mui/material/TableCell';
 import Checkbox from '@mui/material/Checkbox';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Typography from '@mui/material/Typography';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import type { TableHeadType } from './Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-  tableCell: {
-    // background: theme.palette.common.t,
-    padding: 0,
-    // borderBottom: 'none',
-  },
-  tableHeader: {
-    padding: theme.spacing(1.5),
-    fontWeight: 500,
-    maxHeight: 45,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-  },
-  tableRow: {
-    // borderBottom: '1px solid rgba(0, 0, 0, 0.6);',
-  },
+const VisuallyHiddenTypography = styled(Typography)(({ theme }) => ({
+  border: 0,
+  clip: 'rect(0 0 0 0)',
+  height: 1,
+  margin: -1,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  top: 20,
+  width: 1,
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  padding: 0,
+}));
+
+const StyledTableHeader = styled(Typography)(({ theme }) => ({
+  padding: theme.spacing(1.5),
+  fontWeight: 500,
+  maxHeight: 45,
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  // borderBottom: '1px solid rgba(0, 0, 0, 0.6);',
 }));
 
 const EnhancedTableHead: FC<TableHeadType> = props => {
@@ -51,7 +49,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
     openCheckBox,
     disableSelect,
   } = props;
-  const classes = useStyles();
+
   const createSortHandler = (property: string) => (event: React.MouseEvent) => {
     handleSort &&
       handleSort(
@@ -63,7 +61,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
 
   return (
     <TableHead>
-      <TableRow className={classes.tableRow}>
+      <StyledTableRow>
         {openCheckBox && (
           <TableCell padding="checkbox" role="cell">
             <Checkbox
@@ -91,7 +89,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
             headCell.headerFormatter || (v => <>{v.label}</>);
 
           return (
-            <TableCell
+            <StyledTableCell
               key={headCell.id + headCell.label}
               align={headCell.align || 'left'}
               padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -99,7 +97,6 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
                 orderBy === (headCell.sortBy || headCell.id) ? order : false
               }
               style={cellStyle}
-              className={classes.tableCell}
               role="cell"
             >
               {headCell.label && handleSort && !headCell.notSort ? (
@@ -110,27 +107,27 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
                   }
                   onClick={createSortHandler(headCell.sortBy || headCell.id)}
                 >
-                  <Typography variant="body1" className={classes.tableHeader}>
+                  <StyledTableHeader variant="body1">
                     {headerFormatter(headCell)}
-                  </Typography>
+                  </StyledTableHeader>
 
                   {orderBy === (headCell.sortBy || headCell.id) ? (
-                    <Typography className={classes.visuallyHidden}>
+                    <VisuallyHiddenTypography>
                       {order === 'desc'
                         ? 'sorted descending'
                         : 'sorted ascending'}
-                    </Typography>
+                    </VisuallyHiddenTypography>
                   ) : null}
                 </TableSortLabel>
               ) : (
-                <Typography variant="body1" className={classes.tableHeader}>
+                <StyledTableHeader variant="body1">
                   {headerFormatter(headCell)}
-                </Typography>
+                </StyledTableHeader>
               )}
-            </TableCell>
+            </StyledTableCell>
           );
         })}
-      </TableRow>
+      </StyledTableRow>
     </TableHead>
   );
 };

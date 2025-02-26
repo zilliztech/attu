@@ -95,7 +95,6 @@ export type TableType = {
   handleSort?: (e: any, orderBy: string) => void;
   order?: SortDirection;
   orderBy?: string;
-  loadingRowCount: number;
   ref?: Ref<HTMLDivElement>;
 };
 
@@ -167,7 +166,6 @@ type ActionBarConfig = {
   onClick: (e: React.MouseEvent, row: any) => void;
   icon?: IconsType;
   text?: string;
-  linkButton?: boolean;
   showIconMethod?: 'iconType' | 'renderFn';
   renderIconFn?: (row: any) => ReactElement;
   label?: string;
