@@ -20,6 +20,8 @@ export type ValidType =
   | 'firstCharacter'
   | 'specValueOrRange'
   | 'duplicate'
+  | 'valueLength'
+  | 'username'
   | 'custom';
 export interface ICheckMapParam {
   value: string;
@@ -222,6 +224,16 @@ export const checkNumber = (value: string): boolean => {
   return !isNaN(Number(value));
 };
 
+export const checkValueLength = (value: string, min: number, max: number) => {
+  return value.length >= min && value.length <= max;
+};
+
+// Username must not be empty, and must not exceed 32 characters in length. It must start with a letter, and only contains underscores, letters, or numbers.
+export const checkUserName = (value: string): boolean => {
+  const re = /^[a-zA-Z][a-zA-Z0-9_]{0,31}$/;
+  return re.test(value);
+};
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
@@ -265,6 +277,8 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       compareValue: Number(extraParam.compareValue) || 0,
     }),
     duplicate: checkDuplicate({ value, compare: extraParam.compareValue! }),
+    valueLength: checkValueLength(value, extraParam.min!, extraParam.max!),
+    username: checkUserName(value),
     custom:
       extraParam && typeof extraParam.compare === 'function'
         ? extraParam.compare(value)
