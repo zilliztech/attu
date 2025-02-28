@@ -1,9 +1,13 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional,MinLength,MaxLength,Matches } from 'class-validator';
 
 export class CreateUserDto {
+  @Matches(/^[a-zA-Z][a-zA-Z0-9_-]*$/, {
+    message: 'Username must start with a letter and can only contain letters, numbers, underscores, and hyphens'
+  })
   @IsString({ message: 'username is required.' })
   readonly username: string;
-
+  @MinLength(6, { message: 'Password must be at least 6 characters long' })
+  @MaxLength(72, { message: 'Password must not exceed 72 characters' })
   @IsString({ message: 'password is required.' })
   readonly password: string;
 }

@@ -52,6 +52,10 @@ export default class BaseModel {
   static async create<T>(options: updateParamsType) {
     const { path, data } = options;
     const res = await http.post(path, data);
+    const code = res?.data?.data?.error_code;
+    if (code !== 'Success') {
+      throw new Error(res?.data?.data?.detail || res?.data?.data?.reason || 'create failed');
+    }
     return (res.data.data || {}) as T;
   }
 

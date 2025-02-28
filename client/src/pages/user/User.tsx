@@ -72,16 +72,20 @@ const Users = () => {
   } = usePaginationHook(users || []);
 
   const handleCreate = async (data: CreateUserParams) => {
-    await UserService.createUser(data);
-    // assign user role if
-    await UserService.updateUserRole({
-      username: data.username,
-      roles: data.roles,
-    });
+    try {
+      await UserService.createUser(data);
+      // assign user role if
+      await UserService.updateUserRole({
+        username: data.username,
+        roles: data.roles,
+      });
 
-    fetchUsers();
-    openSnackBar(successTrans('create', { name: userTrans('user') }));
-    handleCloseDialog();
+      fetchUsers();
+      openSnackBar(successTrans('create', { name: userTrans('user') }));
+      handleCloseDialog();
+    } catch (error: any) {
+      openSnackBar(error.message, 'error');
+    }
   };
 
   const onUpdate = async (data: UpdateUserRoleParams) => {
