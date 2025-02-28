@@ -74,6 +74,10 @@ const CreateUser: FC<CreateUserProps> = ({
             name: attuTrans.username,
           }),
         },
+        {
+          rule: 'username',
+          errorText: warningTrans('username'),
+        },
       ],
       defaultValue: form.username,
     },
@@ -92,6 +96,18 @@ const CreateUser: FC<CreateUserProps> = ({
           errorText: warningTrans('required', {
             name: attuTrans.password,
           }),
+        },
+        {
+          rule: 'valueLength',
+          errorText: warningTrans('valueLength', {
+            name: attuTrans.password,
+            min: 6,
+            max: 256,
+          }),
+          extraParam: {
+            min: 6,
+            max: 256,
+          },
         },
       ],
       defaultValue: form.username,
