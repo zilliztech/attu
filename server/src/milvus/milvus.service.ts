@@ -86,7 +86,6 @@ export class MilvusService {
 
       try {
         // Attempt to connect to the Milvus server
-        console.log(`Connecting to ${JSON.stringify(clientConfig)}`)
         await milvusClient.connectPromise;
       } catch (error) {
         // If the connection fails, clear the cache and throw an error
