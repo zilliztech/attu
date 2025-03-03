@@ -16,6 +16,7 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useStyles } from './style';
 import type { AuthReq } from '@server/types';
+import FormControlLabel from '@mui/material/FormControlLabel';
 type Connection = AuthReq & {
   time: number;
 };
@@ -26,6 +27,7 @@ const DEFAULT_CONNECTION = {
   token: '',
   username: '',
   password: '',
+  ssl: false,
   checkHealth: true,
   time: -1,
   clientId: '',
@@ -70,6 +72,7 @@ export const AuthForm = () => {
       | 'address'
       | 'username'
       | 'password'
+      | 'ssl'
       | 'database'
       | 'token'
       | 'checkHealth',
@@ -370,6 +373,19 @@ export const AuthForm = () => {
             />
           </>
         )}
+
+        {/* SSL toggle */}
+        <div className={classes.toggle}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={authReq.ssl}
+                onChange={(e) => handleInputChange('ssl', e.target.checked)}
+              />
+            }
+            label={attuTrans.ssl}
+          />
+        </div>
 
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans(isConnecting ? 'connecting' : 'connect')}

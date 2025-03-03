@@ -31,6 +31,7 @@ export class MilvusService {
       token,
       username,
       password,
+      ssl,
       database,
       checkHealth,
       clientId,
@@ -54,6 +55,7 @@ export class MilvusService {
         token,
         username,
         password,
+        ssl,
         logLevel: process.env.ATTU_LOG_LEVEL || 'info',
         database: database || this.DEFAULT_DATABASE,
         id: clientId,
@@ -84,6 +86,7 @@ export class MilvusService {
 
       try {
         // Attempt to connect to the Milvus server
+        console.log(`Connecting to ${JSON.stringify(clientConfig)}`)
         await milvusClient.connectPromise;
       } catch (error) {
         // If the connection fails, clear the cache and throw an error

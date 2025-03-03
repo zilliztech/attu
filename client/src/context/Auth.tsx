@@ -19,6 +19,7 @@ export const authContext = createContext<AuthContextType>({
     database: '',
     checkHealth: true,
     clientId: '',
+    ssl: false
   },
   setAuthReq: () => {},
   isManaged: false,
