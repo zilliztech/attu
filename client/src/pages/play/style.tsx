@@ -177,24 +177,43 @@ export const getCMStyle = (theme: Theme) => {
       backgroundColor: 'rgba(0, 0, 0, 0.1)',
       borderRadius: '4px',
     },
-    '.playground-toolbar .run-button': {
-      position: 'absolute',
-      right: '4px',
-      marginTop: '4px',
-      backgroundColor: theme.palette.grey[200],
-      border: `1px solid ${theme.palette.grey[300]}`,
-      borderRadius: '4px',
-      fontSize: '12px',
+    '.playground-codelens': {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    '.playground-codelens .codelens-item': {
+      position: 'relative',
+      color: isDark ? '#999999' : '#919191',
       cursor: 'pointer',
-      transition: 'background-color 0.2s ease-in-out',
-      zIndex: 999,
+      fontSize: '11px',
+      lineHeight: '17px',
+      letterSpacing: '0.5px',
+      textDecoration: 'none',
+      transition: 'color 0.2s ease-in-out',
 
       '&:hover': {
-        backgroundColor: theme.palette.grey[300],
+        color: theme.palette.primary.main,
+      },
+
+      '&:not(:last-child)': {
+        marginRight: '16px',
+
+        '&::after': {
+          position: 'absolute',
+          right: '-8px',
+          top: '3px',
+          display: 'inline-block',
+          content: '""',
+          borderRight: `1px solid ${isDark ? '#666666' : '#e0e0e0'}`,
+          height: '10px',
+        },
       },
     },
     '.cm-line .token-node': {
       color: '#ff79c6',
+    },
+    '.cm-line .cm-widgetBuffer': {
+      height: '17px',
     },
   };
 };

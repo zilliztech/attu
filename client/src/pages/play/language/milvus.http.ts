@@ -7,10 +7,9 @@ import {
   selectionDecoration,
   highlightTokens,
 } from './extensions/selectionDecoration';
-import { buildToolbarDecorationExtension } from './extensions/toolbarDecoration';
 import { highlights } from './extensions/highlights';
 import { milvusHttpLinter } from './extensions/linter';
-// import { tabCompletion } from './extensions/autocompletion';
+import { codeLensDecoration } from './extensions/codelens';
 
 import { PlaygroundExtensionParams } from '../Types';
 
@@ -42,7 +41,6 @@ export function MilvusHTTP(params: PlaygroundExtensionParams) {
     selectionDecoration,
     highlightTokens,
     milvusHttpLinter,
-    // tabCompletion,
-    buildToolbarDecorationExtension(restParams),
+    codeLensDecoration(restParams),
   ]);
 }
