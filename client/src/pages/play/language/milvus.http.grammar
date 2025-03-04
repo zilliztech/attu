@@ -1,6 +1,6 @@
 @top MultipleRequests { (Authorization space)? Request+ }
 
-Request { ( HTTPMethod " " URL space Body space) | HTTPMethod " " URL space+ }
+Request { ( HTTPMethod " " URL space Body space*) | HTTPMethod " " URL space* }
 
 Authorization {
   ("TOKEN" " " UnquotedString) | ("TOKEN=" '"' UnquotedString '"')

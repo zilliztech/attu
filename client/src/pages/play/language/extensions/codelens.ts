@@ -23,7 +23,6 @@ class CodeLensWidget extends WidgetType {
   toDOM(view: EditorView): HTMLElement {
     const container = document.createElement('div');
     container.className = 'playground-codelens';
-    container.style.marginBottom = '-18px';
 
     const runBtn = document.createElement('div');
     runBtn.className = 'codelens-item';
@@ -124,7 +123,7 @@ export const codeLensDecoration = (options: PlaygroundExtensionParams) =>
         tree.iterate({
           enter: node => {
             if (node.type.name === 'Request' || node.name === 'Request') {
-              const line = view.state.doc.lineAt(node.from).number - 2;
+              const line = view.state.doc.lineAt(node.from).number - 1;
 
               const requestNode = node.node;
               if (token) {
@@ -167,9 +166,10 @@ export const codeLensDecoration = (options: PlaygroundExtensionParams) =>
 
               const widget = Decoration.widget({
                 widget: new CodeLensWidget({ line, onRunClick, onDocsClick }),
-                side: 1,
+                side: -1,
               });
-              widgets.push(widget.range(view.state.doc.line(line + 1).to));
+
+              widgets.push(widget.range(view.state.doc.line(line + 1).from));
             }
           },
         });
