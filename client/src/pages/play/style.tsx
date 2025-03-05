@@ -215,5 +215,9 @@ export const getCMStyle = (theme: Theme) => {
     '.cm-line .cm-widgetBuffer': {
       height: '17px',
     },
+    '.cm-gutter .cm-codelens': {
+      backgroundColor: 'red',
+      // paddingTop: '17px',
+    },
   };
 };
