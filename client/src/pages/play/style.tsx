@@ -215,5 +215,8 @@ export const getCMStyle = (theme: Theme) => {
     '.cm-line .cm-widgetBuffer': {
       height: '17px',
     },
+    '.cm-gutter .cm-codelens-marker': {
+      paddingTop: '17px',
+    },
   };
 };
