@@ -26,6 +26,10 @@ export class ConnectMilvusDto {
   @IsOptional()
   readonly token: string;
 
+  @IsBoolean({ message: 'ssl must be a boolean.' })
+  @IsOptional()
+  readonly ssl: boolean;
+
   @IsBoolean({ message: 'checkHealth must be a boolean.' })
   @IsOptional()
   readonly checkHealth: boolean;

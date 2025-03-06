@@ -10,6 +10,7 @@ const commonTrans = {
     unAuth: '用户名或密码不正确',
     username: '用户名',
     password: '密码',
+    ssl: '启用SSL',
     optional: '（可选）',
     prometheus: 'Prometheus',
     prometheusAddress: 'Prometheus地址',
