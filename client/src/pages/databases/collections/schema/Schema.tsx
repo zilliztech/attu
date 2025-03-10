@@ -18,7 +18,7 @@ import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
-import type { FieldObject } from '@server/types';
+import type { FieldObject, KeyValuePair } from '@server/types';
 
 const Overview = () => {
   const { fetchCollection, collections, loading, database } =
@@ -215,7 +215,7 @@ const Overview = () => {
             {f.index.indexParameterPairs.length > 0 ? (
               f.index.indexParameterPairs.map((p: any) =>
                 p.value ? (
-                  <span key={p.key + p.value}>
+                  <div key={p.key + p.value}>
                     <span className="param">
                       <Typography variant="body1" className="key">
                         {`${p.key}:`}
@@ -224,7 +224,7 @@ const Overview = () => {
                         {p.value}
                       </Typography>
                     </span>
-                  </span>
+                  </div>
                 ) : (
                   ''
                 )
