@@ -22,7 +22,7 @@
     "@mui/material": "^5.16.14",
     "@mui/styles": "^5.16.12",
     "@mui/x-tree-view": "^7.12.1",
-    "axios": "^1.7.9",
+    "axios": "^1.8.2",
     "codemirror": "^6.0.1",
     "d3": "^7.9.0",
     "dayjs": "^1.11.13",
