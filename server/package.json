@@ -24,12 +24,12 @@
     "cross-env": "^7.0.3",
     "csv-writer": "^1.6.0",
     "express": "^4.21.2",
-    "helmet": "^7.1.0",
+    "helmet": "^8.0.0",
     "http-errors": "^2.0.0",
     "lru-cache": "^10.2.0",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
-    "socket.io": "^4.8.0"
+    "socket.io": "^4.8.1"
   },
   "jest": {
     "testEnvironment": "node",
