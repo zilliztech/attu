@@ -16,6 +16,7 @@ interface TreeNode {
   name: string;
   children?: TreeNode[];
   value?: boolean;
+  type?: string;
 }
 
 const D3PrivilegeTree: React.FC<Props> = ({
@@ -60,8 +61,10 @@ const D3PrivilegeTree: React.FC<Props> = ({
 
     const res = {
       name: role,
+      type: 'role',
       children: Object.entries(privileges).map(([dbKey, dbValue]) => ({
         name: dbKey === '*' ? 'All Databases(*)' : dbKey,
+        type: 'database',
         children: Object.entries(dbValue.collections).map(
           ([colKey, colValue]) => {
             const children = Object.entries(colValue).map(([priv, val]) => {
@@ -81,6 +84,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
             return {
               name: colKey === '*' ? 'All Collections(*)' : colKey,
               children,
+              type: 'collection',
             };
           }
         ),
@@ -193,7 +197,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
     // Add text labels
     nodes
       .append('text')
-      .attr('dy', 3)
+      .attr('dy', d => (d.children && d.data.name !== role ? -3 : 3))
       .attr('x', d => (d.children ? -10 : 10))
       .attr('text-anchor', d => (d.children ? 'end' : 'start'))
       .attr('font-family', 'Inter')
@@ -205,7 +209,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
           : `${theme.palette.text.primary}`
       )
       .text(d =>
-        groupPrivileges.has(d.data.name)
+        groupPrivileges.has(d.data.name) && d.data.type !== 'role'
           ? `${userTrans('privilegeGroup')}: ${d.data.name}`
           : d.data.name
       );
