@@ -43,6 +43,7 @@ const btnTrans = {
   close: 'Close',
   modify: 'Modify',
   downloadSchema: 'Download Schema',
+  downloadChart: 'Download Chart',
   EditDefaultValue: 'Edit Default Value',
   viewData: 'View Data',
 
