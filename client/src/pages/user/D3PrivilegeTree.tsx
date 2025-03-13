@@ -154,6 +154,12 @@ const D3PrivilegeTree: React.FC<Props> = ({
       .attr('transform', `translate(${marginLeft}, ${translateY})`);
     gRef.current = g.node();
 
+    const colorMap: { [key: string]: any } = {
+      role: theme.palette.primary.dark,
+      database: theme.palette.primary.dark,
+      collection: theme.palette.primary.dark,
+    };
+
     // Create links (connections between nodes)
     g.selectAll('.link')
       .data(root.links())
@@ -161,7 +167,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
       .append('path')
       .attr('class', 'link')
       .attr('fill', 'none')
-      .attr('stroke', `${theme.palette.primary.main}`)
+      .attr('stroke', d => colorMap[d.source.data.type!])
       .attr('stroke-width', 1)
       .attr(
         'd',
