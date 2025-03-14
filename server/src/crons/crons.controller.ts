@@ -42,7 +42,7 @@ export class CronsController {
   }
 
   deleteCronJob(clientId: string) {
-    console.info(`Deleting all cron jobs for client: ${clientId}`);
+    // console.info(`Deleting all cron jobs for client: ${clientId}`);
     this.schedulerRegistry.deleteAllCronJobs(clientId);
   }
 }
