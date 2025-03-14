@@ -13,6 +13,9 @@ export const logWebSocketRequest = (
   message?: any,
   direction: 'in' | 'out' = 'in'
 ) => {
+  if (isElectron()) {
+    return;
+  }
   const clientId = socket.handshake.query['milvus-client-id'] as string;
   const remoteAddress =
     socket.handshake.address === '::1' ? '127.0.0.1' : socket.handshake.address;
