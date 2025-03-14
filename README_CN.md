@@ -30,7 +30,7 @@ Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统�
 
 | Milvus 版本 | 推荐的 Attu 版本                                                   |
 | ----------- | ------------------------------------------------------------------ |
-| 2.5.x       | [v2.5.2](https://github.com/zilliztech/attu/releases/tag/v2.5.2)   |
+| 2.5.x       | [v2.5.6](https://github.com/zilliztech/attu/releases/tag/v2.5.6)   |
 | 2.4.x       | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
 | 2.2.x       | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
@@ -133,9 +133,11 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | <img src="./.github/images/collection_overview.png" alt="attu" width="800" alt="attu collection view" /> | <img src="./.github/images/data_preview.png" alt="attu" width="800" alt="attu data view" /> |
 
-| vector search                                                                         | system view                                                                       |
-| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| <img src="./.github/images/vector_search.png" width="800" alt="attu vector search" /> | <img src="./.github/images/system_view.png" width="800" alt="attu system view" /> |
+| vector search                                                                         | system view                                                                           |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| <img src="./.github/images/vector_search.png" width="800" alt="attu vector search" /> | <img src="./.github/images/system_view.png" width="800" alt="attu system view" />     |
+| role chart                                                                            |                                                                                       |
+| <img src="./.github/images/role_chart.png" width="800" alt="attu role chart" />       | <img src="./.github/images/role_chart_night.png" width="800" alt="attu role chart" /> |
 
 ## ✨ 代码贡献
 
