@@ -125,4 +125,8 @@ export const ANALYZER_OPTIONS: LabelValuePair[] = [
     label: 'Chinese',
     value: 'chinese',
   },
+  {
+    label: 'Custom',
+    value: 'custom',
+  },
 ];
