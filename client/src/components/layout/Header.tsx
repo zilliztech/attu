@@ -71,7 +71,7 @@ const Title = styled(Typography)(({ theme }) => ({
 
 const DatabaseSelector = styled(CustomSelector)(({ theme }) => ({
   transform: 'translateY(-4px)',
-  width: theme.spacing(16),
+  width: 'auto',
   '& .MuiInputLabel-root': {
     top: '4px',
   },
