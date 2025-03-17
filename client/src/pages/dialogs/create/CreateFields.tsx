@@ -7,7 +7,7 @@ import {
   Checkbox,
   Typography,
 } from '@mui/material';
-import { FC, Fragment, ReactElement, useMemo, useContext } from 'react';
+import { FC, Fragment, ReactElement, useMemo, useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '@/components/icons/Icons';
@@ -181,6 +181,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   // styles
   const classes = useStyles();
+
+  // UI stats
+  const localFieldAnalyzers = useRef(
+    new Map<string, Record<string, {}>>(new Map())
+  );
 
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
@@ -584,12 +589,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateAnalyzerCheckBox = (field: FieldType, fields: FieldType[]) => {
-    let analyzer = '';
-    if (typeof field.analyzer_params === 'object') {
-      analyzer = field.analyzer_params.tokenizer || field.analyzer_params.type;
+    let analyzer = 'standard';
+    if (typeof field.analyzer_params === 'string') {
+      analyzer = field.analyzer_params;
+    } else if (!field.analyzer_params) {
+      analyzer = 'standard';
     } else {
-      analyzer = field.analyzer_params || 'standard';
+      analyzer = 'custom';
     }
+
+    const localAnalyzer = localFieldAnalyzers.current.get(field.id!) || {
+      tokenizer: 'standard',
+      filter: ['lowercase'],
+    };
 
     return (
       <div className={classes.analyzerInput}>
@@ -611,7 +623,18 @@ const CreateFields: FC<CreateFieldsProps> = ({
           options={ANALYZER_OPTIONS}
           size="small"
           onChange={e => {
-            changeFields(field.id!, { analyzer_params: e.target.value });
+            const selectedAnalyzer = e.target.value;
+            if (selectedAnalyzer === 'custom') {
+              // If custom, set the analyzer_params to a JSON editable format
+              changeFields(field.id!, {
+                analyzer_params: localAnalyzer,
+              });
+            } else {
+              // If standard, chinese, or english, set the analyzer_params to the selected type
+              changeFields(field.id!, {
+                analyzer_params: e.target.value,
+              });
+            }
           }}
           disabled={
             !field.enable_analyzer &&
@@ -639,6 +662,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
                     dialogTitle={dialogTrans('editAnalyzerTitle')}
                     dialogTip={dialogTrans('editAnalyzerInfo')}
                     handleConfirm={data => {
+                      localFieldAnalyzers.current.set(field.id!, data);
                       changeFields(field.id!, { analyzer_params: data });
                     }}
                     handleCloseDialog={handleCloseDialog2}
