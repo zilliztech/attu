@@ -10,6 +10,7 @@ import type {
   DatabaseObject,
   AuthReq,
   AuthObject,
+  ResStatus
 } from '@server/types';
 
 export type RootContextType = {
@@ -130,7 +131,7 @@ export type DataContextType = {
     name: string,
     newName: string
   ) => Promise<CollectionFullObject>;
-  dropCollection: (name: string) => Promise<void>;
+  dropCollection: (name: string) => Promise<ResStatus>;
   createIndex: (param: IndexCreateParam) => Promise<CollectionFullObject>;
   dropIndex: (params: IndexManageParam) => Promise<CollectionFullObject>;
   createAlias: (
