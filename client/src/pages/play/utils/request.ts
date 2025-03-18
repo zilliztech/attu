@@ -9,6 +9,12 @@ type PlaygroundRequestOptions = {
   body?: Record<string, any>;
 };
 
+function isLocalhost(url: string): boolean {
+  const regex =
+    /^(http:\/\/|https:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/.*)?$/;
+  return regex.test(url);
+}
+
 export const createPlaygroundRequest =
   (type: 'frontend' | 'backend') => (options: PlaygroundRequestOptions) => {
     const {
@@ -19,22 +25,22 @@ export const createPlaygroundRequest =
       body = {},
       params = {},
     } = options;
-    if (type === 'backend') {
-      return axios.post('/api/v1/playground', {
-        host,
+    if (isLocalhost(host) || type === 'frontend') {
+      return axios.request({
         url,
-        headers,
         method,
-        body,
+        headers,
+        baseURL: host,
+        data: body,
         params,
       });
     }
-    return axios.request({
+    return axios.post('/api/v1/playground', {
+      host,
       url,
-      method,
       headers,
-      baseURL: host,
-      data: body,
+      method,
+      body,
       params,
     });
   };
