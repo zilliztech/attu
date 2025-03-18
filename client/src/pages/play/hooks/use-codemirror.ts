@@ -5,7 +5,7 @@ import {
   StateEffect,
 } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, KeyboardEventHandler } from 'react';
 import {
   lineNumbers,
   highlightActiveLineGutter,
@@ -139,6 +139,33 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
   }, [extensions, view]);
 
   useEffect(() => setContainer(props.container), [props.container]);
+
+  // Handle codelens shortcuts
+  useEffect(() => {
+    const handler = (event: Event) => {
+      if (event instanceof KeyboardEvent) {
+        if (event.metaKey && event.shiftKey && event.key === 'Enter') {
+          const currentRunButton = document.querySelector(
+            '.milvus-http-request-highlight .playground-codelens .run-button'
+          );
+          currentRunButton?.dispatchEvent(new MouseEvent('click'));
+          event.preventDefault();
+        } else if (event.metaKey && event.key === 'h') {
+          const currentDocsButton = document.querySelector(
+            '.milvus-http-request-highlight .playground-codelens .docs-button'
+          );
+          currentDocsButton?.dispatchEvent(new MouseEvent('click'));
+          event.preventDefault();
+        }
+      }
+    };
+
+    container?.addEventListener('keydown', handler);
+
+    return () => {
+      container?.removeEventListener('keydown', handler);
+    };
+  }, [container]);
 
   return { view };
 };

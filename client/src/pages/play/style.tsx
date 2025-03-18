@@ -210,7 +210,7 @@ export const getCMStyle = (theme: Theme) => {
       },
     },
     '.cm-line .token-node': {
-      color: '#ff79c6',
+      color: isDark ? '#50fa7b' : '#006600',
     },
     '.cm-line .cm-widgetBuffer': {
       height: '17px',

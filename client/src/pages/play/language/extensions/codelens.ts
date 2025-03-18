@@ -25,13 +25,15 @@ class CodeLensWidget extends WidgetType {
     container.className = 'playground-codelens';
 
     const runBtn = document.createElement('div');
-    runBtn.className = 'codelens-item';
+    runBtn.className = 'codelens-item run-button';
     runBtn.textContent = 'RUN';
+    runBtn.title = `⌘ + ⇧ + ↵`;
     runBtn.onclick = this.options.onRunClick;
 
     const docsBtn = document.createElement('a');
-    docsBtn.className = 'codelens-item';
+    docsBtn.className = 'codelens-item docs-button';
     docsBtn.textContent = 'DOCS';
+    docsBtn.title = `⌘ + H`;
     docsBtn.onclick = this.options.onDocsClick;
 
     container.appendChild(runBtn);
