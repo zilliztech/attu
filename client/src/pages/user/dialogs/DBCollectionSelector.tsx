@@ -1,13 +1,13 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import {
   TextField,
-  Typography,
   FormControlLabel,
   Checkbox,
   Tabs,
   Tab,
   Radio,
 } from '@mui/material';
+import { authContext } from '@/context';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +30,8 @@ export default function DBCollectionsSelector(
   // i18n
   const { t: searchTrans } = useTranslation('search');
   const { t: userTrans } = useTranslation('user');
+  // context
+  const { isDedicated } = useContext(authContext);
 
   // UI states
   const [selectedDB, setSelectedDB] = useState<DBOption | null>(null);
@@ -276,17 +278,19 @@ export default function DBCollectionsSelector(
           />
           {userTrans('privilegeGroups')}
         </label>
-        <label className="toggle-label">
-          <Radio
-            checked={privilegeOptionType === 'custom'}
-            onChange={() => setPrivilegeOptionType('custom')}
-            value="custom"
-            name="custom"
-            size="small"
-            inputProps={{ 'aria-label': 'custom' }}
-          />
-          {userTrans('privileges')}
-        </label>
+        {!isDedicated && (
+          <label className="toggle-label">
+            <Radio
+              checked={privilegeOptionType === 'custom'}
+              onChange={() => setPrivilegeOptionType('custom')}
+              value="custom"
+              name="custom"
+              size="small"
+              inputProps={{ 'aria-label': 'custom' }}
+            />
+            {userTrans('privileges')}
+          </label>
+        )}
       </div>
       {/* Tabs for cluster, Database, Collection */}
       <Tabs
@@ -468,7 +472,7 @@ const PrivilegeSelector = (props: {
           {privilegeOptions
             .filter(v => {
               if (privilegeOptionType === 'group') {
-                return v[0].includes('Groups');
+                return v[0].includes('Groups') && Object.keys(v[1]).length > 0;
               } else {
                 return !v[0].includes('Groups');
               }

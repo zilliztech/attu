@@ -234,7 +234,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
     svg.call(zoom); // Apply zoom to the SVG
 
     svg.transition().duration(0).call(zoom.transform, d3.zoomIdentity);
-  }, [privileges, margin, theme, groupPrivileges, role]);
+  }, [JSON.stringify({ privileges, margin, theme, groupPrivileges, role })]);
 
   // UI handler
   const handleDownload = () => {

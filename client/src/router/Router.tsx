@@ -10,7 +10,9 @@ import System from '@/pages/system/SystemView';
 import SystemHealthy from '@/pages/systemHealthy/SystemHealthyView';
 
 const RouterComponent = () => {
-  const { isManaged } = useContext(authContext);
+  const { isManaged, isDedicated } = useContext(authContext);
+
+  const enableManageUsers = !isManaged || !isDedicated;
 
   return (
     <Router>
@@ -30,14 +32,14 @@ const RouterComponent = () => {
 
           <Route path="search" element={<Search />} />
           <Route path="system_healthy" element={<SystemHealthy />} />
-          {!isManaged && (
+          {enableManageUsers && (
             <>
               <Route path="users" element={<Users />} />
               <Route path="roles" element={<Users />} />
               <Route path="privilege-groups" element={<Users />} />
-              <Route path="system" element={<System />} />
             </>
           )}
+          {!isManaged && <Route path="system" element={<System />} />}
         </Route>
         <Route path="connect" element={<Connect />} />
       </Routes>
