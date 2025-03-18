@@ -150,7 +150,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
       <section
         className={`${wrapperClass} ${classes.wrapper} ${classes.create}`}
         onClick={() => {
-          if (isManaged) {
+          if (isServerless) {
             // go to https://cloud.zilliz.com/orgs/
             window.open('https://cloud.zilliz.com/', '_blank');
             return;
