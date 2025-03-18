@@ -12,7 +12,7 @@ import SystemHealthy from '@/pages/systemHealthy/SystemHealthyView';
 const RouterComponent = () => {
   const { isManaged, isDedicated } = useContext(authContext);
 
-  const enableManageUsers = !isManaged || !isDedicated;
+  const enableManageUsers = !isManaged || isDedicated;
 
   return (
     <Router>
