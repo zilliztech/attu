@@ -22,6 +22,7 @@ export type ValidType =
   | 'duplicate'
   | 'valueLength'
   | 'username'
+  | 'cloudPassword'
   | 'custom';
 export interface ICheckMapParam {
   value: string;
@@ -234,6 +235,13 @@ export const checkUserName = (value: string): boolean => {
   return re.test(value);
 };
 
+// includ 3 of 4 types of characters: uppercase, lowercase, number, special character
+export const checkCloudPassword = (value: string): boolean => {
+  const re =
+    /^(?![A-Za-z]+$)(?![A-Z\d]+$)(?![A-Z\W]+$)(?![a-z\d]+$)(?![a-z\W]+$)(?![\d\W]+$).{3,}$/;
+  return re.test(value);
+};
+
 export const getCheckResult = (param: ICheckMapParam): boolean => {
   const { value, extraParam = {}, rule } = param;
   const numberValue = Number(value);
@@ -251,6 +259,7 @@ export const getCheckResult = (param: ICheckMapParam): boolean => {
       type: extraParam?.type,
     }),
     password: checkPasswordStrength(value),
+    cloudPassword: checkCloudPassword(value),
     clusterName: checkClusterName(value),
     CIDRorIP: checkIpOrCIDR(value),
     integer: !isNaN(numberValue) && Number.isInteger(numberValue),

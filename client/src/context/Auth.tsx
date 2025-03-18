@@ -19,11 +19,12 @@ export const authContext = createContext<AuthContextType>({
     database: '',
     checkHealth: true,
     clientId: '',
-    ssl: false
+    ssl: false,
   },
   setAuthReq: () => {},
   isManaged: false,
   isServerless: false,
+  isDedicated: false,
   isAuth: false,
   login: async () => {
     return { clientId: '', database: '' };
@@ -106,7 +107,8 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         clientId,
         isAuth: !!clientId,
         isManaged: isManaged,
-        isServerless:isServerless,
+        isServerless: isServerless,
+        isDedicated: !isServerless && isManaged,
       }}
     >
       {props.children}

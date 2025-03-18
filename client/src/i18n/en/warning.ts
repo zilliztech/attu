@@ -11,7 +11,9 @@ const warningTrans = {
   noSupportIndexType:
     'Attu has not supported {{type}} yet. Please change another field.',
   valueLength: '{{name}} length should be in {{min}} ~ {{max}}.',
-  username: ' Username must not be empty, and must not exceed 32 characters in length. It must start with a letter, and only contains underscores, letters, or numbers.',
+  username:
+    'Username must not be empty, and must not exceed 32 characters in length. It must start with a letter, and only contains underscores, letters, or numbers.',
+  cloudPassword: `Includ three of the following: uppercase letters, lowercase letters, numbers, and special characters.`,
 };
 
 export default warningTrans;

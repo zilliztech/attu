@@ -41,14 +41,20 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 function Index() {
-  const navigate = useNavigate();
-  const { isAuth, isManaged } = useContext(authContext);
+  // context
+  const { isAuth, isManaged, isDedicated } = useContext(authContext);
   const { database } = useContext(dataContext);
   const { versionInfo } = useContext(rootContext);
+  // i18n
   const { t: navTrans } = useTranslation('nav');
+  // hooks
+  const navigate = useNavigate();
   const classes = useStyles();
   const location = useLocation();
+
+  // compute data
   const isIndex = location.pathname === '/';
+  const enableUser = !isManaged || isDedicated;
   const defaultActive = useMemo(() => {
     if (location.pathname.includes('databases')) {
       return navTrans('database');
@@ -91,19 +97,20 @@ function Index() {
     // },
   ];
 
+  if (enableUser) {
+    menuItems.push({
+      icon: icons.navPerson,
+      label: navTrans('user'),
+      onClick: () => navigate('/users'),
+    });
+  }
+
   if (!isManaged) {
-    menuItems.push(
-      {
-        icon: icons.navPerson,
-        label: navTrans('user'),
-        onClick: () => navigate('/users'),
-      },
-      {
-        icon: icons.navSystem,
-        label: navTrans('system'),
-        onClick: () => navigate('/system'),
-      }
-    );
+    menuItems.push({
+      icon: icons.navSystem,
+      label: navTrans('system'),
+      onClick: () => navigate('/system'),
+    });
   }
 
   // check if is connected

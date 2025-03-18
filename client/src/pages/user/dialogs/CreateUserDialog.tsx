@@ -5,16 +5,20 @@ import {
   FormControlLabel,
   Typography,
 } from '@mui/material';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
+import { authContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { makeStyles } from '@mui/styles';
 import type { CreateUserProps, CreateUserParams } from '../Types';
 import type { Option as RoleOption } from '@/components/customSelector/Types';
-import type { ITextfieldConfig } from '@/components/customInput/Types';
+import type {
+  ITextfieldConfig,
+  IValidation,
+} from '@/components/customInput/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -33,12 +37,16 @@ const CreateUser: FC<CreateUserProps> = ({
   handleClose,
   roleOptions,
 }) => {
+  // context
+  const { isDedicated } = useContext(authContext);
+  // i18n
   const { t: commonTrans } = useTranslation();
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const attuTrans = commonTrans('attu');
 
+  // UI states
   const [form, setForm] = useState<CreateUserParams>({
     username: '',
     password: '',
@@ -52,11 +60,53 @@ const CreateUser: FC<CreateUserProps> = ({
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
+  // styles
   const classes = useStyles();
 
+  // UI handlers
   const handleInputChange = (key: 'username' | 'password', value: string) => {
     setForm(v => ({ ...v, [key]: value }));
   };
+
+  const opensourceUserPassRule: IValidation[] = [
+    {
+      rule: 'valueLength',
+      errorText: warningTrans('valueLength', {
+        name: attuTrans.password,
+        min: 6,
+        max: 256,
+      }),
+      extraParam: {
+        min: 6,
+        max: 256,
+      },
+    },
+  ];
+
+  const cloudUserPassRule: IValidation[] = [
+    {
+      rule: 'require',
+      errorText: warningTrans('required', {
+        name: attuTrans.password,
+      }),
+    },
+    {
+      rule: 'valueLength',
+      errorText: warningTrans('valueLength', {
+        name: attuTrans.password,
+        min: 8,
+        max: 64,
+      }),
+      extraParam: {
+        min: 8,
+        max: 64,
+      },
+    },
+    {
+      rule: 'cloudPassword',
+      errorText: warningTrans('cloudPassword'),
+    },
+  ];
 
   const createConfigs: ITextfieldConfig[] = [
     {
@@ -90,26 +140,7 @@ const CreateUser: FC<CreateUserProps> = ({
       placeholder: attuTrans.password,
       fullWidth: true,
       type: 'password',
-      validations: [
-        {
-          rule: 'require',
-          errorText: warningTrans('required', {
-            name: attuTrans.password,
-          }),
-        },
-        {
-          rule: 'valueLength',
-          errorText: warningTrans('valueLength', {
-            name: attuTrans.password,
-            min: 6,
-            max: 256,
-          }),
-          extraParam: {
-            min: 6,
-            max: 256,
-          },
-        },
-      ],
+      validations: !isDedicated ? opensourceUserPassRule : cloudUserPassRule,
       defaultValue: form.username,
     },
   ];
