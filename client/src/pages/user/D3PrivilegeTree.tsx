@@ -262,7 +262,44 @@ const D3PrivilegeTree: React.FC<Props> = ({
         zoom.transform,
         d3.zoomIdentity.translate(centerX, centerY).scale(scale)
       );
-  }, [JSON.stringify({ privileges, margin, theme, groupPrivileges, role })]);
+  }, [JSON.stringify({ privileges, margin, groupPrivileges, role })]);
+
+  // Update colors on theme change
+  useEffect(() => {
+    const updateColors = () => {
+      const colorMap: { [key: string]: any } = {
+        role: theme.palette.primary.dark,
+        database: theme.palette.primary.dark,
+        collection: theme.palette.primary.dark,
+      };
+
+      // Update link colors
+      d3.select(svgRef.current)
+        .selectAll('.link')
+        .attr('stroke', (d: any) => colorMap[d.source.data.type!]);
+
+      // Update node colors
+      d3.select(svgRef.current)
+        .selectAll('.node circle')
+        .attr('stroke', theme.palette.primary.main)
+        .attr('fill', (d: any, index) =>
+          d.children || index == 0 || groupPrivileges.has(d.data.name)
+            ? `${theme.palette.primary.main}`
+            : `transparent`
+        );
+
+      // Update text colors
+      d3.select(svgRef.current)
+        .selectAll('.node text')
+        .attr('fill', (d: any) =>
+          groupPrivileges.has(d.data.name)
+            ? `${theme.palette.primary.dark}`
+            : `${theme.palette.text.primary}`
+        );
+    };
+
+    updateColors();
+  }, [theme]);
 
   // UI handler
   const handleDownload = () => {
