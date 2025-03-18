@@ -54,9 +54,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
   );
 
   // Transform privileges data into d3.hierarchy structure
-  const transformData = (
-    privileges: DBCollectionsPrivileges
-  ): { nodeCount: number; treeNode: TreeNode } => {
+  const transformData = (privileges: DBCollectionsPrivileges): TreeNode => {
     let nodeCount = 0;
 
     const res = {
@@ -91,22 +89,47 @@ const D3PrivilegeTree: React.FC<Props> = ({
       })),
     };
 
-    return {
-      nodeCount,
-      treeNode: res,
-    };
+    return res;
   };
 
   useEffect(() => {
     if (!privileges) return;
 
-    const transformedData = transformData(privileges);
+    const treeNode = transformData(privileges);
 
-    const width = 1000; // Fixed SVG width
-    const defaultHeight = 580; // Default SVG height
-    // calculate height based on number of nodes
-    let height = transformedData.nodeCount * 15 + margin.top + margin.bottom;
-    if (height < 500) height = defaultHeight; // Set a minimum height
+    // get svg width and height by accessing dom element
+    const svgWidth = svgRef.current?.clientWidth || 0;
+    const svgHeight = svgRef.current?.clientHeight || 0;
+
+    // Calculate height based on tree structure rather than total node count
+    // Max nodes at any level would be a better indication for vertical space needed
+    const maxNodesAtLevel = Math.max(
+      1, // Role level
+      Object.keys(privileges).length, // Database level
+      ...Object.values(privileges).map(
+        db => Object.keys(db.collections).length
+      ), // Collection level
+      ...Object.values(privileges).reduce(
+        (acc, db) =>
+          acc.concat(
+            Object.values(db.collections).map(col => Object.keys(col).length)
+          ),
+        [] as number[] // Privilege level
+      )
+    );
+
+    // Increase the multiplier to provide more space between nodes
+    const nodeSpacing = 30;
+    let height =
+      maxNodesAtLevel * nodeSpacing + margin.top + margin.bottom + 120; // Added extra padding
+
+    // Ensure minimum height for better visualization
+    height = Math.max(height, svgHeight);
+
+    // Add additional padding for large datasets
+    if (maxNodesAtLevel > 15) {
+      height += maxNodesAtLevel * 10; // Extra space for very large datasets
+    }
 
     const fontSize = 12; // Font size for text labels
     const marginLeft = role.length * fontSize; // Adjust margin left based on role length
@@ -115,10 +138,10 @@ const D3PrivilegeTree: React.FC<Props> = ({
     d3.select(svgRef.current).selectAll('*').remove();
 
     // Create hierarchy and layout
-    const root = d3.hierarchy<TreeNode>(transformedData.treeNode);
+    const root = d3.hierarchy<TreeNode>(treeNode);
     const treeLayout = d3
       .tree<TreeNode>()
-      .size([height, width / 2])
+      .size([height - margin.top - margin.bottom, svgWidth / 2])
       .separation((a: any, b: any) => {
         return a.parent === b.parent ? 3 : 4;
       }); // Swap width and height for vertical layout
@@ -136,22 +159,11 @@ const D3PrivilegeTree: React.FC<Props> = ({
       if (d.y < y0) y0 = d.y;
     });
 
-    // Calculate translateY to center the tree vertically
-    const treeHeight = x1 - x0;
-    const translateY = (height - treeHeight) / 2 - x0;
-
-    // Create SVG container
-    const svg = d3
-      .select(svgRef.current)
-      .attr('width', width)
-      .attr('height', height)
-      .attr('viewBox', [0, 0, width, height].join(' ')) // Add viewBox for scaling
-      .attr('style', 'max-width: 100%; height: auto;'); // Make SVG responsive
+    // Create SVG container with expanded height
+    const svg = d3.select(svgRef.current);
 
     // Add a group for zoomable content
-    const g = svg
-      .append('g')
-      .attr('transform', `translate(${marginLeft}, ${translateY})`);
+    const g = svg.append('g').attr('transform', `translate(0, ${margin.top})`); // Add top margin
     gRef.current = g.node();
 
     const colorMap: { [key: string]: any } = {
@@ -220,20 +232,36 @@ const D3PrivilegeTree: React.FC<Props> = ({
           : d.data.name
       );
 
+    // Calculate scale to fit the entire tree
+    const treeWidth = y1 - y0 + marginLeft + 50; // Add some padding
+    const treeHeight = x1 - x0 + 60; // Increased padding
+    const scaleX = svgWidth / treeWidth;
+    const scaleY = svgHeight / treeHeight;
+    const scale = Math.min(scaleX, scaleY, 0.95); // Slightly reduce to ensure visibility
+
+    // Calculate translation to center the tree
+    const centerX = (svgWidth - treeWidth * scale) / 2 - 60;
+    const centerY =
+      (svgHeight - treeHeight * scale) / 2 - x0 * scale + margin.top;
+
     // Add zoom functionality
     const zoom: any = d3
       .zoom()
-      .scaleExtent([0.5, 3]) // Set zoom limits
+      .scaleExtent([scale, 4]) // Set minimum zoom to fit entire tree
       .on('zoom', event => {
-        g.attr(
-          'transform',
-          `translate(${marginLeft}, ${translateY}) ${event.transform}`
-        );
+        g.attr('transform', event.transform);
       });
 
     svg.call(zoom); // Apply zoom to the SVG
 
-    svg.transition().duration(0).call(zoom.transform, d3.zoomIdentity);
+    // Apply initial transform to show the entire tree
+    svg
+      .transition()
+      .duration(250)
+      .call(
+        zoom.transform,
+        d3.zoomIdentity.translate(centerX, centerY).scale(scale)
+      );
   }, [JSON.stringify({ privileges, margin, theme, groupPrivileges, role })]);
 
   // UI handler
@@ -264,6 +292,8 @@ const D3PrivilegeTree: React.FC<Props> = ({
         flexDirection: 'column',
         gap: '16px',
         position: 'relative',
+        width: '100%',
+        height: '100%',
       }}
     >
       <CustomButton
@@ -278,7 +308,7 @@ const D3PrivilegeTree: React.FC<Props> = ({
       >
         {btnTrans('downloadChart')}
       </CustomButton>
-      <svg ref={svgRef}></svg>
+      <svg ref={svgRef} style={{ width: '100%', height: '100%' }}></svg>
     </Box>
   );
 };

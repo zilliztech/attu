@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   tree: {
     overflow: 'auto',
+    width: 'calc(84% - 16px)',
   },
   chip: {
     marginBottom: theme.spacing(0.5),
