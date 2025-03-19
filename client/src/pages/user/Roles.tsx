@@ -239,7 +239,7 @@ const Roles = () => {
         selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
         selectedRole.findIndex(v => v.roleName === 'public') > -1,
       disabledTooltip: userTrans('deleteRoleTip'),
-      icon: 'delete',
+      icon: 'cross',
     },
   ];
 

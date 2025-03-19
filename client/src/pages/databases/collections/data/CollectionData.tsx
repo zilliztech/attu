@@ -389,7 +389,7 @@ const CollectionData = (props: CollectionDataProps) => {
         });
       },
       label: btnTrans('delete'),
-      icon: 'delete',
+      icon: 'cross2',
       tooltip: btnTrans('deleteTooltip'),
       disabledTooltip: collectionTrans('deleteDisabledTooltip'),
       disabled: () => !selectedData?.length,
