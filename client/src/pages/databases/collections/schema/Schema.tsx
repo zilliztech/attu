@@ -15,10 +15,11 @@ import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
+import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
-import type { FieldObject, KeyValuePair } from '@server/types';
+import type { FieldObject } from '@server/types';
 
 const Overview = () => {
   const { fetchCollection, collections, loading, database } =
@@ -339,6 +340,29 @@ const Overview = () => {
                   tooltip={btnTrans('downloadSchema')}
                   icon={<Icons.download />}
                 />
+                <CustomIconButton
+                  className={classes.extraBtn}
+                  tooltip={btnTrans('drop')}
+                  onClick={() => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <DropCollectionDialog
+                            collections={[collection]}
+                            onDelete={() => {
+                              navigate(`/databases/${database}`);
+                            }}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                >
+                  <Icons.cross />
+                </CustomIconButton>
+
                 <RefreshButton
                   className={classes.extraBtn}
                   tooltip={btnTrans('refresh')}

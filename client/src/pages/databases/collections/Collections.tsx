@@ -279,7 +279,7 @@ const Collections = () => {
       disabled: data => data.length !== 1,
     },
     {
-      icon: 'delete',
+      icon: 'cross',
       type: 'button',
       btnVariant: 'text',
       onClick: () => {

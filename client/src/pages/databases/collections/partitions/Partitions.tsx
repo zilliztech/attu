@@ -152,7 +152,7 @@ const Partitions = () => {
       disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
     },
     {
-      icon: 'delete',
+      icon: 'cross',
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',

@@ -224,7 +224,7 @@ const Users = () => {
         selectedUser.length === 0 ||
         selectedUser.findIndex(v => v.username === 'root') > -1,
       disabledTooltip: userTrans('deleteTip'),
-      icon: 'delete',
+      icon: 'cross',
     },
   ];
 
