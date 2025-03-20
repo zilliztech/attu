@@ -44,7 +44,6 @@ const CreateUser: FC<CreateUserProps> = ({
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
-  const attuTrans = commonTrans('attu');
 
   // UI states
   const [form, setForm] = useState<CreateUserParams>({
@@ -72,7 +71,7 @@ const CreateUser: FC<CreateUserProps> = ({
     {
       rule: 'valueLength',
       errorText: warningTrans('valueLength', {
-        name: attuTrans.password,
+        name: commonTrans('attu.password'),
         min: 6,
         max: 256,
       }),
@@ -87,13 +86,13 @@ const CreateUser: FC<CreateUserProps> = ({
     {
       rule: 'require',
       errorText: warningTrans('required', {
-        name: attuTrans.password,
+        name: commonTrans('attu.password'),
       }),
     },
     {
       rule: 'valueLength',
       errorText: warningTrans('valueLength', {
-        name: attuTrans.password,
+        name: commonTrans('attu.password'),
         min: 8,
         max: 64,
       }),
@@ -110,18 +109,18 @@ const CreateUser: FC<CreateUserProps> = ({
 
   const createConfigs: ITextfieldConfig[] = [
     {
-      label: attuTrans.username,
+      label: commonTrans('attu.username'),
       key: 'username',
       onChange: (value: string) => handleInputChange('username', value),
       variant: 'filled',
       className: classes.input,
-      placeholder: attuTrans.username,
+      placeholder: commonTrans('attu.username'),
       fullWidth: true,
       validations: [
         {
           rule: 'require',
           errorText: warningTrans('required', {
-            name: attuTrans.username,
+            name: commonTrans('attu.username'),
           }),
         },
         {
@@ -132,12 +131,12 @@ const CreateUser: FC<CreateUserProps> = ({
       defaultValue: form.username,
     },
     {
-      label: attuTrans.password,
+      label: commonTrans('attu.password'),
       key: 'password',
       onChange: (value: string) => handleInputChange('password', value),
       variant: 'filled',
       className: classes.input,
-      placeholder: attuTrans.password,
+      placeholder: commonTrans('attu.password'),
       fullWidth: true,
       type: 'password',
       validations: !isDedicated ? opensourceUserPassRule : cloudUserPassRule,

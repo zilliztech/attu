@@ -54,7 +54,6 @@ const Properties = (props: PropertiesProps) => {
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [selected, setSelected] = useState<Property[]>([]);
@@ -230,7 +229,7 @@ const Properties = (props: PropertiesProps) => {
         orderBy={orderBy}
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(
-          gridTrans[data.length > 1 ? 'properties' : 'property']
+          commonTrans(data.length > 1 ? 'grid.properties' : 'grid.property')
         )}
       />
     </section>

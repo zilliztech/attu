@@ -1,6 +1,4 @@
 const searchTrans = {
-  firstTip: '2. Enter search vector {{dimensionTip}}',
-  secondTip: '1. Choose collection and field',
   thirdTip: 'Search Parameters {{metricType}}',
   collection: 'loaded collection',
   noCollection: 'No loaded collection',

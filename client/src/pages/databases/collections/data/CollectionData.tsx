@@ -66,7 +66,6 @@ const CollectionData = (props: CollectionDataProps) => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
   // classes
   const classes = getQueryStyles();
 
@@ -490,11 +489,11 @@ const CollectionData = (props: CollectionDataProps) => {
                 })}
                 values={queryState.outputFields}
                 renderValue={selected => (
-                  <span>{`${(selected as string[]).length} ${
-                    gridTrans[
-                      (selected as string[]).length > 1 ? 'fields' : 'field'
-                    ]
-                  }`}</span>
+                  <span>{`${(selected as string[]).length} ${commonTrans(
+                    (selected as string[]).length > 1
+                      ? 'grid.fields'
+                      : 'grid.field'
+                  )}`}</span>
                 )}
                 label={searchTrans('outputFields')}
                 wrapperClass="selector"
@@ -604,7 +603,9 @@ const CollectionData = (props: CollectionDataProps) => {
             setRowsPerPage={setPageSize}
             rowsPerPage={pageSize}
             labelDisplayedRows={getLabelDisplayedRows(
-              gridTrans[queryResult.data.length > 1 ? 'entities' : 'entity'],
+              commonTrans(
+                queryResult.data.length > 1 ? 'grid.entities' : 'grid.entity'
+              ),
               `(${queryResult.latency || ''} ms)`
             )}
             noData={searchTrans(

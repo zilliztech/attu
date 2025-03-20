@@ -27,12 +27,11 @@ const CreateIndex = (props: {
   handleCreate: (params: IndexExtraParam, index_name: string) => void;
   handleCancel: () => void;
 }) => {
-  const { collectionName, handleCreate, handleCancel, field } = props;
+  const { handleCreate, handleCancel, field } = props;
 
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
-  const { t: commonTrans } = useTranslation();
 
   // https://milvus.io/docs/index.md#In-memory-Index
   const defaultIndexType = INDEX_TYPES_ENUM.AUTOINDEX;

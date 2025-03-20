@@ -112,7 +112,6 @@ const Header: FC = () => {
 
   // i8n
   const { t: commonTrans } = useTranslation();
-  const statusTrans = commonTrans('status');
   const { t: dbTrans } = useTranslation('database');
   const { t: successTrans } = useTranslation('success');
   const { t: userTrans } = useTranslation('user');
@@ -217,7 +216,9 @@ const Header: FC = () => {
           </ModeButton>
           <div className="text">
             <Typography className="address">{address}</Typography>
-            <Typography className="status">{statusTrans.running}</Typography>
+            <Typography className="status">
+              {commonTrans('status.running')}
+            </Typography>
           </div>
           {username && (
             <>

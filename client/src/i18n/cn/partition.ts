@@ -8,8 +8,8 @@ const partitionTrans = {
   name: '名称',
   createdTime: '创建时间',
   status: '状态',
-  rowCount: '大约Entity数量',
-  tooltip: '大约Entity数量。',
+  rowCount: 'Entity数量(大约)',
+  tooltip: '如果这个 collection 没有加载，这个计数是一个近似值，并可能因为Milvus的独特机制而稍有延迟。实际的计数可能会有所变化，并会定期更新。请注意，这个数字应该被用作参考，而不是精确的计数。',
 
   createTitle: '创建分区',
   nameWarning: '_default分区是保留的，不能用作名称',

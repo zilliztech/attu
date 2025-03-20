@@ -34,7 +34,6 @@ const Overview = () => {
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const consistencyTooltipsMap: Record<string, string> = {
     Strong: collectionTrans('consistencyStrongTooltip'),
@@ -508,7 +507,7 @@ const Overview = () => {
           openCheckBox={false}
           showPagination={false}
           labelDisplayedRows={getLabelDisplayedRows(
-            gridTrans[fields.length > 1 ? 'fields' : 'field']
+            commonTrans(`grid.${fields.length > 1 ? 'fields' : 'field'}`)
           )}
         />
       </section>
