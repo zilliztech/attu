@@ -1,49 +1,38 @@
+import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
-import { makeStyles } from '@mui/styles';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import type { FC } from 'react';
-import type { Theme } from '@mui/material/styles';
 import type { EmptyCardProps } from './Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.paper,
-    flexDirection: 'column',
-    textAlign: 'center',
-  },
-  text: {
-    marginTop: theme.spacing(2),
-    fontSize: '36px',
-    lineHeight: '42px',
-    fontWeight: 'bold',
-    letterSpacing: '-0.02em',
-  },
-  subText: {
-    fontSize: '18px',
-    marginTop: theme.spacing(1),
-  },
+const StyledSection = styled('section')(({ theme }) => ({
+  color: theme.palette.text.disabled,
+  backgroundColor: theme.palette.background.paper,
+  flexDirection: 'column',
+  textAlign: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const TitleTypography = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(2),
 }));
 
 const EmptyCard: FC<EmptyCardProps> = ({
   icon,
   text,
   wrapperClass = '',
-  subText = '',
   loading = false,
 }) => {
-  const classes = useStyles();
-
   return (
-    <section className={`flex-center ${classes.wrapper} ${wrapperClass}`}>
+    <StyledSection className={wrapperClass}>
       <CardContent>
         {loading && <StatusIcon type={LoadingType.CREATING} size={40} />}
         {icon}
-        <Typography className={classes.text}>{text}</Typography>
-        <Typography className={classes.subText}>{subText}</Typography>
+        <TitleTypography variant="h2">{text}</TitleTypography>
       </CardContent>
-    </section>
+    </StyledSection>
   );
 };
 

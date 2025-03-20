@@ -27,6 +27,7 @@ import type {
   CollectionObject,
   CollectionFullObject,
   DatabaseObject,
+  ResStatus,
 } from '@server/types';
 
 export const dataContext = createContext<DataContextType>({
@@ -58,7 +59,12 @@ export const dataContext = createContext<DataContextType>({
   duplicateCollection: async () => {
     return {} as CollectionFullObject;
   },
-  dropCollection: async () => {},
+  dropCollection: async () => {
+    return {
+      error_code: -1,
+      reason: '',
+    };
+  },
   createIndex: async () => {
     return {} as CollectionFullObject;
   },
@@ -319,6 +325,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // remove collection from state
       setCollections(prev => prev.filter(v => v.collection_name !== name));
     }
+
+    return dropped.data;
   };
 
   // API: create index

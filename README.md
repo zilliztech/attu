@@ -11,7 +11,7 @@ Attu is an all-in-one milvus administration tool.
 
 <div style="display: flex; justify-content: space-between; gap: 8px;">
   <img src="./.github/images/screenshot.png" width="45%" alt="attu home view" />
-  <img src="./.github/images/data_explorer.png" width="45%" alt="attu home view" />
+  <img src="./.github/images/data_explorer.png" width="45%" alt="attu data explorer" />
 </div>
 
 Attu is designed to manage and interact with Milvus, offering features such as:
@@ -30,7 +30,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                           |
 | -------------- | ------------------------------------------------------------------ |
-| 2.5.x          | [v2.5.2](https://github.com/zilliztech/attu/releases/tag/v2.5.2)   |
+| 2.5.x          | [v2.5.6](https://github.com/zilliztech/attu/releases/tag/v2.5.6)   |
 | 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
 | 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
@@ -146,6 +146,8 @@ If you prefer to use a desktop application, you can download the [desktop versio
 | vector search                                                                         | system view                                                                       |
 | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | <img src="./.github/images/vector_search.png" width="800" alt="attu vector search" /> | <img src="./.github/images/system_view.png" width="800" alt="attu system view" /> |
+| role chart                                                                            |                                                                                   |
+| <img src="./.github/images/role_chart.png" width="800" alt="attu role chart" />       | <img src="./.github/images/role_chart_night.png" width="800" alt="attu role chart" />   |
 
 ## ✨ Contributing Code
 

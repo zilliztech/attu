@@ -119,11 +119,9 @@ const EnhancedTable: FC<TableType> = props => {
     handleSort,
     order,
     orderBy,
-    loadingRowCount,
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy');
 
   return (
     <TableContainer className={classes.root}>
@@ -253,7 +251,7 @@ const EnhancedTable: FC<TableType> = props => {
 
                                   {needCopy && (
                                     <CopyButton
-                                      label={copyTrans.label}
+                                      label={commonTrans('copy.label')}
                                       value={row[colDef.id]}
                                       size="small"
                                       className={classes.copyBtn}
@@ -286,7 +284,7 @@ const EnhancedTable: FC<TableType> = props => {
           </Table>
         )}
 
-        {isLoading && <LoadingTable count={loadingRowCount} />}
+        {isLoading && <LoadingTable />}
       </Box>
     </TableContainer>
   );

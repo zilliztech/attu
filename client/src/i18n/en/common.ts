@@ -1,3 +1,5 @@
+import { version } from "process";
+
 const commonTrans = {
   attu: {
     admin: 'Attu',
@@ -10,6 +12,7 @@ const commonTrans = {
     unAuth: 'Username or password is not correct',
     username: 'username',
     password: 'password',
+    ssl: 'Enable SSL',
     optional: '(optional)',
     prometheus: 'Prometheus',
     prometheusAddress: 'Prometheus Address',
@@ -18,6 +21,7 @@ const commonTrans = {
     connectionTip:
       'Self-hosted Milvus or Zilliz Cloud Dedicated cluster are supported.',
     checkHealth: 'Check Health',
+    version: 'Version',
   },
   status: {
     loaded: 'loaded',

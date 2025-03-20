@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
@@ -7,7 +7,6 @@ import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import {
   CreateUserParams,
   DeleteUserParams,
-  UpdateUserParams,
   UpdateUserRoleParams,
 } from './Types';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
@@ -72,7 +71,11 @@ const Users = () => {
   } = usePaginationHook(users || []);
 
   const handleCreate = async (data: CreateUserParams) => {
-    await UserService.createUser(data);
+    const s: any = await UserService.createUser(data);
+    if (s.error_code !== 'Success') {
+      openSnackBar(s.reason, 'error');
+      return;
+    }
     // assign user role if
     await UserService.updateUserRole({
       username: data.username,
@@ -221,7 +224,7 @@ const Users = () => {
         selectedUser.length === 0 ||
         selectedUser.findIndex(v => v.username === 'root') > -1,
       disabledTooltip: userTrans('deleteTip'),
-      icon: 'delete',
+      icon: 'cross',
     },
   ];
 

@@ -142,7 +142,9 @@ export const TreeContextMenu = (props: {
                   component: (
                     <DropCollectionDialog
                       collections={[contextMenu.object] as CollectionObject[]}
-                      onDelete={async () => {}}
+                      onDelete={async () => {
+                        navigate(`/databases/${database}`);
+                      }}
                     />
                   ),
                 },

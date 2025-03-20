@@ -16,6 +16,7 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import { useStyles } from './style';
 import type { AuthReq } from '@server/types';
+import FormControlLabel from '@mui/material/FormControlLabel';
 type Connection = AuthReq & {
   time: number;
 };
@@ -26,6 +27,7 @@ const DEFAULT_CONNECTION = {
   token: '',
   username: '',
   password: '',
+  ssl: false,
   checkHealth: true,
   time: -1,
   clientId: '',
@@ -42,7 +44,6 @@ export const AuthForm = () => {
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
   const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
@@ -70,6 +71,7 @@ export const AuthForm = () => {
       | 'address'
       | 'username'
       | 'password'
+      | 'ssl'
       | 'database'
       | 'token'
       | 'checkHealth',
@@ -241,8 +243,8 @@ export const AuthForm = () => {
       <section className={classes.wrapper}>
         <div className={classes.titleWrapper}>
           <Typography variant="h4" component="h4">
-            {attuTrans.connectTitle}
-            <CustomToolTip title={attuTrans.connectionTip}>
+            {commonTrans('attu.connectTitle')}
+            <CustomToolTip title={commonTrans('attu.connectionTip')}>
               <Icons.info />
             </CustomToolTip>
           </Typography>
@@ -252,13 +254,13 @@ export const AuthForm = () => {
         <CustomInput
           type="text"
           textConfig={{
-            label: attuTrans.address,
+            label: commonTrans('attu.address'),
             key: 'address',
             onChange: (val: string) =>
               handleInputChange('address', String(val)),
             variant: 'filled',
             className: classes.input,
-            placeholder: attuTrans.address,
+            placeholder: commonTrans('attu.address'),
             fullWidth: true,
             InputProps: {
               endAdornment: (
@@ -274,7 +276,7 @@ export const AuthForm = () => {
               {
                 rule: 'require',
                 errorText: warningTrans('required', {
-                  name: attuTrans.address,
+                  name: commonTrans('attu.address'),
                 }),
               },
             ],
@@ -282,14 +284,14 @@ export const AuthForm = () => {
           }}
           checkValid={checkIsValid}
           validInfo={validation}
-          key={attuTrans.address}
+          key={commonTrans('attu.address')}
         />
 
         {/* db  */}
         <CustomInput
           type="text"
           textConfig={{
-            label: `Milvus ${dbTrans('database')} ${attuTrans.optional}`,
+            label: `Milvus ${dbTrans('database')} ${commonTrans('attu.optional')}`,
             key: 'database',
             onChange: (value: string) => handleInputChange('database', value),
             variant: 'filled',
@@ -300,14 +302,14 @@ export const AuthForm = () => {
           }}
           checkValid={checkIsValid}
           validInfo={validation}
-          key={attuTrans.database}
+          key={commonTrans('attu.database')}
         />
 
         {/* toggle auth */}
         <div className={classes.toggle}>
           <CustomRadio
             checked={withPass}
-            label={attuTrans.authentication}
+            label={commonTrans('attu.authentication')}
             handleChange={handleEnableAuth}
           />
         </div>
@@ -318,58 +320,71 @@ export const AuthForm = () => {
             <CustomInput
               type="text"
               textConfig={{
-                label: `${attuTrans.token} ${attuTrans.optional} `,
+                label: `${commonTrans('attu.token')} ${commonTrans('attu.optional')} `,
                 key: 'token',
                 onChange: (val: string) => handleInputChange('token', val),
                 variant: 'filled',
                 className: classes.input,
-                placeholder: attuTrans.token,
+                placeholder: commonTrans('attu.token'),
                 fullWidth: true,
                 value: authReq.token,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
-              key={attuTrans.token}
+              key={commonTrans('attu.token')}
             />
             {/* user  */}
             <CustomInput
               type="text"
               textConfig={{
-                label: `${attuTrans.username} ${attuTrans.optional}`,
+                label: `${commonTrans('attu.username')} ${commonTrans('attu.optional')}`,
                 key: 'username',
                 onChange: (value: string) =>
                   handleInputChange('username', value),
                 variant: 'filled',
                 className: classes.input,
-                placeholder: attuTrans.username,
+                placeholder: commonTrans('attu.username'),
                 fullWidth: true,
                 value: authReq.username,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
-              key={attuTrans.username}
+              key={commonTrans('attu.username')}
             />
             {/* pass  */}
             <CustomInput
               type="text"
               textConfig={{
-                label: `${attuTrans.password} ${attuTrans.optional}`,
+                label: `${commonTrans('attu.password')} ${commonTrans('attu.optional')}`,
                 key: 'password',
                 onChange: (value: string) =>
                   handleInputChange('password', value),
                 variant: 'filled',
                 className: classes.input,
-                placeholder: attuTrans.password,
+                placeholder: commonTrans('attu.password'),
                 fullWidth: true,
                 type: 'password',
                 value: authReq.password,
               }}
               checkValid={checkIsValid}
               validInfo={validation}
-              key={attuTrans.password}
+              key={commonTrans('attu.password')}
             />
           </>
         )}
+
+        {/* SSL toggle */}
+        <div className={classes.toggle}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={authReq.ssl}
+                onChange={e => handleInputChange('ssl', e.target.checked)}
+              />
+            }
+            label={commonTrans('attu.ssl')}
+          />
+        </div>
 
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans(isConnecting ? 'connecting' : 'connect')}
@@ -384,7 +399,9 @@ export const AuthForm = () => {
                 handleInputChange('checkHealth', e.target.checked);
               }}
             />
-            <Typography component="span">{attuTrans.checkHealth}</Typography>
+            <Typography component="span">
+              {commonTrans('attu.checkHealth')}
+            </Typography>
           </label>
         </div>
       </section>

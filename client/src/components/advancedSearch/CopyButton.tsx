@@ -13,7 +13,6 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const { label, icon, className, value = '', ...others } = props;
   const classes = useStyles();
   const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy');
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
   const unsecuredCopyToClipboard = (v: string) => {
@@ -40,10 +39,10 @@ const CopyButton: FC<CopyButtonProps> = props => {
       v = JSON.stringify(v);
     }
 
-    setTooltipTitle(copyTrans.copied);
+    setTooltipTitle(commonTrans('copy.copied'));
     navigator.clipboard?.writeText(v) ?? unsecuredCopyToClipboard(v);
     setTimeout(() => {
-      setTooltipTitle(copyTrans.copy);
+      setTooltipTitle(commonTrans('copy.copy'));
     }, 1000);
   };
 

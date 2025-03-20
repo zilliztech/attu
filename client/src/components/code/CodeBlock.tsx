@@ -38,7 +38,6 @@ const CodeBlock: FC<CodeBlockProps> = ({
   const classes = getStyles();
 
   const { t: commonTrans } = useTranslation();
-  const copyTrans = commonTrans('copy');
 
   const highlightTheme = theme.palette.mode === 'dark' ? vs2015 : github;
 
@@ -46,7 +45,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
     <div className={`${classes.wrapper} ${wrapperClass}`}>
       <CopyButton
         className={classes.copy}
-        label={copyTrans.label}
+        label={commonTrans('copy.label')}
         value={code}
       />
       <SyntaxHighlighter

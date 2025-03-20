@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useRef, useEffect, useState } from 'react';
+import { FC, MouseEvent, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -12,6 +12,13 @@ import type { Theme } from '@mui/material/styles/createTheme';
 import type { AttuGridType } from './Types';
 
 const userStyle = makeStyles((theme: Theme) => ({
+  wrapper: {
+    height: '100%',
+  },
+  container: {
+    flexWrap: 'nowrap',
+    flexDirection: 'column',
+  },
   loading: {
     height: '100%',
     display: 'flex',
@@ -20,21 +27,10 @@ const userStyle = makeStyles((theme: Theme) => ({
     padding: theme.spacing(20),
     width: '100%',
   },
-
   tableTitle: {
     '& .last': {
       color: 'rgba(0, 0, 0, 0.54)',
     },
-  },
-  noData: {
-    pointerEvents: 'none',
-    color:  theme.palette.text.secondary,
-    textAlign: 'center',
-    height: '50vh',
-    display: 'grid',
-    justifyContent: 'center',
-    alignContent: 'center',
-    fontSize: '32px',
   },
   pagenation: {
     '& .MuiTablePagination-spacer': {
@@ -58,19 +54,9 @@ const userStyle = makeStyles((theme: Theme) => ({
       },
     },
   },
-
   noBottomPadding: {
     paddingBottom: '0 !important',
     display: 'flex',
-    flexDirection: 'column',
-  },
-
-  wrapper: {
-    height: '100%',
-    
-  },
-  container: {
-    flexWrap: 'nowrap',
     flexDirection: 'column',
   },
 }));
@@ -103,11 +89,9 @@ const userStyle = makeStyles((theme: Theme) => ({
 const AttuGrid: FC<AttuGridType> = props => {
   const classes = userStyle();
   const tableRef = useRef<HTMLDivElement | null>(null);
-  const [loadingRowCount, setLoadingRowCount] = useState<number>(0);
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const {
     rowCount = 20,
@@ -132,7 +116,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     title,
     openCheckBox = true,
     disableSelect = false,
-    noData = gridTrans.noData,
+    noData = commonTrans('grid.gridTrans.noData'),
     showHoverStyle = true,
     headEditable = false,
     editHeads = [],
@@ -182,7 +166,8 @@ const AttuGrid: FC<AttuGridType> = props => {
           {from} - {to}
         </Typography>
         <Typography variant="body2" className="rows" component="span">
-          {gridTrans.of} {count} {gridTrans.rows}
+          {commonTrans('grid.gridTrans.of')} {count}{' '}
+          {commonTrans('grid.gridTrans.rows')}
         </Typography>
       </>
     );
@@ -199,9 +184,6 @@ const AttuGrid: FC<AttuGridType> = props => {
         (hasToolbar ? 47 : 0);
 
       const rowCount = Math.floor(totalHeight / rowHeight);
-
-      // fix loading mask
-      setLoadingRowCount(rowCount);
 
       if (setRowsPerPage) {
         setRowsPerPage(rowCount);
@@ -261,7 +243,6 @@ const AttuGrid: FC<AttuGridType> = props => {
 
       <Grid item xs={12} className={classes.noBottomPadding}>
         <Table
-          loadingRowCount={loadingRowCount}
           openCheckBox={openCheckBox}
           primaryKey={primaryKey}
           rows={rows}

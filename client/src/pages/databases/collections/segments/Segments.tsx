@@ -23,7 +23,6 @@ const Segments = () => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -236,7 +235,7 @@ const Segments = () => {
         orderBy={orderBy}
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(
-          gridTrans[data.length > 1 ? 'segments' : 'segment']
+          commonTrans(data.length > 1 ? 'grid.segments' : 'grid.segment')
         )}
       />
     </div>

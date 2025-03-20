@@ -15,6 +15,7 @@ import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
+import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
@@ -33,7 +34,6 @@ const Overview = () => {
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const consistencyTooltipsMap: Record<string, string> = {
     Strong: collectionTrans('consistencyStrongTooltip'),
@@ -215,7 +215,7 @@ const Overview = () => {
             {f.index.indexParameterPairs.length > 0 ? (
               f.index.indexParameterPairs.map((p: any) =>
                 p.value ? (
-                  <span key={p.key + p.value}>
+                  <div key={p.key + p.value}>
                     <span className="param">
                       <Typography variant="body1" className="key">
                         {`${p.key}:`}
@@ -224,7 +224,7 @@ const Overview = () => {
                         {p.value}
                       </Typography>
                     </span>
-                  </span>
+                  </div>
                 ) : (
                   ''
                 )
@@ -339,6 +339,29 @@ const Overview = () => {
                   tooltip={btnTrans('downloadSchema')}
                   icon={<Icons.download />}
                 />
+                <CustomIconButton
+                  className={classes.extraBtn}
+                  tooltip={btnTrans('drop')}
+                  onClick={() => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <DropCollectionDialog
+                            collections={[collection]}
+                            onDelete={() => {
+                              navigate(`/databases/${database}`);
+                            }}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                >
+                  <Icons.cross />
+                </CustomIconButton>
+
                 <RefreshButton
                   className={classes.extraBtn}
                   tooltip={btnTrans('refresh')}
@@ -484,7 +507,7 @@ const Overview = () => {
           openCheckBox={false}
           showPagination={false}
           labelDisplayedRows={getLabelDisplayedRows(
-            gridTrans[fields.length > 1 ? 'fields' : 'field']
+            commonTrans(`grid.${fields.length > 1 ? 'fields' : 'field'}`)
           )}
         />
       </section>

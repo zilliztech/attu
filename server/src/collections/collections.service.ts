@@ -780,13 +780,19 @@ export class CollectionsService {
       const metricTypePair =
         index.params.filter(v => v.key === 'metric_type') || [];
       index.metricType = findKeyValue(metricTypePair, 'metric_type') as string;
+
+      // copy index.params withouth index_type and metric_type and params
+      const indexParams = index.params.filter(
+        p => p.key !== 'index_type' && p.key !== 'metric_type' && p.key !== 'params'
+      );
       // get index parameter pairs
       const paramsJSONstring = findKeyValue(index.params, 'params'); // params is a json string
       const params =
         (paramsJSONstring &&
           getKeyValueListFromJsonString(paramsJSONstring as string)) ||
         [];
-      index.indexParameterPairs = [...metricTypePair, ...params];
+
+      index.indexParameterPairs = [...metricTypePair, ...indexParams, ...params];
     });
 
     // Return the response from the Milvus SDK's describeIndex function

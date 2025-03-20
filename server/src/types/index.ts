@@ -15,6 +15,7 @@ export type AuthReq = {
   password: string;
   address: string;
   token: string;
+  ssl: boolean;
   database: string;
   checkHealth: boolean;
   clientId: string;

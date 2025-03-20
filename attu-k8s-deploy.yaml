@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: attu
-        image: zilliz/attu:v2.4
+        image: zilliz/attu:v2.5
         imagePullPolicy: IfNotPresent
         ports:
         - name: attu

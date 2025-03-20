@@ -157,7 +157,7 @@ export class SchedulerRegistry {
   }
 
   deleteAllCronJobs(clientId: string) {
-    console.log('Deleting all cron jobs in service for client:', clientId);
+    // console.log('Deleting all cron jobs in service for client:', clientId);
     this.cronJobMap.forEach((v, k) => {
       if (v.clientId === clientId) {
         v.task.stop();

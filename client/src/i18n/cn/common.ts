@@ -10,6 +10,7 @@ const commonTrans = {
     unAuth: '用户名或密码不正确',
     username: '用户名',
     password: '密码',
+    ssl: '启用SSL',
     optional: '（可选）',
     prometheus: 'Prometheus',
     prometheusAddress: 'Prometheus地址',
@@ -17,6 +18,7 @@ const commonTrans = {
     prometheusNamespace: 'Prometheus命名空间',
     connectionTip: '支持自托管Milvus或Zilliz云专用集群。',
     checkHealth: '检查健康状态',
+    version: '版本',
   },
   status: {
     loaded: '已加载',

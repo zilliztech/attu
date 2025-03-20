@@ -39,7 +39,6 @@ const Partitions = () => {
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
@@ -152,7 +151,7 @@ const Partitions = () => {
       disabled: () => partitions.length === 0 || selectedPartitions.length > 1,
     },
     {
-      icon: 'delete',
+      icon: 'cross',
       type: 'button',
       btnVariant: 'text',
       btnColor: 'secondary',
@@ -308,7 +307,9 @@ const Partitions = () => {
         orderBy={orderBy}
         handleSort={handleGridSort}
         labelDisplayedRows={getLabelDisplayedRows(
-          gridTrans[partitionList.length > 1 ? 'partitions' : 'partition']
+          commonTrans(
+            partitionList.length > 1 ? 'grid.partitions' : 'grid.partition'
+          )
         )}
       />
     </section>

@@ -1,33 +1,49 @@
 import { useContext, useEffect, useState } from 'react';
-import { Theme, Chip } from '@mui/material';
+import { Theme } from '@mui/material';
+import { List, ListItemButton, ListItemText, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import { rootContext, dataContext } from '@/context';
-import { useNavigationHook, usePaginationHook } from '@/hooks';
-import AttuGrid from '@/components/grid/Grid';
+import { useNavigationHook } from '@/hooks';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
+import CustomToolBar from '@/components/grid/ToolBar';
 import { makeStyles } from '@mui/styles';
-import type {
-  ColDefinitionsType,
-  ToolBarConfig,
-} from '@/components/grid/Types';
+import type { ToolBarConfig } from '@/components/grid/Types';
 import Wrapper from '@/components/layout/Wrapper';
-import type { DeleteRoleParams } from './Types';
-import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import type {
-  RolesWithPrivileges,
-  RBACOptions,
-  DBCollectionsPrivileges,
-} from '@server/types';
+import type { DeleteRoleParams, CreateRoleParams } from './Types';
+import type { RolesWithPrivileges, RBACOptions } from '@server/types';
+import D3PrivilegeTree from './D3PrivilegeTree';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
-    height: `calc(100vh - 160px)`,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'auto',
+  },
+  list: {
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: '8px',
+    backgroundColor: theme.palette.background.light,
+    width: '16%',
+    height: 'calc(100vh - 200px)',
+    overflow: 'auto',
+    color: theme.palette.text.primary,
+    boxShadow: theme.shadows[1],
+    minWidth: '200px',
+  },
+  tree: {
+    overflow: 'auto',
+    width: 'calc(84% - 16px)',
   },
   chip: {
-    marginRight: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5),
+  },
+  groupChip: {
+    marginBottom: theme.spacing(0.5),
+    backgroundColor: theme.palette.primary.dark,
+    color: theme.palette.primary.light,
   },
 }));
 
@@ -63,10 +79,12 @@ const Roles = () => {
         UserService.getRBAC(),
       ]);
 
-      setSelectedRole([]);
+      setSelectedRole([roles[0]]);
       setRbacOptions(rbacs);
 
       setRoles(roles as any);
+
+      return roles;
     } catch (error) {
       setHasPermission(false);
     } finally {
@@ -74,14 +92,23 @@ const Roles = () => {
     }
   };
 
-  const onUpdate = async (data: { isEditing: boolean }) => {
-    fetchRoles();
+  const onUpdate = async (data: {
+    isEditing: boolean;
+    data: CreateRoleParams;
+  }) => {
+    const newRoles = await fetchRoles();
     openSnackBar(
       successTrans(data.isEditing ? 'update' : 'create', {
         name: userTrans('role'),
       })
     );
     handleCloseDialog();
+
+    const roleName = data.data.roleName;
+    const role = newRoles!.find(role => role.roleName === roleName);
+    if (role) {
+      setSelectedRole([role]);
+    }
   };
 
   const handleDelete = async (force?: boolean) => {
@@ -90,12 +117,18 @@ const Roles = () => {
         roleName: role.roleName,
         force,
       };
-      await UserService.deleteRole(param);
+      const d: any = await UserService.deleteRole(param);
+
+      if (d.error_code !== 'Success') {
+        openSnackBar(d.data.reason, 'error');
+        return;
+      }
     }
 
     openSnackBar(successTrans('delete', { name: userTrans('role') }));
-    fetchRoles();
+    await fetchRoles();
     handleCloseDialog();
+    setSelectedRole(roles[0] ? [roles[0]] : []);
   };
 
   const toolbarConfigs: ToolBarConfig[] = [
@@ -206,145 +239,47 @@ const Roles = () => {
         selectedRole.findIndex(v => v.roleName === 'admin') > -1 ||
         selectedRole.findIndex(v => v.roleName === 'public') > -1,
       disabledTooltip: userTrans('deleteRoleTip'),
-      icon: 'delete',
+      icon: 'cross',
     },
   ];
-
-  const colDefinitions: ColDefinitionsType[] = [
-    {
-      id: 'roleName',
-      align: 'left',
-      disablePadding: false,
-      label: userTrans('role'),
-      sortType: 'string',
-    },
-
-    {
-      id: 'privileges',
-      align: 'left',
-      disablePadding: false,
-      formatter({ privileges, roleName }) {
-        const isAdmin = roleName === 'admin';
-
-        // Derive the options arrays as in DBCollectionSelector.
-        const rbacEntries = Object.entries(rbacOptions) as [
-          string,
-          Record<string, string>
-        ][];
-
-        // privileges of the privilege groups
-        const privilegeGroups = rbacEntries.filter(([key]) =>
-          key.endsWith('PrivilegeGroups')
-        );
-
-        const groupPrivileges = new Set(
-          privilegeGroups.reduce(
-            (acc, [_, group]) => acc.concat(Object.values(group)),
-            [] as string[]
-          )
-        );
-
-        let groupCount = 0;
-        let privilegeCount = 0;
-
-        Object.values(privileges as DBCollectionsPrivileges).forEach(
-          dbPrivileges => {
-            Object.values(dbPrivileges.collections).forEach(
-              collectionPrivileges => {
-                Object.keys(collectionPrivileges).forEach(privilege => {
-                  if (groupPrivileges.has(privilege)) {
-                    groupCount++;
-                  } else {
-                    privilegeCount++;
-                  }
-                });
-              }
-            );
-          }
-        );
-
-        return (
-          <div>
-            {
-              <>
-                <div style={{ marginBottom: 2 }}>
-                  <Chip
-                    label={`${userTrans('Group')} (${
-                      isAdmin ? '*' : groupCount
-                    })`}
-                    size="small"
-                    style={{ marginRight: 2 }}
-                  />
-                </div>
-                <div style={{ marginBottom: 2 }}>
-                  <Chip
-                    label={`${userTrans('privileges')} (${
-                      isAdmin ? '*' : privilegeCount
-                    })`}
-                    size="small"
-                    style={{ marginRight: 2 }}
-                  />
-                </div>
-              </>
-            }
-          </div>
-        );
-      },
-      label: userTrans('privileges'),
-      getStyle: () => {
-        return {
-          width: '80%',
-        };
-      },
-    },
-  ];
-
-  const handleSelectChange = (value: any[]) => {
-    setSelectedRole(value);
-  };
 
   useEffect(() => {
     fetchRoles();
   }, [database]);
 
-  const {
-    pageSize,
-    handlePageSize,
-    currentPage,
-    handleCurrentPage,
-    total,
-    data: result,
-    order,
-    orderBy,
-    handleGridSort,
-  } = usePaginationHook(roles || []);
-
-  const handlePageChange = (e: any, page: number) => {
-    handleCurrentPage(page);
+  const handleRoleClick = (role: RolesWithPrivileges) => {
+    setSelectedRole([role]);
   };
 
   return (
     <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
-      <AttuGrid
-        toolbarConfigs={toolbarConfigs}
-        colDefinitions={colDefinitions}
-        rows={result}
-        rowCount={total}
-        primaryKey="roleName"
-        showPagination={true}
-        selected={selectedRole}
-        setSelected={handleSelectChange}
-        page={currentPage}
-        onPageChange={handlePageChange}
-        rowsPerPage={pageSize}
-        rowHeight={69}
-        setRowsPerPage={handlePageSize}
-        isLoading={loading}
-        order={order}
-        orderBy={orderBy}
-        handleSort={handleGridSort}
-        labelDisplayedRows={getLabelDisplayedRows(userTrans('roles'))}
-      />
+      <CustomToolBar toolbarConfigs={toolbarConfigs} />
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
+        <Box className={classes.list}>
+          <List>
+            {roles.map(role => (
+              <ListItemButton
+                key={role.roleName}
+                selected={
+                  selectedRole.length > 0 &&
+                  selectedRole[0].roleName === role.roleName
+                }
+                onClick={() => handleRoleClick(role)}
+              >
+                <ListItemText primary={role.roleName} />
+              </ListItemButton>
+            ))}
+          </List>
+        </Box>
+        <div className={classes.tree}>
+          <D3PrivilegeTree
+            privileges={selectedRole[0]?.privileges}
+            role={selectedRole[0]?.roleName}
+            rbacOptions={rbacOptions}
+          />
+        </div>
+      </Box>
     </Wrapper>
   );
 };

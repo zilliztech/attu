@@ -24,6 +24,7 @@ import {
   ResourceManagementPrivileges,
   RBACPrivileges,
 } from '../utils';
+import { ErrorCode } from '@zilliz/milvus2-sdk-node';
 
 export class UserController {
   private router: Router;
@@ -440,7 +441,12 @@ export class UserController {
       });
       // if role does not exist, create it
       if (hasRole.hasRole === false) {
-        await this.userService.createRole(clientId, { roleName });
+        const res = await this.userService.createRole(clientId, { roleName });
+
+        // If the role creation fails, propagate the error
+        if (res.error_code !== ErrorCode.SUCCESS) {
+          throw new Error(res.reason);
+        }
       }
 
       // Iterate over each database

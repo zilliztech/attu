@@ -4,17 +4,15 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
-import { withStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { generateId } from '../../utils/Common';
 import type { CustomMultiSelectorType } from './Types';
 
-const CustomMenuItem = withStyles({
-  root: {
-    minHeight: 'auto',
-    padding: '0 8px',
-    fontSize: '0.875rem',
-  },
-})(MenuItem);
+const StyledMenuItem = styled(MenuItem)({
+  minHeight: 'auto',
+  padding: '0 8px',
+  fontSize: '0.875rem',
+});
 
 const CustomSelector: FC<CustomMultiSelectorType> = props => {
   const {
@@ -36,12 +34,12 @@ const CustomSelector: FC<CustomMultiSelectorType> = props => {
   return (
     <FormControl variant={variant} className={wrapperClass} size={size}>
       {label && (
-        <InputLabel classes={{ root: labelClass }} htmlFor={id}>
+        <InputLabel className={labelClass} htmlFor={id}>
           {label}
         </InputLabel>
       )}
       <Select
-        classes={{ ...classes }}
+        className={classes?.root}
         {...others}
         multiple={true}
         value={values}
@@ -52,10 +50,10 @@ const CustomSelector: FC<CustomMultiSelectorType> = props => {
         renderValue={renderValue}
       >
         {options.map(v => (
-          <CustomMenuItem key={v.value} value={v.value}>
+          <StyledMenuItem key={v.value} value={v.value}>
             <Checkbox checked={values.indexOf(v.value as string) !== -1} />
             {v.label}
-          </CustomMenuItem>
+          </StyledMenuItem>
         ))}
       </Select>
     </FormControl>

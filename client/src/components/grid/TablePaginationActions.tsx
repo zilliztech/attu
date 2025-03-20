@@ -3,32 +3,30 @@ import CustomButton from '../customButton/CustomButton';
 import icons from '../icons/Icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import type { TablePaginationActionsProps } from './Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    flexShrink: 0,
-  },
-  page: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '24px',
-    height: '24px',
-  },
-  btn: {
-    paddingLeft: 8,
-    paddingRight: 8,
-    minWidth: '24px',
-  },
+const Root = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  flexShrink: 0,
+}));
+
+const PageNumber = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '24px',
+  height: '24px',
+}));
+
+const StyledButton = styled(CustomButton)(({ theme }) => ({
+  paddingLeft: 8,
+  paddingRight: 8,
+  minWidth: '24px',
 }));
 
 const TablePaginationActions = (props: TablePaginationActionsProps) => {
-  const classes = useStyles();
   const { count, page, rowsPerPage, onPageChange } = props;
 
   // icons
@@ -37,7 +35,6 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const handleBackButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -52,27 +49,23 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
   };
 
   return (
-    <div className={classes.root}>
-      <CustomButton
+    <Root>
+      <StyledButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
-        aria-label={gridTrans.prevLabel}
-        className={classes.btn}
+        aria-label={commonTrans('grid.prevLabel')}
       >
         <PrevIcon />
-      </CustomButton>
-      <Typography variant="body2" className={classes.page}>
-        {page + 1}
-      </Typography>
-      <CustomButton
+      </StyledButton>
+      <PageNumber variant="body2">{page + 1}</PageNumber>
+      <StyledButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label={gridTrans.nextLabel}
-        className={classes.btn}
+        aria-label={commonTrans('grid.nextLabel')}
       >
         <NextIcon />
-      </CustomButton>
-    </div>
+      </StyledButton>
+    </Root>
   );
 };
 

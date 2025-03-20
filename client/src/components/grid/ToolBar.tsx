@@ -5,7 +5,6 @@ import IconButton from '@mui/material/IconButton';
 import CustomButton from '../customButton/CustomButton';
 import Icons from '../icons/Icons';
 import SearchInput from '../customInput/SearchInput';
-import TableSwitch from './TableSwitch';
 import { throwErrorForDev } from '../../utils/Common';
 import CustomIconButton from '../customButton/CustomIconButton';
 import { makeStyles } from '@mui/styles';
@@ -136,19 +135,6 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 );
               }
               switch (c.type) {
-                case 'switch':
-                  if (!c.onAppClick || !c.onListClick) {
-                    return throwErrorForDev(
-                      `if type is switch need onAppClick onListClick event handler`
-                    );
-                  }
-                  return (
-                    <TableSwitch
-                      onAppClick={c.onAppClick}
-                      onListClick={c.onListClick}
-                      key={i}
-                    />
-                  );
                 case 'select':
                 case 'groupSelect':
                   if (!c.component) {

@@ -11,7 +11,7 @@ const btnTrans = {
   connecting: '连接中...',
   import: '导入',
   delete: '删除',
-  drop: 'drop',
+  drop: '删除',
   release: '释放',
   load: '加载',
   insert: '插入数据',
@@ -43,6 +43,7 @@ const btnTrans = {
   close: '关闭',
   modify: '修改',
   downloadSchema: '下载 Schema',
+  downloadChart: '下载图表',
   editDefaultValue: '编辑默认值',
   viewData: '查看数据',
 

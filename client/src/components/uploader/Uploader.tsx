@@ -2,13 +2,7 @@ import { FC, useContext, useRef } from 'react';
 import { rootContext } from '@/context';
 import CustomButton from '../customButton/CustomButton';
 import { FILE_MIME_TYPE } from '@/consts';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
 import type { UploaderProps } from './Types';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  btn: {},
-}));
 
 const Uploader: FC<UploaderProps> = ({
   label,
@@ -25,7 +19,6 @@ const Uploader: FC<UploaderProps> = ({
 }) => {
   const inputRef = useRef(null);
   const type = useRef<FILE_MIME_TYPE>(FILE_MIME_TYPE.CSV);
-  const classes = getStyles();
 
   const { openSnackBar } = useContext(rootContext);
 
@@ -75,7 +68,7 @@ const Uploader: FC<UploaderProps> = ({
     <section>
       <CustomButton
         variant="contained"
-        className={`${classes.btn} ${btnClass}`}
+        className={`${btnClass}`}
         onClick={handleUpload}
         disabled={disabled}
         tooltip={disabled ? disableTooltip : ''}
