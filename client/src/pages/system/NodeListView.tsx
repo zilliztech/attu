@@ -67,9 +67,9 @@ const NodeListView: FC<NodeListViewProps> = props => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
   const { t } = useTranslation('systemView');
   const { t: commonTrans } = useTranslation();
-  const capacityTrans: { [key in string]: string } = commonTrans('capacity');
-
-  const gridTrans = commonTrans('grid');
+  const capacityTrans: { [key in string]: string } = commonTrans(
+    'capacity'
+  ) as any;
 
   const classes = getStyles();
   const [selectedChildNode, setSelectedChildNode] = useState<GridNode[]>([]);
@@ -222,7 +222,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
             selected={selectedChildNode}
             setSelected={handleSelectChange}
             labelDisplayedRows={getLabelDisplayedRows(
-              gridTrans[data.length > 1 ? 'nodes' : 'node']
+              commonTrans(data.length > 1 ? 'grid.nodes' : 'grid.node')
             )}
           />
         </div>

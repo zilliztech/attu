@@ -32,8 +32,6 @@ import userTransEn from './en/user';
 import userTransCn from './cn/user';
 import databaseTransEn from './en/database';
 import databaseTransCn from './cn/database';
-import prometheusTransEn from './en/prometheus';
-import prometheusTransCn from './cn/prometheus';
 import propertiesEn from './en/properties';
 import propertiesCn from './cn/properties';
 import actionEn from './en/action';
@@ -56,7 +54,6 @@ export const resources = {
     systemView: systemViewTransCn,
     user: userTransCn,
     database: databaseTransCn,
-    prometheus: prometheusTransCn,
     properties: propertiesCn,
     action: actionCn,
   },
@@ -76,7 +73,6 @@ export const resources = {
     systemView: systemViewTransEn,
     user: userTransEn,
     database: databaseTransEn,
-    prometheus: prometheusTransEn,
     properties: propertiesEn,
     action: actionEn,
   },
@@ -90,7 +86,7 @@ i18n
   .init({
     fallbackLng: 'en',
     resources,
-    keySeparator: false,
+    keySeparator: '.',
     returnObjects: true,
     interpolation: {
       escapeValue: false,

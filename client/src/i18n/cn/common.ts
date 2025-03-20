@@ -18,6 +18,7 @@ const commonTrans = {
     prometheusNamespace: 'Prometheus命名空间',
     connectionTip: '支持自托管Milvus或Zilliz云专用集群。',
     checkHealth: '检查健康状态',
+    version: '版本',
   },
   status: {
     loaded: '已加载',

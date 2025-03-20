@@ -51,7 +51,6 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
   const { t: warningTrans } = useTranslation('warning');
   const { t: commonTrans } = useTranslation();
   const { t: searchTrans } = useTranslation('search');
-  const gridTrans = commonTrans('grid');
 
   // UI functions
   const handleInputChange = useCallback(
@@ -112,9 +111,9 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
         })}
         values={searchGlobalParams.output_fields}
         renderValue={selected => (
-          <span>{`${(selected as string[]).length} ${
-            gridTrans[(selected as string[]).length > 1 ? 'fields' : 'field']
-          }`}</span>
+          <span>{`${(selected as string[]).length} ${commonTrans(
+            (selected as string[]).length > 1 ? 'grid.fields' : 'grid.field'
+          )}`}</span>
         )}
         label={searchTrans('outputFields')}
         wrapperClass="selector"

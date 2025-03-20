@@ -34,7 +34,6 @@ const getExpanded = (nodes: DatabaseTreeItem[]) => {
 const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   // i18n collectionTrans
   const { t: commonTrans } = useTranslation();
-  const statusTrans = commonTrans('status');
 
   // styles
   const classes = useStyles();
@@ -51,9 +50,9 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   const hasIndex = data.schema && data.schema.hasVectorIndex;
   const loadStatus = hasIndex
     ? data.loaded
-      ? statusTrans.loaded
-      : statusTrans.unloaded
-    : statusTrans.noVectorIndex;
+      ? commonTrans('status.loaded')
+      : commonTrans('status.unloaded')
+    : commonTrans('status.noVectorIndex');
 
   return (
     <div className={classes.collectionNode}>

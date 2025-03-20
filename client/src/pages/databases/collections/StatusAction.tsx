@@ -74,25 +74,24 @@ const StatusAction: FC<StatusActionType> = props => {
 
   // Determine status-related labels and icons
   const { label, tooltip, icon, deleteIcon } = useMemo(() => {
-    const statusTrans = commonTrans('status');
     switch (status) {
       case LOADING_STATE.UNLOADED:
         return {
-          label: statusTrans.unloaded,
+          label: commonTrans('status.unloaded'),
           tooltip: collectionTrans('clickToLoad'),
           icon: <div className={`${classes.circle} ${classes.unloaded}`}></div>,
           deleteIcon: <Icons.load />,
         };
       case LOADING_STATE.LOADED:
         return {
-          label: statusTrans.loaded,
+          label: commonTrans('status.loaded'),
           tooltip: collectionTrans('clickToRelease'),
           icon: <div className={`${classes.circle} ${classes.loaded}`}></div>,
           deleteIcon: <Icons.release />,
         };
       case LOADING_STATE.LOADING:
         return {
-          label: `${percentage}% ${statusTrans.loading}`,
+          label: `${percentage}% ${commonTrans('status.loading')}`,
           tooltip: collectionTrans('collectionIsLoading'),
           icon: (
             <StatusIcon
@@ -110,7 +109,7 @@ const StatusAction: FC<StatusActionType> = props => {
           deleteIcon: <Icons.release />,
         };
     }
-  }, [status, percentage, classes, commonTrans, collectionTrans]);
+  }, [status, percentage, classes, collectionTrans]);
 
   // Handle missing vector index
   const noIndex = collection.schema && !collection.schema.hasVectorIndex;

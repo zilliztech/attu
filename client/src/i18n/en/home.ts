@@ -1,7 +1,6 @@
 const homeTrans = {
   load: 'Loaded Collections',
   all: 'Collections',
-  data: 'Approx Entities',
   rows: '{{number}}',
   loading: 'Loading Collections',
   sysInfo: 'System Info',
