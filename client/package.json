@@ -10,7 +10,7 @@
     "@codemirror/commands": "^6.6.0",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-json": "^6.0.1",
-    "@codemirror/language": "^6.10.8",
+    "@codemirror/language": "^6.10.1",
     "@codemirror/lint": "^6.8.0",
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.28.6",
@@ -20,7 +20,6 @@
     "@emotion/styled": "^11.13.0",
     "@lezer/common": "^1.2.3",
     "@lezer/highlight": "^1.2.1",
-    "@mui/lab": "^5.0.0-alpha.173",
     "@json2csv/plainjs": "^7.0.6",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.17.1",
@@ -46,10 +45,6 @@
   },
   "devDependencies": {
     "@lezer/generator": "^1.7.2",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "12.1.2",
-    "@testing-library/react-hooks": "^7.0.1",
-    "@testing-library/user-event": "^12.1.10",
     "@types/codemirror": "^5.60.15",
     "@types/d3": "^7.4.3",
     "@types/file-saver": "^2.0.5",
@@ -70,11 +65,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage",
-    "test:watch": "vitest --watchAll",
     "lezer": "lezer-generator src/pages/play/language/milvus.http.grammar -o  src/pages/play/language/milvus.http.parser.js",
-    "openapi": "node src/openapi/index.js",
     "format": "prettier --write '**/*.{ts,js,tsx,jsx,css}'"
   },
   "eslintConfig": {
