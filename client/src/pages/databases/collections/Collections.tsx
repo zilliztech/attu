@@ -88,7 +88,6 @@ const Collections = () => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const classes = useStyles();
 
@@ -517,7 +516,9 @@ const Collections = () => {
           order={order}
           orderBy={orderBy}
           hideOnDisable={true}
-          labelDisplayedRows={getLabelDisplayedRows(gridTrans.collections)}
+          labelDisplayedRows={getLabelDisplayedRows(
+            commonTrans('grid.collections')
+          )}
         />
       ) : (
         <>

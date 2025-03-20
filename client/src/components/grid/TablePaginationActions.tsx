@@ -35,7 +35,6 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const handleBackButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -54,7 +53,7 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
       <StyledButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
-        aria-label={gridTrans.prevLabel}
+        aria-label={commonTrans('grid.prevLabel')}
       >
         <PrevIcon />
       </StyledButton>
@@ -62,7 +61,7 @@ const TablePaginationActions = (props: TablePaginationActionsProps) => {
       <StyledButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label={gridTrans.nextLabel}
+        aria-label={commonTrans('grid.nextLabel')}
       >
         <NextIcon />
       </StyledButton>

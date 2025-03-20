@@ -128,99 +128,102 @@ const DataProgress: FC<DataProgressProps> = ({ percent = 0, desc = '' }) => {
   );
 };
 
-const DataCard: FC<DataCardProps & React.HTMLAttributes<HTMLDivElement>> =
-  props => {
-    const classes = getStyles();
-    const { t } = useTranslation('systemView');
-    const { t: commonTrans } = useTranslation();
-    const capacityTrans: { [key in string]: string } = commonTrans('capacity');
-    const { node, extend } = props;
+const DataCard: FC<
+  DataCardProps & React.HTMLAttributes<HTMLDivElement>
+> = props => {
+  const classes = getStyles();
+  const { t } = useTranslation('systemView');
+  const { t: commonTrans } = useTranslation();
+  const capacityTrans: { [key in string]: string } = commonTrans(
+    'capacity'
+  ) as any;
+  const { node, extend } = props;
 
-    const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
-    const hardwareContent = [];
+  const hardwareTitle = [t('hardwareTitle'), t('valueTitle')];
+  const hardwareContent = [];
 
-    const configTitle = [t('configTitle'), t('valueTitle')];
-    const systemConfig: { label: string; value: any }[] = [];
+  const configTitle = [t('configTitle'), t('valueTitle')];
+  const systemConfig: { label: string; value: any }[] = [];
 
-    const systemTitle = [t('systemTitle'), t('valueTitle')];
+  const systemTitle = [t('systemTitle'), t('valueTitle')];
 
-    const systemContent = [];
+  const systemContent = [];
 
-    const {
-      created_time: createTime,
-      updated_time: updateTime,
-      system_info = {},
-      hardware_infos: infos = {},
-      system_configurations,
-    } = node?.infos || {};
+  const {
+    created_time: createTime,
+    updated_time: updateTime,
+    system_info = {},
+    hardware_infos: infos = {},
+    system_configurations,
+  } = node?.infos || {};
 
-    const {
-      cpu_core_count: cpu = 0,
-      cpu_core_usage: cpuUsage = 0,
-      // memory = 1,
-      memory_usage: memoryUsage = 0,
-      disk = 1,
-      disk_usage: diskUsage = 0,
-    } = infos;
-    const memUsage = formatByteSize(memoryUsage, capacityTrans);
-    if (extend) {
-      hardwareContent.push({ label: t('thCPUCount'), value: cpu });
-      hardwareContent.push({
-        label: t('thCPUUsage'),
-        value: <DataProgress percent={cpuUsage / 100} />,
-      });
-      hardwareContent.push({
-        label: t('thMemUsage'),
-        value: `${memUsage.value} ${memUsage.unit}`,
-      });
-      // hardwareContent.push({
-      //   label: t('thDiskUsage'),
-      //   value: (
-      //     <DataProgress
-      //       percent={diskUsage / disk}
-      //       desc={getByteString(diskUsage, disk, capacityTrans)}
-      //     />
-      //   ),
-      // });
-    }
-
-    if (system_configurations) {
-      Object.keys(system_configurations).forEach(key => {
-        systemConfig.push({ label: key, value: system_configurations[key] });
-      });
-    }
-
-    const { deploy_mode: mode = '', build_version: version = '' } = system_info;
-    systemContent.push({ label: t('thVersion'), value: version });
-    systemContent.push({ label: t('thDeployMode'), value: mode });
-    systemContent.push({
-      label: t('thCreateTime'),
-      value: createTime ? formatSystemTime(createTime) : '',
+  const {
+    cpu_core_count: cpu = 0,
+    cpu_core_usage: cpuUsage = 0,
+    // memory = 1,
+    memory_usage: memoryUsage = 0,
+    disk = 1,
+    disk_usage: diskUsage = 0,
+  } = infos;
+  const memUsage = formatByteSize(memoryUsage, capacityTrans);
+  if (extend) {
+    hardwareContent.push({ label: t('thCPUCount'), value: cpu });
+    hardwareContent.push({
+      label: t('thCPUUsage'),
+      value: <DataProgress percent={cpuUsage / 100} />,
     });
-    systemContent.push({
-      label: t('thUpdateTime'),
-      value: updateTime ? formatSystemTime(updateTime) : '',
+    hardwareContent.push({
+      label: t('thMemUsage'),
+      value: `${memUsage.value} ${memUsage.unit}`,
     });
+    // hardwareContent.push({
+    //   label: t('thDiskUsage'),
+    //   value: (
+    //     <DataProgress
+    //       percent={diskUsage / disk}
+    //       desc={getByteString(diskUsage, disk, capacityTrans)}
+    //     />
+    //   ),
+    // });
+  }
 
-    return (
-      <div className={classes.root}>
-        <div className={classes.title}>
-          <div>
-            <span className={classes.rootName}>Milvus / </span>
-            <span className={classes.childName}>{node?.infos?.name}</span>
-          </div>
-          <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
+  if (system_configurations) {
+    Object.keys(system_configurations).forEach(key => {
+      systemConfig.push({ label: key, value: system_configurations[key] });
+    });
+  }
+
+  const { deploy_mode: mode = '', build_version: version = '' } = system_info;
+  systemContent.push({ label: t('thVersion'), value: version });
+  systemContent.push({ label: t('thDeployMode'), value: mode });
+  systemContent.push({
+    label: t('thCreateTime'),
+    value: createTime ? formatSystemTime(createTime) : '',
+  });
+  systemContent.push({
+    label: t('thUpdateTime'),
+    value: updateTime ? formatSystemTime(updateTime) : '',
+  });
+
+  return (
+    <div className={classes.root}>
+      <div className={classes.title}>
+        <div>
+          <span className={classes.rootName}>Milvus / </span>
+          <span className={classes.childName}>{node?.infos?.name}</span>
         </div>
-        <DataSection titles={systemTitle} contents={systemContent} />
-        {extend && (
-          <DataSection titles={hardwareTitle} contents={hardwareContent} />
-        )}
-
-        {systemConfig.length ? (
-          <DataSection titles={configTitle} contents={systemConfig} />
-        ) : null}
+        <div className={classes.ip}>{`${t('thIP')}:${infos?.ip || ''}`}</div>
       </div>
-    );
-  };
+      <DataSection titles={systemTitle} contents={systemContent} />
+      {extend && (
+        <DataSection titles={hardwareTitle} contents={hardwareContent} />
+      )}
+
+      {systemConfig.length ? (
+        <DataSection titles={configTitle} contents={systemConfig} />
+      ) : null}
+    </div>
+  );
+};
 
 export default DataCard;

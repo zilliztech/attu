@@ -78,7 +78,6 @@ const ConnectContainer = () => {
   const [version, setVersion] = useState('loading');
   const classes = getContainerStyles();
   const { t: commonTrans } = useTranslation();
-  const attuTrans = commonTrans('attu');
   const { t: btnTrans } = useTranslation('btn');
 
   useEffect(() => {
@@ -93,11 +92,11 @@ const ConnectContainer = () => {
         <section className={`flex-center ${classes.attu}`}>
           <Icons.attu classes={{ root: classes.logo }} />
           <Typography variant="body2" className={classes.brand}>
-            {attuTrans.admin}
+            {commonTrans('attu.admin')}
           </Typography>
           {version && (
             <Typography component="sub" className={classes.sub}>
-              {attuTrans.version} {version}
+              {commonTrans('attu.version')}: {version}
             </Typography>
           )}
 
@@ -124,7 +123,7 @@ const ConnectContainer = () => {
                 )
               }
             >
-              {attuTrans.fileIssue}
+              {commonTrans('attu.fileIssue')}
             </CustomButton>
 
             <CustomButton
@@ -133,7 +132,7 @@ const ConnectContainer = () => {
               onClick={() => window.open('https://milvus.io/discord', '_blank')}
               fullWidth={true}
             >
-              {attuTrans.discord}
+              {commonTrans('attu.discord')}
             </CustomButton>
           </div>
         </section>

@@ -92,7 +92,6 @@ const AttuGrid: FC<AttuGridType> = props => {
 
   // i18n
   const { t: commonTrans } = useTranslation();
-  const gridTrans = commonTrans('grid');
 
   const {
     rowCount = 20,
@@ -117,7 +116,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     title,
     openCheckBox = true,
     disableSelect = false,
-    noData = gridTrans.noData,
+    noData = commonTrans('grid.gridTrans.noData'),
     showHoverStyle = true,
     headEditable = false,
     editHeads = [],
@@ -167,7 +166,8 @@ const AttuGrid: FC<AttuGridType> = props => {
           {from} - {to}
         </Typography>
         <Typography variant="body2" className="rows" component="span">
-          {gridTrans.of} {count} {gridTrans.rows}
+          {commonTrans('grid.gridTrans.of')} {count}{' '}
+          {commonTrans('grid.gridTrans.rows')}
         </Typography>
       </>
     );

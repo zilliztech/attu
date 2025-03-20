@@ -2,7 +2,7 @@ const collectionTrans = {
   noLoadData: '没有加载的Collection',
   noData: '没有Collection',
 
-  rowCount: '大约的Entity数量',
+  rowCount: 'Entity数量(大约)',
   count: 'Entity数量',
 
   create: '创建Collection',
@@ -31,7 +31,7 @@ const collectionTrans = {
   consistencyLevelInfo:
     '一致性是指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
   entityCountInfo:
-    '这个计数是一个近似值，并可能因为Milvus的独特机制而稍有延迟。实际的计数可能会有所变化，并会定期更新。请注意，这个数字应该被用作参考，而不是精确的计数。',
+    '如果这个 collection 没有加载，这个计数是一个近似值，并可能因为Milvus的独特机制而稍有延迟。实际的计数可能会有所变化，并会定期更新。请注意，这个数字应该被用作参考，而不是精确的计数。',
   replicaTooltip: 'Collection的副本数量, 不能超过查询节点的数量。',
   modifyReplicaTooltip: '调整副本数量',
 
@@ -64,7 +64,8 @@ const collectionTrans = {
   partitionKey: '分区键',
   partitionKeyTooltip:
     'Milvus将根据分区键字段中的值在分区中存储entities。只支持一个Int64或VarChar字段。',
-  paritionKeyDisabledTooltip: '只允许一个分区字段，同时分区键字段不能用作主键字段。',
+  paritionKeyDisabledTooltip:
+    '只允许一个分区字段，同时分区键字段不能用作主键字段。',
   enableDynamicSchema: '启用动态Schema',
   analyzer: '分词器',
   enableMatch: '启用匹配',
@@ -137,24 +138,20 @@ const collectionTrans = {
     "压缩是通过组织数据段来优化存储和查询性能的过程。 <a href='https://milvus.io/blog/2022-2-21-compact.md' target='blank'>了解更多</a><br /><br /> 请注意，这个操作可能需要一些时间来完成，特别是对于大型数据集。我们建议在系统活动较低的时期或在计划的维护期间运行压缩以最小化干扰。",
 
   // column tooltip
-  autoIDTooltip: '主键列的值由Milvus自动生成。',
   dynamicSchemaTooltip:
     '动态Schema使用户能够在不修改现有Schema的情况下向Milvus collection插入带有新字段的entities。',
-  consistencyLevelTooltip:
-    '在分布式数据库中，一致性特指确保每个节点或副本在给定时间写入或读取数据时具有相同数据视图的属性。',
   consistencyBoundedTooltip: '它允许在一定时间内数据不一致。',
   consistencyStrongTooltip: '它确保用户可以读取数据的最新版本。',
   consistencySessionTooltip:
     '它确保在同一会话中所有数据写入可以立即在读取中感知。',
   consistencyEventuallyTooltip:
     '没有保证读写的顺序，副本最终会在没有进一步写操作的情况下收敛到相同的状态。',
-  releaseCollectionFirst: '请先释放collection。',
   noVectorIndexTooltip: '请保证所有向量列都有索引。',
 
-  clickToLoad: '点击加载collection。',
-  clickToRelease: '点击释放collection。',
-  clickToSearch: '点击执行向量搜索。',
-  clickToCreateVectorIndex: '点击创建向量索引。',
+  clickToLoad: '点击加载collection',
+  clickToRelease: '点击释放collection',
+  clickToSearch: '点击执行向量搜索',
+  clickToCreateVectorIndex: '点击创建向量索引',
   collectionIsLoading: 'colleciton正在加载...',
 };
 

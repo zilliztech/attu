@@ -34,51 +34,38 @@ const LoadingIconWrapper = styled('div')({
   marginRight: '10px',
 });
 
-const bgColorChange = keyframes`
-  0% {
-    background-color: inherit;
-  }
-  50% {
-    background-color: transparent;
-  }
-  100% {
-    background-color: inherit;
-  }
-`;
-
 const Status: FC<StatusType> = props => {
   const { status, percentage = 0 } = props;
   const { t: commonTrans } = useTranslation();
   const theme = useTheme();
-  const statusTrans = commonTrans('status');
 
   const { label, color } = useMemo(() => {
     switch (status) {
       case LOADING_STATE.UNLOADED:
         return {
-          label: statusTrans.unloaded,
+          label: commonTrans('status.unloaded'),
           color: theme.palette.primary.main,
         };
 
       case LOADING_STATE.LOADED:
         return {
-          label: statusTrans.loaded,
+          label: commonTrans('status.loaded'),
           color: '#06f3af',
         };
 
       case LOADING_STATE.LOADING:
         return {
-          label: `${percentage}% ${statusTrans.loading}`,
+          label: `${percentage}% ${commonTrans('status.loading')}`,
           color: '#f25c06',
         };
 
       default:
         return {
-          label: statusTrans.error,
+          label: commonTrans('status.error'),
           color: '#f25c06',
         };
     }
-  }, [status, statusTrans, percentage, theme.palette.primary.main]);
+  }, [status, percentage, theme.palette.primary.main]);
 
   return (
     <Root>
