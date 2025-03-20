@@ -1,5 +1,5 @@
 const searchTrans = {
-  thirdTip: '搜索参数 {{metricType}}',
+  thirdTip: '搜索参数',
   collection: '已加载的Collection',
   noCollection: '没有已加载的Collection',
   field: '向量字段',

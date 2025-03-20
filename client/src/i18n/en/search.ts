@@ -1,5 +1,5 @@
 const searchTrans = {
-  thirdTip: 'Search Parameters {{metricType}}',
+  thirdTip: 'Search Parameters',
   collection: 'loaded collection',
   noCollection: 'No loaded collection',
   field: 'Vector field',
