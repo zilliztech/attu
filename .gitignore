@@ -20,6 +20,7 @@ node_modules
 /client/.env.test.local
 /client/.env.production.local
 /client/report.*.json
+/client/src/openapi/openapi.json
 
 /client/npm-debug.log*
 /client/yarn-debug.log*

@@ -76,6 +76,16 @@ export const useNavigationHook = (
         setNavInfo(navInfo);
         break;
       }
+      case ALL_ROUTER_TYPES.PLAY: {
+        const navInfo: NavInfo = {
+          navTitle: navTrans('play'),
+          backPath: '',
+          showDatabaseSelector: false,
+        };
+        setNavInfo(navInfo);
+        break;
+      }
+
       default:
         break;
     }

@@ -12,6 +12,7 @@ import { router as databasesRouter } from './database';
 import { router as partitionsRouter } from './partitions';
 import { router as cronsRouter } from './crons';
 import { router as userRouter } from './users';
+import { router as playgroundRouter } from './playground';
 import {
   TransformResMiddleware,
   LoggingMiddleware,
@@ -51,6 +52,7 @@ router.use('/collections', collectionsRouter);
 router.use('/partitions', partitionsRouter);
 router.use('/crons', cronsRouter);
 router.use('/users', userRouter);
+router.use('/playground', playgroundRouter);
 router.get('/healthy', (req, res, next) => {
   res.json({ status: 200 });
   next();

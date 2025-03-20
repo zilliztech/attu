@@ -19,6 +19,7 @@ const getStyles = makeStyles((theme: Theme) => ({
     right: theme.spacing(1),
     '& svg': {
       width: 16,
+      height: 16,
     },
   },
 }));
@@ -31,11 +32,14 @@ const CodeBlock: FC<CodeBlockProps> = ({
   code,
   language,
   wrapperClass = '',
+  style = {},
 }) => {
   const theme = useTheme();
   const classes = getStyles();
 
   const { t: commonTrans } = useTranslation();
+
+  const highlightTheme = theme.palette.mode === 'dark' ? vs2015 : github;
 
   return (
     <div className={`${classes.wrapper} ${wrapperClass}`}>
@@ -46,7 +50,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
       />
       <SyntaxHighlighter
         language={language}
-        style={theme.palette.mode === 'dark' ? vs2015 : github}
+        style={{ ...highlightTheme, ...style }}
         customStyle={CodeStyle}
         showLineNumbers={true}
       >

@@ -14,4 +14,5 @@ export enum ALL_ROUTER_TYPES {
   USER = 'user',
   DATABASES = 'databases',
   DB_ADMIN = 'db-admin',
+  PLAY = 'play',
 }

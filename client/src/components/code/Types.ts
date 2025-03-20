@@ -15,6 +15,7 @@ export interface CodeBlockProps {
   code: string;
   language: string;
   wrapperClass?: string;
+  style?: Record<string, React.CSSProperties>;
 }
 
 export interface CodeViewData extends CodeBlockProps {

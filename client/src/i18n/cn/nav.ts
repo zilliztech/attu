@@ -7,6 +7,7 @@ const navTrans = {
   system: '系统视图',
   user: '用户和角色',
   database: '数据库',
+  play: 'Play',
 };
 
 export default navTrans;
