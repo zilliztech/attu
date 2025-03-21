@@ -5,9 +5,7 @@ import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
 import { AxiosError } from 'axios';
 import { MILVUS_RESTFUL_DOC_URL, CLOUD_RESTFUL_DOC_URL } from '@/consts';
 import { CustomEventNameEnum, PlaygroundExtensionParams } from '../../Types';
-import { createPlaygroundRequest, DocumentEventManager } from '../../utils';
-
-const apiPlaygroundRequest = createPlaygroundRequest('backend');
+import { playgroundRequest, DocumentEventManager } from '../../utils';
 
 class CodeLensWidget extends WidgetType {
   constructor(
@@ -139,7 +137,7 @@ export const codeLensDecoration = (options: PlaygroundExtensionParams) =>
                     CustomEventNameEnum.PlaygroundResponseDetail,
                     { loading: true, response: 'running' }
                   );
-                  const res = await apiPlaygroundRequest(params);
+                  const res = await playgroundRequest(params);
                   DocumentEventManager.dispatch(
                     CustomEventNameEnum.PlaygroundResponseDetail,
                     { response: res.data, loading: false }
