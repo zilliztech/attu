@@ -81,7 +81,7 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
       <CustomSelector
         options={TOP_K_OPTIONS}
         value={searchGlobalParams.topK}
-        label={searchTrans('topK')}
+        label={searchTrans('limit')}
         wrapperClass="selector"
         variant="filled"
         onChange={(e: { target: { value: unknown } }) => {
