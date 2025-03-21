@@ -50,8 +50,16 @@ const Play: FC = () => {
 
   const extensions = useMemo(() => {
     const { address, token, username, password } = authReq;
+
     const getBaseUrl = () => {
-      return address.startsWith('http') ? address : `http://${address}`;
+      if (!address.startsWith('http')) {
+        if (!/:(\d+)/.test(address)) {
+          return `http://${address}:19530`;
+        }
+        return `http://${address}`;
+      }
+
+      return address;
     };
     return [
       placeholder('Write your code here'),
