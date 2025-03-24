@@ -5,11 +5,7 @@ import {
   StateEffect,
 } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { useState, useEffect, KeyboardEventHandler } from 'react';
-import {
-  lineNumbers,
-  highlightActiveLineGutter,
-} from '../language/extensions/gutter';
+import { useState, useEffect } from 'react';
 import {
   highlightSpecialChars,
   drawSelection,
@@ -38,6 +34,12 @@ import {
 } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 
+import {
+  lineNumbers,
+  highlightActiveLineGutter,
+} from '../language/extensions/gutter';
+import { customFoldGutter } from '../language/extensions/fold';
+
 const basicSetup = () => [
   lineNumbers(),
   highlightActiveLineGutter(),
@@ -65,6 +67,7 @@ const basicSetup = () => [
     ...completionKeymap,
     ...lintKeymap,
   ]),
+  customFoldGutter(),
 ];
 
 const External = Annotation.define<boolean>();
