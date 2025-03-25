@@ -33,12 +33,19 @@ import {
   completionKeymap,
 } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
+import {
+  DEFAULT_CODE_VALUE,
+  DEFAULT_FOLD_LINE_RANGES,
+} from '@/pages/play/Constants';
 
 import {
   lineNumbers,
   highlightActiveLineGutter,
 } from '../language/extensions/gutter';
-import { customFoldGutter } from '../language/extensions/fold';
+import {
+  customFoldGutter,
+  foldByLineRanges,
+} from '../language/extensions/fold';
 
 const basicSetup = () => [
   lineNumbers(),
@@ -107,6 +114,10 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
         state: startState,
         parent: container,
       });
+
+      if (value === DEFAULT_CODE_VALUE) {
+        foldByLineRanges(editorView, DEFAULT_FOLD_LINE_RANGES);
+      }
       setView(editorView);
     }
 
