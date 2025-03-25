@@ -85,7 +85,7 @@ Array {
 
 
 @tokens {
-  LineComment { "#" ![\n]* }
+  LineComment { "#" ![\n]* space+ }
 
   String {
     '"' (![\\\n"] | "\\" _)* '"'?
