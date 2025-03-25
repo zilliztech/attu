@@ -23,6 +23,7 @@ import { MilvusHTTP } from './language/milvus.http';
 import { getCMStyle, getStyles } from './style';
 import { CustomEventNameEnum, PlaygroundCustomEventDetail } from './Types';
 import { DocumentEventManager } from './utils/event';
+import { DEFAULT_CODE_VALUE } from '@/pages/play/Constants';
 
 const Play: FC = () => {
   // hooks
@@ -38,7 +39,7 @@ const Play: FC = () => {
   const classes = getStyles();
   const [code, setCode] = useState(() => {
     const savedCode = localStorage.getItem(ATTU_PLAY_CODE);
-    return savedCode || '';
+    return savedCode || DEFAULT_CODE_VALUE;
   });
 
   // refs
@@ -91,6 +92,10 @@ const Play: FC = () => {
 
   // save code to local storage
   useEffect(() => {
+    if (code === '') {
+      localStorage.removeItem(ATTU_PLAY_CODE);
+      return;
+    }
     localStorage.setItem(ATTU_PLAY_CODE, code);
   }, [code]);
 
