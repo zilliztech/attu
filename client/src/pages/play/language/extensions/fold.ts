@@ -1,5 +1,22 @@
-import { foldService, syntaxTree } from '@codemirror/language';
-import { EditorState } from '@codemirror/state';
+import { foldEffect, foldService, syntaxTree } from '@codemirror/language';
+import { EditorState, StateEffect } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
+
+export const foldByLineRanges = (
+  view: EditorView,
+  lineRanges: Array<{ lineFrom: number; LineTo: number }>
+) => {
+  const effects = [];
+  const { state } = view;
+
+  for (const { lineFrom, LineTo } of lineRanges) {
+    const lineStart = state.doc.line(lineFrom).from + 1;
+    const lineEnd = state.doc.line(LineTo).to - 1;
+    effects.push(foldEffect.of({ from: lineStart, to: lineEnd }));
+  }
+
+  view.dispatch({ effects });
+};
 
 export const customFoldGutter = () => {
   return foldService.of(
