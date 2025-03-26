@@ -45,6 +45,9 @@ import {
 import {
   customFoldGutter,
   foldByLineRanges,
+  persistFoldState,
+  loadFoldState,
+  recoveryFoldState,
 } from '../language/extensions/fold';
 
 const basicSetup = () => [
@@ -75,6 +78,7 @@ const basicSetup = () => [
     ...lintKeymap,
   ]),
   customFoldGutter(),
+  persistFoldState(),
 ];
 
 const External = Annotation.define<boolean>();
@@ -115,7 +119,10 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
         parent: container,
       });
 
-      if (value === DEFAULT_CODE_VALUE) {
+      const foldState = loadFoldState();
+      if (foldState) {
+        recoveryFoldState(editorView);
+      } else if (value === DEFAULT_CODE_VALUE) {
         foldByLineRanges(editorView, DEFAULT_FOLD_LINE_RANGES);
       }
       setView(editorView);

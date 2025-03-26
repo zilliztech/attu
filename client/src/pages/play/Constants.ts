@@ -73,9 +73,9 @@ POST /v2/vectordb/entities/search
 `;
 
 export const DEFAULT_FOLD_LINE_RANGES = [
-  { lineFrom: 5, LineTo: 26 },
-  { lineFrom: 30, LineTo: 40 },
-  { lineFrom: 44, LineTo: 46 },
-  { lineFrom: 50, LineTo: 62 },
-  { lineFrom: 66, LineTo: 72 },
+  { lineFrom: 5, lineTo: 26 },
+  { lineFrom: 30, lineTo: 40 },
+  { lineFrom: 44, lineTo: 46 },
+  { lineFrom: 50, lineTo: 62 },
+  { lineFrom: 66, lineTo: 72 },
 ];
