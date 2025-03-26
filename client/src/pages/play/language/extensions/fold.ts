@@ -105,3 +105,52 @@ export const recoveryFoldState = (view: EditorView) => {
     }
   }
 };
+
+export const jsonFoldGutter = () => {
+  return foldService.of(
+    (state: EditorState, lineStart: number, lineEnd: number) => {
+      try {
+        const text = state.doc.sliceString(lineStart, lineEnd);
+        const lines = state.doc.lines;
+        if (text.endsWith('{') || text.endsWith('[')) {
+          const letter = text.endsWith('{') ? '{' : '[';
+          const line = state.doc.lineAt(lineStart);
+          let to = line.to;
+          const matches = [letter];
+          for (let i = line.number + 1; i <= lines; i++) {
+            const nextLine = state.doc.line(i);
+            const nextText = nextLine.text.trim();
+            for (const char of nextText) {
+              if (char === '{' || char === '[') {
+                matches.push(char);
+              } else if (char === '}') {
+                if (matches[matches.length - 1] === '{') {
+                  matches.pop();
+                }
+              } else if (char === ']') {
+                if (matches[matches.length - 1] === '[') {
+                  matches.pop();
+                }
+              }
+            }
+            if (matches.length === 0) {
+              if (nextText.endsWith('}') || nextText.endsWith(']')) {
+                to = nextLine.to - 1;
+              } else {
+                to = nextLine.to - 2;
+              }
+              break;
+            }
+          }
+          return {
+            from: lineEnd,
+            to: to,
+          };
+        }
+      } catch (error) {
+        return null;
+      }
+      return null;
+    }
+  );
+};

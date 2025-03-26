@@ -5,7 +5,7 @@ import {
   StateEffect,
 } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   highlightSpecialChars,
   drawSelection,
@@ -43,9 +43,7 @@ import {
   highlightActiveLineGutter,
 } from '../language/extensions/gutter';
 import {
-  customFoldGutter,
   foldByLineRanges,
-  persistFoldState,
   loadFoldState,
   recoveryFoldState,
 } from '../language/extensions/fold';
@@ -77,8 +75,6 @@ const basicSetup = () => [
     ...completionKeymap,
     ...lintKeymap,
   ]),
-  customFoldGutter(),
-  persistFoldState(),
 ];
 
 const External = Annotation.define<boolean>();
@@ -94,10 +90,10 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
   const { value, extensions, onChange } = props;
 
   const [container, setContainer] = useState<HTMLDivElement | null>();
-  const [view, setView] = useState<EditorView>();
+  const viewRef = useRef<EditorView>();
 
   const updateListener = EditorView.updateListener.of(update => {
-    if (update.changes) {
+    if (update.docChanged) {
       onChange?.(update.state.doc.toString());
     }
   });
@@ -108,7 +104,7 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
 
   // init editor
   useEffect(() => {
-    if (container && !view) {
+    if (container && !viewRef.current) {
       const startState = EditorState.create({
         doc: value,
         extensions: getExtensions(),
@@ -125,10 +121,13 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
       } else if (value === DEFAULT_CODE_VALUE) {
         foldByLineRanges(editorView, DEFAULT_FOLD_LINE_RANGES);
       }
-      setView(editorView);
+      viewRef.current = editorView;
     }
 
-    return () => {};
+    return () => {
+      viewRef.current?.destroy();
+      viewRef.current = undefined;
+    };
   }, [container]);
 
   // update value
@@ -137,6 +136,7 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
       return;
     }
 
+    const view = viewRef.current;
     const currentValue = view?.state.doc.toString() ?? '';
     if (view && value !== currentValue) {
       view.dispatch({
@@ -152,12 +152,13 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
 
   // update extensions
   useEffect(() => {
+    const view = viewRef.current;
     if (view) {
       view.dispatch({
         effects: [StateEffect.reconfigure.of(getExtensions())],
       });
     }
-  }, [extensions, view]);
+  }, [extensions]);
 
   useEffect(() => setContainer(props.container), [props.container]);
 
@@ -188,5 +189,5 @@ export const useCodeMirror = (props: UseCodeMirrorProps) => {
     };
   }, [container]);
 
-  return { view };
+  return { view: viewRef.current };
 };

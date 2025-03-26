@@ -10,11 +10,11 @@ import {
   useState,
 } from 'react';
 
-import CodeBlock from '@/components/code/CodeBlock';
 import { ATTU_PLAY_CODE } from '@/consts';
 import { authContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { DEFAULT_CODE_VALUE } from '@/pages/play/Constants';
 
 import { useCodeMirror } from './hooks/use-codemirror';
 import { Autocomplete } from './language/extensions/autocomplete';
@@ -23,7 +23,8 @@ import { MilvusHTTP } from './language/milvus.http';
 import { getCMStyle, getStyles } from './style';
 import { CustomEventNameEnum, PlaygroundCustomEventDetail } from './Types';
 import { DocumentEventManager } from './utils/event';
-import { DEFAULT_CODE_VALUE } from '@/pages/play/Constants';
+import { JSONEditor } from './JSONEditor';
+import { customFoldGutter, persistFoldState } from './language/extensions/fold';
 
 const Play: FC = () => {
   // hooks
@@ -76,6 +77,8 @@ const Play: FC = () => {
         isDarkMode: theme.palette.mode === 'dark',
       }),
       Autocomplete({ databases, collections }),
+      customFoldGutter(),
+      persistFoldState(),
     ];
   }, [databases, collections, authReq, theme.palette.mode]);
 
@@ -115,30 +118,6 @@ const Play: FC = () => {
     };
   }, []);
 
-  const renderResponse = () => {
-    const style =
-      theme.palette.mode !== 'dark'
-        ? {
-            hljs: {
-              display: 'block',
-              overflowX: 'auto' as const,
-              padding: '12px 0',
-              color: '#333',
-              margin: 0,
-              background: theme.palette.background.paper,
-            },
-          }
-        : undefined;
-    return (
-      <CodeBlock
-        wrapperClass={classes.response}
-        language="json"
-        code={content || '{}'}
-        style={style}
-      />
-    );
-  };
-
   return (
     <Box className={classes.root}>
       <Paper elevation={0} className={classes.leftPane}>
@@ -150,7 +129,7 @@ const Play: FC = () => {
       </Paper>
 
       <Paper elevation={0} className={classes.rightPane}>
-        {renderResponse()}
+        <JSONEditor value={content || `{}`} editable={false} />
       </Paper>
     </Box>
   );
