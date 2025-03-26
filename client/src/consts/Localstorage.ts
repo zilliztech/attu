@@ -16,3 +16,4 @@ export const ATTU_UI_TREE_WIDTH = 'attu.ui.tree.with';
 export const ATTU_AUTH_HISTORY = 'attu.auth.history';
 export const ATTU_THEME_MODE = 'attu.theme.mode';
 export const ATTU_PLAY_CODE = 'attu.play.code';
+export const ATTU_PLAY_FOLD_STATE = 'attu.play.fold.state';
