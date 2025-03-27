@@ -50,19 +50,31 @@ export const customFoldGutter = () => {
 
 export const persistFoldState = () => {
   return EditorView.updateListener.of(update => {
-    for (const tr of update.transactions) {
-      for (const effect of tr.effects) {
-        if (effect.is(foldEffect) || effect.is(unfoldEffect)) {
-          const view = update.view;
-          const folded = view.state.field(foldState);
-          const lineRanges: Array<{ from: number; to: number }> = [];
-          folded.between(0, view.state.doc.length, (from, to) => {
-            lineRanges.push({ from, to });
-          });
-          localStorage.setItem(
-            ATTU_PLAY_FOLD_STATE,
-            JSON.stringify(lineRanges)
-          );
+    if (update.docChanged) {
+      // Handle document changes
+      const view = update.view;
+      const folded = view.state.field(foldState);
+      const lineRanges: Array<{ from: number; to: number }> = [];
+      folded.between(0, view.state.doc.length, (from, to) => {
+        lineRanges.push({ from, to });
+      });
+      localStorage.setItem(ATTU_PLAY_FOLD_STATE, JSON.stringify(lineRanges));
+    } else {
+      // Handle fold/unfold effects
+      for (const tr of update.transactions) {
+        for (const effect of tr.effects) {
+          if (effect.is(foldEffect) || effect.is(unfoldEffect)) {
+            const view = update.view;
+            const folded = view.state.field(foldState);
+            const lineRanges: Array<{ from: number; to: number }> = [];
+            folded.between(0, view.state.doc.length, (from, to) => {
+              lineRanges.push({ from, to });
+            });
+            localStorage.setItem(
+              ATTU_PLAY_FOLD_STATE,
+              JSON.stringify(lineRanges)
+            );
+          }
         }
       }
     }
