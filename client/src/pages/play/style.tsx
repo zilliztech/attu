@@ -19,19 +19,9 @@ export const getStyles = makeStyles((theme: Theme) => ({
   },
   rightPane: {
     flex: 1,
-    padding: `0 ${theme.spacing(2)}`,
     marginLeft: theme.spacing(2),
     display: 'flex',
     overflow: 'hidden',
-  },
-  response: {
-    width: '100%',
-    overflow: 'auto',
-    lineHeight: '18px',
-
-    '& pre': {
-      borderRadius: '4px',
-    },
   },
   editor: {
     width: '100%',
@@ -217,6 +207,9 @@ export const getCMStyle = (theme: Theme) => {
     },
     '.cm-gutter .cm-codelens-marker': {
       paddingTop: '17px',
+    },
+    '.cm-content[data-language="json"]': {
+      paddingLeft: '18px',
     },
   };
 };
