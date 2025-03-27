@@ -24,6 +24,9 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    include: ['@emotion/react', '@emotion/styled'],
+  },
   plugins: [
     react(),
     svgr({
