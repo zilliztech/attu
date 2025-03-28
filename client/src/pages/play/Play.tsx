@@ -14,9 +14,13 @@ import { ATTU_PLAY_CODE } from '@/consts';
 import { authContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import { DEFAULT_CODE_VALUE } from '@/pages/play/Constants';
+import {
+  DEFAULT_CODE_VALUE,
+  DEFAULT_FOLD_LINE_RANGES,
+} from '@/pages/play/Constants';
 
 import { useCodeMirror } from './hooks/use-codemirror';
+import { useCodelensShortcuts } from './hooks/use-codelens-shortcuts';
 import { Autocomplete } from './language/extensions/autocomplete';
 import { KeyMap } from './language/extensions/keymap';
 import { MilvusHTTP } from './language/milvus.http';
@@ -24,7 +28,13 @@ import { getCMStyle, getStyles } from './style';
 import { CustomEventNameEnum, PlaygroundCustomEventDetail } from './Types';
 import { DocumentEventManager } from './utils/event';
 import { JSONEditor } from './JSONEditor';
-import { customFoldGutter, persistFoldState } from './language/extensions/fold';
+import {
+  customFoldGutter,
+  foldByLineRanges,
+  loadFoldState,
+  persistFoldState,
+  recoveryFoldState,
+} from './language/extensions/fold';
 
 const Play: FC = () => {
   // hooks
@@ -67,7 +77,6 @@ const Play: FC = () => {
       placeholder('Write your code here'),
       EditorView.lineWrapping,
       EditorView.theme(getCMStyle(theme)),
-      KeyMap(),
       MilvusHTTP({
         baseUrl: getBaseUrl(),
         token,
@@ -76,6 +85,7 @@ const Play: FC = () => {
         isManaged,
         isDarkMode: theme.palette.mode === 'dark',
       }),
+      KeyMap(),
       Autocomplete({ databases, collections }),
       customFoldGutter(),
       persistFoldState(),
@@ -86,12 +96,23 @@ const Play: FC = () => {
     setCode(code);
   }, []);
 
+  const onEditorViewLoaded = (editorView: EditorView) => {
+    const foldState = loadFoldState();
+    if (foldState) {
+      recoveryFoldState(editorView);
+    } else if (code === DEFAULT_CODE_VALUE) {
+      foldByLineRanges(editorView, DEFAULT_FOLD_LINE_RANGES);
+    }
+  };
+
   useCodeMirror({
     container: container.current,
     value: code,
     extensions,
     onChange: handleCodeChange,
+    onLoaded: onEditorViewLoaded,
   });
+  useCodelensShortcuts(container.current);
 
   // save code to local storage
   useEffect(() => {
