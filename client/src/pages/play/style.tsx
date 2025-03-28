@@ -44,6 +44,9 @@ export const getCMStyle = (theme: Theme) => {
       height: '100%',
       borderRadius: '4px',
     },
+    '&.cm-editor.cm-focused': {
+      outline: 'none',
+    },
     '&.cm-editor .cm-cursor': {
       borderColor: theme.palette.text.primary,
     },
@@ -53,6 +56,10 @@ export const getCMStyle = (theme: Theme) => {
       overflow: 'auto',
     },
     '.cm-line': { padding: ' 0 4px 0 2px' },
+    '.cm-line .cm-foldPlaceholder': {
+      backgroundColor: 'transparent',
+      border: 'none',
+    },
     '.cm-content': {
       fontSize: '13px',
       fontFamily: 'IBM Plex Mono, monospace',
