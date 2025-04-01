@@ -1,5 +1,4 @@
 import {
-  Theme,
   TextField,
   IconButton,
   Switch,
@@ -25,7 +24,6 @@ import {
   ALL_OPTIONS,
   PRIMARY_FIELDS_OPTIONS,
   VECTOR_FIELDS_OPTIONS,
-  ANALYZER_OPTIONS,
 } from './Constants';
 
 import { DataTypeEnum, VectorTypes } from '@/consts';
@@ -35,123 +33,16 @@ import {
   DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
   DEFAULT_ATTU_ELEMENT_TYPE,
 } from '@/consts';
-import { makeStyles } from '@mui/styles';
-import CustomIconButton from '@/components/customButton/CustomIconButton';
-import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import type {
   CreateFieldsProps,
   CreateFieldType,
   FieldType,
 } from '../../databases/collections/Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  scalarFieldsWrapper: {
-    width: '100%',
-    paddingRight: theme.spacing(1),
-    overflowY: 'auto',
-  },
-  title: {
-    fontSize: 14,
-    marginTop: theme.spacing(0),
-    marginBottom: theme.spacing(1.5),
-    '& button': {
-      position: 'relative',
-      top: '-1px',
-      marginLeft: 4,
-    },
-  },
-  rowWrapper: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: 4,
-    '& .MuiFormLabel-root': {
-      fontSize: 14,
-    },
-    '& .MuiInputBase-root': {
-      fontSize: 14,
-    },
-    '& .MuiSelect-filled': {
-      fontSize: 14,
-    },
-    '& .MuiCheckbox-root': {
-      padding: 4,
-    },
-    '& .MuiFormControlLabel-label': {
-      fontSize: 14,
-    },
-  },
-  fieldInput: {
-    width: '130px',
-  },
-  select: {
-    width: '150px',
-    marginTop: '-20px',
-  },
-  smallSelect: {
-    width: '105px',
-    marginTop: '-20px',
-  },
-  autoIdSelect: {
-    width: '120px',
-    marginTop: '-20px',
-  },
-  numberBox: {
-    width: '80px',
-  },
-  maxLength: {
-    maxWidth: '80px',
-  },
-  descInput: {
-    width: '64px',
-  },
-  btnTxt: {
-    textTransform: 'uppercase',
-  },
-  iconBtn: {
-    padding: 0,
-    position: 'relative',
-    top: '-8px',
-    '& svg': {
-      width: 15,
-    },
-  },
-  helperText: {
-    lineHeight: '20px',
-    fontSize: '10px',
-    margin: theme.spacing(0),
-    marginLeft: '11px',
-  },
-  toggle: {
-    marginLeft: theme.spacing(0.5),
-    marginRight: theme.spacing(0.5),
-  },
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-  },
-  paramsGrp: {
-    border: `1px dashed ${theme.palette.divider}`,
-    borderRadius: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    paddingLeft: 0,
-    paddingTop: 0,
-    paddingRight: 8,
-    minHeight: 44,
-    alignSelf: 'flex-start',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  analyzerInput: {
-    paddingTop: 8,
-    '& .select': {
-      width: '110px',
-    },
-  },
-  setting: { fontSize: 12, alignItems: 'center', display: 'flex' },
-}));
+import { useStyles } from './styles';
+import Desc from './Desc';
+import TextMatchCheckBox from './TextMatchCheckBox';
+import AnalyzerCheckBox from './AnalyzerCheckBox';
+import DefaultValueInput from './DefaultValueInput';
 
 type inputType = {
   label: string;
@@ -339,45 +230,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
   };
 
-  const generateDesc = (field: FieldType) => {
-    return getInput({
-      label: collectionTrans('description'),
-      value: field.description,
-      handleChange: (value: string) =>
-        changeFields(field.id!, { description: value }),
-      inputClassName: classes.descInput,
-    });
-  };
-
-  const generateDefaultValue = (field: FieldType) => {
-    let type: 'number' | 'text' = 'number';
-    switch (field.data_type) {
-      case DataTypeEnum.Int8:
-      case DataTypeEnum.Int16:
-      case DataTypeEnum.Int32:
-      case DataTypeEnum.Int64:
-      case DataTypeEnum.Float:
-      case DataTypeEnum.Double:
-        type = 'number';
-        break;
-      case DataTypeEnum.Bool:
-        type = 'text';
-        break;
-      default:
-        type = 'text';
-        break;
-    }
-
-    return getInput({
-      label: collectionTrans('defaultValue'),
-      value: field.default_value,
-      type: type,
-      handleChange: (value: string) =>
-        changeFields(field.id!, { default_value: value }),
-      inputClassName: classes.descInput,
-    });
-  };
-
   const generateDimension = (field: FieldType) => {
     // sparse doesn't support dimension
     if (field.data_type === DataTypeEnum.SparseFloatVector) {
@@ -460,11 +312,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         return !isEmptyValid
           ? warningTrans('requiredOnly')
           : !isRangeValid
-          ? warningTrans('range', {
-              min: 1,
-              max: 65535,
-            })
-          : ' ';
+            ? warningTrans('range', {
+                min: 1,
+                max: 65535,
+              })
+            : ' ';
       },
     });
   };
@@ -489,11 +341,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         return !isEmptyValid
           ? warningTrans('requiredOnly')
           : !isRangeValid
-          ? warningTrans('range', {
-              min: 1,
-              max: 4096,
-            })
-          : ' ';
+            ? warningTrans('range', {
+                min: 1,
+                max: 4096,
+              })
+            : ' ';
       },
     });
   };
@@ -554,126 +406,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
             <>{collectionTrans('nullable')}</>
           </CustomToolTip>
         </label>
-      </div>
-    );
-  };
-
-  const generateTextMatchCheckBox = (field: FieldType, fields: FieldType[]) => {
-    const update: Partial<FieldType> = {
-      enable_match: !field.enable_match,
-    };
-
-    if (!field.enable_match) {
-      update.enable_analyzer = true;
-    }
-    return (
-      <div className={classes.setting}>
-        <label htmlFor="enableMatch">
-          <Checkbox
-            id="enableMatch"
-            checked={!!field.enable_match}
-            size="small"
-            onChange={() => {
-              changeFields(field.id!, update);
-            }}
-          />
-          <CustomToolTip
-            title={collectionTrans('textMatchTooltip')}
-            placement="top"
-          >
-            <>{collectionTrans('enableMatch')}</>
-          </CustomToolTip>
-        </label>
-      </div>
-    );
-  };
-
-  const generateAnalyzerCheckBox = (field: FieldType, fields: FieldType[]) => {
-    let analyzer = 'standard';
-    if (typeof field.analyzer_params === 'string') {
-      analyzer = field.analyzer_params;
-    } else if (!field.analyzer_params) {
-      analyzer = 'standard';
-    } else {
-      analyzer = 'custom';
-    }
-
-    const localAnalyzer = localFieldAnalyzers.current.get(field.id!) || {
-      tokenizer: 'standard',
-      filter: ['lowercase'],
-    };
-
-    return (
-      <div className={classes.analyzerInput}>
-        <Checkbox
-          checked={
-            !!field.enable_analyzer ||
-            field.data_type === DataTypeEnum.VarCharBM25
-          }
-          size="small"
-          onChange={() => {
-            changeFields(field.id!, {
-              enable_analyzer: !field.enable_analyzer,
-            });
-          }}
-          disabled={field.data_type === DataTypeEnum.VarCharBM25}
-        />
-        <CustomSelector
-          wrapperClass="select"
-          options={ANALYZER_OPTIONS}
-          size="small"
-          onChange={e => {
-            const selectedAnalyzer = e.target.value;
-            if (selectedAnalyzer === 'custom') {
-              // If custom, set the analyzer_params to a JSON editable format
-              changeFields(field.id!, {
-                analyzer_params: localAnalyzer,
-              });
-            } else {
-              // If standard, chinese, or english, set the analyzer_params to the selected type
-              changeFields(field.id!, {
-                analyzer_params: e.target.value,
-              });
-            }
-          }}
-          disabled={
-            !field.enable_analyzer &&
-            field.data_type !== DataTypeEnum.VarCharBM25
-          }
-          value={analyzer}
-          variant="filled"
-          label={collectionTrans('analyzer')}
-        />
-        <CustomIconButton
-          disabled={
-            !field.enable_analyzer &&
-            field.data_type !== DataTypeEnum.VarCharBM25
-          }
-          onClick={() => {
-            setDialog2({
-              open: true,
-              type: 'custom',
-              params: {
-                component: (
-                  <EditJSONDialog
-                    data={getAnalyzerParams(
-                      field.analyzer_params || 'standard'
-                    )}
-                    dialogTitle={dialogTrans('editAnalyzerTitle')}
-                    dialogTip={dialogTrans('editAnalyzerInfo')}
-                    handleConfirm={data => {
-                      localFieldAnalyzers.current.set(field.id!, data);
-                      changeFields(field.id!, { analyzer_params: data });
-                    }}
-                    handleCloseDialog={handleCloseDialog2}
-                  />
-                ),
-              },
-            });
-          }}
-        >
-          <icons.settings className={classes.icon} />
-        </CustomIconButton>
       </div>
     );
   };
@@ -770,7 +502,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
             }
           }
         )}
-        {generateDesc(field)}
+
+        <Desc
+          value={field.description}
+          onChange={(value: string) => {
+            changeFields(field.id!, { description: value });
+          }}
+        />
 
         {isVarChar && generateMaxLength(field)}
 
@@ -814,7 +552,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
         {generateDimension(field)}
-        {generateDesc(field)}
+        <Desc
+          value={field.description}
+          onChange={(value: string) => {
+            changeFields(field.id!, { description: value });
+          }}
+        />
         <IconButton
           onClick={() => handleAddNewField(index, field.data_type)}
           classes={{ root: classes.iconBtn }}
@@ -874,17 +617,40 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {isArray ? generateMaxCapacity(field) : null}
         {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
 
-        {showDefaultValue && generateDefaultValue(field)}
+        {showDefaultValue && (
+          <DefaultValueInput
+            field={field}
+            onChange={(id, value) => changeFields(id, { default_value: value })}
+            label="Default Value"
+          />
+        )}
 
-        {generateDesc(field)}
+        <Desc
+          value={field.description}
+          onChange={(value: string) => {
+            changeFields(field.id!, { description: value });
+          }}
+        />
 
         <div className={classes.paramsGrp}>
           {isInt64 ? generatePartitionKeyCheckbox(field, fields) : null}
 
           {isVarChar ? (
             <>
-              {generateAnalyzerCheckBox(field, fields)}
-              {generateTextMatchCheckBox(field, fields)}
+              <AnalyzerCheckBox
+                field={field}
+                onChange={changeFields}
+                collectionTrans={collectionTrans}
+                dialogTrans={dialogTrans}
+                localFieldAnalyzers={localFieldAnalyzers}
+                setDialog={setDialog2}
+                getAnalyzerParams={getAnalyzerParams}
+              />
+              <TextMatchCheckBox
+                field={field}
+                onChange={changeFields}
+                collectionTrans={collectionTrans}
+              />
               {generatePartitionKeyCheckbox(field, fields)}
             </>
           ) : null}
@@ -933,12 +699,33 @@ const CreateFields: FC<CreateFieldsProps> = ({
         )}
 
         {generateMaxLength(field)}
-        {generateDefaultValue(field)}
-        {generateDesc(field)}
+        <DefaultValueInput
+          field={field}
+          onChange={(id, value) => changeFields(id, { default_value: value })}
+          label="Default Value"
+        />
+        <Desc
+          value={field.description}
+          onChange={(value: string) => {
+            changeFields(field.id!, { description: value });
+          }}
+        />
 
         <div className={classes.paramsGrp}>
-          {generateAnalyzerCheckBox(field, fields)}
-          {generateTextMatchCheckBox(field, fields)}
+          <AnalyzerCheckBox
+            field={field}
+            onChange={changeFields}
+            collectionTrans={collectionTrans}
+            dialogTrans={dialogTrans}
+            localFieldAnalyzers={localFieldAnalyzers}
+            setDialog={setDialog2}
+            getAnalyzerParams={getAnalyzerParams}
+          />
+          <TextMatchCheckBox
+            field={field}
+            onChange={changeFields}
+            collectionTrans={collectionTrans}
+          />
           {generatePartitionKeyCheckbox(field, fields)}
           {generateNullableCheckbox(field, fields)}
         </div>
@@ -983,7 +770,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
         )}
 
         {generateDimension(field)}
-        {generateDesc(field)}
+        <Desc
+          value={field.description}
+          onChange={(value: string) => {
+            changeFields(field.id!, { description: value });
+          }}
+        />
 
         <IconButton
           onClick={() => handleAddNewField(index, field.data_type)}
