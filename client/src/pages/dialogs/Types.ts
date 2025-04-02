@@ -5,12 +5,6 @@ export interface DropCollectionProps {
   onDelete: () => void;
 }
 
-export interface DropPartitionProps {
-  partitions: PartitionData[];
-  collectionName: string;
-  onDelete: () => void;
-}
-
 export interface PartitionCreateProps {
   onCreate: (collectionName: string) => void;
   collectionName: string;

@@ -4,6 +4,7 @@ import type {
   PartitionManageParam,
   PartitionParam,
 } from '@/pages/databases/collections/partitions/Types';
+import { ResStatus } from '@server/types';
 
 export class PartitionService extends BaseModel {
   static getPartitions(collectionName: string) {
@@ -17,7 +18,7 @@ export class PartitionService extends BaseModel {
 
   static managePartition(param: PartitionManageParam) {
     const { collectionName, partitionName, type } = param;
-    return super.create({
+    return super.create<ResStatus>({
       path: `/partitions`,
       data: {
         collection_name: collectionName,

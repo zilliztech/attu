@@ -16,7 +16,7 @@ import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
 import { formatNumber } from '@/utils';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { makeStyles } from '@mui/styles';
-import type { PartitionData } from '@server/types';
+import type { PartitionData, ResStatus } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -89,9 +89,21 @@ const Partitions = () => {
   } = usePaginationHook(list);
 
   // on delete
-  const onDelete = () => {
-    openSnackBar(successTrans('delete', { name: t('partition') }));
+  const onDelete = (res: ResStatus[]) => {
+    let hasError = false;
+    res.forEach(r => {
+      if (r.error_code !== 'Success') {
+        console.log('delete error', r);
+        openSnackBar(r.reason, 'error');
+        hasError = true;
+        return;
+      }
+    });
+
     fetchPartitions(collectionName);
+
+    if (hasError) return;
+    openSnackBar(successTrans('delete', { name: t('partition') }));
   };
 
   // on handle search
