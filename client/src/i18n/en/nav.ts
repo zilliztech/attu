@@ -7,7 +7,7 @@ const navTrans = {
   system: 'System View',
   user: 'User and Role',
   database: 'Database',
-  play: 'Play',
+  play: 'Play(beta)',
 };
 
 export default navTrans;

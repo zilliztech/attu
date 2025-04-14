@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 
-import { ATTU_PLAY_CODE } from '@/consts';
+import { ATTU_PLAY_CODE, ATTU_PLAY_RESULT } from '@/consts';
 import { authContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
@@ -40,9 +40,11 @@ const Play: FC = () => {
   // hooks
   const theme = useTheme();
   useNavigationHook(ALL_ROUTER_TYPES.PLAY);
-  const [detail, setDetail] = useState<PlaygroundCustomEventDetail>(
-    {} as PlaygroundCustomEventDetail
-  );
+  const [result, setResult] = useState(() => {
+    const savedResult = localStorage.getItem(ATTU_PLAY_RESULT);
+    return savedResult || '{}';
+  });
+
   const { collections, databases, loading } = useContext(dataContext);
   const { isManaged, authReq } = useContext(authContext);
 
@@ -56,6 +58,7 @@ const Play: FC = () => {
   // refs
   const container = useRef<HTMLDivElement>(null);
 
+  const detail = JSON.parse(result) as PlaygroundCustomEventDetail;
   const content = detail.error
     ? JSON.stringify(detail.error, null, 2)
     : JSON.stringify(detail.response, null, 2);
@@ -126,7 +129,9 @@ const Play: FC = () => {
   useEffect(() => {
     const handleCodeMirrorResponse = (event: Event) => {
       const { detail } = event as CustomEvent<PlaygroundCustomEventDetail>;
-      setDetail(detail);
+      const detailString = JSON.stringify(detail);
+      setResult(detailString);
+      localStorage.setItem(ATTU_PLAY_RESULT, detailString);
     };
 
     const unsubscribe = DocumentEventManager.subscribe(
