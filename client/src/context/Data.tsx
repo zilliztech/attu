@@ -39,8 +39,8 @@ export const dataContext = createContext<DataContextType>({
   setDatabase: () => {},
   databases: [],
   setDatabaseList: () => {},
-  createDatabase: async () => {},
-  dropDatabase: async () => {},
+  createDatabase: async () => ({}) as ResStatus,
+  dropDatabase: async () => ({}) as ResStatus,
   fetchDatabases: async () => {
     return [];
   },
@@ -51,8 +51,8 @@ export const dataContext = createContext<DataContextType>({
   createCollection: async () => {
     return {} as CollectionFullObject;
   },
-  loadCollection: async () => {},
-  releaseCollection: async () => {},
+  loadCollection: async () => ({}) as ResStatus,
+  releaseCollection: async () => ({}) as ResStatus,
   renameCollection: async () => {
     return {} as CollectionFullObject;
   },
@@ -194,16 +194,20 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: create database
   const createDatabase = async (params: { db_name: string }) => {
-    await DatabaseService.createDatabase(params);
+    const res = await DatabaseService.createDatabase(params);
     await fetchDatabases();
+
+    return res;
   };
 
   // API: delete database
   const dropDatabase = async (params: { db_name: string }) => {
-    await DatabaseService.dropDatabase(params);
+    const res = await DatabaseService.dropDatabase(params);
     const newDatabases = await fetchDatabases();
 
     setDatabase(newDatabases[0].name);
+
+    return res;
   };
 
   // API:fetch collections
@@ -271,7 +275,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // API: load collection
   const loadCollection = async (name: string, param?: any) => {
     // load collection
-    await CollectionService.loadCollection(name, param);
+    const res = await CollectionService.loadCollection(name, param);
 
     // find the collection in the collections
     const collection = collections.find(
@@ -286,12 +290,14 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
     // update collection, and trigger cron job
     updateCollections({ collections: [collection] });
+
+    return res;
   };
 
   // API: release collection
   const releaseCollection = async (name: string) => {
     // release collection
-    await CollectionService.releaseCollection(name);
+    return await CollectionService.releaseCollection(name);
   };
 
   // API: rename collection
