@@ -80,7 +80,7 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
         </span>
       </div>
       <Tooltip title={loadStatus} placement="top">
-        <div className={loadClass} title={loadStatus}></div>
+        <div className={loadClass}></div>
       </Tooltip>
     </div>
   );
