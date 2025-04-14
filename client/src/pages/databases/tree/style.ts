@@ -48,7 +48,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
     left: 160,
     top: 8,
     zIndex: 1,
-    pointerEvents: 'none',
   },
   loaded: {
     border: `1px solid ${theme.palette.primary.main}`,
