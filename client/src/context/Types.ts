@@ -115,15 +115,15 @@ export type DataContextType = {
   // APIs
   // databases
   fetchDatabases: () => Promise<DatabaseObject[]>;
-  createDatabase: (params: { db_name: string }) => Promise<void>;
-  dropDatabase: (params: { db_name: string }) => Promise<void>;
+  createDatabase: (params: { db_name: string }) => Promise<ResStatus>;
+  dropDatabase: (params: { db_name: string }) => Promise<ResStatus>;
 
   // collections
   fetchCollections: () => Promise<void>;
   fetchCollection: (name: string) => Promise<CollectionFullObject>;
   createCollection: (data: any) => Promise<CollectionFullObject>;
-  loadCollection: (name: string, param?: any) => Promise<void>;
-  releaseCollection: (name: string) => Promise<void>;
+  loadCollection: (name: string, param?: any) => Promise<ResStatus>;
+  releaseCollection: (name: string) => Promise<ResStatus>;
   renameCollection: (
     name: string,
     newName: string

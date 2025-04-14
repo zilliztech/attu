@@ -1,5 +1,5 @@
 import BaseModel from './BaseModel';
-import type { DatabaseObject } from '@server/types';
+import type { DatabaseObject, ResStatus } from '@server/types';
 
 // request types
 export interface CreateDatabaseParams {
@@ -24,11 +24,11 @@ export class DatabaseService extends BaseModel {
   }
 
   static createDatabase(data: CreateDatabaseParams) {
-    return super.create({ path: `/databases`, data });
+    return super.create<ResStatus>({ path: `/databases`, data });
   }
 
   static dropDatabase(data: DropDatabaseParams) {
-    return super.delete({ path: `/databases/${data.db_name}` });
+    return super.delete<ResStatus>({ path: `/databases/${data.db_name}` });
   }
 
   static describeDatabase(db_name: string) {
