@@ -1,22 +1,27 @@
-import { type AxiosError, type AxiosResponse } from "axios"
+import { type AxiosError, type AxiosResponse } from 'axios';
 
 export enum CustomEventNameEnum {
-  PlaygroundResponseDetail = 'playgroundResponseDetail'
+  PlaygroundResponseDetail = 'playgroundResponseDetail',
+  PlaygroundCollectionUpdate = 'playgroundCollectionUpdate',
 }
 
 export interface PlaygroundCustomEventDetail {
-  loading?: boolean
-  response?: AxiosResponse['data']
-  error?: object
+  loading?: boolean;
+  response?: AxiosResponse['data'];
+  error?: object;
+}
+
+export interface PlaygroundCollectionUpdateEventDetail {
+  collectionName: string;
 }
 
 export interface PlaygroundExtensionParams {
-  baseUrl: string
-  isManaged?: boolean
-  token?: string
-  username?: string
-  password?: string
-  isDarkMode?: boolean
+  baseUrl: string;
+  isManaged?: boolean;
+  token?: string;
+  username?: string;
+  password?: string;
+  isDarkMode?: boolean;
 }
 
 export type IdentifierMap = {
@@ -31,4 +36,4 @@ export type CompletionMacro = {
   apply: string;
   type: 'text';
   detail: 'macro';
-}
+};

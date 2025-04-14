@@ -137,11 +137,21 @@ export const codeLensDecoration = (options: PlaygroundExtensionParams) =>
                     CustomEventNameEnum.PlaygroundResponseDetail,
                     { loading: true, response: 'running' }
                   );
+
                   const res = await playgroundRequest(params);
+
                   DocumentEventManager.dispatch(
                     CustomEventNameEnum.PlaygroundResponseDetail,
                     { response: res.data, loading: false }
                   );
+
+                  // if param body contains collectionName, dispatch PlaygroundCollectionUpdate event
+                  if ('collectionName' in params.body) {
+                    DocumentEventManager.dispatch(
+                      CustomEventNameEnum.PlaygroundCollectionUpdate,
+                      { collectionName: params.body.collectionName as string }
+                    );
+                  }
                 } catch (err) {
                   DocumentEventManager.dispatch(
                     CustomEventNameEnum.PlaygroundResponseDetail,

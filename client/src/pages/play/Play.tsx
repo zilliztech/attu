@@ -45,7 +45,7 @@ const Play: FC = () => {
     return savedResult || '{}';
   });
 
-  const { collections, databases, loading } = useContext(dataContext);
+  const { collections, databases, fetchCollections } = useContext(dataContext);
   const { isManaged, authReq } = useContext(authContext);
 
   // styles
@@ -137,6 +137,21 @@ const Play: FC = () => {
     const unsubscribe = DocumentEventManager.subscribe(
       CustomEventNameEnum.PlaygroundResponseDetail,
       handleCodeMirrorResponse
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleCollectionUpdate = async (event: Event) => {
+      await fetchCollections();
+    };
+
+    const unsubscribe = DocumentEventManager.subscribe(
+      CustomEventNameEnum.PlaygroundCollectionUpdate,
+      handleCollectionUpdate
     );
 
     return () => {

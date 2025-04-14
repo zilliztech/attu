@@ -2,6 +2,7 @@ import { type PlaygroundCustomEventDetail, CustomEventNameEnum } from '../Types'
 
 type EventMap = {
   [CustomEventNameEnum.PlaygroundResponseDetail]: PlaygroundCustomEventDetail;
+  [CustomEventNameEnum.PlaygroundCollectionUpdate]: { collectionName: string };
 };
 
 export class DocumentEventManager {
