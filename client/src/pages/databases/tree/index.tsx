@@ -56,16 +56,31 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
 
   return (
     <div className={classes.collectionNode}>
-      <div className={classes.collectionName} title={data.collection_name}>
-        <Typography noWrap className="collectionName">
-          {data.collection_name}
-        </Typography>
+      <div className={classes.collectionName}>
+        <Tooltip
+          title={data.collection_name}
+          placement="top"
+          PopperProps={{
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: [0, -10],
+                },
+              },
+            ],
+          }}
+        >
+          <Typography noWrap className="collectionName">
+            {data.collection_name}
+          </Typography>
+        </Tooltip>
         <span className={classes.count}>
           ({formatNumber(data.rowCount || 0)})
         </span>
       </div>
-      <Tooltip title={loadStatus}>
-        <div className={loadClass}></div>
+      <Tooltip title={loadStatus} placement="top">
+        <div className={loadClass} title={loadStatus}></div>
       </Tooltip>
     </div>
   );
@@ -219,11 +234,25 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
           <TreeItem
             key={tree.id}
             itemId={tree.id}
-            title={tree.name}
             label={
-              <Typography noWrap className={classes.dbName}>
-                {tree.name}
-              </Typography>
+              <Tooltip
+                title={tree.name}
+                placement="top"
+                PopperProps={{
+                  modifiers: [
+                    {
+                      name: 'offset',
+                      options: {
+                        offset: [0, -10],
+                      },
+                    },
+                  ],
+                }}
+              >
+                <Typography noWrap className={classes.dbName}>
+                  {tree.name}
+                </Typography>
+              </Tooltip>
             }
             className={classes.treeItem}
             slots={{
