@@ -15,6 +15,7 @@ import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
+import EditMmapDialog from '@/pages/dialogs/EditMmapDialog';
 import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
@@ -47,6 +48,16 @@ const Overview = () => {
     c => c.collection_name === collectionName
   );
 
+  // mmap enabled fields
+  const mmapEnabledFields = collection?.schema?.fields.filter(f =>
+    findKeyValue(f.type_params, 'mmap.enabled')
+  );
+
+  // check if collection is mmap enabled
+  const isCollectionMmapEnabled = collection?.properties!.some((p: any) => {
+    return p.key === 'mmap.enabled' && p.value === 'true';
+  });
+
   // get fields
   const fields = collection?.schema?.fields || [];
 
@@ -55,7 +66,7 @@ const Overview = () => {
       id: 'name',
       align: 'left',
       disablePadding: true,
-      formatter(f) {
+      formatter(f: FieldObject) {
         return (
           <div className={classes.nameWrapper}>
             {f.name}
@@ -83,7 +94,7 @@ const Overview = () => {
             ) : null}
             {findKeyValue(f.type_params, 'enable_analyzer') ? (
               <Tooltip
-                title={findKeyValue(f.type_params, 'analyzer_params')}
+                title={findKeyValue(f.type_params, 'analyzer_params') as string}
                 arrow
               >
                 <Chip
@@ -487,6 +498,35 @@ const Overview = () => {
                     />
                   </Tooltip>
                 ) : null}
+              </Typography>
+
+              <Typography variant="h5">
+                MMap
+                <RefreshButton
+                  className={classes.mmapExtraBtn}
+                  onClick={async () => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <EditMmapDialog
+                            collection={collection}
+                            cb={() => {}}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                  tooltip={btnTrans('rename')}
+                  icon={<Icons.edit />}
+                />
+              </Typography>
+
+              <Typography variant="h6">
+                mmap enabled fields: {isCollectionMmapEnabled ? 'All' : 'None'}
+                <br />
+                mmap enabled index: none
               </Typography>
             </div>
           </div>

@@ -64,6 +64,14 @@ export const useStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.text.primary,
     },
   },
+  mmapExtraBtn: {
+    position: 'relative',
+    top: -2,
+    '& svg': {
+      width: 15,
+      color: theme.palette.text.primary,
+    },
+  },
   smallIcon: {
     fontSize: '13px',
     marginLeft: theme.spacing(0.5),

@@ -4,6 +4,8 @@ export {
   MilvusClient,
   ResStatus,
   RerankerObj,
+  TypeParamKey,
+  TypeParam,
 } from '@zilliz/milvus2-sdk-node';
 
 export * from './collections.type';
