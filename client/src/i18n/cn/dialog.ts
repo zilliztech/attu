@@ -22,8 +22,8 @@ const dialogTrans = {
 
   createTitle: `在 "{{name}}" 上创建 {{type}}`,
   emptyTitle: `清空{{type}}的数据`,
-  editPropertyTitle: `编辑属性 {{type}}`,
-  resetPropertyTitle: `重置属性 {{type}}`,
+  editPropertyTitle: `编辑{{type}}属性`,
+  resetPropertyTitle: `重置{{type}}属性`,
 
   // info
   duplicateCollectionInfo:

@@ -20,8 +20,8 @@ const dialogTrans = {
 
   createTitle: `Create {{type}} on "{{name}}"`,
   emptyTitle: `Empty data for {{type}}`,
-  editPropertyTitle: `Edit property {{type}}`,
-  resetPropertyTitle: `Reset property {{type}}`,
+  editPropertyTitle: `Edit {{type}} property`,
+  resetPropertyTitle: `Reset {{type}} property`,
 
   // info
   duplicateCollectionInfo:

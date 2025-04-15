@@ -108,7 +108,7 @@ const EditPropertyDialog: FC<EditPropertyProps> = props => {
 
   return (
     <DialogTemplate
-      title={dialogTrans('editPropertyTitle')}
+      title={dialogTrans('editPropertyTitle', { type: props.type })}
       handleClose={handleCloseDialog}
       children={
         <>
