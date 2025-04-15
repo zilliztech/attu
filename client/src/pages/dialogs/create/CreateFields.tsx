@@ -460,11 +460,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         return !isEmptyValid
           ? warningTrans('requiredOnly')
           : !isRangeValid
-          ? warningTrans('range', {
-              min: 1,
-              max: 65535,
-            })
-          : ' ';
+            ? warningTrans('range', {
+                min: 1,
+                max: 65535,
+              })
+            : ' ';
       },
     });
   };
@@ -489,11 +489,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         return !isEmptyValid
           ? warningTrans('requiredOnly')
           : !isRangeValid
-          ? warningTrans('range', {
-              min: 1,
-              max: 4096,
-            })
-          : ' ';
+            ? warningTrans('range', {
+                min: 1,
+                max: 4096,
+              })
+            : ' ';
       },
     });
   };
@@ -507,9 +507,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
       field.nullable;
     return (
       <div className={classes.setting}>
-        <label htmlFor="partitionKey">
+        <label htmlFor={`partitionKey-${field.id}`}>
           <Checkbox
-            id="partitionKey"
+            id={`partitionKey-${field.id}`}
             checked={!!field.is_partition_key}
             size="small"
             disabled={disabled}
@@ -535,9 +535,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateNullableCheckbox = (field: FieldType, fields: FieldType[]) => {
     return (
       <div className={classes.setting}>
-        <label htmlFor="nullable">
+        <label htmlFor={`nullable-${field.id}`}>
           <Checkbox
-            id="nullable"
+            id={`nullable-${field.id}`}
             checked={!!field.nullable}
             size="small"
             onChange={() => {
@@ -568,9 +568,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
     }
     return (
       <div className={classes.setting}>
-        <label htmlFor="enableMatch">
+        <label htmlFor={`enableMatch-${field.id}`}>
           <Checkbox
-            id="enableMatch"
+            id={`enableMatch-${field.id}`}
             checked={!!field.enable_match}
             size="small"
             onChange={() => {
