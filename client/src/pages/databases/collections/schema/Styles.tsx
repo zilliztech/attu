@@ -51,6 +51,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     flexBasis: 'calc(33.333% - 12px)',
     height: '100%',
     minWidth: 200,
+    flexWrap: 'wrap',
   },
   icon: {
     fontSize: '20px',
@@ -91,7 +92,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.primary,
     cursor: 'normal',
     marginRight: 4,
-    marginLeft: 4,
+    marginBottom: 4,
+    marginTop: 4,
   },
   dataTypeChip: {
     backgroundColor: theme.palette.background.grey,

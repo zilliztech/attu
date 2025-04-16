@@ -46,6 +46,7 @@ const btnTrans = {
   downloadChart: 'Download Chart',
   EditDefaultValue: 'Edit Default Value',
   viewData: 'View Data',
+  mmapSetting: 'MMap Settings',
 
   // tips
   loadColTooltip: 'Load Collection',

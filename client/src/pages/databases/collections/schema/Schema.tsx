@@ -118,6 +118,11 @@ const Overview = () => {
                 />
               </Tooltip>
             ) : null}
+            {findKeyValue(f.type_params, 'mmap.enabled') === 'true' ? (
+              <Tooltip title={'MMap'} arrow>
+                <Chip className={classes.chip} size="small" label={'MMap'} />
+              </Tooltip>
+            ) : null}
 
             {f.function ? (
               <Tooltip title={JSON.stringify(f.function)} arrow>
@@ -459,75 +464,75 @@ const Overview = () => {
               <Typography variant="h5">
                 {collectionTrans('features')}
               </Typography>
-              <Typography variant="h6">
-                {isAutoIDEnabled ? (
-                  <Chip
-                    className={`${classes.chip} ${classes.featureChip}`}
-                    label={collectionTrans('autoId')}
-                    size="small"
-                  />
-                ) : null}
+              {isAutoIDEnabled ? (
+                <Chip
+                  className={`${classes.chip} ${classes.featureChip}`}
+                  label={collectionTrans('autoId')}
+                  size="small"
+                />
+              ) : null}
+              <Tooltip
+                title={
+                  consistencyTooltipsMap[collection.consistency_level!] || ''
+                }
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={`${classes.chip} ${classes.featureChip}`}
+                  label={`${collectionTrans('consistency')}: ${
+                    collection.consistency_level
+                  }`}
+                  size="small"
+                />
+              </Tooltip>
+
+              {collection &&
+              collection.schema &&
+              collection.schema.enable_dynamic_field ? (
                 <Tooltip
-                  title={
-                    consistencyTooltipsMap[collection.consistency_level!] || ''
-                  }
+                  title={collectionTrans('dynamicSchemaTooltip')}
                   placement="top"
                   arrow
                 >
                   <Chip
-                    className={`${classes.chip} ${classes.featureChip}`}
-                    label={`${collectionTrans('consistency')}: ${
-                      collection.consistency_level
-                    }`}
+                    className={`${classes.chip}`}
+                    label={collectionTrans('dynamicSchema')}
                     size="small"
                   />
                 </Tooltip>
+              ) : null}
 
-                {collection &&
-                collection.schema &&
-                collection.schema.enable_dynamic_field ? (
-                  <Tooltip
-                    title={collectionTrans('dynamicSchemaTooltip')}
-                    placement="top"
-                    arrow
-                  >
-                    <Chip
-                      className={`${classes.chip}`}
-                      label={collectionTrans('dynamicSchema')}
-                      size="small"
-                    />
-                  </Tooltip>
-                ) : null}
-              </Typography>
-
-              <Typography variant="h5">
-                MMap
-                <RefreshButton
-                  className={classes.mmapExtraBtn}
-                  onClick={async () => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <EditMmapDialog
-                            collection={collection}
-                            cb={() => {}}
-                          />
-                        ),
-                      },
-                    });
-                  }}
-                  tooltip={btnTrans('rename')}
-                  icon={<Icons.edit />}
-                />
-              </Typography>
-
-              <Typography variant="h6">
-                mmap enabled fields: {isCollectionMmapEnabled ? 'All' : 'None'}
-                <br />
-                mmap enabled index: none
-              </Typography>
+              {isCollectionMmapEnabled ? (
+                <Tooltip
+                  title={collectionTrans('mmapEnabledTooltip')}
+                  placement="top"
+                  arrow
+                >
+                  <Chip
+                    className={`${classes.chip}`}
+                    label={collectionTrans('mmapEnabled')}
+                    size="small"
+                    onDelete={async () => {
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <EditMmapDialog
+                              collection={collection}
+                              cb={async () => {
+                                fetchCollection(collectionName);
+                              }}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                    deleteIcon={<Icons.settings />}
+                  />
+                </Tooltip>
+              ) : null}
             </div>
           </div>
         </section>

@@ -15,8 +15,8 @@ const collectionTrans = {
   // table
   id: 'ID',
   name: '名称',
-  features: '特性',
-  nameTip: 'Collection名称',
+  features: 'Collection 特性',
+  nameTip: 'Collection 名称',
   status: '状态',
   desc: '描述',
   createdTime: '创建时间',
@@ -147,6 +147,7 @@ const collectionTrans = {
   consistencyEventuallyTooltip:
     '没有保证读写的顺序，副本最终会在没有进一步写操作的情况下收敛到相同的状态。',
   noVectorIndexTooltip: '请保证所有向量列都有索引。',
+  mmapEnabledTooltip: `Collection级别MMap已启用，将覆盖字段的MMap设置。`,
 
   clickToLoad: '点击加载collection',
   clickToRelease: '点击释放collection',
