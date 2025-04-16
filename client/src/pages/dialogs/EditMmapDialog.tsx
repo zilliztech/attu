@@ -284,7 +284,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
       }
       confirmDisabled={noChange || notReleased}
       confirmLabel={btnTrans('confirm')}
-      confirmDisaledTooltip={
+      confirmDisabledTooltip={
         notReleased ? collectionTrans('mmapCollectionNotReleasedTooltip') : ''
       }
       handleConfirm={handleConfirm}
