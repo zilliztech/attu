@@ -11,6 +11,7 @@ const successTrans = {
   reset: `{{name}}重置成功。`,
   modifyReplica: `{{name}}修改副本数量成功。`,
   passwordChanged: `密码更新成功`,
+  updateMmap: `{{name}}的Mmap设置已更新。`,
 };
 
 export default successTrans;

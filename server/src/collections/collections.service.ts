@@ -29,6 +29,8 @@ import {
   SearchSimpleReq,
   LoadState,
   ErrorCode,
+  AlterCollectionFieldPropertiesReq,
+  AlterIndexReq,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -204,17 +206,23 @@ export class CollectionsService {
     return newCollection[0];
   }
 
-  async alterCollection(clientId: string, data: AlterCollectionReq) {
+  async alterCollectionProperties(clientId: string, data: AlterCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.alterCollectionProperties(data);
+    return await milvusClient.alterCollectionProperties(data);
+  }
 
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
+  async alterCollectionFieldProperties(
+    clientId: string,
+    data: AlterCollectionFieldPropertiesReq
+  ) {
+    const { milvusClient } = clientCache.get(clientId);
 
-    return newCollection[0];
+    return await milvusClient.alterCollectionFieldProperties(data);
+  }
+
+  async alterIndex(clientId: string, data: AlterIndexReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    return await milvusClient.alterIndexProperties(data);
   }
 
   async dropCollection(clientId: string, data: DropCollectionReq) {
@@ -783,7 +791,10 @@ export class CollectionsService {
 
       // copy index.params withouth index_type and metric_type and params
       const indexParams = index.params.filter(
-        p => p.key !== 'index_type' && p.key !== 'metric_type' && p.key !== 'params'
+        p =>
+          p.key !== 'index_type' &&
+          p.key !== 'metric_type' &&
+          p.key !== 'params'
       );
       // get index parameter pairs
       const paramsJSONstring = findKeyValue(index.params, 'params'); // params is a json string
@@ -792,7 +803,11 @@ export class CollectionsService {
           getKeyValueListFromJsonString(paramsJSONstring as string)) ||
         [];
 
-      index.indexParameterPairs = [...metricTypePair, ...indexParams, ...params];
+      index.indexParameterPairs = [
+        ...metricTypePair,
+        ...indexParams,
+        ...params,
+      ];
     });
 
     // Return the response from the Milvus SDK's describeIndex function

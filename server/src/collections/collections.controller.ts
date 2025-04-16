@@ -5,6 +5,8 @@ import {
   LoadCollectionReq,
   IndexType,
   MetricType,
+  ResStatus,
+  ErrorCode,
 } from '@zilliz/milvus2-sdk-node';
 import {
   CreateAliasDto,
@@ -16,6 +18,7 @@ import {
   DuplicateCollectionDto,
   ManageIndexDto,
 } from './dto';
+import { MmapChanges } from '../types';
 
 export class CollectionController {
   private collectionsService: CollectionsService;
@@ -134,6 +137,9 @@ export class CollectionController {
     this.router.get('/:name/qsegments', this.getQSegment.bind(this));
     // compact
     this.router.put('/:name/compact', this.compact.bind(this));
+
+    // mmap settings
+    this.router.put('/:name/mmap', this.updateMmapSettings.bind(this));
 
     return this.router;
   }
@@ -261,7 +267,7 @@ export class CollectionController {
     const name = req.params?.name;
     const data = req.body;
     try {
-      const result = await this.collectionsService.alterCollection(
+      const result = await this.collectionsService.alterCollectionProperties(
         req.clientId,
         {
           collection_name: name,
@@ -640,6 +646,57 @@ export class CollectionController {
       });
 
       res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateMmapSettings(
+    req: Request<{ name: string }, ResStatus, MmapChanges[]>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const name = req.params?.name;
+    const data = req.body;
+    try {
+      const promises = [];
+      // loop through all fields and update the mmap settings, if it is raw, update fieldproperties, if it is index, update index
+      for (const field of data) {
+        if (typeof field.rawMmapEnabled !== 'undefined') {
+          promises.push(
+            await this.collectionsService.alterCollectionFieldProperties(
+              req.clientId,
+              {
+                collection_name: name,
+                field_name: field.fieldName,
+                properties: {
+                  'mmap.enabled': field.rawMmapEnabled,
+                },
+              }
+            )
+          );
+        }
+        if (typeof field.indexMmapEnabled !== 'undefined') {
+          promises.push(
+            this.collectionsService.alterIndex(req.clientId, {
+              collection_name: name,
+              index_name: field.fieldName,
+              params: {
+                'mmap.enabled': field.indexMmapEnabled,
+              },
+            })
+          );
+        }
+      }
+      const results = await Promise.all(promises);
+
+      // loop through results, if any of them is not success, return the promise
+      for (const result of results) {
+        if (result.error_code !== ErrorCode.SUCCESS) {
+          return result;
+        }
+      }
+      res.send(results[0]);
     } catch (error) {
       next(error);
     }

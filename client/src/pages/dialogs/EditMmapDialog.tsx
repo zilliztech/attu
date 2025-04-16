@@ -13,9 +13,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { DataService } from '@/http';
+import { CollectionService } from '@/http';
 import { makeStyles } from '@mui/styles';
-import { CollectionObject } from '@server/types';
+import { CollectionObject, MmapChanges } from '@server/types';
 import { findKeyValue } from '@/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -52,15 +52,10 @@ interface FieldMmapState {
   id: string;
   name: string;
   dataType: string;
+  indexName: string;
   rawMmapEnabled: boolean;
   indexMmapEnabled: boolean;
   hasIndex: boolean;
-}
-
-interface MmapChanges {
-  fieldName: string;
-  rawMmapEnabled?: boolean;
-  indexMmapEnabled?: boolean;
 }
 
 const EditMmapDialog: FC<EditMmapProps> = props => {
@@ -68,15 +63,17 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
 
   const classes = useStyles();
 
-  const { handleCloseDialog } = useContext(rootContext);
+  const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
+  const { t: successTrans } = useTranslation('success');
 
   // Current state of all fields (initial state)
   const [fieldsState, setFieldsState] = useState<FieldMmapState[]>(() => {
     return collection.schema!.fields.map(field => ({
       id: field.fieldID as string,
       name: field.name,
+      indexName: field.index?.index_name,
       dataType: field.data_type,
       rawMmapEnabled:
         findKeyValue(field.type_params, 'mmap.enabled') === 'true',
@@ -105,6 +102,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
         ...filtered,
         {
           fieldName: field.name,
+          indexName: field.indexName,
           rawMmapEnabled: enabled,
           // Preserve existing index change if it exists
           indexMmapEnabled: prev.find(c => c.fieldName === field.name)
@@ -131,6 +129,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
         ...filtered,
         {
           fieldName: field.name,
+          indexName: field.indexName,
           // Preserve existing raw change if it exists
           rawMmapEnabled: prev.find(c => c.fieldName === field.name)
             ?.rawMmapEnabled,
@@ -144,14 +143,23 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
     try {
       if (pendingChanges.length > 0) {
         console.log('Updating mmap settings:', pendingChanges);
-        // await DataService.updateCollectionMmapSettings(
-        //   collection.collection_name,
-        //   pendingChanges
-        // );
-      }
+        // Make the API call to update mmap settings
+        const res = await CollectionService.updateMmap(
+          collection.collection_name,
+          pendingChanges
+        );
 
-      // handleCloseDialog();
-      cb && cb();
+        if (res.error_code === 'Success') {
+          cb && cb();
+          openSnackBar(
+            successTrans('updateMmap', { name: collection.collection_name }),
+            'success'
+          );
+          handleCloseDialog();
+        } else {
+          openSnackBar(res.reason, 'error');
+        }
+      }
     } catch (error) {
       console.error('Error updating mmap settings:', error);
     }

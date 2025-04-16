@@ -11,6 +11,7 @@ const successTrans = {
   reset: `{{name}} has been reset.`,
   modifyReplica: `Replica number for {{name}} has been modified.`,
   passwordChanged: `Password updated successfully`,
+  updateMmap: `Mmap settings for {{name}} have been updated.`,
 };
 
 export default successTrans;
