@@ -11,8 +11,9 @@ const collectionTrans = {
   aliasTooltip: 'Please select one collection to create alias',
   collection: 'Collection',
   entities: 'entities',
+  mmapEnabled: 'MMap-Enabled',
   mmapSettings: 'MMap Settings',
-  collectionMMapSettingsLabel: 'Collection Level MMap Setting',
+  collectionMMapSettingsLabel: 'Collection Raw Data MMap Settings',
   rawData: 'Raw Data',
 
   // table

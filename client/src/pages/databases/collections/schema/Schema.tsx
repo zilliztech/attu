@@ -113,9 +113,30 @@ const Overview = () => {
                 />
               </Tooltip>
             ) : null}
-            {findKeyValue(f.type_params, 'mmap.enabled') === 'true' ? (
-              <Tooltip title={'MMap'} arrow>
-                <Chip className={classes.chip} size="small" label={'MMap'} />
+            {findKeyValue(f.type_params, 'mmap.enabled') === 'true' ||
+            isCollectionMmapEnabled ? (
+              <Tooltip title={collectionTrans('mmapTooltip')} arrow>
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={collectionTrans('mmapEnabled')}
+                  onClick={() => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <EditMmapDialog
+                            collection={collection!}
+                            cb={async () => {
+                              fetchCollection(collectionName);
+                            }}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                />
               </Tooltip>
             ) : null}
 
@@ -503,28 +524,28 @@ const Overview = () => {
                 placement="top"
                 arrow
               >
-                  <Chip
-                    className={classes.chip}
-                    label={collectionTrans('mmapSettings')}
-                    size="small"
-                    onDelete={async () => {
-                      setDialog({
-                        open: true,
-                        type: 'custom',
-                        params: {
-                          component: (
-                            <EditMmapDialog
-                              collection={collection}
-                              cb={async () => {
-                                fetchCollection(collectionName);
-                              }}
-                            />
-                          ),
-                        },
-                      });
-                    }}
-                    deleteIcon={<Icons.settings />}
-                  />
+                <Chip
+                  className={classes.chip}
+                  label={collectionTrans('mmapSettings')}
+                  size="small"
+                  onDelete={async () => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <EditMmapDialog
+                            collection={collection}
+                            cb={async () => {
+                              fetchCollection(collectionName);
+                            }}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                  deleteIcon={<Icons.settings />}
+                />
               </Tooltip>
             </div>
           </div>

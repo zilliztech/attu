@@ -11,9 +11,10 @@ const collectionTrans = {
   aliasTooltip: '请选择一个Collection创建别名',
   collection: 'Collection',
   entities: 'Entities',
+  mmapEnabled: '内存映射(MMap)',
   mmapSettings: 'MMap设置',
-  collectionMMapSettingsLabel: 'Collection级别MMap设置',
-  rawData: '原始数据',
+  collectionMMapSettingsLabel: '全局原始数据 MMap设置',
+  rawData: '全局内存映射(MMap)的原始数据配置',
 
   // table
   id: 'ID',
