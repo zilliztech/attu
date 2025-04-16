@@ -58,6 +58,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   handleClose,
   handleCancel,
   confirmLabel,
+  confirmDisaledTooltip,
   handleConfirm,
   confirmDisabled,
   children,
@@ -125,6 +126,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                   disabled={confirming || confirmDisabled}
                   name="confirm"
                   className="btn"
+                  tooltip={confirmDisabled ? confirmDisaledTooltip : ''}
                 >
                   {confirming ? <CircularProgress size={16} /> : confirm}
                 </CustomButton>

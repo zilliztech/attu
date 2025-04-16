@@ -8,6 +8,7 @@ const indexTrans = {
 
   create: '创建索引',
   index: '索引',
+  noIndex: '没有索引',
   desc: '描述',
   indexName: '索引名称',
 

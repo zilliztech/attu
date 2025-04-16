@@ -48,11 +48,6 @@ const Overview = () => {
     c => c.collection_name === collectionName
   );
 
-  // mmap enabled fields
-  const mmapEnabledFields = collection?.schema?.fields.filter(f =>
-    findKeyValue(f.type_params, 'mmap.enabled')
-  );
-
   // check if collection is mmap enabled
   const isCollectionMmapEnabled = collection?.properties!.some((p: any) => {
     return p.key === 'mmap.enabled' && p.value === 'true';
@@ -503,15 +498,14 @@ const Overview = () => {
                 </Tooltip>
               ) : null}
 
-              {isCollectionMmapEnabled ? (
-                <Tooltip
-                  title={collectionTrans('mmapEnabledTooltip')}
-                  placement="top"
-                  arrow
-                >
+              <Tooltip
+                title={collectionTrans('mmapTooltip')}
+                placement="top"
+                arrow
+              >
                   <Chip
-                    className={`${classes.chip}`}
-                    label={collectionTrans('mmapEnabled')}
+                    className={classes.chip}
+                    label={collectionTrans('mmapSettings')}
                     size="small"
                     onDelete={async () => {
                       setDialog({
@@ -531,8 +525,7 @@ const Overview = () => {
                     }}
                     deleteIcon={<Icons.settings />}
                   />
-                </Tooltip>
-              ) : null}
+              </Tooltip>
             </div>
           </div>
         </section>

@@ -8,6 +8,7 @@ const indexTrans = {
 
   create: 'Create Index',
   index: 'Index',
+  noIndex: 'No Index',
   desc: 'Description',
   indexName: 'Index Name',
 

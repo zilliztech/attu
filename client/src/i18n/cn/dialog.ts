@@ -1,5 +1,3 @@
-import { Edit } from '@mui/icons-material';
-
 const dialogTrans = {
   value: '值',
   deleteTipAction: '输入',
@@ -34,7 +32,7 @@ const dialogTrans = {
   resetPropertyInfo: '您确定要重置属性吗？',
   editEntityInfo: `注意：编辑PrimayKey字段将会创建一个新的实体。`,
   editAnalyzerInfo: `分析器以JSON格式定义，请参考milvus.io 了解<a href='https://milvus.io/docs/analyzer-overview.md' target='_blank'>更多信息</a>。`,
-  editMmapInfo: `在Milvus中，内存映射文件允许将文件内容直接映射到内存中。此功能提高了内存效率，特别是在可用内存稀缺但无法完全加载数据的情况下。选择要管理mmap设置的字段和索引。 <br /><br />注意：mmap设置仅在加载Collection后生效。`,
+  editMmapInfo: `在Milvus中，内存映射文件允许将原始数据和索引文件直接映射到内存中。此功能提高了内存效率，特别是在可用内存稀缺但无法完全加载数据的情况下。选择要管理mmap设置的字段和索引。 <br /><br />注意：mmap设置仅在加载Collection后生效。`,
 };
 
 export default dialogTrans;

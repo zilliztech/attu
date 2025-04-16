@@ -11,7 +11,9 @@ const collectionTrans = {
   aliasTooltip: 'Please select one collection to create alias',
   collection: 'Collection',
   entities: 'entities',
-  mmapEnabled: 'MMap Enabled',
+  mmapSettings: 'MMap Settings',
+  collectionMMapSettingsLabel: 'Collection Level MMap Setting',
+  rawData: 'Raw Data',
 
   // table
   id: 'ID',
@@ -151,7 +153,9 @@ const collectionTrans = {
   consistencySessionTooltip: `It ensures that all data writes can be immediately perceived in reads during the same session.`,
   consistencyEventuallyTooltip: `There is no guaranteed order of reads and writes, and replicas eventually converge to the same state given that no further write operations are done.`,
   noVectorIndexTooltip: `Please make sure all vector fields have index.`,
-  mmapEnabledTooltip: `MMap is enabled for the collection, it will override the MMap settings of the fields.`,
+  mmapTooltip: `Memory-mapped files allow for direct mapping of raw data and indexes into memory. This feature enhances memory efficiency, particularly in situations where available memory is scarce but complete data loading is infeasible.`,
+  mmapFieldSettingDisabledTooltip: `This setting is disabled because collection-level mmap configuration overrides field-level settings.`,
+  mmapCollectionNotReleasedTooltip: `Collection is not released, please release it first.`,
 
   clickToLoad: 'Click to load the collection.',
   clickToRelease: 'Click to release the collection.',
