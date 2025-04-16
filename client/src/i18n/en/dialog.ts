@@ -14,6 +14,7 @@ const dialogTrans = {
   editEntityTitle: `Edit Entity(JSON)`,
   editAnalyzerTitle: `Edit Analyzer`,
   modifyReplicaTitle: `Modify replica for {{type}}`,
+  manageMmapTitle: `Manage MMap settings for {{type}}`,
 
   loadContent: `You are trying to load a {{type}} with data. Only loaded {{type}} can be searched.`,
   releaseContent: `You are trying to release {{type}} with data. Please be aware that the data will no longer be available for search.`,
@@ -31,6 +32,7 @@ const dialogTrans = {
   resetPropertyInfo: `Are you sure you want to reset the property?`,
   editEntityInfo: `NOTE: Edit PrimayKey field will create a new entity.`,
   editAnalyzerInfo: `Analyzer is defined in JSON format, please refer to milvus.io for <a href='https://milvus.io/docs/analyzer-overview.md' target='_blank'>more information</a>.`,
+  editMmapInfo: `In Milvus, memory-mapped files allow for direct mapping of raw data and indexes into memory. This feature enhances memory efficiency, particularly in situations where available memory is scarce but complete data loading is infeasible. Please refer to milvus.io for <a href='https://milvus.io/docs/mmap.md' target='_blank'>more information</a>. <br /><br />Note: The mmap settings will only take effect after the collection is loaded.`,
 };
 
 export default dialogTrans;

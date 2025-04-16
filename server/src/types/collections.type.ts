@@ -120,3 +120,10 @@ export type DatabaseObject = {
   properties: KeyValuePair[];
   collections: string[];
 };
+
+export interface MmapChanges {
+  fieldName: string;
+  indexName: string;
+  rawMmapEnabled?: boolean;
+  indexMmapEnabled?: boolean;
+}

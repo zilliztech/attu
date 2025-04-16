@@ -15,6 +15,7 @@ import { useStyles } from './Styles';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
+import EditMmapDialog from '@/pages/dialogs/EditMmapDialog';
 import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
 import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
@@ -47,6 +48,11 @@ const Overview = () => {
     c => c.collection_name === collectionName
   );
 
+  // check if collection is mmap enabled
+  const isCollectionMmapEnabled = collection?.properties!.some((p: any) => {
+    return p.key === 'mmap.enabled' && p.value === 'true';
+  });
+
   // get fields
   const fields = collection?.schema?.fields || [];
 
@@ -55,7 +61,7 @@ const Overview = () => {
       id: 'name',
       align: 'left',
       disablePadding: true,
-      formatter(f) {
+      formatter(f: FieldObject) {
         return (
           <div className={classes.nameWrapper}>
             {f.name}
@@ -83,7 +89,7 @@ const Overview = () => {
             ) : null}
             {findKeyValue(f.type_params, 'enable_analyzer') ? (
               <Tooltip
-                title={findKeyValue(f.type_params, 'analyzer_params')}
+                title={findKeyValue(f.type_params, 'analyzer_params') as string}
                 arrow
               >
                 <Chip
@@ -103,6 +109,32 @@ const Overview = () => {
                       .catch(err => {
                         alert('Failed to copy: ' + err);
                       });
+                  }}
+                />
+              </Tooltip>
+            ) : null}
+            {findKeyValue(f.type_params, 'mmap.enabled') === 'true' ||
+            isCollectionMmapEnabled ? (
+              <Tooltip title={collectionTrans('mmapTooltip')} arrow>
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={collectionTrans('mmapEnabled')}
+                  onClick={() => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <EditMmapDialog
+                            collection={collection!}
+                            cb={async () => {
+                              fetchCollection(collectionName);
+                            }}
+                          />
+                        ),
+                      },
+                    });
                   }}
                 />
               </Tooltip>
@@ -448,46 +480,73 @@ const Overview = () => {
               <Typography variant="h5">
                 {collectionTrans('features')}
               </Typography>
-              <Typography variant="h6">
-                {isAutoIDEnabled ? (
-                  <Chip
-                    className={`${classes.chip} ${classes.featureChip}`}
-                    label={collectionTrans('autoId')}
-                    size="small"
-                  />
-                ) : null}
+              {isAutoIDEnabled ? (
+                <Chip
+                  className={`${classes.chip} ${classes.featureChip}`}
+                  label={collectionTrans('autoId')}
+                  size="small"
+                />
+              ) : null}
+              <Tooltip
+                title={
+                  consistencyTooltipsMap[collection.consistency_level!] || ''
+                }
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={`${classes.chip} ${classes.featureChip}`}
+                  label={`${collectionTrans('consistency')}: ${
+                    collection.consistency_level
+                  }`}
+                  size="small"
+                />
+              </Tooltip>
+
+              {collection &&
+              collection.schema &&
+              collection.schema.enable_dynamic_field ? (
                 <Tooltip
-                  title={
-                    consistencyTooltipsMap[collection.consistency_level!] || ''
-                  }
+                  title={collectionTrans('dynamicSchemaTooltip')}
                   placement="top"
                   arrow
                 >
                   <Chip
-                    className={`${classes.chip} ${classes.featureChip}`}
-                    label={`${collectionTrans('consistency')}: ${
-                      collection.consistency_level
-                    }`}
+                    className={`${classes.chip}`}
+                    label={collectionTrans('dynamicSchema')}
                     size="small"
                   />
                 </Tooltip>
+              ) : null}
 
-                {collection &&
-                collection.schema &&
-                collection.schema.enable_dynamic_field ? (
-                  <Tooltip
-                    title={collectionTrans('dynamicSchemaTooltip')}
-                    placement="top"
-                    arrow
-                  >
-                    <Chip
-                      className={`${classes.chip}`}
-                      label={collectionTrans('dynamicSchema')}
-                      size="small"
-                    />
-                  </Tooltip>
-                ) : null}
-              </Typography>
+              <Tooltip
+                title={collectionTrans('mmapTooltip')}
+                placement="top"
+                arrow
+              >
+                <Chip
+                  className={classes.chip}
+                  label={collectionTrans('mmapSettings')}
+                  size="small"
+                  onDelete={async () => {
+                    setDialog({
+                      open: true,
+                      type: 'custom',
+                      params: {
+                        component: (
+                          <EditMmapDialog
+                            collection={collection}
+                            cb={async () => {
+                              fetchCollection(collectionName);
+                            }}
+                          />
+                        ),
+                      },
+                    });
+                  }}
+                  deleteIcon={<Icons.settings />}
+                />
+              </Tooltip>
             </div>
           </div>
         </section>

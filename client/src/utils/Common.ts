@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import { Parser } from '@json2csv/plainjs';
-import type { KeyValuePair } from '@server/types';
+import type { KeyValuePair, TypeParamKey, TypeParam } from '@server/types';
 
 export const copyToCommand = (
   value: string,
@@ -97,5 +97,7 @@ export const saveCsvAs = (csvObj: any, as: string) => {
   }
 };
 
-export const findKeyValue = (obj: KeyValuePair[], key: string) =>
-  obj.find(v => v.key === key)?.value;
+export const findKeyValue = (
+  obj: KeyValuePair<TypeParamKey | string, TypeParam>[],
+  key: string
+) => obj.find(v => v.key === key)?.value;

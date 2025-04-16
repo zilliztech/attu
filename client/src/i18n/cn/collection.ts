@@ -11,12 +11,16 @@ const collectionTrans = {
   aliasTooltip: '请选择一个Collection创建别名',
   collection: 'Collection',
   entities: 'Entities',
+  mmapEnabled: '内存映射(MMap)',
+  mmapSettings: 'MMap设置',
+  collectionMMapSettingsLabel: '全局原始数据 MMap设置',
+  rawData: '全局内存映射(MMap)的原始数据配置',
 
   // table
   id: 'ID',
   name: '名称',
-  features: '特性',
-  nameTip: 'Collection名称',
+  features: 'Collection 特性',
+  nameTip: 'Collection 名称',
   status: '状态',
   desc: '描述',
   createdTime: '创建时间',
@@ -147,6 +151,9 @@ const collectionTrans = {
   consistencyEventuallyTooltip:
     '没有保证读写的顺序，副本最终会在没有进一步写操作的情况下收敛到相同的状态。',
   noVectorIndexTooltip: '请保证所有向量列都有索引。',
+  mmapTooltip: `内存映射文件允许将原始数据和索引文件直接映射到内存中。此功能提高了内存效率，尤其是在可用内存稀缺但无法完全加载数据的情况下。`,
+  mmapFieldSettingDisabledTooltip: `此设置已禁用，因为Collection级别的 mmap 配置覆盖了字段级别的设置。`,
+  mmapCollectionNotReleasedTooltip: `Collection没有释放， 无法更新mmap配置。`,
 
   clickToLoad: '点击加载collection',
   clickToRelease: '点击释放collection',

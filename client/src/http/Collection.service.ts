@@ -10,6 +10,7 @@ import {
   ResStatus,
   DescribeIndexRes,
   IndexObject,
+  MmapChanges,
 } from '@server/types';
 import { ManageRequestMethods } from '@/consts';
 import type {
@@ -150,6 +151,18 @@ export class CollectionService extends BaseModel {
   static queryData(collectionName: string, params: QueryParam) {
     return super.query({
       path: `/collections/${collectionName}/query`,
+      data: params,
+    });
+  }
+
+  static async updateMmap(
+    collectionName: string,
+    params: MmapChanges[]
+  ): Promise<ResStatus> {
+    const path = `/collections/${collectionName}/mmap`;
+
+    return super.update<ResStatus>({
+      path,
       data: params,
     });
   }

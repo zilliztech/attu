@@ -32,6 +32,7 @@ export type DialogContainerProps = {
   handleCancel?: () => void;
   handleConfirm: (param?: any) => void;
   confirmDisabled?: boolean;
+  confirmDisabledTooltip?: string;
   showActions?: boolean;
   showCancel?: boolean;
   leftActions?: ReactElement;
