@@ -76,7 +76,8 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
     const res = await createDatabase(form).finally(() => {
       setLoading(false);
     });
-    if (res.error_code === 'SUCCESS') {
+
+    if (res.error_code === 'Success') {
       openSnackBar(successTrans('create', { name: dbTrans('database') }));
 
       handleCloseDialog();
