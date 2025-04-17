@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Index() {
   // context
-  const { isAuth, isManaged, isDedicated } = useContext(authContext);
+  const { isAuth, isManaged, isDedicated, authReq } = useContext(authContext);
   const { database } = useContext(dataContext);
   const { versionInfo } = useContext(rootContext);
   // i18n
@@ -89,6 +89,7 @@ function Index() {
       label: navTrans('overview'),
       onClick: () => navigate('/'),
     },
+
     {
       icon: icons.database,
       label: navTrans('database'),
@@ -110,11 +111,24 @@ function Index() {
   }
 
   if (!isManaged) {
-    menuItems.push({
-      icon: icons.navSystem,
-      label: navTrans('system'),
-      onClick: () => navigate('/system'),
-    });
+    menuItems.push(
+      {
+        icon: icons.navSystem,
+        label: navTrans('system'),
+        onClick: () => navigate('/system'),
+      },
+      {
+        icon: icons.newWindow,
+        label: 'Milvus WebUI',
+        onClick: () => {
+          // open a link
+          window.open(
+            `http://${authReq.address.split(':')[0]}:9091/webui`,
+            '_blank'
+          );
+        },
+      }
+    );
   }
 
   // check if is connected
