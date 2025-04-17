@@ -73,7 +73,7 @@ docker run -p 8000:3000 \
 -e PRIVATE_KEY_PATH=/app/tls/client.key \
 -e CERT_CHAIN_PATH=/app/tls/client.pem \
 -e SERVER_NAME=your_server_name \
-zilliz/attu:dev
+zilliz/attu:v2.5
 ```
 
 #### Custom Server Port Example
@@ -87,7 +87,7 @@ docker run --network host \
 -e ATTU_LOG_LEVEL=info  \
 -e SERVER_NAME=your_server_name \
 -e SERVER_PORT=8080 \
-zilliz/attu:dev
+zilliz/attu:v2.5
 ```
 
 ### Running Attu within Kubernetes
@@ -127,11 +127,7 @@ If you prefer to use a desktop application, you can download the [desktop versio
 
 - I can't log into the system
   > Make sure that the IP address of the Milvus server can be accessed from the Attu container. [#161](https://github.com/zilliztech/attu/issues/161)
-- Mac M chip install app failed: attu.app is damaged and cannot be opened.
-  ```shell
-    sudo xattr -rd com.apple.quarantine /Applications/attu.app
-  ```
-- TBD
+- If you encounter issues installing the desktop app on Mac OS, refer to the note under [Install Desktop application](#install-desktop-application).
 
 ## More Screenshots
 
