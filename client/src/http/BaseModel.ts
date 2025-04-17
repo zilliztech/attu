@@ -1,84 +1,93 @@
 import http from './Axios';
-import { Method } from 'axios';
+import { Method, AxiosRequestConfig } from 'axios';
 
-type findParamsType = {
+type RequestParams = {
   method?: Method;
   path: string;
-  params: { [x: string]: any };
-  timeout?: number;
-};
-
-type updateParamsType = {
-  path: string;
+  params?: Record<string, any>;
   data?: any;
+  timeout?: number;
+  config?: AxiosRequestConfig;
 };
 
 export default class BaseModel {
-  static async findAll<T>(data: findParamsType) {
-    const { params = {}, path = '', method = 'get' } = data;
-    const type = method === 'post' ? 'data' : 'params';
-    const httpConfig = {
+  /**
+   * Fetch multiple items
+   */
+  static async find<T>(options: RequestParams): Promise<T> {
+    const { method = 'get', path, params = {}, config } = options;
+    const requestConfig: AxiosRequestConfig = {
       method,
       url: path,
-      [type]: { ...params },
+      ...config,
     };
 
-    const res = await http(httpConfig);
-    let list = res.data.data || [];
-    if (!Array.isArray(list)) {
-      return list as T;
+    if (method.toLowerCase() === 'get') {
+      requestConfig.params = params;
+    } else {
+      requestConfig.data = params;
     }
 
-    return Object.assign(list, {
-      _total: res.data.data.total_count || list.length,
-    } as T);
-  }
-
-  static async search<T>(data: findParamsType) {
-    const { method = 'get', params = {}, path = '', timeout } = data;
-    const httpConfig = {
-      method,
-      url: path,
-      params,
-    } as any;
-    if (timeout) httpConfig.timeout = timeout;
-    const res = await http(httpConfig);
-    return (res.data.data || {}) as T;
+    const response = await http(requestConfig);
+    return response.data?.data as T;
   }
 
   /**
-   * Create instance in database
+   * Search with flexible parameters
    */
-  static async create<T>(options: updateParamsType) {
-    const { path, data } = options;
-    const res = await http.post(path, data);
-    return (res.data.data || {}) as T;
+  static async search<T>(options: RequestParams): Promise<T> {
+    return this.find<T>(options);
   }
 
-  static async update<T>(options: updateParamsType) {
-    const { path, data } = options;
-    const res = await http.put(path, data);
-
-    return (res.data.data || {}) as T;
+  /**
+   * Create a new resource
+   */
+  static async create<T>(options: RequestParams): Promise<T> {
+    const { path, data = {}, config } = options;
+    const response = await http.post(path, data, config);
+    return response.data?.data as T;
   }
 
-  static async delete<T>(options: updateParamsType) {
-    const { path, data } = options;
-
-    const res = await http.delete(path, { data: data });
-
-    return res.data as T;
+  /**
+   * Update an existing resource
+   */
+  static async update<T>(options: RequestParams): Promise<T> {
+    const { path, data = {}, config } = options;
+    const response = await http.put(path, data, config);
+    return response.data?.data as T;
   }
 
-  static async batchDelete<T>(options: updateParamsType) {
-    const { path, data } = options;
-    const res = await http.post(path, data);
-    return res.data as T;
+  /**
+   * Delete a resource
+   */
+  static async delete<T>(options: RequestParams): Promise<T> {
+    const { path, params = {}, config } = options;
+    const response = await http.delete(path, { 
+      data: params,
+      ...config 
+    });
+    return response.data?.data as T;
   }
 
-  static async query(options: updateParamsType) {
-    const { path, data } = options;
-    const res = await http.post(path, data);
-    return res.data.data;
+  /**
+   * Batch delete resources
+   */
+  static async batchDelete<T>(options: RequestParams): Promise<T> {
+    return this.create<T>({
+      ...options,
+      method: 'post',
+      path: `${options.path}/batch-delete`,
+    });
+  }
+
+  /**
+   * Custom query
+   */
+  static async query<T>(options: RequestParams): Promise<T> {
+    return this.find<T>({
+      ...options,
+      params: options.data,
+      method: 'post',
+    });
   }
 }

@@ -10,7 +10,7 @@ export class PartitionService extends BaseModel {
   static getPartitions(collectionName: string) {
     const path = `/partitions`;
 
-    return super.findAll<PartitionData[]>({
+    return super.find<PartitionData[]>({
       path,
       params: { collection_name: collectionName },
     });

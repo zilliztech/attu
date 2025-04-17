@@ -22,11 +22,11 @@ export class CollectionService extends BaseModel {
   static getCollections(data?: {
     type: ShowCollectionsType;
   }): Promise<CollectionObject[]> {
-    return super.findAll({ path: `/collections`, params: data || {} });
+    return super.find({ path: `/collections`, params: data || {} });
   }
 
   static getCollectionsNames(data?: { db_name: string }): Promise<string[]> {
-    return super.findAll({ path: `/collections/names`, params: data || {} });
+    return super.find({ path: `/collections/names`, params: data || {} });
   }
 
   static describeCollectionUnformatted(collectionName: string) {
@@ -121,7 +121,7 @@ export class CollectionService extends BaseModel {
   }
 
   static async describeIndex(collectionName: string): Promise<IndexObject[]> {
-    const res = await super.findAll<DescribeIndexRes>({
+    const res = await super.find<DescribeIndexRes>({
       path: `/collections/index`,
       params: { collection_name: collectionName },
     });
