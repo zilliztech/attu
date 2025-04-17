@@ -62,4 +62,5 @@ export type IconsType =
   | 'img'
   | 'fileplus'
   | 'file'
-  | 'eye';
+  | 'eye'
+  | 'newWindow';
