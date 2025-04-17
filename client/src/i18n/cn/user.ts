@@ -1,6 +1,6 @@
 const userTrans = {
   createTitle: '创建用户',
-  updateTitle: '更新Milvus用户',
+  updateTitle: '更新 Milvus 用户',
   updateUserPassTitle: `更新 {{username}} 的密码`,
   updateRoleTitle: '更新用户角色',
   user: '用户',
@@ -13,14 +13,14 @@ const userTrans = {
   update: '更新密码',
   changePassword: '修改密码',
   isNotSame: '与新密码不同',
-  deleteTip: '请至少选择一个要删除的用户，不能删除root用户。',
-  deleteRoleTip: '请至少选择一个要删除的角色，不能删除admin/public 角色。',
+  deleteTip: '请至少选择一个要删除的用户，不能删除 root 用户。',
+  deleteRoleTip: '请至少选择一个要删除的角色，不能删除 admin/public 角色。',
   editPassword: '修改密码',
   editPassDisabledTip: '请选择一个用户进行编辑。',
 
   // role
-  deleteEditRoleTip: '请选择一个角色，并且root角色不可编辑。',
-  disableEditRolePrivilegeTip: 'admin和public角色不可编辑。',
+  deleteEditRoleTip: '请选择一个角色，并且 root 角色不可编辑。',
+  disableEditRolePrivilegeTip: 'admin 和 public 角色不可编辑。',
 
   role: '角色',
   editRole: '编辑角色',
@@ -47,8 +47,8 @@ const userTrans = {
   deletePrivilegGroupWarning: '您正在尝试删除权限组，请确保没有角色与其绑定。',
   createPrivilegeGroupTitle: '创建权限组',
   updatePrivilegeGroupTitle: '更新权限组',
-  allCollections: '所有集合',
-  allDatabases: '所有Database 及所有集合',
+  allCollections: '所有 Collection',
+  allDatabases: '所有 Database 及所有 Collection',
 
   collections: 'Collection',
   collection: 'Collection',
@@ -62,7 +62,7 @@ const userTrans = {
   IndexPrivileges: 'Index 相关权限',
   EntityPrivileges: 'Entity 相关权限',
   ResourceManagementPrivileges: '资源管理相关权限',
-  RBACPrivileges: 'RBAC相关权限',
+  RBACPrivileges: 'RBAC 相关权限',
 
   CollectionPrivilegeGroups: '内置权限组',
   DatabasePrivilegeGroups: '内置权限组',
