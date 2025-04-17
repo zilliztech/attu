@@ -152,14 +152,10 @@ const Header: FC = () => {
           <UpdateUser
             username={username}
             onUpdate={res => {
-              if (res.error_code === 'Success') {
-                openSnackBar(successTrans('passwordChanged'));
-                handleCloseDialog();
-                setAnchorEl(null);
-                logout();
-              } else {
-                openSnackBar(res.detail, 'error');
-              }
+              openSnackBar(successTrans('passwordChanged'));
+              handleCloseDialog();
+              setAnchorEl(null);
+              logout();
             }}
             handleClose={handleCloseDialog}
           />

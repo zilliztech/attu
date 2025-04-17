@@ -158,7 +158,6 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
 
   const handleConfirm = async () => {
     // Make the API call to update mmap settings
-
     try {
       if (pendingCollectionMmap !== isCollectionMmapEnabled) {
         await setCollectionProperty(
@@ -173,14 +172,10 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
           pendingChanges
         );
 
-        if (res.error_code === 'Success') {
-          openSnackBar(
-            successTrans('updateMmap', { name: collection.collection_name }),
-            'success'
-          );
-        } else {
-          openSnackBar(res.reason, 'error');
-        }
+        openSnackBar(
+          successTrans('updateMmap', { name: collection.collection_name }),
+          'success'
+        );
       }
     } catch (error) {
       console.error('Error updating mmap settings:', error);

@@ -19,24 +19,12 @@ const DropCollectionDialog: FC<DropCollectionProps> = props => {
       res.push(await dropCollection(item.collection_name));
     }
 
-    if (res.some(item => item.error_code !== 'Success')) {
-      // show error message
-      openSnackBar(
-        res
-          .filter(item => item.error_code !== 'Success')
-          .map(item => item.reason)
-          .join(', '),
-        'error'
-      );
-      return;
-    } else {
-      // show success message
-      openSnackBar(
-        successTrans('delete', {
-          name: collectionTrans('collection'),
-        })
-      );
-    }
+    // show success message
+    openSnackBar(
+      successTrans('delete', {
+        name: collectionTrans('collection'),
+      })
+    );
 
     handleCloseDialog();
     onDelete && (await onDelete());

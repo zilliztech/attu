@@ -117,12 +117,7 @@ const Roles = () => {
         roleName: role.roleName,
         force,
       };
-      const d: any = await UserService.deleteRole(param);
-
-      if (d.error_code !== 'Success') {
-        openSnackBar(d.data.reason, 'error');
-        return;
-      }
+      await UserService.deleteRole(param);
     }
 
     openSnackBar(successTrans('delete', { name: userTrans('role') }));

@@ -72,10 +72,7 @@ const Users = () => {
 
   const handleCreate = async (data: CreateUserParams) => {
     const s: any = await UserService.createUser(data);
-    if (s.error_code !== 'Success') {
-      openSnackBar(s.reason, 'error');
-      return;
-    }
+
     // assign user role if
     await UserService.updateUserRole({
       username: data.username,
@@ -96,13 +93,9 @@ const Users = () => {
   };
 
   const onUpdateUserPass = async (res: any) => {
-    if (res.error_code === 'Success') {
-      openSnackBar(successTrans('passwordChanged'));
-      fetchUsers();
-      handleCloseDialog();
-    } else {
-      openSnackBar(res.detail, 'error');
-    }
+    openSnackBar(successTrans('passwordChanged'));
+    fetchUsers();
+    handleCloseDialog();
   };
 
   const handleDelete = async () => {
