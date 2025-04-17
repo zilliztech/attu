@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -17,34 +17,35 @@ import type {
 const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
   const { onChange, className, initValue = 'and' } = props;
   const [operator, setOperator] = useState(initValue);
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newOp: string
-  ) => {
-    if (newOp !== null) {
-      setOperator(newOp);
-      onChange(newOp);
-    }
-  };
+  const handleChange = useCallback(
+    (
+      event: React.MouseEvent<HTMLElement>,
+      newOp: string
+    ) => {
+      if (newOp !== null) {
+        setOperator(newOp);
+        onChange(newOp);
+      }
+    },
+    [onChange]
+  );
   return (
-    <>
-      <div className={`${className} op-${operator}`}>
-        <ToggleButtonGroup
-          value={operator}
-          exclusive
-          onChange={handleChange}
-          aria-label="Binary Logical Operator"
-        >
-          <ToggleButton value="and" aria-label="And">
-            AND
-          </ToggleButton>
-          <ToggleButton value="or" aria-label="Or">
-            OR
-          </ToggleButton>
-        </ToggleButtonGroup>
-        <div className="op-split" />
-      </div>
-    </>
+    <div className={`${className} op-${operator}`}>
+      <ToggleButtonGroup
+        value={operator}
+        exclusive
+        onChange={handleChange}
+        aria-label="Binary Logical Operator"
+      >
+        <ToggleButton value="and" aria-label="And">
+          AND
+        </ToggleButton>
+        <ToggleButton value="or" aria-label="Or">
+          OR
+        </ToggleButton>
+      </ToggleButtonGroup>
+      <div className="op-split" />
+    </div>
   );
 };
 

@@ -42,15 +42,15 @@ const CustomDialog: FC<CustomDialogType> = props => {
     cancelLabel = t('cancel'),
     confirmClass = '',
     handleClose,
+    component: CustomComponent,
   } = params;
-  const { component: CustomComponent } = params;
 
   const handleConfirm = async (event: React.FormEvent<HTMLFormElement>) => {
     if (confirm) {
       const res = await confirm();
       if (!res) return;
     }
-    handleClose ? handleClose() : onClose();
+    (handleClose || onClose)();
     event.preventDefault();
   };
 
@@ -59,7 +59,7 @@ const CustomDialog: FC<CustomDialogType> = props => {
       const res = await cancel();
       if (!res) return;
     }
-    handleClose ? handleClose() : onClose();
+    (handleClose || onClose)();
   };
 
   return (

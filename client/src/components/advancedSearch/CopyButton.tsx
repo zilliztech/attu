@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import icons from '../icons/Icons';
@@ -15,7 +15,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
   const { t: commonTrans } = useTranslation();
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
-  const unsecuredCopyToClipboard = (v: string) => {
+  const unsecuredCopyToClipboard = useCallback((v: string) => {
     const textArea = document.createElement('textarea');
     textArea.style.position = 'fixed';
     textArea.style.opacity = '0';
@@ -30,21 +30,26 @@ const CopyButton: FC<CopyButtonProps> = props => {
       console.error('Unable to copy to clipboard', err);
     }
     document.body.removeChild(textArea);
-  };
+  }, []);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, v: string) => {
-    event.stopPropagation();
-
-    if (typeof v === 'object') {
-      v = JSON.stringify(v);
-    }
-
-    setTooltipTitle(commonTrans('copy.copied'));
-    navigator.clipboard?.writeText(v) ?? unsecuredCopyToClipboard(v);
-    setTimeout(() => {
-      setTooltipTitle(commonTrans('copy.copy'));
-    }, 1000);
-  };
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>, v: string) => {
+      event.stopPropagation();
+      if (typeof v === 'object') {
+        v = JSON.stringify(v);
+      }
+      setTooltipTitle(commonTrans('copy.copied'));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(v);
+      } else {
+        unsecuredCopyToClipboard(v);
+      }
+      setTimeout(() => {
+        setTooltipTitle(commonTrans('copy.copy'));
+      }, 1000);
+    },
+    [commonTrans, unsecuredCopyToClipboard]
+  );
 
   return (
     <CustomIconButton

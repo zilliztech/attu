@@ -36,9 +36,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
 }) => {
   const theme = useTheme();
   const classes = getStyles();
-
   const { t: commonTrans } = useTranslation();
-
   const highlightTheme = theme.palette.mode === 'dark' ? vs2015 : github;
 
   return (
@@ -52,7 +50,7 @@ const CodeBlock: FC<CodeBlockProps> = ({
         language={language}
         style={{ ...highlightTheme, ...style }}
         customStyle={CodeStyle}
-        showLineNumbers={true}
+        showLineNumbers
       >
         {code}
       </SyntaxHighlighter>

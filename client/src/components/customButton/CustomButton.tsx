@@ -26,13 +26,11 @@ const CustomButton = ({
   ...props
 }: CustomButtonProps) => {
   const button = <Button disabled={disabled} {...props} />;
-
-  return tooltip ? (
+  if (!tooltip) return button;
+  return (
     <Tooltip title={tooltip} placement={tooltipPlacement}>
       {disabled ? <span>{button}</span> : button}
     </Tooltip>
-  ) : (
-    button
   );
 };
 

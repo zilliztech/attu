@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Theme, IconButton, TextField, SelectChangeEvent } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import CloseIcon from '@mui/icons-material/Close';
@@ -33,8 +33,6 @@ const Condition: FC<ConditionProps> = props => {
     initData?.isCorrect || false
   );
 
-  const [isKeyLegal, setIsKeyLegal] = useState(initData?.isCorrect || false);
-
   /**
    * Check condition's value by field's and operator's type.
    * Trigger condition change event.
@@ -42,19 +40,13 @@ const Condition: FC<ConditionProps> = props => {
   useEffect(() => {
     const type = conditionField?.data_type;
     const conditionValueWithNoSpace = conditionValue.replaceAll(' ', '');
-    let isKeyLegal = false;
     let isLegal = checkValue({
       value: conditionValueWithNoSpace,
       type,
       operator,
     });
-
-    // if type is json, check the json key is valid
-    if (type === DataTypeStringEnum.JSON) {
-      isKeyLegal = jsonKeyValue.trim() !== '';
-    }
-
-    setIsKeyLegal(isKeyLegal);
+    const isKeyLegal =
+      type === DataTypeStringEnum.JSON ? jsonKeyValue.trim() !== '' : true;
     setIsValueLegal(isLegal);
     triggerChange(id, {
       field: conditionField,
@@ -68,7 +60,6 @@ const Condition: FC<ConditionProps> = props => {
           type !== DataTypeStringEnum.JSON),
       id,
     });
-    // No need for 'id' and 'triggerChange'.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionField, operator, conditionValue, jsonKeyValue]);
 
@@ -78,33 +69,42 @@ const Condition: FC<ConditionProps> = props => {
     if (conditionField.data_type === DataTypeStringEnum.Bool) {
       const data = LOGICAL_OPERATORS.filter(v => v.value === '==');
       setOperator(data[0].value);
-      // bool only support ==
       return data;
     }
     return LOGICAL_OPERATORS;
   }, [conditionField]);
 
-  // Logic operator input change.
-  const handleOpChange = (event: SelectChangeEvent<unknown>) => {
+  const handleOpChange = useCallback((event: SelectChangeEvent<unknown>) => {
     setOperator(event.target.value);
-  };
-  // Field Name input change.
-  const handleFieldNameChange = (event: SelectChangeEvent<unknown>) => {
-    const value = event.target.value;
-    const target = fields.find(field => field.name === value);
-    target && setConditionField(target);
-  };
-  // Value input change.
-  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setConditionValue(value);
-  };
+  }, []);
 
-  // Value JSON change.
-  const handleJSONKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setJsonKeyValue(value);
-  };
+  const handleFieldNameChange = useCallback(
+    (event: SelectChangeEvent<unknown>) => {
+      const value = event.target.value;
+      const target = fields.find(field => field.name === value);
+      if (target) setConditionField(target);
+    },
+    [fields]
+  );
+
+  const handleValueChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setConditionValue(event.target.value);
+    },
+    []
+  );
+
+  const handleJSONKeyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setJsonKeyValue(event.target.value);
+    },
+    []
+  );
+
+  const isKeyLegal =
+    conditionField?.data_type === DataTypeStringEnum.JSON
+      ? jsonKeyValue.trim() !== ''
+      : true;
 
   return (
     <div className={`${classes.wrapper} ${className}`} {...others}>
@@ -116,17 +116,16 @@ const Condition: FC<ConditionProps> = props => {
         variant="filled"
         wrapperClass={classes.fieldName}
       />
-      {conditionField?.data_type === DataTypeStringEnum.JSON ? (
+      {conditionField?.data_type === DataTypeStringEnum.JSON && (
         <TextField
           className={classes.key}
           label="key"
           variant="filled"
           value={jsonKeyValue}
-          // size="small"
           onChange={handleJSONKeyChange}
           error={!isKeyLegal}
         />
-      ) : null}
+      )}
       <CustomSelector
         label="Logic"
         value={operator}
