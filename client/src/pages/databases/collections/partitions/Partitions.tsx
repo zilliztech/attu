@@ -90,19 +90,8 @@ const Partitions = () => {
 
   // on delete
   const onDelete = (res: ResStatus[]) => {
-    let hasError = false;
-    res.forEach(r => {
-      if (r.error_code !== 'Success') {
-        console.log('delete error', r);
-        openSnackBar(r.reason, 'error');
-        hasError = true;
-        return;
-      }
-    });
-
     fetchPartitions(collectionName);
 
-    if (hasError) return;
     openSnackBar(successTrans('delete', { name: t('partition') }));
   };
 

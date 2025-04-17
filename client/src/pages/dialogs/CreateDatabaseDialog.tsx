@@ -77,17 +77,14 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
       setLoading(false);
     });
 
-    if (res.error_code === 'Success') {
-      openSnackBar(successTrans('create', { name: dbTrans('database') }));
+    openSnackBar(successTrans('create', { name: dbTrans('database') }));
 
-      handleCloseDialog();
+    handleCloseDialog();
 
-      if (onCreate) {
-        onCreate();
-      }
-    } else {
-      openSnackBar(res.reason, 'error');
+    if (onCreate) {
+      onCreate();
     }
+
     setLoading(false);
   };
 

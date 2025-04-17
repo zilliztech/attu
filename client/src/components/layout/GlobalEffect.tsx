@@ -30,13 +30,27 @@ const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
     if (axiosResInterceptor === null) {
       axiosResInterceptor = axiosInstance.interceptors.response.use(
         (response: any) => {
-          if (
-            response.statusCode &&
-            response.statusCode !== HTTP_STATUS_CODE.OK
-          ) {
+          // Handle successful responses
+          const isHttpError =
+            response.statusCode && response.statusCode !== 200;
+
+          // check if the response is type of ResStatus and ResStatus.error_code !== 'Success'
+          const isResStatusError =
+            response.data &&
+            response.data.data &&
+            typeof response.data.data.error_code === 'string' &&
+            response.data.data.error_code !== 'Success';
+
+          if (isHttpError) {
             openSnackBar(response.data.message, 'warning');
             return Promise.reject(response.data);
           }
+
+          if (isResStatusError) {
+            openSnackBar(response.data.data.reason, 'error');
+            return Promise.reject(response.data.data.reason);
+          }
+
           return response;
         },
         error => {
