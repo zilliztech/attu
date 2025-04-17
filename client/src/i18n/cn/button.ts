@@ -46,28 +46,28 @@ const btnTrans = {
   downloadChart: '下载图表',
   editDefaultValue: '编辑默认值',
   viewData: '查看数据',
-  mmapSetting: '内存映射(MMap)设置',
+  mmapSetting: '内存映射 (MMap) 设置',
 
   // tips
-  loadColTooltip: '加载Collection',
-  releaseColTooltip: '释放Collection',
-  importFileTooltip: '导入JSON或者CSV文件',
+  loadColTooltip: '加载 Collection',
+  releaseColTooltip: '释放 Collection',
+  importFileTooltip: '导入 JSON 或者 CSV 文件',
   importSampleDataTooltip: '导入样例数据',
-  exportTooltip: '将选择的查询结果导出到CSV文件',
-  copyJsonTooltip: '复制所选的数据为JSON格式',
+  exportTooltip: '将选择的查询结果导出到 CSV 文件',
+  copyJsonTooltip: '复制所选的数据为 JSON 格式',
   emptyTooltip: '清空所有数据',
   deleteTooltip: '删除所选的数据',
-  deleteColTooltip: '删除所选的collection',
-  duplicateTooltip: '复制collection，不包含数据',
-  renameTooltip: '重命名collection',
-  editEntityTooltip: '编辑entity',
+  deleteColTooltip: '删除所选的 Collection',
+  duplicateTooltip: '复制 Collection，不包含数据',
+  renameTooltip: '重命名 Collection',
+  editEntityTooltip: '编辑 Entity',
   viewDataTooltip: '查看详细数据',
 
   // disable tooltip
   downloadDisabledTooltip: '导出前请先选择数据。',
   deleteDisableTooltip: '请至少选择一个要删除的项目。',
-  editEntityDisabledTooltip: '一次只能编辑一个entity。',
-  editEntityDisabledTooltipAutoId: 'auto-id数据无法编辑。',
+  editEntityDisabledTooltip: '一次只能编辑一个 Entity。',
+  editEntityDisabledTooltipAutoId: 'auto-id 数据无法编辑。',
 };
 
 export default btnTrans;
