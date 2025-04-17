@@ -37,21 +37,28 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   cardWrapper: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap', // Changed from 'wrap' to 'nowrap'
+    overflowX: 'auto', // Add horizontal scrolling
     '& > div:not(:last-child)': { marginRight: theme.spacing(1.5) },
     height: 200,
+    // Optional: hide scrollbar for cleaner look (works in some browsers)
+    scrollbarWidth: 'none', // Firefox
+    '&::-webkit-scrollbar': {
+      // Chrome, Safari
+      display: 'none',
+    },
   },
   card: {
     backgroundColor: theme.palette.background.default,
     borderRadius: 8,
     padding: theme.spacing(1.5, 2),
     boxSizing: 'border-box',
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 'calc(33.333% - 12px)',
+    flexGrow: 0, // Changed from 1 to prevent stretching
+    flexShrink: 0, // Changed from 1 to prevent shrinking
+    flexBasis: 'auto', // Changed from calc
+    width: 'calc(33.333% - 8px)', // Use width instead of flex-basis
+    minWidth: 200, // Minimum width for each card
     height: '100%',
-    minWidth: 200,
-    flexWrap: 'wrap',
   },
   icon: {
     fontSize: '20px',
