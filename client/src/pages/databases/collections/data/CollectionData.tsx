@@ -96,6 +96,7 @@ const CollectionData = (props: CollectionDataProps) => {
   const handleFilterSubmit = async (expression: string) => {
     // update UI expression
     setQueryState({ ...queryState, expr: expression });
+    setExprInput(expression);
   };
   const handlePageChange = async (e: any, page: number) => {
     // do the query
