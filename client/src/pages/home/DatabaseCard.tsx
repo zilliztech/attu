@@ -10,7 +10,7 @@ import { rootContext, authContext } from '@/context';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import { CREATE_DB } from './Home';
 import { makeStyles } from '@mui/styles';
-import type { DatabaseObject } from '@server/types';
+import type { DatabaseObject, ResStatus } from '@server/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -89,7 +89,7 @@ export interface DatabaseCardProps {
   wrapperClass?: string;
   database: DatabaseObject;
   setDatabase: (database: string) => void;
-  dropDatabase: (params: { db_name: string }) => Promise<void>;
+  dropDatabase: (params: { db_name: string }) => Promise<ResStatus>;
   isActive?: boolean;
 }
 

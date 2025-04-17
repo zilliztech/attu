@@ -83,8 +83,8 @@ const Home = () => {
       unit = withinOneHour
         ? homeTrans('minutes')
         : withinOneDay
-        ? homeTrans('hours')
-        : homeTrans('day');
+          ? homeTrans('hours')
+          : homeTrans('day');
     }
 
     return `${duration.toFixed(2)} ${unit}`;
