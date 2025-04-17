@@ -45,7 +45,7 @@ export const logWebSocketRequest = (
   console.log(logMessage);
 };
 
-export function initWebSocket(server: http.Server) {
+export const initWebSocket = (server: http.Server) => {
   io = new Server(server, {
     cors: {
       origin: '*',
@@ -82,8 +82,10 @@ export function initWebSocket(server: http.Server) {
 
   io.use((socket, next) => {
     const originalEmit = socket.emit;
-    socket.emit = function (event: string, ...args: any[]) {
+    // Convert the assigned function to an arrow function
+    socket.emit = (event: string, ...args: any[]) => {
       logWebSocketRequest(socket, event, args, 'out');
+      // Use .apply() with the correct context (socket)
       return originalEmit.apply(socket, [event, ...args]);
     };
     next();
@@ -95,4 +97,4 @@ export function initWebSocket(server: http.Server) {
       console.error(chalk.red(`ws server error: ${error.message}`));
     }
   });
-}
+};
