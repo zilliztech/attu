@@ -35,6 +35,10 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # => Reinstall production dependencies and clean cache
 RUN yarn install --production && yarn cache clean
+
+# Remove git
+RUN apt-get remove -y git && rm -rf /var/lib/apt/lists/*
+
 # Make our shell script executable
 RUN chmod +x /app/build/env.sh
 
