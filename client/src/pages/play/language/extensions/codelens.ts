@@ -5,7 +5,8 @@ import { EditorView, Decoration, DecorationSet } from '@codemirror/view';
 import { AxiosError } from 'axios';
 import { MILVUS_RESTFUL_DOC_URL, CLOUD_RESTFUL_DOC_URL } from '@/consts';
 import { CustomEventNameEnum, PlaygroundExtensionParams } from '../../Types';
-import { playgroundRequest, DocumentEventManager } from '../../utils';
+import { DocumentEventManager } from '../../utils';
+import { MilvusService } from '@/http';
 
 class CodeLensWidget extends WidgetType {
   constructor(
@@ -138,11 +139,11 @@ export const codeLensDecoration = (options: PlaygroundExtensionParams) =>
                     { loading: true, response: 'running' }
                   );
 
-                  const res = await playgroundRequest(params);
+                  const data = await MilvusService.request(params);
 
                   DocumentEventManager.dispatch(
                     CustomEventNameEnum.PlaygroundResponseDetail,
-                    { response: res.data, loading: false }
+                    { response: data, loading: false }
                   );
 
                   // if param body contains collectionName, dispatch PlaygroundCollectionUpdate event
