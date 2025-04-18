@@ -10,32 +10,6 @@ export default defineConfig({
   // comment this out if that isn't relevant for your project
   build: {
     outDir: 'build',
-    rollupOptions: { // Add rollupOptions here
-      output: {
-        manualChunks(id) {
-          // Split vendor code into a separate chunk
-          if (id.includes('node_modules')) {
-            // Example: Split MUI into its own chunk
-            // if (id.includes('@mui')) {
-            //   return 'vendor-mui';
-            // }
-            // Example: Split react related libs into its own chunk
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
-            }
-            // Example: Split codemirror related libs into its own chunk
-            if (id.includes('codemirror') || id.includes('@codemirror') || id.includes('@lezer')) {
-              return 'vendor-codemirror';
-            }
-            // Example: Split d3 into its own chunk
-            if (id.includes('d3')) {
-              return 'vendor-d3';
-            }
-            return 'vendor'; // All other node_modules go here
-          }
-        },
-      },
-    },
   },
   server: {
     port: 3001,
