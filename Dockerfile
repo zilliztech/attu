@@ -30,6 +30,9 @@ COPY --from=builder /app/client/build /app/build
 COPY --from=builder /app/server/package.json /app/package.json
 COPY --from=builder /app/server/yarn.lock /app/yarn.lock
 
+# Install git
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 # => Reinstall production dependencies and clean cache
 RUN yarn install --production && yarn cache clean
 # Make our shell script executable
