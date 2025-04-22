@@ -9,6 +9,7 @@ import {
   QuerySegmentInfo,
   PersistentSegmentInfo,
   FunctionType,
+  SearchResults,
 } from '@zilliz/milvus2-sdk-node';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '../utils';
 
@@ -126,4 +127,9 @@ export interface MmapChanges {
   indexName: string;
   rawMmapEnabled?: boolean;
   indexMmapEnabled?: boolean;
+}
+
+
+export type VectorSearchResults = SearchResults & {
+  latency: number;
 }

@@ -6,6 +6,8 @@ export {
   RerankerObj,
   TypeParamKey,
   TypeParam,
+  QueryResults,
+  SearchResultData,
 } from '@zilliz/milvus2-sdk-node';
 
 export * from './collections.type';

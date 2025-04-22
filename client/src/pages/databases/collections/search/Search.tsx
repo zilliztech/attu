@@ -37,7 +37,6 @@ import DataExplorer, { formatMilvusData } from './DataExplorer';
 import {
   SearchParams as SearchParamsType,
   SearchSingleParams,
-  SearchResultView,
 } from '../../types';
 import { DYNAMIC_FIELD } from '@/consts';
 import CodeDialog from '@/pages/dialogs/CodeDialog';
@@ -45,7 +44,11 @@ import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
 import type { GraphData, GraphNode } from '../../types';
 import type { ColDefinitionsType } from '@/components/grid/Types';
-import type { CollectionObject, CollectionFullObject } from '@server/types';
+import type {
+  CollectionObject,
+  CollectionFullObject,
+  VectorSearchResults,
+} from '@server/types';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -177,7 +180,7 @@ const Search = (props: CollectionDataProps) => {
 
   // set search result
   const setSearchResult = useCallback(
-    (props: { results: SearchResultView[]; latency: number }) => {
+    (props: VectorSearchResults) => {
       const { results, latency } = props;
       const s = cloneObj(searchParams) as SearchParamsType;
       s.searchResult = results;
@@ -259,7 +262,7 @@ const Search = (props: CollectionDataProps) => {
   );
 
   const searchResultMemo = useSearchResult(
-    (searchParams && (searchParams.searchResult as SearchResultView[])) || []
+    (searchParams && searchParams.searchResult) || []
   );
 
   let primaryKeyField = 'id';
@@ -474,9 +477,9 @@ const Search = (props: CollectionDataProps) => {
                       indexType={field.index.indexType}
                       indexParams={field.index_params}
                       searchParamsForm={s.params}
-                      handleFormChange={(
-                        updates: { [key in string]: number | string }
-                      ) => {
+                      handleFormChange={(updates: {
+                        [key in string]: number | string;
+                      }) => {
                         updateSearchParamCallback(updates as any, index);
                       }}
                       topK={searchParams.globalParams.topK}

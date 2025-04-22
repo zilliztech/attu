@@ -1,7 +1,11 @@
 import BaseModel from './BaseModel';
 import type { LoadSampleParam } from '@/pages/dialogs/Types';
-import type { InsertDataParam, DeleteEntitiesReq } from '@/pages/databases/collections/Types';
+import type {
+  InsertDataParam,
+  DeleteEntitiesReq,
+} from '@/pages/databases/collections/Types';
 import type { VectorSearchParam } from '@/types/SearchTypes';
+import type { VectorSearchResults } from '@server/types';
 
 export class DataService extends BaseModel {
   static importSample(collectionName: string, param: LoadSampleParam) {
@@ -48,7 +52,7 @@ export class DataService extends BaseModel {
   }
 
   static vectorSearchData(collectionName: string, params: VectorSearchParam) {
-    return super.query({
+    return super.query<VectorSearchResults>({
       path: `/collections/${collectionName}/search`,
       data: params,
     });

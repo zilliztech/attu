@@ -2,6 +2,7 @@ import type {
   FieldObject,
   CollectionObject,
   PartitionData,
+  SearchResultData
 } from '@server/types';
 
 export type SearchSingleParams = {
@@ -23,13 +24,6 @@ export type GlobalParams = {
   round_decimal?: number;
   group_by_field?: string;
   output_fields: string[];
-};
-
-export type SearchResultView = {
-  // dynamic field names
-  [key: string]: any;
-  rank: number;
-  distance: number;
 };
 
 export type GraphNode = {
@@ -58,7 +52,7 @@ export type SearchParams = {
   partitions: PartitionData[];
   searchParams: SearchSingleParams[];
   globalParams: GlobalParams;
-  searchResult: SearchResultView[] | null;
+  searchResult: SearchResultData[] | null;
   graphData: GraphData;
   searchLatency: number;
 };

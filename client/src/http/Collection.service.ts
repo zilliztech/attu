@@ -8,9 +8,8 @@ import {
   CountObject,
   StatisticsObject,
   ResStatus,
-  DescribeIndexRes,
-  IndexObject,
   MmapChanges,
+  QueryResults,
 } from '@server/types';
 import { ManageRequestMethods } from '@/consts';
 import type {
@@ -120,14 +119,6 @@ export class CollectionService extends BaseModel {
     });
   }
 
-  static async describeIndex(collectionName: string): Promise<IndexObject[]> {
-    const res = await super.find<DescribeIndexRes>({
-      path: `/collections/index`,
-      params: { collection_name: collectionName },
-    });
-    return res.index_descriptions;
-  }
-
   static async createIndex(param: IndexCreateParam) {
     const path = `/collections/index`;
     const type: ManageRequestMethods = ManageRequestMethods.CREATE;
@@ -149,7 +140,7 @@ export class CollectionService extends BaseModel {
   }
 
   static queryData(collectionName: string, params: QueryParam) {
-    return super.query({
+    return super.query<QueryResults>({
       path: `/collections/${collectionName}/query`,
       data: params,
     });
