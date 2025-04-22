@@ -5,7 +5,7 @@ import { cloneObj } from '@/utils';
 import { getDataExplorerStyle } from './Styles';
 import DataPanel from './DataPanel';
 import type { GraphData, GraphNode, GraphLink } from '../../types';
-
+import type { SearchResultData } from '@server/types';
 
 interface DataExplorerProps {
   data: GraphData;
@@ -34,7 +34,7 @@ export const formatMilvusData = (
     id: string;
     [key: string]: any;
   },
-  results: any[]
+  results: SearchResultData[]
 ) => {
   const graphDataCopy = cloneObj(graphData) as GraphData;
   // if searchedVector's id is 'root', color = 0
