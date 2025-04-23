@@ -13,10 +13,11 @@ export interface DatabaseTreeItem {
   data?: CollectionObject;
 }
 
-export interface DatabaseToolProps {
+export interface DatabaseTreeProps {
   database: string;
   collections: CollectionObject[];
   params: Readonly<Params<string>>;
+  treeHeight?: number;
 }
 
 export type ContextMenu = {

@@ -23,7 +23,7 @@ import { useStyles } from './style';
 import {
   DatabaseTreeItem as OriginalDatabaseTreeItem, // Rename original type
   TreeNodeType,
-  DatabaseToolProps,
+  DatabaseTreeProps,
   ContextMenu,
   TreeNodeObject,
 } from './types';
@@ -79,8 +79,13 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   );
 };
 
-const DatabaseTree: React.FC<DatabaseToolProps> = props => {
-  const { database, collections, params } = props;
+const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
+  const {
+    database,
+    collections,
+    params,
+    treeHeight = 'calc(100vh - 64px)',
+  } = props;
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -227,7 +232,7 @@ const DatabaseTree: React.FC<DatabaseToolProps> = props => {
         ref={parentRef}
         className={classes.root} // Apply root styles (ensure height and overflow)
         sx={{
-          height: '800px', // Adjust this height based on your layout requirements
+          height: treeHeight, // Adjust this height based on your layout requirements
           overflow: 'auto',
         }}
       >
