@@ -48,10 +48,10 @@ const Overview = () => {
     c => c.collection_name === collectionName
   );
 
-  // check if collection is mmap enabled
-  const isCollectionMmapEnabled = collection?.properties!.some((p: any) => {
-    return p.key === 'mmap.enabled' && p.value === 'true';
-  });
+  // fetch collection if not loaded
+  if (collection && !collection.schema) {
+    fetchCollection(collectionName);
+  }
 
   // get fields
   const fields = collection?.schema?.fields || [];
@@ -307,6 +307,11 @@ const Overview = () => {
   const isAutoIDEnabled = collection?.schema?.fields.some(
     f => f.autoID === true
   );
+
+  // check if collection is mmap enabled
+  const isCollectionMmapEnabled = collection?.properties?.some((p: any) => {
+    return p.key === 'mmap.enabled' && p.value === 'true';
+  });
 
   // get loading state label
   return (
