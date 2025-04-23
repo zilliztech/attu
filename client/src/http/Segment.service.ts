@@ -6,14 +6,14 @@ import type {
 
 export class SegmentService extends BaseModel {
   static getQSegments(collectionName: string) {
-    return super.search<QuerySegmentObjects>({
+    return super.find<QuerySegmentObjects>({
       path: `/collections/${collectionName}/qsegments`,
       params: {},
     });
   }
 
   static getPSegments(collectionName: string) {
-    return super.search<PersistentSegmentObjects>({
+    return super.find<PersistentSegmentObjects>({
       path: `/collections/${collectionName}/psegments`,
       params: {},
     });

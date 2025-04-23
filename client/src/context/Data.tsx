@@ -48,6 +48,7 @@ export const dataContext = createContext<DataContextType>({
   fetchCollection: async () => {
     return {} as CollectionFullObject;
   },
+  batchRefreshCollections: async () => {},
   createCollection: async () => {
     return {} as CollectionFullObject;
   },
@@ -145,7 +146,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // Websocket Callback: update single collection
   const updateCollections = useCallback(
     (props: { collections: CollectionFullObject[]; database?: string }) => {
-      const { collections, database: remote } = props;
+      const { collections = [], database: remote } = props;
       if (
         remote !== database &&
         database !== undefined &&
@@ -220,7 +221,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       // set collections
       setCollections([]);
       // fetch collections
-      const res = await CollectionService.getCollections();
+      const res = await CollectionService.getAllCollections();
       // Only process the response if this is the latest request
       if (currentRequestId === requestIdRef.current) {
         // check state
@@ -248,6 +249,71 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
     return res;
   };
+
+  const _fetchCollections = async (collectionNames: string[]) => {
+    const res = await CollectionService.getCollections({
+      db_name: database,
+      collections: collectionNames,
+    });
+    // update collections
+    updateCollections({ collections: res });
+  };
+
+  // Batch refresh collections with debounce
+  const refreshCollectionsDebounceMapRef = useRef<
+    Map<
+      string,
+      { timer: NodeJS.Timeout | null; names: string[]; pending: Set<string> }
+    >
+  >(new Map());
+
+  const batchRefreshCollections = useCallback(
+    (collectionNames: string[], key: string = 'default') => {
+      let ref = refreshCollectionsDebounceMapRef.current.get(key);
+      if (!ref) {
+        ref = { timer: null, names: [], pending: new Set() };
+        refreshCollectionsDebounceMapRef.current.set(key, ref);
+      }
+
+      const filteredCollectionNames = collectionNames.filter(name => {
+        const collection = collections.find(v => v.collection_name === name);
+        return collection && !collection.schema && !ref!.pending.has(name);
+      });
+
+      ref.names = filteredCollectionNames;
+
+      if (ref.timer) {
+        clearTimeout(ref.timer);
+      }
+
+      ref.timer = setTimeout(async () => {
+        if (ref!.names.length === 0) return;
+        try {
+          const batchSize = 2;
+          for (let i = 0; i < ref!.names.length; i += batchSize) {
+            let batch = ref!.names.slice(i, i + batchSize);
+
+            // recheck if the collection is still pending
+            batch = batch.filter(name => {
+              const collection = collections.find(
+                v => v.collection_name === name
+              );
+              return collection && !collection.schema;
+            });
+
+            batch.forEach(name => ref!.pending.add(name));
+            await _fetchCollections(batch);
+            batch.forEach(name => ref!.pending.delete(name));
+          }
+        } catch (error) {
+          console.error('Failed to refresh collections:', error);
+        }
+        ref!.names = [];
+        ref!.timer = null;
+      }, 200);
+    },
+    [collections, _fetchCollections]
+  );
 
   // API: create collection
   const createCollection = async (data: any) => {
@@ -507,6 +573,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         fetchDatabases,
         fetchCollections,
         fetchCollection,
+        batchRefreshCollections,
         createCollection,
         loadCollection,
         releaseCollection,

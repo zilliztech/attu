@@ -38,6 +38,8 @@ export class CollectionController {
     // get all collections
     this.router.get('/', this.showCollections.bind(this));
     this.router.get('/names', this.getCollectionNames.bind(this));
+    this.router.post('/details', this.getCollections.bind(this));
+
     // get all collections statistics
     this.router.get('/statistics', this.getStatistics.bind(this));
     // index
@@ -158,6 +160,21 @@ export class CollectionController {
               [],
               req.db_name
             );
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCollections(req: Request, res: Response, next: NextFunction) {
+    const collections = req.body?.collections || [];
+
+    try {
+      const result = await this.collectionsService.getAllCollections(
+        req.clientId,
+        collections,
+        req.db_name
+      );
       res.send(result);
     } catch (error) {
       next(error);

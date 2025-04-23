@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -73,8 +73,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   const { isManaged } = useContext(authContext);
-  const { collections, database, loading, fetchCollections, fetchCollection } =
-    useContext(dataContext);
+  const {
+    collections,
+    database,
+    loading,
+    fetchCollections,
+    fetchCollection,
+    batchRefreshCollections,
+  } = useContext(dataContext);
 
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
@@ -115,12 +121,6 @@ const Collections = () => {
     order,
     orderBy,
   } = usePaginationHook(formatCollections);
-
-  collectionList.forEach(c => {
-    if (!c.schema) {
-      fetchCollection(c.collection_name);
-    }
-  });
 
   const toolbarConfigs: ToolBarConfig[] = [
     {
@@ -499,6 +499,17 @@ const Collections = () => {
   };
 
   const CollectionIcon = icons.navCollection;
+
+  console.log(collectionList);
+  // lazy fetch collections that don't have schema
+  const names = collectionList
+    .filter(c => !c.schema)
+    .map(c => c.collection_name);
+
+  console.log(22, names);
+  if (names.length > 0) {
+    batchRefreshCollections(names);
+  }
 
   return (
     <section className={classes.root}>

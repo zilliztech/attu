@@ -10,7 +10,7 @@ import type {
   DatabaseObject,
   AuthReq,
   AuthObject,
-  ResStatus
+  ResStatus,
 } from '@server/types';
 
 export type RootContextType = {
@@ -111,6 +111,7 @@ export type DataContextType = {
   setDatabase: Dispatch<SetStateAction<string>>;
   databases: DatabaseObject[];
   setDatabaseList: Dispatch<SetStateAction<DatabaseObject[]>>;
+  batchRefreshCollections: (collectionNames: string[], key?: string) => void;
 
   // APIs
   // databases

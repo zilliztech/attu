@@ -18,10 +18,17 @@ import type {
 } from '@/pages/databases/collections/schema/Types';
 
 export class CollectionService extends BaseModel {
-  static getCollections(data?: {
+  static getAllCollections(data?: {
     type: ShowCollectionsType;
   }): Promise<CollectionObject[]> {
     return super.find({ path: `/collections`, params: data || {} });
+  }
+
+  static getCollections(data?: {
+    db_name?: string;
+    collections: string[];
+  }): Promise<CollectionFullObject[]> {
+    return super.query({ path: `/collections/details`, data });
   }
 
   static getCollectionsNames(data?: { db_name: string }): Promise<string[]> {
@@ -29,14 +36,14 @@ export class CollectionService extends BaseModel {
   }
 
   static describeCollectionUnformatted(collectionName: string) {
-    return super.search({
+    return super.find({
       path: `/collections/${collectionName}/unformatted`,
       params: {},
     });
   }
 
   static getCollection(collectionName: string) {
-    return super.search<CollectionFullObject>({
+    return super.find<CollectionFullObject>({
       path: `/collections/${collectionName}`,
       params: {},
     });
@@ -93,14 +100,14 @@ export class CollectionService extends BaseModel {
   }
 
   static getStatistics() {
-    return super.search<StatisticsObject>({
+    return super.find<StatisticsObject>({
       path: `/collections/statistics`,
       params: {},
     });
   }
 
   static count(collectionName: string) {
-    return super.search<CountObject>({
+    return super.find<CountObject>({
       path: `/collections/${collectionName}/count`,
       params: {},
     });

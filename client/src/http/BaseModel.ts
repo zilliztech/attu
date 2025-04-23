@@ -32,12 +32,6 @@ export default class BaseModel {
     return response.data?.data as T;
   }
 
-  /**
-   * Search with flexible parameters
-   */
-  static async search<T>(options: RequestParams): Promise<T> {
-    return this.find<T>(options);
-  }
 
   /**
    * Create a new resource

@@ -20,12 +20,12 @@ import type {
 export class UserService extends BaseModel {
   // get user data
   static getUsers() {
-    return super.search<UserWithRoles[]>({ path: `/users`, params: {} });
+    return super.find<UserWithRoles[]>({ path: `/users`, params: {} });
   }
 
   // get all roles
   static getRoles() {
-    return super.search<RolesWithPrivileges[]>({
+    return super.find<RolesWithPrivileges[]>({
       path: `/users/roles`,
       params: {},
     });
@@ -82,7 +82,7 @@ export class UserService extends BaseModel {
 
   // get RBAC info
   static getAllPrivilegeGroups() {
-    return super.search({
+    return super.find({
       path: `/users/privilegeGroups`,
       params: {},
     }) as Promise<PrivilegeGroup[]>;
@@ -90,14 +90,14 @@ export class UserService extends BaseModel {
 
   // get RBAC info
   static getRBAC() {
-    return super.search({
+    return super.find({
       path: `/users/rbac`,
       params: {},
     }) as Promise<RBACOptions>;
   }
   // get privilege groups
   static getPrivilegeGroups() {
-    return super.search<PrivilegeGroupsRes>({
+    return super.find<PrivilegeGroupsRes>({
       path: `/users/privilege-groups`,
       params: {},
     });

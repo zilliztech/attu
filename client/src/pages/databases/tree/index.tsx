@@ -4,6 +4,7 @@ import React, {
   useRef,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
@@ -29,6 +30,7 @@ import {
 } from './types';
 import { TreeContextMenu } from './TreeContextMenu';
 import { useVirtualizer } from '@tanstack/react-virtual'; // Import virtualizer
+import { dataContext } from '@/context';
 
 // Define a type for the flattened list item
 interface FlatTreeItem {
@@ -88,6 +90,9 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
   } = props;
   const classes = useStyles();
   const navigate = useNavigate();
+
+  // context
+  const { batchRefreshCollections } = useContext(dataContext);
 
   // State
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
@@ -224,6 +229,88 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       document.removeEventListener('click', handleCloseContextMenu);
     };
   }, []);
+
+  // Track visible items for refreshing
+  useEffect(() => {
+    if (!collections.length) return;
+
+    // Track whether we're currently scrolling
+    let isScrolling = false;
+    let scrollTimeoutId: NodeJS.Timeout | null = null;
+
+    // Save references to stable values to avoid dependency changes
+    const currentFlattenedNodes = flattenedNodes;
+
+    const refreshVisibleCollections = () => {
+      // Early return if the component is unmounted
+      if (!parentRef.current) return;
+
+      const visibleItems = rowVirtualizer.getVirtualItems();
+      const visibleCollectionNames = visibleItems
+        .map(item => {
+          if (item.index >= currentFlattenedNodes.length) return null;
+          const node = currentFlattenedNodes[item.index];
+          if (node && node.type === 'collection' && node.name) {
+            return node.name;
+          }
+          return null;
+        })
+        .filter(Boolean) as string[];
+
+      if (visibleCollectionNames.length > 0) {
+        batchRefreshCollections(visibleCollectionNames, 'collection-tree');
+      }
+    };
+
+    // This will be called when scrolling starts
+    const handleScrollStart = () => {
+      if (!isScrolling) {
+        isScrolling = true;
+        // Execute on scroll start
+        refreshVisibleCollections();
+      }
+
+      // Clear any existing timeout
+      if (scrollTimeoutId) {
+        clearTimeout(scrollTimeoutId);
+      }
+
+      // Set a new timeout for scroll end detection
+      scrollTimeoutId = setTimeout(() => {
+        isScrolling = false;
+        // Execute on scroll end
+        refreshVisibleCollections();
+        scrollTimeoutId = null;
+      }, 500); // Wait for scrolling to stop for 300ms
+    };
+
+    // Initial refresh when component mounts - with delay to ensure UI is ready
+    const initialRefreshTimeout = setTimeout(() => {
+      refreshVisibleCollections();
+    }, 100);
+
+    // Setup scroll listener
+    const scrollElement = parentRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScrollStart);
+
+      return () => {
+        scrollElement.removeEventListener('scroll', handleScrollStart);
+        // Clear timeout on cleanup
+        if (scrollTimeoutId) {
+          clearTimeout(scrollTimeoutId);
+        }
+        clearTimeout(initialRefreshTimeout);
+      };
+    }
+
+    return () => {
+      if (scrollTimeoutId) {
+        clearTimeout(scrollTimeoutId);
+      }
+      clearTimeout(initialRefreshTimeout);
+    };
+  }, [collections.length, batchRefreshCollections, rowVirtualizer]);
 
   // --- Rendering ---
   return (

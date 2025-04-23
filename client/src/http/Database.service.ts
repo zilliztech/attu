@@ -17,7 +17,7 @@ export interface AlterDatabaseRequest {
 
 export class DatabaseService extends BaseModel {
   static listDatabases() {
-    return super.search<DatabaseObject[]>({
+    return super.find<DatabaseObject[]>({
       path: `/databases`,
       params: {},
     });
@@ -32,7 +32,7 @@ export class DatabaseService extends BaseModel {
   }
 
   static describeDatabase(db_name: string) {
-    return super.search<DatabaseObject>({
+    return super.find<DatabaseObject>({
       path: `/databases/${db_name}`,
       params: {},
     });
