@@ -6,21 +6,15 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '15px',
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.default,
-  },
-  treeItem: {
-    '& .right-selected-on': {
-      '& .MuiTreeItem-content': {
-        backgroundColor: 'rgba(10, 206, 130, 0.08)',
-        '&.Mui-selected': {
-          backgroundColor: 'rgba(10, 206, 130, 0.28) !important',
-        },
-      },
+    '& .MuiSvgIcon-root': {
+      fontSize: '14px',
+      color: theme.palette.text.primary,
     },
   },
   collectionNode: {
     minHeight: '24px',
     lineHeight: '24px',
-    position: 'relative',
+    display: 'flex',
   },
   collectionName: {
     display: 'flex',
@@ -45,7 +39,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     height: '8px',
     borderRadius: '50%',
     position: 'absolute',
-    left: 160,
+    right: 6,
     top: 8,
     zIndex: 1,
   },

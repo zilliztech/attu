@@ -544,7 +544,7 @@ export class CollectionsService {
         v => v.name === collection.name
       );
 
-      const notLazy = i <= 5; // lazy is true, only load full details for the first 10 collections
+      const notLazy = i <= 10; // lazy is true, only load full details for the first 10 collections
 
       data.push(
         await this.getCollection(
@@ -557,23 +557,23 @@ export class CollectionsService {
       );
     }
 
-    // start the queue
-    if (currentClient.collectionsQueue.size() > 0) {
-      currentClient.collectionsQueue.executeNext(
-        async (collectionsToGet, q) => {
-          // if the queue is obseleted, return
-          if (q.isObseleted) {
-            return;
-          }
-          await this.updateCollectionsDetails(
-            clientId,
-            collectionsToGet,
-            database
-          );
-        },
-        5
-      );
-    }
+    // // start the queue
+    // if (currentClient.collectionsQueue.size() > 0) {
+    //   currentClient.collectionsQueue.executeNext(
+    //     async (collectionsToGet, q) => {
+    //       // if the queue is obseleted, return
+    //       if (q.isObseleted) {
+    //         return;
+    //       }
+    //       await this.updateCollectionsDetails(
+    //         clientId,
+    //         collectionsToGet,
+    //         database
+    //       );
+    //     },
+    //     5
+    //   );
+    // }
 
     // return data
     return data;

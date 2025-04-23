@@ -116,6 +116,12 @@ const Collections = () => {
     orderBy,
   } = usePaginationHook(formatCollections);
 
+  collectionList.forEach(c => {
+    if (!c.schema) {
+      fetchCollection(c.collection_name);
+    }
+  });
+
   const toolbarConfigs: ToolBarConfig[] = [
     {
       label: collectionTrans('create'),
