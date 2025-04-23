@@ -337,6 +337,9 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
 
             const isSelected = node.id === selectedItemId;
             const isContextMenuTarget = contextMenu?.nodeId === node.id;
+            const isCollectionNoSchema =
+              node.type === 'collection' &&
+              (!node.data || !(node.data as CollectionObject).schema);
 
             return (
               <Box
@@ -364,6 +367,9 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
                       ? 'rgba(10, 206, 130, 0.28)'
                       : 'rgba(10, 206, 130, 0.08)',
                   },
+                  opacity: isCollectionNoSchema ? 0.5 : 1,
+                  color: isCollectionNoSchema ? 'text.disabled' : 'inherit',
+                  pointerEvents: isCollectionNoSchema ? 'none' : 'auto',
                 }}
                 onClick={() => handleNodeClick(node)}
                 onContextMenu={e => handleContextMenu(e, node)}
