@@ -500,16 +500,16 @@ const Collections = () => {
 
   const CollectionIcon = icons.navCollection;
 
-  console.log(collectionList);
   // lazy fetch collections that don't have schema
-  const names = collectionList
-    .filter(c => !c.schema)
-    .map(c => c.collection_name);
+  useEffect(() => {
+    const names = collectionList
+      .filter(c => !c.schema)
+      .map(c => c.collection_name);
 
-  console.log(22, names);
-  if (names.length > 0) {
-    batchRefreshCollections(names);
-  }
+    if (names.length > 0) {
+      batchRefreshCollections(names, 'collection-grid');
+    }
+  }, [collectionList, batchRefreshCollections]);
 
   return (
     <section className={classes.root}>
@@ -536,6 +536,16 @@ const Collections = () => {
           labelDisplayedRows={getLabelDisplayedRows(
             commonTrans('grid.collections')
           )}
+          rowDecorator={(row: CollectionObject) => {
+            if (!row.schema) {
+              return {
+                pointerEvents: 'none',
+                opacity: 0.5,
+                backgroundColor: 'rgba(0,0,0,0.04)',
+              };
+            }
+            return {};
+          }}
         />
       ) : (
         <>

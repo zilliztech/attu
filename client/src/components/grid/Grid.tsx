@@ -129,6 +129,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     orderBy,
     showPagination = true,
     hideOnDisable,
+    rowDecorator = () => ({}),
   } = props;
 
   const _isSelected = (row: { [x: string]: any }) => {
@@ -261,6 +262,7 @@ const AttuGrid: FC<AttuGridType> = props => {
           handleSort={handleSort}
           order={order}
           orderBy={orderBy}
+          rowDecorator={rowDecorator}
         ></Table>
         {rowCount && showPagination ? (
           <TablePagination
