@@ -54,7 +54,7 @@ export class CollectionService extends BaseModel {
   }
 
   static dropCollection(collectionName: string) {
-    return super.delete<{ data: ResStatus }>({
+    return super.delete<ResStatus>({
       path: `/collections/${collectionName}`,
     });
   }

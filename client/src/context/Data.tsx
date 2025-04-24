@@ -393,12 +393,12 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const dropCollection = async (name: string) => {
     // drop collection
     const dropped = await CollectionService.dropCollection(name);
-    if (dropped.data.error_code === 'Success') {
+    if (dropped.error_code === 'Success') {
       // remove collection from state
       setCollections(prev => prev.filter(v => v.collection_name !== name));
     }
 
-    return dropped.data;
+    return dropped;
   };
 
   // API: create index
