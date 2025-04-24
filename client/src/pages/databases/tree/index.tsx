@@ -7,6 +7,7 @@ import React, {
   useContext,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import icons from '@/components/icons/Icons';
 import {
   Tooltip,
@@ -88,10 +89,11 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     params,
     treeHeight = 'calc(100vh - 64px)',
   } = props;
-  const classes = useStyles();
-  const navigate = useNavigate();
 
   // context
+  const classes = useStyles();
+  const navigate = useNavigate();
+  const { collectionName = '' } = useParams<{ collectionName: string }>();
   const { batchRefreshCollections } = useContext(dataContext);
 
   // State
@@ -191,7 +193,13 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     setContextMenu(null);
   };
 
+  // Scroll to the selected item
+  const skipNextScrollRef = useRef(false);
+
   const handleNodeClick = (node: FlatTreeItem) => {
+    // flag to skip the next scroll
+    skipNextScrollRef.current = true;
+
     setSelectedItemId(node.id);
     navigate(
       node.type === 'db'
@@ -311,6 +319,27 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       clearTimeout(initialRefreshTimeout);
     };
   }, [collections.length, batchRefreshCollections, rowVirtualizer]);
+
+  useEffect(() => {
+    if (skipNextScrollRef.current) {
+      skipNextScrollRef.current = false;
+      setSelectedItemId(
+        flattenedNodes.find(node => node.name === collectionName)?.id ||
+          database
+      );
+      return;
+    }
+    const index = flattenedNodes.findIndex(
+      node => node.name === collectionName
+    );
+    if (index >= 0) {
+      rowVirtualizer.scrollToIndex(index, { align: 'center' });
+      setSelectedItemId(flattenedNodes[index].id);
+    } else {
+      rowVirtualizer.scrollToIndex(0, { align: 'start' });
+      setSelectedItemId(database);
+    }
+  }, [collectionName]);
 
   // --- Rendering ---
   return (
