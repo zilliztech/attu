@@ -23,7 +23,6 @@ const CustomIconButton = ({
 
   return (
     <Tooltip title={tooltip} arrow>
-      {/* span包裹以保证disabled时Tooltip可用 */}
       <span style={{ display: 'inline-block' }}>{iconBtn}</span>
     </Tooltip>
   );
