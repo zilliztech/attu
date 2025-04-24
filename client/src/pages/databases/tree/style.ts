@@ -15,6 +15,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     minHeight: '24px',
     lineHeight: '24px',
     display: 'flex',
+    minWidth: 190,
   },
   collectionName: {
     display: 'flex',
@@ -40,7 +41,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: '50%',
     position: 'absolute',
     right: 6,
-    top: 8,
+    top: 10,
     zIndex: 1,
   },
   loaded: {
