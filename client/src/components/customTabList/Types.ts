@@ -18,4 +18,5 @@ export interface ITabPanel {
   value: number;
   index: number;
   className?: string;
+  style?: React.CSSProperties;
 }

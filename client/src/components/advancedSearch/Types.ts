@@ -1,4 +1,5 @@
 import type { FieldObject } from '@server/types';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 export interface ConditionProps {
   others?: object;
@@ -46,6 +47,7 @@ export interface CopyButtonProps {
   value: string;
   others?: any;
   size?: 'medium' | 'small' | undefined;
+  sx?: SxProps<Theme>;
 }
 
 export interface DialogProps {
