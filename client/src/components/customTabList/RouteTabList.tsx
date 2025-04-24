@@ -3,56 +3,78 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useStyles } from './style';
 import type { ITabListProps, ITabPanel } from './Types';
+import type { SxProps, Theme } from '@mui/material/styles';
 
-const TabPanel = (props: ITabPanel) => {
-  const { children, value, index, className = '', ...other } = props;
+const tabSx: SxProps<Theme> = {
+  textTransform: 'capitalize',
+  minWidth: 0,
+  marginRight: 3,
+};
 
+const tabsSx: SxProps<Theme> = {
+  borderBottom: theme => `1px solid ${theme.palette.divider}`,
+  '& .MuiTabs-indicator': {
+    height: (theme: Theme) => theme.spacing(0.5),
+  },
+};
+
+const tabPanelSx: SxProps<Theme> = {
+  flexBasis: 0,
+  flexGrow: 1,
+  marginTop: 1,
+  overflow: 'hidden',
+};
+
+const wrapperSx: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  flexBasis: 0,
+  flexGrow: 1,
+  backgroundColor: theme => theme.palette.background.paper,
+  padding: 0,
+};
+
+const TabPanel = (props: ITabPanel & { sx?: SxProps<Theme> }) => {
+  const { children, value, index, className = '', sx, ...other } = props;
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       className={className}
       id={`tabpanel-${index}`}
       aria-labelledby={`tabpanel-${index}`}
+      sx={sx}
+      width="100%"
       {...other}
     >
       {value === index && <Box height="100%">{children}</Box>}
-    </div>
+    </Box>
   );
 };
 
-const a11yProps = (index: number) => {
-  return {
-    id: `tab-${index}`,
-    'aria-controls': `tabpanel-${index}`,
-  };
-};
+const a11yProps = (index: number) => ({
+  id: `tab-${index}`,
+  'aria-controls': `tabpanel-${index}`,
+});
 
 const RouteTabList: FC<ITabListProps> = props => {
   const { tabs, activeIndex = 0, wrapperClass = '' } = props;
-  const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     const newPath =
       location.pathname.split('/').slice(0, -1).join('/') +
       '/' +
       tabs[newValue].path;
-
     navigate(newPath);
   };
 
   return (
-    <div className={`${classes.wrapper}  ${wrapperClass}`}>
+    <Box sx={wrapperSx} className={wrapperClass}>
       <Tabs
-        classes={{
-          indicator: classes.tab,
-          flexContainer: classes.tabContainer,
-        }}
-        // if not provide this property, Material will add single span element by default
+        sx={tabsSx}
         TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={activeIndex}
         onChange={handleChange}
@@ -60,11 +82,11 @@ const RouteTabList: FC<ITabListProps> = props => {
       >
         {tabs.map((tab, index) => (
           <Tab
-            classes={{ root: classes.tabContent }}
+            sx={tabSx}
             key={tab.label}
             label={tab.label}
             {...a11yProps(index)}
-          ></Tab>
+          />
         ))}
       </Tabs>
 
@@ -73,12 +95,12 @@ const RouteTabList: FC<ITabListProps> = props => {
           key={tab.label}
           value={activeIndex}
           index={index}
-          className={classes.tabPanel}
+          sx={tabPanelSx}
         >
           {tab.component}
         </TabPanel>
       ))}
-    </div>
+    </Box>
   );
 };
 

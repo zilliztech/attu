@@ -2,12 +2,10 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { FC, useState } from 'react';
-import { useStyles } from './style';
 import type { ITabListProps, ITabPanel } from './Types';
 
 const TabPanel = (props: ITabPanel) => {
   const { children, value, index, className = '', ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -16,38 +14,46 @@ const TabPanel = (props: ITabPanel) => {
       id={`tabpanel-${index}`}
       aria-labelledby={`tabpanel-${index}`}
       {...other}
+      style={{ width: '100%' }}
     >
       {value === index && <Box height="100%">{children}</Box>}
     </div>
   );
 };
 
-const a11yProps = (index: number) => {
-  return {
-    id: `tab-${index}`,
-    'aria-controls': `tabpanel-${index}`,
-  };
-};
+const a11yProps = (index: number) => ({
+  id: `tab-${index}`,
+  'aria-controls': `tabpanel-${index}`,
+});
 
 const CustomTabList: FC<ITabListProps> = props => {
   const { tabs, activeIndex = 0, handleTabChange, wrapperClass = '' } = props;
-  const classes = useStyles();
   const [value, setValue] = useState<number>(activeIndex);
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-
     handleTabChange && handleTabChange(newValue);
   };
 
   return (
-    <div className={`${classes.wrapper}  ${wrapperClass}`}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexBasis: 0,
+        flexGrow: 1,
+        backgroundColor: theme => theme.palette.background.paper,
+        padding: 0,
+      }}
+      className={wrapperClass}
+    >
       <Tabs
-        classes={{
-          indicator: classes.tab,
-          flexContainer: classes.tabContainer,
+        sx={{
+          borderBottom: theme => `1px solid ${theme.palette.divider}`,
+          '& .MuiTabs-indicator': {
+            height: theme => theme.spacing(0.5),
+          },
         }}
-        // if not provide this property, Material will add single span element by default
         TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={value}
         onChange={handleChange}
@@ -55,11 +61,15 @@ const CustomTabList: FC<ITabListProps> = props => {
       >
         {tabs.map((tab, index) => (
           <Tab
-            classes={{ root: classes.tabContent }}
+            sx={{
+              textTransform: 'capitalize',
+              minWidth: 0,
+              marginRight: theme => theme.spacing(3),
+            }}
             key={tab.label}
             label={tab.label}
             {...a11yProps(index)}
-          ></Tab>
+          />
         ))}
       </Tabs>
 
@@ -68,12 +78,18 @@ const CustomTabList: FC<ITabListProps> = props => {
           key={tab.label}
           value={value}
           index={index}
-          className={classes.tabPanel}
+          className=""
+          style={{
+            flexBasis: 0,
+            flexGrow: 1,
+            marginTop: 8,
+            overflow: 'hidden',
+          }}
         >
           {tab.component}
         </TabPanel>
       ))}
-    </div>
+    </Box>
   );
 };
 
