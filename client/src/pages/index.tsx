@@ -1,7 +1,6 @@
 import { useMemo, useContext } from 'react';
 import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Theme } from '@mui/material';
 import GlobalEffect from '@/components/layout/GlobalEffect';
 import Header from '@/components/layout/Header';
 import NavMenu from '@/components/menu/NavMenu';
@@ -9,87 +8,36 @@ import { NavMenuItem } from '@/components/menu/Types';
 import icons from '@/components/icons/Icons';
 import { authContext, rootContext, dataContext } from '@/context';
 import Overview from '@/pages/home/Home';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    minHeight: '100vh',
-    backgroundColor: theme.palette.background.default,
-  },
-  content: {
-    display: 'flex',
-
-    '& .active': {
-      '& path': {
-        fill: theme.palette.text.primary,
-      },
-    },
-
-    '& .normal': {
-      '& path': {
-        fill: theme.palette.primary.main,
-      },
-    },
-  },
-  body: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100vh',
-    overflowY: 'scroll',
-  },
-}));
+import Box from '@mui/material/Box';
 
 function Index() {
-  // context
   const { isAuth, isManaged, isDedicated, authReq } = useContext(authContext);
   const { database } = useContext(dataContext);
   const { versionInfo } = useContext(rootContext);
-  // i18n
   const { t: navTrans } = useTranslation('nav');
-  // hooks
   const navigate = useNavigate();
-  const classes = useStyles();
   const location = useLocation();
 
-  // compute data
-  const isIndex = location.pathname === '/';
-  const enableUser = !isManaged || isDedicated;
+  const navMap = [
+    { key: 'databases', label: 'database' },
+    { key: 'search', label: 'search' },
+    { key: 'system', label: 'system' },
+    { key: 'users', label: 'user' },
+    { key: 'roles', label: 'user' },
+    { key: 'privilege-groups', label: 'user' },
+    { key: 'play', label: 'play' },
+  ];
   const defaultActive = useMemo(() => {
-    if (location.pathname.includes('databases')) {
-      return navTrans('database');
-    }
+    const found = navMap.find(item => location.pathname.includes(item.key));
+    return navTrans(found?.label || 'overview');
+  }, [location.pathname, navTrans]);
 
-    if (location.pathname.includes('search')) {
-      return navTrans('search');
-    }
-
-    if (location.pathname.includes('system')) {
-      return navTrans('system');
-    }
-
-    if (
-      location.pathname.includes('users') ||
-      location.pathname.includes('roles') ||
-      location.pathname.includes('privilege-groups')
-    ) {
-      return navTrans('user');
-    }
-
-    if (location.pathname.includes('play')) {
-      return navTrans('play');
-    }
-
-    return navTrans('overview');
-  }, [location, navTrans]);
-
-  const menuItems: NavMenuItem[] = [
+  const baseMenu: NavMenuItem[] = [
     {
       icon: icons.attu,
       label: navTrans('overview'),
       onClick: () => navigate('/'),
     },
-
     {
       icon: icons.database,
       label: navTrans('database'),
@@ -102,7 +50,9 @@ function Index() {
     },
   ];
 
-  if (enableUser) {
+  const menuItems = [...baseMenu];
+
+  if (!isManaged || isDedicated) {
     menuItems.push({
       icon: icons.navPerson,
       label: navTrans('user'),
@@ -121,7 +71,6 @@ function Index() {
         icon: icons.newWindow,
         label: 'Milvus WebUI',
         onClick: () => {
-          // open a link
           window.open(
             `http://${authReq.address.split(':')[0]}:9091/webui`,
             '_blank'
@@ -131,33 +80,52 @@ function Index() {
     );
   }
 
-  // check if is connected
   if (!isAuth) {
     return <Navigate to="/connect" />;
   }
 
   return (
-    <>
-      <div className={classes.root}>
-        <GlobalEffect>
-          <div className={classes.content}>
-            <NavMenu
-              width="172px"
-              data={menuItems}
-              defaultActive={defaultActive}
-              // used for nested child menu
-              defaultOpen={{ [navTrans('overview')]: true }}
-              versionInfo={versionInfo}
-            />
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundColor: theme => theme.palette.background.default,
+      }}
+    >
+      <GlobalEffect>
+        <Box
+          sx={{
+            display: 'flex',
+            '& .active path': {
+              fill: theme => theme.palette.text.primary,
+            },
+            '& .normal path': {
+              fill: theme => theme.palette.primary.main,
+            },
+          }}
+        >
+          <NavMenu
+            width="172px"
+            data={menuItems}
+            defaultActive={defaultActive}
+            defaultOpen={{ [navTrans('overview')]: true }}
+            versionInfo={versionInfo}
+          />
 
-            <div className={classes.body}>
-              <Header />
-              {isIndex ? <Overview /> : <Outlet />}
-            </div>
-          </div>
-        </GlobalEffect>
-      </div>
-    </>
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100vh',
+              overflowY: 'scroll',
+            }}
+          >
+            <Header />
+            {location.pathname === '/' ? <Overview /> : <Outlet />}
+          </Box>
+        </Box>
+      </GlobalEffect>
+    </Box>
   );
 }
 
