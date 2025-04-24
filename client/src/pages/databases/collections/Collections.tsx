@@ -18,7 +18,6 @@ import DropCollectionDialog from '@/pages/dialogs/DropCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import DuplicateCollectionDialog from '@/pages/dialogs/DuplicateCollectionDialog';
 import InsertDialog from '@/pages/dialogs/insert/Dialog';
-import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
@@ -432,39 +431,6 @@ const Collections = () => {
         return { minWidth: '165px' };
       },
     },
-    {
-      id: 'import',
-      align: 'center',
-      disablePadding: false,
-      label: '',
-      showActionCell: true,
-      isHoverAction: true,
-      actionBarConfigs: [
-        {
-          onClick: (e: React.MouseEvent, row: CollectionObject) => {
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component: (
-                  <ImportSampleDialog
-                    collection={row}
-                    cb={async (collectionName: string) => {
-                      await fetchCollection(collectionName);
-                    }}
-                  />
-                ),
-              },
-            });
-          },
-          icon: 'source',
-          label: 'Import',
-          showIconMethod: 'renderFn',
-          getLabel: () => 'Import sample data',
-          renderIconFn: () => <SourceIcon />,
-        },
-      ],
-    },
   ];
 
   if (!isManaged) {
@@ -526,7 +492,7 @@ const Collections = () => {
           onPageChange={handlePageChange}
           rowsPerPage={pageSize}
           tableHeaderHeight={49}
-          rowHeight={49}
+          rowHeight={43}
           setRowsPerPage={handlePageSize}
           isLoading={loading}
           handleSort={handleGridSort}
