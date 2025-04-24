@@ -116,7 +116,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     title,
     openCheckBox = true,
     disableSelect = false,
-    noData = commonTrans('grid.gridTrans.noData'),
+    noData = commonTrans('grid.noData'),
     showHoverStyle = true,
     headEditable = false,
     editHeads = [],

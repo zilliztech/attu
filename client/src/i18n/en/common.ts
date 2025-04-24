@@ -1,5 +1,3 @@
-import { version } from "process";
-
 const commonTrans = {
   attu: {
     admin: 'Attu',
