@@ -29,7 +29,7 @@ const CustomButton = ({
   if (!tooltip) return button;
   return (
     <Tooltip title={tooltip} placement={tooltipPlacement} arrow>
-      <span style={{ display: 'inline-block' }}>{button}</span>
+      <span>{button}</span>
     </Tooltip>
   );
 };
