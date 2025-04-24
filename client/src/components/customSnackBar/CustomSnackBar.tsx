@@ -2,7 +2,6 @@ import { forwardRef, FC } from 'react';
 import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Slide from '@mui/material/Slide';
-import { styled } from '@mui/material/styles';
 import type { AlertProps } from '@mui/material/Alert';
 import type { SlideProps } from '@mui/material/Slide';
 import type { CustomSnackBarType } from './Types';
@@ -17,24 +16,6 @@ const SlideTransition: FC<SlideProps> = props => {
   return <Slide {...props} direction="left" />;
 };
 
-// Styled components
-const StyledSnackbar = styled(Snackbar)(({ theme }) => ({
-  '&.MuiSnackbar-anchorOriginTopRight': {
-    [theme.breakpoints.up('md')]: {
-      top: '72px',
-      right: theme.spacing(4),
-    },
-    top: '72px',
-    right: theme.spacing(4),
-  },
-}));
-
-const StyledAlert = styled(Alert)({
-  maxWidth: '50vh',
-  wordBreak: 'break-all',
-});
-
-// CustomSnackBar component
 const CustomSnackBar: FC<CustomSnackBarType> = props => {
   const {
     vertical,
@@ -51,23 +32,34 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
   };
 
   return (
-    <div>
-      <StyledSnackbar
-        anchorOrigin={{
-          vertical: vertical,
-          horizontal: horizontal,
-        }}
-        key={`${vertical}${horizontal}`}
-        open={open}
+    <Snackbar
+      anchorOrigin={{
+        vertical: vertical,
+        horizontal: horizontal,
+      }}
+      key={`${vertical}${horizontal}`}
+      open={open}
+      onClose={handleClose}
+      autoHideDuration={autoHideDuration}
+      TransitionComponent={SlideTransition}
+      sx={{
+        '&.MuiSnackbar-anchorOriginTopRight': {
+          top: { xs: 56, md: 72 },
+          right: theme => theme.spacing(4),
+        },
+      }}
+    >
+      <Alert
         onClose={handleClose}
-        autoHideDuration={autoHideDuration}
-        TransitionComponent={SlideTransition}
+        severity={type}
+        sx={{
+          maxWidth: '50vh',
+          wordBreak: 'break-all',
+        }}
       >
-        <StyledAlert onClose={handleClose} severity={type}>
-          {message}
-        </StyledAlert>
-      </StyledSnackbar>
-    </div>
+        {message}
+      </Alert>
+    </Snackbar>
   );
 };
 

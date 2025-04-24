@@ -1,28 +1,7 @@
 import Typography from '@mui/material/Typography';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import icons from '../icons/Icons';
-import { styled } from '@mui/material/styles';
 import type { DialogTitleProps } from '@mui/material/DialogTitle';
-
-const StyledDialogTitle = styled(MuiDialogTitle)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: theme.spacing(1),
-  paddingTop: theme.spacing(4),
-}));
-
-const TitleText = styled(Typography)(({ theme }) => ({
-  fontWeight: 500,
-  wordBreak: 'break-all',
-  fontSize: '20px',
-}));
-
-const CloseIcon = styled(icons.clear)(({ theme }) => ({
-  fontSize: '18px',
-  color: theme.palette.text.primary,
-  cursor: 'pointer',
-}));
 
 interface IProps extends DialogTitleProps {
   onClose?: () => void;
@@ -35,16 +14,44 @@ const CustomDialogTitle = (props: IProps) => {
     classes = { root: '' },
     onClose,
     showCloseIcon = true,
+    sx,
     ...other
   } = props;
 
   return (
-    <StyledDialogTitle className={classes.root} {...other}>
-      <TitleText variant="body2">{children}</TitleText>
+    <MuiDialogTitle
+      className={classes.root}
+      {...other}
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mb: 1,
+        pt: 4,
+        ...sx,
+      }}
+    >
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: 500,
+          wordBreak: 'break-all',
+          fontSize: '20px',
+        }}
+      >
+        {children}
+      </Typography>
       {showCloseIcon && onClose ? (
-        <CloseIcon data-testid="clear-icon" onClick={onClose} />
+        <icons.clear
+          data-testid="clear-icon"
+          onClick={onClose}
+          sx={{
+            fontSize: '18px',
+            cursor: 'pointer',
+          }}
+        />
       ) : null}
-    </StyledDialogTitle>
+    </MuiDialogTitle>
   );
 };
 

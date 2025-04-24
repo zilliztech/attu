@@ -5,47 +5,44 @@ import icons from '@/components/icons/Icons';
 import type { MouseEvent } from 'react';
 import type { IconButtonProps } from '@mui/material';
 
-const RefreshButton = (
-  props: IconButtonProps & {
-    tooltip?: string;
-    icon?: React.ReactNode;
-  }
-) => {
-  // props
-  const { onClick, icon, ...otherProps } = props;
-  // UI states
-  const [isLoading, setIsLoading] = useState(false);
+interface RefreshButtonProps extends IconButtonProps {
+  tooltip?: string;
+  icon?: React.ReactNode;
+}
 
-  // icon
+const RefreshButton = ({
+  onClick,
+  icon,
+  className,
+  ...otherProps
+}: RefreshButtonProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const RefreshIcon = icons.refresh;
 
   const onBtnClicked = async (event: MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
-    onClick && (await onClick(event));
+    if (onClick) {
+      await onClick(event);
+    }
     setIsLoading(false);
-  };
-
-  const styleObj = {
-    display: 'flex',
-    width: '23px',
   };
 
   if (isLoading) {
     return (
-      <div className={props.className} style={styleObj}>
+      <span className={className} style={{ display: 'flex', width: 23 }}>
         <StatusIcon type={LoadingType.CREATING} />
-      </div>
+      </span>
     );
   }
 
   return (
     <CustomIconButton
-      className={props.className}
+      className={className}
       {...otherProps}
       onClick={onBtnClicked}
       disabled={isLoading}
     >
-      {icon ? icon : <RefreshIcon />}
+      {icon ?? <RefreshIcon />}
     </CustomIconButton>
   );
 };

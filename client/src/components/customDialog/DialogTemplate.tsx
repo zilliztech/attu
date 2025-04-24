@@ -1,56 +1,15 @@
 import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { styled } from '@mui/material/styles';
-import { DialogContent, DialogActions, CircularProgress } from '@mui/material';
+import {
+  DialogContent,
+  DialogActions,
+  CircularProgress,
+  Box,
+} from '@mui/material';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
 import CodeView from '../code/CodeView';
 import type { DialogContainerProps } from './Types';
-
-const Wrapper = styled('section')({
-  display: 'flex',
-  '& form': {
-    display: 'flex',
-  },
-  '& .MuiDialogContent-root': {
-    maxHeight: '60vh',
-  },
-});
-
-const DialogBlock = styled('div')<{ showCode: boolean }>(
-  ({ theme, showCode }) => ({
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.paper,
-    minWidth: 540,
-    transition: 'width 0.2s',
-    width: showCode ? 540 : 'auto',
-  })
-);
-
-const CodeWrapper = styled('div')<{ showCode: boolean }>(
-  ({ theme, showCode }) => ({
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.paper,
-    width: showCode ? 540 : 0,
-    transition: 'width 0.2s',
-  })
-);
-
-const CodeContainer = styled('div')<{ showCode: boolean }>(
-  ({ theme, showCode }) => ({
-    height: '100%',
-    padding: showCode ? theme.spacing(4) : 0,
-  })
-);
-
-const Actions = styled(DialogActions)(({ theme }) => ({
-  paddingTop: theme.spacing(1),
-  paddingBottom: theme.spacing(2),
-  justifyContent: 'space-between',
-  '& .btn': {
-    margin: theme.spacing(0.5),
-  },
-}));
 
 const DialogTemplate: FC<DialogContainerProps> = ({
   title,
@@ -91,12 +50,24 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   };
 
   return (
-    <Wrapper>
+    <Box
+      sx={{
+        display: 'flex',
+        '& form': { display: 'flex' },
+        '& .MuiDialogContent-root': { maxHeight: '60vh' },
+      }}
+    >
       <form onSubmit={_handleConfirm}>
-        <DialogBlock
-          showCode={showCode}
+        <Box
           ref={dialogRef}
           className={dialogClass}
+          sx={{
+            color: theme => theme.palette.text.primary,
+            backgroundColor: theme => theme.palette.background.paper,
+            minWidth: 540,
+            transition: 'width 0.2s',
+            width: showCode ? 540 : 'auto',
+          }}
         >
           <CustomDialogTitle
             onClose={handleClose}
@@ -106,9 +77,16 @@ const DialogTemplate: FC<DialogContainerProps> = ({
           </CustomDialogTitle>
           <DialogContent>{children}</DialogContent>
           {showActions && (
-            <Actions>
-              <div>{leftActions}</div>
-              <div>
+            <DialogActions
+              sx={{
+                pt: 1,
+                pb: 2,
+                justifyContent: 'space-between',
+                '& .btn': { m: 0.5 },
+              }}
+            >
+              <Box>{leftActions}</Box>
+              <Box>
                 {showCancel && (
                   <CustomButton
                     onClick={onCancel}
@@ -130,20 +108,32 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                 >
                   {confirming ? <CircularProgress size={16} /> : confirm}
                 </CustomButton>
-              </div>
-            </Actions>
+              </Box>
+            </DialogActions>
           )}
-        </DialogBlock>
+        </Box>
 
-        <CodeWrapper showCode={showCode}>
+        <Box
+          sx={{
+            color: theme => theme.palette.text.primary,
+            backgroundColor: theme => theme.palette.background.paper,
+            width: showCode ? 540 : 0,
+            transition: 'width 0.2s',
+          }}
+        >
           {showCode && (
-            <CodeContainer showCode={showCode}>
+            <Box
+              sx={{
+                height: '100%',
+                p: showCode ? 4 : 0,
+              }}
+            >
               <CodeView data={codeBlocksData} />
-            </CodeContainer>
+            </Box>
           )}
-        </CodeWrapper>
+        </Box>
       </form>
-    </Wrapper>
+    </Box>
   );
 };
 

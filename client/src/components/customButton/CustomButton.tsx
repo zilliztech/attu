@@ -28,8 +28,8 @@ const CustomButton = ({
   const button = <Button disabled={disabled} {...props} />;
   if (!tooltip) return button;
   return (
-    <Tooltip title={tooltip} placement={tooltipPlacement}>
-      {disabled ? <span>{button}</span> : button}
+    <Tooltip title={tooltip} placement={tooltipPlacement} arrow>
+      <span style={{ display: 'inline-block' }}>{button}</span>
     </Tooltip>
   );
 };
