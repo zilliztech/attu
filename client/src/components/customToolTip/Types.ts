@@ -1,10 +1,12 @@
 import { ReactElement } from 'react';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 export type CustomToolTipType = {
   title: string;
   placement?: placement;
   children: ReactElement<any, any>;
   leaveDelay?: number;
+  sx?: SxProps<Theme>;
 };
 
 type placement =
