@@ -286,12 +286,17 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         clearTimeout(ref.timer);
       }
 
+      function getRandomBatchSize() {
+        const weights = [2, 2, 2, 3, 3, 3, 4, 4, 5];
+        return weights[Math.floor(Math.random() * weights.length)];
+      }
+
       ref.timer = setTimeout(async () => {
         if (ref!.names.length === 0) return;
         try {
-          const batchSize = 2;
-          for (let i = 0; i < ref!.names.length; i += batchSize) {
-            let batch = ref!.names.slice(i, i + batchSize);
+          while (ref!.names.length > 0) {
+            const batchSize = getRandomBatchSize();
+            let batch = ref!.names.slice(0, batchSize);
 
             // recheck if the collection is still pending
             batch = batch.filter(name => {
@@ -304,6 +309,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
             batch.forEach(name => ref!.pending.add(name));
             await _fetchCollections(batch);
             batch.forEach(name => ref!.pending.delete(name));
+            ref!.names = ref!.names.slice(batch.length);
           }
         } catch (error) {
           console.error('Failed to refresh collections:', error);
