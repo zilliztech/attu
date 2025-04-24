@@ -461,7 +461,10 @@ export const collectionDefaults: Property[] = [
   { key: 'mmap.enabled', value: '', desc: '', type: 'boolean' },
   { key: 'lazyload.enabled', value: '', desc: '', type: 'boolean' },
   { key: 'partitionkey.isolation', value: '', desc: '', type: 'boolean' },
+  { key: 'field.skipLoad', value: '', desc: '', type: 'string' },
   { key: 'indexoffsetcache.enabled', value: '', desc: '', type: 'boolean' },
+  { key: 'replicate.id', value: '', desc: '', type: 'string' },
+  { key: 'replicate.endTS', value: '', desc: '', type: 'string' },
 ];
 
 export const databaseDefaults: Property[] = [
@@ -470,6 +473,7 @@ export const databaseDefaults: Property[] = [
   { key: 'database.diskQuota.mb', value: '', desc: '', type: 'number' },
   { key: 'database.max.collections', value: '', desc: '', type: 'number' },
   { key: 'database.force.deny.writing', value: '', desc: '', type: 'boolean' },
+  { key: 'database.force.deny.reading', value: '', desc: '', type: 'boolean' },
 ];
 
 export enum FunctionType {
