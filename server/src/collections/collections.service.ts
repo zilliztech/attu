@@ -41,7 +41,6 @@ import {
   convertFieldSchemaToFieldType,
   LOADING_STATE,
   DYNAMIC_FIELD,
-  SimpleQueue,
   MIN_INT64,
   VectorTypes,
   cloneObj,
@@ -195,7 +194,7 @@ export class CollectionsService {
 
   async renameCollection(clientId: string, data: RenameCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.renameCollection(data);
+    await milvusClient.renameCollection(data);
 
     const newCollection = (await this.getAllCollections(
       clientId,
@@ -233,21 +232,21 @@ export class CollectionsService {
 
   async loadCollection(clientId: string, data: LoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.loadCollection(data);
+    await milvusClient.loadCollection(data);
 
     return data.collection_name;
   }
 
   async loadCollectionAsync(clientId: string, data: LoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.loadCollectionAsync(data);
+    await milvusClient.loadCollectionAsync(data);
 
     return data.collection_name;
   }
 
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.releaseCollection(data);
+    await milvusClient.releaseCollection(data);
 
     // emit update to client
     this.updateCollectionsDetails(
@@ -370,7 +369,7 @@ export class CollectionsService {
 
   async dropAlias(clientId: string, collection_name: string, data: any) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.dropAlias(data);
+    await milvusClient.dropAlias(data);
 
     const newCollection = (await this.getAllCollections(
       clientId,
@@ -411,11 +410,7 @@ export class CollectionsService {
     lazy: boolean = false,
     database?: string
   ) {
-    const { collectionsQueue } = clientCache.get(clientId);
     if (lazy) {
-      // add to lazy queue
-      collectionsQueue.enqueue(collection.name);
-
       // return lazy object
       return {
         id: collection.id,
@@ -505,14 +500,6 @@ export class CollectionsService {
     collections: string[] = [],
     database?: string
   ): Promise<CollectionObject[]> {
-    const currentClient = clientCache.get(clientId);
-
-    // clear collectionsQueue if we fetch all collections
-    if (collections.length === 0) {
-      currentClient.collectionsQueue.stop();
-      currentClient.collectionsQueue = new SimpleQueue<string>();
-    }
-
     // get all collections(name, timestamp, id)
     const allCollections = await this.showCollections(clientId, {
       db_name: database,
@@ -544,34 +531,14 @@ export class CollectionsService {
         v => v.name === collection.name
       );
 
-      const notLazy = i <= 5; // lazy is true, only load full details for the first 10 collections
-
       data.push(
         await this.getCollection(
           clientId,
           collection,
           loadedCollection,
-          !notLazy,
+          collections.length === 0, // if no collection is specified, load all collections without detail
           database
         )
-      );
-    }
-
-    // start the queue
-    if (currentClient.collectionsQueue.size() > 0) {
-      currentClient.collectionsQueue.executeNext(
-        async (collectionsToGet, q) => {
-          // if the queue is obseleted, return
-          if (q.isObseleted) {
-            return;
-          }
-          await this.updateCollectionsDetails(
-            clientId,
-            collectionsToGet,
-            database
-          );
-        },
-        5
       );
     }
 

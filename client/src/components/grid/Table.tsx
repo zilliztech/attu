@@ -119,6 +119,7 @@ const EnhancedTable: FC<TableType> = props => {
     handleSort,
     order,
     orderBy,
+    rowDecorator = () => ({}),
   } = props;
   const classes = useStyles({ tableCellMaxWidth });
   const { t: commonTrans } = useTranslation();
@@ -171,6 +172,7 @@ const EnhancedTable: FC<TableType> = props => {
                             ? classes.selected
                             : undefined,
                       }}
+                      sx={rowDecorator(row)}
                     >
                       {openCheckBox && (
                         <TableCell

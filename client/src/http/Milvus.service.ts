@@ -15,18 +15,18 @@ export class MilvusService extends BaseModel {
   }
 
   static getVersion() {
-    return super.search({ path: `/milvus/version`, params: {} });
+    return super.find({ path: `/milvus/version`, params: {} });
   }
 
   static check(address: string) {
-    return super.search({
+    return super.find({
       path: `/milvus/check`,
       params: { address },
     }) as Promise<{ connected: boolean }>;
   }
 
   static getMetrics() {
-    return super.search({
+    return super.find({
       path: `/milvus/metrics`,
       params: {},
     });

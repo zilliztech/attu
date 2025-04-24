@@ -25,6 +25,7 @@
     "@mui/material": "^5.17.1",
     "@mui/styles": "^5.17.1",
     "@mui/x-tree-view": "^7.28.0",
+    "@tanstack/react-virtual": "^3.13.6",
     "axios": "^1.8.2",
     "codemirror": "^6.0.1",
     "d3": "^7.9.0",

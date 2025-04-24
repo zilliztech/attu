@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -73,8 +73,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Collections = () => {
   const { isManaged } = useContext(authContext);
-  const { collections, database, loading, fetchCollections, fetchCollection } =
-    useContext(dataContext);
+  const {
+    collections,
+    database,
+    loading,
+    fetchCollections,
+    fetchCollection,
+    batchRefreshCollections,
+  } = useContext(dataContext);
 
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
@@ -494,6 +500,17 @@ const Collections = () => {
 
   const CollectionIcon = icons.navCollection;
 
+  // lazy fetch collections that don't have schema
+  useEffect(() => {
+    const names = collectionList
+      .filter(c => !c.schema)
+      .map(c => c.collection_name);
+
+    if (names.length > 0) {
+      batchRefreshCollections(names, 'collection-grid');
+    }
+  }, [collectionList, batchRefreshCollections]);
+
   return (
     <section className={classes.root}>
       {collections.length > 0 || loading ? (
@@ -519,6 +536,16 @@ const Collections = () => {
           labelDisplayedRows={getLabelDisplayedRows(
             commonTrans('grid.collections')
           )}
+          rowDecorator={(row: CollectionObject) => {
+            if (!row.schema) {
+              return {
+                pointerEvents: 'none',
+                opacity: 0.5,
+                backgroundColor: 'rgba(0,0,0,0.04)',
+              };
+            }
+            return {};
+          }}
         />
       ) : (
         <>

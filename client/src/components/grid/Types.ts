@@ -2,6 +2,7 @@ import React, { ReactElement, Ref } from 'react';
 import { LabelDisplayedRowsArgs } from '@mui/material';
 import { IconsType } from '../icons/Types';
 import { SearchType } from '../customInput/Types';
+import type { SxProps, Theme } from '@mui/material';
 
 export type IconConfigType = {
   [x: string]: JSX.Element;
@@ -85,6 +86,7 @@ export type TableType = {
   primaryKey: string;
   openCheckBox?: boolean;
   disableSelect?: boolean;
+  rowDecorator?: (row: any) => SxProps<Theme> | React.CSSProperties;
   noData?: string;
   showHoverStyle?: boolean;
   isLoading?: boolean;
@@ -154,6 +156,7 @@ export type AttuGridType = ToolBarType & {
   rowHeight?: number;
   hideOnDisable?: boolean;
   pagerHeight?: number;
+  rowDecorator?: (row: any) => SxProps<Theme> | React.CSSProperties;
 };
 
 export type ActionBarType = {
