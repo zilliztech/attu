@@ -437,6 +437,13 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
                     <Typography noWrap className={classes.dbName}>
                       {/* Reuse dbName style or create a generic one */}
                       {node.name}
+                      {node.type === 'db' && (
+                        <span
+                          style={{ marginLeft: 8, color: '#888', fontSize: 12 }}
+                        >
+                          ({collections.length})
+                        </span>
+                      )}
                     </Typography>
                   </Tooltip>
                 )}
@@ -445,7 +452,6 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
           })}
         </Box>
       </Box>
-
       {/* Context Menu Popover (keep existing) */}
       <Popover
         open={Boolean(contextMenu)}
@@ -459,8 +465,10 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
         TransitionComponent={Grow}
         transitionDuration={0}
         sx={{ pointerEvents: 'none' }}
-        PaperProps={{
-          sx: { pointerEvents: 'auto', boxShadow: 4, borderRadius: 2 },
+        slotProps={{
+          paper: {
+            sx: { pointerEvents: 'auto', boxShadow: 4, borderRadius: 2 },
+          },
         }}
       >
         {/* Pass the correct contextMenu object */}
@@ -469,6 +477,7 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
           contextMenu={contextMenu!}
         />
       </Popover>
+      // ...existing code...
     </>
   );
 };
