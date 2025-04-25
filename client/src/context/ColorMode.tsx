@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 import { ThemeProvider } from '@mui/material/styles';
 import getCommonThemes from '../styles/theme';
 
@@ -22,7 +22,10 @@ export const ColorModeProvider = (props: { children: React.ReactNode }) => {
 
   const [mode, setMode] = useState<theme>(userThemeMode as theme);
 
-  const theme = React.useMemo(() => createTheme(getCommonThemes(mode)), [mode]);
+  const theme = React.useMemo(
+    () => createTheme(getCommonThemes(mode) as ThemeOptions),
+    [mode]
+  );
 
   const toggleColorMode = () => {
     setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
@@ -31,7 +34,6 @@ export const ColorModeProvider = (props: { children: React.ReactNode }) => {
   // store the current mode in localStorage
   useEffect(() => {
     localStorage.setItem(ATTU_THEME_MODE, mode);
-
   }, [mode]);
 
   return (
