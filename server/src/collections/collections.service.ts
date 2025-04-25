@@ -425,6 +425,7 @@ export class CollectionsService {
         consistency_level: undefined,
         replicas: undefined,
         loaded: undefined,
+        db_name: database,
       } as CollectionLazyObject;
     }
     // get collection schema and properties
@@ -491,6 +492,7 @@ export class CollectionsService {
       loaded: status === LOADING_STATE.LOADED,
       status,
       properties: collectionInfo.properties,
+      db_name: database,
     };
   }
 

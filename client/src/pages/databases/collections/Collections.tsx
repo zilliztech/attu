@@ -97,7 +97,6 @@ const Collections = () => {
   const classes = useStyles();
 
   const QuestionIcon = icons.question;
-  const SourceIcon = icons.source;
 
   const formatCollections = useMemo(() => {
     const filteredCollections = search

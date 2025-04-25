@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { CollectionService, MilvusService } from '@/http';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
@@ -12,6 +12,12 @@ export function useCollectionsManagement(database: string) {
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [loading, setLoading] = useState(true);
   const requestIdRef = useRef(0);
+  const databaseRef = useRef(database);
+
+  // Update the ref when database changes
+  useEffect(() => {
+    databaseRef.current = database;
+  }, [database]);
 
   const detectLoadingIndexing = useCallback(
     (collections: CollectionObject[]) => {
@@ -25,7 +31,7 @@ export function useCollectionsManagement(database: string) {
           name: WS_EVENTS.COLLECTION_UPDATE,
           type: WS_EVENTS_TYPE.START,
           payload: {
-            database,
+            database: databaseRef.current,
             collections: LoadingOrBuildingCollections.map(
               c => c.collection_name
             ),
@@ -33,15 +39,15 @@ export function useCollectionsManagement(database: string) {
         });
       }
     },
-    [database]
+    [] // Removing database from dependencies
   );
 
   const updateCollections = useCallback(
     (props: { collections: CollectionFullObject[]; database?: string }) => {
       const { collections: updated = [], database: remote } = props;
       if (
-        remote !== database &&
-        database !== undefined &&
+        remote !== databaseRef.current &&
+        databaseRef.current !== undefined &&
         remote !== undefined
       ) {
         return;
@@ -55,13 +61,21 @@ export function useCollectionsManagement(database: string) {
         return Array.from(prevMap.values());
       });
     },
-    [database, detectLoadingIndexing]
+    [detectLoadingIndexing] // Removed database dependency
   );
+
+  const refreshCollectionsDebounceMapRef = useRef<
+    Map<
+      string,
+      { timer: NodeJS.Timeout | null; names: string[]; pending: Set<string> }
+    >
+  >(new Map());
 
   const fetchCollections = async () => {
     const currentRequestId = ++requestIdRef.current;
     try {
       setLoading(true);
+
       setCollections([]);
       const res = await CollectionService.getAllCollections();
       if (currentRequestId === requestIdRef.current) {
@@ -82,24 +96,6 @@ export function useCollectionsManagement(database: string) {
     updateCollections({ collections: [res] });
     return res;
   };
-
-  const _fetchCollections = useCallback(
-    async (collectionNames: string[]) => {
-      const res = await CollectionService.getCollections({
-        db_name: database,
-        collections: collectionNames,
-      });
-      updateCollections({ collections: res });
-    },
-    [database, updateCollections]
-  );
-
-  const refreshCollectionsDebounceMapRef = useRef<
-    Map<
-      string,
-      { timer: NodeJS.Timeout | null; names: string[]; pending: Set<string> }
-    >
-  >(new Map());
 
   const batchRefreshCollections = useCallback(
     (collectionNames: string[], key: string = 'default') => {
@@ -133,7 +129,14 @@ export function useCollectionsManagement(database: string) {
               return collection && !collection.schema;
             });
             batch.forEach(name => ref!.pending.add(name));
-            await _fetchCollections(batch);
+            // call api
+            const res = await CollectionService.getCollections({
+              db_name: databaseRef.current,
+              collections: batch,
+            });
+            updateCollections({
+              collections: res.filter(c => c.db_name === databaseRef.current),
+            });
             batch.forEach(name => ref!.pending.delete(name));
             ref!.names = ref!.names.slice(batch.length);
           }
@@ -144,7 +147,7 @@ export function useCollectionsManagement(database: string) {
         ref!.timer = null;
       }, 200);
     },
-    [collections, _fetchCollections]
+    [collections, updateCollections] // Removed database dependency
   );
 
   const createCollection = async (data: any) => {

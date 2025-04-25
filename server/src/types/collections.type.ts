@@ -70,6 +70,7 @@ export type CollectionFullObject = {
   status: LOADING_STATE;
   loaded: boolean;
   properties: KeyValuePair[];
+  db_name: string;
 };
 
 export type CollectionLazyObject = {
@@ -87,6 +88,7 @@ export type CollectionLazyObject = {
   replicas: undefined;
   loaded: undefined;
   properties: undefined;
+  db_name: string;
 };
 
 export type CollectionObject = CollectionFullObject | CollectionLazyObject;
