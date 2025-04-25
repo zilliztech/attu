@@ -3,8 +3,8 @@ import { authContext } from '@/context';
 import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { useUIPrefs } from '@/context/hooks/useUIPrefs';
 import { useWebSocket } from '@/context/hooks/useWebSocket';
-import { useDatabaseManagement } from '@/context/hooks/useDatabaseuseCollectionsManagement';
-import { useCollectionsManagement } from '@/context/hooks/useCollectionsuseCollectionsManagement';
+import { useDatabaseManagement } from '@/context/hooks/useDatabaseuseManagement';
+import { useCollectionsManagement } from '@/context/hooks/useCollectionsManagement';
 import type { DataContextType } from './Types';
 import type { CollectionFullObject, ResStatus } from '@server/types';
 
