@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { DatabaseService } from '@/http';
 import { authContext } from '@/context';
-import type { DatabaseObject, ResStatus } from '@server/types';
+import type { DatabaseObject } from '@server/types';
 
 export const useDatabaseManagement = () => {
   const { authReq, isAuth, logout, setAuthReq } = useContext(authContext);
@@ -11,41 +11,50 @@ export const useDatabaseManagement = () => {
   const [database, setDatabase] = useState<string>(authReq.database);
 
   // API: fetch databases
-  const fetchDatabases = useCallback(async (updateLoading?: boolean) => {
-    try {
-      updateLoading && setLoadingDatabases(true);
-      const newDatabases = await DatabaseService.listDatabases();
-      // if no database, logout
-      if (newDatabases.length === 0) {
-        logout();
+  const fetchDatabases = useCallback(
+    async (updateLoading?: boolean) => {
+      try {
+        updateLoading && setLoadingDatabases(true);
+        const newDatabases = await DatabaseService.listDatabases();
+        // if no database, logout
+        if (newDatabases.length === 0) {
+          logout();
+        }
+        setDatabases(newDatabases);
+        return newDatabases;
+      } finally {
+        updateLoading && setLoadingDatabases(false);
       }
-      setDatabases(newDatabases);
-      return newDatabases;
-    } finally {
-      updateLoading && setLoadingDatabases(false);
-    }
-  }, [logout]); // Added logout dependency
+    },
+    [logout]
+  ); // Added logout dependency
 
   // API: create database
-  const createDatabase = useCallback(async (params: { db_name: string }) => {
-    const res = await DatabaseService.createDatabase(params);
-    await fetchDatabases();
-    return res;
-  }, [fetchDatabases]); // Added fetchDatabases dependency
+  const createDatabase = useCallback(
+    async (params: { db_name: string }) => {
+      const res = await DatabaseService.createDatabase(params);
+      await fetchDatabases();
+      return res;
+    },
+    [fetchDatabases]
+  ); // Added fetchDatabases dependency
 
   // API: delete database
-  const dropDatabase = useCallback(async (params: { db_name: string }) => {
-    const res = await DatabaseService.dropDatabase(params);
-    const newDatabases = await fetchDatabases();
-    // Switch to the first available database after deletion
-    if (newDatabases.length > 0) {
-      setDatabase(newDatabases[0].name);
-    } else {
-      // Handle case where no databases are left (e.g., logout or show message)
-      logout(); // Example: logout if no databases left
-    }
-    return res;
-  }, [fetchDatabases, logout]); // Added fetchDatabases and logout dependencies
+  const dropDatabase = useCallback(
+    async (params: { db_name: string }) => {
+      const res = await DatabaseService.dropDatabase(params);
+      const newDatabases = await fetchDatabases();
+      // Switch to the first available database after deletion
+      if (newDatabases.length > 0) {
+        setDatabase(newDatabases[0].name);
+      } else {
+        // Handle case where no databases are left (e.g., logout or show message)
+        logout(); // Example: logout if no databases left
+      }
+      return res;
+    },
+    [fetchDatabases, logout]
+  ); // Added fetchDatabases and logout dependencies
 
   // Effect to fetch initial databases when authenticated
   useEffect(() => {
