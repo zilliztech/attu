@@ -6,19 +6,17 @@ import {
   useState,
   useRef,
 } from 'react';
-import { io, Socket } from 'socket.io-client';
 import { authContext } from '@/context';
 import {
   CollectionService,
   MilvusService,
   DatabaseService,
-  isElectron,
-  url,
 } from '@/http';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
-import { DEFAULT_TREE_WIDTH, ATTU_UI_TREE_WIDTH } from '@/consts';
+import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
-import { useUIPrefs } from '@/hooks/useUIPrefs'; // Import the new hook
+import { useUIPrefs } from '@/hooks/useUIPrefs';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import type {
   IndexCreateParam,
   IndexManageParam,
@@ -102,14 +100,11 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
-  const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingDatabases, setLoadingDatabases] = useState(true);
   const [database, setDatabase] = useState<string>(authReq.database);
-
   const [databases, setDatabases] = useState<DatabaseObject[]>([]);
-  // socket ref
-  const socket = useRef<Socket | null>(null);
+
   // Use a ref to track concurrent requests
   const requestIdRef = useRef(0);
 
@@ -170,8 +165,16 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         return newCollections;
       });
     },
-    [database]
+    [database, detectLoadingIndexing]
   );
+
+  // WebSocket Hook
+  const { connected } = useWebSocket({
+    isAuth,
+    clientId,
+    database, // Pass database
+    onCollectionUpdate: updateCollections,
+  });
 
   // API: fetch databases
   const fetchDatabases = async (updateLoading?: boolean) => {
@@ -466,79 +469,42 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     return newCollection;
   };
 
+  // Effect to fetch initial data when authenticated and connected
   useEffect(() => {
-    const clear = () => {
-      // clear collections
-      setCollections([]);
-      // clear database
-      setDatabases([]);
-      // set connected to false
-      setConnected(false);
-      // remove all listeners when component unmount
-      socket.current?.offAny();
-      socket.current?.disconnect();
-    };
-
     if (isAuth) {
-      // update database get from auth
+      // Update database from auth context when auth state changes
       setDatabase(authReq.database);
-
-      const extraHeaders = {
-        'milvus-client-id': clientId,
-      };
-
-      const ioParams = { extraHeaders, query: extraHeaders };
-
-      socket.current = isElectron ? io(url as string, ioParams) : io(ioParams);
-
-      socket.current.on('connect', async () => {
-        // console.info('--- ws connected ---', clientId);
-        // fetch db
-        await fetchDatabases(true);
-        // set connected to trues
-        setConnected(true);
-      });
-
-      // handle disconnect
-      socket.current.on('disconnect', () => {
-        // Set connected to false
-        setConnected(false);
-      });
-
-      // handle error
-      socket.current.on('error', error => {
-        socket.current?.disconnect();
-      });
+      // Fetch databases immediately when authenticated
+      // The useWebSocket hook handles the connection itself
+      fetchDatabases(true);
     } else {
-      clear();
+      // Clear data when not authenticated
+      setCollections([]);
+      setDatabases([]);
+      setLoading(true); // Reset loading states if needed
+      setLoadingDatabases(true);
     }
+  }, [isAuth, authReq.database]);
 
-    return () => {
-      clear();
-    };
-  }, [isAuth]);
-
+  // Effect to fetch collections when connection is established or database changes
   useEffect(() => {
     if (connected) {
-      // clear data
-      setCollections([]);
-      // remove all listeners
-      socket.current?.off(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
-      // listen to backend collection event
-      socket.current?.on(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
-
-      // fetch db
+      // Fetch collections when connected or database changes
       fetchCollections();
+    } else {
+      // Clear collections if disconnected
+      setCollections([]);
+      setLoading(true); // Optionally reset loading state
     }
+  }, [connected, database]);
 
-    return () => {
-      socket.current?.off(WS_EVENTS.COLLECTION_UPDATE, updateCollections);
-    };
-  }, [updateCollections, connected]);
-
+  // Effect to update auth context when local database state changes
   useEffect(() => {
-    setAuthReq({ ...authReq, database });
-  }, [database]);
+    // Only update if the database actually changed from the auth context one
+    if (authReq.database !== database) {
+      setAuthReq({ ...authReq, database });
+    }
+  }, [database, authReq, setAuthReq]);
 
   return (
     <Provider
