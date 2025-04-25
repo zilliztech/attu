@@ -1,17 +1,14 @@
-import { useState, useCallback, useEffect, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import React from 'react';
 import { authContext } from '@/context';
 import CustomSnackBar from '@/components/customSnackBar/CustomSnackBar';
 import CustomDialog from '@/components/customDialog/CustomDialog';
 import CustomDrawer from '@/components/customDrawer/CustomDrawer';
 import { MilvusService } from '@/http';
-import type {
-  RootContextType,
-  DialogType,
-  SnackBarType,
-  OpenSnackBarType,
-  DrawerType,
-} from './Types';
+import { useSnackBar } from './hooks/useSnackBar';
+import { useDialog } from './hooks/useDialog';
+import { useDrawer } from './hooks/useDrawer';
+import type { RootContextType, DialogType, DrawerType } from './Types';
 
 const DefaultDialogConfigs: DialogType = {
   open: false,
@@ -58,60 +55,17 @@ const { Provider } = rootContext;
 export const RootProvider = (props: { children: React.ReactNode }) => {
   const { isAuth } = useContext(authContext);
 
-  const [snackBar, setSnackBar] = useState<SnackBarType>({
-    open: false,
-    type: 'success',
-    message: '',
-    vertical: 'top',
-    horizontal: 'right',
-    autoHideDuration: 1000,
-  });
-  const [dialog, setDialog] = useState<DialogType>(DefaultDialogConfigs);
-  const [dialog2, setDialog2] = useState<DialogType>(DefaultDialogConfigs);
-
-  const [drawer, setDrawer] = useState<DrawerType>({
-    open: false,
-    title: '',
-    content: <></>,
-    hasActionBar: false,
-    actions: [],
-  });
+  const { snackBar, setSnackBar, openSnackBar, handleSnackBarClose } =
+    useSnackBar();
+  const { dialog, setDialog, handleCloseDialog } = useDialog();
+  const {
+    dialog: dialog2,
+    setDialog: setDialog2,
+    handleCloseDialog: handleCloseDialog2,
+  } = useDialog();
+  const { drawer, setDrawer } = useDrawer();
 
   const [versionInfo, setVersionInfo] = useState({ attu: '', sdk: '' });
-
-  const handleSnackBarClose = () => {
-    setSnackBar(v => ({ ...v, open: false }));
-  };
-  const openSnackBar: OpenSnackBarType = useCallback(
-    (
-      message = '',
-      type = 'success',
-      autoHideDuration: number | null | undefined = 5000,
-      position = { vertical: 'top', horizontal: 'right' }
-    ) => {
-      setSnackBar({
-        open: true,
-        message,
-        type,
-        autoHideDuration,
-        ...position,
-      });
-    },
-    []
-  );
-
-  const handleCloseDialog = () => {
-    setDialog({
-      ...dialog,
-      open: false,
-    });
-  };
-  const handleCloseDialog2 = () => {
-    setDialog2({
-      ...dialog2,
-      open: false,
-    });
-  };
 
   useEffect(() => {
     if (isAuth) {
@@ -120,12 +74,8 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         setVersionInfo(res as any);
       };
       fetchVersion();
-    }
-  }, [isAuth]);
-
-  useEffect(() => {
-    // if auth is off, hide snack bar
-    if (!isAuth) {
+    } else {
+      // if auth is off, hide snack bar
       setSnackBar({
         open: false,
         type: 'success',
@@ -134,8 +84,21 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         horizontal: 'right',
         autoHideDuration: 3000,
       });
+      // hide dialog
+      setDialog({
+        ...dialog,
+        open: false,
+      });
+      setDialog2({
+        ...dialog2,
+        open: false,
+      });
+      setDrawer({
+        ...drawer,
+        open: false,
+      });
     }
-  }, [isAuth]);
+  }, [isAuth, setSnackBar, setDialog, setDialog2, setDrawer]);
 
   return (
     <Provider
