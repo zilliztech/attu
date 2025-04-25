@@ -7,16 +7,13 @@ import {
   useRef,
 } from 'react';
 import { authContext } from '@/context';
-import {
-  CollectionService,
-  MilvusService,
-  DatabaseService,
-} from '@/http';
+import { CollectionService, MilvusService } from '@/http';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
 import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 import { useUIPrefs } from '@/hooks/useUIPrefs';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { useDatabaseManagement } from '@/hooks/useDatabaseManagement';
 import type {
   IndexCreateParam,
   IndexManageParam,
@@ -25,7 +22,6 @@ import type { DataContextType } from './Types';
 import type {
   CollectionObject,
   CollectionFullObject,
-  DatabaseObject,
   ResStatus,
 } from '@server/types';
 
@@ -92,18 +88,26 @@ const { Provider } = dataContext;
 
 export const DataProvider = (props: { children: React.ReactNode }) => {
   // auth context
-  const { authReq, isAuth, clientId, logout, setAuthReq } =
-    useContext(authContext);
+  const { clientId } = useContext(authContext);
 
   // UI preferences hook
   const { ui, setUIPref } = useUIPrefs();
 
-  // local data state
+  // Database Management Hook
+  const {
+    databases,
+    loadingDatabases,
+    database,
+    setDatabase,
+    fetchDatabases,
+    createDatabase,
+    dropDatabase,
+    setDatabaseList,
+  } = useDatabaseManagement();
+
+  // local collection state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingDatabases, setLoadingDatabases] = useState(true);
-  const [database, setDatabase] = useState<string>(authReq.database);
-  const [databases, setDatabases] = useState<DatabaseObject[]>([]);
 
   // Use a ref to track concurrent requests
   const requestIdRef = useRef(0);
@@ -144,24 +148,17 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database !== undefined &&
         remote !== undefined
       ) {
-        // console.log('database not matched', remote, database);
         return;
       }
-      // check state to see if it is loading or building index, if so, start server cron job
       detectLoadingIndexing(collections);
-      // update single collection
       setCollections(prev => {
-        // update exist collection
         const newCollections = prev.map(v => {
           const collectionToUpdate = collections.find(c => c.id === v.id);
-
           if (collectionToUpdate) {
             return collectionToUpdate;
           }
-
           return v;
         });
-
         return newCollections;
       });
     },
@@ -170,65 +167,23 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // WebSocket Hook
   const { connected } = useWebSocket({
-    isAuth,
+    isAuth: !!clientId,
     clientId,
-    database, // Pass database
+    database,
     onCollectionUpdate: updateCollections,
   });
-
-  // API: fetch databases
-  const fetchDatabases = async (updateLoading?: boolean) => {
-    try {
-      updateLoading && setLoadingDatabases(true);
-      const newDatabases = await DatabaseService.listDatabases();
-      // if no database, logout
-      if (newDatabases.length === 0) {
-        logout();
-      }
-      setDatabases(newDatabases);
-
-      return newDatabases;
-    } finally {
-      updateLoading && setLoadingDatabases(false);
-    }
-  };
-
-  // API: create database
-  const createDatabase = async (params: { db_name: string }) => {
-    const res = await DatabaseService.createDatabase(params);
-    await fetchDatabases();
-
-    return res;
-  };
-
-  // API: delete database
-  const dropDatabase = async (params: { db_name: string }) => {
-    const res = await DatabaseService.dropDatabase(params);
-    const newDatabases = await fetchDatabases();
-
-    setDatabase(newDatabases[0].name);
-
-    return res;
-  };
 
   // API:fetch collections
   const fetchCollections = async () => {
     const currentRequestId = ++requestIdRef.current;
 
     try {
-      // set loading true
       setLoading(true);
-      // set collections
       setCollections([]);
-      // fetch collections
       const res = await CollectionService.getAllCollections();
-      // Only process the response if this is the latest request
       if (currentRequestId === requestIdRef.current) {
-        // check state
         detectLoadingIndexing(res);
-        // set collections
         setCollections(res);
-        // set loading false
         setLoading(false);
       }
     } catch (error) {
@@ -241,12 +196,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: fetch single collection
   const fetchCollection = async (name: string) => {
-    // fetch collections
     const res = await CollectionService.getCollection(name);
-
-    // update collection
     updateCollections({ collections: [res] });
-
     return res;
   };
 
@@ -255,7 +206,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       db_name: database,
       collections: collectionNames,
     });
-    // update collections
     updateCollections({ collections: res });
   };
 
@@ -298,7 +248,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
             const batchSize = getRandomBatchSize();
             let batch = ref!.names.slice(0, batchSize);
 
-            // recheck if the collection is still pending
             batch = batch.filter(name => {
               const collection = collections.find(
                 v => v.collection_name === name
@@ -323,11 +272,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: create collection
   const createCollection = async (data: any) => {
-    // create collection
     const newCollection = await CollectionService.createCollection(data);
 
-    // combine new collection with old collections
-    // sort state by createdTime.
     const newCollections = collections.concat(newCollection).sort((a, b) => {
       if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
         if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
@@ -338,7 +284,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
       return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
     });
 
-    // update collection
     setCollections(newCollections);
 
     return newCollection;
@@ -346,21 +291,17 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: load collection
   const loadCollection = async (name: string, param?: any) => {
-    // load collection
     const res = await CollectionService.loadCollection(name, param);
 
-    // find the collection in the collections
     const collection = collections.find(
       v => v.collection_name === name
     ) as CollectionFullObject;
-    // update collection infomation
     if (collection) {
       collection.loadedPercentage = 0;
       collection.loaded = false;
       collection.status = LOADING_STATE.LOADING;
     }
 
-    // update collection, and trigger cron job
     updateCollections({ collections: [collection] });
 
     return res;
@@ -368,13 +309,11 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: release collection
   const releaseCollection = async (name: string) => {
-    // release collection
     return await CollectionService.releaseCollection(name);
   };
 
   // API: rename collection
   const renameCollection = async (name: string, newName: string) => {
-    // rename collection
     const newCollection = await CollectionService.renameCollection(name, {
       new_collection_name: newName,
     });
@@ -385,11 +324,9 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: duplicate collection
   const duplicateCollection = async (name: string, newName: string) => {
-    // duplicate collection
     const newCollection = await CollectionService.duplicateCollection(name, {
       new_collection_name: newName,
     });
-    // inset collection to state
     setCollections(prev => [...prev, newCollection]);
 
     return newCollection;
@@ -397,10 +334,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: drop collection
   const dropCollection = async (name: string) => {
-    // drop collection
     const dropped = await CollectionService.dropCollection(name);
     if (dropped.error_code === 'Success') {
-      // remove collection from state
       setCollections(prev => prev.filter(v => v.collection_name !== name));
     }
 
@@ -409,9 +344,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: create index
   const createIndex = async (param: IndexCreateParam) => {
-    // create index
     const newCollection = await CollectionService.createIndex(param);
-    // update collection
     updateCollections({ collections: [newCollection] });
 
     return newCollection;
@@ -419,9 +352,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: drop index
   const dropIndex = async (params: IndexManageParam) => {
-    // drop index
     const { data } = await CollectionService.dropIndex(params);
-    // update collection
     updateCollections({ collections: [data] });
 
     return data;
@@ -429,11 +360,9 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: create alias
   const createAlias = async (collectionName: string, alias: string) => {
-    // create alias
     const newCollection = await CollectionService.createAlias(collectionName, {
       alias,
     });
-    // update collection
     updateCollections({ collections: [newCollection] });
 
     return newCollection;
@@ -441,12 +370,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
   // API: drop alias
   const dropAlias = async (collectionName: string, alias: string) => {
-    // drop alias
     const { data } = await CollectionService.dropAlias(collectionName, {
       alias,
     });
 
-    // update collection
     updateCollections({ collections: [data] });
 
     return data;
@@ -458,53 +385,24 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     key: string,
     value: any
   ) => {
-    // set property
     const newCollection = await CollectionService.setProperty(collectionName, {
       [key]: value,
     });
 
-    // update existing collection
     updateCollections({ collections: [newCollection] });
 
     return newCollection;
   };
 
-  // Effect to fetch initial data when authenticated and connected
-  useEffect(() => {
-    if (isAuth) {
-      // Update database from auth context when auth state changes
-      setDatabase(authReq.database);
-      // Fetch databases immediately when authenticated
-      // The useWebSocket hook handles the connection itself
-      fetchDatabases(true);
-    } else {
-      // Clear data when not authenticated
-      setCollections([]);
-      setDatabases([]);
-      setLoading(true); // Reset loading states if needed
-      setLoadingDatabases(true);
-    }
-  }, [isAuth, authReq.database]);
-
   // Effect to fetch collections when connection is established or database changes
   useEffect(() => {
     if (connected) {
-      // Fetch collections when connected or database changes
       fetchCollections();
     } else {
-      // Clear collections if disconnected
       setCollections([]);
-      setLoading(true); // Optionally reset loading state
+      setLoading(true);
     }
   }, [connected, database]);
-
-  // Effect to update auth context when local database state changes
-  useEffect(() => {
-    // Only update if the database actually changed from the auth context one
-    if (authReq.database !== database) {
-      setAuthReq({ ...authReq, database });
-    }
-  }, [database, authReq, setAuthReq]);
 
   return (
     <Provider
@@ -516,7 +414,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database,
         databases,
         setDatabase,
-        setDatabaseList: setDatabases,
+        setDatabaseList,
         createDatabase,
         dropDatabase,
         fetchDatabases,
