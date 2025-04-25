@@ -18,6 +18,7 @@ import {
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
 import { DEFAULT_TREE_WIDTH, ATTU_UI_TREE_WIDTH } from '@/consts';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
+import { useUIPrefs } from '@/hooks/useUIPrefs'; // Import the new hook
 import type {
   IndexCreateParam,
   IndexManageParam,
@@ -96,12 +97,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const { authReq, isAuth, clientId, logout, setAuthReq } =
     useContext(authContext);
 
-  // UI preferences
-  const [ui, setUI] = useState({
-    tree: {
-      width: DEFAULT_TREE_WIDTH,
-    },
-  });
+  // UI preferences hook
+  const { ui, setUIPref } = useUIPrefs();
 
   // local data state
   const [collections, setCollections] = useState<CollectionObject[]>([]);
@@ -468,26 +465,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
 
     return newCollection;
   };
-
-  // set UI preferences
-  const setUIPref = (pref: DataContextType['ui']) => {
-    setUI(pref);
-    localStorage.setItem(ATTU_UI_TREE_WIDTH, String(pref.tree.width));
-  };
-
-  // load UI preferences
-  useEffect(() => {
-    const storedWidth = Number(localStorage.getItem(ATTU_UI_TREE_WIDTH));
-    if (storedWidth) {
-      setUI(prevUI => ({
-        ...prevUI,
-        tree: {
-          ...prevUI.tree,
-          width: storedWidth,
-        },
-      }));
-    }
-  }, []);
 
   useEffect(() => {
     const clear = () => {
