@@ -49,7 +49,7 @@ export const useDatabaseManagement = () => {
         setDatabase(newDatabases[0].name);
       } else {
         // Handle case where no databases are left (e.g., logout or show message)
-        logout(); // Example: logout if no databases left
+        logout();
       }
       return res;
     },

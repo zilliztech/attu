@@ -76,9 +76,9 @@ export const useWebSocket = ({
     return () => {
       socket.current?.off(WS_EVENTS.COLLECTION_UPDATE, onCollectionUpdate);
     };
-    // Add database here if the listener logic depends on it, 
+    // Add database here if the listener logic depends on it,
     // but the current onCollectionUpdate is passed from DataProvider which already depends on database
-  }, [connected, onCollectionUpdate]); 
+  }, [connected, onCollectionUpdate]);
 
   return { connected };
 };

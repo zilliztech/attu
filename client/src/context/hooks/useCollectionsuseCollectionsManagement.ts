@@ -8,7 +8,7 @@ import type {
 } from '@/pages/databases/collections/schema/Types';
 import type { CollectionObject, CollectionFullObject } from '@server/types';
 
-export function useCollections(database: string) {
+export function useCollectionsManagement(database: string) {
   const [collections, setCollections] = useState<CollectionObject[]>([]);
   const [loading, setLoading] = useState(true);
   const requestIdRef = useRef(0);
@@ -48,14 +48,11 @@ export function useCollections(database: string) {
       }
       detectLoadingIndexing(updated);
       setCollections(prev => {
-        const newCollections = prev.map(v => {
-          const collectionToUpdate = updated.find(c => c.id === v.id);
-          if (collectionToUpdate) {
-            return collectionToUpdate;
-          }
-          return v;
+        const prevMap = new Map(prev.map(c => [c.id, c]));
+        updated.forEach(c => {
+          prevMap.set(c.id, c);
         });
-        return newCollections;
+        return Array.from(prevMap.values());
       });
     },
     [database, detectLoadingIndexing]
@@ -86,13 +83,16 @@ export function useCollections(database: string) {
     return res;
   };
 
-  const _fetchCollections = async (collectionNames: string[]) => {
-    const res = await CollectionService.getCollections({
-      db_name: database,
-      collections: collectionNames,
-    });
-    updateCollections({ collections: res });
-  };
+  const _fetchCollections = useCallback(
+    async (collectionNames: string[]) => {
+      const res = await CollectionService.getCollections({
+        db_name: database,
+        collections: collectionNames,
+      });
+      updateCollections({ collections: res });
+    },
+    [database, updateCollections]
+  );
 
   const refreshCollectionsDebounceMapRef = useRef<
     Map<

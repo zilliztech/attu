@@ -3,8 +3,8 @@ import { authContext } from '@/context';
 import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { useUIPrefs } from '@/context/hooks/useUIPrefs';
 import { useWebSocket } from '@/context/hooks/useWebSocket';
-import { useDatabaseManagement } from '@/context/hooks/useDatabase';
-import { useCollections } from '@/context/hooks/useCollections';
+import { useDatabaseManagement } from '@/context/hooks/useDatabaseuseCollectionsManagement';
+import { useCollectionsManagement } from '@/context/hooks/useCollectionsuseCollectionsManagement';
 import type { DataContextType } from './Types';
 import type { CollectionFullObject, ResStatus } from '@server/types';
 
@@ -76,7 +76,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   // UI preferences hook
   const { ui, setUIPref } = useUIPrefs();
 
-  // Database Management Hook
+  // Database Hook
   const {
     databases,
     loadingDatabases,
@@ -88,7 +88,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     setDatabaseList,
   } = useDatabaseManagement();
 
-  // 使用 useCollections hook
+  //  useCollections hook
   const {
     collections,
     setCollections,
@@ -108,7 +108,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     dropAlias,
     setCollectionProperty,
     updateCollections,
-  } = useCollections(database);
+  } = useCollectionsManagement(database);
 
   // WebSocket Hook
   const { connected } = useWebSocket({
