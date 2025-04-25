@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState, useMemo } from 'react';
 import { AuthContextType } from './Types';
 import { MilvusService } from '@/http';
 import {
@@ -35,19 +35,28 @@ export const authContext = createContext<AuthContextType>({
 const { Provider } = authContext;
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   // get data from local storage
-  const localClientId = window.localStorage.getItem(MILVUS_CLIENT_ID) || '';
-  const localAuthReq = JSON.parse(
-    window.localStorage.getItem(ATTU_AUTH_REQ) ||
-      JSON.stringify({
-        username: '',
-        password: '',
-        address: MILVUS_URL,
-        token: '',
-        database: MILVUS_DATABASE,
-        checkHealth: true,
-        clientId: localClientId,
-      })
-  );
+  let localClientId = '';
+  let localAuthReq: AuthReq = {
+    username: '',
+    password: '',
+    address: MILVUS_URL,
+    token: '',
+    database: MILVUS_DATABASE,
+    checkHealth: true,
+    clientId: '',
+    ssl: false,
+  };
+  try {
+    localClientId = window.localStorage.getItem(MILVUS_CLIENT_ID) || '';
+    const storedAuthReq = window.localStorage.getItem(ATTU_AUTH_REQ);
+    if (storedAuthReq) {
+      localAuthReq = { ...localAuthReq, ...JSON.parse(storedAuthReq) };
+    } else {
+      localAuthReq.clientId = localClientId;
+    }
+  } catch (e) {
+    // fallback to defaults if JSON parse fails
+  }
 
   // state
   const [authReq, setAuthReq] = useState<AuthReq>(localAuthReq);
@@ -55,47 +64,51 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
 
   // update local storage when authReq changes
   useEffect(() => {
-    // store auth request in local storage
     window.localStorage.setItem(
       ATTU_AUTH_REQ,
       JSON.stringify({ ...authReq, password: '', token: '' })
     );
-    // set title
     document.title = authReq.address ? `${authReq.address} - Attu` : 'Attu';
   }, [authReq]);
 
   // login API
   const login = async (params: AuthReq) => {
-    // create a new client id
     params.clientId = Math.random().toString(36).substring(7);
-    // save clientId to local storage
-    // console.log('params.clientId', params.clientId);
+    // only set clientId once
     window.localStorage.setItem(MILVUS_CLIENT_ID, params.clientId);
-    // connect to Milvus
     const res = await MilvusService.connect(params);
-    // update auth request
     setAuthReq({ ...params, database: res.database });
     setClientId(res.clientId);
-
-    // save clientId to local storage
-    window.localStorage.setItem(MILVUS_CLIENT_ID, res.clientId);
-
+    // update clientId in localStorage if changed
+    if (res.clientId !== params.clientId) {
+      window.localStorage.setItem(MILVUS_CLIENT_ID, res.clientId);
+    }
     return res;
   };
+
   // logout API
   const logout = async (pass?: boolean) => {
     if (!pass) {
-      // close connetion
       await MilvusService.closeConnection();
     }
-    // clear client id
     setClientId('');
-    // remove client id from local storage
     window.localStorage.removeItem(MILVUS_CLIENT_ID);
+    window.localStorage.removeItem(ATTU_AUTH_REQ);
   };
 
-  const isManaged = authReq.address.includes('zilliz');
-  const isServerless = isManaged && authReq.address.includes('serverless');
+  // useMemo for computed values
+  const isManaged = useMemo(
+    () => authReq.address.includes('zilliz'),
+    [authReq.address]
+  );
+  const isServerless = useMemo(
+    () => isManaged && authReq.address.includes('serverless'),
+    [isManaged, authReq.address]
+  );
+  const isDedicated = useMemo(
+    () => !isServerless && isManaged,
+    [isServerless, isManaged]
+  );
 
   return (
     <Provider
@@ -106,9 +119,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
         logout,
         clientId,
         isAuth: !!clientId,
-        isManaged: isManaged,
-        isServerless: isServerless,
-        isDedicated: !isServerless && isManaged,
+        isManaged,
+        isServerless,
+        isDedicated,
       }}
     >
       {props.children}
