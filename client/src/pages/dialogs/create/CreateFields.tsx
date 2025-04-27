@@ -50,6 +50,7 @@ import DefaultValueField from './DefaultValueField';
 import NullableCheckboxField from './NullableCheckboxField';
 import TextMatchCheckboxField from './TextMatchCheckboxField';
 import MaxLengthField from './MaxLengthField';
+import MaxCapacityField from './MaxCapacityField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -311,68 +312,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         type={type}
       />
     );
-  };
-
-  const generateMaxLength = (field: FieldType) => {
-    // update data if needed
-    if (typeof field.max_length === 'undefined') {
-      changeFields(field.id!, { max_length: DEFAULT_ATTU_VARCHAR_MAX_LENGTH });
-    }
-    return getInput({
-      label: 'Max Length',
-      value: field.max_length! || DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
-      type: 'number',
-      inputClassName: classes.maxLength,
-      handleChange: (value: string) =>
-        changeFields(field.id!, { max_length: value }),
-      validate: (value: any) => {
-        if (value === null) return ' ';
-        const isEmptyValid = checkEmptyValid(value);
-        const isRangeValid = checkRange({
-          value,
-          min: 1,
-          max: 65535,
-          type: 'number',
-        });
-        return !isEmptyValid
-          ? warningTrans('requiredOnly')
-          : !isRangeValid
-            ? warningTrans('range', {
-                min: 1,
-                max: 65535,
-              })
-            : ' ';
-      },
-    });
-  };
-
-  const generateMaxCapacity = (field: FieldType) => {
-    return getInput({
-      label: 'Max Capacity',
-      value: field.max_capacity || DEFAULT_ATTU_MAX_CAPACITY,
-      type: 'number',
-      inputClassName: classes.maxLength,
-      handleChange: (value: string) =>
-        changeFields(field.id!, { max_capacity: value }),
-      validate: (value: any) => {
-        if (value === null) return ' ';
-        const isEmptyValid = checkEmptyValid(value);
-        const isRangeValid = checkRange({
-          value,
-          min: 1,
-          max: 4096,
-          type: 'number',
-        });
-        return !isEmptyValid
-          ? warningTrans('requiredOnly')
-          : !isRangeValid
-            ? warningTrans('range', {
-                min: 1,
-                max: 4096,
-              })
-            : ' ';
-      },
-    });
   };
 
   const generatePartitionKeyCheckbox = (
@@ -719,7 +658,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
             )
           : null}
 
-        {isArray ? generateMaxCapacity(field) : null}
+        {isArray ? (
+          <MaxCapacityField
+            field={field}
+            onChange={changeFields}
+            inputClassName={classes.maxLength}
+          />
+        ) : null}
         {isVarChar || isElementVarChar ? (
           <MaxLengthField
             field={field}
