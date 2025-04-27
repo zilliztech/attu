@@ -46,6 +46,7 @@ import type {
 import DescriptionField from './DescriptionField';
 import NameField from './NameField';
 import DefaultValueField from './DefaultValueField';
+import NullableCheckboxField from './NullableCheckboxField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -457,32 +458,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateNullableCheckbox = (field: FieldType, fields: FieldType[]) => {
-    return (
-      <div className={classes.setting}>
-        <label htmlFor={`nullable-${field.id}`}>
-          <Checkbox
-            id={`nullable-${field.id}`}
-            checked={!!field.nullable}
-            size="small"
-            onChange={() => {
-              changeFields(field.id!, {
-                nullable: !field.nullable,
-                is_partition_key: false,
-              });
-            }}
-          />
-          <CustomToolTip
-            title={collectionTrans('nullableTooltip')}
-            placement="top"
-          >
-            <>{collectionTrans('nullable')}</>
-          </CustomToolTip>
-        </label>
-      </div>
-    );
-  };
-
   const generateTextMatchCheckBox = (field: FieldType, fields: FieldType[]) => {
     const update: Partial<FieldType> = {
       enable_match: !field.enable_match,
@@ -843,7 +818,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
               {generatePartitionKeyCheckbox(field, fields)}
             </>
           ) : null}
-          {generateNullableCheckbox(field, fields)}
+          <NullableCheckboxField
+            field={field}
+            onChange={changeFields}
+            className={classes.setting}
+          />
         </div>
 
         <IconButton
@@ -909,7 +888,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           {generateAnalyzerCheckBox(field, fields)}
           {generateTextMatchCheckBox(field, fields)}
           {generatePartitionKeyCheckbox(field, fields)}
-          {generateNullableCheckbox(field, fields)}
+          <NullableCheckboxField
+            field={field}
+            onChange={changeFields}
+            className={classes.setting}
+          />
         </div>
 
         <IconButton
