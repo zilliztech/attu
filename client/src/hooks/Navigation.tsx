@@ -15,79 +15,75 @@ export const useNavigationHook = (
 ) => {
   const { t: navTrans } = useTranslation('nav');
   const { setNavInfo } = useContext(navContext);
-  const {
-    databaseName = '',
-    collectionName = '',
-    extra,
-  } = extraParam || {
-    collectionName: '',
-    databaseName: '',
-  };
+  const { collectionName = '', extra } = extraParam || {};
 
   useEffect(() => {
-    switch (type) {
-      case ALL_ROUTER_TYPES.HOME: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('welcome'),
-          backPath: '',
-          showDatabaseSelector: false,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.DATABASES: {
-        const navInfo: NavInfo = {
-          navTitle: collectionName,
-          backPath: '',
-          showDatabaseSelector: true,
-        };
+    const baseNavInfo: Omit<NavInfo, 'navTitle'> = {
+      backPath: '',
+      showDatabaseSelector: false,
+    };
 
-        if (collectionName) {
-          navInfo.extra = extra;
-        }
+    const navConfigMap: Record<ALL_ROUTER_TYPES, () => NavInfo | undefined> = {
+      [ALL_ROUTER_TYPES.HOME]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('welcome'),
+      }),
 
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.SEARCH: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('search'),
-          backPath: '',
-          showDatabaseSelector: true,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.SYSTEM: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('system'),
-          backPath: '',
-          showDatabaseSelector: false,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.USER: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('user'),
-          backPath: '',
-          showDatabaseSelector: false,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
-      case ALL_ROUTER_TYPES.PLAY: {
-        const navInfo: NavInfo = {
-          navTitle: navTrans('play'),
-          backPath: '',
-          showDatabaseSelector: false,
-        };
-        setNavInfo(navInfo);
-        break;
-      }
+      [ALL_ROUTER_TYPES.DATABASES]: () => ({
+        ...baseNavInfo,
+        navTitle: collectionName,
+        showDatabaseSelector: true,
+        ...(collectionName ? { extra } : {}),
+      }),
 
-      default:
-        break;
+      [ALL_ROUTER_TYPES.COLLECTIONS]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('collections'),
+        showDatabaseSelector: true,
+      }),
+
+      [ALL_ROUTER_TYPES.COLLECTION_DETAIL]: () => ({
+        ...baseNavInfo,
+        navTitle: collectionName || navTrans('collection'),
+        showDatabaseSelector: true,
+        ...(collectionName ? { extra } : {}),
+      }),
+
+      [ALL_ROUTER_TYPES.SEARCH]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('search'),
+        showDatabaseSelector: true,
+      }),
+
+      [ALL_ROUTER_TYPES.SYSTEM]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('system'),
+      }),
+
+      [ALL_ROUTER_TYPES.USER]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('user'),
+      }),
+
+      [ALL_ROUTER_TYPES.DB_ADMIN]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('dbAdmin'),
+        showDatabaseSelector: true,
+      }),
+
+      [ALL_ROUTER_TYPES.PLAY]: () => ({
+        ...baseNavInfo,
+        navTitle: navTrans('play'),
+      }),
+    };
+
+    const getNavInfo = Object.prototype.hasOwnProperty.call(navConfigMap, type)
+      ? navConfigMap[type as ALL_ROUTER_TYPES]
+      : navConfigMap[ALL_ROUTER_TYPES.HOME];
+    const navInfo = getNavInfo();
+
+    if (navInfo) {
+      setNavInfo(navInfo);
     }
-  }, [type, navTrans, setNavInfo, databaseName, collectionName]);
+  }, [type, navTrans, setNavInfo, collectionName, extra]);
 };

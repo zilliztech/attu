@@ -9,8 +9,6 @@ export enum ALL_ROUTER_TYPES {
   SEARCH = 'search',
   // 'system'
   SYSTEM = 'system',
-  // plugins
-  PLUGIN = 'plugin',
   USER = 'user',
   DATABASES = 'databases',
   DB_ADMIN = 'db-admin',
