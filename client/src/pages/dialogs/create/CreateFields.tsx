@@ -45,6 +45,7 @@ import TextMatchCheckboxField from './TextMatchCheckboxField';
 import MaxLengthField from './MaxLengthField';
 import MaxCapacityField from './MaxCapacityField';
 import PartitionKeyCheckboxField from './PartitionKeyCheckboxField';
+import AnalyzerCheckboxField from './AnalyzerCheckboxField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -177,7 +178,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
-  const { t: warningTrans } = useTranslation('warning');
   const { t: dialogTrans } = useTranslation('dialog');
 
   // styles
@@ -264,137 +264,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         variant="filled"
         label={label}
       />
-    );
-  };
-
-  const getInput = (data: inputType) => {
-    const {
-      label,
-      value,
-      handleChange = () => {},
-      className = '',
-      inputClassName = '',
-      isReadOnly = false,
-      validate = (value: string | number | null) => ' ',
-      type = 'text',
-    } = data;
-    return (
-      <TextField
-        label={label}
-        // value={value}
-        onChange={(e: React.ChangeEvent<{ value: unknown }>) => {
-          handleChange(e.target.value as string);
-        }}
-        variant="filled"
-        className={className}
-        InputProps={{
-          classes: {
-            input: inputClassName,
-          },
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        size="small"
-        disabled={isReadOnly}
-        error={validate(value) !== ' '}
-        helperText={validate(value)}
-        FormHelperTextProps={{
-          className: classes.helperText,
-        }}
-        defaultValue={value}
-        type={type}
-      />
-    );
-  };
-
-  const generateAnalyzerCheckBox = (field: FieldType, fields: FieldType[]) => {
-    let analyzer = 'standard';
-    if (typeof field.analyzer_params === 'string') {
-      analyzer = field.analyzer_params;
-    } else if (!field.analyzer_params) {
-      analyzer = 'standard';
-    } else {
-      analyzer = 'custom';
-    }
-
-    const localAnalyzer = localFieldAnalyzers.current.get(field.id!) || {
-      tokenizer: 'standard',
-      filter: ['lowercase'],
-    };
-
-    return (
-      <div className={classes.analyzerInput}>
-        <Checkbox
-          checked={
-            !!field.enable_analyzer ||
-            field.data_type === DataTypeEnum.VarCharBM25
-          }
-          size="small"
-          onChange={() => {
-            changeFields(field.id!, {
-              enable_analyzer: !field.enable_analyzer,
-            });
-          }}
-          disabled={field.data_type === DataTypeEnum.VarCharBM25}
-        />
-        <CustomSelector
-          wrapperClass="select"
-          options={ANALYZER_OPTIONS}
-          size="small"
-          onChange={e => {
-            const selectedAnalyzer = e.target.value;
-            if (selectedAnalyzer === 'custom') {
-              // If custom, set the analyzer_params to a JSON editable format
-              changeFields(field.id!, {
-                analyzer_params: localAnalyzer,
-              });
-            } else {
-              // If standard, chinese, or english, set the analyzer_params to the selected type
-              changeFields(field.id!, {
-                analyzer_params: e.target.value,
-              });
-            }
-          }}
-          disabled={
-            !field.enable_analyzer &&
-            field.data_type !== DataTypeEnum.VarCharBM25
-          }
-          value={analyzer}
-          variant="filled"
-          label={collectionTrans('analyzer')}
-        />
-        <CustomIconButton
-          disabled={
-            !field.enable_analyzer &&
-            field.data_type !== DataTypeEnum.VarCharBM25
-          }
-          onClick={() => {
-            setDialog2({
-              open: true,
-              type: 'custom',
-              params: {
-                component: (
-                  <EditJSONDialog
-                    data={getAnalyzerParams(
-                      field.analyzer_params || 'standard'
-                    )}
-                    dialogTitle={dialogTrans('editAnalyzerTitle')}
-                    dialogTip={dialogTrans('editAnalyzerInfo')}
-                    handleConfirm={data => {
-                      localFieldAnalyzers.current.set(field.id!, data);
-                      changeFields(field.id!, { analyzer_params: data });
-                    }}
-                    handleCloseDialog={handleCloseDialog2}
-                  />
-                ),
-              },
-            });
-          }}
-        >
-          <icons.settings className={classes.icon} />
-        </CustomIconButton>
-      </div>
     );
   };
 
@@ -662,7 +531,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
           {isVarChar ? (
             <>
-              {generateAnalyzerCheckBox(field, fields)}
+              <AnalyzerCheckboxField
+                field={field}
+                onChange={changeFields}
+                localFieldAnalyzers={localFieldAnalyzers}
+              />
               <TextMatchCheckboxField
                 field={field}
                 onChange={changeFields}
@@ -747,7 +620,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         />
 
         <div className={classes.paramsGrp}>
-          {generateAnalyzerCheckBox(field, fields)}
+          <AnalyzerCheckboxField
+            field={field}
+            onChange={changeFields}
+            localFieldAnalyzers={localFieldAnalyzers}
+          />
           <TextMatchCheckboxField
             field={field}
             onChange={changeFields}
