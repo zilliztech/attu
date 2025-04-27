@@ -16,7 +16,6 @@ interface VectorFieldRowProps {
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField?: (id: string) => void;
   showDeleteButton?: boolean;
-  className?: string;
   sx?: SxProps<Theme>;
 }
 
@@ -28,7 +27,6 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
   onAddField,
   onRemoveField,
   showDeleteButton = false,
-  className,
   sx,
 }) => {
   const AddIcon = icons.addOutline;
@@ -66,7 +64,7 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
   );
 
   return (
-    <Box className={className} sx={rowStyles}>
+    <Box sx={rowStyles}>
       <NameField
         field={field}
         onChange={(id, name) => onFieldChange(field.id!, { name: name })}

@@ -8,7 +8,6 @@ import type { FieldType } from '../../databases/collections/Types';
 interface NameFieldProps {
   field: FieldType;
   onChange: (id: string, name: string, isValid: boolean) => void;
-  className?: string;
   label?: string;
   isReadOnly?: boolean;
 }
@@ -16,7 +15,6 @@ interface NameFieldProps {
 const NameField: FC<NameFieldProps> = ({
   field,
   onChange,
-  className = '',
   label,
   isReadOnly = false,
 }) => {
@@ -63,7 +61,6 @@ const NameField: FC<NameFieldProps> = ({
       value={value}
       onChange={e => handleChange(e.target.value)}
       variant="filled"
-      className={className}
       InputLabelProps={{
         shrink: true,
       }}

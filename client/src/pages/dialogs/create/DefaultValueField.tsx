@@ -7,7 +7,6 @@ import { SxProps, Theme } from '@mui/material';
 interface DefaultValueFieldProps {
   field: FieldType;
   onChange: (id: string, defaultValue: string) => void;
-  className?: string;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -15,7 +14,6 @@ interface DefaultValueFieldProps {
 const DefaultValueField: FC<DefaultValueFieldProps> = ({
   field,
   onChange,
-  className = '',
   label = 'Default Value',
   sx,
 }) => {
@@ -42,11 +40,6 @@ const DefaultValueField: FC<DefaultValueFieldProps> = ({
         onChange(field.id!, e.target.value);
       }}
       variant="filled"
-      InputProps={{
-        classes: {
-          input: className,
-        },
-      }}
       InputLabelProps={{
         shrink: true,
       }}

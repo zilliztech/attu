@@ -8,7 +8,6 @@ import { SxProps, Theme } from '@mui/material';
 interface ElementTypeSelectorProps {
   value: number;
   onChange: (value: DataTypeEnum) => void;
-  className?: string;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -16,7 +15,6 @@ interface ElementTypeSelectorProps {
 const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
   value,
   onChange,
-  className = '',
   label,
   sx,
 }) => {
@@ -32,7 +30,6 @@ const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
 
   return (
     <CustomSelector
-      wrapperClass={className}
       options={elementOptions}
       size="small"
       onChange={e => {

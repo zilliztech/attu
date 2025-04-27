@@ -9,8 +9,6 @@ import { SxProps, Theme } from '@mui/material';
 interface MaxLengthFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
-  className?: string;
-  inputClassName?: string;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -18,8 +16,6 @@ interface MaxLengthFieldProps {
 const MaxLengthField: FC<MaxLengthFieldProps> = ({
   field,
   onChange,
-  className = '',
-  inputClassName = '',
   label = 'Max Length',
   sx,
 }) => {
@@ -61,12 +57,6 @@ const MaxLengthField: FC<MaxLengthFieldProps> = ({
       defaultValue={field.max_length || DEFAULT_ATTU_VARCHAR_MAX_LENGTH}
       onChange={e => handleChange(e.target.value)}
       variant="filled"
-      className={className}
-      InputProps={{
-        classes: {
-          input: inputClassName,
-        },
-      }}
       InputLabelProps={{
         shrink: true,
       }}

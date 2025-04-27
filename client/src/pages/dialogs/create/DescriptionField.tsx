@@ -7,14 +7,12 @@ import { SxProps, Theme } from '@mui/material';
 interface DescriptionFieldProps {
   field: FieldType;
   onChange: (id: string, description: string) => void;
-  className?: string;
   sx?: SxProps<Theme>;
 }
 
 const DescriptionField: FC<DescriptionFieldProps> = ({
   field,
   onChange,
-  className,
   sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
@@ -26,11 +24,6 @@ const DescriptionField: FC<DescriptionFieldProps> = ({
       onChange={e => onChange(field.id!, e.target.value)}
       variant="filled"
       size="small"
-      InputProps={{
-        classes: {
-          input: className,
-        },
-      }}
       InputLabelProps={{
         shrink: true,
       }}

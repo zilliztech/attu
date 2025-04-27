@@ -9,8 +9,6 @@ import { SxProps, Theme } from '@mui/material';
 interface MaxCapacityFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
-  className?: string;
-  inputClassName?: string;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -18,8 +16,6 @@ interface MaxCapacityFieldProps {
 const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
   field,
   onChange,
-  className = '',
-  inputClassName = '',
   label = 'Max Capacity',
   sx,
 }) => {
@@ -61,12 +57,6 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
       defaultValue={field.max_capacity || DEFAULT_ATTU_MAX_CAPACITY}
       onChange={e => handleChange(e.target.value)}
       variant="filled"
-      className={className}
-      InputProps={{
-        classes: {
-          input: inputClassName,
-        },
-      }}
       InputLabelProps={{
         shrink: true,
       }}

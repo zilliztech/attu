@@ -9,18 +9,10 @@ import { SxProps, Theme } from '@mui/material';
 interface DimensionFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
-  className?: string;
-  inputClassName?: string;
   sx?: SxProps<Theme>;
 }
 
-const DimensionField: FC<DimensionFieldProps> = ({
-  field,
-  onChange,
-  className = '',
-  inputClassName = '',
-  sx,
-}) => {
+const DimensionField: FC<DimensionFieldProps> = ({ field, onChange, sx }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
   // Return null for sparse vectors as they don't support dimension
@@ -71,12 +63,6 @@ const DimensionField: FC<DimensionFieldProps> = ({
       defaultValue={field.dim}
       onChange={e => handleChange(e.target.value)}
       variant="filled"
-      className={className}
-      InputProps={{
-        classes: {
-          input: inputClassName,
-        },
-      }}
       InputLabelProps={{
         shrink: true,
       }}

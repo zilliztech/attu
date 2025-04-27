@@ -8,7 +8,6 @@ import { SxProps, Theme } from '@mui/material';
 interface ScalarTypeSelectorProps {
   value: number;
   onChange: (value: DataTypeEnum) => void;
-  className?: string;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -16,7 +15,6 @@ interface ScalarTypeSelectorProps {
 const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
   value,
   onChange,
-  className = '',
   label,
   sx,
 }) => {
@@ -24,7 +22,6 @@ const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
 
   return (
     <CustomSelector
-      wrapperClass={className}
       options={ALL_OPTIONS}
       size="small"
       onChange={e => {

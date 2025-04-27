@@ -14,7 +14,6 @@ interface PrimaryKeyFieldRowProps {
   autoID: boolean;
   onFieldChange: (id: string, changes: Partial<FieldType>) => void;
   setAutoID: (value: boolean) => void;
-  className?: string;
   sx?: SxProps<Theme>;
 }
 
@@ -23,7 +22,6 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
   autoID,
   onFieldChange,
   setAutoID,
-  className,
   sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
@@ -63,7 +61,7 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
   });
 
   return (
-    <Box className={className} sx={rowStyles}>
+    <Box sx={rowStyles}>
       <NameField
         field={field}
         onChange={(id, name) => onFieldChange(field.id!, { name: name })}

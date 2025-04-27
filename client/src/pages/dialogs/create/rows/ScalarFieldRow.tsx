@@ -25,7 +25,6 @@ interface ScalarFieldRowProps {
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField: (id: string) => void;
   localFieldAnalyzers: MutableRefObject<Map<string, Record<string, {}>>>;
-  className?: string;
   sx?: SxProps<Theme>;
 }
 
@@ -37,7 +36,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
   onAddField,
   onRemoveField,
   localFieldAnalyzers,
-  className,
   sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
@@ -118,7 +116,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
   } as SxProps<Theme>;
 
   return (
-    <Box className={className} sx={rowStyles}>
+    <Box sx={rowStyles}>
       <NameField
         field={field}
         onChange={(id, name) => onFieldChange(field.id!, { name: name })}

@@ -15,7 +15,6 @@ import { SxProps, Theme } from '@mui/material';
 interface AnalyzerCheckboxFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
-  className?: string;
   localFieldAnalyzers: React.MutableRefObject<Map<string, Record<string, {}>>>;
   sx?: SxProps<Theme>;
 }
@@ -23,9 +22,8 @@ interface AnalyzerCheckboxFieldProps {
 const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
   field,
   onChange,
-  className = '',
   localFieldAnalyzers,
-  sx
+  sx,
 }) => {
   const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
@@ -89,7 +87,6 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
 
   return (
     <Box
-      className={className}
       sx={{
         paddingTop: 1, // 8px
         '& .select': {

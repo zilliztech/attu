@@ -8,7 +8,6 @@ import { SxProps, Theme } from '@mui/material';
 interface VectorTypeSelectorProps {
   value: number;
   onChange: (value: DataTypeEnum) => void;
-  className?: string;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -16,7 +15,6 @@ interface VectorTypeSelectorProps {
 const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
   value,
   onChange,
-  className = '',
   label,
   sx,
 }) => {
@@ -24,7 +22,6 @@ const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
 
   return (
     <CustomSelector
-      wrapperClass={className}
       options={VECTOR_FIELDS_OPTIONS}
       size="small"
       onChange={e => {
