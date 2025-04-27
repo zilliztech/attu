@@ -47,6 +47,7 @@ import DescriptionField from './DescriptionField';
 import NameField from './NameField';
 import DefaultValueField from './DefaultValueField';
 import NullableCheckboxField from './NullableCheckboxField';
+import TextMatchCheckboxField from './TextMatchCheckboxField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -458,36 +459,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateTextMatchCheckBox = (field: FieldType, fields: FieldType[]) => {
-    const update: Partial<FieldType> = {
-      enable_match: !field.enable_match,
-    };
-
-    if (!field.enable_match) {
-      update.enable_analyzer = true;
-    }
-    return (
-      <div className={classes.setting}>
-        <label htmlFor={`enableMatch-${field.id}`}>
-          <Checkbox
-            id={`enableMatch-${field.id}`}
-            checked={!!field.enable_match}
-            size="small"
-            onChange={() => {
-              changeFields(field.id!, update);
-            }}
-          />
-          <CustomToolTip
-            title={collectionTrans('textMatchTooltip')}
-            placement="top"
-          >
-            <>{collectionTrans('enableMatch')}</>
-          </CustomToolTip>
-        </label>
-      </div>
-    );
-  };
-
   const generateAnalyzerCheckBox = (field: FieldType, fields: FieldType[]) => {
     let analyzer = 'standard';
     if (typeof field.analyzer_params === 'string') {
@@ -814,7 +785,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           {isVarChar ? (
             <>
               {generateAnalyzerCheckBox(field, fields)}
-              {generateTextMatchCheckBox(field, fields)}
+              <TextMatchCheckboxField
+                field={field}
+                onChange={changeFields}
+                className={classes.setting}
+              />
               {generatePartitionKeyCheckbox(field, fields)}
             </>
           ) : null}
@@ -886,7 +861,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         <div className={classes.paramsGrp}>
           {generateAnalyzerCheckBox(field, fields)}
-          {generateTextMatchCheckBox(field, fields)}
+          <TextMatchCheckboxField
+            field={field}
+            onChange={changeFields}
+            className={classes.setting}
+          />
           {generatePartitionKeyCheckbox(field, fields)}
           <NullableCheckboxField
             field={field}
