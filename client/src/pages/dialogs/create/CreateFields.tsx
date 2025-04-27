@@ -49,6 +49,7 @@ import DescriptionField from './DescriptionField';
 import DefaultValueField from './DefaultValueField';
 import NullableCheckboxField from './NullableCheckboxField';
 import TextMatchCheckboxField from './TextMatchCheckboxField';
+import MaxLengthField from './MaxLengthField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -599,7 +600,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
           className={classes.descInput}
         />
 
-        {isVarChar && generateMaxLength(field)}
+        {isVarChar && (
+          <MaxLengthField
+            field={field}
+            onChange={changeFields}
+            inputClassName={classes.maxLength}
+          />
+        )}
 
         <FormControlLabel
           control={
@@ -713,7 +720,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
           : null}
 
         {isArray ? generateMaxCapacity(field) : null}
-        {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
+        {isVarChar || isElementVarChar ? (
+          <MaxLengthField
+            field={field}
+            onChange={changeFields}
+            inputClassName={classes.maxLength}
+          />
+        ) : null}
 
         {showDefaultValue && (
           <DefaultValueField
@@ -797,7 +810,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
 
-        {generateMaxLength(field)}
+        <MaxLengthField
+          field={field}
+          onChange={changeFields}
+          inputClassName={classes.maxLength}
+        />
         <DefaultValueField
           field={field}
           onChange={(id, defaultValue) =>
