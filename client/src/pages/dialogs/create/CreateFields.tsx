@@ -1,22 +1,10 @@
-import {
-  Theme,
-  IconButton,
-  Switch,
-  FormControlLabel,
-  Typography,
-} from '@mui/material';
+import { Theme, IconButton, Typography } from '@mui/material';
 import { FC, Fragment, ReactElement, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
-import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { generateId, getCreateFieldType } from '@/utils';
 import { DataTypeEnum, VectorTypes } from '@/consts';
-import {
-  DEFAULT_ATTU_DIM,
-  DEFAULT_ATTU_MAX_CAPACITY,
-  DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
-  DEFAULT_ATTU_ELEMENT_TYPE,
-} from '@/consts';
+import { DEFAULT_ATTU_DIM, DEFAULT_ATTU_VARCHAR_MAX_LENGTH } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import type {
   CreateFieldsProps,
@@ -26,17 +14,11 @@ import type {
 import NameField from './NameField';
 import DimensionField from './DimensionField';
 import DescriptionField from './DescriptionField';
-import DefaultValueField from './DefaultValueField';
-import NullableCheckboxField from './NullableCheckboxField';
-import TextMatchCheckboxField from './TextMatchCheckboxField';
-import MaxLengthField from './MaxLengthField';
-import MaxCapacityField from './MaxCapacityField';
-import PartitionKeyCheckboxField from './PartitionKeyCheckboxField';
-import AnalyzerCheckboxField from './AnalyzerCheckboxField';
-import ScalarTypeSelector from './ScalarTypeSelector';
 import VectorTypeSelector from './VectorTypeSelector';
-import ElementTypeSelector from './ElementTypeSelector';
-import PrimaryKeyTypeSelector from './PrimaryKeyTypeSelector';
+import PrimaryKeyFieldRow from './PrimaryKeyFieldRow';
+import ScalarFieldRow from './ScalarFieldRow';
+import FunctionFieldRow from './FunctionFieldRow';
+import VectorFieldRow from './VectorFieldRow';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -263,68 +245,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     setFields(newFields);
   };
 
-  const generatePrimaryKeyRow = (
-    field: FieldType,
-    autoID: boolean
-  ): ReactElement => {
-    const isVarChar = field.data_type === DataTypeEnum.VarChar;
-    return (
-      <div className={`${classes.rowWrapper}`}>
-        <NameField
-          field={field}
-          onChange={(id, name) => changeFields(field.id!, { name: name })}
-          label={collectionTrans('idFieldName')}
-        />
-        <PrimaryKeyTypeSelector
-          value={field.data_type}
-          onChange={(value: DataTypeEnum) => {
-            changeFields(field.id!, { data_type: value });
-            if (value === DataTypeEnum.VarChar) {
-              setAutoID(false);
-            }
-          }}
-          className={classes.select}
-        />
-        <DescriptionField
-          field={field}
-          onChange={(id, description) => changeFields(id, { description })}
-          className={classes.descInput}
-        />
-
-        {isVarChar && (
-          <MaxLengthField
-            field={field}
-            onChange={changeFields}
-            inputClassName={classes.maxLength}
-          />
-        )}
-
-        <FormControlLabel
-          control={
-            <Switch
-              checked={autoID}
-              disabled={isVarChar}
-              size="small"
-              onChange={() => {
-                changeFields(field.id!, { autoID: !autoID });
-                setAutoID(!autoID);
-              }}
-            />
-          }
-          label={
-            <CustomToolTip
-              title={collectionTrans('autoIdToggleTip')}
-              placement="top"
-            >
-              <>{collectionTrans('autoId')}</>
-            </CustomToolTip>
-          }
-          className={classes.toggle}
-        />
-      </div>
-    );
-  };
-
   const generateDefaultVectorRow = (
     field: FieldType,
     index: number
@@ -361,236 +281,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         >
           <AddIcon />
         </IconButton>
-      </div>
-    );
-  };
-
-  const generateScalarFieldRow = (
-    field: FieldType,
-    index: number,
-    fields: FieldType[]
-  ): ReactElement => {
-    const isVarChar = field.data_type === DataTypeEnum.VarChar;
-    const isInt64 = field.data_type === DataTypeEnum.Int64;
-    const isArray = field.data_type === DataTypeEnum.Array;
-    const isElementVarChar = field.element_type === DataTypeEnum.VarChar;
-    const showDefaultValue =
-      field.data_type !== DataTypeEnum.Array &&
-      field.data_type !== DataTypeEnum.JSON;
-
-    // handle default values
-    if (isArray && typeof field.element_type === 'undefined') {
-      changeFields(field.id!, { element_type: DEFAULT_ATTU_ELEMENT_TYPE });
-    }
-    if (isArray && typeof field.max_capacity === 'undefined') {
-      changeFields(field.id!, { max_capacity: DEFAULT_ATTU_MAX_CAPACITY });
-    }
-
-    return (
-      <div className={`${classes.rowWrapper}`}>
-        <NameField
-          field={field}
-          onChange={(id, name) => changeFields(field.id!, { name: name })}
-        />
-        <ScalarTypeSelector
-          value={field.data_type}
-          onChange={(value: DataTypeEnum) =>
-            changeFields(field.id!, { data_type: value })
-          }
-          className={classes.smallSelect}
-        />
-
-        {isArray ? (
-          <ElementTypeSelector
-            value={field.element_type || DEFAULT_ATTU_ELEMENT_TYPE}
-            onChange={(value: DataTypeEnum) =>
-              changeFields(field.id!, { element_type: value })
-            }
-            className={classes.smallSelect}
-          />
-        ) : null}
-
-        {isArray ? (
-          <MaxCapacityField
-            field={field}
-            onChange={changeFields}
-            inputClassName={classes.maxLength}
-          />
-        ) : null}
-        {isVarChar || isElementVarChar ? (
-          <MaxLengthField
-            field={field}
-            onChange={changeFields}
-            inputClassName={classes.maxLength}
-          />
-        ) : null}
-
-        {showDefaultValue && (
-          <DefaultValueField
-            field={field}
-            onChange={(id, defaultValue) =>
-              changeFields(id, { default_value: defaultValue })
-            }
-            className={classes.descInput}
-            label={collectionTrans('defaultValue')}
-          />
-        )}
-
-        <DescriptionField
-          field={field}
-          onChange={(id, description) => changeFields(id, { description })}
-          className={classes.descInput}
-        />
-
-        <div className={classes.paramsGrp}>
-          {isInt64 ? (
-            <PartitionKeyCheckboxField
-              field={field}
-              fields={fields}
-              onChange={changeFields}
-              className={classes.setting}
-            />
-          ) : null}
-
-          {isVarChar ? (
-            <>
-              <AnalyzerCheckboxField
-                field={field}
-                onChange={changeFields}
-                localFieldAnalyzers={localFieldAnalyzers}
-              />
-              <TextMatchCheckboxField
-                field={field}
-                onChange={changeFields}
-                className={classes.setting}
-              />
-              <PartitionKeyCheckboxField
-                field={field}
-                fields={fields}
-                onChange={changeFields}
-                className={classes.setting}
-              />
-            </>
-          ) : null}
-          <NullableCheckboxField
-            field={field}
-            onChange={changeFields}
-            className={classes.setting}
-          />
-        </div>
-
-        <IconButton
-          onClick={() => {
-            handleAddNewField(index, field.data_type);
-          }}
-          classes={{ root: classes.iconBtn }}
-          aria-label="add"
-          size="large"
-        >
-          <AddIcon />
-        </IconButton>
-        <IconButton
-          onClick={() => {
-            const id = field.id || '';
-            handleRemoveField(id);
-          }}
-          classes={{ root: classes.iconBtn }}
-          aria-label="delete"
-          size="large"
-        >
-          <RemoveIcon />
-        </IconButton>
-      </div>
-    );
-  };
-
-  const generateFunctionRow = (
-    field: FieldType,
-    index: number,
-    fields: FieldType[],
-    requiredFields: FieldType[]
-  ) => {
-    return (
-      <div className={`${classes.rowWrapper}`}>
-        <NameField
-          field={field}
-          onChange={(id, name) => changeFields(field.id!, { name: name })}
-        />
-        <VectorTypeSelector
-          value={field.data_type}
-          onChange={(value: DataTypeEnum) =>
-            changeFields(field.id!, { data_type: value })
-          }
-          className={classes.select}
-        />
-
-        <MaxLengthField
-          field={field}
-          onChange={changeFields}
-          inputClassName={classes.maxLength}
-        />
-        <DefaultValueField
-          field={field}
-          onChange={(id, defaultValue) =>
-            changeFields(id, { default_value: defaultValue })
-          }
-          className={classes.descInput}
-          label={collectionTrans('defaultValue')}
-        />
-        <DescriptionField
-          field={field}
-          onChange={(id, description) => changeFields(id, { description })}
-          className={classes.descInput}
-        />
-
-        <div className={classes.paramsGrp}>
-          <AnalyzerCheckboxField
-            field={field}
-            onChange={changeFields}
-            localFieldAnalyzers={localFieldAnalyzers}
-          />
-          <TextMatchCheckboxField
-            field={field}
-            onChange={changeFields}
-            className={classes.setting}
-          />
-          <PartitionKeyCheckboxField
-            field={field}
-            fields={fields}
-            onChange={changeFields}
-            className={classes.setting}
-          />
-          <NullableCheckboxField
-            field={field}
-            onChange={changeFields}
-            className={classes.setting}
-          />
-        </div>
-
-        <IconButton
-          onClick={() => {
-            handleAddNewField(index, field.data_type);
-          }}
-          classes={{ root: classes.iconBtn }}
-          aria-label="add"
-          size="large"
-        >
-          <AddIcon />
-        </IconButton>
-
-        {requiredFields.length !== 2 && (
-          <IconButton
-            onClick={() => {
-              const id = field.id || '';
-              handleRemoveField(id);
-            }}
-            classes={{ root: classes.iconBtn }}
-            aria-label="delete"
-            size="large"
-          >
-            <RemoveIcon />
-          </IconButton>
-        )}
       </div>
     );
   };
@@ -654,19 +344,57 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ) => {
     // required type is primaryKey or defaultVector
     if (field.createType === 'primaryKey') {
-      return generatePrimaryKeyRow(field, autoID);
+      return (
+        <PrimaryKeyFieldRow
+          field={field}
+          autoID={autoID}
+          onFieldChange={changeFields}
+          setAutoID={setAutoID}
+        />
+      );
     }
 
     if (field.data_type === DataTypeEnum.VarCharBM25) {
-      return generateFunctionRow(field, index, fields, requiredFields);
+      return (
+        <FunctionFieldRow
+          field={field}
+          index={index}
+          fields={fields}
+          requiredFields={requiredFields}
+          onFieldChange={changeFields}
+          onAddField={handleAddNewField}
+          onRemoveField={handleRemoveField}
+          localFieldAnalyzers={localFieldAnalyzers}
+        />
+      );
     }
 
     if (field.createType === 'defaultVector') {
-      return generateDefaultVectorRow(field, index);
+      return (
+        <VectorFieldRow
+          field={field}
+          index={index}
+          requiredFields={requiredFields}
+          onFieldChange={changeFields}
+          onAddField={handleAddNewField}
+          onRemoveField={handleRemoveField}
+          showDeleteButton={true}
+        />
+      );
     }
 
     // generate other vector rows
-    return generateVectorRow(field, index);
+    return (
+      <VectorFieldRow
+        field={field}
+        index={index}
+        requiredFields={requiredFields}
+        onFieldChange={changeFields}
+        onAddField={handleAddNewField}
+        onRemoveField={handleRemoveField}
+        showDeleteButton={true}
+      />
+    );
   };
 
   return (
@@ -700,13 +428,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
       </Typography>
       <div className={classes.scalarFieldsWrapper}>
         {scalarFields.map((field, index) => (
-          <Fragment key={field.id}>
-            {generateScalarFieldRow(
-              field,
-              index + requiredFields.length,
-              fields
-            )}
-          </Fragment>
+          <ScalarFieldRow
+            key={field.id}
+            field={field}
+            index={index + requiredFields.length}
+            fields={fields}
+            onFieldChange={changeFields}
+            onAddField={handleAddNewField}
+            onRemoveField={handleRemoveField}
+            localFieldAnalyzers={localFieldAnalyzers}
+          />
         ))}
       </div>
     </>
