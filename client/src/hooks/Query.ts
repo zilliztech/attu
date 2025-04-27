@@ -142,19 +142,23 @@ export const useQuery = (params: {
     pageCache.current.clear();
   };
 
-  // query if expr is changed
+  // query if expression or other dependencies change
   useEffect(() => {
+    // Skip query execution if prerequisites are not met
     if (!collection || !collection.loaded || !pageSize) {
+      // Reset result and use collection row count as total when not ready to query
       setQueryResult({ data: [], latency: 0 });
       setTotal(collection.rowCount);
-      // console.info('[skip running query]: no key yet');
       return;
-    } // reset
-    reset();
-    // get count;
-    count(queryState.expr);
+    }
 
-    // do the query
+    // When all prerequisites are met, perform query
+    reset();
+
+    // First get total count
+    count(queryState.consistencyLevel, queryState.expr);
+
+    // Then fetch actual data
     query(
       currentPage,
       queryState.consistencyLevel,
@@ -163,13 +167,11 @@ export const useQuery = (params: {
     );
   }, [
     pageSize,
-    JSON.stringify([
-      queryState.outputFields,
-      queryState.collection,
-      queryState.consistencyLevel,
-      queryState.expr,
-      queryState.tick,
-    ]),
+    queryState.outputFields,
+    queryState.collection,
+    queryState.consistencyLevel,
+    queryState.expr,
+    queryState.tick,
   ]);
 
   return {
