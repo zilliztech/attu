@@ -1,5 +1,5 @@
-import { FC, useContext, useRef } from 'react';
-import { Checkbox } from '@mui/material';
+import { FC, useContext } from 'react';
+import { Checkbox, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
@@ -10,7 +10,6 @@ import { getAnalyzerParams } from '@/utils';
 import { rootContext } from '@/context';
 import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import { FieldType } from '../../databases/collections/Types';
-import { makeStyles } from '@mui/styles';
 
 interface AnalyzerCheckboxFieldProps {
   field: FieldType;
@@ -19,26 +18,12 @@ interface AnalyzerCheckboxFieldProps {
   localFieldAnalyzers: React.MutableRefObject<Map<string, Record<string, {}>>>;
 }
 
-const useStyles = makeStyles(() => ({
-  analyzerInput: {
-    paddingTop: 8,
-    '& .select': {
-      width: '110px',
-    },
-  },
-  icon: {
-    fontSize: '14px',
-    marginLeft: '4px',
-  },
-}));
-
 const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
   field,
   onChange,
   className = '',
   localFieldAnalyzers,
 }) => {
-  const classes = useStyles();
   const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: dialogTrans } = useTranslation('dialog');
@@ -100,7 +85,15 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
   };
 
   return (
-    <div className={`${classes.analyzerInput} ${className}`}>
+    <Box
+      className={className}
+      sx={{
+        paddingTop: 1, // 8px
+        '& .select': {
+          width: '110px',
+        },
+      }}
+    >
       <Checkbox
         checked={
           !!field.enable_analyzer ||
@@ -128,9 +121,9 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
         }
         onClick={handleSettingsClick}
       >
-        <icons.settings className={classes.icon} />
+        <icons.settings sx={{ fontSize: '14px', marginLeft: '4px' }} />
       </CustomIconButton>
-    </div>
+    </Box>
   );
 };
 
