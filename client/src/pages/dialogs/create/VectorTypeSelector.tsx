@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { VECTOR_FIELDS_OPTIONS } from './Constants';
 import { DataTypeEnum } from '@/consts';
+import { SxProps, Theme } from '@mui/material';
 
 interface VectorTypeSelectorProps {
   value: number;
   onChange: (value: DataTypeEnum) => void;
   className?: string;
   label?: string;
+  sx?: SxProps<Theme>;
 }
 
 const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
@@ -16,6 +18,7 @@ const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
   onChange,
   className = '',
   label,
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -24,12 +27,13 @@ const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
       wrapperClass={className}
       options={VECTOR_FIELDS_OPTIONS}
       size="small"
-      onChange={(e) => {
+      onChange={e => {
         onChange(e.target.value as DataTypeEnum);
       }}
       value={value}
       variant="filled"
       label={label || `${collectionTrans('vectorType')} `}
+      sx={sx}
     />
   );
 };

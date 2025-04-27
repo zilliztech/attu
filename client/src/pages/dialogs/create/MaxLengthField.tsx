@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { checkEmptyValid, checkRange } from '@/utils';
 import { DEFAULT_ATTU_VARCHAR_MAX_LENGTH } from '@/consts';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface MaxLengthFieldProps {
   field: FieldType;
@@ -11,6 +12,7 @@ interface MaxLengthFieldProps {
   className?: string;
   inputClassName?: string;
   label?: string;
+  sx?: SxProps<Theme>;
 }
 
 const MaxLengthField: FC<MaxLengthFieldProps> = ({
@@ -19,6 +21,7 @@ const MaxLengthField: FC<MaxLengthFieldProps> = ({
   className = '',
   inputClassName = '',
   label = 'Max Length',
+  sx,
 }) => {
   const { t: warningTrans } = useTranslation('warning');
 
@@ -79,6 +82,7 @@ const MaxLengthField: FC<MaxLengthFieldProps> = ({
           marginLeft: '11px',
         },
       }}
+      sx={sx}
     />
   );
 };

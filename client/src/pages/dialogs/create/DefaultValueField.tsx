@@ -2,12 +2,14 @@ import { FC } from 'react';
 import { TextField } from '@mui/material';
 import { DataTypeEnum } from '@/consts';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface DefaultValueFieldProps {
   field: FieldType;
   onChange: (id: string, defaultValue: string) => void;
   className?: string;
   label?: string;
+  sx?: SxProps<Theme>;
 }
 
 const DefaultValueField: FC<DefaultValueFieldProps> = ({
@@ -15,6 +17,7 @@ const DefaultValueField: FC<DefaultValueFieldProps> = ({
   onChange,
   className = '',
   label = 'Default Value',
+  sx,
 }) => {
   const getInputType = (dataType: DataTypeEnum): 'number' | 'text' => {
     switch (dataType) {
@@ -49,6 +52,7 @@ const DefaultValueField: FC<DefaultValueFieldProps> = ({
       }}
       size="small"
       type={getInputType(field.data_type)}
+      sx={sx}
     />
   );
 };

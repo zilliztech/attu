@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ALL_OPTIONS } from './Constants';
 import { DataTypeEnum } from '@/consts';
+import { SxProps, Theme } from '@mui/material';
 
 interface ScalarTypeSelectorProps {
   value: number;
   onChange: (value: DataTypeEnum) => void;
   className?: string;
   label?: string;
+  sx?: SxProps<Theme>;
 }
 
 const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
@@ -16,6 +18,7 @@ const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
   onChange,
   className = '',
   label,
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -30,6 +33,7 @@ const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
       value={value}
       variant="filled"
       label={label || collectionTrans('fieldType')}
+      sx={sx}
     />
   );
 };

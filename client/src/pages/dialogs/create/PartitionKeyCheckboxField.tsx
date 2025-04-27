@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Checkbox } from '@mui/material';
+import { Checkbox, SxProps, Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { FieldType } from '../../databases/collections/Types';
@@ -9,6 +9,7 @@ interface PartitionKeyCheckboxFieldProps {
   fields: FieldType[];
   onChange: (id: string, changes: Partial<FieldType>) => void;
   className?: string;
+  sx?: SxProps<Theme>;
 }
 
 const PartitionKeyCheckboxField: FC<PartitionKeyCheckboxFieldProps> = ({
@@ -16,6 +17,7 @@ const PartitionKeyCheckboxField: FC<PartitionKeyCheckboxFieldProps> = ({
   fields,
   onChange,
   className = '',
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -38,6 +40,7 @@ const PartitionKeyCheckboxField: FC<PartitionKeyCheckboxFieldProps> = ({
           size="small"
           disabled={disabled}
           onChange={handleChange}
+          sx={sx}
         />
         <CustomToolTip
           title={collectionTrans(

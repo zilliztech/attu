@@ -1,133 +1,19 @@
-import { Theme, IconButton, Typography } from '@mui/material';
-import { FC, Fragment, ReactElement, useMemo, useRef } from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
+import { FC, Fragment, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateId, getCreateFieldType } from '@/utils';
 import { DataTypeEnum, VectorTypes } from '@/consts';
 import { DEFAULT_ATTU_DIM, DEFAULT_ATTU_VARCHAR_MAX_LENGTH } from '@/consts';
-import { makeStyles } from '@mui/styles';
 import type {
   CreateFieldsProps,
   CreateFieldType,
   FieldType,
 } from '../../databases/collections/Types';
-import NameField from './NameField';
-import DimensionField from './DimensionField';
-import DescriptionField from './DescriptionField';
-import VectorTypeSelector from './VectorTypeSelector';
-import PrimaryKeyFieldRow from './PrimaryKeyFieldRow';
-import ScalarFieldRow from './ScalarFieldRow';
-import FunctionFieldRow from './FunctionFieldRow';
-import VectorFieldRow from './VectorFieldRow';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  scalarFieldsWrapper: {
-    width: '100%',
-    paddingRight: theme.spacing(1),
-    overflowY: 'auto',
-  },
-  title: {
-    fontSize: 14,
-    marginTop: theme.spacing(0),
-    marginBottom: theme.spacing(1.5),
-    '& button': {
-      position: 'relative',
-      top: '-1px',
-      marginLeft: 4,
-    },
-  },
-  rowWrapper: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: 4,
-    '& .MuiFormLabel-root': {
-      fontSize: 14,
-    },
-    '& .MuiInputBase-root': {
-      fontSize: 14,
-    },
-    '& .MuiSelect-filled': {
-      fontSize: 14,
-    },
-    '& .MuiCheckbox-root': {
-      padding: 4,
-    },
-    '& .MuiFormControlLabel-label': {
-      fontSize: 14,
-    },
-  },
-  fieldInput: {
-    width: '130px',
-  },
-  select: {
-    width: '150px',
-    marginTop: '-20px',
-  },
-  smallSelect: {
-    width: '105px',
-    marginTop: '-20px',
-  },
-  autoIdSelect: {
-    width: '120px',
-    marginTop: '-20px',
-  },
-  numberBox: {
-    width: '80px',
-  },
-  maxLength: {
-    maxWidth: '80px',
-  },
-  descInput: {
-    width: '64px',
-  },
-  btnTxt: {
-    textTransform: 'uppercase',
-  },
-  iconBtn: {
-    padding: 0,
-    position: 'relative',
-    top: '-8px',
-    '& svg': {
-      width: 15,
-    },
-  },
-  helperText: {
-    lineHeight: '20px',
-    fontSize: '10px',
-    margin: theme.spacing(0),
-    marginLeft: '11px',
-  },
-  toggle: {
-    marginLeft: theme.spacing(0.5),
-    marginRight: theme.spacing(0.5),
-  },
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-  },
-  paramsGrp: {
-    border: `1px dashed ${theme.palette.divider}`,
-    borderRadius: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    paddingLeft: 0,
-    paddingTop: 0,
-    paddingRight: 8,
-    minHeight: 44,
-    alignSelf: 'flex-start',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  analyzerInput: {
-    paddingTop: 8,
-    '& .select': {
-      width: '110px',
-    },
-  },
-  setting: { fontSize: 12, alignItems: 'center', display: 'flex' },
-}));
+import PrimaryKeyFieldRow from './rows/PrimaryKeyFieldRow';
+import ScalarFieldRow from './rows/ScalarFieldRow';
+import FunctionFieldRow from './rows/FunctionFieldRow';
+import VectorFieldRow from './rows/VectorFieldRow';
 
 const CreateFields: FC<CreateFieldsProps> = ({
   fields,
@@ -138,17 +24,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
 
-  // styles
-  const classes = useStyles();
-
   // UI stats
   const localFieldAnalyzers = useRef(
     new Map<string, Record<string, {}>>(new Map())
   );
 
+  // UI icons
   const AddIcon = icons.addOutline;
-  const RemoveIcon = icons.remove;
 
+  // calculate required and scalar fields
   const { requiredFields, scalarFields } = useMemo(
     () =>
       fields.reduce(
@@ -179,6 +63,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     [fields]
   );
 
+  // UI handlers
   const changeFields = (id: string, changes: Partial<FieldType>) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
@@ -245,96 +130,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     setFields(newFields);
   };
 
-  const generateDefaultVectorRow = (
-    field: FieldType,
-    index: number
-  ): ReactElement => {
-    return (
-      <div className={`${classes.rowWrapper}`}>
-        <NameField
-          field={field}
-          onChange={(id, name) => changeFields(field.id!, { name: name })}
-        />
-        <VectorTypeSelector
-          value={field.data_type}
-          onChange={(value: DataTypeEnum) =>
-            changeFields(field.id!, { data_type: value })
-          }
-          className={classes.select}
-        />
-
-        <DimensionField
-          field={field}
-          onChange={changeFields}
-          inputClassName={classes.numberBox}
-        />
-        <DescriptionField
-          field={field}
-          onChange={(id, description) => changeFields(id, { description })}
-          className={classes.descInput}
-        />
-        <IconButton
-          onClick={() => handleAddNewField(index, field.data_type)}
-          classes={{ root: classes.iconBtn }}
-          aria-label="add"
-          size="large"
-        >
-          <AddIcon />
-        </IconButton>
-      </div>
-    );
-  };
-
-  const generateVectorRow = (field: FieldType, index: number) => {
-    return (
-      <div className={`${classes.rowWrapper}`}>
-        <NameField
-          field={field}
-          onChange={(id, name) => changeFields(field.id!, { name: name })}
-        />
-        <VectorTypeSelector
-          value={field.data_type}
-          onChange={(value: DataTypeEnum) =>
-            changeFields(field.id!, { data_type: value })
-          }
-          className={classes.select}
-        />
-
-        <DimensionField
-          field={field}
-          onChange={changeFields}
-          inputClassName={classes.numberBox}
-        />
-        <DescriptionField
-          field={field}
-          onChange={(id, description) => changeFields(id, { description })}
-          className={classes.descInput}
-        />
-        <IconButton
-          onClick={() => handleAddNewField(index, field.data_type)}
-          classes={{ root: classes.iconBtn }}
-          aria-label="add"
-          size="large"
-        >
-          <AddIcon />
-        </IconButton>
-        {requiredFields.length !== 2 && (
-          <IconButton
-            onClick={() => {
-              const id = field.id || '';
-              handleRemoveField(id);
-            }}
-            classes={{ root: classes.iconBtn }}
-            aria-label="delete"
-            size="large"
-          >
-            <RemoveIcon />
-          </IconButton>
-        )}
-      </div>
-    );
-  };
-
   const generateRequiredFieldRow = (
     field: FieldType,
     autoID: boolean,
@@ -398,10 +193,17 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   return (
-    <>
-      <Typography variant="h4" className={classes.title}>
+    <Box>
+      <Typography
+        variant="h4"
+        sx={{
+          fontSize: 14,
+          mb: 1.5,
+        }}
+      >
         {`${collectionTrans('idAndVectorFields')}(${requiredFields.length})`}
       </Typography>
+
       {requiredFields.map((field, index) => (
         <Fragment key={field.id}>
           {generateRequiredFieldRow(
@@ -413,20 +215,41 @@ const CreateFields: FC<CreateFieldsProps> = ({
           )}
         </Fragment>
       ))}
-      <Typography variant="h4" className={classes.title}>
+
+      <Typography
+        variant="h4"
+        sx={{
+          fontSize: 14,
+          mt: 2,
+          mb: 1.5,
+          '& button': {
+            position: 'relative',
+            top: '-1px',
+            ml: 0.5,
+          },
+        }}
+      >
         {`${collectionTrans('scalarFields')}(${scalarFields.length})`}
         <IconButton
           onClick={() => {
             handleAddNewField(requiredFields.length + 1);
           }}
-          classes={{ root: classes.iconBtn }}
+          sx={{
+            p: 0,
+            position: 'relative',
+            top: '-8px',
+            '& svg': {
+              width: 15,
+            },
+          }}
           aria-label="add"
           size="large"
         >
           <AddIcon />
         </IconButton>
       </Typography>
-      <div className={classes.scalarFieldsWrapper}>
+
+      <Box>
         {scalarFields.map((field, index) => (
           <ScalarFieldRow
             key={field.id}
@@ -439,8 +262,8 @@ const CreateFields: FC<CreateFieldsProps> = ({
             localFieldAnalyzers={localFieldAnalyzers}
           />
         ))}
-      </div>
-    </>
+      </Box>
+    </Box>
   );
 };
 

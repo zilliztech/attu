@@ -1,24 +1,25 @@
 import { FC } from 'react';
-import { Checkbox } from '@mui/material';
+import { Checkbox, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface NullableCheckboxFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
-  className?: string;
+  sx?: SxProps<Theme>;
 }
 
 const NullableCheckboxField: FC<NullableCheckboxFieldProps> = ({
   field,
   onChange,
-  className = '',
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
   return (
-    <div className={className}>
+    <Box sx={sx}>
       <label htmlFor={`nullable-${field.id}`}>
         <Checkbox
           id={`nullable-${field.id}`}
@@ -38,7 +39,7 @@ const NullableCheckboxField: FC<NullableCheckboxFieldProps> = ({
           <>{collectionTrans('nullable')}</>
         </CustomToolTip>
       </label>
-    </div>
+    </Box>
   );
 };
 

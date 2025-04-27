@@ -1,19 +1,20 @@
 import { FC } from 'react';
-import { Checkbox } from '@mui/material';
+import { Checkbox, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface TextMatchCheckboxFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
-  className?: string;
+  sx?: SxProps<Theme>;
 }
 
 const TextMatchCheckboxField: FC<TextMatchCheckboxFieldProps> = ({
   field,
   onChange,
-  className = '',
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -31,7 +32,7 @@ const TextMatchCheckboxField: FC<TextMatchCheckboxFieldProps> = ({
   };
 
   return (
-    <div className={className}>
+    <Box sx={sx}>
       <label htmlFor={`enableMatch-${field.id}`}>
         <Checkbox
           id={`enableMatch-${field.id}`}
@@ -46,7 +47,7 @@ const TextMatchCheckboxField: FC<TextMatchCheckboxFieldProps> = ({
           <>{collectionTrans('enableMatch')}</>
         </CustomToolTip>
       </label>
-    </div>
+    </Box>
   );
 };
 

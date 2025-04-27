@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ALL_OPTIONS } from './Constants';
 import { DataTypeEnum } from '@/consts';
+import { SxProps, Theme } from '@mui/material';
 
 interface ElementTypeSelectorProps {
   value: number;
   onChange: (value: DataTypeEnum) => void;
   className?: string;
   label?: string;
+  sx?: SxProps<Theme>;
 }
 
 const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
@@ -16,9 +18,10 @@ const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
   onChange,
   className = '',
   label,
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
-  
+
   const elementOptions = ALL_OPTIONS.filter(
     d =>
       d.label !== 'Array' &&
@@ -32,12 +35,13 @@ const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
       wrapperClass={className}
       options={elementOptions}
       size="small"
-      onChange={(e) => {
+      onChange={e => {
         onChange(e.target.value as DataTypeEnum);
       }}
       value={value}
       variant="filled"
       label={label || collectionTrans('elementType')}
+      sx={sx}
     />
   );
 };

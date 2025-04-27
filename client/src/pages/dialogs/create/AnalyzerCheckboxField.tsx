@@ -10,12 +10,14 @@ import { getAnalyzerParams } from '@/utils';
 import { rootContext } from '@/context';
 import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface AnalyzerCheckboxFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
   className?: string;
   localFieldAnalyzers: React.MutableRefObject<Map<string, Record<string, {}>>>;
+  sx?: SxProps<Theme>;
 }
 
 const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
@@ -23,6 +25,7 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
   onChange,
   className = '',
   localFieldAnalyzers,
+  sx
 }) => {
   const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
@@ -92,6 +95,7 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
         '& .select': {
           width: '110px',
         },
+        ...sx,
       }}
     >
       <Checkbox

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { checkEmptyValid, checkRange } from '@/utils';
 import { DEFAULT_ATTU_MAX_CAPACITY } from '@/consts';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface MaxCapacityFieldProps {
   field: FieldType;
@@ -11,6 +12,7 @@ interface MaxCapacityFieldProps {
   className?: string;
   inputClassName?: string;
   label?: string;
+  sx?: SxProps<Theme>;
 }
 
 const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
@@ -19,6 +21,7 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
   className = '',
   inputClassName = '',
   label = 'Max Capacity',
+  sx,
 }) => {
   const { t: warningTrans } = useTranslation('warning');
 
@@ -79,6 +82,7 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
           marginLeft: '11px',
         },
       }}
+      sx={sx}
     />
   );
 };

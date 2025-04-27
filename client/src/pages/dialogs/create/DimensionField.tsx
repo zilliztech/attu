@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { getCheckResult } from '@/utils';
 import { DataTypeEnum } from '@/consts';
 import { FieldType } from '../../databases/collections/Types';
+import { SxProps, Theme } from '@mui/material';
 
 interface DimensionFieldProps {
   field: FieldType;
   onChange: (id: string, changes: Partial<FieldType>) => void;
   className?: string;
   inputClassName?: string;
+  sx?: SxProps<Theme>;
 }
 
 const DimensionField: FC<DimensionFieldProps> = ({
@@ -17,6 +19,7 @@ const DimensionField: FC<DimensionFieldProps> = ({
   onChange,
   className = '',
   inputClassName = '',
+  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -89,6 +92,7 @@ const DimensionField: FC<DimensionFieldProps> = ({
           marginLeft: '11px',
         },
       }}
+      sx={sx}
     />
   );
 };

@@ -1,22 +1,21 @@
-import { FC, MutableRefObject } from 'react';
-import { IconButton, Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { FC, MutableRefObject, useMemo } from 'react';
+import { IconButton, Theme, Box, SxProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { DataTypeEnum } from '@/consts';
 import { DEFAULT_ATTU_ELEMENT_TYPE, DEFAULT_ATTU_MAX_CAPACITY } from '@/consts';
-import { FieldType } from '../../databases/collections/Types';
-import NameField from './NameField';
-import ScalarTypeSelector from './ScalarTypeSelector';
-import ElementTypeSelector from './ElementTypeSelector';
-import MaxCapacityField from './MaxCapacityField';
-import MaxLengthField from './MaxLengthField';
-import DefaultValueField from './DefaultValueField';
-import DescriptionField from './DescriptionField';
-import PartitionKeyCheckboxField from './PartitionKeyCheckboxField';
-import AnalyzerCheckboxField from './AnalyzerCheckboxField';
-import TextMatchCheckboxField from './TextMatchCheckboxField';
-import NullableCheckboxField from './NullableCheckboxField';
+import { FieldType } from '../../../databases/collections/Types';
+import NameField from '../NameField';
+import ScalarTypeSelector from '../ScalarTypeSelector';
+import ElementTypeSelector from '../ElementTypeSelector';
+import MaxCapacityField from '../MaxCapacityField';
+import MaxLengthField from '../MaxLengthField';
+import DefaultValueField from '../DefaultValueField';
+import DescriptionField from '../DescriptionField';
+import PartitionKeyCheckboxField from '../PartitionKeyCheckboxField';
+import AnalyzerCheckboxField from '../AnalyzerCheckboxField';
+import TextMatchCheckboxField from '../TextMatchCheckboxField';
+import NullableCheckboxField from '../NullableCheckboxField';
 
 interface ScalarFieldRowProps {
   field: FieldType;
@@ -27,64 +26,8 @@ interface ScalarFieldRowProps {
   onRemoveField: (id: string) => void;
   localFieldAnalyzers: MutableRefObject<Map<string, Record<string, {}>>>;
   className?: string;
+  sx?: SxProps<Theme>;
 }
-
-const useStyles = makeStyles((theme: Theme) => ({
-  rowWrapper: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: 4,
-    '& .MuiFormLabel-root': {
-      fontSize: 14,
-    },
-    '& .MuiInputBase-root': {
-      fontSize: 14,
-    },
-    '& .MuiSelect-filled': {
-      fontSize: 14,
-    },
-    '& .MuiCheckbox-root': {
-      padding: 4,
-    },
-    '& .MuiFormControlLabel-label': {
-      fontSize: 14,
-    },
-  },
-  smallSelect: {
-    width: '105px',
-    marginTop: '-20px',
-  },
-  maxLength: {
-    maxWidth: '80px',
-  },
-  descInput: {
-    width: '64px',
-  },
-  iconBtn: {
-    padding: 0,
-    position: 'relative',
-    top: '-8px',
-    '& svg': {
-      width: 15,
-    },
-  },
-  paramsGrp: {
-    border: `1px dashed ${theme.palette.divider}`,
-    borderRadius: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    paddingLeft: 0,
-    paddingTop: 0,
-    paddingRight: 8,
-    minHeight: 44,
-    alignSelf: 'flex-start',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  setting: { fontSize: 12, alignItems: 'center', display: 'flex' },
-}));
 
 const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
   field,
@@ -95,8 +38,8 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
   onRemoveField,
   localFieldAnalyzers,
   className,
+  sx,
 }) => {
-  const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
 
   const AddIcon = icons.addOutline;
@@ -118,18 +61,75 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
     onFieldChange(field.id!, { max_capacity: DEFAULT_ATTU_MAX_CAPACITY });
   }
 
+  const rowStyles = useMemo(
+    () => ({
+      display: 'flex',
+      flexWrap: 'nowrap',
+      alignItems: 'center',
+      gap: '8px',
+      marginBottom: 4,
+      '& .MuiFormLabel-root': {
+        fontSize: 14,
+      },
+      '& .MuiInputBase-root': {
+        fontSize: 14,
+      },
+      '& .MuiSelect-filled': {
+        fontSize: 14,
+      },
+      '& .MuiCheckbox-root': {
+        padding: 4,
+      },
+      '& .MuiFormControlLabel-label': {
+        fontSize: 14,
+      },
+      ...(sx || {}),
+    }),
+    [sx]
+  ) as SxProps<Theme>;
+
+  const iconBtnStyles = {
+    padding: 0,
+    position: 'relative',
+    top: '-8px',
+    '& svg': {
+      width: 15,
+    },
+  };
+
+  const paramsGrpStyles = (theme: Theme) => ({
+    border: `1px dashed ${theme.palette.divider}`,
+    borderRadius: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    paddingLeft: 0,
+    paddingTop: 0,
+    paddingRight: 8,
+    minHeight: 44,
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  });
+
+  const settingStyles = {
+    fontSize: 12,
+    alignItems: 'center',
+    display: 'flex',
+  } as SxProps<Theme>;
+
   return (
-    <div className={`${classes.rowWrapper} ${className || ''}`}>
+    <Box className={className} sx={rowStyles}>
       <NameField
         field={field}
         onChange={(id, name) => onFieldChange(field.id!, { name: name })}
       />
+
       <ScalarTypeSelector
         value={field.data_type}
         onChange={(value: DataTypeEnum) =>
           onFieldChange(field.id!, { data_type: value })
         }
-        className={classes.smallSelect}
+        sx={{ width: '105px', marginTop: '-20px' }}
       />
 
       {isArray && (
@@ -138,7 +138,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(value: DataTypeEnum) =>
             onFieldChange(field.id!, { element_type: value })
           }
-          className={classes.smallSelect}
+          sx={{ width: '105px', marginTop: '-20px' }}
         />
       )}
 
@@ -146,7 +146,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         <MaxCapacityField
           field={field}
           onChange={onFieldChange}
-          inputClassName={classes.maxLength}
+          sx={{ maxWidth: '80px' }}
         />
       )}
 
@@ -154,7 +154,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         <MaxLengthField
           field={field}
           onChange={onFieldChange}
-          inputClassName={classes.maxLength}
+          sx={{ maxWidth: '80px' }}
         />
       )}
 
@@ -164,7 +164,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(id, defaultValue) =>
             onFieldChange(id, { default_value: defaultValue })
           }
-          className={classes.descInput}
+          sx={{ width: '64px' }}
           label={collectionTrans('defaultValue')}
         />
       )}
@@ -172,16 +172,16 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
       <DescriptionField
         field={field}
         onChange={(id, description) => onFieldChange(id, { description })}
-        className={classes.descInput}
+        sx={{ width: '64px' }}
       />
 
-      <div className={classes.paramsGrp}>
+      <Box sx={paramsGrpStyles}>
         {isInt64 && (
           <PartitionKeyCheckboxField
             field={field}
             fields={fields}
             onChange={onFieldChange}
-            className={classes.setting}
+            sx={settingStyles}
           />
         )}
 
@@ -191,17 +191,18 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
               field={field}
               onChange={onFieldChange}
               localFieldAnalyzers={localFieldAnalyzers}
+              sx={settingStyles}
             />
             <TextMatchCheckboxField
               field={field}
               onChange={onFieldChange}
-              className={classes.setting}
+              sx={settingStyles}
             />
             <PartitionKeyCheckboxField
               field={field}
               fields={fields}
               onChange={onFieldChange}
-              className={classes.setting}
+              sx={settingStyles}
             />
           </>
         )}
@@ -209,13 +210,13 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         <NullableCheckboxField
           field={field}
           onChange={onFieldChange}
-          className={classes.setting}
+          sx={settingStyles}
         />
-      </div>
+      </Box>
 
       <IconButton
         onClick={() => onAddField(index, field.data_type)}
-        classes={{ root: classes.iconBtn }}
+        sx={iconBtnStyles}
         aria-label="add"
         size="large"
       >
@@ -224,13 +225,13 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
 
       <IconButton
         onClick={() => onRemoveField(field.id || '')}
-        classes={{ root: classes.iconBtn }}
+        sx={iconBtnStyles}
         aria-label="delete"
         size="large"
       >
         <RemoveIcon />
       </IconButton>
-    </div>
+    </Box>
   );
 };
 

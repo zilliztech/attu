@@ -4,16 +4,16 @@ import { makeStyles } from '@mui/styles';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { DataTypeEnum } from '@/consts';
-import { FieldType } from '../../databases/collections/Types';
-import NameField from './NameField';
-import VectorTypeSelector from './VectorTypeSelector';
-import MaxLengthField from './MaxLengthField';
-import DefaultValueField from './DefaultValueField';
-import DescriptionField from './DescriptionField';
-import AnalyzerCheckboxField from './AnalyzerCheckboxField';
-import TextMatchCheckboxField from './TextMatchCheckboxField';
-import PartitionKeyCheckboxField from './PartitionKeyCheckboxField';
-import NullableCheckboxField from './NullableCheckboxField';
+import { FieldType } from '../../../databases/collections/Types';
+import NameField from '../NameField';
+import VectorTypeSelector from '../VectorTypeSelector';
+import MaxLengthField from '../MaxLengthField';
+import DefaultValueField from '../DefaultValueField';
+import DescriptionField from '../DescriptionField';
+import AnalyzerCheckboxField from '../AnalyzerCheckboxField';
+import TextMatchCheckboxField from '../TextMatchCheckboxField';
+import PartitionKeyCheckboxField from '../PartitionKeyCheckboxField';
+import NullableCheckboxField from '../NullableCheckboxField';
 
 interface FunctionFieldRowProps {
   field: FieldType;

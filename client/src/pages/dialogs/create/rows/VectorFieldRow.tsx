@@ -1,13 +1,12 @@
-import { FC } from 'react';
-import { IconButton, Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { FC, useMemo } from 'react';
+import { IconButton, Box, SxProps, Theme } from '@mui/material';
 import icons from '@/components/icons/Icons';
 import { DataTypeEnum } from '@/consts';
-import { FieldType } from '../../databases/collections/Types';
-import NameField from './NameField';
-import VectorTypeSelector from './VectorTypeSelector';
-import DimensionField from './DimensionField';
-import DescriptionField from './DescriptionField';
+import { FieldType } from '../../../databases/collections/Types';
+import NameField from '../NameField';
+import VectorTypeSelector from '../VectorTypeSelector';
+import DimensionField from '../DimensionField';
+import DescriptionField from '../DescriptionField';
 
 interface VectorFieldRowProps {
   field: FieldType;
@@ -18,50 +17,8 @@ interface VectorFieldRowProps {
   onRemoveField?: (id: string) => void;
   showDeleteButton?: boolean;
   className?: string;
+  sx?: SxProps<Theme>;
 }
-
-const useStyles = makeStyles((theme: Theme) => ({
-  rowWrapper: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: 4,
-    '& .MuiFormLabel-root': {
-      fontSize: 14,
-    },
-    '& .MuiInputBase-root': {
-      fontSize: 14,
-    },
-    '& .MuiSelect-filled': {
-      fontSize: 14,
-    },
-    '& .MuiCheckbox-root': {
-      padding: 4,
-    },
-    '& .MuiFormControlLabel-label': {
-      fontSize: 14,
-    },
-  },
-  select: {
-    width: '150px',
-    marginTop: '-20px',
-  },
-  numberBox: {
-    width: '80px',
-  },
-  descInput: {
-    width: '64px',
-  },
-  iconBtn: {
-    padding: 0,
-    position: 'relative',
-    top: '-8px',
-    '& svg': {
-      width: 15,
-    },
-  },
-}));
 
 const VectorFieldRow: FC<VectorFieldRowProps> = ({
   field,
@@ -72,18 +29,44 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
   onRemoveField,
   showDeleteButton = false,
   className,
+  sx,
 }) => {
-  const classes = useStyles();
-
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
 
-  // 判断是否应该显示删除按钮
   const showDelete =
     showDeleteButton && onRemoveField && requiredFields.length !== 2;
 
+  const rowStyles = useMemo(
+    () =>
+      ({
+        display: 'flex',
+        flexWrap: 'nowrap',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: 4,
+        '& .MuiFormLabel-root': {
+          fontSize: 14,
+        },
+        '& .MuiInputBase-root': {
+          fontSize: 14,
+        },
+        '& .MuiSelect-filled': {
+          fontSize: 14,
+        },
+        '& .MuiCheckbox-root': {
+          padding: 4,
+        },
+        '& .MuiFormControlLabel-label': {
+          fontSize: 14,
+        },
+        ...(sx || {}),
+      }) as SxProps<Theme>,
+    [sx]
+  );
+
   return (
-    <div className={`${classes.rowWrapper} ${className || ''}`}>
+    <Box className={className} sx={rowStyles}>
       <NameField
         field={field}
         onChange={(id, name) => onFieldChange(field.id!, { name: name })}
@@ -94,24 +77,29 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
         onChange={(value: DataTypeEnum) =>
           onFieldChange(field.id!, { data_type: value })
         }
-        className={classes.select}
+        sx={{ width: '150px' }}
       />
 
       <DimensionField
         field={field}
         onChange={onFieldChange}
-        inputClassName={classes.numberBox}
+        sx={{ width: '80px' }}
       />
 
       <DescriptionField
         field={field}
         onChange={(id, description) => onFieldChange(id, { description })}
-        className={classes.descInput}
+        sx={{ width: '64px' }}
       />
 
       <IconButton
         onClick={() => onAddField(index, field.data_type)}
-        classes={{ root: classes.iconBtn }}
+        sx={{
+          padding: 0,
+          position: 'relative',
+          top: '-8px',
+          '& svg': { width: 15 },
+        }}
         aria-label="add"
         size="large"
       >
@@ -124,14 +112,19 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
             const id = field.id || '';
             onRemoveField(id);
           }}
-          classes={{ root: classes.iconBtn }}
+          sx={{
+            padding: 0,
+            position: 'relative',
+            top: '-8px',
+            '& svg': { width: 15 },
+          }}
           aria-label="delete"
           size="large"
         >
           <RemoveIcon />
         </IconButton>
       )}
-    </div>
+    </Box>
   );
 };
 
