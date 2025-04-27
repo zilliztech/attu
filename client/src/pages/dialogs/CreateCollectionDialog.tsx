@@ -101,7 +101,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     {
       data_type: DataTypeEnum.Int64,
       is_primary_key: true,
-      name: null, // we need hide helpertext at first time, so we use null to detect user enter input or not.
+      name: '', // we need hide helpertext at first time, so we use null to detect user enter input or not.
       description: '',
       isDefault: true,
       id: '1',
@@ -109,26 +109,13 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
-      name: null,
+      name: '',
       dim: DEFAULT_ATTU_DIM,
       description: '',
       isDefault: true,
       id: '2',
     },
   ]);
-
-  const [fieldsValidation, setFieldsValidation] = useState<
-    {
-      [x: string]: string | boolean;
-    }[]
-  >([
-    { id: '1', name: false },
-    { id: '2', name: false, dim: true },
-  ]);
-
-  const allFieldsValid = useMemo(() => {
-    return fieldsValidation.every(v => Object.keys(v).every(key => !!v[key]));
-  }, [fieldsValidation]);
 
   const checkedForm = useMemo(() => {
     const { collection_name } = form;
@@ -335,7 +322,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       }}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
-      confirmDisabled={disabled || !allFieldsValid}
+      confirmDisabled={disabled}
       dialogClass={classes.dialog}
     >
       <div className={classes.container}>
@@ -359,7 +346,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             <CreateFields
               fields={fields}
               setFields={setFields}
-              setFieldsValidation={setFieldsValidation}
               autoID={form.autoID}
               setAutoID={changeIsAutoID}
             />

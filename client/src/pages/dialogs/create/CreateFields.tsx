@@ -44,6 +44,7 @@ import type {
   FieldType,
 } from '../../databases/collections/Types';
 import DescriptionField from './DescriptionField';
+import NameField from './NameField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -170,7 +171,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
   setFields,
   setAutoID,
   autoID,
-  setFieldsValidation,
 }) => {
   // context
   const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
@@ -308,58 +308,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
     );
   };
 
-  const generateFieldName = (
-    field: FieldType,
-    label?: string,
-    className?: string
-  ) => {
-    const defaultLabel = collectionTrans(
-      VectorTypes.includes(field.data_type) ? 'vectorFieldName' : 'fieldName'
-    );
-
-    return getInput({
-      label: label || defaultLabel,
-      value: field.name,
-      className: `${classes.fieldInput} ${className}`,
-      handleChange: (value: string) => {
-        const isValid = checkEmptyValid(value);
-        setFieldsValidation(v =>
-          v.map(item =>
-            item.id === field.id! ? { ...item, name: isValid } : item
-          )
-        );
-
-        changeFields(field.id!, { name: value });
-      },
-      validate: (value: any) => {
-        if (value === null) return ' ';
-        const isValid = checkEmptyValid(value);
-
-        return isValid ? ' ' : warningTrans('requiredOnly');
-      },
-    });
-  };
-
-  const generateDesc = (field: FieldType) => {
-    return (
-      <TextField
-        label={collectionTrans('description')}
-        defaultValue={field.description}
-        onChange={e => changeFields(field.id!, { description: e.target.value })}
-        variant="filled"
-        size="small"
-        InputProps={{
-          classes: {
-            input: classes.descInput,
-          },
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    );
-  };
-
   const generateDefaultValue = (field: FieldType) => {
     let type: 'number' | 'text' = 'number';
     switch (field.data_type) {
@@ -428,12 +376,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
             : isPositive;
 
         changeFields(field.id!, { dim: value });
-
-        setFieldsValidation(v =>
-          v.map(item =>
-            item.id === field.id! ? { ...item, dim: isValid } : item
-          )
-        );
       },
       type: 'number',
       validate: (value: any) => {
@@ -753,13 +695,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
     fields.splice(index + 1, 0, newDefaultItem);
     setFields([...fields]);
-    setFieldsValidation(v => [...v, newValidation]);
   };
 
   const handleRemoveField = (id: string) => {
     const newFields = fields.filter(f => f.id !== id);
     setFields(newFields);
-    setFieldsValidation(v => v.filter(item => item.id !== id));
   };
 
   const generatePrimaryKeyRow = (
@@ -769,7 +709,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
     const isVarChar = field.data_type === DataTypeEnum.VarChar;
     return (
       <div className={`${classes.rowWrapper}`}>
-        {generateFieldName(field, collectionTrans('idFieldName'))}
+        <NameField
+          field={field}
+          onChange={(id, name) => changeFields(field.id!, { name: name })}
+          label={collectionTrans('idFieldName')}
+        />
         {getSelector(
           'primaryKey',
           `${collectionTrans('idType')} `,
@@ -822,7 +766,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ): ReactElement => {
     return (
       <div className={`${classes.rowWrapper}`}>
-        {generateFieldName(field)}
+        <NameField
+          field={field}
+          onChange={(id, name) => changeFields(field.id!, { name: name })}
+        />
         {getSelector(
           'vector',
           `${collectionTrans('vectorType')} `,
@@ -870,7 +817,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
     return (
       <div className={`${classes.rowWrapper}`}>
-        {generateFieldName(field)}
+        <NameField
+          field={field}
+          onChange={(id, name) => changeFields(field.id!, { name: name })}
+        />
         {getSelector(
           'scalar',
           collectionTrans('fieldType'),
@@ -948,7 +898,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
   ) => {
     return (
       <div className={`${classes.rowWrapper}`}>
-        {generateFieldName(field)}
+        <NameField
+          field={field}
+          onChange={(id, name) => changeFields(field.id!, { name: name })}
+        />
         {getSelector(
           'vector',
           collectionTrans('fieldType'),
@@ -1002,21 +955,22 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const generateVectorRow = (field: FieldType, index: number) => {
     return (
       <div className={`${classes.rowWrapper}`}>
-        {generateFieldName(field)}
+        <NameField
+          field={field}
+          onChange={(id, name) => changeFields(field.id!, { name: name })}
+        />
         {getSelector(
           'vector',
           `${collectionTrans('vectorType')} `,
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
-
         {generateDimension(field)}
         <DescriptionField
           field={field}
           onChange={(id, description) => changeFields(id, { description })}
           className={classes.descInput}
         />
-
         <IconButton
           onClick={() => handleAddNewField(index, field.data_type)}
           classes={{ root: classes.iconBtn }}
