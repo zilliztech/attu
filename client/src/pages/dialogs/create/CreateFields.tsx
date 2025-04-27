@@ -1,26 +1,15 @@
 import {
   Theme,
-  TextField,
   IconButton,
   Switch,
   FormControlLabel,
-  Checkbox,
   Typography,
 } from '@mui/material';
-import { FC, Fragment, ReactElement, useMemo, useContext, useRef } from 'react';
+import { FC, Fragment, ReactElement, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { generateId, getCreateFieldType, getAnalyzerParams } from '@/utils';
-import { rootContext } from '@/context';
-import {
-  ALL_OPTIONS,
-  PRIMARY_FIELDS_OPTIONS,
-  VECTOR_FIELDS_OPTIONS,
-  ANALYZER_OPTIONS,
-} from './Constants';
-
+import { generateId, getCreateFieldType } from '@/utils';
 import { DataTypeEnum, VectorTypes } from '@/consts';
 import {
   DEFAULT_ATTU_DIM,
@@ -29,8 +18,6 @@ import {
   DEFAULT_ATTU_ELEMENT_TYPE,
 } from '@/consts';
 import { makeStyles } from '@mui/styles';
-import CustomIconButton from '@/components/customButton/CustomIconButton';
-import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import type {
   CreateFieldsProps,
   CreateFieldType,
@@ -46,6 +33,10 @@ import MaxLengthField from './MaxLengthField';
 import MaxCapacityField from './MaxCapacityField';
 import PartitionKeyCheckboxField from './PartitionKeyCheckboxField';
 import AnalyzerCheckboxField from './AnalyzerCheckboxField';
+import ScalarTypeSelector from './ScalarTypeSelector';
+import VectorTypeSelector from './VectorTypeSelector';
+import ElementTypeSelector from './ElementTypeSelector';
+import PrimaryKeyTypeSelector from './PrimaryKeyTypeSelector';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -156,29 +147,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   setting: { fontSize: 12, alignItems: 'center', display: 'flex' },
 }));
 
-type inputType = {
-  label: string;
-  value: string | number | null;
-  handleChange?: (value: string) => void;
-  className?: string;
-  inputClassName?: string;
-  isReadOnly?: boolean;
-  validate?: (value: string | number | null) => string;
-  type?: 'number' | 'text';
-};
-
 const CreateFields: FC<CreateFieldsProps> = ({
   fields,
   setFields,
   setAutoID,
   autoID,
 }) => {
-  // context
-  const { setDialog2, handleCloseDialog2 } = useContext(rootContext);
-
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
-  const { t: dialogTrans } = useTranslation('dialog');
 
   // styles
   const classes = useStyles();
@@ -220,52 +196,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
     [fields]
   );
-
-  const getSelector = (
-    type: 'scalar' | 'vector' | 'element' | 'primaryKey',
-    label: string,
-    value: number,
-    onChange: (value: DataTypeEnum) => void,
-    className: string = classes.select
-  ) => {
-    let _options = ALL_OPTIONS;
-    switch (type) {
-      case 'primaryKey':
-        _options = PRIMARY_FIELDS_OPTIONS;
-        break;
-      case 'scalar':
-        _options = ALL_OPTIONS;
-        break;
-      case 'vector':
-        _options = VECTOR_FIELDS_OPTIONS;
-        break;
-      case 'element':
-        _options = ALL_OPTIONS.filter(
-          d =>
-            d.label !== 'Array' &&
-            d.label !== 'JSON' &&
-            d.label !== 'VarChar(BM25)' &&
-            !d.label.includes('Vector')
-        );
-        break;
-      default:
-        break;
-    }
-
-    return (
-      <CustomSelector
-        wrapperClass={className}
-        options={_options}
-        size="small"
-        onChange={e => {
-          onChange(e.target.value as DataTypeEnum);
-        }}
-        value={value}
-        variant="filled"
-        label={label}
-      />
-    );
-  };
 
   const changeFields = (id: string, changes: Partial<FieldType>) => {
     const newFields = fields.map(f => {
@@ -323,11 +253,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
       enable_analyzer: type === DataTypeEnum.VarCharBM25,
       id,
     };
-    const newValidation = {
-      id,
-      name: false,
-      dim: true,
-    };
 
     fields.splice(index + 1, 0, newDefaultItem);
     setFields([...fields]);
@@ -350,18 +275,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
           onChange={(id, name) => changeFields(field.id!, { name: name })}
           label={collectionTrans('idFieldName')}
         />
-        {getSelector(
-          'primaryKey',
-          `${collectionTrans('idType')} `,
-          field.data_type,
-          (value: DataTypeEnum) => {
+        <PrimaryKeyTypeSelector
+          value={field.data_type}
+          onChange={(value: DataTypeEnum) => {
             changeFields(field.id!, { data_type: value });
             if (value === DataTypeEnum.VarChar) {
               setAutoID(false);
             }
-          }
-        )}
-
+          }}
+          className={classes.select}
+        />
         <DescriptionField
           field={field}
           onChange={(id, description) => changeFields(id, { description })}
@@ -412,12 +335,14 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field={field}
           onChange={(id, name) => changeFields(field.id!, { name: name })}
         />
-        {getSelector(
-          'vector',
-          `${collectionTrans('vectorType')} `,
-          field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
-        )}
+        <VectorTypeSelector
+          value={field.data_type}
+          onChange={(value: DataTypeEnum) =>
+            changeFields(field.id!, { data_type: value })
+          }
+          className={classes.select}
+        />
+
         <DimensionField
           field={field}
           onChange={changeFields}
@@ -467,25 +392,23 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field={field}
           onChange={(id, name) => changeFields(field.id!, { name: name })}
         />
-        {getSelector(
-          'scalar',
-          collectionTrans('fieldType'),
-          field.data_type,
-          (value: DataTypeEnum) =>
-            changeFields(field.id!, { data_type: value }),
-          classes.smallSelect
-        )}
+        <ScalarTypeSelector
+          value={field.data_type}
+          onChange={(value: DataTypeEnum) =>
+            changeFields(field.id!, { data_type: value })
+          }
+          className={classes.smallSelect}
+        />
 
-        {isArray
-          ? getSelector(
-              'element',
-              collectionTrans('elementType'),
-              field.element_type || DEFAULT_ATTU_ELEMENT_TYPE,
-              (value: DataTypeEnum) =>
-                changeFields(field.id!, { element_type: value }),
-              classes.smallSelect
-            )
-          : null}
+        {isArray ? (
+          <ElementTypeSelector
+            value={field.element_type || DEFAULT_ATTU_ELEMENT_TYPE}
+            onChange={(value: DataTypeEnum) =>
+              changeFields(field.id!, { element_type: value })
+            }
+            className={classes.smallSelect}
+          />
+        ) : null}
 
         {isArray ? (
           <MaxCapacityField
@@ -593,12 +516,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field={field}
           onChange={(id, name) => changeFields(field.id!, { name: name })}
         />
-        {getSelector(
-          'vector',
-          collectionTrans('fieldType'),
-          field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
-        )}
+        <VectorTypeSelector
+          value={field.data_type}
+          onChange={(value: DataTypeEnum) =>
+            changeFields(field.id!, { data_type: value })
+          }
+          className={classes.select}
+        />
 
         <MaxLengthField
           field={field}
@@ -678,12 +602,14 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field={field}
           onChange={(id, name) => changeFields(field.id!, { name: name })}
         />
-        {getSelector(
-          'vector',
-          `${collectionTrans('vectorType')} `,
-          field.data_type,
-          (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
-        )}
+        <VectorTypeSelector
+          value={field.data_type}
+          onChange={(value: DataTypeEnum) =>
+            changeFields(field.id!, { data_type: value })
+          }
+          className={classes.select}
+        />
+
         <DimensionField
           field={field}
           onChange={changeFields}
