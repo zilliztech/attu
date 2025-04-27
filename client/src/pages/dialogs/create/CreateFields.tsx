@@ -45,6 +45,7 @@ import type {
 } from '../../databases/collections/Types';
 import DescriptionField from './DescriptionField';
 import NameField from './NameField';
+import DefaultValueField from './DefaultValueField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -306,35 +307,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         type={type}
       />
     );
-  };
-
-  const generateDefaultValue = (field: FieldType) => {
-    let type: 'number' | 'text' = 'number';
-    switch (field.data_type) {
-      case DataTypeEnum.Int8:
-      case DataTypeEnum.Int16:
-      case DataTypeEnum.Int32:
-      case DataTypeEnum.Int64:
-      case DataTypeEnum.Float:
-      case DataTypeEnum.Double:
-        type = 'number';
-        break;
-      case DataTypeEnum.Bool:
-        type = 'text';
-        break;
-      default:
-        type = 'text';
-        break;
-    }
-
-    return getInput({
-      label: collectionTrans('defaultValue'),
-      value: field.default_value,
-      type: type,
-      handleChange: (value: string) =>
-        changeFields(field.id!, { default_value: value }),
-      inputClassName: classes.descInput,
-    });
   };
 
   const generateDimension = (field: FieldType) => {
@@ -844,7 +816,16 @@ const CreateFields: FC<CreateFieldsProps> = ({
         {isArray ? generateMaxCapacity(field) : null}
         {isVarChar || isElementVarChar ? generateMaxLength(field) : null}
 
-        {showDefaultValue && generateDefaultValue(field)}
+        {showDefaultValue && (
+          <DefaultValueField
+            field={field}
+            onChange={(id, defaultValue) =>
+              changeFields(id, { default_value: defaultValue })
+            }
+            className={classes.descInput}
+            label={collectionTrans('defaultValue')}
+          />
+        )}
 
         <DescriptionField
           field={field}
@@ -910,7 +891,14 @@ const CreateFields: FC<CreateFieldsProps> = ({
         )}
 
         {generateMaxLength(field)}
-        {generateDefaultValue(field)}
+        <DefaultValueField
+          field={field}
+          onChange={(id, defaultValue) =>
+            changeFields(id, { default_value: defaultValue })
+          }
+          className={classes.descInput}
+          label={collectionTrans('defaultValue')}
+        />
         <DescriptionField
           field={field}
           onChange={(id, description) => changeFields(id, { description })}
