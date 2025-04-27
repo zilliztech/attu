@@ -43,6 +43,7 @@ import type {
   CreateFieldType,
   FieldType,
 } from '../../databases/collections/Types';
+import DescriptionField from './DescriptionField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -340,13 +341,23 @@ const CreateFields: FC<CreateFieldsProps> = ({
   };
 
   const generateDesc = (field: FieldType) => {
-    return getInput({
-      label: collectionTrans('description'),
-      value: field.description,
-      handleChange: (value: string) =>
-        changeFields(field.id!, { description: value }),
-      inputClassName: classes.descInput,
-    });
+    return (
+      <TextField
+        label={collectionTrans('description')}
+        defaultValue={field.description}
+        onChange={e => changeFields(field.id!, { description: e.target.value })}
+        variant="filled"
+        size="small"
+        InputProps={{
+          classes: {
+            input: classes.descInput,
+          },
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+    );
   };
 
   const generateDefaultValue = (field: FieldType) => {
@@ -770,7 +781,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
             }
           }
         )}
-        {generateDesc(field)}
+
+        <DescriptionField
+          field={field}
+          onChange={(id, description) => changeFields(id, { description })}
+          className={classes.descInput}
+        />
 
         {isVarChar && generateMaxLength(field)}
 
@@ -814,7 +830,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
         {generateDimension(field)}
-        {generateDesc(field)}
+        <DescriptionField
+          field={field}
+          onChange={(id, description) => changeFields(id, { description })}
+          className={classes.descInput}
+        />
         <IconButton
           onClick={() => handleAddNewField(index, field.data_type)}
           classes={{ root: classes.iconBtn }}
@@ -876,7 +896,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         {showDefaultValue && generateDefaultValue(field)}
 
-        {generateDesc(field)}
+        <DescriptionField
+          field={field}
+          onChange={(id, description) => changeFields(id, { description })}
+          className={classes.descInput}
+        />
 
         <div className={classes.paramsGrp}>
           {isInt64 ? generatePartitionKeyCheckbox(field, fields) : null}
@@ -934,7 +958,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
         {generateMaxLength(field)}
         {generateDefaultValue(field)}
-        {generateDesc(field)}
+        <DescriptionField
+          field={field}
+          onChange={(id, description) => changeFields(id, { description })}
+          className={classes.descInput}
+        />
 
         <div className={classes.paramsGrp}>
           {generateAnalyzerCheckBox(field, fields)}
@@ -983,7 +1011,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
         )}
 
         {generateDimension(field)}
-        {generateDesc(field)}
+        <DescriptionField
+          field={field}
+          onChange={(id, description) => changeFields(id, { description })}
+          className={classes.descInput}
+        />
 
         <IconButton
           onClick={() => handleAddNewField(index, field.data_type)}
