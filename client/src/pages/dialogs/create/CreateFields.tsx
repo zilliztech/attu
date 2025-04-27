@@ -12,14 +12,7 @@ import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import {
-  generateId,
-  getCreateFieldType,
-  checkEmptyValid,
-  checkRange,
-  getCheckResult,
-  getAnalyzerParams,
-} from '@/utils';
+import { generateId, getCreateFieldType, getAnalyzerParams } from '@/utils';
 import { rootContext } from '@/context';
 import {
   ALL_OPTIONS,
@@ -51,6 +44,7 @@ import NullableCheckboxField from './NullableCheckboxField';
 import TextMatchCheckboxField from './TextMatchCheckboxField';
 import MaxLengthField from './MaxLengthField';
 import MaxCapacityField from './MaxCapacityField';
+import PartitionKeyCheckboxField from './PartitionKeyCheckboxField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   scalarFieldsWrapper: {
@@ -311,40 +305,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         defaultValue={value}
         type={type}
       />
-    );
-  };
-
-  const generatePartitionKeyCheckbox = (
-    field: FieldType,
-    fields: FieldType[]
-  ) => {
-    const disabled =
-      (fields.some(f => f.is_partition_key) && !field.is_partition_key) ||
-      field.nullable;
-    return (
-      <div className={classes.setting}>
-        <label htmlFor={`partitionKey-${field.id}`}>
-          <Checkbox
-            id={`partitionKey-${field.id}`}
-            checked={!!field.is_partition_key}
-            size="small"
-            disabled={disabled}
-            onChange={() => {
-              changeFields(field.id!, {
-                is_partition_key: !field.is_partition_key,
-              });
-            }}
-          />
-          <CustomToolTip
-            title={collectionTrans(
-              disabled ? 'paritionKeyDisabledTooltip' : 'partitionKeyTooltip'
-            )}
-            placement="top"
-          >
-            <>{collectionTrans('partitionKey')}</>
-          </CustomToolTip>
-        </label>
-      </div>
     );
   };
 
@@ -691,7 +651,14 @@ const CreateFields: FC<CreateFieldsProps> = ({
         />
 
         <div className={classes.paramsGrp}>
-          {isInt64 ? generatePartitionKeyCheckbox(field, fields) : null}
+          {isInt64 ? (
+            <PartitionKeyCheckboxField
+              field={field}
+              fields={fields}
+              onChange={changeFields}
+              className={classes.setting}
+            />
+          ) : null}
 
           {isVarChar ? (
             <>
@@ -701,7 +668,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
                 onChange={changeFields}
                 className={classes.setting}
               />
-              {generatePartitionKeyCheckbox(field, fields)}
+              <PartitionKeyCheckboxField
+                field={field}
+                fields={fields}
+                onChange={changeFields}
+                className={classes.setting}
+              />
             </>
           ) : null}
           <NullableCheckboxField
@@ -781,7 +753,12 @@ const CreateFields: FC<CreateFieldsProps> = ({
             onChange={changeFields}
             className={classes.setting}
           />
-          {generatePartitionKeyCheckbox(field, fields)}
+          <PartitionKeyCheckboxField
+            field={field}
+            fields={fields}
+            onChange={changeFields}
+            className={classes.setting}
+          />
           <NullableCheckboxField
             field={field}
             onChange={changeFields}
