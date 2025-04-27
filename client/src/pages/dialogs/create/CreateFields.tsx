@@ -43,8 +43,9 @@ import type {
   CreateFieldType,
   FieldType,
 } from '../../databases/collections/Types';
-import DescriptionField from './DescriptionField';
 import NameField from './NameField';
+import DimensionField from './DimensionField';
+import DescriptionField from './DescriptionField';
 import DefaultValueField from './DefaultValueField';
 import NullableCheckboxField from './NullableCheckboxField';
 import TextMatchCheckboxField from './TextMatchCheckboxField';
@@ -309,58 +310,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
         type={type}
       />
     );
-  };
-
-  const generateDimension = (field: FieldType) => {
-    // sparse doesn't support dimension
-    if (field.data_type === DataTypeEnum.SparseFloatVector) {
-      return null;
-    }
-    const validateDimension = (value: string) => {
-      const isPositive = getCheckResult({
-        value,
-        rule: 'positiveNumber',
-      });
-      const isMultiple = getCheckResult({
-        value,
-        rule: 'multiple',
-        extraParam: {
-          multipleNumber: 8,
-        },
-      });
-      if (field.data_type === DataTypeEnum.BinaryVector) {
-        return {
-          isMultiple,
-          isPositive,
-        };
-      }
-      return {
-        isPositive,
-      };
-    };
-    return getInput({
-      label: collectionTrans('dimension'),
-      value: field.dim as number,
-      inputClassName: classes.numberBox,
-      handleChange: (value: string) => {
-        const { isPositive, isMultiple } = validateDimension(value);
-        const isValid =
-          field.data_type === DataTypeEnum.BinaryVector
-            ? !!isMultiple && isPositive
-            : isPositive;
-
-        changeFields(field.id!, { dim: value });
-      },
-      type: 'number',
-      validate: (value: any) => {
-        const { isPositive, isMultiple } = validateDimension(value);
-        if (isMultiple === false) {
-          return collectionTrans('dimensionMultipleWarning');
-        }
-
-        return isPositive ? ' ' : collectionTrans('dimensionPositiveWarning');
-      },
-    });
   };
 
   const generateMaxLength = (field: FieldType) => {
@@ -694,7 +643,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
-        {generateDimension(field)}
+        <DimensionField
+          field={field}
+          onChange={changeFields}
+          inputClassName={classes.numberBox}
+        />
         <DescriptionField
           field={field}
           onChange={(id, description) => changeFields(id, { description })}
@@ -915,7 +868,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
           field.data_type,
           (value: DataTypeEnum) => changeFields(field.id!, { data_type: value })
         )}
-        {generateDimension(field)}
+        <DimensionField
+          field={field}
+          onChange={changeFields}
+          inputClassName={classes.numberBox}
+        />
         <DescriptionField
           field={field}
           onChange={(id, description) => changeFields(id, { description })}
