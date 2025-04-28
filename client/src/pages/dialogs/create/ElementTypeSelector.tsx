@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Box, FormHelperText, SxProps, Theme } from '@mui/material';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ALL_OPTIONS } from './Constants';
 import { DataTypeEnum } from '@/consts';
-import { SxProps, Theme } from '@mui/material';
 
 interface ElementTypeSelectorProps {
   value: number;
@@ -29,17 +29,26 @@ const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
   );
 
   return (
-    <CustomSelector
-      options={elementOptions}
-      size="small"
-      onChange={e => {
-        onChange(e.target.value as DataTypeEnum);
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        ...sx,
       }}
-      value={value}
-      variant="filled"
-      label={label || collectionTrans('elementType')}
-      sx={sx}
-    />
+    >
+      <CustomSelector
+        options={elementOptions}
+        size="small"
+        onChange={e => {
+          onChange(e.target.value as DataTypeEnum);
+        }}
+        value={value}
+        variant="filled"
+        label={label || collectionTrans('elementType')}
+        sx={{ width: '100%' }}
+      />
+      <FormHelperText sx={{ marginTop: 0 }}> </FormHelperText>
+    </Box>
   );
 };
 

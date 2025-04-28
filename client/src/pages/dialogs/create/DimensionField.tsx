@@ -69,7 +69,7 @@ const DimensionField: FC<DimensionFieldProps> = ({ field, onChange, sx }) => {
       size="small"
       type="number"
       error={getValidationMessage(field.dim as string) !== ' '}
-      helperText={getValidationMessage(field.dim as string)}
+      helperText={getValidationMessage(field.dim as string) || ' '}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',

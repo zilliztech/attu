@@ -6,7 +6,7 @@ export const rowStyles = {
   flexWrap: 'nowrap',
   alignItems: 'center',
   gap: '8px',
-  marginBottom: 4,
+  marginBottom: 1,
   '& .MuiFormLabel-root': {
     fontSize: 14,
   },

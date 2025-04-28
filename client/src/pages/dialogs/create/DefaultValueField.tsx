@@ -43,9 +43,18 @@ const DefaultValueField: FC<DefaultValueFieldProps> = ({
       InputLabelProps={{
         shrink: true,
       }}
+      helperText={' '}
       size="small"
       type={getInputType(field.data_type)}
       sx={sx}
+      FormHelperTextProps={{
+        style: {
+          lineHeight: '20px',
+          fontSize: '10px',
+          margin: 0,
+          marginLeft: '11px',
+        },
+      }}
     />
   );
 };

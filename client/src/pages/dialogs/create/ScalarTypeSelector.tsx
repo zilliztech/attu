@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ALL_OPTIONS } from './Constants';
 import { DataTypeEnum } from '@/consts';
-import { SxProps, Theme } from '@mui/material';
+import { SxProps, Theme, Box, FormHelperText } from '@mui/material';
 
 interface ScalarTypeSelectorProps {
   value: number;
@@ -21,17 +21,26 @@ const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
   const { t: collectionTrans } = useTranslation('collection');
 
   return (
-    <CustomSelector
-      options={ALL_OPTIONS}
-      size="small"
-      onChange={e => {
-        onChange(e.target.value as DataTypeEnum);
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        ...sx,
       }}
-      value={value}
-      variant="filled"
-      label={label || collectionTrans('fieldType')}
-      sx={sx}
-    />
+    >
+      <CustomSelector
+        options={ALL_OPTIONS}
+        size="small"
+        onChange={e => {
+          onChange(e.target.value as DataTypeEnum);
+        }}
+        value={value}
+        variant="filled"
+        label={label || collectionTrans('fieldType')}
+        sx={sx}
+      />
+      <FormHelperText sx={{ marginTop: 0 }}> </FormHelperText>
+    </Box>
   );
 };
 

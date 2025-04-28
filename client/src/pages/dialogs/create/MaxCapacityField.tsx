@@ -63,7 +63,7 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
       size="small"
       type="number"
       error={validateMaxCapacity(field.max_capacity) !== ' '}
-      helperText={validateMaxCapacity(field.max_capacity)}
+      helperText={validateMaxCapacity(field.max_capacity) || ' '}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',

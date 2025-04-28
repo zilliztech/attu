@@ -68,6 +68,7 @@ const NameField: FC<NameFieldProps> = ({
       disabled={isReadOnly}
       error={!isValid}
       helperText={errorMessage}
+      style={{ width: 128 }}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',

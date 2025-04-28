@@ -27,9 +27,18 @@ const DescriptionField: FC<DescriptionFieldProps> = ({
       InputLabelProps={{
         shrink: true,
       }}
+      helperText={' '}
+      style={{ width: 80 }}
       sx={{
-        width: '128',
         ...sx,
+      }}
+      FormHelperTextProps={{
+        style: {
+          lineHeight: '20px',
+          fontSize: '10px',
+          margin: 0,
+          marginLeft: '11px',
+        },
       }}
     />
   );
