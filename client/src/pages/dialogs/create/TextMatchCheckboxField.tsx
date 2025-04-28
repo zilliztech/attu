@@ -39,6 +39,7 @@ const TextMatchCheckboxField: FC<TextMatchCheckboxFieldProps> = ({
           checked={!!field.enable_match}
           size="small"
           onChange={handleChange}
+          style={{ padding: '8px' }}
         />
         <CustomToolTip
           title={collectionTrans('textMatchTooltip')}

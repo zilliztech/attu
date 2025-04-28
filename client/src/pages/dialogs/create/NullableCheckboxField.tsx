@@ -31,6 +31,7 @@ const NullableCheckboxField: FC<NullableCheckboxFieldProps> = ({
               is_partition_key: false,
             });
           }}
+          style={{ padding: '8px' }}
         />
         <CustomToolTip
           title={collectionTrans('nullableTooltip')}

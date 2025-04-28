@@ -1,5 +1,5 @@
-import { FC, MutableRefObject, useMemo } from 'react';
-import { IconButton, Theme, Box, SxProps } from '@mui/material';
+import { FC, MutableRefObject } from 'react';
+import { IconButton, Theme, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { DataTypeEnum } from '@/consts';
@@ -16,6 +16,7 @@ import PartitionKeyCheckboxField from '../PartitionKeyCheckboxField';
 import AnalyzerCheckboxField from '../AnalyzerCheckboxField';
 import TextMatchCheckboxField from '../TextMatchCheckboxField';
 import NullableCheckboxField from '../NullableCheckboxField';
+import { rowStyles } from './styles';
 
 interface ScalarFieldRowProps {
   field: FieldType;
@@ -25,7 +26,6 @@ interface ScalarFieldRowProps {
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField: (id: string) => void;
   localFieldAnalyzers: MutableRefObject<Map<string, Record<string, {}>>>;
-  sx?: SxProps<Theme>;
 }
 
 const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
@@ -36,7 +36,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
   onAddField,
   onRemoveField,
   localFieldAnalyzers,
-  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -59,33 +58,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
     onFieldChange(field.id!, { max_capacity: DEFAULT_ATTU_MAX_CAPACITY });
   }
 
-  const rowStyles = useMemo(
-    () => ({
-      display: 'flex',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      gap: '8px',
-      marginBottom: 4,
-      '& .MuiFormLabel-root': {
-        fontSize: 14,
-      },
-      '& .MuiInputBase-root': {
-        fontSize: 14,
-      },
-      '& .MuiSelect-filled': {
-        fontSize: 14,
-      },
-      '& .MuiCheckbox-root': {
-        padding: 4,
-      },
-      '& .MuiFormControlLabel-label': {
-        fontSize: 14,
-      },
-      ...(sx || {}),
-    }),
-    [sx]
-  ) as SxProps<Theme>;
-
   const iconBtnStyles = {
     padding: 0,
     position: 'relative',
@@ -102,7 +74,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
     flexDirection: 'column',
     paddingLeft: 0,
     paddingTop: 0,
-    paddingRight: 8,
+    paddingRight: 2,
     minHeight: 44,
     alignSelf: 'flex-start',
     alignItems: 'flex-start',
@@ -113,7 +85,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
     fontSize: 12,
     alignItems: 'center',
     display: 'flex',
-  } as SxProps<Theme>;
+  };
 
   return (
     <Box sx={rowStyles}>
@@ -127,7 +99,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         onChange={(value: DataTypeEnum) =>
           onFieldChange(field.id!, { data_type: value })
         }
-        sx={{ width: '105px', marginTop: '-20px' }}
+        sx={{ width: '105px' }}
       />
 
       {isArray && (
@@ -136,7 +108,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(value: DataTypeEnum) =>
             onFieldChange(field.id!, { element_type: value })
           }
-          sx={{ width: '105px', marginTop: '-20px' }}
+          sx={{ width: '105px' }}
         />
       )}
 

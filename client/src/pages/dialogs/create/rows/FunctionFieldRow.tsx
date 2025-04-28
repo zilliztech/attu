@@ -1,5 +1,5 @@
-import { FC, MutableRefObject, useMemo } from 'react';
-import { IconButton, Theme, Box, SxProps } from '@mui/material';
+import { FC, MutableRefObject } from 'react';
+import { IconButton, Theme, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { DataTypeEnum } from '@/consts';
@@ -13,6 +13,7 @@ import AnalyzerCheckboxField from '../AnalyzerCheckboxField';
 import TextMatchCheckboxField from '../TextMatchCheckboxField';
 import PartitionKeyCheckboxField from '../PartitionKeyCheckboxField';
 import NullableCheckboxField from '../NullableCheckboxField';
+import { rowStyles } from './styles';
 
 interface FunctionFieldRowProps {
   field: FieldType;
@@ -23,7 +24,6 @@ interface FunctionFieldRowProps {
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField: (id: string) => void;
   localFieldAnalyzers: MutableRefObject<Map<string, Record<string, {}>>>;
-  sx?: SxProps<Theme>;
 }
 
 const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
@@ -35,43 +35,14 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
   onAddField,
   onRemoveField,
   localFieldAnalyzers,
-  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
   const AddIcon = icons.addOutline;
   const RemoveIcon = icons.remove;
 
-  const rowStyles = useMemo(
-    () => ({
-      display: 'flex',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      gap: '8px',
-      marginBottom: 4,
-      '& .MuiFormLabel-root': {
-        fontSize: 14,
-      },
-      '& .MuiInputBase-root': {
-        fontSize: 14,
-      },
-      '& .MuiSelect-filled': {
-        fontSize: 14,
-      },
-      '& .MuiCheckbox-root': {
-        padding: 4,
-      },
-      '& .MuiFormControlLabel-label': {
-        fontSize: 14,
-      },
-      ...(sx || {}),
-    }),
-    [sx]
-  ) as SxProps<Theme>;
-
   const selectStyles = {
     width: '150px',
-    marginTop: '-20px',
   };
 
   const maxLengthStyles = {
@@ -98,7 +69,7 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
     flexDirection: 'column',
     paddingLeft: 0,
     paddingTop: 0,
-    paddingRight: 8,
+    paddingRight: 2,
     minHeight: 44,
     alignSelf: 'flex-start',
     alignItems: 'flex-start',

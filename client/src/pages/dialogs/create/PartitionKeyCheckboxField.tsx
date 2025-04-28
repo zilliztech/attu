@@ -38,6 +38,7 @@ const PartitionKeyCheckboxField: FC<PartitionKeyCheckboxFieldProps> = ({
           size="small"
           disabled={disabled}
           onChange={handleChange}
+          style={{ padding: '8px' }}
         />
         <CustomToolTip
           title={collectionTrans(

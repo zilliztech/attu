@@ -103,6 +103,7 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
         size="small"
         onChange={handleCheckboxChange}
         disabled={field.data_type === DataTypeEnum.VarCharBM25}
+        style={{ padding: '8px' }}
       />
       <CustomSelector
         wrapperClass="select"

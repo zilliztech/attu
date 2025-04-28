@@ -1,5 +1,5 @@
-import { FC, useMemo } from 'react';
-import { FormControlLabel, Switch, Theme, Box, SxProps } from '@mui/material';
+import { FC } from 'react';
+import { FormControlLabel, Switch, Theme, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { DataTypeEnum } from '@/consts';
@@ -8,13 +8,13 @@ import NameField from '../NameField';
 import DescriptionField from '../DescriptionField';
 import MaxLengthField from '../MaxLengthField';
 import PrimaryKeyTypeSelector from '../PrimaryKeyTypeSelector';
+import { rowStyles } from './styles';
 
 interface PrimaryKeyFieldRowProps {
   field: FieldType;
   autoID: boolean;
   onFieldChange: (id: string, changes: Partial<FieldType>) => void;
   setAutoID: (value: boolean) => void;
-  sx?: SxProps<Theme>;
 }
 
 const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
@@ -22,38 +22,10 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
   autoID,
   onFieldChange,
   setAutoID,
-  sx,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
   const isVarChar = field.data_type === DataTypeEnum.VarChar;
-
-  const rowStyles = useMemo(
-    () => ({
-      display: 'flex',
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      gap: '8px',
-      marginBottom: 4,
-      '& .MuiFormLabel-root': {
-        fontSize: 14,
-      },
-      '& .MuiInputBase-root': {
-        fontSize: 14,
-      },
-      '& .MuiSelect-filled': {
-        fontSize: 14,
-      },
-      '& .MuiCheckbox-root': {
-        padding: 4,
-      },
-      '& .MuiFormControlLabel-label': {
-        fontSize: 14,
-      },
-      ...(sx || {}),
-    }),
-    [sx]
-  ) as SxProps<Theme>;
 
   const toggleStyles = (theme: Theme) => ({
     marginLeft: theme.spacing(0.5),
@@ -76,7 +48,7 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
             setAutoID(false);
           }
         }}
-        sx={{ width: '150px', marginTop: '-20px' } as SxProps<Theme>}
+        sx={{ width: '150px' }}
       />
 
       <DescriptionField
