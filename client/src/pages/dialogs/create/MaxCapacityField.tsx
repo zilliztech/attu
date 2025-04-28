@@ -8,7 +8,7 @@ import { SxProps, Theme } from '@mui/material';
 
 interface MaxCapacityFieldProps {
   field: FieldType;
-  onChange: (id: string, changes: Partial<FieldType>) => void;
+  onChange: (id: string, max_capacity: number, isValid?: boolean) => void;
   label?: string;
   sx?: SxProps<Theme>;
 }
@@ -23,15 +23,14 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
 
   // Initialize max_capacity if not defined
   if (typeof field.max_capacity === 'undefined') {
-    onChange(field.id!, { max_capacity: DEFAULT_ATTU_MAX_CAPACITY });
+    onChange(field.id!, DEFAULT_ATTU_MAX_CAPACITY, true);
   }
 
-  const handleChange = (value: string) => {
-    onChange(field.id!, { max_capacity: value });
-  };
-
-  const validateMaxCapacity = (value: any) => {
-    if (value === null) return ' ';
+  // Common validation function to avoid duplicating the validation logic
+  const validateField = (value: any) => {
+    if (value === null) {
+      return { isValid: false, isEmptyValid: false, isRangeValid: false };
+    }
 
     const isEmptyValid = checkEmptyValid(value);
     const isRangeValid = checkRange({
@@ -40,6 +39,29 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
       max: 4096,
       type: 'number',
     });
+
+    return {
+      isValid: isEmptyValid && isRangeValid,
+      isEmptyValid,
+      isRangeValid,
+    };
+  };
+
+  const handleChange = (value: string) => {
+    const numValue = Number(value);
+    const { isValid } = validateField(numValue);
+    onChange(field.id!, numValue, isValid);
+  };
+
+  const getError = (value: any) => {
+    const { isValid } = validateField(value);
+    return !isValid;
+  };
+
+  const getHelperText = (value: any) => {
+    if (value === null) return ' ';
+
+    const { isEmptyValid, isRangeValid } = validateField(value);
 
     return !isEmptyValid
       ? warningTrans('requiredOnly')
@@ -62,8 +84,8 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
       }}
       size="small"
       type="number"
-      error={validateMaxCapacity(field.max_capacity) !== ' '}
-      helperText={validateMaxCapacity(field.max_capacity) || ' '}
+      error={getError(field.max_capacity)}
+      helperText={getHelperText(field.max_capacity)}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',

@@ -20,7 +20,11 @@ interface FunctionFieldRowProps {
   index: number;
   fields: FieldType[];
   requiredFields: FieldType[];
-  onFieldChange: (id: string, changes: Partial<FieldType>) => void;
+  onFieldChange: (
+    id: string,
+    changes: Partial<FieldType>,
+    isValid?: boolean
+  ) => void;
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField: (id: string) => void;
   localFieldAnalyzers: MutableRefObject<Map<string, Record<string, {}>>>;
@@ -86,7 +90,9 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
-        onChange={(id, name) => onFieldChange(field.id!, { name: name })}
+        onChange={(id, name, isValid) =>
+          onFieldChange(field.id!, { name }, isValid)
+        }
       />
 
       <VectorTypeSelector
@@ -99,7 +105,9 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
 
       <MaxLengthField
         field={field}
-        onChange={onFieldChange}
+        onChange={(id, max_length, isValid) =>
+          onFieldChange(id, { max_length }, isValid)
+        }
         sx={maxLengthStyles}
       />
 

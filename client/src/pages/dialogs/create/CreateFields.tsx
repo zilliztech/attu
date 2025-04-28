@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@mui/material';
-import { FC, Fragment, useMemo, useRef } from 'react';
+import { FC, Fragment, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateId, getCreateFieldType } from '@/utils';
@@ -20,7 +20,13 @@ const CreateFields: FC<CreateFieldsProps> = ({
   setFields,
   setAutoID,
   autoID,
+  onValidationChange,
 }) => {
+  // local state
+  const [fieldValidation, setFieldValidation] = useState<
+    Record<string, boolean>
+  >({});
+
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -64,7 +70,11 @@ const CreateFields: FC<CreateFieldsProps> = ({
   );
 
   // UI handlers
-  const changeFields = (id: string, changes: Partial<FieldType>) => {
+  const changeFields = (
+    id: string,
+    changes: Partial<FieldType>,
+    isValid?: boolean
+  ) => {
     const newFields = fields.map(f => {
       if (f.id !== id) {
         return f;
@@ -105,6 +115,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
 
     setFields(newFields);
+    console.log('newFields', changes);
   };
 
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {

@@ -82,6 +82,7 @@ export interface CreateFieldsProps {
   setFields: Dispatch<SetStateAction<CreateField[]>>;
   autoID: boolean;
   setAutoID: (value: boolean) => void;
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 export interface InsertDataParam {

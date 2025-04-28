@@ -22,7 +22,11 @@ interface ScalarFieldRowProps {
   field: FieldType;
   index: number;
   fields: FieldType[];
-  onFieldChange: (id: string, changes: Partial<FieldType>) => void;
+  onFieldChange: (
+    id: string,
+    changes: Partial<FieldType>,
+    isValid?: boolean
+  ) => void;
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField: (id: string) => void;
   localFieldAnalyzers: MutableRefObject<Map<string, Record<string, {}>>>;
@@ -91,13 +95,13 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
-        onChange={(id, name) => onFieldChange(field.id!, { name: name })}
+        onChange={(id, name, isValid) => onFieldChange(id, { name }, isValid)}
       />
 
       <ScalarTypeSelector
         value={field.data_type}
         onChange={(value: DataTypeEnum) =>
-          onFieldChange(field.id!, { data_type: value })
+          onFieldChange(field.id!, { data_type: value }, true)
         }
         sx={{ width: '105px' }}
       />
@@ -106,7 +110,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         <ElementTypeSelector
           value={field.element_type || DEFAULT_ATTU_ELEMENT_TYPE}
           onChange={(value: DataTypeEnum) =>
-            onFieldChange(field.id!, { element_type: value })
+            onFieldChange(field.id!, { element_type: value }, true)
           }
           sx={{ width: '105px' }}
         />
@@ -115,7 +119,9 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
       {isArray && (
         <MaxCapacityField
           field={field}
-          onChange={onFieldChange}
+          onChange={(id, max_capacity, isValid) => {
+            onFieldChange(id, { max_capacity }, isValid);
+          }}
           sx={{ maxWidth: '80px' }}
         />
       )}
@@ -123,7 +129,9 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
       {(isVarChar || isElementVarChar) && (
         <MaxLengthField
           field={field}
-          onChange={onFieldChange}
+          onChange={(id, max_length, isValid) =>
+            onFieldChange(id, { max_length }, isValid)
+          }
           sx={{ maxWidth: '80px' }}
         />
       )}
@@ -132,7 +140,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         <DefaultValueField
           field={field}
           onChange={(id, defaultValue) =>
-            onFieldChange(id, { default_value: defaultValue })
+            onFieldChange(id, { default_value: defaultValue }, true)
           }
           sx={{ width: '64px' }}
           label={collectionTrans('defaultValue')}
@@ -141,7 +149,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
 
       <DescriptionField
         field={field}
-        onChange={(id, description) => onFieldChange(id, { description })}
+        onChange={(id, description) => onFieldChange(id, { description }, true)}
         sx={{ width: '64px' }}
       />
 

@@ -124,6 +124,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
+  console.log(checkedForm)
+
   const changeIsAutoID = (value: boolean) => {
     setForm({
       ...form,

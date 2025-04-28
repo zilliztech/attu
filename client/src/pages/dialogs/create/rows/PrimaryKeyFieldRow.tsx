@@ -13,7 +13,11 @@ import { rowStyles } from './styles';
 interface PrimaryKeyFieldRowProps {
   field: FieldType;
   autoID: boolean;
-  onFieldChange: (id: string, changes: Partial<FieldType>) => void;
+  onFieldChange: (
+    id: string,
+    changes: Partial<FieldType>,
+    isValid?: boolean
+  ) => void;
   setAutoID: (value: boolean) => void;
 }
 
@@ -36,7 +40,7 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
-        onChange={(id, name) => onFieldChange(field.id!, { name: name })}
+        onChange={(id, name, isValid) => onFieldChange(id, { name }, isValid)}
         label={collectionTrans('idFieldName')}
       />
 
@@ -53,14 +57,16 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
 
       <DescriptionField
         field={field}
-        onChange={(id, description) => onFieldChange(id, { description })}
+        onChange={(id, description) => onFieldChange(id, { description }, true)}
         sx={{ width: '64px' }}
       />
 
       {isVarChar && (
         <MaxLengthField
           field={field}
-          onChange={onFieldChange}
+          onChange={(id, max_length, isValid) =>
+            onFieldChange(id, { max_length }, isValid)
+          }
           sx={{ maxWidth: '80px' }}
         />
       )}

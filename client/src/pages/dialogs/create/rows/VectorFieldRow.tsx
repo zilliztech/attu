@@ -13,7 +13,11 @@ interface VectorFieldRowProps {
   field: FieldType;
   index: number;
   requiredFields?: FieldType[];
-  onFieldChange: (id: string, changes: Partial<FieldType>) => void;
+  onFieldChange: (
+    id: string,
+    changes: Partial<FieldType>,
+    isValid?: boolean
+  ) => void;
   onAddField: (index: number, type: DataTypeEnum) => void;
   onRemoveField?: (id: string) => void;
   showDeleteButton?: boolean;
@@ -38,7 +42,9 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
-        onChange={(id, name) => onFieldChange(field.id!, { name: name })}
+        onChange={(id, name, isValid) =>
+          onFieldChange(field.id!, { name }, isValid)
+        }
       />
 
       <VectorTypeSelector
