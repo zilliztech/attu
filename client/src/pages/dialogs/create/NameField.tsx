@@ -20,7 +20,6 @@ const NameField: FC<NameFieldProps> = ({
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
-  const [value, setValue] = useState<string>(field.name || '');
   const [touched, setTouched] = useState<boolean>(false);
 
   // Determine the label based on field type
@@ -28,34 +27,24 @@ const NameField: FC<NameFieldProps> = ({
     VectorTypes.includes(field.data_type) ? 'vectorFieldName' : 'fieldName'
   );
 
-  // Validate the field value
-  const isNameValid = (name: string): boolean => {
-    return checkEmptyValid(name);
-  };
-
-  // Get error message based on validation result
-  const getErrorMessage = (name: string): string => {
-    // Only show error message if the field has been touched
-    if (!touched) return ' ';
-    return isNameValid(name) ? ' ' : warningTrans('requiredOnly');
-  };
-
-  // Current validation state
-  const isValid = isNameValid(value);
-  const errorMessage = getErrorMessage(value);
-
-  // Sync initial value from props
+  // Initialize name if not defined
   useEffect(() => {
-    if (field.name !== undefined && field.name !== value) {
-      setValue(field.name);
+    if (field.name === undefined && field.id) {
+      onChange(field.id, '', false);
     }
-  }, [field.name]);
+  }, []);
+
+  // Common validation function
+  const validateField = (name: string) => {
+    const isValid = checkEmptyValid(name);
+    return { isValid };
+  };
 
   const handleChange = (newValue: string) => {
-    setValue(newValue);
     setTouched(true);
     if (field.id) {
-      onChange(field.id, newValue, isNameValid(newValue));
+      const { isValid } = validateField(newValue);
+      onChange(field.id, newValue, isValid);
     }
   };
 
@@ -63,10 +52,22 @@ const NameField: FC<NameFieldProps> = ({
     setTouched(true);
   };
 
+  const getError = (name: string) => {
+    if (!touched) return false;
+    const { isValid } = validateField(name);
+    return !isValid;
+  };
+
+  const getHelperText = (name: string) => {
+    if (!touched) return ' ';
+    const { isValid } = validateField(name);
+    return isValid ? ' ' : warningTrans('requiredOnly');
+  };
+
   return (
     <TextField
       label={label || defaultLabel}
-      value={value}
+      defaultValue={field.name || ''}
       onChange={e => handleChange(e.target.value)}
       onBlur={handleBlur}
       variant="filled"
@@ -75,8 +76,8 @@ const NameField: FC<NameFieldProps> = ({
       }}
       size="small"
       disabled={isReadOnly}
-      error={touched && !isValid}
-      helperText={errorMessage}
+      error={getError(field.name || '')}
+      helperText={getHelperText(field.name || '')}
       style={{ width: 128 }}
       FormHelperTextProps={{
         style: {

@@ -22,11 +22,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
   autoID,
   onValidationChange,
 }) => {
-  // local state
-  const [fieldValidation, setFieldValidation] = useState<
-    Record<string, boolean>
-  >({});
-
   // i18n
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -34,6 +29,9 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const localFieldAnalyzers = useRef(
     new Map<string, Record<string, {}>>(new Map())
   );
+  const [localFieldsValidation, setLocalFieldsValidation] = useState<
+    Map<string, boolean>
+  >(new Map());
 
   // UI icons
   const AddIcon = icons.addOutline;
@@ -115,7 +113,20 @@ const CreateFields: FC<CreateFieldsProps> = ({
     });
 
     setFields(newFields);
-    console.log('newFields', changes);
+    setLocalFieldsValidation(prev => {
+      const newValidation = new Map(prev);
+      if (isValid !== undefined) {
+        newValidation.set(id, isValid);
+      } else {
+        newValidation.delete(id);
+      }
+      const areFieldsValid = Array.from(newValidation.values()).every(v => v);
+
+      console.log('areFieldsValid', areFieldsValid, newValidation);
+      onValidationChange(areFieldsValid);
+
+      return newValidation;
+    });
   };
 
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
@@ -139,6 +150,15 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const handleRemoveField = (id: string) => {
     const newFields = fields.filter(f => f.id !== id);
     setFields(newFields);
+    // remove validation
+    setLocalFieldsValidation(prev => {
+      const newValidation = new Map(prev);
+      newValidation.delete(id);
+      const areFieldsValid = Array.from(newValidation.values()).every(v => v);
+      onValidationChange(areFieldsValid);
+
+      return newValidation;
+    });
   };
 
   const generateRequiredFieldRow = (

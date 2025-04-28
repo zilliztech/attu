@@ -94,6 +94,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     loadAfterCreate: true,
   });
 
+  const [fieldsValidation, setFieldsValidation] = useState(false);
+
   const [consistencyLevel, setConsistencyLevel] =
     useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Bounded); // Bounded is the default value of consistency level
 
@@ -123,8 +125,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   }, [form]);
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
-
-  console.log(checkedForm)
 
   const changeIsAutoID = (value: boolean) => {
     setForm({
@@ -324,7 +324,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       }}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
-      confirmDisabled={disabled}
+      confirmDisabled={disabled || !fieldsValidation}
       dialogClass={classes.dialog}
     >
       <div className={classes.container}>
@@ -350,6 +350,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
               setFields={setFields}
               autoID={form.autoID}
               setAutoID={changeIsAutoID}
+              onValidationChange={setFieldsValidation}
             />
           </fieldset>
         </section>
