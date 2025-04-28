@@ -52,13 +52,6 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
             setAutoID(false);
           }
         }}
-        sx={{ width: '150px' }}
-      />
-
-      <DescriptionField
-        field={field}
-        onChange={(id, description) => onFieldChange(id, { description }, true)}
-        sx={{ width: '64px' }}
       />
 
       {isVarChar && (
@@ -67,9 +60,14 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
           onChange={(id, max_length, isValid) =>
             onFieldChange(id, { max_length }, isValid)
           }
-          sx={{ maxWidth: '80px' }}
         />
       )}
+
+      <DescriptionField
+        field={field}
+        onChange={(id, description) => onFieldChange(id, { description }, true)}
+        sx={{ width: '64px' }}
+      />
 
       <FormControlLabel
         control={

@@ -25,6 +25,7 @@ const ScalarTypeSelector: FC<ScalarTypeSelectorProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        width: 140,
         ...sx,
       }}
     >

@@ -53,10 +53,6 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
     maxWidth: '80px',
   };
 
-  const descInputStyles = {
-    width: '64px',
-  };
-
   const iconBtnStyles = {
     padding: 0,
     position: 'relative',
@@ -116,14 +112,12 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
         onChange={(id, defaultValue) =>
           onFieldChange(id, { default_value: defaultValue })
         }
-        sx={descInputStyles}
         label={collectionTrans('defaultValue')}
       />
 
       <DescriptionField
         field={field}
         onChange={(id, description) => onFieldChange(id, { description })}
-        sx={descInputStyles}
       />
 
       <Box sx={paramsGrpStyles}>

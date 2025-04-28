@@ -52,19 +52,13 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
         onChange={(value: DataTypeEnum) =>
           onFieldChange(field.id!, { data_type: value })
         }
-        sx={{ width: '150px' }}
       />
 
-      <DimensionField
-        field={field}
-        onChange={onFieldChange}
-        sx={{ width: '80px' }}
-      />
+      <DimensionField field={field} onChange={onFieldChange} />
 
       <DescriptionField
         field={field}
         onChange={(id, description) => onFieldChange(id, { description })}
-        sx={{ width: '64px' }}
       />
 
       <IconButton

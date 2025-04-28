@@ -86,6 +86,9 @@ const MaxLengthField: FC<MaxLengthFieldProps> = ({
       type="number"
       error={getError(field.max_length)}
       helperText={getHelperText(field.max_length)}
+      style={{
+        width: 120,
+      }}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',

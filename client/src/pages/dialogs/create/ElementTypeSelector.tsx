@@ -33,6 +33,7 @@ const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        width: 120,
         ...sx,
       }}
     >

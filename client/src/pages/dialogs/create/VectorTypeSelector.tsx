@@ -25,6 +25,7 @@ const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        width: 140,
         ...sx,
       }}
     >

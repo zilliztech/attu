@@ -36,6 +36,7 @@ const PrimaryKeyTypeSelector: FC<PrimaryKeyTypeSelectorProps> = ({
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        width: 140,
         ...sx,
       }}
     >

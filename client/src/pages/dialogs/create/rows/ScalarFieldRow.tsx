@@ -103,7 +103,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
         onChange={(value: DataTypeEnum) =>
           onFieldChange(field.id!, { data_type: value }, true)
         }
-        sx={{ width: '105px' }}
       />
 
       {isArray && (
@@ -112,7 +111,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(value: DataTypeEnum) =>
             onFieldChange(field.id!, { element_type: value }, true)
           }
-          sx={{ width: '105px' }}
         />
       )}
 
@@ -122,7 +120,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(id, max_capacity, isValid) => {
             onFieldChange(id, { max_capacity }, isValid);
           }}
-          sx={{ maxWidth: '80px' }}
         />
       )}
 
@@ -132,7 +129,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(id, max_length, isValid) =>
             onFieldChange(id, { max_length }, isValid)
           }
-          sx={{ maxWidth: '80px' }}
         />
       )}
 
@@ -142,7 +138,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(id, defaultValue) =>
             onFieldChange(id, { default_value: defaultValue }, true)
           }
-          sx={{ width: '64px' }}
           label={collectionTrans('defaultValue')}
         />
       )}
@@ -150,7 +145,6 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
       <DescriptionField
         field={field}
         onChange={(id, description) => onFieldChange(id, { description }, true)}
-        sx={{ width: '64px' }}
       />
 
       <Box sx={paramsGrpStyles}>

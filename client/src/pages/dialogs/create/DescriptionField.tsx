@@ -28,7 +28,7 @@ const DescriptionField: FC<DescriptionFieldProps> = ({
         shrink: true,
       }}
       helperText={' '}
-      style={{ width: 80 }}
+      style={{ width: 120 }}
       sx={{
         ...sx,
       }}

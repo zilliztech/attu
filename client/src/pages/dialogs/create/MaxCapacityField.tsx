@@ -86,6 +86,9 @@ const MaxCapacityField: FC<MaxCapacityFieldProps> = ({
       type="number"
       error={getError(field.max_capacity)}
       helperText={getHelperText(field.max_capacity)}
+      style={{
+        width: 100,
+      }}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',
