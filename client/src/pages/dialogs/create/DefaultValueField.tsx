@@ -47,6 +47,9 @@ const DefaultValueField: FC<DefaultValueFieldProps> = ({
       size="small"
       type={getInputType(field.data_type)}
       sx={sx}
+      style={{
+        width: 120,
+      }}
       FormHelperTextProps={{
         style: {
           lineHeight: '20px',
