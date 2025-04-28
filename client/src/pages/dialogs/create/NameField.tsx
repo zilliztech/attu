@@ -21,6 +21,7 @@ const NameField: FC<NameFieldProps> = ({
   const { t: collectionTrans } = useTranslation('collection');
   const { t: warningTrans } = useTranslation('warning');
   const [value, setValue] = useState<string>(field.name || '');
+  const [touched, setTouched] = useState<boolean>(false);
 
   // Determine the label based on field type
   const defaultLabel = collectionTrans(
@@ -34,6 +35,8 @@ const NameField: FC<NameFieldProps> = ({
 
   // Get error message based on validation result
   const getErrorMessage = (name: string): string => {
+    // Only show error message if the field has been touched
+    if (!touched) return ' ';
     return isNameValid(name) ? ' ' : warningTrans('requiredOnly');
   };
 
@@ -50,9 +53,14 @@ const NameField: FC<NameFieldProps> = ({
 
   const handleChange = (newValue: string) => {
     setValue(newValue);
+    setTouched(true);
     if (field.id) {
       onChange(field.id, newValue, isNameValid(newValue));
     }
+  };
+
+  const handleBlur = () => {
+    setTouched(true);
   };
 
   return (
@@ -60,13 +68,14 @@ const NameField: FC<NameFieldProps> = ({
       label={label || defaultLabel}
       value={value}
       onChange={e => handleChange(e.target.value)}
+      onBlur={handleBlur}
       variant="filled"
       InputLabelProps={{
         shrink: true,
       }}
       size="small"
       disabled={isReadOnly}
-      error={!isValid}
+      error={touched && !isValid}
       helperText={errorMessage}
       style={{ width: 128 }}
       FormHelperTextProps={{
