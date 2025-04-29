@@ -43,7 +43,7 @@ const collectionTrans = {
 
   // create dialog
   createTitle: 'Create Collection {{name}}',
-  idAndVectorFields: 'Primary Key, Vector, or BM25(VarChar) Fields',
+  idAndVectorFields: 'Primary Key, Vector Fields',
   scalarFields: 'Scalar Fields',
   schema: 'Schema',
   consistency: 'Consistency',
@@ -88,6 +88,10 @@ const collectionTrans = {
   loadCollectionAfterCreate: 'Load collection immediately after creation',
   loadCollectionAfterCreateTip:
     'Attu will create indexes for fields using AUTOINDEX and then load the collection.',
+  addBm25Function: 'Add BM25 Function',
+  bm25NoVarcharAndSparse: 'To create a BM25 function, please add at least one VarChar field and one SparseFloatVector field.',
+  bm25NoVarchar: 'To create a BM25 function, please add at least one VarChar field.',
+  bm25NoSparse: 'To create a BM25 function, please add at least one SparseFloatVector field.',
 
   // load dialog
   loadTitle: 'Load Collection',

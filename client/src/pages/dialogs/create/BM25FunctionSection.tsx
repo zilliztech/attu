@@ -4,9 +4,11 @@ import {
   Button,
   Box,
   List,
-  ListItem,
   IconButton,
-  ListItemText,
+  Paper,
+  Stack,
+  Chip,
+  Tooltip,
 } from '@mui/material';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import Icons from '@/components/icons/Icons';
@@ -56,15 +58,37 @@ const BM25FunctionSection: FC<BM25FunctionSectionProps> = ({
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       {!showBm25Selection && (
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<Icons.add />}
-          onClick={handleAddBm25Click}
-          disabled={varcharFields.length === 0 || sparseFields.length === 0}
+        <Tooltip
+          title={
+            varcharFields.length === 0 && sparseFields.length === 0
+              ? collectionTrans('bm25NoVarcharAndSparse')
+              : varcharFields.length === 0
+                ? collectionTrans('bm25NoVarchar')
+                : sparseFields.length === 0
+                  ? collectionTrans('bm25NoSparse')
+                  : ''
+          }
+          placement="top"
+          arrow
+          disableHoverListener={
+            !(varcharFields.length === 0 || sparseFields.length === 0)
+          }
         >
-          {collectionTrans('addBM25Function')}
-        </Button>
+          <span>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Icons.add />}
+              onClick={handleAddBm25Click}
+              sx={{
+                width: '100%',
+              }}
+              disabled={varcharFields.length === 0 || sparseFields.length === 0}
+            >
+              {collectionTrans('addBm25Function')}
+            </Button>
+          </span>
+        </Tooltip>
       )}
 
       {showBm25Selection && (
@@ -116,30 +140,53 @@ const BM25FunctionSection: FC<BM25FunctionSectionProps> = ({
         <Box sx={{ mt: 2 }}>
           <List dense>
             {formFunctions.map((func, index) => (
-              <ListItem
-                key={index}
-                secondaryAction={
-                  <IconButton
-                    edge="end"
-                    size="small"
-                    onClick={() => {
-                      setForm(prev => ({
-                        ...prev,
-                        functions: prev.functions?.filter(
-                          (_: any, i: number) => i !== index
-                        ),
-                      }));
-                    }}
-                  >
-                    <Icons.delete fontSize="small" />
-                  </IconButton>
-                }
-              >
-                <ListItemText
-                  primary={func.name}
-                  secondary={`Input: ${func.input_field_names.join(', ')} → Output: ${func.output_field_names.join(', ')}`}
-                />
-              </ListItem>
+              <Paper key={index} sx={{ mb: 1, p: 1, position: 'relative' }}>
+                <IconButton
+                  size="small"
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                  }}
+                  onClick={() => {
+                    setForm(prev => ({
+                      ...prev,
+                      functions: prev.functions?.filter(
+                        (_: any, i: number) => i !== index
+                      ),
+                    }));
+                  }}
+                >
+                  <Icons.delete fontSize="small" />
+                </IconButton>
+                <Stack spacing={0.5}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {func.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {func.description}
+                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    {func.input_field_names.map(name => (
+                      <Chip
+                        key={name}
+                        label={name}
+                        size="small"
+                        color="primary"
+                      />
+                    ))}
+                    <Typography variant="body2">→</Typography>
+                    {func.output_field_names.map(name => (
+                      <Chip
+                        key={name}
+                        label={name}
+                        size="small"
+                        color="success"
+                      />
+                    ))}
+                  </Stack>
+                </Stack>
+              </Paper>
             ))}
           </List>
         </Box>

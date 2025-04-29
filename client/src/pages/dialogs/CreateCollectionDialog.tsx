@@ -1,4 +1,4 @@
-import { Theme, Box } from '@mui/material';
+import { Theme, Box, Typography } from '@mui/material';
 import {
   FC,
   useContext,
@@ -31,57 +31,8 @@ import type {
 } from '../databases/collections/Types';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  dialog: {
-    minWidth: 900,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    '& section': {
-      display: 'flex',
-      '& fieldset': {},
-    },
-  },
-  generalInfo: {
-    '& fieldset': {
-      gap: 16,
-      display: 'flex',
-      width: '100%',
-    },
-  },
-  schemaInfo: {
-    background: theme.palette.background.lightGrey,
-    padding: '16px',
-    borderRadius: 8,
-  },
-  functionInfo: {
-    marginTop: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-
-    '& input': {
-      marginLeft: 0,
-    },
-  },
   input: {
     width: '100%',
-  },
-  bm25Section: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(1), // Added gap for spacing
-  },
-  bm25Selectors: {
-    // Added style for selector container
-    display: 'flex',
-    gap: theme.spacing(2),
-    alignItems: 'center',
-  },
-  bm25Selector: {
-    // Added style for individual selectors
-    minWidth: 200,
   },
 }));
 
@@ -325,18 +276,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     [fields]
   );
 
-  // Effect to reset selection when fields change or selection UI is hidden
-  useEffect(() => {
-    if (!showBm25Selection) {
-      setSelectedBm25Input('');
-      setSelectedBm25Output('');
-    } else {
-      // Pre-select first available fields when opening selection
-      setSelectedBm25Input(varcharFields[0]?.name || '');
-      setSelectedBm25Output(sparseFields[0]?.name || '');
-    }
-  }, [showBm25Selection, varcharFields, sparseFields]);
-
   const handleAddBm25Click = () => {
     setShowBm25Selection(true);
   };
@@ -379,11 +318,51 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
     // Hide selection UI
     setShowBm25Selection(false);
+
+    // need to update field.is_function_output to true
+    const updatedFields = fields.map(field => {
+      if (field.name === outputField.name) {
+        return {
+          ...field,
+          is_function_output: true,
+        };
+      }
+      return field;
+    });
+    setFields(updatedFields);
   };
 
   const handleCancelAddBm25 = () => {
     setShowBm25Selection(false);
   };
+
+  // Effect to reset selection when fields change or selection UI is hidden
+  useEffect(() => {
+    if (!showBm25Selection) {
+      setSelectedBm25Input('');
+      setSelectedBm25Output('');
+    } else {
+      // Pre-select first available fields when opening selection
+      setSelectedBm25Input(varcharFields[0]?.name || '');
+      setSelectedBm25Output(sparseFields[0]?.name || '');
+    }
+  }, [showBm25Selection, varcharFields, sparseFields]);
+
+  // Effect to filter out functions with invalid field names
+  useEffect(() => {
+    setForm(prevForm => {
+      const fieldNames = fields.map(f => f.name);
+      const filteredFunctions = (prevForm.functions || []).filter(
+        fn =>
+          fn.input_field_names.every(name => fieldNames.includes(name)) &&
+          fn.output_field_names.every(name => fieldNames.includes(name))
+      );
+      if (filteredFunctions.length !== (prevForm.functions || []).length) {
+        return { ...prevForm, functions: filteredFunctions };
+      }
+      return prevForm;
+    });
+  }, [fields]);
 
   return (
     <DialogTemplate
@@ -397,18 +376,16 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       sx={{ width: 900 }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex' }}>
-          <fieldset style={{ gap: 16, display: 'flex', width: '100%' }}>
-            {generalInfoConfigs.map(config => (
-              <CustomInput
-                key={config.key}
-                type="text"
-                textConfig={{ ...config }}
-                checkValid={checkIsValid}
-                validInfo={validation}
-              />
-            ))}
-          </fieldset>
+        <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+          {generalInfoConfigs.map(config => (
+            <CustomInput
+              key={config.key}
+              type="text"
+              textConfig={{ ...config }}
+              checkValid={checkIsValid}
+              validInfo={validation}
+            />
+          ))}
         </Box>
 
         <Box
@@ -418,43 +395,37 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             borderRadius: 0.5,
           }}
         >
-          <fieldset>
-            {/* <legend>{collectionTrans('schema')}</legend> */}
-            <CreateFields
-              fields={fields}
-              setFields={setFields}
-              autoID={form.autoID}
-              setAutoID={changeIsAutoID}
-              onValidationChange={setFieldsValidation}
-            />
-          </fieldset>
+          <CreateFields
+            fields={fields}
+            setFields={setFields}
+            autoID={form.autoID}
+            setAutoID={changeIsAutoID}
+            onValidationChange={setFieldsValidation}
+          />
         </Box>
 
         <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <fieldset>
-            <legend>{collectionTrans('functions')}</legend>
-            {varcharFields.length > 0 && sparseFields.length > 0 && (
-              <BM25FunctionSection
-                showBm25Selection={showBm25Selection}
-                varcharFields={varcharFields}
-                sparseFields={sparseFields}
-                selectedBm25Input={selectedBm25Input}
-                selectedBm25Output={selectedBm25Output}
-                setSelectedBm25Input={setSelectedBm25Input}
-                setSelectedBm25Output={setSelectedBm25Output}
-                handleAddBm25Click={handleAddBm25Click}
-                handleConfirmAddBm25={handleConfirmAddBm25}
-                handleCancelAddBm25={handleCancelAddBm25}
-                formFunctions={form.functions}
-                setForm={setForm}
-                collectionTrans={collectionTrans}
-                btnTrans={btnTrans}
-              />
-            )}
-          </fieldset>
+          <Typography variant="h4" sx={{ fontSize: 16 }}>
+            {collectionTrans('functions')}
+          </Typography>
+          <BM25FunctionSection
+            showBm25Selection={showBm25Selection}
+            varcharFields={varcharFields}
+            sparseFields={sparseFields}
+            selectedBm25Input={selectedBm25Input}
+            selectedBm25Output={selectedBm25Output}
+            setSelectedBm25Input={setSelectedBm25Input}
+            setSelectedBm25Output={setSelectedBm25Output}
+            handleAddBm25Click={handleAddBm25Click}
+            handleConfirmAddBm25={handleConfirmAddBm25}
+            handleCancelAddBm25={handleCancelAddBm25}
+            formFunctions={form.functions}
+            setForm={setForm}
+            collectionTrans={collectionTrans}
+            btnTrans={btnTrans}
+          />
         </Box>
 
-        {/* Replace original extraInfo section with the new component */}
         <ExtraInfoSection
           consistencyLevel={consistencyLevel}
           setConsistencyLevel={setConsistencyLevel}
