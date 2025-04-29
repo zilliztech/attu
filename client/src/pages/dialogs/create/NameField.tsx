@@ -7,6 +7,7 @@ import type { FieldType } from '../../databases/collections/Types';
 
 interface NameFieldProps {
   field: FieldType;
+  fields: FieldType[];
   onChange: (id: string, name: string, isValid: boolean) => void;
   label?: string;
   isReadOnly?: boolean;
@@ -14,6 +15,7 @@ interface NameFieldProps {
 
 const NameField: FC<NameFieldProps> = ({
   field,
+  fields,
   onChange,
   label,
   isReadOnly = false,
@@ -37,7 +39,10 @@ const NameField: FC<NameFieldProps> = ({
   // Common validation function
   const validateField = (name: string) => {
     const isValid = checkEmptyValid(name);
-    return { isValid };
+    const isDuplicate =
+      fields.filter((f: FieldType) => f.name === name && f.id !== field.id)
+        .length > 0;
+    return { isValid: isValid && !isDuplicate, isDuplicate };
   };
 
   const handleChange = (newValue: string) => {
@@ -60,7 +65,8 @@ const NameField: FC<NameFieldProps> = ({
 
   const getHelperText = (name: string) => {
     if (!touched) return ' ';
-    const { isValid } = validateField(name);
+    const { isValid, isDuplicate } = validateField(name);
+    if (isDuplicate) return collectionTrans('fieldNameExist');
     return isValid ? ' ' : warningTrans('requiredOnly');
   };
 

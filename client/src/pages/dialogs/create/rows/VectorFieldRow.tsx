@@ -11,6 +11,7 @@ import { rowStyles } from './styles';
 
 interface VectorFieldRowProps {
   field: FieldType;
+  fields: FieldType[];
   index: number;
   requiredFields?: FieldType[];
   onFieldChange: (
@@ -25,6 +26,7 @@ interface VectorFieldRowProps {
 
 const VectorFieldRow: FC<VectorFieldRowProps> = ({
   field,
+  fields,
   index,
   requiredFields = [],
   onFieldChange,
@@ -42,6 +44,7 @@ const VectorFieldRow: FC<VectorFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
+        fields={fields}
         onChange={(id, name, isValid) =>
           onFieldChange(field.id!, { name }, isValid)
         }

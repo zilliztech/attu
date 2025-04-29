@@ -86,6 +86,7 @@ const FunctionFieldRow: FC<FunctionFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
+        fields={fields}
         onChange={(id, name, isValid) =>
           onFieldChange(field.id!, { name }, isValid)
         }

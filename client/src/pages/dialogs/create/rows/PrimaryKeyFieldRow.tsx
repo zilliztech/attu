@@ -12,6 +12,7 @@ import { rowStyles } from './styles';
 
 interface PrimaryKeyFieldRowProps {
   field: FieldType;
+  fields: FieldType[];
   autoID: boolean;
   onFieldChange: (
     id: string,
@@ -23,6 +24,7 @@ interface PrimaryKeyFieldRowProps {
 
 const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
   field,
+  fields,
   autoID,
   onFieldChange,
   setAutoID,
@@ -40,6 +42,7 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
+        fields={fields}
         onChange={(id, name, isValid) => onFieldChange(id, { name }, isValid)}
         label={collectionTrans('idFieldName')}
       />

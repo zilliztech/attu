@@ -133,6 +133,7 @@ const collectionTrans = {
 
   // duplicate dialog
   duplicateNameExist: 'Collection 已经存在。',
+  fieldNameExist: '字段名称已存在。',
 
   // segment
   segments: 'Segment',
