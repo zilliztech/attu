@@ -12,7 +12,6 @@ import type {
 } from '../../databases/collections/Types';
 import PrimaryKeyFieldRow from './rows/PrimaryKeyFieldRow';
 import ScalarFieldRow from './rows/ScalarFieldRow';
-import FunctionFieldRow from './rows/FunctionFieldRow';
 import VectorFieldRow from './rows/VectorFieldRow';
 
 const CreateFields: FC<CreateFieldsProps> = ({
@@ -140,6 +139,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
     const id = generateId();
     const newDefaultItem: FieldType = {
+      id,
       name: '',
       data_type: type,
       is_primary_key: false,
@@ -148,7 +148,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
       dim: DEFAULT_ATTU_DIM,
       max_length: DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
       enable_analyzer: type === DataTypeEnum.VarCharBM25,
-      id,
     };
 
     fields.splice(index + 1, 0, newDefaultItem);
@@ -183,21 +182,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
           autoID={autoID}
           onFieldChange={changeFields}
           setAutoID={setAutoID}
-        />
-      );
-    }
-
-    if (field.data_type === DataTypeEnum.VarCharBM25) {
-      return (
-        <FunctionFieldRow
-          field={field}
-          index={index}
-          fields={fields}
-          requiredFields={requiredFields}
-          onFieldChange={changeFields}
-          onAddField={handleAddNewField}
-          onRemoveField={handleRemoveField}
-          localFieldAnalyzers={localFieldAnalyzers}
         />
       );
     }

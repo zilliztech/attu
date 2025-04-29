@@ -11,7 +11,7 @@ declare module '@mui/material/Typography' {
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
-    light?: string; // Adding the light property to the TypeBackground interface
+    lightGrey?: string; // Adding the light property to the TypeBackground interface
     grey?: string;
   }
   interface Palette {
@@ -55,6 +55,7 @@ const getCommonThemes = (mode: PaletteMode) => ({
       default: mode === 'light' ? '#f5f5f5' : '#121212',
       paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
       grey: mode === 'light' ? grey[200] : grey[800],
+      lightGrey: mode === 'light' ? grey[100] : grey[800],
     },
   },
   spacing: (factor: number) => `${8 * factor}px`,

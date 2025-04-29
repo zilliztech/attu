@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   schemaInfo: {
-    background: theme.palette.background.grey,
+    background: theme.palette.background.lightGrey,
     padding: '16px',
     borderRadius: 8,
   },
@@ -238,23 +238,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           data.max_capacity = Number(v.max_capacity);
         }
 
-        // handle BM25 row
-        if (data.data_type === DataTypeEnum.VarCharBM25) {
-          data.data_type = DataTypeEnum.VarChar;
-          data.enable_analyzer = true;
-          data.analyzer_params = data.analyzer_params || 'standard';
-          // create sparse field
-          const sparseField = {
-            name: `${data.name}_embeddings`,
-            is_primary_key: false,
-            data_type: DataTypeEnum.SparseFloatVector,
-            description: `fn BM25(${data.name}) -> embeddings`,
-            is_function_output: true,
-          };
-          // push sparse field to fields
-          fnOutputFields.push(sparseField);
-        }
-
         if (data.analyzer_params) {
           // if analyzer_params is string, we need to use default value
           data.analyzer_params = getAnalyzerParams(data.analyzer_params);
@@ -287,18 +270,18 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     param.fields.push(...fnOutputFields);
 
     // build functions
-    fnOutputFields.forEach((field, index) => {
-      const [input] = (field.name as string).split('_');
-      const functionParam = {
-        name: `BM25_${index}`,
-        description: `${input} BM25 function`,
-        type: FunctionType.BM25,
-        input_field_names: [input],
-        output_field_names: [field.name as string],
-        params: {},
-      };
-      param.functions.push(functionParam);
-    });
+    // fnOutputFields.forEach((field, index) => {
+    //   const [input] = (field.name as string).split('_');
+    //   const functionParam = {
+    //     name: `BM25_${index}`,
+    //     description: `${input} BM25 function`,
+    //     type: FunctionType.BM25,
+    //     input_field_names: [input],
+    //     output_field_names: [field.name as string],
+    //     params: {},
+    //   };
+    //   param.functions.push(functionParam);
+    // });
 
     // create collection
     await createCollection({
@@ -354,6 +337,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
             />
           </fieldset>
         </section>
+
+        <section className={classes.extraInfo}>Functions</section>
 
         <section className={classes.extraInfo}>
           <fieldset>
