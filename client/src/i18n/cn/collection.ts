@@ -15,6 +15,7 @@ const collectionTrans = {
   mmapSettings: 'MMap 设置',
   collectionMMapSettingsLabel: '全局原始数据 MMap 设置',
   rawData: '全局内存映射 (MMap) 的原始数据配置',
+  functions: 'Functions',
 
   // table
   id: 'ID',

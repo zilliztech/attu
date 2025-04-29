@@ -15,6 +15,7 @@ const collectionTrans = {
   mmapSettings: 'MMap Settings',
   collectionMMapSettingsLabel: 'Collection Raw Data MMap Settings',
   rawData: 'Raw Data',
+  functions: 'Functions',
 
   // table
   id: 'ID',

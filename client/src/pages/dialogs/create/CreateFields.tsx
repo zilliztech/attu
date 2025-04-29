@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@mui/material';
-import { FC, Fragment, useMemo, useRef, useState, useCallback } from 'react';
+import { FC, Fragment, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateId, getCreateFieldType } from '@/utils';
