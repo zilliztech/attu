@@ -1,6 +1,7 @@
 import { useContext, useMemo, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Theme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import { rootContext, authContext, dataContext } from '@/context';
@@ -81,6 +82,8 @@ const Collections = () => {
     batchRefreshCollections,
   } = useContext(dataContext);
 
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState<string>(
     (searchParams.get('search') as string) || ''
@@ -128,7 +131,14 @@ const Collections = () => {
           open: true,
           type: 'custom',
           params: {
-            component: <CreateCollectionDialog />,
+            component: (
+              <CreateCollectionDialog
+                onCreate={collection_name => {
+                  //navigate to the new collection
+                 navigate(`/databases/${database}/${collection_name}/schema`);
+                }}
+              />
+            ),
           },
         });
       },

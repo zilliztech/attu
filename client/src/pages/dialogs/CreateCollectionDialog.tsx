@@ -255,7 +255,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       })
     );
 
-    onCreate && onCreate();
+    onCreate && onCreate(param.collection_name);
     handleCloseDialog();
   };
 

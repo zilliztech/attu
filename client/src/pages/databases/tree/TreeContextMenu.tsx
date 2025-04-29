@@ -46,7 +46,15 @@ export const TreeContextMenu = (props: {
                 open: true,
                 type: 'custom',
                 params: {
-                  component: <CreateCollectionDialog />,
+                  component: (
+                    <CreateCollectionDialog
+                      onCreate={collection_name => {
+                        navigate(
+                          `/databases/${database}/${collection_name}/schema`
+                        );
+                      }}
+                    />
+                  ),
                 },
               });
             }}
