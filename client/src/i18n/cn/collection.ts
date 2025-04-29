@@ -86,6 +86,9 @@ const collectionTrans = {
   bm25NoVarcharAndSparse: '要创建 BM25 Function，请至少添加一个 VarChar 字段和一个 SparseFloatVector 字段。',
   bm25NoVarchar: '要创建 BM25 Function，请至少添加一个 VarChar 字段。',
   bm25NoSparse: '要创建 BM25 Function，请至少添加一个 SparseFloatVector 字段。',
+  bm25InputVarChar: '输入 VarChar 字段',
+  bm25OutputSparse: '输出 SparseFloatVector 字段',
+  noAvailableSparse: '没有可用的字段',
 
   // load dialog
   loadTitle: '加载 Collection',

@@ -9,8 +9,11 @@ import {
   Stack,
   Chip,
   Tooltip,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from '@mui/material';
-import CustomSelector from '@/components/customSelector/CustomSelector';
 import Icons from '@/components/icons/Icons';
 import type { CreateField } from '../../databases/collections/Types';
 export interface BM25Function {
@@ -55,6 +58,31 @@ const BM25FunctionSection: FC<BM25FunctionSectionProps> = ({
   collectionTrans,
   btnTrans,
 }) => {
+  const usedSparseOutputs = new Set(
+    formFunctions.reduce<string[]>(
+      (acc, f) => acc.concat(f.output_field_names),
+      []
+    )
+  );
+
+  const availableSparseFields = sparseFields.filter(
+    field => !usedSparseOutputs.has(field.name)
+  );
+  const sparseOptions =
+    availableSparseFields.length > 0
+      ? availableSparseFields.map(field => ({
+          label: field.name,
+          value: field.name,
+          disabled: false,
+        }))
+      : [
+          {
+            label: collectionTrans('noAvailableSparse'),
+            value: '',
+            disabled: true,
+          },
+        ];
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
       {!showBm25Selection && (
@@ -93,33 +121,45 @@ const BM25FunctionSection: FC<BM25FunctionSectionProps> = ({
 
       {showBm25Selection && (
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <CustomSelector
-            label={collectionTrans('bm25InputVarChar')}
-            value={selectedBm25Input}
-            onChange={e => setSelectedBm25Input(e.target.value as string)}
-            variant="filled"
-            size="small"
-            sx={{ minWidth: 200 }}
-            options={varcharFields.map(field => ({
-              label: field.name,
-              value: field.name,
-            }))}
-          />
+          <FormControl variant="filled" size="small" sx={{ minWidth: 200 }}>
+            <InputLabel shrink={true}>
+              {collectionTrans('bm25InputVarChar')}
+            </InputLabel>
+            <Select
+              value={selectedBm25Input}
+              onChange={e => setSelectedBm25Input(e.target.value as string)}
+              label={collectionTrans('bm25InputVarChar')}
+            >
+              {varcharFields.map(field => (
+                <MenuItem key={field.name} value={field.name}>
+                  {field.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <Typography sx={{ mx: 1 }}>→</Typography>
 
-          <CustomSelector
-            label={collectionTrans('bm25OutputSparse')}
-            value={selectedBm25Output}
-            onChange={e => setSelectedBm25Output(e.target.value as string)}
-            variant="filled"
-            size="small"
-            sx={{ minWidth: 200 }}
-            options={sparseFields.map(field => ({
-              label: field.name,
-              value: field.name,
-            }))}
-          />
+          <FormControl variant="filled" size="small" sx={{ minWidth: 200 }}>
+            <InputLabel shrink={true}>
+              {collectionTrans('bm25OutputSparse')}
+            </InputLabel>
+            <Select
+              value={selectedBm25Output}
+              onChange={e => setSelectedBm25Output(e.target.value as string)}
+              label={collectionTrans('bm25OutputSparse')}
+            >
+              {sparseOptions.map(option => (
+                <MenuItem
+                  key={option.label}
+                  value={option.value}
+                  disabled={!!option.disabled}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <Button
             variant="contained"
@@ -137,10 +177,20 @@ const BM25FunctionSection: FC<BM25FunctionSectionProps> = ({
       )}
 
       {formFunctions && formFunctions.length > 0 && (
-        <Box sx={{ mt: 2 }}>
+        <Box>
           <List dense>
             {formFunctions.map((func, index) => (
-              <Paper key={index} sx={{ mb: 1, p: 1, position: 'relative' }}>
+              <Paper
+                key={index}
+                elevation={0}
+                variant="outlined"
+                sx={{
+                  mb: 2,
+                  p: 1.5,
+                  position: 'relative',
+                  borderRadius: 1,
+                }}
+              >
                 <IconButton
                   size="small"
                   sx={{
