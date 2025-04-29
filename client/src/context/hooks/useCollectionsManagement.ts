@@ -155,15 +155,17 @@ export function useCollectionsManagement(database: string) {
     const filteredCollections = collections.filter(
       c => c.collection_name !== newCollection.collection_name
     );
-    const newCollections = filteredCollections.concat(newCollection).sort((a, b) => {
-      if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
-        if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
-          return b.createdTime - a.createdTime;
+    const newCollections = filteredCollections
+      .concat(newCollection)
+      .sort((a, b) => {
+        if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
+          if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
+            return b.createdTime - a.createdTime;
+          }
+          return a.schema.hasVectorIndex ? -1 : 1;
         }
-        return a.schema.hasVectorIndex ? -1 : 1;
-      }
-      return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
-    });
+        return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
+      });
     setCollections(newCollections);
     return newCollection;
   };
@@ -184,14 +186,6 @@ export function useCollectionsManagement(database: string) {
 
   const releaseCollection = async (name: string) => {
     return await CollectionService.releaseCollection(name);
-  };
-
-  const renameCollection = async (name: string, newName: string) => {
-    const newCollection = await CollectionService.renameCollection(name, {
-      new_collection_name: newName,
-    });
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
   };
 
   const duplicateCollection = async (name: string, newName: string) => {
@@ -260,7 +254,6 @@ export function useCollectionsManagement(database: string) {
     createCollection,
     loadCollection,
     releaseCollection,
-    renameCollection,
     duplicateCollection,
     dropCollection,
     createIndex,

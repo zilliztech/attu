@@ -1,7 +1,7 @@
 import { FC, useContext, useMemo, useState } from 'react';
 import { Typography, Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { rootContext, dataContext } from '@/context';
+import { rootContext } from '@/context';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -9,6 +9,7 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { makeStyles } from '@mui/styles';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type { CollectionObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -23,8 +24,6 @@ export interface RenameCollectionProps {
 }
 
 const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
-  const { renameCollection } = useContext(dataContext);
-
   const { collection, cb } = props;
   const [form, setForm] = useState({
     new_collection_name: '',
@@ -51,7 +50,7 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await renameCollection(
+    await CollectionService.renameCollection(
       collection.collection_name,
       form.new_collection_name
     );

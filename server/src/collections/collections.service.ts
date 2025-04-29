@@ -194,15 +194,7 @@ export class CollectionsService {
 
   async renameCollection(clientId: string, data: RenameCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.renameCollection(data);
-
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.new_collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
-
-    return newCollection[0];
+    return await milvusClient.renameCollection(data);
   }
 
   async alterCollectionProperties(clientId: string, data: AlterCollectionReq) {

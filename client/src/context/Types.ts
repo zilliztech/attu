@@ -125,10 +125,6 @@ export type DataContextType = {
   createCollection: (data: any) => Promise<CollectionFullObject>;
   loadCollection: (name: string, param?: any) => Promise<ResStatus>;
   releaseCollection: (name: string) => Promise<ResStatus>;
-  renameCollection: (
-    name: string,
-    newName: string
-  ) => Promise<CollectionFullObject>;
   duplicateCollection: (
     name: string,
     newName: string

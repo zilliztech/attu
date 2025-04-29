@@ -72,13 +72,10 @@ export class CollectionService extends BaseModel {
     });
   }
 
-  static renameCollection(
-    collectionName: string,
-    params: { new_collection_name: string }
-  ) {
-    return super.create<CollectionFullObject>({
+  static renameCollection(collectionName: string, new_collection_name: string) {
+    return super.create<ResStatus>({
       path: `/collections/${collectionName}`,
-      data: params,
+      data: { new_collection_name: new_collection_name },
     });
   }
 
