@@ -216,22 +216,6 @@ export function useCollectionsManagement(database: string) {
     return data;
   };
 
-  const createAlias = async (collectionName: string, alias: string) => {
-    const newCollection = await CollectionService.createAlias(collectionName, {
-      alias,
-    });
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
-  };
-
-  const dropAlias = async (collectionName: string, alias: string) => {
-    const { data } = await CollectionService.dropAlias(collectionName, {
-      alias,
-    });
-    updateCollections({ collections: [data] });
-    return data;
-  };
-
   const setCollectionProperty = async (
     collectionName: string,
     key: string,
@@ -258,8 +242,6 @@ export function useCollectionsManagement(database: string) {
     dropCollection,
     createIndex,
     dropIndex,
-    createAlias,
-    dropAlias,
     setCollectionProperty,
     updateCollections,
   };

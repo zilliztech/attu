@@ -110,16 +110,16 @@ export class CollectionService extends BaseModel {
     });
   }
 
-  static createAlias(collectionName: string, params: { alias: string }) {
+  static createAlias(collectionName: string, alias: string) {
     return super.create<CollectionFullObject>({
       path: `/collections/${collectionName}/alias`,
-      data: params,
+      data: { alias: alias },
     });
   }
 
-  static dropAlias(collectionName: string, params: { alias: string }) {
+  static dropAlias(collectionName: string, alias: string) {
     return super.delete<{ data: CollectionFullObject }>({
-      path: `/collections/${collectionName}/alias/${params.alias}`,
+      path: `/collections/${collectionName}/alias/${alias}`,
     });
   }
 

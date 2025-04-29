@@ -342,15 +342,7 @@ export class CollectionsService {
 
   async createAlias(clientId: string, data: CreateAliasReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.createAlias(data);
-
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
-
-    return newCollection[0];
+    return await milvusClient.createAlias(data);
   }
 
   async alterAlias(clientId: string, data: AlterAliasReq) {
