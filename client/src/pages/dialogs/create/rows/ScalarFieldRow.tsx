@@ -95,6 +95,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
     <Box sx={rowStyles}>
       <NameField
         field={field}
+        fields={fields}
         onChange={(id, name, isValid) => onFieldChange(id, { name }, isValid)}
       />
 

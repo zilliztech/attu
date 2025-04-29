@@ -142,6 +142,7 @@ const collectionTrans = {
 
   // duplicate dialog
   duplicateNameExist: 'A collection with this name already exists.',
+  fieldNameExist: 'field name is already exist',
 
   // segment
   segments: 'Segments',

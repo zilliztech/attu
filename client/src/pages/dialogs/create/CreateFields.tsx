@@ -168,11 +168,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
     const id = generateId();
     const shortType = getShortTypeName(type);
-    const sameTypeCount = fields.filter(
+
+    let sameTypeCount = fields.filter(
       f => getShortTypeName(f.data_type) === shortType
     ).length;
-    const name =
+    let name =
       sameTypeCount === 0 ? shortType : `${shortType}_${sameTypeCount + 1}`;
+
+    const existingNames = new Set(fields.map(f => f.name));
+    while (existingNames.has(name)) {
+      sameTypeCount += 1;
+      name = `${shortType}_${sameTypeCount}`;
+    }
+
     const newDefaultItem: FieldType = {
       id,
       name,
@@ -214,6 +222,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       return (
         <PrimaryKeyFieldRow
           field={field}
+          fields={fields}
           autoID={autoID}
           onFieldChange={changeFields}
           setAutoID={setAutoID}
@@ -225,6 +234,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       return (
         <VectorFieldRow
           field={field}
+          fields={fields}
           index={index}
           requiredFields={requiredFields}
           onFieldChange={changeFields}
@@ -239,6 +249,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
     return (
       <VectorFieldRow
         field={field}
+        fields={fields}
         index={index}
         requiredFields={requiredFields}
         onFieldChange={changeFields}
