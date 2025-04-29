@@ -27,7 +27,6 @@ export enum DataTypeEnum {
   Float16Vector = 102,
   BFloat16Vector = 103,
   SparseFloatVector = 104,
-  VarCharBM25 = 1000,
 }
 
 export const VectorTypes = [

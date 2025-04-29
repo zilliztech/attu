@@ -63,7 +63,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     functions: [],
   });
 
-  const [fieldsValidation, setFieldsValidation] = useState(false);
+  const [fieldsValidation, setFieldsValidation] = useState(true);
 
   // State for BM25 selection UI
   const [showBm25Selection, setShowBm25Selection] = useState<boolean>(false);
@@ -77,7 +77,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     {
       data_type: DataTypeEnum.Int64,
       is_primary_key: true,
-      name: '', // we need hide helpertext at first time, so we use null to detect user enter input or not.
+      name: 'id', // we need hide helpertext at first time, so we use null to detect user enter input or not.
       description: '',
       isDefault: true,
       id: '1',
@@ -85,7 +85,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
-      name: '',
+      name: 'vector',
       dim: DEFAULT_ATTU_DIM,
       description: '',
       isDefault: true,

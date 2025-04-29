@@ -104,7 +104,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
       // remove varchar params, if not varchar
       if (
         updatedField.data_type !== DataTypeEnum.VarChar &&
-        updatedField.data_type !== DataTypeEnum.VarCharBM25 &&
         updatedField.element_type !== DataTypeEnum.VarChar
       ) {
         delete updatedField.max_length;
@@ -136,25 +135,61 @@ const CreateFields: FC<CreateFieldsProps> = ({
     updateValidationStatus();
   };
 
+  const getShortTypeName = (type: DataTypeEnum) => {
+    switch (type) {
+      case DataTypeEnum.Int8:
+      case DataTypeEnum.Int16:
+      case DataTypeEnum.Int32:
+      case DataTypeEnum.Int64:
+        return 'int';
+      case DataTypeEnum.Float:
+        return 'float';
+      case DataTypeEnum.Double:
+        return 'double';
+      case DataTypeEnum.VarChar:
+        return 'varchar';
+      case DataTypeEnum.Bool:
+        return 'bool';
+      case DataTypeEnum.BinaryVector:
+      case DataTypeEnum.FloatVector:
+      case DataTypeEnum.Float16Vector:
+      case DataTypeEnum.BFloat16Vector:
+      case DataTypeEnum.SparseFloatVector:
+        return 'vec';
+      case DataTypeEnum.Array:
+        return 'array';
+      case DataTypeEnum.JSON:
+        return 'json';
+      default:
+        return 'field';
+    }
+  };
+
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
     const id = generateId();
+    const shortType = getShortTypeName(type);
+    const sameTypeCount = fields.filter(
+      f => getShortTypeName(f.data_type) === shortType
+    ).length;
+    const name =
+      sameTypeCount === 0 ? shortType : `${shortType}_${sameTypeCount + 1}`;
     const newDefaultItem: FieldType = {
       id,
-      name: '',
+      name,
       data_type: type,
       is_primary_key: false,
       description: '',
       isDefault: false,
       dim: DEFAULT_ATTU_DIM,
       max_length: DEFAULT_ATTU_VARCHAR_MAX_LENGTH,
-      enable_analyzer: type === DataTypeEnum.VarCharBM25,
+      enable_analyzer: false,
     };
 
     fields.splice(index + 1, 0, newDefaultItem);
     setFields([...fields]);
 
     // Add validation to ref
-    localFieldsValidation.current.set(id, false);
+    localFieldsValidation.current.set(id, true);
     updateValidationStatus();
   };
 
