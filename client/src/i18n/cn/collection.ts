@@ -15,6 +15,7 @@ const collectionTrans = {
   mmapSettings: 'MMap 设置',
   collectionMMapSettingsLabel: '全局原始数据 MMap 设置',
   rawData: '全局内存映射 (MMap) 的原始数据配置',
+  functions: 'Functions',
 
   // table
   id: 'ID',
@@ -41,7 +42,7 @@ const collectionTrans = {
 
   // create dialog
   createTitle: '创建 Collection {{name}}',
-  idAndVectorFields: 'ID、向量或可用 BM25 算法处理的文本字段',
+  idAndVectorFields: 'ID、向量字段',
   scalarFields: '标量字段',
   schema: 'Schema',
   consistency: '一致性',
@@ -81,6 +82,13 @@ const collectionTrans = {
   loadCollectionAfterCreate: '创建后加载 Collection',
   loadCollectionAfterCreateTooltip:
     'Attu 将使用 AUTOINDEX 为所有字段创建 Index，然后加载 Collection。',
+  addBm25Function: '添加 BM25 Function',
+  bm25NoVarcharAndSparse: '要创建 BM25 Function，请至少添加一个 VarChar 字段和一个 SparseFloatVector 字段。',
+  bm25NoVarchar: '要创建 BM25 Function，请至少添加一个 VarChar 字段。',
+  bm25NoSparse: '要创建 BM25 Function，请至少添加一个 SparseFloatVector 字段。',
+  bm25InputVarChar: '输入 VarChar 字段',
+  bm25OutputSparse: '输出 SparseFloatVector 字段',
+  noAvailableSparse: '没有可用的字段',
 
   // load dialog
   loadTitle: '加载 Collection',

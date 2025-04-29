@@ -2,6 +2,7 @@ import { ReactElement } from 'react';
 import { InputLabelProps } from '@mui/material';
 import { IValidationItem } from '@/hooks';
 import { IExtraParam, ValidType } from '@/utils';
+import { SxProps, Theme } from '@mui/material';
 
 export type InputType = 'icon' | 'adornment' | 'text' | undefined;
 export type VariantType = 'filled' | 'outlined' | 'standard';
@@ -82,6 +83,7 @@ export interface ITextfieldConfig {
   onChange?: (event: any) => void;
   onKeyDown?: (event: any) => void;
   InputLabelProps?: Partial<InputLabelProps>;
+  sx?: SxProps<Theme>;
 }
 
 export interface IAdornmentConfig {

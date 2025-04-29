@@ -26,7 +26,7 @@ export interface CollectionCreateParam {
 export type AnalyzerType = 'standard' | 'english' | 'chinese';
 
 export interface CreateField {
-  name: string | null;
+  name: string;
   data_type: DataTypeEnum;
   is_primary_key: boolean;
   is_partition_key?: boolean;
@@ -53,7 +53,7 @@ export type CreateFieldType =
   | 'number';
 
 export type FieldType = {
-  name: string | null;
+  name: string;
   data_type: DataTypeEnum;
   element_type?: DataTypeEnum;
   is_primary_key: boolean;
@@ -80,11 +80,9 @@ export type FieldType = {
 export interface CreateFieldsProps {
   fields: CreateField[];
   setFields: Dispatch<SetStateAction<CreateField[]>>;
-  setFieldsValidation: Dispatch<
-    SetStateAction<{ [x: string]: string | boolean }[]>
-  >;
   autoID: boolean;
   setAutoID: (value: boolean) => void;
+  onValidationChange: (isValid: boolean) => void;
 }
 
 export interface InsertDataParam {

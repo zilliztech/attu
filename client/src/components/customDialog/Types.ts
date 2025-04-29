@@ -1,6 +1,8 @@
 import { ReactElement } from 'react';
 import { DialogType } from '@/context';
 import { CodeViewData } from '../code/Types';
+import { SxProps, Theme } from '@mui/material';
+
 export type CustomDialogType = DialogType & {
   onClose: () => void;
   containerClass?: string;
@@ -41,4 +43,5 @@ export type DialogContainerProps = {
   codeBlocksData?: CodeViewData[];
   children: ReactElement;
   dialogClass?: string;
+  sx?: SxProps<Theme>;
 };

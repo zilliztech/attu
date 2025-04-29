@@ -1,11 +1,16 @@
-import { Theme, Checkbox } from '@mui/material';
-import { FC, useContext, useMemo, useState, ChangeEvent } from 'react';
+import { Box, Typography } from '@mui/material';
+import {
+  FC,
+  useContext,
+  useMemo,
+  useState,
+  ChangeEvent,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
-import CustomSelector from '@/components/customSelector/CustomSelector';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm, getAnalyzerParams, TypeEnum } from '@/utils';
@@ -16,83 +21,54 @@ import {
   FunctionType,
 } from '@/consts';
 import CreateFields from './create/CreateFields';
-import { CONSISTENCY_LEVEL_OPTIONS } from './create/Constants';
-import { makeStyles } from '@mui/styles';
+import ExtraInfoSection from './create/ExtraInfoSection';
+import BM25FunctionSection from './create/BM25FunctionSection';
 import type {
   CollectionCreateParam,
   CollectionCreateProps,
   CreateField,
 } from '../databases/collections/Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  dialog: {
-    minWidth: 720,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-
-    '& section': {
-      display: 'flex',
-      '& fieldset': {},
-    },
-  },
-  generalInfo: {
-    '& fieldset': {
-      gap: 16,
-      display: 'flex',
-      width: '100%',
-    },
-  },
-  schemaInfo: {
-    background: theme.palette.background.grey,
-    padding: '16px',
-    borderRadius: 8,
-  },
-  extraInfo: {
-    marginTop: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-
-    '& input': {
-      marginLeft: 0,
-    },
-  },
-  input: {
-    width: '100%',
-  },
-  chexBoxArea: {
-    paddingTop: 8,
-    fontSize: 14,
-    marginLeft: -8,
-    '& label': {
-      display: 'inline-block',
-    },
-    borderTop: `1px solid ${theme.palette.divider}`,
-  },
-  consistencySelect: {
-    width: '50%',
-    marginBottom: 16,
-  },
-}));
+// Add this type at the top of your file or in a relevant types file
+interface BM25Function {
+  name: string;
+  description: string;
+  type: FunctionType;
+  input_field_names: string[];
+  output_field_names: string[];
+  params: Record<string, any>;
+}
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   const { createCollection } = useContext(dataContext);
-  const classes = useStyles();
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
   const { t: warningTrans } = useTranslation('warning');
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    collection_name: string;
+    description: string;
+    autoID: boolean;
+    enableDynamicField: boolean;
+    loadAfterCreate: boolean;
+    functions: BM25Function[];
+  }>({
     collection_name: '',
     description: '',
     autoID: true,
     enableDynamicField: false,
     loadAfterCreate: true,
+    functions: [],
   });
+
+  const [fieldsValidation, setFieldsValidation] = useState(true);
+
+  // State for BM25 selection UI
+  const [showBm25Selection, setShowBm25Selection] = useState<boolean>(false);
+  const [selectedBm25Input, setSelectedBm25Input] = useState<string>('');
+  const [selectedBm25Output, setSelectedBm25Output] = useState<string>('');
 
   const [consistencyLevel, setConsistencyLevel] =
     useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Bounded); // Bounded is the default value of consistency level
@@ -101,7 +77,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     {
       data_type: DataTypeEnum.Int64,
       is_primary_key: true,
-      name: null, // we need hide helpertext at first time, so we use null to detect user enter input or not.
+      name: 'id', // we need hide helpertext at first time, so we use null to detect user enter input or not.
       description: '',
       isDefault: true,
       id: '1',
@@ -109,26 +85,13 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     {
       data_type: DataTypeEnum.FloatVector,
       is_primary_key: false,
-      name: null,
+      name: 'vector',
       dim: DEFAULT_ATTU_DIM,
       description: '',
       isDefault: true,
       id: '2',
     },
   ]);
-
-  const [fieldsValidation, setFieldsValidation] = useState<
-    {
-      [x: string]: string | boolean;
-    }[]
-  >([
-    { id: '1', name: false },
-    { id: '2', name: false, dim: true },
-  ]);
-
-  const allFieldsValid = useMemo(() => {
-    return fieldsValidation.every(v => Object.keys(v).every(key => !!v[key]));
-  }, [fieldsValidation]);
 
   const checkedForm = useMemo(() => {
     const { collection_name } = form;
@@ -199,7 +162,9 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         shrink: true,
       },
       size: 'small',
-      className: classes.input,
+      sx: {
+        width: '100%',
+      },
     },
     {
       label: collectionTrans('description'),
@@ -209,16 +174,16 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       variant: 'filled',
       validations: [],
       size: 'small',
-      className: classes.input,
       InputLabelProps: {
         shrink: true,
+      },
+      sx: {
+        width: '100%',
       },
     },
   ];
 
   const handleCreateCollection = async () => {
-    // function output fields
-    const fnOutputFields: CreateField[] = [];
     const param: CollectionCreateParam = {
       ...form,
       fields: fields.map(v => {
@@ -249,23 +214,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           data.max_capacity = Number(v.max_capacity);
         }
 
-        // handle BM25 row
-        if (data.data_type === DataTypeEnum.VarCharBM25) {
-          data.data_type = DataTypeEnum.VarChar;
-          data.enable_analyzer = true;
-          data.analyzer_params = data.analyzer_params || 'standard';
-          // create sparse field
-          const sparseField = {
-            name: `${data.name}_embeddings`,
-            is_primary_key: false,
-            data_type: DataTypeEnum.SparseFloatVector,
-            description: `fn BM25(${data.name}) -> embeddings`,
-            is_function_output: true,
-          };
-          // push sparse field to fields
-          fnOutputFields.push(sparseField);
-        }
-
         if (data.analyzer_params) {
           // if analyzer_params is string, we need to use default value
           data.analyzer_params = getAnalyzerParams(data.analyzer_params);
@@ -277,6 +225,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         if (data.data_type === DataTypeEnum.SparseFloatVector) {
           delete data.dim;
         }
+
         // delete analyzer if not varchar
         if (
           data.data_type !== DataTypeEnum.VarChar &&
@@ -290,26 +239,9 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
         return data;
       }),
-      functions: [],
+      functions: form.functions || [],
       consistency_level: consistencyLevel,
     };
-
-    // push sparse fields to param.fields
-    param.fields.push(...fnOutputFields);
-
-    // build functions
-    fnOutputFields.forEach((field, index) => {
-      const [input] = (field.name as string).split('_');
-      const functionParam = {
-        name: `BM25_${index}`,
-        description: `${input} BM25 function`,
-        type: FunctionType.BM25,
-        input_field_names: [input],
-        output_field_names: [field.name as string],
-        params: {},
-      };
-      param.functions.push(functionParam);
-    });
 
     // create collection
     await createCollection({
@@ -327,6 +259,107 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     handleCloseDialog();
   };
 
+  // Filter available fields for BM25 selectors
+  const varcharFields = useMemo(
+    () => fields.filter(f => f.data_type === DataTypeEnum.VarChar && f.name),
+    [fields]
+  );
+  const sparseFields = useMemo(
+    () =>
+      fields.filter(
+        f => f.data_type === DataTypeEnum.SparseFloatVector && f.name
+      ),
+    [fields]
+  );
+
+  const handleAddBm25Click = () => {
+    setShowBm25Selection(true);
+  };
+
+  const handleConfirmAddBm25 = () => {
+    if (!selectedBm25Input || !selectedBm25Output) {
+      openSnackBar(collectionTrans('bm25SelectFieldsWarning'), 'warning');
+      return;
+    }
+
+    const inputField = fields.find(f => f.name === selectedBm25Input);
+    const outputField = fields.find(f => f.name === selectedBm25Output);
+
+    if (!inputField || !outputField) {
+      // Should not happen if state is managed correctly, but good to check
+      console.error('Selected BM25 fields not found');
+      return;
+    }
+
+    // Generate a unique name for the function
+    const functionName = `BM25_${inputField.name}_${
+      outputField.name
+    }_${Math.floor(Math.random() * 1000)}`;
+
+    // Create a new function with the selected fields
+    const newFunction: BM25Function = {
+      name: functionName,
+      description: `BM25 function: ${inputField.name} → ${outputField.name}`,
+      type: FunctionType.BM25,
+      input_field_names: [inputField.name],
+      output_field_names: [outputField.name],
+      params: {}, // Add default params if needed, e.g., { k1: 1.2, b: 0.75 }
+    };
+
+    // Update form with the new function
+    setForm(prev => ({
+      ...prev,
+      functions: [...(prev.functions || []), newFunction],
+    }));
+
+    // Hide selection UI
+    setShowBm25Selection(false);
+
+    // need to update field.is_function_output to true
+    const updatedFields = fields.map(field => {
+      if (field.name === outputField.name) {
+        return {
+          ...field,
+          is_function_output: true,
+        };
+      }
+      return field;
+    });
+    setFields(updatedFields);
+  };
+
+  const handleCancelAddBm25 = () => {
+    setShowBm25Selection(false);
+  };
+
+  // Effect to reset selection when fields change or selection UI is hidden
+  useEffect(() => {
+    if (!showBm25Selection) {
+      setSelectedBm25Input('');
+      setSelectedBm25Output('');
+    } else {
+      // Pre-select first available fields when opening selection
+      setSelectedBm25Input(varcharFields[0]?.name || '');
+      setSelectedBm25Output(sparseFields[0]?.name || '');
+    }
+  }, [showBm25Selection, varcharFields, sparseFields]);
+
+  // Effect to filter out functions with invalid field names
+  useEffect(() => {
+    setForm(prevForm => {
+      const fieldNames = fields.map(f => f.name);
+      const filteredFunctions = (prevForm.functions || []).filter(
+        fn =>
+          fn.input_field_names.every(name => fieldNames.includes(name)) &&
+          fn.output_field_names.every(name => fieldNames.includes(name))
+      );
+      if (filteredFunctions.length !== (prevForm.functions || []).length) {
+        return { ...prevForm, functions: filteredFunctions };
+      }
+      return prevForm;
+    });
+  }, [fields]);
+
   return (
     <DialogTemplate
       title={collectionTrans('createTitle', { name: form.collection_name })}
@@ -335,96 +368,68 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       }}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
-      confirmDisabled={disabled || !allFieldsValid}
-      dialogClass={classes.dialog}
+      confirmDisabled={disabled || !fieldsValidation}
+      sx={{ width: 900 }}
     >
-      <div className={classes.container}>
-        <section className={classes.generalInfo}>
-          <fieldset>
-            {generalInfoConfigs.map(config => (
-              <CustomInput
-                key={config.key}
-                type="text"
-                textConfig={config}
-                checkValid={checkIsValid}
-                validInfo={validation}
-              />
-            ))}
-          </fieldset>
-        </section>
-
-        <section className={classes.schemaInfo}>
-          <fieldset>
-            {/* <legend>{collectionTrans('schema')}</legend> */}
-            <CreateFields
-              fields={fields}
-              setFields={setFields}
-              setFieldsValidation={setFieldsValidation}
-              autoID={form.autoID}
-              setAutoID={changeIsAutoID}
+      <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
+          {generalInfoConfigs.map(config => (
+            <CustomInput
+              key={config.key}
+              type="text"
+              textConfig={{ ...config }}
+              checkValid={checkIsValid}
+              validInfo={validation}
             />
-          </fieldset>
-        </section>
+          ))}
+        </Box>
 
-        <section className={classes.extraInfo}>
-          <fieldset>
-            <CustomSelector
-              wrapperClass={classes.consistencySelect}
-              size="small"
-              options={CONSISTENCY_LEVEL_OPTIONS}
-              onChange={e => {
-                setConsistencyLevel(e.target.value as ConsistencyLevelEnum);
-              }}
-              label={collectionTrans('consistency')}
-              value={consistencyLevel}
-              variant="filled"
-            />
-          </fieldset>
-          <fieldset className={classes.chexBoxArea}>
-            <div>
-              <CustomToolTip title={collectionTrans('partitionKeyTooltip')}>
-                <label htmlFor="enableDynamicField">
-                  <Checkbox
-                    id="enableDynamicField"
-                    checked={!!form.enableDynamicField}
-                    size="small"
-                    onChange={event => {
-                      updateCheckBox(
-                        event,
-                        'enableDynamicField',
-                        !form.enableDynamicField
-                      );
-                    }}
-                  />
-                  {collectionTrans('enableDynamicSchema')}
-                </label>
-              </CustomToolTip>
-            </div>
+        <Box
+          sx={{
+            background: theme => theme.palette.background.lightGrey,
+            padding: '16px',
+            borderRadius: 0.5,
+          }}
+        >
+          <CreateFields
+            fields={fields}
+            setFields={setFields}
+            autoID={form.autoID}
+            setAutoID={changeIsAutoID}
+            onValidationChange={setFieldsValidation}
+          />
+        </Box>
 
-            <div>
-              <CustomToolTip
-                title={collectionTrans('loadCollectionAfterCreateTip')}
-              >
-                <label htmlFor="loadAfterCreate">
-                  <Checkbox
-                    id="loadAfterCreate"
-                    checked={!!form.loadAfterCreate}
-                    size="small"
-                    onChange={event => {
-                      updateCheckBox(
-                        event,
-                        'loadAfterCreate',
-                        !form.loadAfterCreate
-                      );
-                    }}
-                  />
-                  {collectionTrans('loadCollectionAfterCreate')}
-                </label>
-              </CustomToolTip>
-            </div>
-          </fieldset>
-        </section>
-      </div>
+        <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Typography variant="h4" sx={{ fontSize: 16 }}>
+            {collectionTrans('functions')}
+          </Typography>
+          <BM25FunctionSection
+            showBm25Selection={showBm25Selection}
+            varcharFields={varcharFields}
+            sparseFields={sparseFields}
+            selectedBm25Input={selectedBm25Input}
+            selectedBm25Output={selectedBm25Output}
+            setSelectedBm25Input={setSelectedBm25Input}
+            setSelectedBm25Output={setSelectedBm25Output}
+            handleAddBm25Click={handleAddBm25Click}
+            handleConfirmAddBm25={handleConfirmAddBm25}
+            handleCancelAddBm25={handleCancelAddBm25}
+            formFunctions={form.functions}
+            setForm={setForm}
+            collectionTrans={collectionTrans}
+            btnTrans={btnTrans}
+          />
+        </Box>
+
+        <ExtraInfoSection
+          consistencyLevel={consistencyLevel}
+          setConsistencyLevel={setConsistencyLevel}
+          form={form}
+          updateCheckBox={updateCheckBox}
+          collectionTrans={collectionTrans}
+        />
+      </Box>
     </DialogTemplate>
   );
 };

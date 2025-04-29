@@ -28,6 +28,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   showCode = false,
   codeBlocksData = [],
   dialogClass = '',
+  sx = {},
 }) => {
   const [confirming, setConfirming] = useState(false);
   const { t } = useTranslation('btn');
@@ -67,6 +68,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
             minWidth: 540,
             transition: 'width 0.2s',
             width: showCode ? 540 : 'auto',
+            ...sx,
           }}
         >
           <CustomDialogTitle
