@@ -26,7 +26,7 @@ import type {
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialog: {
-    minWidth: 800,
+    minWidth: 900,
   },
   container: {
     display: 'flex',

@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@mui/material';
-import { FC, Fragment, useMemo, useRef, useState } from 'react';
+import { FC, Fragment, useMemo, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateId, getCreateFieldType } from '@/utils';
@@ -29,7 +29,22 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const localFieldAnalyzers = useRef(
     new Map<string, Record<string, {}>>(new Map())
   );
-  const localFieldsValidation = useRef<Map<string, boolean>>(new Map());
+
+  const localFieldsValidation = useRef<Map<string, boolean>>(
+    new Map(
+      fields
+        .filter(field => field.id !== undefined)
+        .map(field => [field.id!, field.name !== ''])
+    )
+  );
+
+  // Add this helper function
+  const updateValidationStatus = useCallback(() => {
+    const areFieldsValid = Array.from(
+      localFieldsValidation.current.values()
+    ).every(v => v);
+    onValidationChange(areFieldsValid);
+  }, [onValidationChange]);
 
   // UI icons
   const AddIcon = icons.addOutline;
@@ -119,10 +134,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
       localFieldsValidation.current.delete(id);
     }
 
-    const areFieldsValid = Array.from(
-      localFieldsValidation.current.values()
-    ).every(v => v);
-    onValidationChange(areFieldsValid);
+    updateValidationStatus();
   };
 
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
@@ -141,6 +153,10 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
     fields.splice(index + 1, 0, newDefaultItem);
     setFields([...fields]);
+
+    // Add validation to ref
+    localFieldsValidation.current.set(id, false);
+    updateValidationStatus();
   };
 
   const handleRemoveField = (id: string) => {
@@ -149,10 +165,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
     // Remove validation from ref
     localFieldsValidation.current.delete(id);
-    const areFieldsValid = Array.from(
-      localFieldsValidation.current.values()
-    ).every(v => v);
-    onValidationChange(areFieldsValid);
+    updateValidationStatus();
   };
 
   const generateRequiredFieldRow = (
