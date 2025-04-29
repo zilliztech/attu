@@ -118,7 +118,7 @@ export class CollectionService extends BaseModel {
   }
 
   static dropAlias(collectionName: string, alias: string) {
-    return super.delete<{ data: CollectionFullObject }>({
+    return super.delete<ResStatus>({
       path: `/collections/${collectionName}/alias/${alias}`,
     });
   }
@@ -127,7 +127,7 @@ export class CollectionService extends BaseModel {
     const path = `/collections/index`;
     const type: ManageRequestMethods = ManageRequestMethods.CREATE;
 
-    return super.create<CollectionFullObject>({
+    return super.create<ResStatus>({
       path,
       data: { ...param, type },
     });
@@ -137,7 +137,7 @@ export class CollectionService extends BaseModel {
     const path = `/collections/index`;
     const type: ManageRequestMethods = ManageRequestMethods.DELETE;
 
-    return super.batchDelete<{ data: CollectionFullObject }>({
+    return super.query<ResStatus>({
       path,
       data: { ...param, type },
     });

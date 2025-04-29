@@ -130,8 +130,6 @@ export type DataContextType = {
     newName: string
   ) => Promise<CollectionFullObject>;
   dropCollection: (name: string) => Promise<ResStatus>;
-  createIndex: (param: IndexCreateParam) => Promise<CollectionFullObject>;
-  dropIndex: (params: IndexManageParam) => Promise<CollectionFullObject>;
   setCollectionProperty: (
     collectionName: string,
     key: string,

@@ -64,17 +64,6 @@ export default class BaseModel {
   }
 
   /**
-   * Batch delete resources
-   */
-  static async batchDelete<T>(options: RequestParams): Promise<T> {
-    return this.create<T>({
-      ...options,
-      method: 'post',
-      path: `${options.path}/batch-delete`,
-    });
-  }
-
-  /**
    * Custom query
    */
   static async query<T>(options: RequestParams): Promise<T> {

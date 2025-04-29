@@ -711,20 +711,7 @@ export class CollectionsService {
 
   async createIndex(clientId: string, data: CreateIndexReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const createIndex = await milvusClient.createIndex(data);
-
-    if (createIndex.error_code === ErrorCode.SUCCESS) {
-      // fetch new collections
-      const newCollection = (await this.getAllCollections(
-        clientId,
-        [data.collection_name],
-        data.db_name
-      )) as CollectionFullObject[];
-
-      return newCollection[0];
-    } else {
-      throw new Error(createIndex.reason);
-    }
+    return await milvusClient.createIndex(data);
   }
 
   async describeIndex(clientId: string, data: DescribeIndexReq) {
@@ -768,20 +755,7 @@ export class CollectionsService {
   }
 
   async dropIndex(clientId: string, data: DropIndexReq) {
-    const { milvusClient, database } = clientCache.get(clientId);
-    const dropIndex = await milvusClient.dropIndex(data);
-
-    if (dropIndex.error_code === ErrorCode.SUCCESS) {
-      // fetch new collections
-      const newCollection = (await this.getAllCollections(
-        clientId,
-        [data.collection_name],
-        data.db_name
-      )) as CollectionFullObject[];
-
-      return newCollection[0];
-    } else {
-      throw new Error(dropIndex.reason);
-    }
+    const { milvusClient } = clientCache.get(clientId);
+    return await milvusClient.dropIndex(data);
   }
 }

@@ -2,10 +2,6 @@ import { useCallback, useRef, useState, useEffect } from 'react';
 import { CollectionService, MilvusService } from '@/http';
 import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
-import type {
-  IndexCreateParam,
-  IndexManageParam,
-} from '@/pages/databases/collections/schema/Types';
 import type { CollectionObject, CollectionFullObject } from '@server/types';
 
 export function useCollectionsManagement(database: string) {
@@ -204,18 +200,6 @@ export function useCollectionsManagement(database: string) {
     return dropped;
   };
 
-  const createIndex = async (param: IndexCreateParam) => {
-    const newCollection = await CollectionService.createIndex(param);
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
-  };
-
-  const dropIndex = async (params: IndexManageParam) => {
-    const { data } = await CollectionService.dropIndex(params);
-    updateCollections({ collections: [data] });
-    return data;
-  };
-
   const setCollectionProperty = async (
     collectionName: string,
     key: string,
@@ -240,8 +224,6 @@ export function useCollectionsManagement(database: string) {
     releaseCollection,
     duplicateCollection,
     dropCollection,
-    createIndex,
-    dropIndex,
     setCollectionProperty,
     updateCollections,
   };
