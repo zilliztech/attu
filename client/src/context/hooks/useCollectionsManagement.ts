@@ -152,7 +152,10 @@ export function useCollectionsManagement(database: string) {
 
   const createCollection = async (data: any) => {
     const newCollection = await CollectionService.createCollection(data);
-    const newCollections = collections.concat(newCollection).sort((a, b) => {
+    const filteredCollections = collections.filter(
+      c => c.collection_name !== newCollection.collection_name
+    );
+    const newCollections = filteredCollections.concat(newCollection).sort((a, b) => {
       if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
         if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
           return b.createdTime - a.createdTime;

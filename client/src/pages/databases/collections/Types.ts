@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { DataTypeEnum, FunctionType } from '@/consts';
 
 export interface CollectionCreateProps {
-  onCreate?: () => void;
+  onCreate?: (collection_name: string) => void;
 }
 
 export type FunctionConfig = {
