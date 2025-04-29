@@ -123,8 +123,6 @@ export type DataContextType = {
   fetchCollections: () => Promise<void>;
   fetchCollection: (name: string) => Promise<CollectionFullObject>;
   createCollection: (data: any) => Promise<CollectionFullObject>;
-  loadCollection: (name: string, param?: any) => Promise<ResStatus>;
-  releaseCollection: (name: string) => Promise<ResStatus>;
   duplicateCollection: (
     name: string,
     newName: string

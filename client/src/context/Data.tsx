@@ -30,8 +30,6 @@ export const dataContext = createContext<DataContextType>({
   createCollection: async () => {
     return {} as CollectionFullObject;
   },
-  loadCollection: async () => ({}) as ResStatus,
-  releaseCollection: async () => ({}) as ResStatus,
   duplicateCollection: async () => {
     return {} as CollectionFullObject;
   },
@@ -77,8 +75,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     fetchCollection,
     batchRefreshCollections,
     createCollection,
-    loadCollection,
-    releaseCollection,
     duplicateCollection,
     dropCollection,
     setCollectionProperty,
@@ -120,8 +116,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         fetchCollection,
         batchRefreshCollections,
         createCollection,
-        loadCollection,
-        releaseCollection,
         duplicateCollection,
         dropCollection,
         setCollectionProperty,

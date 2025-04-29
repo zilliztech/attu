@@ -28,7 +28,6 @@ import {
   HybridSearchReq,
   SearchSimpleReq,
   LoadState,
-  ErrorCode,
   AlterCollectionFieldPropertiesReq,
   AlterIndexReq,
 } from '@zilliz/milvus2-sdk-node';
@@ -218,22 +217,17 @@ export class CollectionsService {
 
   async dropCollection(clientId: string, data: DropCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.dropCollection(data);
-    return res;
+    return await milvusClient.dropCollection(data);
   }
 
   async loadCollection(clientId: string, data: LoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.loadCollection(data);
-
-    return data.collection_name;
+    return await milvusClient.loadCollection(data);
   }
 
   async loadCollectionAsync(clientId: string, data: LoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.loadCollectionAsync(data);
-
-    return data.collection_name;
+    return await milvusClient.loadCollectionAsync(data);
   }
 
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {

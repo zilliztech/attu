@@ -13,6 +13,7 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
 import type { CollectionObject } from '@server/types';
 import { makeStyles } from '@mui/styles';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -37,7 +38,7 @@ const LoadCollectionDialog = (props: {
   onLoad?: (collection: CollectionObject) => void;
   isModifyReplica?: boolean;
 }) => {
-  const { loadCollection } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
   const classes = useStyles();
   const { collection, onLoad, isModifyReplica } = props;
   const { t: dialogTrans } = useTranslation('dialog');
@@ -107,7 +108,12 @@ const LoadCollectionDialog = (props: {
     try {
       setBtnDisabled(true);
       // load collection request
-      await loadCollection(collection.collection_name, params);
+      await CollectionService.loadCollection(
+        collection.collection_name,
+        params
+      );
+      // refresh collection
+      await fetchCollection(collection.collection_name);
 
       // show success message
       openSnackBar(

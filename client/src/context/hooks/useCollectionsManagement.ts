@@ -180,10 +180,6 @@ export function useCollectionsManagement(database: string) {
     return res;
   };
 
-  const releaseCollection = async (name: string) => {
-    return await CollectionService.releaseCollection(name);
-  };
-
   const duplicateCollection = async (name: string, newName: string) => {
     const newCollection = await CollectionService.duplicateCollection(name, {
       new_collection_name: newName,
@@ -221,7 +217,6 @@ export function useCollectionsManagement(database: string) {
     batchRefreshCollections,
     createCollection,
     loadCollection,
-    releaseCollection,
     duplicateCollection,
     dropCollection,
     setCollectionProperty,

@@ -5,6 +5,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { rootContext, dataContext } from '@/context';
 import { makeStyles } from '@mui/styles';
 import type { CollectionObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -18,7 +19,7 @@ const ReleaseCollectionDialog = (props: {
   collection: CollectionObject;
   onRelease?: (collection: CollectionObject) => void;
 }) => {
-  const { releaseCollection } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
 
   const classes = useStyles();
 
@@ -36,7 +37,10 @@ const ReleaseCollectionDialog = (props: {
     setDisabled(true);
     try {
       // release collection
-      await releaseCollection(collection.collection_name);
+      await CollectionService.releaseCollection(collection.collection_name);
+
+      // refresh collection
+      await fetchCollection(collection.collection_name);
 
       // show success message
       openSnackBar(
