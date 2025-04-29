@@ -54,7 +54,26 @@ export function useCollectionsManagement(database: string) {
         updated.forEach(c => {
           prevMap.set(c.id, c);
         });
-        return Array.from(prevMap.values());
+        const merged = Array.from(prevMap.values());
+        const newCollections = updated.filter(
+          c => !prev.some(p => p.collection_name === c.collection_name)
+        );
+        if (newCollections.length > 0) {
+          return merged.sort((a, b) => {
+            if (
+              a.loadedPercentage === b.loadedPercentage &&
+              a.schema &&
+              b.schema
+            ) {
+              if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
+                return b.createdTime - a.createdTime;
+              }
+              return a.schema.hasVectorIndex ? -1 : 1;
+            }
+            return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
+          });
+        }
+        return merged;
       });
     },
     [detectLoadingIndexing] // Removed database dependency
@@ -146,26 +165,6 @@ export function useCollectionsManagement(database: string) {
     [collections, updateCollections] // Removed database dependency
   );
 
-  const createCollection = async (data: any) => {
-    const newCollection = await CollectionService.createCollection(data);
-    const filteredCollections = collections.filter(
-      c => c.collection_name !== newCollection.collection_name
-    );
-    const newCollections = filteredCollections
-      .concat(newCollection)
-      .sort((a, b) => {
-        if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
-          if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
-            return b.createdTime - a.createdTime;
-          }
-          return a.schema.hasVectorIndex ? -1 : 1;
-        }
-        return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
-      });
-    setCollections(newCollections);
-    return newCollection;
-  };
-
   const loadCollection = async (name: string, param?: any) => {
     const res = await CollectionService.loadCollection(name, param);
     const collection = collections.find(
@@ -180,32 +179,12 @@ export function useCollectionsManagement(database: string) {
     return res;
   };
 
-  const duplicateCollection = async (name: string, newName: string) => {
-    const newCollection = await CollectionService.duplicateCollection(name, {
-      new_collection_name: newName,
-    });
-    setCollections(prev => [...prev, newCollection]);
-    return newCollection;
-  };
-
   const dropCollection = async (name: string) => {
     const dropped = await CollectionService.dropCollection(name);
     if (dropped.error_code === 'Success') {
       setCollections(prev => prev.filter(v => v.collection_name !== name));
     }
     return dropped;
-  };
-
-  const setCollectionProperty = async (
-    collectionName: string,
-    key: string,
-    value: any
-  ) => {
-    const newCollection = await CollectionService.setProperty(collectionName, {
-      [key]: value,
-    });
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
   };
 
   return {
@@ -215,11 +194,8 @@ export function useCollectionsManagement(database: string) {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
-    createCollection,
     loadCollection,
-    duplicateCollection,
     dropCollection,
-    setCollectionProperty,
     updateCollections,
   };
 }

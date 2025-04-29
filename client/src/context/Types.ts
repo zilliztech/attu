@@ -1,10 +1,6 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
 import type { NavInfo } from '@/router/Types';
 import type {
-  IndexCreateParam,
-  IndexManageParam,
-} from '@/pages/databases/collections/schema/Types';
-import type {
   CollectionObject,
   CollectionFullObject,
   DatabaseObject,
@@ -122,17 +118,7 @@ export type DataContextType = {
   // collections
   fetchCollections: () => Promise<void>;
   fetchCollection: (name: string) => Promise<CollectionFullObject>;
-  createCollection: (data: any) => Promise<CollectionFullObject>;
-  duplicateCollection: (
-    name: string,
-    newName: string
-  ) => Promise<CollectionFullObject>;
   dropCollection: (name: string) => Promise<ResStatus>;
-  setCollectionProperty: (
-    collectionName: string,
-    key: string,
-    value: any
-  ) => Promise<CollectionFullObject>;
   // UI preferences
   ui: {
     tree: {

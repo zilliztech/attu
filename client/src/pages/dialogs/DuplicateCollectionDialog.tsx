@@ -9,6 +9,7 @@ import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { makeStyles } from '@mui/styles';
 import type { CollectionObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -27,7 +28,7 @@ export interface DuplicateCollectionDialogProps {
 }
 
 const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
-  const { duplicateCollection } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
 
   const { cb, collection, collections } = props;
   const [form, setForm] = useState({
@@ -56,7 +57,12 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   const handleConfirm = async () => {
     // duplicate
-    await duplicateCollection(collection.collection_name, form.duplicate);
+    await CollectionService.duplicateCollection(
+      collection.collection_name,
+      form.duplicate
+    );
+    //refresh collection
+    await fetchCollection(form.duplicate);
     // show success message
     openSnackBar(
       successTrans('duplicate', {

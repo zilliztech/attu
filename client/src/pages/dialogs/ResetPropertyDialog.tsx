@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { Property } from '@/consts';
-import { DatabaseService } from '@/http';
+import { DatabaseService, CollectionService } from '@/http';
 import type { CollectionObject } from '@server/types';
 
 export interface EditPropertyProps {
@@ -15,7 +15,7 @@ export interface EditPropertyProps {
 
 const ResetPropertyDialog: FC<EditPropertyProps> = props => {
   // context
-  const { setCollectionProperty } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
   const { handleCloseDialog } = useContext(rootContext);
   // props
   const { cb, target, type, property } = props;
@@ -28,11 +28,12 @@ const ResetPropertyDialog: FC<EditPropertyProps> = props => {
         if (!collection || !collection.schema) {
           return;
         }
-        await setCollectionProperty(
-          collection.collection_name,
-          property.key,
-          ''
-        );
+        // Reset the property in the collection schema
+        await CollectionService.setProperty(collection.collection_name, {
+          [property.key]: '',
+        });
+        // Refresh the collection to get the latest schema
+        await fetchCollection((target as CollectionObject).collection_name);
         break;
 
       case 'database':

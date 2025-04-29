@@ -28,6 +28,7 @@ import type {
   CollectionCreateProps,
   CreateField,
 } from '../databases/collections/Types';
+import { CollectionService } from '@/http';
 
 // Add this type at the top of your file or in a relevant types file
 interface BM25Function {
@@ -40,7 +41,7 @@ interface BM25Function {
 }
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
-  const { createCollection } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -244,9 +245,12 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     };
 
     // create collection
-    await createCollection({
+    await CollectionService.createCollection({
       ...param,
     });
+
+    // refresh collection
+    await fetchCollection(param.collection_name);
 
     // show success message
     openSnackBar(

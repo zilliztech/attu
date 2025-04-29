@@ -69,14 +69,7 @@ export class CollectionsService {
 
   async createCollection(clientId: string, data: CreateCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.createCollection(data);
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
-
-    return newCollection[0];
+    return await milvusClient.createCollection(data);
   }
 
   async describeUnformattedCollection(

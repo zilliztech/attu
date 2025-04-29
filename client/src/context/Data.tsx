@@ -27,16 +27,7 @@ export const dataContext = createContext<DataContextType>({
     return {} as CollectionFullObject;
   },
   batchRefreshCollections: async () => {},
-  createCollection: async () => {
-    return {} as CollectionFullObject;
-  },
-  duplicateCollection: async () => {
-    return {} as CollectionFullObject;
-  },
   dropCollection: async () => ({}) as ResStatus,
-  setCollectionProperty: async () => {
-    return {} as CollectionFullObject;
-  },
   ui: {
     tree: {
       width: DEFAULT_TREE_WIDTH,
@@ -74,10 +65,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
-    createCollection,
-    duplicateCollection,
     dropCollection,
-    setCollectionProperty,
     updateCollections,
   } = useCollectionsManagement(database);
 
@@ -115,10 +103,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         fetchCollections,
         fetchCollection,
         batchRefreshCollections,
-        createCollection,
-        duplicateCollection,
         dropCollection,
-        setCollectionProperty,
         ui,
         setUIPref,
       }}

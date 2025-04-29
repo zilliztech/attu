@@ -70,7 +70,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
   const classes = useStyles();
 
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
-  const { setCollectionProperty } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
 
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
@@ -160,14 +160,12 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
     // Make the API call to update mmap settings
     try {
       if (pendingCollectionMmap !== isCollectionMmapEnabled) {
-        await setCollectionProperty(
-          collection.collection_name,
-          'mmap.enabled',
-          pendingCollectionMmap
-        );
+        await CollectionService.setProperty(collection.collection_name, {
+          'mmap.enabled': pendingCollectionMmap,
+        });
       }
       if (pendingChanges.length > 0) {
-        const res = await CollectionService.updateMmap(
+        await CollectionService.updateMmap(
           collection.collection_name,
           pendingChanges
         );
@@ -181,6 +179,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
       console.error('Error updating mmap settings:', error);
     } finally {
       cb && (await cb());
+      await fetchCollection(collection.collection_name);
       handleCloseDialog();
     }
   };
