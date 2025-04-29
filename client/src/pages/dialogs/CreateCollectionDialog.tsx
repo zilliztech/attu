@@ -1,4 +1,4 @@
-import { Theme, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import {
   FC,
   useContext,
@@ -23,18 +23,11 @@ import {
 import CreateFields from './create/CreateFields';
 import ExtraInfoSection from './create/ExtraInfoSection';
 import BM25FunctionSection from './create/BM25FunctionSection';
-import { makeStyles } from '@mui/styles';
 import type {
   CollectionCreateParam,
   CollectionCreateProps,
   CreateField,
 } from '../databases/collections/Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    width: '100%',
-  },
-}));
 
 // Add this type at the top of your file or in a relevant types file
 interface BM25Function {
@@ -48,7 +41,6 @@ interface BM25Function {
 
 const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   const { createCollection } = useContext(dataContext);
-  const classes = useStyles();
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
@@ -170,7 +162,9 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
         shrink: true,
       },
       size: 'small',
-      className: classes.input,
+      sx: {
+        width: '100%',
+      },
     },
     {
       label: collectionTrans('description'),
@@ -180,9 +174,11 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       variant: 'filled',
       validations: [],
       size: 'small',
-      className: classes.input,
       InputLabelProps: {
         shrink: true,
+      },
+      sx: {
+        width: '100%',
       },
     },
   ];
@@ -375,7 +371,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       confirmDisabled={disabled || !fieldsValidation}
       sx={{ width: 900 }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
         <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>
           {generalInfoConfigs.map(config => (
             <CustomInput

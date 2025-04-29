@@ -198,6 +198,7 @@ const getTextfield = (
     inputProps,
     InputProps,
     value,
+    sx,
     ...others
   } = config;
 
@@ -239,6 +240,7 @@ const getTextfield = (
       }}
       type={others.type || 'text'}
       value={value}
+      sx={sx}
       onChange={event => {
         handleOnChange({
           event,
