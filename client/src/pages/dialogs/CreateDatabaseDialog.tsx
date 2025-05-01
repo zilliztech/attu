@@ -9,6 +9,7 @@ import { formatForm } from '@/utils';
 import { CreateDatabaseParams } from '@/http';
 import { dataContext, rootContext } from '@/context';
 import { makeStyles } from '@mui/styles';
+import { DatabaseService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -22,7 +23,7 @@ export interface CreateDatabaseProps {
 
 const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
   // context
-  const { createDatabase } = useContext(dataContext);
+  const { fetchDatabases } = useContext(dataContext);
   const { openSnackBar, handleCloseDialog } = useContext(rootContext);
 
   // i18n
@@ -73,9 +74,12 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
 
   const handleCreate = async () => {
     setLoading(true);
-    const res = await createDatabase(form).finally(() => {
+    // create database
+    await DatabaseService.createDatabase(form).finally(() => {
       setLoading(false);
     });
+    // refresh database list
+    await fetchDatabases();
 
     openSnackBar(successTrans('create', { name: dbTrans('database') }));
 

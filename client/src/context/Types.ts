@@ -106,19 +106,16 @@ export type DataContextType = {
   database: string;
   setDatabase: Dispatch<SetStateAction<string>>;
   databases: DatabaseObject[];
-  setDatabaseList: Dispatch<SetStateAction<DatabaseObject[]>>;
   batchRefreshCollections: (collectionNames: string[], key?: string) => void;
 
-  // APIs
+  // key APIs
   // databases
-  fetchDatabases: () => Promise<DatabaseObject[]>;
-  createDatabase: (params: { db_name: string }) => Promise<ResStatus>;
+  fetchDatabases: () => void;
   dropDatabase: (params: { db_name: string }) => Promise<ResStatus>;
 
   // collections
-  fetchCollections: () => Promise<void>;
-  fetchCollection: (name: string) => Promise<CollectionFullObject>;
-  dropCollection: (name: string) => Promise<ResStatus>;
+  fetchCollections: () => void;
+  fetchCollection: (name: string, drop?: boolean) => void;
   // UI preferences
   ui: {
     tree: {

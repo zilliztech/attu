@@ -16,8 +16,6 @@ export const dataContext = createContext<DataContextType>({
   database: '',
   setDatabase: () => {},
   databases: [],
-  setDatabaseList: () => {},
-  createDatabase: async () => ({}) as ResStatus,
   dropDatabase: async () => ({}) as ResStatus,
   fetchDatabases: async () => {
     return [];
@@ -27,7 +25,6 @@ export const dataContext = createContext<DataContextType>({
     return {} as CollectionFullObject;
   },
   batchRefreshCollections: async () => {},
-  dropCollection: async () => ({}) as ResStatus,
   ui: {
     tree: {
       width: DEFAULT_TREE_WIDTH,
@@ -52,9 +49,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     database,
     setDatabase,
     fetchDatabases,
-    createDatabase,
     dropDatabase,
-    setDatabaseList,
   } = useDatabaseManagement();
 
   //  useCollections hook
@@ -65,7 +60,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
-    dropCollection,
     updateCollections,
   } = useCollectionsManagement(database);
 
@@ -96,14 +90,11 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database,
         databases,
         setDatabase,
-        setDatabaseList,
-        createDatabase,
         dropDatabase,
+        fetchCollection,
         fetchDatabases,
         fetchCollections,
-        fetchCollection,
         batchRefreshCollections,
-        dropCollection,
         ui,
         setUIPref,
       }}

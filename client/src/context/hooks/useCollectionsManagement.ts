@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { CollectionService, MilvusService } from '@/http';
-import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
 import type { CollectionObject, CollectionFullObject } from '@server/types';
 
@@ -39,8 +39,16 @@ export function useCollectionsManagement(database: string) {
   );
 
   const updateCollections = useCallback(
-    (props: { collections: CollectionFullObject[]; database?: string }) => {
-      const { collections: updated = [], database: remote } = props;
+    (props: {
+      collections: CollectionFullObject[];
+      database?: string;
+      deletedNames?: string[];
+    }) => {
+      const {
+        collections: updated = [],
+        database: remote,
+        deletedNames = [],
+      } = props;
       if (
         remote !== databaseRef.current &&
         databaseRef.current !== undefined &&
@@ -50,14 +58,22 @@ export function useCollectionsManagement(database: string) {
       }
       detectLoadingIndexing(updated);
       setCollections(prev => {
+        // merge collections
         const prevMap = new Map(prev.map(c => [c.id, c]));
         updated.forEach(c => {
           prevMap.set(c.id, c);
         });
-        const merged = Array.from(prevMap.values());
+        let merged = Array.from(prevMap.values());
+        // delete collections
+        if (deletedNames.length > 0) {
+          merged = merged.filter(
+            c => !deletedNames.includes(c.collection_name)
+          );
+        }
         const newCollections = updated.filter(
           c => !prev.some(p => p.collection_name === c.collection_name)
         );
+        // sort collections
         if (newCollections.length > 0) {
           return merged.sort((a, b) => {
             if (
@@ -76,7 +92,7 @@ export function useCollectionsManagement(database: string) {
         return merged;
       });
     },
-    [detectLoadingIndexing] // Removed database dependency
+    [detectLoadingIndexing]
   );
 
   const refreshCollectionsDebounceMapRef = useRef<
@@ -106,10 +122,13 @@ export function useCollectionsManagement(database: string) {
     }
   };
 
-  const fetchCollection = async (name: string) => {
-    const res = await CollectionService.getCollection(name);
-    updateCollections({ collections: [res] });
-    return res;
+  const fetchCollection = async (name: string, drop?: boolean) => {
+    if (drop) {
+      updateCollections({ collections: [], deletedNames: [name] });
+    } else {
+      const res = await CollectionService.getCollection(name);
+      updateCollections({ collections: [res] });
+    }
   };
 
   const batchRefreshCollections = useCallback(
@@ -165,28 +184,6 @@ export function useCollectionsManagement(database: string) {
     [collections, updateCollections] // Removed database dependency
   );
 
-  const loadCollection = async (name: string, param?: any) => {
-    const res = await CollectionService.loadCollection(name, param);
-    const collection = collections.find(
-      v => v.collection_name === name
-    ) as CollectionFullObject;
-    if (collection) {
-      collection.loadedPercentage = 0;
-      collection.loaded = false;
-      collection.status = LOADING_STATE.LOADING;
-    }
-    updateCollections({ collections: [collection] });
-    return res;
-  };
-
-  const dropCollection = async (name: string) => {
-    const dropped = await CollectionService.dropCollection(name);
-    if (dropped.error_code === 'Success') {
-      setCollections(prev => prev.filter(v => v.collection_name !== name));
-    }
-    return dropped;
-  };
-
   return {
     collections,
     setCollections,
@@ -194,8 +191,6 @@ export function useCollectionsManagement(database: string) {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
-    loadCollection,
-    dropCollection,
     updateCollections,
   };
 }

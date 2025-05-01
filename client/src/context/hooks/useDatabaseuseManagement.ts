@@ -29,16 +29,6 @@ export const useDatabaseManagement = () => {
     [logout]
   ); // Added logout dependency
 
-  // API: create database
-  const createDatabase = useCallback(
-    async (params: { db_name: string }) => {
-      const res = await DatabaseService.createDatabase(params);
-      await fetchDatabases();
-      return res;
-    },
-    [fetchDatabases]
-  ); // Added fetchDatabases dependency
-
   // API: delete database
   const dropDatabase = useCallback(
     async (params: { db_name: string }) => {
@@ -84,8 +74,6 @@ export const useDatabaseManagement = () => {
     database,
     setDatabase,
     fetchDatabases,
-    createDatabase,
     dropDatabase,
-    setDatabaseList: setDatabases, // Keep setDatabaseList for compatibility if needed, though setDatabases is standard
   };
 };
