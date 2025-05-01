@@ -51,10 +51,10 @@ export const useDatabaseManagement = () => {
   // Effect to update auth context when local database state changes
   useEffect(() => {
     // Only update if the database actually changed from the auth context one
-    if (authReq.database !== database) {
+    if (authReq.database !== database && isAuth) {
       setAuthReq({ ...authReq, database });
     }
-  }, [database, authReq, setAuthReq]);
+  }, [isAuth, database, authReq, setAuthReq]);
 
   return {
     databases,
