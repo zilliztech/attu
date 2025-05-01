@@ -9,6 +9,7 @@ import { useFormValidation } from '@/hooks';
 import { makeStyles } from '@mui/styles';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type { CollectionObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -22,7 +23,7 @@ export interface CreateAliasProps {
 }
 
 const CreateAliasDialog: FC<CreateAliasProps> = props => {
-  const { createAlias } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
   const { handleCloseDialog } = useContext(rootContext);
 
   const { cb, collection } = props;
@@ -49,7 +50,8 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   };
 
   const handleConfirm = async () => {
-    await createAlias(collection.collection_name, form.alias);
+    await CollectionService.createAlias(collection.collection_name, form.alias);
+    await fetchCollection(collection.collection_name);
     handleCloseDialog();
     cb && (await cb(collection));
   };

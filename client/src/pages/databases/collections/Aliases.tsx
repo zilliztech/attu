@@ -7,6 +7,7 @@ import CreateAliasDialog from '@/pages/dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { makeStyles } from '@mui/styles';
 import type { CollectionObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -29,7 +30,7 @@ export interface AliasesProps {
 }
 
 export default function Aliases(props: AliasesProps) {
-  const { dropAlias } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
 
   const {
     aliases,
@@ -86,7 +87,11 @@ export default function Aliases(props: AliasesProps) {
     collection: CollectionObject;
     alias: string;
   }) => {
-    await dropAlias(params.collection.collection_name, params.alias);
+    await CollectionService.dropAlias(
+      params.collection.collection_name,
+      params.alias
+    );
+    await fetchCollection(params.collection.collection_name);
     openSnackBar(successTrans('delete', { name: collectionTrans('alias') }));
     handleCloseDialog();
     await onDelete(collection.collection_name);

@@ -2,13 +2,13 @@ import { FC, useContext } from 'react';
 import { Typography, useTheme, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MilvusService } from '@/http';
+import { MilvusService, DatabaseService } from '@/http';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, authContext } from '@/context';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import { CREATE_DB } from './Home';
-import type { DatabaseObject, ResStatus } from '@server/types';
+import type { DatabaseObject } from '@server/types';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -16,7 +16,7 @@ export interface DatabaseCardProps {
   wrapperClass?: string;
   database: DatabaseObject;
   setDatabase: (database: string) => void;
-  dropDatabase: (params: { db_name: string }) => Promise<ResStatus>;
+  fetchDatabases: () => void;
   isActive?: boolean;
 }
 
@@ -24,7 +24,7 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   database = { name: '', collections: [], createdTime: 0 },
   wrapperClass = '',
   setDatabase,
-  dropDatabase,
+  fetchDatabases,
   isActive = false,
 }) => {
   // context
@@ -54,7 +54,8 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   };
 
   const handleDelete = async () => {
-    await dropDatabase({ db_name: database.name });
+    await DatabaseService.dropDatabase({ db_name: database.name });
+    await fetchDatabases();
     openSnackBar(successTrans('delete', { name: dbTrans('database') }));
     await MilvusService.useDatabase({ database: 'default' });
     handleCloseDialog();

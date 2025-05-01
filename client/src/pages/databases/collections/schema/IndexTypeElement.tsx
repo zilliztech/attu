@@ -14,6 +14,7 @@ import CustomButton from '@/components/customButton/CustomButton';
 import { makeStyles } from '@mui/styles';
 import { isVectorType } from '@/utils';
 import type { FieldObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   wrapper: {
@@ -73,7 +74,7 @@ const IndexTypeElement: FC<{
   disabledTooltip?: string;
   cb?: (collectionName: string) => void;
 }> = ({ field, collectionName, cb, disabled }) => {
-  const { createIndex, dropIndex } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
 
   const classes = useStyles();
   // set empty string as default status
@@ -95,7 +96,8 @@ const IndexTypeElement: FC<{
       index_name,
       extra_params: params,
     };
-    await createIndex(indexCreateParam);
+    await CollectionService.createIndex(indexCreateParam);
+    await fetchCollection(collectionName);
     // reset status to default empty string
     handleCloseDialog();
     openSnackBar(indexTrans('createSuccess'));
@@ -128,7 +130,8 @@ const IndexTypeElement: FC<{
       index_name: field.index.index_name,
     };
 
-    await dropIndex(indexDeleteParam);
+    await CollectionService.dropIndex(indexDeleteParam);
+    await fetchCollection(collectionName);
     cb && (await cb(collectionName));
     handleCloseDialog();
     openSnackBar(successTrans('delete', { name: indexTrans('index') }));

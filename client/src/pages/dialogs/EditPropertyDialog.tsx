@@ -11,6 +11,7 @@ import { Property } from '@/consts';
 import { makeStyles } from '@mui/styles';
 import { DatabaseService } from '@/http';
 import type { CollectionObject } from '@server/types';
+import { CollectionService } from '@/http';
 
 const useStyles = makeStyles((theme: Theme) => ({
   desc: {
@@ -26,7 +27,7 @@ export interface EditPropertyProps {
 }
 
 const EditPropertyDialog: FC<EditPropertyProps> = props => {
-  const { setCollectionProperty } = useContext(dataContext);
+  const { fetchCollection } = useContext(dataContext);
   const { handleCloseDialog } = useContext(rootContext);
 
   const { cb, target, property } = props;
@@ -69,11 +70,11 @@ const EditPropertyDialog: FC<EditPropertyProps> = props => {
 
     switch (props.type) {
       case 'collection':
-        await setCollectionProperty(
+        await CollectionService.setProperty(
           (target as CollectionObject).collection_name,
-          property.key,
-          value
+          { [property.key]: value }
         );
+        await fetchCollection((target as CollectionObject).collection_name);
         break;
       case 'database':
         await DatabaseService.setProperty({

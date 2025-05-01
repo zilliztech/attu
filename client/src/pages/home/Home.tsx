@@ -50,7 +50,7 @@ const Home = () => {
     collections,
     loadingDatabases,
     setDatabase,
-    dropDatabase,
+    fetchDatabases,
   } = useContext(dataContext);
   const { data } = useContext(systemContext);
   const classes = useStyles();
@@ -108,7 +108,7 @@ const Home = () => {
                   database={db}
                   isActive={db.name === database}
                   setDatabase={setDatabase}
-                  dropDatabase={dropDatabase}
+                  fetchDatabases={fetchDatabases}
                   key={db.name}
                 />
               );
@@ -116,7 +116,7 @@ const Home = () => {
             <DatabaseCard
               database={CREATE_DB}
               setDatabase={setDatabase}
-              dropDatabase={dropDatabase}
+              fetchDatabases={fetchDatabases}
               key={CREATE_DB.name}
             />
           </div>

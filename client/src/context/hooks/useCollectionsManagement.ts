@@ -1,11 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { CollectionService, MilvusService } from '@/http';
-import { WS_EVENTS, WS_EVENTS_TYPE, LOADING_STATE } from '@server/utils/Const';
+import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
-import type {
-  IndexCreateParam,
-  IndexManageParam,
-} from '@/pages/databases/collections/schema/Types';
 import type { CollectionObject, CollectionFullObject } from '@server/types';
 
 export function useCollectionsManagement(database: string) {
@@ -43,8 +39,16 @@ export function useCollectionsManagement(database: string) {
   );
 
   const updateCollections = useCallback(
-    (props: { collections: CollectionFullObject[]; database?: string }) => {
-      const { collections: updated = [], database: remote } = props;
+    (props: {
+      collections: CollectionFullObject[];
+      database?: string;
+      deletedNames?: string[];
+    }) => {
+      const {
+        collections: updated = [],
+        database: remote,
+        deletedNames = [],
+      } = props;
       if (
         remote !== databaseRef.current &&
         databaseRef.current !== undefined &&
@@ -54,14 +58,41 @@ export function useCollectionsManagement(database: string) {
       }
       detectLoadingIndexing(updated);
       setCollections(prev => {
+        // merge collections
         const prevMap = new Map(prev.map(c => [c.id, c]));
         updated.forEach(c => {
           prevMap.set(c.id, c);
         });
-        return Array.from(prevMap.values());
+        let merged = Array.from(prevMap.values());
+        // delete collections
+        if (deletedNames.length > 0) {
+          merged = merged.filter(
+            c => !deletedNames.includes(c.collection_name)
+          );
+        }
+        const newCollections = updated.filter(
+          c => !prev.some(p => p.collection_name === c.collection_name)
+        );
+        // sort collections
+        if (newCollections.length > 0) {
+          return merged.sort((a, b) => {
+            if (
+              a.loadedPercentage === b.loadedPercentage &&
+              a.schema &&
+              b.schema
+            ) {
+              if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
+                return b.createdTime - a.createdTime;
+              }
+              return a.schema.hasVectorIndex ? -1 : 1;
+            }
+            return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
+          });
+        }
+        return merged;
       });
     },
-    [detectLoadingIndexing] // Removed database dependency
+    [detectLoadingIndexing]
   );
 
   const refreshCollectionsDebounceMapRef = useRef<
@@ -91,14 +122,17 @@ export function useCollectionsManagement(database: string) {
     }
   };
 
-  const fetchCollection = async (name: string) => {
-    const res = await CollectionService.getCollection(name);
-    updateCollections({ collections: [res] });
-    return res;
+  const fetchCollection = async (name: string, drop?: boolean) => {
+    if (drop) {
+      updateCollections({ collections: [], deletedNames: [name] });
+    } else {
+      const res = await CollectionService.getCollection(name);
+      updateCollections({ collections: [res] });
+    }
   };
 
   const batchRefreshCollections = useCallback(
-    (collectionNames: string[], key: string = 'default') => {
+    async (collectionNames: string[], key: string = 'default') => {
       let ref = refreshCollectionsDebounceMapRef.current.get(key);
       if (!ref) {
         ref = { timer: null, names: [], pending: new Set() };
@@ -150,106 +184,6 @@ export function useCollectionsManagement(database: string) {
     [collections, updateCollections] // Removed database dependency
   );
 
-  const createCollection = async (data: any) => {
-    const newCollection = await CollectionService.createCollection(data);
-    const filteredCollections = collections.filter(
-      c => c.collection_name !== newCollection.collection_name
-    );
-    const newCollections = filteredCollections.concat(newCollection).sort((a, b) => {
-      if (a.loadedPercentage === b.loadedPercentage && a.schema && b.schema) {
-        if (a.schema.hasVectorIndex === b.schema.hasVectorIndex) {
-          return b.createdTime - a.createdTime;
-        }
-        return a.schema.hasVectorIndex ? -1 : 1;
-      }
-      return (b.loadedPercentage || 0) - (a.loadedPercentage || 0);
-    });
-    setCollections(newCollections);
-    return newCollection;
-  };
-
-  const loadCollection = async (name: string, param?: any) => {
-    const res = await CollectionService.loadCollection(name, param);
-    const collection = collections.find(
-      v => v.collection_name === name
-    ) as CollectionFullObject;
-    if (collection) {
-      collection.loadedPercentage = 0;
-      collection.loaded = false;
-      collection.status = LOADING_STATE.LOADING;
-    }
-    updateCollections({ collections: [collection] });
-    return res;
-  };
-
-  const releaseCollection = async (name: string) => {
-    return await CollectionService.releaseCollection(name);
-  };
-
-  const renameCollection = async (name: string, newName: string) => {
-    const newCollection = await CollectionService.renameCollection(name, {
-      new_collection_name: newName,
-    });
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
-  };
-
-  const duplicateCollection = async (name: string, newName: string) => {
-    const newCollection = await CollectionService.duplicateCollection(name, {
-      new_collection_name: newName,
-    });
-    setCollections(prev => [...prev, newCollection]);
-    return newCollection;
-  };
-
-  const dropCollection = async (name: string) => {
-    const dropped = await CollectionService.dropCollection(name);
-    if (dropped.error_code === 'Success') {
-      setCollections(prev => prev.filter(v => v.collection_name !== name));
-    }
-    return dropped;
-  };
-
-  const createIndex = async (param: IndexCreateParam) => {
-    const newCollection = await CollectionService.createIndex(param);
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
-  };
-
-  const dropIndex = async (params: IndexManageParam) => {
-    const { data } = await CollectionService.dropIndex(params);
-    updateCollections({ collections: [data] });
-    return data;
-  };
-
-  const createAlias = async (collectionName: string, alias: string) => {
-    const newCollection = await CollectionService.createAlias(collectionName, {
-      alias,
-    });
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
-  };
-
-  const dropAlias = async (collectionName: string, alias: string) => {
-    const { data } = await CollectionService.dropAlias(collectionName, {
-      alias,
-    });
-    updateCollections({ collections: [data] });
-    return data;
-  };
-
-  const setCollectionProperty = async (
-    collectionName: string,
-    key: string,
-    value: any
-  ) => {
-    const newCollection = await CollectionService.setProperty(collectionName, {
-      [key]: value,
-    });
-    updateCollections({ collections: [newCollection] });
-    return newCollection;
-  };
-
   return {
     collections,
     setCollections,
@@ -257,17 +191,6 @@ export function useCollectionsManagement(database: string) {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
-    createCollection,
-    loadCollection,
-    releaseCollection,
-    renameCollection,
-    duplicateCollection,
-    dropCollection,
-    createIndex,
-    dropIndex,
-    createAlias,
-    dropAlias,
-    setCollectionProperty,
     updateCollections,
   };
 }

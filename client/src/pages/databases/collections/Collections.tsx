@@ -135,7 +135,7 @@ const Collections = () => {
               <CreateCollectionDialog
                 onCreate={collection_name => {
                   //navigate to the new collection
-                 navigate(`/databases/${database}/${collection_name}/schema`);
+                  navigate(`/databases/${database}/${collection_name}/schema`);
                 }}
               />
             ),
@@ -253,7 +253,8 @@ const Collections = () => {
           params: {
             component: (
               <RenameCollectionDialog
-                cb={async () => {
+                cb={async (newName: string) => {
+                  await fetchCollection(newName);
                   setSelectedCollections([]);
                 }}
                 collection={selectedCollections[0]}

@@ -1,10 +1,6 @@
 import { Dispatch, ReactElement, SetStateAction } from 'react';
 import type { NavInfo } from '@/router/Types';
 import type {
-  IndexCreateParam,
-  IndexManageParam,
-} from '@/pages/databases/collections/schema/Types';
-import type {
   CollectionObject,
   CollectionFullObject,
   DatabaseObject,
@@ -106,49 +102,18 @@ export type DataContextType = {
   loading: boolean;
   loadingDatabases: boolean;
   collections: CollectionObject[];
-  setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
-  database: string;
-  setDatabase: Dispatch<SetStateAction<string>>;
   databases: DatabaseObject[];
-  setDatabaseList: Dispatch<SetStateAction<DatabaseObject[]>>;
-  batchRefreshCollections: (collectionNames: string[], key?: string) => void;
+  database: string;
 
-  // APIs
-  // databases
-  fetchDatabases: () => Promise<DatabaseObject[]>;
-  createDatabase: (params: { db_name: string }) => Promise<ResStatus>;
-  dropDatabase: (params: { db_name: string }) => Promise<ResStatus>;
-
-  // collections
+  setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
+  setDatabase: Dispatch<SetStateAction<string>>;
+  batchRefreshCollections: (
+    collectionNames: string[],
+    key?: string
+  ) => Promise<void>;
+  fetchDatabases: () => Promise<void>;
   fetchCollections: () => Promise<void>;
-  fetchCollection: (name: string) => Promise<CollectionFullObject>;
-  createCollection: (data: any) => Promise<CollectionFullObject>;
-  loadCollection: (name: string, param?: any) => Promise<ResStatus>;
-  releaseCollection: (name: string) => Promise<ResStatus>;
-  renameCollection: (
-    name: string,
-    newName: string
-  ) => Promise<CollectionFullObject>;
-  duplicateCollection: (
-    name: string,
-    newName: string
-  ) => Promise<CollectionFullObject>;
-  dropCollection: (name: string) => Promise<ResStatus>;
-  createIndex: (param: IndexCreateParam) => Promise<CollectionFullObject>;
-  dropIndex: (params: IndexManageParam) => Promise<CollectionFullObject>;
-  createAlias: (
-    collectionName: string,
-    alias: string
-  ) => Promise<CollectionFullObject>;
-  dropAlias: (
-    collectionName: string,
-    alias: string
-  ) => Promise<CollectionFullObject>;
-  setCollectionProperty: (
-    collectionName: string,
-    key: string,
-    value: any
-  ) => Promise<CollectionFullObject>;
+  fetchCollection: (name: string, drop?: boolean) => Promise<void>;
   // UI preferences
   ui: {
     tree: {

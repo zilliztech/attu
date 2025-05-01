@@ -28,7 +28,6 @@ import {
   HybridSearchReq,
   SearchSimpleReq,
   LoadState,
-  ErrorCode,
   AlterCollectionFieldPropertiesReq,
   AlterIndexReq,
 } from '@zilliz/milvus2-sdk-node';
@@ -70,14 +69,7 @@ export class CollectionsService {
 
   async createCollection(clientId: string, data: CreateCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.createCollection(data);
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
-
-    return newCollection[0];
+    return await milvusClient.createCollection(data);
   }
 
   async describeUnformattedCollection(
@@ -194,15 +186,7 @@ export class CollectionsService {
 
   async renameCollection(clientId: string, data: RenameCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.renameCollection(data);
-
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.new_collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
-
-    return newCollection[0];
+    return await milvusClient.renameCollection(data);
   }
 
   async alterCollectionProperties(clientId: string, data: AlterCollectionReq) {
@@ -226,22 +210,17 @@ export class CollectionsService {
 
   async dropCollection(clientId: string, data: DropCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.dropCollection(data);
-    return res;
+    return await milvusClient.dropCollection(data);
   }
 
   async loadCollection(clientId: string, data: LoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.loadCollection(data);
-
-    return data.collection_name;
+    return await milvusClient.loadCollection(data);
   }
 
   async loadCollectionAsync(clientId: string, data: LoadCollectionReq) {
     const { milvusClient } = clientCache.get(clientId);
-    await milvusClient.loadCollectionAsync(data);
-
-    return data.collection_name;
+    return await milvusClient.loadCollectionAsync(data);
   }
 
   async releaseCollection(clientId: string, data: ReleaseLoadCollectionReq) {
@@ -350,15 +329,7 @@ export class CollectionsService {
 
   async createAlias(clientId: string, data: CreateAliasReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.createAlias(data);
-
-    const newCollection = (await this.getAllCollections(
-      clientId,
-      [data.collection_name],
-      data.db_name
-    )) as CollectionFullObject[];
-
-    return newCollection[0];
+    return await milvusClient.createAlias(data);
   }
 
   async alterAlias(clientId: string, data: AlterAliasReq) {
@@ -727,20 +698,7 @@ export class CollectionsService {
 
   async createIndex(clientId: string, data: CreateIndexReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const createIndex = await milvusClient.createIndex(data);
-
-    if (createIndex.error_code === ErrorCode.SUCCESS) {
-      // fetch new collections
-      const newCollection = (await this.getAllCollections(
-        clientId,
-        [data.collection_name],
-        data.db_name
-      )) as CollectionFullObject[];
-
-      return newCollection[0];
-    } else {
-      throw new Error(createIndex.reason);
-    }
+    return await milvusClient.createIndex(data);
   }
 
   async describeIndex(clientId: string, data: DescribeIndexReq) {
@@ -784,20 +742,7 @@ export class CollectionsService {
   }
 
   async dropIndex(clientId: string, data: DropIndexReq) {
-    const { milvusClient, database } = clientCache.get(clientId);
-    const dropIndex = await milvusClient.dropIndex(data);
-
-    if (dropIndex.error_code === ErrorCode.SUCCESS) {
-      // fetch new collections
-      const newCollection = (await this.getAllCollections(
-        clientId,
-        [data.collection_name],
-        data.db_name
-      )) as CollectionFullObject[];
-
-      return newCollection[0];
-    } else {
-      throw new Error(dropIndex.reason);
-    }
+    const { milvusClient } = clientCache.get(clientId);
+    return await milvusClient.dropIndex(data);
   }
 }

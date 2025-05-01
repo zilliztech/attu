@@ -3,10 +3,9 @@ import { authContext } from '@/context';
 import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { useUIPrefs } from '@/context/hooks/useUIPrefs';
 import { useWebSocket } from '@/context/hooks/useWebSocket';
-import { useDatabaseManagement } from '@/context/hooks/useDatabaseuseManagement';
+import { useDatabaseManagement } from '@/context/hooks/useDatabaseManagement';
 import { useCollectionsManagement } from '@/context/hooks/useCollectionsManagement';
 import type { DataContextType } from './Types';
-import type { CollectionFullObject, ResStatus } from '@server/types';
 
 export const dataContext = createContext<DataContextType>({
   loading: true,
@@ -16,49 +15,10 @@ export const dataContext = createContext<DataContextType>({
   database: '',
   setDatabase: () => {},
   databases: [],
-  setDatabaseList: () => {},
-  createDatabase: async () => ({}) as ResStatus,
-  dropDatabase: async () => ({}) as ResStatus,
-  fetchDatabases: async () => {
-    return [];
-  },
+  fetchDatabases: async () => {},
   fetchCollections: async () => {},
-  fetchCollection: async () => {
-    return {} as CollectionFullObject;
-  },
+  fetchCollection: async () => {},
   batchRefreshCollections: async () => {},
-  createCollection: async () => {
-    return {} as CollectionFullObject;
-  },
-  loadCollection: async () => ({}) as ResStatus,
-  releaseCollection: async () => ({}) as ResStatus,
-  renameCollection: async () => {
-    return {} as CollectionFullObject;
-  },
-  duplicateCollection: async () => {
-    return {} as CollectionFullObject;
-  },
-  dropCollection: async () => {
-    return {
-      error_code: -1,
-      reason: '',
-    };
-  },
-  createIndex: async () => {
-    return {} as CollectionFullObject;
-  },
-  dropIndex: async () => {
-    return {} as CollectionFullObject;
-  },
-  createAlias: async () => {
-    return {} as CollectionFullObject;
-  },
-  dropAlias: async () => {
-    return {} as CollectionFullObject;
-  },
-  setCollectionProperty: async () => {
-    return {} as CollectionFullObject;
-  },
   ui: {
     tree: {
       width: DEFAULT_TREE_WIDTH,
@@ -77,16 +37,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const { ui, setUIPref } = useUIPrefs();
 
   // Database Hook
-  const {
-    databases,
-    loadingDatabases,
-    database,
-    setDatabase,
-    fetchDatabases,
-    createDatabase,
-    dropDatabase,
-    setDatabaseList,
-  } = useDatabaseManagement();
+  const { databases, loadingDatabases, database, setDatabase, fetchDatabases } =
+    useDatabaseManagement();
 
   //  useCollections hook
   const {
@@ -96,17 +48,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
-    createCollection,
-    loadCollection,
-    releaseCollection,
-    renameCollection,
-    duplicateCollection,
-    dropCollection,
-    createIndex,
-    dropIndex,
-    createAlias,
-    dropAlias,
-    setCollectionProperty,
     updateCollections,
   } = useCollectionsManagement(database);
 
@@ -137,24 +78,10 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database,
         databases,
         setDatabase,
-        setDatabaseList,
-        createDatabase,
-        dropDatabase,
+        fetchCollection,
         fetchDatabases,
         fetchCollections,
-        fetchCollection,
         batchRefreshCollections,
-        createCollection,
-        loadCollection,
-        releaseCollection,
-        renameCollection,
-        duplicateCollection,
-        dropCollection,
-        createIndex,
-        dropIndex,
-        createAlias,
-        dropAlias,
-        setCollectionProperty,
         ui,
         setUIPref,
       }}
