@@ -3,10 +3,9 @@ import { authContext } from '@/context';
 import { DEFAULT_TREE_WIDTH } from '@/consts';
 import { useUIPrefs } from '@/context/hooks/useUIPrefs';
 import { useWebSocket } from '@/context/hooks/useWebSocket';
-import { useDatabaseManagement } from '@/context/hooks/useDatabaseuseManagement';
+import { useDatabaseManagement } from '@/context/hooks/useDatabaseManagement';
 import { useCollectionsManagement } from '@/context/hooks/useCollectionsManagement';
 import type { DataContextType } from './Types';
-import type { CollectionFullObject, ResStatus } from '@server/types';
 
 export const dataContext = createContext<DataContextType>({
   loading: true,
@@ -16,14 +15,9 @@ export const dataContext = createContext<DataContextType>({
   database: '',
   setDatabase: () => {},
   databases: [],
-  dropDatabase: async () => ({}) as ResStatus,
-  fetchDatabases: async () => {
-    return [];
-  },
+  fetchDatabases: async () => {},
   fetchCollections: async () => {},
-  fetchCollection: async () => {
-    return {} as CollectionFullObject;
-  },
+  fetchCollection: async () => {},
   batchRefreshCollections: async () => {},
   ui: {
     tree: {
@@ -43,14 +37,8 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
   const { ui, setUIPref } = useUIPrefs();
 
   // Database Hook
-  const {
-    databases,
-    loadingDatabases,
-    database,
-    setDatabase,
-    fetchDatabases,
-    dropDatabase,
-  } = useDatabaseManagement();
+  const { databases, loadingDatabases, database, setDatabase, fetchDatabases } =
+    useDatabaseManagement();
 
   //  useCollections hook
   const {
@@ -90,7 +78,6 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         database,
         databases,
         setDatabase,
-        dropDatabase,
         fetchCollection,
         fetchDatabases,
         fetchCollections,

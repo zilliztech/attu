@@ -102,20 +102,18 @@ export type DataContextType = {
   loading: boolean;
   loadingDatabases: boolean;
   collections: CollectionObject[];
-  setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
-  database: string;
-  setDatabase: Dispatch<SetStateAction<string>>;
   databases: DatabaseObject[];
-  batchRefreshCollections: (collectionNames: string[], key?: string) => void;
+  database: string;
 
-  // key APIs
-  // databases
-  fetchDatabases: () => void;
-  dropDatabase: (params: { db_name: string }) => Promise<ResStatus>;
-
-  // collections
-  fetchCollections: () => void;
-  fetchCollection: (name: string, drop?: boolean) => void;
+  setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
+  setDatabase: Dispatch<SetStateAction<string>>;
+  batchRefreshCollections: (
+    collectionNames: string[],
+    key?: string
+  ) => Promise<void>;
+  fetchDatabases: () => Promise<void>;
+  fetchCollections: () => Promise<void>;
+  fetchCollection: (name: string, drop?: boolean) => Promise<void>;
   // UI preferences
   ui: {
     tree: {

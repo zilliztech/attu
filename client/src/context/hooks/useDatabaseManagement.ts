@@ -12,51 +12,39 @@ export const useDatabaseManagement = () => {
 
   // API: fetch databases
   const fetchDatabases = useCallback(
-    async (updateLoading?: boolean) => {
+    async (updateLoading?: boolean): Promise<void> => {
       try {
         updateLoading && setLoadingDatabases(true);
         const newDatabases = await DatabaseService.listDatabases();
-        // if no database, logout
         if (newDatabases.length === 0) {
           logout();
+          return;
         }
         setDatabases(newDatabases);
-        return newDatabases;
+
+        setDatabase(prev =>
+          newDatabases.some(db => db.name === prev)
+            ? prev
+            : newDatabases[0].name
+        );
+      } catch (error) {
+        console.error('Failed to fetch databases:', error);
       } finally {
         updateLoading && setLoadingDatabases(false);
       }
     },
     [logout]
-  ); // Added logout dependency
-
-  // API: delete database
-  const dropDatabase = useCallback(
-    async (params: { db_name: string }) => {
-      const res = await DatabaseService.dropDatabase(params);
-      const newDatabases = await fetchDatabases();
-      // Switch to the first available database after deletion
-      if (newDatabases.length > 0) {
-        setDatabase(newDatabases[0].name);
-      } else {
-        // Handle case where no databases are left (e.g., logout or show message)
-        logout();
-      }
-      return res;
-    },
-    [fetchDatabases, logout]
-  ); // Added fetchDatabases and logout dependencies
+  );
 
   // Effect to fetch initial databases when authenticated
   useEffect(() => {
     if (isAuth) {
-      // Update database from auth context when auth state changes
-      setDatabase(authReq.database);
-      // Fetch databases immediately when authenticated
+      if (database !== authReq.database) setDatabase(authReq.database);
       fetchDatabases(true);
     } else {
       // Clear data when not authenticated
       setDatabases([]);
-      setLoadingDatabases(true);
+      setLoadingDatabases(false);
     }
   }, [isAuth, authReq.database, fetchDatabases]); // Added fetchDatabases dependency
 
@@ -74,6 +62,5 @@ export const useDatabaseManagement = () => {
     database,
     setDatabase,
     fetchDatabases,
-    dropDatabase,
   };
 };

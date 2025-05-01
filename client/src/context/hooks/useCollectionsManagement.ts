@@ -132,7 +132,7 @@ export function useCollectionsManagement(database: string) {
   };
 
   const batchRefreshCollections = useCallback(
-    (collectionNames: string[], key: string = 'default') => {
+    async (collectionNames: string[], key: string = 'default') => {
       let ref = refreshCollectionsDebounceMapRef.current.get(key);
       if (!ref) {
         ref = { timer: null, names: [], pending: new Set() };
