@@ -5,7 +5,6 @@ import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
 import icons from '@/components/icons/Icons';
 import { ANALYZER_OPTIONS } from './Constants';
-import { DataTypeEnum } from '@/consts';
 import { getAnalyzerParams } from '@/utils';
 import { rootContext } from '@/context';
 import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
@@ -45,8 +44,10 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
   };
 
   const handleCheckboxChange = () => {
+    const isAnalyzerEnabled = !field.enable_analyzer;
     onChange(field.id!, {
-      enable_analyzer: !field.enable_analyzer,
+      enable_analyzer: isAnalyzerEnabled,
+      analyzer_params: isAnalyzerEnabled ? 'standard' : undefined,
     });
   };
 
@@ -96,13 +97,10 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
       }}
     >
       <Checkbox
-        checked={
-          !!field.enable_analyzer ||
-          field.data_type === DataTypeEnum.VarCharBM25
-        }
+        checked={!!field.enable_analyzer}
         size="small"
         onChange={handleCheckboxChange}
-        disabled={field.data_type === DataTypeEnum.VarCharBM25}
+        disabled={false}
         style={{ padding: '8px' }}
       />
       <CustomSelector
@@ -110,17 +108,13 @@ const AnalyzerCheckboxField: FC<AnalyzerCheckboxFieldProps> = ({
         options={ANALYZER_OPTIONS}
         size="small"
         onChange={e => handleAnalyzerChange(e.target.value as string)}
-        disabled={
-          !field.enable_analyzer && field.data_type !== DataTypeEnum.VarCharBM25
-        }
+        disabled={!field.enable_analyzer}
         value={analyzer}
         variant="filled"
         label={collectionTrans('analyzer')}
       />
       <CustomIconButton
-        disabled={
-          !field.enable_analyzer && field.data_type !== DataTypeEnum.VarCharBM25
-        }
+        disabled={!field.enable_analyzer}
         onClick={handleSettingsClick}
       >
         <icons.settings sx={{ fontSize: '14px', marginLeft: '4px' }} />

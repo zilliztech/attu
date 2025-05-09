@@ -5,7 +5,6 @@ import {
   VectorTypes,
   DataTypeStringEnum,
   DEFAULT_ANALYZER_PARAMS,
-  DataTypeEnum,
 } from '@/consts';
 import {
   CreateFieldType,
@@ -91,10 +90,13 @@ export const getEnumKeyByValue = (enumObj: any, enumValue: any) => {
 export const getObjFromKeyValuePair = (
   pairs: { key: string; value: any }[]
 ): { [key in string]: any } => {
-  const obj = pairs.reduce((acc, cur) => {
-    acc[cur.key] = cur.value;
-    return acc;
-  }, {} as { [key in string]: any });
+  const obj = pairs.reduce(
+    (acc, cur) => {
+      acc[cur.key] = cur.value;
+      return acc;
+    },
+    {} as { [key in string]: any }
+  );
   return obj;
 };
 
@@ -116,10 +118,7 @@ export const getCreateFieldType = (field: CreateField): CreateFieldType => {
     return 'defaultVector';
   }
 
-  if (
-    VectorTypes.includes(field.data_type) ||
-    field.data_type === DataTypeEnum.VarCharBM25
-  ) {
+  if (VectorTypes.includes(field.data_type)) {
     return 'vector';
   }
 
