@@ -87,7 +87,7 @@ const Overview = () => {
                 label={collectionTrans('enableMatch')}
               />
             ) : null}
-            {findKeyValue(f.type_params, 'enable_analyzer') ? (
+            {findKeyValue(f.type_params, 'enable_analyzer') === 'true' ? (
               <Tooltip
                 title={findKeyValue(f.type_params, 'analyzer_params') as string}
                 arrow
