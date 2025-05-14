@@ -13,6 +13,7 @@ declare module '@mui/material/styles' {
   interface TypeBackground {
     lightGrey?: string; // Adding the light property to the TypeBackground interface
     grey?: string;
+    light?: string;
   }
   interface Palette {
     background: TypeBackground; // Ensure the background interface uses the updated TypeBackground

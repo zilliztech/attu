@@ -318,17 +318,43 @@ export default function DBCollectionsSelector(
       )}
 
       {tabValue === 1 && (
-        <PrivilegeSelector
-          privilegeOptions={databasePrivilegeOptions}
-          selected={selected}
-          selectedDB={{ name: userTrans('allDatabases'), value: '*' }}
-          selectedCollection={'*'}
-          handlePrivilegeChange={handlePrivilegeChange}
-          isCategoryAllSelected={isCategoryAllSelected}
-          isCategorySomeSelected={isCategorySomeSelected}
-          handleSelectAll={handleSelectAll}
-          privilegeOptionType={privilegeOptionType}
-        />
+        <div>
+          <Autocomplete
+            className={classes.selectorDB}
+            options={dbOptions}
+            loading={loading}
+            value={selectedDB || null}
+            onChange={(_, value) => {
+              if (!value) return;
+              handleDBChange(value);
+            }}
+            getOptionLabel={option => option.name}
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
+            renderInput={params => (
+              <TextField
+                {...params}
+                label={userTrans('databases')}
+                variant="filled"
+              />
+            )}
+            noOptionsText={
+              loading ? searchTrans('loading') : searchTrans('noOptions')
+            }
+          />
+          <PrivilegeSelector
+            privilegeOptions={databasePrivilegeOptions}
+            selected={selected}
+            selectedDB={selectedDB}
+            selectedCollection={'*'}
+            handlePrivilegeChange={handlePrivilegeChange}
+            isCategoryAllSelected={isCategoryAllSelected}
+            isCategorySomeSelected={isCategorySomeSelected}
+            handleSelectAll={handleSelectAll}
+            privilegeOptionType={privilegeOptionType}
+          />
+        </div>
       )}
 
       {tabValue === 0 && (
