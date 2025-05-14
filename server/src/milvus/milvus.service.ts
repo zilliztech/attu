@@ -120,7 +120,9 @@ export class MilvusService {
         await milvusClient.use({ db_name: db });
         await milvusClient.listDatabases();
       } catch (e) {
-        throw new Error(
+        await milvusClient.closeConnection();
+        throw HttpErrors(
+          HTTP_STATUS_CODE.FORBIDDEN,
           `You don't have permission to access the database: ${db}.`
         );
       }

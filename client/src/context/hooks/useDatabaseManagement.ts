@@ -17,7 +17,6 @@ export const useDatabaseManagement = () => {
         updateLoading && setLoadingDatabases(true);
         const newDatabases = await DatabaseService.listDatabases();
         if (newDatabases.length === 0) {
-          logout();
           return;
         }
         setDatabases(newDatabases);
