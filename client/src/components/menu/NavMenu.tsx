@@ -1,4 +1,4 @@
-import { useState, FC, useEffect } from 'react';
+import { useState, FC, useEffect, useContext } from 'react';
 import clsx from 'clsx';
 import { Theme } from '@mui/material/styles';
 import List from '@mui/material/List';
@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import icons from '@/components/icons/Icons';
 import type { NavMenuItem, NavMenuType } from './Types';
+import { dataContext } from '@/context';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -60,6 +61,8 @@ const NavMenu: FC<NavMenuType> = props => {
   const classes = useStyles({ width });
   const [active, setActive] = useState<string>(defaultActive);
 
+  const { databases } = useContext(dataContext);
+
   useEffect(() => {
     if (defaultActive) {
       setActive(defaultActive);
@@ -68,6 +71,7 @@ const NavMenu: FC<NavMenuType> = props => {
 
   const NestList = (props: { data: NavMenuItem[]; className?: string }) => {
     const { className = '', data } = props;
+
     return (
       <>
         {data.map((v: NavMenuItem) => {
@@ -80,21 +84,29 @@ const NavMenu: FC<NavMenuType> = props => {
                 : v.iconNormalClass
               : 'icon';
 
+          const disabled = v.label === 'Database' && databases.length === 0;
+          const disabledTooltip = `No database available. Please create a database first.`;
+
           return (
             <ListItem
               key={v.label}
               title={v.label}
+              disabled={disabled}
               className={clsx(classes.item, {
                 [className]: className,
                 ['active']: isActive,
                 ['attu']: v.icon === icons.attu,
               })}
               onClick={() => {
+                if (disabled) return;
                 setActive(v.label);
                 v.onClick && v.onClick();
               }}
             >
-              <Tooltip title={v.label} placement="right">
+              <Tooltip
+                title={disabled ? disabledTooltip : v.label}
+                placement="right"
+              >
                 <ListItemIcon className="itemIcon">
                   <IconComponent classes={{ root: iconClass }} />
                 </ListItemIcon>
