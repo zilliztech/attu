@@ -1,19 +1,17 @@
-import { useCallback, useRef, useState, useEffect } from 'react';
+import { useCallback, useRef, useState, useEffect, useContext } from 'react';
 import { CollectionService, MilvusService } from '@/http';
 import { WS_EVENTS, WS_EVENTS_TYPE } from '@server/utils/Const';
 import { checkIndexing, checkLoading } from '@server/utils/Shared';
+import { authContext } from '@/context';
 import type { CollectionObject, CollectionFullObject } from '@server/types';
 
 export function useCollectionsManagement(database: string) {
   const [collections, setCollections] = useState<CollectionObject[]>([]);
+  const { isAuth } = useContext(authContext);
+
   const [loading, setLoading] = useState(true);
   const requestIdRef = useRef(0);
   const databaseRef = useRef(database);
-
-  // Update the ref when database changes
-  useEffect(() => {
-    databaseRef.current = database;
-  }, [database]);
 
   const detectLoadingIndexing = useCallback(
     (collections: CollectionObject[]) => {
@@ -102,6 +100,33 @@ export function useCollectionsManagement(database: string) {
     >
   >(new Map());
 
+  function clearRefreshCollectionsDebounceMapRef() {
+    refreshCollectionsDebounceMapRef.current.forEach(ref => {
+      if (ref.timer) {
+        clearTimeout(ref.timer);
+      }
+      ref.names = [];
+      ref.timer = null;
+    });
+    refreshCollectionsDebounceMapRef.current.clear();
+  }
+
+  useEffect(() => {
+    if (!isAuth) {
+      // clear collections when not authenticated
+      setCollections([]);
+      clearRefreshCollectionsDebounceMapRef();
+    }
+  }, [isAuth]);
+
+  // Update the ref when database changes
+  useEffect(() => {
+    databaseRef.current = database;
+    setCollections([]);
+    // clear refreshCollectionsDebounceMapRef
+    clearRefreshCollectionsDebounceMapRef();
+  }, [database]);
+
   const fetchCollections = async () => {
     const currentRequestId = ++requestIdRef.current;
     try {
@@ -122,17 +147,23 @@ export function useCollectionsManagement(database: string) {
     }
   };
 
-  const fetchCollection = async (name: string, drop?: boolean) => {
-    if (drop) {
-      updateCollections({ collections: [], deletedNames: [name] });
-    } else {
-      const res = await CollectionService.getCollection(name);
-      updateCollections({ collections: [res] });
-    }
-  };
+  const fetchCollection = useCallback(
+    async (name: string, drop?: boolean) => {
+      if (!isAuth) return;
+      if (drop) {
+        updateCollections({ collections: [], deletedNames: [name] });
+      } else {
+        const res = await CollectionService.getCollection(name);
+        updateCollections({ collections: [res] });
+      }
+    },
+    [isAuth, updateCollections]
+  );
 
   const batchRefreshCollections = useCallback(
     async (collectionNames: string[], key: string = 'default') => {
+      // if not logged in, do not refresh collections
+      if (!isAuth) return;
       let ref = refreshCollectionsDebounceMapRef.current.get(key);
       if (!ref) {
         ref = { timer: null, names: [], pending: new Set() };
@@ -181,7 +212,7 @@ export function useCollectionsManagement(database: string) {
         ref!.timer = null;
       }, 200);
     },
-    [collections, updateCollections] // Removed database dependency
+    [collections, updateCollections, isAuth] // Removed database dependency
   );
 
   return {
