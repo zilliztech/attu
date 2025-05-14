@@ -473,50 +473,55 @@ export class CollectionsService {
     collections: string[] = [],
     database?: string
   ): Promise<CollectionObject[]> {
-    // get all collections(name, timestamp, id)
-    const allCollections = await this.showCollections(clientId, {
-      db_name: database,
-    });
-    // get all loaded collection
-    const loadedCollections = await this.showCollections(clientId, {
-      type: ShowCollectionsType.Loaded,
-      db_name: database,
-    });
+    try {
+      // get all collections(name, timestamp, id)
+      const allCollections = await this.showCollections(clientId, {
+        db_name: database,
+      });
+      // get all loaded collection
+      const loadedCollections = await this.showCollections(clientId, {
+        type: ShowCollectionsType.Loaded,
+        db_name: database,
+      });
 
-    // data container
-    const data: CollectionObject[] = [];
+      // data container
+      const data: CollectionObject[] = [];
 
-    // get target collections details
-    const targetCollections = allCollections.data.filter(
-      d => collections.indexOf(d.name) !== -1
-    );
-
-    const targets =
-      targetCollections.length > 0 ? targetCollections : allCollections.data;
-
-    // sort targets by name
-    targets.sort((a, b) => a.name.localeCompare(b.name));
-
-    // get all collection details
-    for (let i = 0; i < targets.length; i++) {
-      const collection = targets[i];
-      const loadedCollection = loadedCollections.data.find(
-        v => v.name === collection.name
+      // get target collections details
+      const targetCollections = allCollections.data.filter(
+        d => collections.indexOf(d.name) !== -1
       );
 
-      data.push(
-        await this.getCollection(
-          clientId,
-          collection,
-          loadedCollection,
-          collections.length === 0, // if no collection is specified, load all collections without detail
-          database
-        )
-      );
+      const targets =
+        targetCollections.length > 0 ? targetCollections : allCollections.data;
+
+      // sort targets by name
+      targets.sort((a, b) => a.name.localeCompare(b.name));
+
+      // get all collection details
+      for (let i = 0; i < targets.length; i++) {
+        const collection = targets[i];
+        const loadedCollection = loadedCollections.data.find(
+          v => v.name === collection.name
+        );
+
+        data.push(
+          await this.getCollection(
+            clientId,
+            collection,
+            loadedCollection,
+            collections.length === 0, // if no collection is specified, load all collections without detail
+            database
+          )
+        );
+      }
+
+      // return data
+      return data;
+    } catch (error) {
+      // if error occurs, return empty array, for example, when the client is disconnected
+      return [];
     }
-
-    // return data
-    return data;
   }
 
   // update collections details
