@@ -72,6 +72,7 @@ jobs:
           tags: |
             zilliz/attu:${{ github.ref_name }}
             zilliz/attu:v${{ env.MAJOR }}.${{ env.MINOR }}
+            zilliz/attu:latest
           cache-from: type=registry,ref=zilliz/attu:cache
           cache-to: type=inline
           build-args: |
