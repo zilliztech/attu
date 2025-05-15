@@ -477,7 +477,6 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
           contextMenu={contextMenu!}
         />
       </Popover>
-      // ...existing code...
     </>
   );
 };
