@@ -370,6 +370,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       handleClose={() => {
         handleCloseDialog();
       }}
+      leftActions={<>Import from JSON</>}
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
       confirmDisabled={disabled || !fieldsValidation}
