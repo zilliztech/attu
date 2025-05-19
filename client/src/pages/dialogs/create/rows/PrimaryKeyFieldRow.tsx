@@ -13,21 +13,17 @@ import { rowStyles } from './styles';
 interface PrimaryKeyFieldRowProps {
   field: FieldType;
   fields: FieldType[];
-  autoID: boolean;
   onFieldChange: (
     id: string,
     changes: Partial<FieldType>,
     isValid?: boolean
   ) => void;
-  setAutoID: (value: boolean) => void;
 }
 
 const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
   field,
   fields,
-  autoID,
   onFieldChange,
-  setAutoID,
 }) => {
   const { t: collectionTrans } = useTranslation('collection');
 
@@ -50,10 +46,11 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
       <PrimaryKeyTypeSelector
         value={field.data_type}
         onChange={(value: DataTypeEnum) => {
-          onFieldChange(field.id!, { data_type: value });
+          const changes: Partial<FieldType> = { data_type: value };
           if (value === DataTypeEnum.VarChar) {
-            setAutoID(false);
+            changes.autoID = false;
           }
+          onFieldChange(field.id!, changes);
         }}
       />
 
@@ -75,12 +72,11 @@ const PrimaryKeyFieldRow: FC<PrimaryKeyFieldRowProps> = ({
       <FormControlLabel
         control={
           <Switch
-            checked={autoID}
-            disabled={isVarChar}
+            checked={!!field.autoID}
             size="small"
+            disabled={isVarChar}
             onChange={() => {
-              onFieldChange(field.id!, { autoID: !autoID });
-              setAutoID(!autoID);
+              onFieldChange(field.id!, { autoID: !field.autoID });
             }}
           />
         }

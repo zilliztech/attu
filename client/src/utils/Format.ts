@@ -70,41 +70,6 @@ export const parseLocationSearch = (search: string) => {
   return obj;
 };
 
-export const getEnumKeyByValue = (enumObj: any, enumValue: any) => {
-  const match = Object.entries(enumObj).find(
-    ([, value]) => value === enumValue
-  );
-
-  if (match) {
-    const [key] = match;
-    return key;
-  }
-
-  return '--';
-};
-
-/**
- * @param pairs e.g. [{key: 'key', value: 'value'}]
- * @returns object, e.g. {key: value}
- */
-export const getObjFromKeyValuePair = (
-  pairs: { key: string; value: any }[]
-): { [key in string]: any } => {
-  const obj = pairs.reduce(
-    (acc, cur) => {
-      acc[cur.key] = cur.value;
-      return acc;
-    },
-    {} as { [key in string]: any }
-  );
-  return obj;
-};
-
-// BinarySubstructure includes Superstructure and Substructure
-export const checkIsBinarySubstructure = (metricLabel: string): boolean => {
-  return metricLabel === 'Superstructure' || metricLabel === 'Substructure';
-};
-
 export const isVectorType = (field: FieldObject): boolean => {
   return VectorTypes.includes(field.dataType as any);
 };
@@ -130,18 +95,6 @@ export const formatAddress = (address: string): string => {
   // remove http or https prefix from address
   const ip = address.replace(/(http):\/\//, '');
   return ip.includes(':') ? ip : `${ip}:${DEFAULT_MILVUS_PORT}`;
-};
-
-// format the prometheus address
-export const formatPrometheusAddress = (address: string): string => {
-  let formatAddress = address;
-  // add protocal (default http)
-  const withProtocol = address.includes('http');
-  if (!withProtocol) formatAddress = 'http://' + formatAddress;
-  // add port (default 9090)
-  const withPort = address.includes(':');
-  if (!withPort) formatAddress = formatAddress + ':' + DEFAULT_PROMETHEUS_PORT;
-  return formatAddress;
 };
 
 export const formatByteSize = (
@@ -361,4 +314,92 @@ export const getAnalyzerParams = (
   }
 
   return analyzerParams;
+};
+
+/**
+ * Parse the imported collection JSON and return an object suitable for setForm/setFields/setConsistencyLevel
+ */
+export const parseCollectionJson = (json: any) => {
+  // Parse fields
+  const fields = (json.schema?.fields || []).map((f: any, idx: number) => {
+    // Handle type_params
+    let dim = undefined;
+    let max_length = undefined;
+    let enable_analyzer = undefined;
+    let analyzer_params = undefined;
+    if (Array.isArray(f.type_params)) {
+      f.type_params.forEach((param: any) => {
+        if (param.key === 'dim') dim = Number(param.value);
+        if (param.key === 'max_length') max_length = Number(param.value);
+        if (param.key === 'enable_analyzer')
+          enable_analyzer = param.value === 'true';
+
+        if (param.key === 'analyzer_params') {
+          try {
+            analyzer_params = JSON.parse(param.value);
+          } catch (e) {
+            console.error('Failed to parse analyzer_params:', e);
+          }
+        }
+      });
+    }
+
+    return {
+      data_type: f.dataType,
+      element_type: f.elementType,
+      is_primary_key: !!f.is_primary_key,
+      name: f.name,
+      description: f.description || '',
+      isDefault: false,
+      id: String(idx + 1),
+      dim: dim ?? (f.dim ? Number(f.dim) : undefined),
+      max_length:
+        max_length ?? (f.max_length ? Number(f.max_length) : undefined),
+      enable_analyzer: enable_analyzer ?? f.enable_analyzer === 'true',
+      analyzer_params: analyzer_params,
+      is_partition_key: !!f.is_partition_key,
+      is_function_output: !!f.is_function_output,
+      autoID: !!f.autoID,
+      default_value: f.default_value || undefined,
+      enable_match: f.enable_match,
+      max_capacity: f.max_capacity,
+      nullable: f.nullable,
+      'mmap.enabled': f['mmap.enabled'],
+    };
+  });
+
+  // Parse functions
+  const functions = (json.schema?.functions || []).map((fn: any) => ({
+    name: fn.name,
+    description: fn.description,
+    type: fn.type === 'BM25' ? 1 : 0,
+    input_field_names: fn.input_field_names,
+    output_field_names: fn.output_field_names,
+    params: fn.params || {},
+  }));
+
+  // Parse properties
+  const properties: Record<string, any> = {};
+  if (json.properties) {
+    json.properties.forEach((property: any) => {
+      if (property.key && property.value) {
+        properties[property.key] = property.value;
+      }
+    });
+  }
+
+  // Parse form
+  const form = {
+    collection_name: json.collection_name || json.schema?.name || '',
+    description: json.schema?.description || '',
+    autoID: !!json.schema?.autoID,
+    enableDynamicField: !!json.schema?.enable_dynamic_field,
+    loadAfterCreate: true,
+    functions,
+  };
+
+  // Parse consistencyLevel
+  const consistencyLevel = json.consistency_level || 'Bounded';
+
+  return { form, fields, consistencyLevel, properties };
 };
