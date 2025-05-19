@@ -17,8 +17,6 @@ import VectorFieldRow from './rows/VectorFieldRow';
 const CreateFields: FC<CreateFieldsProps> = ({
   fields,
   setFields,
-  setAutoID,
-  autoID,
   onValidationChange,
 }) => {
   // i18n
@@ -212,7 +210,6 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
   const generateRequiredFieldRow = (
     field: FieldType,
-    autoID: boolean,
     index: number,
     fields: FieldType[],
     requiredFields: FieldType[]
@@ -223,9 +220,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
         <PrimaryKeyFieldRow
           field={field}
           fields={fields}
-          autoID={autoID}
           onFieldChange={changeFields}
-          setAutoID={setAutoID}
         />
       );
     }
@@ -274,13 +269,7 @@ const CreateFields: FC<CreateFieldsProps> = ({
 
       {requiredFields.map((field, index) => (
         <Fragment key={field.id}>
-          {generateRequiredFieldRow(
-            field,
-            autoID,
-            index,
-            fields,
-            requiredFields
-          )}
+          {generateRequiredFieldRow(field, index, fields, requiredFields)}
         </Fragment>
       ))}
 

@@ -6,6 +6,7 @@ import {
   useState,
   ChangeEvent,
   useEffect,
+  useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -13,7 +14,12 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { rootContext, dataContext } from '@/context';
 import { useFormValidation } from '@/hooks';
-import { formatForm, getAnalyzerParams, TypeEnum } from '@/utils';
+import {
+  formatForm,
+  getAnalyzerParams,
+  TypeEnum,
+  parseCollectionJson,
+} from '@/utils';
 import {
   DataTypeEnum,
   ConsistencyLevelEnum,
@@ -51,14 +57,12 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
   const [form, setForm] = useState<{
     collection_name: string;
     description: string;
-    autoID: boolean;
     enableDynamicField: boolean;
     loadAfterCreate: boolean;
     functions: BM25Function[];
   }>({
     collection_name: '',
     description: '',
-    autoID: true,
     enableDynamicField: false,
     loadAfterCreate: true,
     functions: [],
@@ -73,6 +77,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
 
   const [consistencyLevel, setConsistencyLevel] =
     useState<ConsistencyLevelEnum>(ConsistencyLevelEnum.Bounded); // Bounded is the default value of consistency level
+  const [properties, setProperties] = useState({});
 
   const [fields, setFields] = useState<CreateField[]>([
     {
@@ -99,14 +104,8 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     return formatForm({ collection_name });
   }, [form]);
 
-  const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
-
-  const changeIsAutoID = (value: boolean) => {
-    setForm({
-      ...form,
-      autoID: value,
-    });
-  };
+  const { validation, checkIsValid, disabled, setDisabled } =
+    useFormValidation(checkedForm);
 
   const updateCheckBox = (
     event: ChangeEvent<any>,
@@ -220,8 +219,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           data.analyzer_params = getAnalyzerParams(data.analyzer_params);
         }
 
-        data.is_primary_key && (data.autoID = form.autoID);
-
         // delete sparse vector dime
         if (data.data_type === DataTypeEnum.SparseFloatVector) {
           delete data.dim;
@@ -242,6 +239,9 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       }),
       functions: form.functions || [],
       consistency_level: consistencyLevel,
+      properties: {
+        ...properties,
+      },
     };
 
     // create collection
@@ -364,13 +364,83 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
     });
   }, [fields]);
 
+  // Import from json
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        const json = JSON.parse(evt.target?.result as string);
+
+        if (
+          !json.collection_name ||
+          !Array.isArray(json.schema?.fields) ||
+          json.schema.fields.length === 0
+        ) {
+          openSnackBar('Invalid JSON file', 'error');
+          return;
+        }
+
+        const {
+          form: importedForm,
+          fields: importedFields,
+          consistencyLevel: importedConsistencyLevel,
+          properties: importedProperties,
+        } = parseCollectionJson(json);
+
+        setFields(importedFields);
+        setConsistencyLevel(importedConsistencyLevel);
+        setForm(importedForm);
+        setProperties(importedProperties);
+
+        // enable submit
+        setDisabled(false);
+
+        openSnackBar('Import successful', 'success');
+      } catch (err) {
+        openSnackBar('Invalid JSON file', 'error');
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <DialogTemplate
+      dialogClass="create-collection-dialog"
       title={collectionTrans('createTitle', { name: form.collection_name })}
       handleClose={() => {
         handleCloseDialog();
       }}
-      leftActions={<>Import from JSON</>}
+      leftActions={
+        <>
+          <button
+            type="button"
+            onClick={handleImportClick}
+            style={{
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+              color: '#1976d2',
+            }}
+          >
+            {btnTrans('importFromJSON')}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </>
+      }
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
       confirmDisabled={disabled || !fieldsValidation}
@@ -399,8 +469,6 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
           <CreateFields
             fields={fields}
             setFields={setFields}
-            autoID={form.autoID}
-            setAutoID={changeIsAutoID}
             onValidationChange={setFieldsValidation}
           />
         </Box>

@@ -47,6 +47,7 @@ const btnTrans = {
   editDefaultValue: '编辑默认值',
   viewData: '查看数据',
   mmapSetting: '内存映射 (MMap) 设置',
+  importFromJSON: '从 JSON 导入',
 
   // tips
   loadColTooltip: '加载 Collection',

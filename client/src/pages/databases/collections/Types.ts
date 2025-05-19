@@ -17,10 +17,10 @@ export type FunctionConfig = {
 export interface CollectionCreateParam {
   collection_name: string;
   description: string;
-  autoID: boolean;
   fields: CreateField[];
   consistency_level: string;
   functions: FunctionConfig[];
+  properties: Record<string, unknown>;
 }
 
 export type AnalyzerType = 'standard' | 'english' | 'chinese';
@@ -80,8 +80,6 @@ export type FieldType = {
 export interface CreateFieldsProps {
   fields: CreateField[];
   setFields: Dispatch<SetStateAction<CreateField[]>>;
-  autoID: boolean;
-  setAutoID: (value: boolean) => void;
   onValidationChange: (isValid: boolean) => void;
 }
 

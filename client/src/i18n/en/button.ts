@@ -47,6 +47,7 @@ const btnTrans = {
   EditDefaultValue: 'Edit Default Value',
   viewData: 'View Data',
   mmapSetting: 'MMap Settings',
+  importFromJSON: 'Import from JSON',
 
   // tips
   loadColTooltip: 'Load Collection',
