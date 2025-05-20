@@ -8,6 +8,7 @@ export {
   TypeParam,
   QueryResults,
   SearchResultData,
+  MutationResult,
 } from '@zilliz/milvus2-sdk-node';
 
 export * from './collections.type';

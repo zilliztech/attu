@@ -1,7 +1,6 @@
 import {
   BYTE_UNITS,
   DEFAULT_MILVUS_PORT,
-  DEFAULT_PROMETHEUS_PORT,
   VectorTypes,
   DataTypeStringEnum,
   DEFAULT_ANALYZER_PARAMS,
@@ -402,4 +401,35 @@ export const parseCollectionJson = (json: any) => {
   const consistencyLevel = json.consistency_level || 'Bounded';
 
   return { form, fields, consistencyLevel, properties };
+};
+
+export const convertVectorFields = (
+  jsonData: Record<string, any> | Record<string, any>[],
+  fields: any[]
+): typeof jsonData => {
+  const vectorFields = fields.filter(isVectorType).map(f => f.name);
+
+  const convert = (item: Record<string, any>) => {
+    const newItem = { ...item };
+    vectorFields.forEach(field => {
+      if (typeof newItem[field] === 'string') {
+        try {
+          const str = newItem[field].trim();
+          if (str.startsWith('[') && str.endsWith(']')) {
+            newItem[field] = JSON.parse(str);
+          } else {
+            newItem[field] = str.split(',').map(Number);
+          }
+        } catch {
+          // If parsing fails, keep the original string
+        }
+      }
+    });
+    return newItem;
+  };
+
+  if (Array.isArray(jsonData)) {
+    return jsonData.map(convert);
+  }
+  return convert(jsonData);
 };

@@ -5,7 +5,7 @@ import type {
   DeleteEntitiesReq,
 } from '@/pages/databases/collections/Types';
 import type { VectorSearchParam } from '@/types/SearchTypes';
-import type { VectorSearchResults } from '@server/types';
+import { MutationResult, type VectorSearchResults } from '@server/types';
 
 export class DataService extends BaseModel {
   static importSample(collectionName: string, param: LoadSampleParam) {
@@ -16,7 +16,7 @@ export class DataService extends BaseModel {
   }
 
   static insertData(collectionName: string, param: InsertDataParam) {
-    return super.create({
+    return super.create<MutationResult>({
       path: `/collections/${collectionName}/insert`,
       data: param,
     });

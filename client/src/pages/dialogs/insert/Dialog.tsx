@@ -14,7 +14,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import icons from '@/components/icons/Icons';
 import { PartitionService } from '@/http';
 import { rootContext } from '@/context';
-import { combineHeadsAndData } from '@/utils';
+import { combineHeadsAndData, convertVectorFields } from '@/utils';
 import { FILE_MIME_TYPE } from '@/consts';
 import InsertImport from './Import';
 import InsertPreview from './Preview';
@@ -311,7 +311,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     // process data
     const data =
       typeof jsonData !== 'undefined'
-        ? jsonData
+        ? convertVectorFields(jsonData, fields!)
         : combineHeadsAndData(
             tableHeads,
             isContainFieldNames ? csvData.slice(1) : csvData,
@@ -324,11 +324,15 @@ const InsertContainer: FC<InsertContentProps> = ({
     };
 
     try {
-      await DataService.insertData(collectionValue, param);
-      await DataService.flush(collectionValue);
-      // update collections
-      await onInsert(collectionValue);
-      setInsertStatus(InsertStatusEnum.success);
+      const inserted = await DataService.insertData(collectionValue, param);
+      if (inserted.status.error_code !== 'Success') {
+        setInsertFailMsg(inserted.status.reason);
+      } else {
+        await DataService.flush(collectionValue);
+        // update collections
+        await onInsert(collectionValue);
+        setInsertStatus(InsertStatusEnum.success);
+      }
     } catch (err: any) {
       const {
         response: {
