@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
-import { Typography, Theme, Switch, FormControlLabel } from '@mui/material';
+import { Typography, Switch, FormControlLabel } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { authContext, rootContext, dataContext } from '@/context';
 import { MilvusService } from '@/http';
@@ -12,26 +12,7 @@ import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import icons from '@/components/icons/Icons';
 import type { CollectionObject } from '@server/types';
-import { makeStyles } from '@mui/styles';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  desc: {
-    marginBottom: theme.spacing(2),
-    maxWidth: 480,
-  },
-  replicaDesc: {
-    marginBottom: theme.spacing(2),
-    maxWidth: 480,
-  },
-  toggle: {
-    marginBottom: theme.spacing(2),
-  },
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-  },
-}));
 
 const LoadCollectionDialog = (props: {
   collection: CollectionObject;
@@ -39,7 +20,6 @@ const LoadCollectionDialog = (props: {
   isModifyReplica?: boolean;
 }) => {
   const { fetchCollection } = useContext(dataContext);
-  const classes = useStyles();
   const { collection, onLoad, isModifyReplica } = props;
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: collectionTrans } = useTranslation('collection');
@@ -195,7 +175,11 @@ const LoadCollectionDialog = (props: {
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ marginBottom: 2, maxWidth: 480 }}
+          >
             {collectionTrans(isModifyReplica ? 'replicaDes' : 'loadContent')}
           </Typography>
           {enableRelica ? (
@@ -208,11 +192,11 @@ const LoadCollectionDialog = (props: {
                   <CustomToolTip title={collectionTrans('replicaDes')}>
                     <>
                       {collectionTrans('enableRepica')}
-                      <QuestionIcon classes={{ root: classes.icon }} />
+                      <QuestionIcon sx={{ fontSize: 14, ml: 0.5 }} />
                     </>
                   </CustomToolTip>
                 }
-                className={classes.toggle}
+                sx={{ marginBottom: 2 }}
               />
             </>
           ) : null}

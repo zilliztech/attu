@@ -1,21 +1,14 @@
 import { FC, useContext, useMemo, useState } from 'react';
-import { Typography, Theme } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
-import { makeStyles } from '@mui/styles';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type { CollectionObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  desc: {
-    margin: '8px 0 16px 0',
-  },
-}));
 
 export interface CreateAliasProps {
   collection: CollectionObject;
@@ -30,8 +23,6 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
   const [form, setForm] = useState({
     alias: '',
   });
-
-  const classes = useStyles();
 
   const checkedForm = useMemo(() => {
     const { alias } = form;
@@ -85,7 +76,11 @@ const CreateAliasDialog: FC<CreateAliasProps> = props => {
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ margin: '8px 0 16px 0' }}
+          >
             {collectionTrans('aliasInfo')}
           </Typography>
           <CustomInput

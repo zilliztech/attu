@@ -1,22 +1,14 @@
 import { FC, useContext, useMemo, useState } from 'react';
-import { Typography, Theme } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
-import { makeStyles } from '@mui/styles';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type { CollectionObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  desc: {
-    margin: '8px 0 16px 0',
-    color: theme.palette.text.secondary,
-  },
-}));
 
 export interface RenameCollectionProps {
   collection: CollectionObject;
@@ -28,8 +20,6 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
   const [form, setForm] = useState({
     new_collection_name: '',
   });
-
-  const classes = useStyles();
 
   const checkedForm = useMemo(() => {
     const { new_collection_name } = form;
@@ -92,7 +82,14 @@ const RenameCollectionDialog: FC<RenameCollectionProps> = props => {
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{
+              margin: '8px 0 16px 0',
+              color: theme => theme.palette.text.secondary,
+            }}
+          >
             {collectionTrans('newNameInfo')}
           </Typography>
           <CustomInput

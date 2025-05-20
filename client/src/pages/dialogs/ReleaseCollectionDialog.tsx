@@ -1,27 +1,16 @@
 import { useContext, useState } from 'react';
-import { Typography, Theme } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { rootContext, dataContext } from '@/context';
-import { makeStyles } from '@mui/styles';
 import type { CollectionObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  desc: {
-    margin: '8px 0 16px 0',
-    maxWidth: 480,
-    color: theme.palette.text.secondary,
-  },
-}));
 
 const ReleaseCollectionDialog = (props: {
   collection: CollectionObject;
   onRelease?: (collection: CollectionObject) => void;
 }) => {
   const { fetchCollection } = useContext(dataContext);
-
-  const classes = useStyles();
 
   const { collection, onRelease } = props;
   const { t: dialogTrans } = useTranslation('dialog');
@@ -69,7 +58,15 @@ const ReleaseCollectionDialog = (props: {
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{
+              margin: '8px 0 16px 0',
+              maxWidth: 480,
+              color: (theme) => theme.palette.text.secondary,
+            }}
+          >
             {dialogTrans('releaseContent', {
               type: collection.collection_name,
             })}
