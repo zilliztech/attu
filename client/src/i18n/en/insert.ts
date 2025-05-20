@@ -31,7 +31,7 @@ const insertTrans = {
   statusError: 'Import File Failed!',
 
   importSampleData: 'Insert sample data into {{collection}}',
-  sampleDataSize: 'Choose sample data size',
+  sampleDataSize: 'Choose or enter sample data size, max 10000',
   importSampleDataDesc: `This function inserts randomly generated data matching the collection schema. Useful for testing and development. Click the download button to get the data.`,
   downloadSampleDataCSV: `Download Sample CSV Data`,
   downloadSampleDataJSON: `Download Sample JSON Data`,

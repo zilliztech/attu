@@ -28,7 +28,7 @@ const insertTrans = {
   statusError: '数据导入失败！',
 
   importSampleData: '将样本数据导入到 {{collection}}',
-  sampleDataSize: '选择样本数据大小',
+  sampleDataSize: '选择或者输入样本数据大小, 最大值为 10000',
   importSampleDataDesc: `此功能导入与 Collection Schema 匹配的随机生成的数据。对于测试和开发很有用。点击下载按钮获取数据。`,
   downloadSampleDataCSV: `下载样本 CSV 数据`,
   downloadSampleDataJSON: `下载样本 JSON 数据`,
