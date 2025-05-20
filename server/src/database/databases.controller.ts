@@ -52,16 +52,19 @@ export class DatabasesController {
   async listDatabases(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.databasesService.listDatabase(req.clientId);
-      result.sort((a: DatabaseObject, b: DatabaseObject) => {
-        if (a.name === 'default') {
-          return -1; // 'default' comes before other strings
-        } else if (b.name === 'default') {
-          return 1; // 'default' comes after other strings
-        } else {
-          return a.name.localeCompare(b.name); // sort other strings alphabetically
-        }
-      });
-      res.send(result);
+
+      const defaultDb = result.find(
+        (db: DatabaseObject) => db.name === 'default'
+      );
+      const otherDbs = result
+        .filter((db: DatabaseObject) => db.name !== 'default')
+        .sort((a: DatabaseObject, b: DatabaseObject) => {
+          return Number(b.created_timestamp) - Number(a.created_timestamp);
+        });
+
+      const sortedResult = defaultDb ? [defaultDb, ...otherDbs] : otherDbs;
+
+      res.send(sortedResult);
     } catch (error) {
       next(error);
     }
