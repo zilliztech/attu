@@ -1,46 +1,21 @@
 import { useContext, useMemo } from 'react';
-import { Theme, Typography } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { dataContext, systemContext } from '@/context';
+import {
+  dataContext,
+  systemContext,
+  authContext,
+  rootContext,
+} from '@/context';
 import { MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import DatabaseCard from './DatabaseCard';
+import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
+import icons from '@/components/icons/Icons';
 import SysCard from './SysCard';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  homeWrapper: {
-    gap: theme.spacing(2),
-    '& h4': {
-      marginBottom: theme.spacing(2),
-    },
-    color: theme.palette.text.primary,
-  },
-
-  section: {
-    width: '85%',
-    marginBottom: theme.spacing(2),
-  },
-  cardWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexGrow: 0,
-    gap: theme.spacing(2),
-  },
-}));
-
-export const CREATE_DB = {
-  name: '___new___',
-  collections: [],
-  createdTime: 0,
-  db_name: '___new___',
-  properties: [],
-  created_timestamp: 0,
-  dbID: 0,
-};
 
 const Home = () => {
   useNavigationHook(ALL_ROUTER_TYPES.HOME);
@@ -53,7 +28,6 @@ const Home = () => {
     fetchDatabases,
   } = useContext(dataContext);
   const { data } = useContext(systemContext);
-  const classes = useStyles();
   const { t: homeTrans } = useTranslation('home');
   const { t: databaseTrans } = useTranslation('database');
 
@@ -90,16 +64,86 @@ const Home = () => {
     return `${duration.toFixed(2)} ${unit}`;
   }, [data.rootCoord]);
 
+  const { isServerless } = useContext(authContext);
+  const { setDialog } = useContext(rootContext);
+  const PlusIcon = icons.add;
+
+  const handleCreateDbClick = () => {
+    if (isServerless) {
+      window.open('https://cloud.zilliz.com/', '_blank');
+      return;
+    }
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component: <CreateDatabaseDialog />,
+      },
+    });
+  };
+
   return (
-    <section className={`page-wrapper  ${classes.homeWrapper}`}>
-      <section className={classes.section}>
-        <Typography variant="h4">{databaseTrans('databases')}</Typography>
+    <Box className="page-wrapper" sx={{ color: 'inherit' }}>
+      <Box
+        sx={{
+          width: '90%',
+          mb: 2,
+        }}
+      >
+        <Box display="flex" alignItems="center" mb={2}>
+          <Box display="flex" alignItems="center">
+            <Typography
+              variant="h4"
+              sx={{
+                mr: 1,
+                position: 'relative',
+                top: 8,
+                mb: 2,
+                color: theme => theme.palette.text.primary,
+              }}
+            >
+              {databaseTrans('databases')}
+            </Typography>
+            <Typography
+              component="span"
+              variant="subtitle1"
+              color="textSecondary"
+              sx={{ position: 'relative', top: 1, mr: 2 }}
+            >
+              ({databases.length})
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={handleCreateDbClick}
+            sx={{
+              ml: 0,
+              minWidth: 24,
+              width: 24,
+              height: 24,
+              p: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <PlusIcon sx={{ fontSize: 20 }} />
+          </Button>
+        </Box>
         {loadingDatabases ? (
           <StatusIcon type={LoadingType.CREATING} />
         ) : (
-          <div className={classes.cardWrapper}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexGrow: 0,
+              gap: 2,
+            }}
+          >
             {databases.map(db => {
-              // if the database is the current database, using client side collections data to avoid more requests
               if (db.name === database) {
                 db.collections = collections.map(c => c.collection_name);
               }
@@ -113,21 +157,32 @@ const Home = () => {
                 />
               );
             })}
-            <DatabaseCard
-              database={CREATE_DB}
-              setDatabase={setDatabase}
-              fetchDatabases={fetchDatabases}
-              key={CREATE_DB.name}
-            />
-          </div>
+          </Box>
         )}
-      </section>
+      </Box>
 
       {data?.systemInfo && (
         <>
-          <section className={classes.section}>
-            <Typography variant="h4">{homeTrans('sysInfo')}</Typography>
-            <div className={classes.cardWrapper}>
+          <Box
+            sx={{
+              width: '90%',
+              marginBottom: 2,
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{ mb: 2, color: theme => theme.palette.text.primary }}
+            >
+              {homeTrans('sysInfo')}
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                flexGrow: 0,
+                gap: 2,
+              }}
+            >
               <SysCard
                 title={'Milvus Version'}
                 count={data?.systemInfo?.build_version}
@@ -155,12 +210,24 @@ const Home = () => {
                 count={data?.roles?.length}
                 link="roles"
               />
-            </div>
-          </section>
+            </Box>
+          </Box>
 
           {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED && (
-            <section className={classes.section}>
-              <div className={classes.cardWrapper}>
+            <Box
+              sx={{
+                width: '90%',
+                marginBottom: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  flexGrow: 0,
+                  gap: 2,
+                }}
+              >
                 <SysCard
                   title={homeTrans('dataNodes')}
                   count={data?.dataNodes?.length}
@@ -176,12 +243,12 @@ const Home = () => {
                   count={data?.queryNodes?.length}
                   link="system"
                 />
-              </div>
-            </section>
+              </Box>
+            </Box>
           )}
         </>
       )}
-    </section>
+    </Box>
   );
 };
 

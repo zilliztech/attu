@@ -6,8 +6,6 @@ import { MilvusService, DatabaseService } from '@/http';
 import icons from '@/components/icons/Icons';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { rootContext, authContext } from '@/context';
-import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
-import { CREATE_DB } from './Home';
 import type { DatabaseObject } from '@server/types';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -60,48 +58,6 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
     await MilvusService.useDatabase({ database: 'default' });
     handleCloseDialog();
   };
-
-  // empty database => create new database
-  if (database.name === CREATE_DB.name) {
-    return (
-      <Box
-        component="section"
-        className={wrapperClass}
-        sx={{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-          backgroundColor: theme => theme.palette.background.paper,
-          color: theme => theme.palette.text.primary,
-          padding: 2,
-          border: theme => `1px dashed ${theme.palette.primary.main}`,
-          minWidth: '168px',
-          minHeight: '168px',
-          cursor: 'pointer',
-          borderRadius: 2,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onClick={() => {
-          if (isServerless) {
-            window.open('https://cloud.zilliz.com/', '_blank');
-            return;
-          }
-          setDialog({
-            open: true,
-            type: 'custom',
-            params: {
-              component: <CreateDatabaseDialog />,
-            },
-          });
-        }}
-      >
-        <PlusIcon />
-        <Typography variant="h6">{dbTrans('createTitle')}</Typography>
-      </Box>
-    );
-  }
 
   return (
     <Box component="section" className={wrapperClass}>
