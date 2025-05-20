@@ -1,4 +1,3 @@
-import { Theme } from '@mui/material';
 import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { rootContext } from '@/context';
@@ -11,20 +10,11 @@ import { PartitionService } from '@/http';
 import { PartitionCreateProps } from './Types';
 import { PartitionManageParam } from '../databases/collections/partitions/Types';
 import { ManageRequestMethods } from '@/consts';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    margin: theme.spacing(3, 0, 0.5),
-  },
-}));
 
 const CreatePartition: FC<PartitionCreateProps> = ({
   onCreate,
   collectionName,
 }) => {
-  const classes = useStyles();
-
   const { handleCloseDialog } = useContext(rootContext);
   const { t: partitionTrans } = useTranslation('partition');
   const { t: btnTrans } = useTranslation('btn');
@@ -48,7 +38,7 @@ const CreatePartition: FC<PartitionCreateProps> = ({
     key: 'name',
     fullWidth: true,
     onChange: handleInputChange,
-    className: classes.input,
+    sx: { margin: theme => theme.spacing(3, 0, 0.5) },
     validations: [
       {
         rule: 'require',

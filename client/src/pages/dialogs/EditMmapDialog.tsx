@@ -1,7 +1,6 @@
 import { FC, useContext, useState } from 'react';
 import {
   Typography,
-  Theme,
   Table,
   TableBody,
   TableCell,
@@ -15,39 +14,8 @@ import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { CollectionService } from '@/http';
-import { makeStyles } from '@mui/styles';
 import { CollectionObject, MmapChanges } from '@server/types';
 import { findKeyValue } from '@/utils';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  desc: {
-    margin: '8px 0 16px 0',
-    fontSize: '14px',
-  },
-  collection: {
-    margin: '8px 0 0 0',
-    fontSize: '13px',
-    fontWeight: 800,
-  },
-  dialog: {
-    minWidth: '600px',
-    maxWidth: '800px',
-  },
-  table: {
-    marginTop: theme.spacing(0),
-    '& th': {
-      fontWeight: 'bold',
-    },
-  },
-  fieldName: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  fieldType: {
-    color: theme.palette.text.secondary,
-    fontSize: '0.8rem',
-  },
-}));
 
 interface EditMmapProps {
   collection: CollectionObject;
@@ -66,8 +34,6 @@ interface FieldMmapState {
 
 const EditMmapDialog: FC<EditMmapProps> = props => {
   const { collection, cb } = props;
-
-  const classes = useStyles();
 
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { fetchCollection } = useContext(dataContext);
@@ -191,18 +157,30 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
 
   return (
     <DialogTemplate
-      dialogClass={classes.dialog}
+      sx={{
+        minWidth: '600px',
+        maxWidth: '800px',
+      }}
       title={dialogTrans('manageMmapTitle', {
         type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={
         <Box>
-          <p
-            className={classes.desc}
+          <Typography
+            variant="body2"
+            sx={{ margin: '8px 0 16px 0', fontSize: '14px' }}
             dangerouslySetInnerHTML={{ __html: dialogTrans('editMmapInfo') }}
-          ></p>
-          <div className={classes.collection}>
+          />
+          <Box
+            sx={{
+              margin: '8px 0 0 0',
+              fontSize: '13px',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             {collectionTrans('collectionMMapSettingsLabel')}
             <Switch
               checked={pendingCollectionMmap}
@@ -210,10 +188,16 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
                 setPendingCollectionMmap(e.target.checked);
               }}
               color="primary"
+              sx={{ ml: 1 }}
             />
-          </div>
+          </Box>
           <br />
-          <Table className={classes.table}>
+          <Table
+            sx={{
+              marginTop: 0,
+              '& th': { fontWeight: 'bold' },
+            }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell>{collectionTrans('fieldName')}</TableCell>
@@ -225,9 +209,14 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
               {fieldsState.map(field => (
                 <TableRow key={field.id}>
                   <TableCell>
-                    <Box className={classes.fieldName}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                       <span>{field.name}</span>
-                      <span className={classes.fieldType}>
+                      <span
+                        style={{
+                          color: 'rgba(0,0,0,0.6)',
+                          fontSize: '0.8rem',
+                        }}
+                      >
                         {field.dataType}
                       </span>
                     </Box>

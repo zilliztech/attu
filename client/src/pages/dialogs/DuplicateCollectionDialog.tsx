@@ -1,5 +1,5 @@
 import { FC, useContext, useMemo, useState } from 'react';
-import { Typography, Theme } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -7,19 +7,8 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { formatForm } from '@/utils';
 import { useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
-import { makeStyles } from '@mui/styles';
 import type { CollectionObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    width: theme.spacing(48),
-  },
-  desc: {
-    margin: '8px 0 16px 0',
-    color: theme.palette.text.secondary,
-  },
-}));
 
 export interface DuplicateCollectionDialogProps {
   collection: CollectionObject;
@@ -34,8 +23,6 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
   const [form, setForm] = useState({
     duplicate: `${collection.collection_name}_duplicate`,
   });
-
-  const classes = useStyles();
 
   const checkedForm = useMemo(() => {
     const { duplicate } = form;
@@ -109,14 +96,21 @@ const DuplicateCollectionDialog: FC<DuplicateCollectionDialogProps> = props => {
 
   return (
     <DialogTemplate
-      dialogClass={classes.wrapper}
+      sx={{ width: theme => theme.spacing(48) }}
       title={dialogTrans('duplicateTitle', {
         type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{
+              margin: '8px 0 16px 0',
+              color: theme => theme.palette.text.secondary,
+            }}
+          >
             {dialogTrans('duplicateCollectionInfo')}
           </Typography>
           <CustomInput

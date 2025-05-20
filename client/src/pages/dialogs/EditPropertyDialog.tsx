@@ -1,5 +1,5 @@
 import { FC, useContext, useMemo, useState } from 'react';
-import { Typography, Theme } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -8,16 +8,9 @@ import { formatForm } from '@/utils';
 import { IForm, useFormValidation } from '@/hooks';
 import { ITextfieldConfig } from '@/components/customInput/Types';
 import { Property } from '@/consts';
-import { makeStyles } from '@mui/styles';
 import { DatabaseService } from '@/http';
 import type { CollectionObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  desc: {
-    margin: '8px 0 16px 0',
-  },
-}));
 
 export interface EditPropertyProps {
   target: CollectionObject | string;
@@ -35,8 +28,6 @@ const EditPropertyDialog: FC<EditPropertyProps> = props => {
     key: 'property',
     value: property.value,
   });
-
-  const classes = useStyles();
 
   const checkedForm = useMemo(() => {
     return formatForm(form);
@@ -113,7 +104,11 @@ const EditPropertyDialog: FC<EditPropertyProps> = props => {
       handleClose={handleCloseDialog}
       children={
         <>
-          <Typography variant="body1" component="p" className={classes.desc}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ margin: '8px 0 16px 0' }} // 用 sx 替代 className
+          >
             <code>
               <b>{property.key}</b>
             </code>

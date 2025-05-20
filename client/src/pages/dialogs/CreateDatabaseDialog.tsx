@@ -1,4 +1,3 @@
-import { Theme } from '@mui/material';
 import { FC, useMemo, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -8,14 +7,7 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { CreateDatabaseParams } from '@/http';
 import { dataContext, rootContext } from '@/context';
-import { makeStyles } from '@mui/styles';
 import { DatabaseService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    margin: theme.spacing(3, 0, 0.5),
-  },
-}));
 
 export interface CreateDatabaseProps {
   onCreate?: () => void;
@@ -45,8 +37,6 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
   }, [form]);
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const classes = useStyles();
-
   const handleInputChange = (key: 'db_name', value: string) => {
     setForm(v => ({ ...v, [key]: value }));
   };
@@ -57,7 +47,7 @@ const CreateDatabaseDialog: FC<CreateDatabaseProps> = ({ onCreate }) => {
       key: 'db_name',
       onChange: (value: string) => handleInputChange('db_name', value),
       variant: 'filled',
-      className: classes.input,
+      sx: { margin: theme => theme.spacing(3, 0, 0.5) },
       placeholder: databaseTrans('database'),
       fullWidth: true,
       validations: [
