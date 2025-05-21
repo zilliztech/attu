@@ -1,32 +1,18 @@
-import { Theme } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import CustomInput from '@/components/customInput/CustomInput';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { makeStyles } from '@mui/styles';
 import { UserService } from '@/http';
 import type { UpdateUserParams, UpdateUserProps } from '../Types';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    maxWidth: 480,
-  },
-  input: {
-    margin: theme.spacing(1, 0, 0.5),
-  },
-}));
 
 const UpdateUser: FC<UpdateUserProps> = ({
   handleClose,
   onUpdate,
   username,
 }) => {
-  // styles
-  const classes = useStyles();
-
   // i18n
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
@@ -65,13 +51,14 @@ const UpdateUser: FC<UpdateUserProps> = ({
   };
 
   // UI configs
+  const inputSx = { mt: 1, mb: 0.5 };
   const createConfigs: ITextfieldConfig[] = [
     {
       label: userTrans('oldPassword'),
       key: 'oldPassword',
       onChange: (value: string) => handleInputChange('oldPassword', value),
       variant: 'filled',
-      className: classes.input,
+      sx: inputSx,
       placeholder: userTrans('oldPassword'),
       fullWidth: true,
       validations: [
@@ -90,7 +77,7 @@ const UpdateUser: FC<UpdateUserProps> = ({
       key: 'newPassword',
       onChange: (value: string) => handleInputChange('newPassword', value),
       variant: 'filled',
-      className: classes.input,
+      sx: inputSx,
       placeholder: userTrans('newPassword'),
       fullWidth: true,
       validations: [
@@ -109,7 +96,7 @@ const UpdateUser: FC<UpdateUserProps> = ({
       key: 'confirmPassword',
       onChange: (value: string) => handleInputChange('confirmPassword', value),
       variant: 'filled',
-      className: classes.input,
+      sx: inputSx,
       placeholder: userTrans('confirmPassword'),
       fullWidth: true,
       validations: [
@@ -134,7 +121,7 @@ const UpdateUser: FC<UpdateUserProps> = ({
 
   return (
     <DialogTemplate
-      dialogClass={classes.root}
+      sx={{ maxWidth: 480 }}
       title={userTrans('updateUserPassTitle', { username })}
       handleClose={handleClose}
       confirmLabel={btnTrans('update')}
