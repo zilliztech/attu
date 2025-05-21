@@ -7,35 +7,10 @@ import Icons from '../icons/Icons';
 import SearchInput from '../customInput/SearchInput';
 import { throwErrorForDev } from '../../utils/Common';
 import CustomIconButton from '../customButton/CustomIconButton';
-import { makeStyles } from '@mui/styles';
-import type { Theme } from '@mui/material/styles';
 import type { ToolBarConfig, ToolBarType } from './Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  countLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.default,
-    opacity: 0.4,
-  },
-  btn: {
-    marginRight: theme.spacing(0.5),
-  },
-  gridEnd: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  toolbar: {
-    marginBottom: theme.spacing(1),
-  },
-}));
 
 const CustomToolBar: FC<ToolBarType> = props => {
   const { toolbarConfigs, selected = [], hideOnDisable = false } = props;
-  const classes = useStyles();
 
   // remove hidden button
   const leftConfigs = useMemo(() => {
@@ -56,7 +31,11 @@ const CustomToolBar: FC<ToolBarType> = props => {
 
   return (
     <>
-      <Grid container role="toolbar" className={classes.toolbar}>
+      <Grid
+        container
+        role="toolbar"
+        sx={theme => ({ marginBottom: theme.spacing(1) })}
+      >
         <Grid item xs={10}>
           {leftConfigs.map((c, i) => {
             const isSelect = c.type === 'select' || c.type === 'groupSelect';
@@ -92,7 +71,7 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 // use contained variant as default
                 variant={c.btnVariant || 'contained'}
                 tooltip={tooltip}
-                className={classes.btn}
+                sx={theme => ({ marginRight: theme.spacing(0.5) })}
                 role="button"
               >
                 <Typography variant="button">{c.label}</Typography>
@@ -116,7 +95,15 @@ const CustomToolBar: FC<ToolBarType> = props => {
         </Grid>
 
         {rightConfigs.length > 0 && (
-          <Grid className={classes.gridEnd} item xs={2}>
+          <Grid
+            item
+            xs={2}
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}
+          >
             {rightConfigs.map((c, i) => {
               if (c.icon === 'search') {
                 if (!c.onSearch) {
