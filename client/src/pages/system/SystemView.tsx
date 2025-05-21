@@ -6,8 +6,6 @@ import { MilvusService } from '@/http';
 import { parseJson } from '@/utils';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
-// import LineChartCard from './LineChartCard';
-// import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
 
 const SystemView: any = () => {

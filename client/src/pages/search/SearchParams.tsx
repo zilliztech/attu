@@ -1,5 +1,5 @@
-import { Theme } from '@mui/material';
 import { FC, useCallback, useContext, useEffect, useMemo } from 'react';
+import Box from '@mui/material/Box';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import { ITextfieldConfig } from '@/components/customInput/Types';
@@ -13,24 +13,6 @@ import { rootContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import type { SearchParamInputConfig, SearchParamsProps } from './Types';
-import { makeStyles } from '@mui/styles';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  selector: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  input: {
-    marginBottom: theme.spacing(2),
-  },
-  inlineInput: {
-    width: 160,
-    '&:nth-child(odd)': {
-      marginRight: theme.spacing(1),
-    },
-  },
-  inlineInputWrapper: {},
-}));
 
 const SearchParams: FC<SearchParamsProps> = ({
   indexType = '',
@@ -42,7 +24,6 @@ const SearchParams: FC<SearchParamsProps> = ({
   wrapperClass = '',
 }) => {
   const { t: warningTrans } = useTranslation('warning');
-  const classes = getStyles();
 
   const { openSnackBar } = useContext(rootContext);
 
@@ -107,7 +88,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         onChange: value => {
           handleChange(value);
         },
-        className: classes.inlineInput,
+        className: 'inline-input',
         variant: 'filled',
         type: type,
         value,
@@ -156,7 +137,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       }
       return config;
     },
-    [classes.inlineInput, warningTrans]
+    [warningTrans]
   );
 
   const getSearchInputConfig = useCallback(
@@ -179,7 +160,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           handleChange: value => {
             handleInputChange('filter', value);
           },
-          className: classes.inlineInput,
+          className: 'inline-input',
         },
         round_decimal: {
           label: 'round',
@@ -193,7 +174,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           handleChange: value => {
             handleInputChange('round_decimal', value);
           },
-          className: classes.inlineInput,
+          className: 'inline-input',
         },
         nprobe: {
           label: 'nprobe',
@@ -206,7 +187,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           handleChange: value => {
             handleInputChange('nprobe', value);
           },
-          className: classes.inlineInput,
+          className: 'inline-input',
         },
         radius: {
           label: 'radius',
@@ -218,7 +199,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           handleChange: value => {
             handleInputChange('radius', value);
           },
-          className: classes.inlineInput,
+          className: 'inline-input',
         },
         range_filter: {
           label: 'range filter',
@@ -230,7 +211,7 @@ const SearchParams: FC<SearchParamsProps> = ({
           handleChange: value => {
             handleInputChange('range_filter', value);
           },
-          className: classes.inlineInput,
+          className: 'inline-input',
         },
         ef: {
           label: 'ef',
@@ -367,14 +348,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       const param = configParamMap[paramKey];
       return getInputConfig(param);
     },
-    [
-      indexParams,
-      searchParamsForm,
-      classes.inlineInput,
-      topK,
-      getInputConfig,
-      handleInputChange,
-    ]
+    [indexParams, searchParamsForm, topK, getInputConfig, handleInputChange]
   );
 
   useEffect(() => {
@@ -401,8 +375,8 @@ const SearchParams: FC<SearchParamsProps> = ({
   }, [disabled, setParamsDisabled]);
 
   return (
-    <div className={wrapperClass}>
-      <div className={classes.inlineInputWrapper}>
+    <Box className={wrapperClass}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {/* dynamic params, now every type only has one param except metric type */}
         {searchParams.map(param => (
           <CustomInput
@@ -413,8 +387,8 @@ const SearchParams: FC<SearchParamsProps> = ({
             validInfo={validation}
           />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
