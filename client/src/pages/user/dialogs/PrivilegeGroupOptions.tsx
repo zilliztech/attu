@@ -1,10 +1,4 @@
-import {
-  Theme,
-  Typography,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-} from '@mui/material';
+import { Theme, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { FC } from 'react';
 import { PrivilegeGrpOptionsProps } from '../Types';
 import { makeStyles } from '@mui/styles';
@@ -25,7 +19,6 @@ const PrivilegeGroupOptions: FC<PrivilegeGrpOptionsProps> = ({
   options,
   selection,
   onChange,
-  group_name,
 }) => {
   const classes = useStyles();
 
