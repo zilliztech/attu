@@ -1,4 +1,3 @@
-import { Theme } from '@mui/material';
 import { FC, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
@@ -6,24 +5,10 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { UserService, DatabaseService } from '@/http';
-import { makeStyles } from '@mui/styles';
 import DBCollectionSelector from './DBCollectionSelector';
 import type { ITextfieldConfig } from '@/components/customInput/Types';
 import type { CreateRoleProps, CreateRoleParams, DBOption } from '../Types';
 import type { DBCollectionsPrivileges, RBACOptions } from '@server/types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    margin: theme.spacing(1, 0, 0.5),
-  },
-  dialogWrapper: {
-    width: '66vw',
-    maxWidth: '66vw',
-  },
-  subTitle: {
-    marginBottom: theme.spacing(0.5),
-  },
-}));
 
 const DEFAULT_DB_Privileges: DBCollectionsPrivileges = {
   '*': {
@@ -132,17 +117,15 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
     }
   };
 
-  // styles
-  const classes = useStyles();
-
   // Input configurations
+  const inputSx = { mt: 1, mb: 0.5 };
   const createConfigs: ITextfieldConfig[] = [
     {
       label: userTrans('role'),
       key: 'roleName',
       onChange: (value: string) => handleInputChange('roleName', value),
       variant: 'filled',
-      className: classes.input,
+      sx: inputSx,
       placeholder: userTrans('role'),
       fullWidth: true,
       validations: [
@@ -164,14 +147,14 @@ const UpdateRoleDialog: FC<CreateRoleProps> = props => {
         isEditing
           ? 'updateRolePrivilegeTitle'
           : sameAs
-          ? 'dupicateRoleTitle'
-          : 'createRoleTitle'
+            ? 'dupicateRoleTitle'
+            : 'createRoleTitle'
       )}
       handleClose={handleClose}
       confirmLabel={btnTrans(isEditing ? 'update' : 'create')}
       handleConfirm={handleCreateRole}
       confirmDisabled={disabled}
-      dialogClass={classes.dialogWrapper}
+      sx={{ width: '66vw', maxWidth: '66vw' }}
     >
       <>
         {createConfigs.map(v => (
