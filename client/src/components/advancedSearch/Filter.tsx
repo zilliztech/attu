@@ -1,13 +1,12 @@
 import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
-import { makeStyles } from '@mui/styles';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import icons from '@/components/icons/Icons';
 import { generateIdByHash } from '@/utils/Common';
 import AdvancedDialog from './Dialog';
 import CustomButton from '../customButton/CustomButton';
-import type { Theme } from '@mui/material/styles';
 import type { FilterProps, ConditionData } from './Types';
 
 const Filter = forwardRef((props: FilterProps, ref) => {
@@ -22,7 +21,6 @@ const Filter = forwardRef((props: FilterProps, ref) => {
     fields = [],
     ...others
   } = props;
-  const classes = useStyles();
 
   // i18n
   const { t: searchTrans } = useTranslation('search');
@@ -98,7 +96,11 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       let newExpr = `${n} ${op} ${value}`;
 
       // rewrite expression if the op is JSON_CONTAINS/ARRAY_CONTAINS
-      if (op === 'JSON_CONTAINS' || op === 'ARRAY_CONTAINS' || op ==='TEXT_MATCH') {
+      if (
+        op === 'JSON_CONTAINS' ||
+        op === 'ARRAY_CONTAINS' ||
+        op === 'TEXT_MATCH'
+      ) {
         newExpr = `${op}(${n}, ${value})`;
       }
       // rewrite expression if the op is ARRAY_CONTAINS_ALL/ARRAY_CONTAINS_ANY
@@ -303,10 +305,15 @@ const Filter = forwardRef((props: FilterProps, ref) => {
 
   return (
     <>
-      <div className={`${classes.wrapper} ${className}`} {...others}>
+      <Box className={className} {...others}>
         <CustomButton
           disabled={filterDisabled}
-          className={classes.afBtn}
+          sx={{
+            color: theme => theme.palette.primary.main,
+            minWidth: 32,
+            p: '8px 0',
+            '& .MuiButton-endIcon': { ml: 0 },
+          }}
           onClick={handleClickOpen}
           size="small"
           endIcon={<FilterIcon />}
@@ -338,23 +345,11 @@ const Filter = forwardRef((props: FilterProps, ref) => {
             expression={filterExpression}
           />
         )}
-      </div>
+      </Box>
     </>
   );
 });
 
 Filter.displayName = 'AdvancedFilter';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {},
-  afBtn: {
-    color: theme.palette.primary.main,
-    minWidth: 32,
-    padding: '8px 0',
-    '& .MuiButton-endIcon': {
-      marginLeft: 0,
-    },
-  },
-}));
 
 export default Filter;

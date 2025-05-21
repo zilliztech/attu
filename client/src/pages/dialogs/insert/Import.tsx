@@ -45,7 +45,7 @@ const InsertImport: FC<InsertImportProps> = ({
             mb: 3,
           }}
         >
-          <Box sx={{ flexBasis: '40%', minWidth: 256 }}>
+          <Box sx={{ flexBasis: '40%' }}>
             <CustomSelector
               options={collectionOptions}
               disabled={collectionOptions.length === 0}
@@ -59,6 +59,10 @@ const InsertImport: FC<InsertImportProps> = ({
                 handleCollectionChange &&
                   handleCollectionChange(collection as string);
               }}
+              sx={{
+                width: '100%',
+                minWidth: 256,
+              }}
             />
           </Box>
           <Divider
@@ -68,7 +72,7 @@ const InsertImport: FC<InsertImportProps> = ({
               bgcolor: theme.palette.text.secondary,
             })}
           />
-          <Box sx={{ flexBasis: '40%', minWidth: 256 }}>
+          <Box sx={{ flexBasis: '40%' }}>
             <CustomSelector
               options={partitionOptions}
               disabled={partitionOptions.length === 0}
@@ -80,6 +84,10 @@ const InsertImport: FC<InsertImportProps> = ({
               onChange={(e: { target: { value: unknown } }) => {
                 const partition = e.target.value;
                 handlePartitionChange(partition as string);
+              }}
+              sx={{
+                width: '100%',
+                minWidth: 256,
               }}
             />
           </Box>
@@ -105,6 +113,7 @@ const InsertImport: FC<InsertImportProps> = ({
             alignItems: 'center',
             border: `1px solid ${theme.palette.divider}`,
             p: 1,
+            gap: 1,
             bgcolor: theme.palette.background.paper,
           })}
         >

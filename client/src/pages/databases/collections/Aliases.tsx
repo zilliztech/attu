@@ -1,26 +1,12 @@
 import { useContext } from 'react';
-import { Chip, IconButton, Theme } from '@mui/material';
+import { Chip, IconButton, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { rootContext, dataContext } from '@/context';
 import icons from '@/components/icons/Icons';
 import CreateAliasDialog from '@/pages/dialogs/CreateAliasDialog';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { makeStyles } from '@mui/styles';
 import type { CollectionObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  iconBtn: {
-    marginTop: 4,
-    width: '16px',
-    height: '16px',
-  },
-}));
 
 export interface AliasesProps {
   aliases: string[];
@@ -38,7 +24,6 @@ export default function Aliases(props: AliasesProps) {
     onCreate = () => {},
     onDelete = () => {},
   } = props;
-  const classes = useStyles();
   const { setDialog, openSnackBar, handleCloseDialog } =
     useContext(rootContext);
   // i18n
@@ -70,16 +55,14 @@ export default function Aliases(props: AliasesProps) {
 
   if (aliases.length === 0) {
     return (
-      <>
-        <IconButton
-          onClick={handleCreate}
-          size="small"
-          classes={{ root: classes.iconBtn }}
-          aria-label="add"
-        >
-          <AddIcon width="8" height="8" fontSize="small" />
-        </IconButton>
-      </>
+      <IconButton
+        onClick={handleCreate}
+        size="small"
+        sx={{ mt: 0.5, width: 16, height: 16 }}
+        aria-label="add"
+      >
+        <AddIcon width="8" height="8" fontSize="small" />
+      </IconButton>
     );
   }
 
@@ -120,7 +103,7 @@ export default function Aliases(props: AliasesProps) {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
       {aliases.map(a => (
         <Chip
           key={a}
@@ -128,22 +111,23 @@ export default function Aliases(props: AliasesProps) {
           label={a}
           variant="outlined"
           deleteIcon={<DeleteIcon />}
-          onClick={(e: React.MouseEvent) => {
+          onClick={e => {
             e.stopPropagation();
           }}
           onDelete={() => {
-            _onDelete({ collection: collection, alias: a });
+            _onDelete({ collection, alias: a });
           }}
+          sx={{ mb: 0.5 }}
         />
       ))}
       <IconButton
         onClick={handleCreate}
         size="small"
-        classes={{ root: classes.iconBtn }}
+        sx={{ mt: 0.5, width: 16, height: 16 }}
         aria-label="add"
       >
         <AddIcon width="8" height="8" fontSize="small" />
       </IconButton>
-    </div>
+    </Box>
   );
 }
