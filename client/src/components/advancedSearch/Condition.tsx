@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Theme, IconButton, TextField, SelectChangeEvent } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import {
+  Theme,
+  IconButton,
+  TextField,
+  SelectChangeEvent,
+  Box,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomSelector from '../customSelector/CustomSelector';
 import { LOGICAL_OPERATORS, DataTypeStringEnum } from '@/consts';
@@ -63,8 +68,6 @@ const Condition: FC<ConditionProps> = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionField, operator, conditionValue, jsonKeyValue]);
 
-  const classes = useStyles();
-
   const logicalOperators = useMemo(() => {
     if (conditionField.data_type === DataTypeStringEnum.Bool) {
       const data = LOGICAL_OPERATORS.filter(v => v.value === '==');
@@ -107,18 +110,30 @@ const Condition: FC<ConditionProps> = props => {
       : true;
 
   return (
-    <div className={`${classes.wrapper} ${className}`} {...others}>
-      <CustomSelector
-        label={conditionField.data_type}
-        value={conditionField?.name}
-        onChange={handleFieldNameChange}
-        options={fields.map(i => ({ value: i.name, label: i.name }))}
-        variant="filled"
-        wrapperClass={classes.fieldName}
-      />
+    <Box
+      sx={(theme: Theme) => ({
+        background: theme.palette.background.paper,
+        p: theme.spacing(1.5, 2),
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+      })}
+      className={className}
+      {...others}
+    >
+      <Box>
+        <CustomSelector
+          label={conditionField.data_type}
+          value={conditionField?.name}
+          onChange={handleFieldNameChange}
+          options={fields.map(i => ({ value: i.name, label: i.name }))}
+          variant="filled"
+          sx={{ minWidth: '130px', m: 0 }}
+        />
+      </Box>
       {conditionField?.data_type === DataTypeStringEnum.JSON && (
         <TextField
-          className={classes.key}
+          sx={{ width: '150px', m: 0 }}
           label="key"
           variant="filled"
           value={jsonKeyValue}
@@ -126,55 +141,31 @@ const Condition: FC<ConditionProps> = props => {
           error={!isKeyLegal}
         />
       )}
-      <CustomSelector
-        label="Logic"
-        value={operator}
-        onChange={handleOpChange}
-        options={logicalOperators}
-        variant="filled"
-        wrapperClass={classes.logic}
-      />
+      <Box sx={{ margin: '0 8px' }}>
+        <CustomSelector
+          label="Logic"
+          value={operator}
+          onChange={handleOpChange}
+          options={logicalOperators}
+          variant="filled"
+          sx={{ minWidth: '100px', m: 0 }}
+        />
+      </Box>
       <TextField
-        className={classes.value}
+        sx={{ minWidth: '130px' }}
         label="Value"
         variant="filled"
         value={conditionValue}
         onChange={handleValueChange}
         error={!isValueLegal}
       />
-      <IconButton
-        aria-label="close"
-        className={classes.closeButton}
-        onClick={onDelete}
-        size="small"
-      >
+      <IconButton aria-label="close" onClick={onDelete} size="small">
         <CloseIcon />
       </IconButton>
-    </div>
+    </Box>
   );
 };
 
 Condition.displayName = 'Condition';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {},
-  wrapper: {
-    minWidth: '466px',
-    minHeight: '62px',
-    background: theme.palette.background.paper,
-    padding: theme.spacing(1.5, 2),
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  closeButton: {},
-  fieldName: {
-    minHeight: '38px',
-    minWidth: '130px',
-  },
-  logic: { minHeight: '38px', minWidth: '100px', margin: '0 24px' },
-  key: { minHeight: '38px', width: '150px', margin: '0 0' },
-  value: { minHeight: '38px', minWidth: '130px' },
-}));
 
 export default Condition;
