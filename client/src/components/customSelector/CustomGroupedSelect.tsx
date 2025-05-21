@@ -6,7 +6,9 @@ import Select from '@mui/material/Select';
 import { FC } from 'react';
 import type { GroupOption, ICustomGroupSelect } from './Types';
 
-const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
+const CustomGroupedSelect: FC<
+  ICustomGroupSelect & { style?: React.CSSProperties }
+> = props => {
   const {
     options,
     className = '',
@@ -15,6 +17,7 @@ const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
     placeholder = '',
     value,
     onChange,
+    style = {},
   } = props;
 
   const renderSelectGroup = (option: GroupOption) => {
@@ -55,7 +58,7 @@ const CustomGroupedSelect: FC<ICustomGroupSelect> = props => {
   };
 
   return (
-    <div className={className} style={{ width: '100%' }}>
+    <div className={className} style={{ width: '100%', ...style }}>
       <FormControl variant="filled" sx={{ width: '100%' }}>
         {haveLabel && <InputLabel htmlFor="grouped-select">{label}</InputLabel>}
         <Select

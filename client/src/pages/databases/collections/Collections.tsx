@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
@@ -23,53 +23,11 @@ import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { LOADING_STATE } from '@/consts';
 import { formatNumber } from '@/utils';
 import Aliases from './Aliases';
-import { makeStyles } from '@mui/styles';
 import type {
   ColDefinitionsType,
   ToolBarConfig,
 } from '@/components/grid/Types';
 import type { CollectionObject } from '@server/types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: `100%`,
-  },
-  emptyWrapper: {
-    marginTop: theme.spacing(2),
-  },
-
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-  },
-
-  dialogContent: {
-    lineHeight: '24px',
-    fontSize: '16px',
-  },
-  link: {
-    color: theme.palette.text.primary,
-    display: 'inline-block',
-    wordBreak: 'break-all',
-    whiteSpace: 'nowrap',
-    width: '150px',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    height: '20px',
-    textDecoration: 'none',
-  },
-  highlight: {
-    color: theme.palette.primary.main,
-    backgroundColor: 'transparent',
-  },
-  chip: {
-    color: theme.palette.text.primary,
-    marginRight: theme.spacing(0.5),
-    background: `rgba(0, 0, 0, 0.04)`,
-  },
-}));
 
 const Collections = () => {
   const { isManaged } = useContext(authContext);
@@ -96,8 +54,6 @@ const Collections = () => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-
-  const classes = useStyles();
 
   const QuestionIcon = icons.question;
 
@@ -358,13 +314,26 @@ const Collections = () => {
         return (
           <Link
             to={`/databases/${database}/${collection_name}/overview`}
-            className={classes.link}
+            style={{
+              color: 'inherit',
+              display: 'inline-block',
+              wordBreak: 'break-all',
+              whiteSpace: 'nowrap',
+              width: 150,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              height: 20,
+              textDecoration: 'none',
+            }}
             title={collection_name}
           >
             <Highlighter
               textToHighlight={collection_name}
               searchWords={[search]}
-              highlightClassName={classes.highlight}
+              highlightStyle={{
+                color: '#1976d2',
+                backgroundColor: 'transparent',
+              }}
             />
           </Link>
         );
@@ -399,12 +368,16 @@ const Collections = () => {
       disablePadding: false,
       sortBy: 'rowCount',
       label: (
-        <span className="flex-center with-max-content">
+        <Box
+          component="span"
+          className="flex-center with-max-content"
+          sx={{ display: 'inline-flex', alignItems: 'center' }}
+        >
           {collectionTrans('rowCount')}
           <CustomToolTip title={collectionTrans('entityCountInfo')}>
-            <QuestionIcon classes={{ root: classes.icon }} />
+            <QuestionIcon sx={{ fontSize: 14, ml: 0.5 }} />
           </CustomToolTip>
-        </span>
+        </Box>
       ),
       formatter(v) {
         return formatNumber(v.rowCount);
@@ -418,9 +391,13 @@ const Collections = () => {
       align: 'left',
       disablePadding: false,
       label: (
-        <span className="flex-center with-max-content">
+        <Box
+          component="span"
+          className="flex-center with-max-content"
+          sx={{ display: 'inline-flex', alignItems: 'center' }}
+        >
           {collectionTrans('description')}
-        </span>
+        </Box>
       ),
       formatter(v) {
         return v.description || '--';
@@ -449,12 +426,16 @@ const Collections = () => {
       align: 'left',
       disablePadding: false,
       label: (
-        <span className="flex-center with-max-content">
+        <Box
+          component="span"
+          className="flex-center with-max-content"
+          sx={{ display: 'inline-flex', alignItems: 'center' }}
+        >
           {collectionTrans('alias')}
           <CustomToolTip title={collectionTrans('aliasInfo')}>
-            <QuestionIcon classes={{ root: classes.icon }} />
+            <QuestionIcon sx={{ fontSize: 14, ml: 0.5 }} />
           </CustomToolTip>
-        </span>
+        </Box>
       ),
       formatter(v) {
         return <Aliases aliases={v.aliases} collection={v} />;
@@ -488,7 +469,7 @@ const Collections = () => {
   }, [collectionList, batchRefreshCollections]);
 
   return (
-    <section className={classes.root}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {collections.length > 0 || loading ? (
         <AttuGrid
           toolbarConfigs={toolbarConfigs}
@@ -527,13 +508,13 @@ const Collections = () => {
         <>
           <CustomToolBar toolbarConfigs={toolbarConfigs} />
           <EmptyCard
-            wrapperClass={`page-empty-card ${classes.emptyWrapper}`}
+            wrapperClass="page-empty-card"
             icon={<CollectionIcon />}
             text={collectionTrans('noData')}
           />
         </>
       )}
-    </section>
+    </Box>
   );
 };
 

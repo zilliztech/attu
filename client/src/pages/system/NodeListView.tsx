@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
@@ -12,44 +12,6 @@ import DataCard from './DataCard';
 import { usePaginationHook } from '@/hooks';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { NodeListViewProps, Node } from './Types';
-import { makeStyles } from '@mui/styles';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  root: {
-    overflow: 'hidden',
-    padding: '0 16px',
-    display: 'flex',
-    flexDirection: 'column',
-    border: `1px solid ${theme.palette.divider}`,
-  },
-  childCloseBtnContainer: {
-    border: 0,
-    backgroundColor: theme.palette.background.paper,
-    cursor: 'pointer',
-    width: '100%',
-    height: '28px',
-  },
-  childCloseBtn: {
-    border: 0,
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
-    width: '100%',
-  },
-  gridContainer: {
-    height: `calc(100vh - 120px)`,
-    display: 'flex',
-    gap: 8,
-  },
-  leftContainer: {
-    height: '100%',
-    width: '70%',
-  },
-  rightContainer: {
-    width: '30%',
-    overflow: 'scroll',
-  },
-  dataCard: {},
-}));
 
 type GridNode = {
   id: string;
@@ -71,7 +33,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
     'capacity'
   ) as any;
 
-  const classes = getStyles();
+  const theme = useTheme();
   const [selectedChildNode, setSelectedChildNode] = useState<GridNode[]>([]);
   const [rows, setRows] = useState<any[]>([]);
   const { selectedCord, childNodes, setCord, setShowChildView } = props;
@@ -195,15 +157,48 @@ const NodeListView: FC<NodeListViewProps> = props => {
   const infoNode = selectedChildNode[0] && selectedChildNode[0].node;
 
   return (
-    <div className={classes.root}>
-      <button
-        className={classes.childCloseBtnContainer}
+    <Box
+      sx={{
+        overflow: 'hidden',
+        padding: '0 16px',
+        display: 'flex',
+        flexDirection: 'column',
+        border: `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      <Box
+        component="button"
+        sx={{
+          border: 0,
+          backgroundColor: theme.palette.background.paper,
+          cursor: 'pointer',
+          width: '100%',
+          height: '28px',
+        }}
         onClick={() => setShowChildView(false)}
       >
-        <KeyboardArrowDown className={classes.childCloseBtn} />
-      </button>
-      <div className={classes.gridContainer}>
-        <div className={classes.leftContainer}>
+        <KeyboardArrowDown
+          sx={{
+            border: 0,
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+            width: '100%',
+          }}
+        />
+      </Box>
+      <Box
+        sx={{
+          height: `calc(100vh - 120px)`,
+          display: 'flex',
+          gap: 1, // theme.spacing(1) is 8px by default, so 1 means 8px
+        }}
+      >
+        <Box
+          sx={{
+            height: '100%',
+            width: '70%',
+          }}
+        >
           <AttuGrid
             toolbarConfigs={[]}
             colDefinitions={colDefinitions}
@@ -225,8 +220,13 @@ const NodeListView: FC<NodeListViewProps> = props => {
               commonTrans(data.length > 1 ? 'grid.nodes' : 'grid.node')
             )}
           />
-        </div>
-        <div className={classes.rightContainer}>
+        </Box>
+        <Box
+          sx={{
+            width: '30%',
+            overflow: 'scroll',
+          }}
+        >
           {infoNode && (
             <>
               <MiniTopo
@@ -235,16 +235,12 @@ const NodeListView: FC<NodeListViewProps> = props => {
                 selectedChildNode={infoNode}
                 setShowChildView={setShowChildView}
               />
-              <DataCard
-                className={classes.dataCard}
-                node={infoNode}
-                extend={true}
-              />
+              <DataCard node={infoNode} extend={true} />
             </>
           )}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

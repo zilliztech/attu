@@ -1,22 +1,9 @@
-import { Theme, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
+import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
 import { UserService } from '@/http';
-import { makeStyles } from '@mui/styles';
 import type { UpdateUserRoleProps, UpdateUserRoleParams } from '../Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    margin: theme.spacing(1, 0, 0.5),
-  },
-  dialogWrapper: {
-    maxWidth: theme.spacing(70),
-    '& .MuiFormControlLabel-root': {
-      width: theme.spacing(20),
-    },
-  },
-}));
 
 const UpdateUserRole: FC<UpdateUserRoleProps> = ({
   onUpdate,
@@ -32,8 +19,6 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
     username: username,
     roles: roles,
   });
-
-  const classes = useStyles();
 
   const handleUpdate = async () => {
     await UserService.updateUserRole(form);
@@ -57,7 +42,12 @@ const UpdateUserRole: FC<UpdateUserRoleProps> = ({
       confirmLabel={btnTrans('update')}
       handleConfirm={handleUpdate}
       confirmDisabled={false}
-      dialogClass={classes.dialogWrapper}
+      sx={{
+        maxWidth: theme => (theme as any).spacing(70),
+        '& .MuiFormControlLabel-root': {
+          width: (theme: any) => theme.spacing(20),
+        },
+      }}
     >
       <>
         <FormGroup row>

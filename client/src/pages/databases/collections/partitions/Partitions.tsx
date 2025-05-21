@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
@@ -15,26 +15,10 @@ import CreatePartitionDialog from '@/pages/dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
 import { formatNumber } from '@/utils';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import { makeStyles } from '@mui/styles';
 import type { PartitionData, ResStatus } from '@server/types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: `100%`,
-  },
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-  },
-  highlight: {
-    color: theme.palette.primary.main,
-    backgroundColor: 'transparent',
-  },
-}));
 
 const Partitions = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();
-  const classes = useStyles();
   const { t } = useTranslation('partition');
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
@@ -215,7 +199,10 @@ const Partitions = () => {
           <Highlighter
             textToHighlight={newName}
             searchWords={[search]}
-            highlightClassName={classes.highlight}
+            highlightStyle={{
+              color: '#1976d2',
+              backgroundColor: 'transparent',
+            }}
           />
         );
       },
@@ -227,12 +214,16 @@ const Partitions = () => {
       align: 'left',
       disablePadding: false,
       label: (
-        <span className="flex-center with-max-content">
+        <Box
+          component="span"
+          className="flex-center with-max-content"
+          sx={{ display: 'inline-flex', alignItems: 'center' }}
+        >
           {t('rowCount')}
           <CustomToolTip title={t('tooltip')}>
-            <Icons.question classes={{ root: classes.icon }} />
+            <Icons.question sx={{ fontSize: 14, ml: 0.5 }} />
           </CustomToolTip>
-        </span>
+        </Box>
       ),
       formatter(data) {
         return formatNumber(Number(data.rowCount));
@@ -290,7 +281,7 @@ const Partitions = () => {
   };
 
   return (
-    <section className={classes.wrapper}>
+    <Box sx={{ height: '100%' }}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
@@ -313,7 +304,7 @@ const Partitions = () => {
           )
         )}
       />
-    </section>
+    </Box>
   );
 };
 

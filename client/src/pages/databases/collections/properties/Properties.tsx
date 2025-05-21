@@ -1,4 +1,4 @@
-import { Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { useContext, useState, useEffect } from 'react';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
@@ -10,24 +10,9 @@ import ResetPropertyDialog from '@/pages/dialogs/ResetPropertyDialog';
 import { rootContext } from '@/context';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { formatNumber } from '@/utils';
-import { makeStyles } from '@mui/styles';
 import { DatabaseService } from '@/http';
 import { databaseDefaults, collectionDefaults, Property } from '@/consts';
 import type { CollectionFullObject, KeyValuePair } from '@server/types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: `100%`,
-  },
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-  },
-  highlight: {
-    color: theme.palette.primary.main,
-    backgroundColor: 'transparent',
-  },
-}));
 
 const mergeProperties = (
   defaults: Property[],
@@ -49,7 +34,6 @@ interface PropertiesProps {
 const Properties = (props: PropertiesProps) => {
   const { target, type } = props;
 
-  const classes = useStyles();
   const { t } = useTranslation('properties');
   const { t: successTrans } = useTranslation('success');
   const { t: btnTrans } = useTranslation('btn');
@@ -211,7 +195,7 @@ const Properties = (props: PropertiesProps) => {
   }
 
   return (
-    <section className={classes.wrapper}>
+    <Box sx={{ height: '100%' }}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
@@ -232,7 +216,7 @@ const Properties = (props: PropertiesProps) => {
           commonTrans(data.length > 1 ? 'grid.properties' : 'grid.property')
         )}
       />
-    </section>
+    </Box>
   );
 };
 

@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import CustomDialogTitle from './CustomDialogTitle';
 import CustomButton from '../customButton/CustomButton';
-import CodeView from '../code/CodeView';
 import type { DialogContainerProps } from './Types';
 
 const DialogTemplate: FC<DialogContainerProps> = ({
@@ -26,7 +25,6 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   showCloseIcon = true,
   leftActions,
   showCode = false,
-  codeBlocksData = [],
   dialogClass = '',
   sx = {},
 }) => {
@@ -129,9 +127,7 @@ const DialogTemplate: FC<DialogContainerProps> = ({
                 height: '100%',
                 p: showCode ? 4 : 0,
               }}
-            >
-              <CodeView data={codeBlocksData} />
-            </Box>
+            ></Box>
           )}
         </Box>
       </form>

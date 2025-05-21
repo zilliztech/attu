@@ -9,48 +9,14 @@ import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import CustomToolBar from '@/components/grid/ToolBar';
-import { makeStyles } from '@mui/styles';
 import type { ToolBarConfig } from '@/components/grid/Types';
 import Wrapper from '@/components/layout/Wrapper';
 import type { DeleteRoleParams, CreateRoleParams } from './Types';
 import type { RolesWithPrivileges, RBACOptions } from '@server/types';
 import D3PrivilegeTree from './D3PrivilegeTree';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'auto',
-  },
-  list: {
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: '8px',
-    backgroundColor: theme.palette.background.light,
-    width: '16%',
-    height: 'calc(100vh - 200px)',
-    overflow: 'auto',
-    color: theme.palette.text.primary,
-    boxShadow: theme.shadows[1],
-    minWidth: '200px',
-  },
-  tree: {
-    overflow: 'auto',
-    width: 'calc(84% - 16px)',
-  },
-  chip: {
-    marginBottom: theme.spacing(0.5),
-  },
-  groupChip: {
-    marginBottom: theme.spacing(0.5),
-    backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.primary.light,
-  },
-}));
-
 const Roles = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
-  // styles
-  const classes = useStyles();
   // context
   const { database } = useContext(dataContext);
   const { setDialog, handleCloseDialog, openSnackBar } =
@@ -247,11 +213,26 @@ const Roles = () => {
   };
 
   return (
-    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
+    <Wrapper
+      sx={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}
+      hasPermission={hasPermission}
+    >
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
 
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
-        <Box className={classes.list}>
+        <Box
+          sx={theme => ({
+            border: `1px solid ${(theme as any).palette.divider}`,
+            borderRadius: '8px',
+            backgroundColor: (theme as any).palette.background.light,
+            width: '16%',
+            height: 'calc(100vh - 200px)',
+            overflow: 'auto',
+            color: (theme as any).palette.text.primary,
+            boxShadow: (theme as any).shadows[1],
+            minWidth: '200px',
+          })}
+        >
           <List>
             {roles.map(role => (
               <ListItemButton
@@ -267,13 +248,18 @@ const Roles = () => {
             ))}
           </List>
         </Box>
-        <div className={classes.tree}>
+        <Box
+          sx={{
+            overflow: 'auto',
+            width: 'calc(84% - 16px)',
+          }}
+        >
           <D3PrivilegeTree
             privileges={selectedRole[0]?.privileges}
             role={selectedRole[0]?.roleName}
             rbacOptions={rbacOptions}
           />
-        </div>
+        </Box>
       </Box>
     </Wrapper>
   );

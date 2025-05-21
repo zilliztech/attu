@@ -1,18 +1,9 @@
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import { formatFieldType } from '@/utils';
 import Icons from '@/components/icons/Icons';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Box } from '@mui/material';
 import type { CollectionFullObject } from '@server/types';
 import type { ColDefinitionsType } from '@/components/grid/Types';
-
-export const style = makeStyles((theme: Theme) => ({
-  icon: {
-    fontSize: '14px',
-    marginLeft: theme.spacing(0.5),
-    verticalAlign: '-3px',
-  },
-}));
 
 const CollectionColHeader = (props: {
   def: ColDefinitionsType;
@@ -21,15 +12,14 @@ const CollectionColHeader = (props: {
   const { def, collection } = props;
   const title = def.label;
   const field = collection.schema.fields.find(f => f.name === title);
-  const classes = style();
 
   return (
-    <>
+    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center' }}>
       {title}
       <CustomToolTip title={field ? formatFieldType(field) : (title as string)}>
-        <Icons.info classes={{ root: classes.icon }} />
+        <Icons.info sx={{ fontSize: 14, ml: 0.5, verticalAlign: '-3px' }} />
       </CustomToolTip>
-    </>
+    </Box>
   );
 };
 

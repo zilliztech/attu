@@ -1,7 +1,7 @@
 import { FC, useMemo, MouseEvent, useContext } from 'react';
 import { StatusActionType } from '@/components/status/Types';
 import { useTranslation } from 'react-i18next';
-import { Theme, Typography, useTheme, Chip } from '@mui/material';
+import { Typography, useTheme, Chip } from '@mui/material';
 import { rootContext } from '@/context';
 import { LOADING_STATE } from '@/consts';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
@@ -10,44 +10,6 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomButton from '@/components/customButton/CustomButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
-import { makeStyles } from '@mui/styles';
-
-// Define styles using MUI's makeStyles
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  chip: {
-    border: 'none',
-    marginRight: theme.spacing(0.5),
-    paddingLeft: theme.spacing(0.5),
-  },
-  circle: {
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-  },
-  loaded: {
-    border: `1px solid ${theme.palette.primary.main}`,
-    backgroundColor: theme.palette.primary.main,
-  },
-  unloaded: {
-    border: `1px solid ${theme.palette.primary.main}`,
-    background: '#fff !important',
-  },
-  noIndex: {
-    border: `1px solid ${theme.palette.text.disabled}`,
-    backgroundColor: '#fff',
-  },
-  loading: {
-    marginRight: theme.spacing(1.25),
-  },
-  extraBtn: {
-    height: 24,
-    padding: '0 8px',
-  },
-}));
 
 const StatusAction: FC<StatusActionType> = props => {
   const {
@@ -60,9 +22,8 @@ const StatusAction: FC<StatusActionType> = props => {
     createIndexElement,
   } = props;
 
-  // Theme and styles
+  // Theme
   const theme = useTheme();
-  const classes = useStyles();
 
   // Context
   const { setDialog } = useContext(rootContext);
@@ -79,14 +40,38 @@ const StatusAction: FC<StatusActionType> = props => {
         return {
           label: commonTrans('status.unloaded'),
           tooltip: collectionTrans('clickToLoad'),
-          icon: <div className={`${classes.circle} ${classes.unloaded}`}></div>,
+          icon: (
+            <span
+              style={{
+                display: 'inline-block',
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                border: `1px solid ${theme.palette.primary.main}`,
+                background: '#fff',
+                verticalAlign: 'middle',
+              }}
+            />
+          ),
           deleteIcon: <Icons.load />,
         };
       case LOADING_STATE.LOADED:
         return {
           label: commonTrans('status.loaded'),
           tooltip: collectionTrans('clickToRelease'),
-          icon: <div className={`${classes.circle} ${classes.loaded}`}></div>,
+          icon: (
+            <span
+              style={{
+                display: 'inline-block',
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                border: `1px solid ${theme.palette.primary.main}`,
+                background: theme.palette.primary.main,
+                verticalAlign: 'middle',
+              }}
+            />
+          ),
           deleteIcon: <Icons.release />,
         };
       case LOADING_STATE.LOADING:
@@ -94,10 +79,15 @@ const StatusAction: FC<StatusActionType> = props => {
           label: `${percentage}% ${commonTrans('status.loading')}`,
           tooltip: collectionTrans('collectionIsLoading'),
           icon: (
-            <StatusIcon
-              type={LoadingType.CREATING}
-              className={classes.loading}
-            />
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                marginRight: theme.spacing(1.25),
+              }}
+            >
+              <StatusIcon type={LoadingType.CREATING} />
+            </span>
           ),
           deleteIcon: null, // No delete icon during loading
         };
@@ -109,12 +99,22 @@ const StatusAction: FC<StatusActionType> = props => {
           deleteIcon: <Icons.release />,
         };
     }
-  }, [status, percentage, classes, collectionTrans]);
+  }, [status, percentage, theme, collectionTrans]);
 
   // Handle missing vector index
   const noIndex = collection.schema && !collection.schema.hasVectorIndex;
   const noIndexIcon = (
-    <div className={`${classes.circle} ${classes.noIndex}`}></div>
+    <span
+      style={{
+        display: 'inline-block',
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        border: `1px solid ${theme.palette.text.disabled}`,
+        background: '#fff',
+        verticalAlign: 'middle',
+      }}
+    />
   );
   const noIndexTooltip = collectionTrans('noVectorIndexTooltip');
 
@@ -144,7 +144,7 @@ const StatusAction: FC<StatusActionType> = props => {
     return (
       <CustomButton
         startIcon={<Icons.load />}
-        className={classes.extraBtn}
+        sx={{ height: 24, padding: '0 8px' }}
         variant="contained"
         tooltip={collectionTrans('clickToLoad')}
         onClick={() => {
@@ -163,10 +163,14 @@ const StatusAction: FC<StatusActionType> = props => {
   }
 
   return (
-    <div className={classes.root}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
       <CustomToolTip title={noIndex ? noIndexTooltip : tooltip} placement="top">
         <Chip
-          className={classes.chip}
+          sx={{
+            border: 'none',
+            marginRight: theme.spacing(0.5),
+            paddingLeft: theme.spacing(0.5),
+          }}
           label={<Typography>{label}</Typography>}
           onClick={handleChipClick}
           disabled={noIndex}
@@ -181,7 +185,7 @@ const StatusAction: FC<StatusActionType> = props => {
           {status === LOADING_STATE.LOADED && (
             <CustomButton
               startIcon={<Icons.navSearch />}
-              className={classes.extraBtn}
+              sx={{ height: 24, padding: '0 8px' }}
               tooltip={collectionTrans('clickToSearch')}
               onClick={() => {
                 const newHash = window.location.hash.replace(

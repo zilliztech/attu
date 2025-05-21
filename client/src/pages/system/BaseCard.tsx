@@ -1,76 +1,99 @@
 import { FC } from 'react';
-import { SvgIcon, Theme } from '@mui/material';
+import { SvgIcon, Box, useTheme } from '@mui/material';
 import { BaseCardProps } from './Types';
 import pic from '../../assets/imgs/pic.svg?react';
-import { makeStyles } from '@mui/styles';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    boxSizing: 'border-box',
-    height: '150px',
-    padding: theme.spacing(2),
-  },
-  title: {
-    color: theme.palette.text.secondary,
-    fontSize: '14px',
-    marginBottom: '5px',
-    textTransform: 'capitalize',
-  },
-  content: {
-    color: theme.palette.text.primary,
-    fontSize: '20px',
-    fontWeight: 600,
-    lineHeight: '36px',
-  },
-  desc: {
-    color: theme.palette.text.secondary,
-    fontSize: '14px',
-    lineHeight: '36px',
-    marginLeft: theme.spacing(1),
-  },
-  emptyRoot: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-
-    '& > svg': {
-      marginTop: '10px',
-      width: '100%',
-    },
-  },
-  emptyTitle: {
-    fontSize: '14px',
-    marginTop: '14px',
-    textTransform: 'capitalize',
-  },
-  emptyDesc: {
-    fontSize: '10px',
-    color: theme.palette.text.secondary,
-    marginTop: theme.spacing(1),
-  },
-}));
 
 const BaseCard: FC<BaseCardProps> = props => {
-  const classes = getStyles();
+  const theme = useTheme();
   const { children, title, content, desc } = props;
   return (
-    <div className={classes.root}>
-      <div className={classes.title}>{title}</div>
-      {content && <span className={classes.content}>{content}</span>}
-      {desc && <span className={classes.desc}>{desc}</span>}
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        boxSizing: 'border-box',
+        height: '150px',
+        padding: theme.spacing(2),
+        borderRadius: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+      }}
+    >
+      <Box
+        sx={{
+          color: theme.palette.text.secondary,
+          fontSize: '14px',
+          marginBottom: '5px',
+          textTransform: 'capitalize',
+        }}
+      >
+        {title}
+      </Box>
+      {content && (
+        <Box
+          component="span"
+          sx={{
+            color: theme.palette.text.primary,
+            fontSize: '20px',
+            fontWeight: 600,
+            lineHeight: '36px',
+          }}
+        >
+          {content}
+        </Box>
+      )}
+      {desc && (
+        <Box
+          component="span"
+          sx={{
+            color: theme.palette.text.secondary,
+            fontSize: '14px',
+            lineHeight: '36px',
+            marginLeft: theme.spacing(1),
+          }}
+        >
+          {desc}
+        </Box>
+      )}
       {!content && !desc && (
-        <div className={classes.emptyRoot}>
-          <SvgIcon viewBox="0 0 101 26" component={pic} {...props} />
-          <span className={classes.emptyTitle}>no data available</span>
-          <span className={classes.emptyDesc}>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            width: '100%',
+            mt: 1,
+          }}
+        >
+          <SvgIcon
+            viewBox="0 0 101 26"
+            component={pic}
+            sx={{ mt: '10px', width: '100%' }}
+            {...props}
+          />
+          <Box
+            sx={{
+              fontSize: '14px',
+              marginTop: '14px',
+              textTransform: 'capitalize',
+            }}
+          >
+            no data available
+          </Box>
+          <Box
+            sx={{
+              fontSize: '10px',
+              color: theme.palette.text.secondary,
+              marginTop: theme.spacing(1),
+            }}
+          >
             There is no data to show you right now.
-          </span>
-        </div>
+          </Box>
+        </Box>
       )}
       {children}
-    </div>
+    </Box>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Theme, Box } from '@mui/material';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import ConditionItem from './Condition';
 import icons from '../icons/Icons';
@@ -12,16 +11,14 @@ import type {
   BinaryLogicalOpProps,
   AddConditionProps,
 } from './Types';
+import { ThemeContext } from '@emotion/react';
 
 // "And & or" operator component.
 const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
-  const { onChange, className, initValue = 'and' } = props;
+  const { onChange, initValue = 'and' } = props;
   const [operator, setOperator] = useState(initValue);
   const handleChange = useCallback(
-    (
-      event: React.MouseEvent<HTMLElement>,
-      newOp: string
-    ) => {
+    (event: React.MouseEvent<HTMLElement>, newOp: string) => {
       if (newOp !== null) {
         setOperator(newOp);
         onChange(newOp);
@@ -30,22 +27,60 @@ const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
     [onChange]
   );
   return (
-    <div className={`${className} op-${operator}`}>
+    <Box
+      sx={(theme: Theme) => ({
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: theme.palette.background.paper,
+      })}
+      className={`op-${operator}`}
+    >
       <ToggleButtonGroup
         value={operator}
         exclusive
         onChange={handleChange}
         aria-label="Binary Logical Operator"
       >
-        <ToggleButton value="and" aria-label="And">
+        <ToggleButton
+          value="and"
+          aria-label="And"
+          sx={(theme: Theme) => ({
+            borderRadius: 0,
+            width: 52,
+            borderTop:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+            borderBottom:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+          })}
+        >
           AND
         </ToggleButton>
-        <ToggleButton value="or" aria-label="Or">
+        <ToggleButton
+          value="or"
+          aria-label="Or"
+          sx={(theme: Theme) => ({
+            borderRadius: 0,
+            borderTop:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+            borderBottom:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+          })}
+        >
           OR
         </ToggleButton>
       </ToggleButtonGroup>
       <div className="op-split" />
-    </div>
+    </Box>
   );
 };
 
@@ -61,6 +96,7 @@ const AddCondition: FC<AddConditionProps> = props => {
       color="primary"
       className={className}
       startIcon={<AddIcon />}
+      sx={{ margin: 1 }}
     >
       {searchTrans('addCondition')}
     </CustomButton>
@@ -81,21 +117,7 @@ const ConditionGroup = (props: ConditionGroupProps) => {
     updateConditionData,
   } = handleConditions;
 
-  const classes = useStyles();
-
-  const generateClassName = (conditions: any, currentIndex: number) => {
-    let className = '';
-    if (currentIndex === 0 || conditions[currentIndex - 1].type === 'break') {
-      className += 'radius-top';
-    }
-    if (
-      currentIndex === conditions.length - 1 ||
-      conditions[currentIndex + 1].type === 'break'
-    ) {
-      className ? (className = 'radius-all') : (className = 'radius-bottom');
-    }
-    return className;
-  };
+  // 已去除 generateClassName 逻辑
 
   // Generate condition items with operators and add condition btn.
   const generateConditionItems = (conditions: any[]) => {
@@ -112,13 +134,11 @@ const ConditionGroup = (props: ConditionGroupProps) => {
             fields={fields}
             triggerChange={updateConditionData}
             initData={condition?.data}
-            className={generateClassName(conditions, currentIndex)}
           />
         );
         prev.push(
           <AddCondition
             key={`${condition.id}-add`}
-            className={classes.addBtn}
             onClick={() => {
               addCondition(condition.id);
             }}
@@ -129,7 +149,6 @@ const ConditionGroup = (props: ConditionGroupProps) => {
         prev.push(
           <AddCondition
             key={`${condition.id}-add`}
-            className={classes.addBtn}
             onClick={() => {
               addCondition(condition.id, true);
             }}
@@ -141,7 +160,6 @@ const ConditionGroup = (props: ConditionGroupProps) => {
             onChange={newOp => {
               changeBinaryLogicalOp(newOp, condition.id);
             }}
-            className={classes.binaryLogicOp}
             initValue="or"
           />
         );
@@ -156,7 +174,6 @@ const ConditionGroup = (props: ConditionGroupProps) => {
             fields={fields}
             triggerChange={updateConditionData}
             initData={condition?.data}
-            className={generateClassName(conditions, currentIndex)}
           />
         );
         prev.push(
@@ -165,7 +182,6 @@ const ConditionGroup = (props: ConditionGroupProps) => {
             onChange={newOp => {
               changeBinaryLogicalOp(newOp, condition.id);
             }}
-            className={classes.binaryLogicOp}
           />
         );
       }
@@ -175,59 +191,28 @@ const ConditionGroup = (props: ConditionGroupProps) => {
   };
 
   return (
-    <div className={classes.wrapper}>
+    <Box
+      sx={(theme: Theme) => ({
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        '& .op-or': {
+          margin: '8px 0',
+        },
+      })}
+    >
       {generateConditionItems(flatConditions)}
       {flatConditions?.length === 0 && (
         <AddCondition
-          className={classes.addBtn}
           onClick={() => {
             addCondition();
           }}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
 ConditionGroup.displayName = 'ConditionGroup';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {},
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-
-    '& .op-or': {
-      backgroundColor: 'unset',
-      margin: '16px 0',
-    },
-  },
-  addBtn: {},
-  binaryLogicOp: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    '& .op-split': {
-      height: '1px',
-      backgroundColor: theme.palette.divider,
-      width: '100%',
-    },
-    '& button': {
-      width: '42px',
-      height: '32px',
-    },
-    '& button.Mui-selected': {
-      backgroundColor: theme.palette.background.default,
-      color: theme.palette.text.primary,
-    },
-    '& button.Mui-selected:hover': {
-      backgroundColor: theme.palette.background.default,
-      color: theme.palette.text.primary,
-    },
-  },
-}));
 
 export default ConditionGroup;

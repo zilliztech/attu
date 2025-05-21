@@ -4,39 +4,31 @@ import { useTranslation } from 'react-i18next';
 import type { InsertStatusProps } from './Types';
 import successPath from '@/assets/imgs/insert/success.png';
 import failPath from '@/assets/imgs/insert/fail.png';
-import { makeStyles } from '@mui/styles';
 import { InsertStatusEnum } from './consts';
 
-const getStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    width: '75vw',
-    height: (props: { status: InsertStatusEnum }) =>
-      props.status === InsertStatusEnum.loading ? '288px' : '200px',
+import Box from '@mui/material/Box';
 
+const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
+  const { t: insertTrans } = useTranslation('insert');
+
+  const textSx = (theme: Theme) => ({ marginTop: theme.spacing(3) });
+  const loadingTipSx = (theme: Theme) => ({ marginBottom: theme.spacing(6) });
+  const loadingSvgSx = (theme: Theme) => ({
+    color: theme.palette.primary.main,
+  });
+  const wrapperSx = (theme: Theme) => ({
+    width: '75vw',
+    height: status === InsertStatusEnum.loading ? '288px' : '200px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  loadingTip: {
-    marginBottom: theme.spacing(6),
-  },
-  loadingSvg: {
-    color: theme.palette.primary.main,
-  },
-  text: {
-    marginTop: theme.spacing(3),
-  },
-}));
-
-const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
-  const { t: insertTrans } = useTranslation('insert');
-  const classes = getStyles({ status });
+  });
 
   const InsertSuccess = () => (
     <>
       <img src={successPath} alt="insert success" />
-      <Typography variant="h4" className={classes.text}>
+      <Typography variant="h4" sx={textSx}>
         {insertTrans('statusSuccess')}
       </Typography>
     </>
@@ -44,17 +36,13 @@ const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
 
   const InsertLoading = () => (
     <>
-      <CircularProgress
-        size={64}
-        thickness={5}
-        classes={{ svg: classes.loadingSvg }}
-      />
-      <Typography variant="h4" className={classes.text}>
+      <CircularProgress size={64} thickness={5} sx={loadingSvgSx} />
+      <Typography variant="h4" sx={textSx}>
         {insertTrans('statusLoading')}
       </Typography>
       <Typography
         variant="h5"
-        className={`${classes.text} ${classes.loadingTip}`}
+        sx={theme => ({ ...textSx(theme), ...loadingTipSx(theme) })}
       >
         {insertTrans('statusLoadingTip')}
       </Typography>
@@ -63,10 +51,10 @@ const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
   const InsertError = () => (
     <>
       <img src={failPath} alt="insert error" />
-      <Typography variant="h4" className={classes.text}>
+      <Typography variant="h4" sx={textSx}>
         {insertTrans('statusError')}
       </Typography>
-      {failMsg && <Typography className={classes.text}>{failMsg}</Typography>}
+      {failMsg && <Typography sx={textSx}>{failMsg}</Typography>}
     </>
   );
 
@@ -83,7 +71,9 @@ const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
   };
 
   return (
-    <section className={classes.wrapper}>{generateStatus(status)}</section>
+    <Box component="section" sx={wrapperSx}>
+      {generateStatus(status)}
+    </Box>
   );
 };
 

@@ -21,16 +21,9 @@ import InsertPreview from './Preview';
 import InsertStatus from './Status';
 import { InsertStatusEnum, InsertStepperEnum } from './consts';
 import { DataService } from '@/http';
-import { makeStyles } from '@mui/styles';
 import type { InsertContentProps } from './Types';
 import type { Option } from '@/components/customSelector/Types';
 import type { InsertDataParam } from '@/pages/databases/collections/Types';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  icon: {
-    fontSize: '16px',
-  },
-}));
 
 /**
  * this component contains processes during insert
@@ -46,8 +39,6 @@ const InsertContainer: FC<InsertContentProps> = ({
   schema,
   onInsert,
 }) => {
-  const classes = getStyles();
-
   const { t: insertTrans } = useTranslation('insert');
   const { t: btnTrans } = useTranslation('btn');
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
@@ -184,7 +175,7 @@ const InsertContainer: FC<InsertContentProps> = ({
         confirm: btnTrans('importFile'),
         cancel: (
           <>
-            <BackIcon classes={{ root: classes.icon }} />
+            <BackIcon sx={{ fontSize: '16px' }} />
             {btnTrans('previous')}
           </>
         ),
@@ -195,7 +186,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       },
     };
     return labelMap[activeStep];
-  }, [activeStep, btnTrans, BackIcon, classes.icon]);
+  }, [activeStep, btnTrans, BackIcon]);
 
   const { showActions, showCancel } = useMemo(() => {
     return {
@@ -327,6 +318,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       const inserted = await DataService.insertData(collectionValue, param);
       if (inserted.status.error_code !== 'Success') {
         setInsertFailMsg(inserted.status.reason);
+        setInsertStatus(InsertStatusEnum.error);
       } else {
         await DataService.flush(collectionValue);
         // update collections

@@ -1,36 +1,5 @@
-import { Theme, Typography } from '@mui/material';
+import { Theme, Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  sysCard: {
-    minWidth: 'auto',
-    gap: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(2),
-    border: `1px solid ${theme.palette.divider}`,
-    cursor: 'pointer',
-    borderRadius: 8,
-    '&:hover': {
-      boxShadow: '0px 0px 4px 0px #00000029',
-    },
-
-    '& p': {
-      fontSize: '24px',
-      margin: 0,
-    },
-    '& h3': {
-      margin: 0,
-      fontSize: '14px',
-      lineHeight: 1.5,
-      color: theme.palette.text.secondary,
-    },
-    '& a': {
-      textDecoration: 'none',
-      color: theme.palette.text.primary,
-    },
-  },
-}));
 
 const SysCard = (data: {
   title: string;
@@ -38,22 +7,75 @@ const SysCard = (data: {
   des?: string;
   link?: string;
 }) => {
-  const classes = useStyles();
-
-  const content = (
-    <>
-      <Typography component={'p'}>{data.count}</Typography>
-      <Typography component={'h3'}>{data.title}</Typography>
-      {data.des ? <Typography component={'p'}>{data.des}</Typography> : null}
-    </>
-  );
-
   return (
-    <section className={classes.sysCard}>
-      <section>
-        {data.link ? <Link to={data.link}>{content}</Link> : content}
-      </section>
-    </section>
+    <Box
+      sx={(theme: Theme) => ({
+        minWidth: 'auto',
+        gap: theme.spacing(1),
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(2),
+        border: `1px solid ${theme.palette.divider}`,
+        cursor: 'pointer',
+        borderRadius: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        transition: 'box-shadow 0.2s',
+        '&:hover': {
+          boxShadow: '0px 0px 4px 0px #00000029',
+        },
+        '& a': {
+          textDecoration: 'none',
+          color: theme.palette.text.primary,
+        },
+      })}
+    >
+      {data.link ? (
+        <Link to={data.link} style={{ textDecoration: 'none' }}>
+          <Typography component="p" sx={{ fontSize: 24, m: 0 }}>
+            {data.count}
+          </Typography>
+          <Typography
+            component="h3"
+            sx={theme => ({
+              m: 0,
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: theme.palette.text.secondary,
+            })}
+          >
+            {data.title}
+          </Typography>
+          {data.des ? (
+            <Typography component="p" sx={{ fontSize: 14, m: 0 }}>
+              {data.des}
+            </Typography>
+          ) : null}
+        </Link>
+      ) : (
+        <>
+          <Typography component="p" sx={{ fontSize: 24, m: 0 }}>
+            {data.count}
+          </Typography>
+          <Typography
+            component="h3"
+            sx={theme => ({
+              m: 0,
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: theme.palette.text.secondary,
+            })}
+          >
+            {data.title}
+          </Typography>
+          {data.des ? (
+            <Typography component="p" sx={{ fontSize: 14, m: 0 }}>
+              {data.des}
+            </Typography>
+          ) : null}
+        </>
+      )}
+    </Box>
   );
 };
 

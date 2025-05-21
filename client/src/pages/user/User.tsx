@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { Theme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import AttuGrid from '@/components/grid/Grid';
@@ -17,19 +16,10 @@ import CreateUser from './dialogs/CreateUserDialog';
 import UpdateUserRole from './dialogs/UpdateUserRole';
 import UpdateUser from './dialogs/UpdateUserPassDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import { makeStyles } from '@mui/styles';
 import type { UserWithRoles } from '@server/types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: `calc(100vh - 160px)`,
-  },
-}));
 
 const Users = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
-  // styles
-  const classes = useStyles();
 
   // ui states
   const [users, setUsers] = useState<UserWithRoles[]>([]);
@@ -257,7 +247,10 @@ const Users = () => {
   };
 
   return (
-    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
+    <Wrapper
+      sx={{ height: 'calc(100vh - 160px)' }}
+      hasPermission={hasPermission}
+    >
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}

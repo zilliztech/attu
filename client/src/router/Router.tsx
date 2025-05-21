@@ -5,9 +5,7 @@ import Databases from '@/pages/databases/Databases';
 import Connect from '@/pages/connect/Connect';
 import Users from '@/pages/user/UsersAndRoles';
 import Index from '@/pages/index';
-import Search from '@/pages/search/VectorSearch';
 import System from '@/pages/system/SystemView';
-import SystemHealthy from '@/pages/systemHealthy/SystemHealthyView';
 import Play from '@/pages/play/Play';
 
 const RouterComponent = () => {
@@ -31,8 +29,6 @@ const RouterComponent = () => {
             element={<Databases />}
           />
 
-          <Route path="search" element={<Search />} />
-          <Route path="system_healthy" element={<SystemHealthy />} />
           {enableManageUsers && (
             <>
               <Route path="users" element={<Users />} />

@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
-import { Theme, Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
 import CustomSelector from '@/components/customSelector/CustomSelector';
@@ -7,72 +7,8 @@ import AttuGrid from '@/components/grid/Grid';
 import { transferCsvArrayToTableData } from '@/utils';
 import SimpleMenu from '@/components/menu/SimpleMenu';
 import icons from '@/components/icons/Icons';
-import { makeStyles } from '@mui/styles';
 import type { Option } from '@/components/customSelector/Types';
 import type { ColDefinitionsType } from '@/components/grid/Types';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    width: '75vw',
-  },
-  selectorTip: {
-    color: theme.palette.text.secondary,
-    fontWeight: 500,
-    marginBottom: theme.spacing(1),
-  },
-  selectorWrapper: {
-    '& .selector': {
-      flexBasis: '40%',
-      minWidth: '256px',
-    },
-
-    '& .isContainSelect': {
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
-  },
-  gridWrapper: {
-    height: '320px',
-  },
-  tableTip: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1),
-
-    '& .text': {
-      color: theme.palette.text.secondary,
-      fontWeight: 500,
-    },
-  },
-  menuLabel: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    minWidth: '160px',
-
-    color: theme.palette.text.secondary,
-    backgroundColor: '#fff',
-
-    '&:hover': {
-      backgroundColor: '#fff',
-    },
-  },
-
-  menuIcon: {
-    color: theme.palette.text.secondary,
-  },
-  menuItem: {
-    fontWeight: 500,
-    fontSize: '12px',
-    lineHeight: '16px',
-    color: theme.palette.text.secondary,
-  },
-  menuActive: {
-    color: theme.palette.primary.main,
-  },
-}));
 
 const getTableData = (
   data: any[],
@@ -91,7 +27,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   setTableHeads,
   file,
 }) => {
-  const classes = getStyles();
+  // Styles replaced with Box and sx below
   const { t: insertTrans } = useTranslation('insert');
 
   const ArrowIcon = icons.dropdown;
@@ -117,28 +53,27 @@ const InsertPreview: FC<InsertPreviewProps> = ({
             menuItems={schemaOptions.map(schema => ({
               label: schema.label,
               callback: () => handleTableHeadChange(index, schema.label),
-              wrapperClass: `${classes.menuItem} ${
-                head === schema.label ? classes.menuActive : ''
-              }`,
+              wrapperClass: head === schema.label ? 'menu-active' : 'menu-item',
             }))}
             buttonProps={{
-              className: classes.menuLabel,
-              endIcon: <ArrowIcon classes={{ root: classes.menuIcon }} />,
+              sx: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                minWidth: 160,
+                color: theme => theme.palette.text.secondary,
+                backgroundColor: '#fff',
+                '&:hover': { backgroundColor: '#fff' },
+              },
+              endIcon: (
+                <ArrowIcon
+                  sx={{ color: theme => theme.palette.text.secondary }}
+                />
+              ),
             }}
           ></SimpleMenu>
         ),
       })),
-    [
-      tableHeads,
-      classes.menuLabel,
-      classes.menuIcon,
-      classes.menuItem,
-      classes.menuActive,
-      ArrowIcon,
-      schemaOptions,
-      insertTrans,
-      handleTableHeadChange,
-    ]
+    [tableHeads, ArrowIcon, schemaOptions, insertTrans, handleTableHeadChange]
   );
 
   const isContainedOptions: Option[] = [
@@ -161,13 +96,27 @@ const InsertPreview: FC<InsertPreviewProps> = ({
     }));
 
   return (
-    <section className={classes.wrapper}>
-      <form className={classes.selectorWrapper}>
-        <label>
-          <Typography className={classes.selectorTip}>
-            {insertTrans('isContainFieldNames')}
-          </Typography>
-        </label>
+    <Box sx={{ width: '75vw' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          mb: 2,
+          '& .selector': { flexBasis: '40%', minWidth: 256 },
+          '& .isContainSelect': { pt: 2, pb: 2 },
+        }}
+        component="form"
+      >
+        <Typography
+          sx={{
+            color: theme => theme.palette.text.secondary,
+            fontWeight: 500,
+            mb: 1,
+          }}
+        >
+          {insertTrans('isContainFieldNames')}
+        </Typography>
         <CustomSelector
           options={isContainedOptions}
           wrapperClass="selector"
@@ -178,18 +127,34 @@ const InsertPreview: FC<InsertPreviewProps> = ({
             const isContainedValue = e.target.value;
             handleIsContainedChange(isContainedValue as number);
           }}
+          sx={{
+            width: '100px',
+            ml: 2,
+          }}
         />
-      </form>
-      <div className={classes.tableTip}>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mt: 3,
+          mb: 1,
+          '& .text': {
+            color: theme => theme.palette.text.secondary,
+            fontWeight: 500,
+          },
+        }}
+      >
         <Typography className="text">
           {insertTrans('previewTipData')}
         </Typography>
         <Typography className="text">
           {insertTrans('previewTipAction')}
         </Typography>
-      </div>
+      </Box>
       {tableData.length > 0 && (
-        <div className={classes.gridWrapper}>
+        <Box sx={{ height: 320 }}>
           <AttuGrid
             toolbarConfigs={[]}
             colDefinitions={colDefinitions}
@@ -202,9 +167,9 @@ const InsertPreview: FC<InsertPreviewProps> = ({
             editHeads={editHeads}
             tableCellMaxWidth="120px"
           />
-        </div>
+        </Box>
       )}
-    </section>
+    </Box>
   );
 };
 

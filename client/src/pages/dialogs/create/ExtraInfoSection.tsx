@@ -34,14 +34,14 @@ const ExtraInfoSection: React.FC<ExtraInfoSectionProps> = ({
         mt: 2,
         display: 'flex',
         flexDirection: 'column',
-        gap: 1, // Corresponds to gap: 8 in makeStyles
+        gap: 1,
         '& fieldset': {
           border: 'none',
           padding: 0,
           margin: 0,
         },
         '& input': {
-          ml: 0, // Corresponds to marginLeft: 0 in makeStyles
+          ml: 0,
         },
       }}
     >

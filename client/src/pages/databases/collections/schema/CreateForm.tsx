@@ -6,24 +6,9 @@ import CustomInput from '@/components/customInput/CustomInput';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import CustomGroupedSelect from '@/components/customSelector/CustomGroupedSelect';
 import type { FormHelperType } from '../../../../types/Common';
-import { makeStyles } from '@mui/styles';
-import type { Option, GroupOption } from '@/components/customSelector/Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    maxWidth: '480px',
-  },
-  select: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  paramTitle: {
-    margin: theme.spacing(2, 0),
-    color: theme.palette.text.secondary,
-    lineHeight: '20px',
-    fontSize: '14px',
-  },
-}));
+import { useTheme } from '@mui/material';
+import type { Option, GroupOption } from '@/components/customSelector/Types';
 
 const CreateForm = (
   props: FormHelperType & {
@@ -33,7 +18,7 @@ const CreateForm = (
     indexTypeChange?: (type: string) => void;
   }
 ) => {
-  const classes = useStyles();
+  const theme = useTheme();
   const {
     updateForm,
     formValue,
@@ -211,7 +196,7 @@ const CreateForm = (
   };
 
   return (
-    <div className={`${classes.wrapper} ${wrapperClass}`}>
+    <div className={`${wrapperClass || ''}`} style={{ maxWidth: 480 }}>
       <CustomGroupedSelect
         label={indexTrans('type')}
         options={indexOptions}
@@ -225,7 +210,7 @@ const CreateForm = (
           }
           indexTypeChange && indexTypeChange(type as string);
         }}
-        className={classes.select}
+        style={{ width: '100%', marginBottom: theme.spacing(2) }}
       />
       <CustomInput
         type="text"
@@ -234,7 +219,14 @@ const CreateForm = (
         validInfo={validation}
       />
       {metricOptions.length ? (
-        <Typography className={classes.paramTitle}>
+        <Typography
+          style={{
+            margin: theme.spacing(2, 0),
+            color: theme.palette.text.secondary,
+            lineHeight: '20px',
+            fontSize: 14,
+          }}
+        >
           {commonTrans('param')}
         </Typography>
       ) : null}
@@ -249,7 +241,8 @@ const CreateForm = (
             updateForm('metric_type', type as string);
           }}
           variant="filled"
-          wrapperClass={classes.select}
+          wrapperClass=""
+          style={{ width: '100%', marginBottom: theme.spacing(2) }}
         />
       ) : null}
 

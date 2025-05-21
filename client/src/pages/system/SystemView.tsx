@@ -1,69 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
-import { Theme } from '@mui/material';
-import clsx from 'clsx';
+import { Box } from '@mui/material';
 import { useNavigationHook, useInterval } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import { MilvusService } from '@/http';
 import { parseJson } from '@/utils';
 import Topo from './Topology';
 import NodeListView from './NodeListView';
-// import LineChartCard from './LineChartCard';
-// import ProgressCard from './ProgressCard';
 import DataCard from './DataCard';
-import { makeStyles } from '@mui/styles';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  root: {
-    margin: '16px',
-    position: 'relative',
-    display: 'flex',
-    height: 'calc(100vh - 80px)',
-    overflow: 'hidden',
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 8,
-    boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
-  },
-  transparent: {
-    opacity: 0,
-    transition: 'opacity .5s',
-  },
-  contentContainer: {
-    display: 'flex',
-    borderRadius: 8,
-    gap: 8,
-    width: '100%',
-  },
-  left: {
-    width: '70%',
-    background: theme.palette.background.paper,
-    borderRadius: 8,
-    boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
-  },
-  right: { width: '30%', borderRadius: 8 },
-  childView: {
-    height: '100%',
-    width: '100%',
-    transition: 'all .25s',
-    position: 'absolute',
-    // zIndex: 1000,
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: 8,
-  },
-  showChildView: {
-    top: 0,
-    opacity: 1,
-  },
-  hideChildView: {
-    top: 1600,
-    opacity: 0,
-  },
-}));
 
 const SystemView: any = () => {
   useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
   // const { t } = useTranslation('systemView');
 
-  const classes = getStyles();
   const INTERVAL = 60000;
 
   const [data, setData] = useState<{
@@ -96,9 +44,34 @@ const SystemView: any = () => {
   const childView = useRef<HTMLInputElement>(null);
 
   return (
-    <div className={classes.root}>
-      <div className={classes.contentContainer}>
-        <div className={classes.left}>
+    <Box
+      sx={theme => ({
+        margin: '16px',
+        position: 'relative',
+        display: 'flex',
+        height: 'calc(100vh - 80px)',
+        overflow: 'hidden',
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: 2,
+        boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
+      })}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          borderRadius: 2,
+          gap: 1,
+          width: '100%',
+        }}
+      >
+        <Box
+          sx={theme => ({
+            width: '70%',
+            background: theme.palette.background.paper,
+            borderRadius: 2,
+            boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
+          })}
+        >
           <Topo
             nodes={nodes}
             childNodes={childNodes}
@@ -106,18 +79,24 @@ const SystemView: any = () => {
             setCord={setCord}
             setShowChildView={setShowChildView}
           />
-        </div>
-        <div className={classes.right}>
+        </Box>
+        <Box sx={{ width: '30%', borderRadius: 2 }}>
           <DataCard node={selectedNode} extend={true} />
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div
+      <Box
         ref={childView}
-        className={clsx(
-          classes.childView,
-          showChildView ? classes.showChildView : classes.hideChildView
-        )}
+        sx={theme => ({
+          height: '100%',
+          width: '100%',
+          transition: 'all .25s',
+          position: 'absolute',
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 2,
+          top: showChildView ? 0 : 1600,
+          opacity: showChildView ? 1 : 0,
+        })}
       >
         {selectedCord && (
           <NodeListView
@@ -127,8 +106,8 @@ const SystemView: any = () => {
             setShowChildView={setShowChildView}
           />
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

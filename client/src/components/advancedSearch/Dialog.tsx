@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { makeStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
 import CustomButton from '../customButton/CustomButton';
 import ConditionGroup from './ConditionGroup';
 import icons from '../icons/Icons';
@@ -34,7 +34,6 @@ const AdvancedDialog = (props: DialogProps) => {
     ...others
   } = props;
   const { addCondition } = handleConditions;
-  const classes = useStyles();
   const ResetIcon = icons.refresh;
   const CloseIcon = icons.clear;
 
@@ -53,46 +52,78 @@ const AdvancedDialog = (props: DialogProps) => {
         aria-labelledby="customized-dialog-title"
         open={open}
         maxWidth="xl"
-        className={classes.wrapper}
+        sx={{
+          '& .disable-exp': {
+            userSelect: 'none',
+            color: (theme: Theme) => theme.palette.text.disabled, // Changed for better theme coordination
+          },
+        }}
         {...others}
       >
-        <DialogTitle className={classes.dialogTitle}>
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography variant="h5" component="div">
             {title}
           </Typography>
           <IconButton
             aria-label="close"
-            className={classes.closeButton}
+            sx={{ color: (theme: Theme) => theme.palette.action.active }} // Changed for better theme coordination
             onClick={onCancel}
             size="small"
           >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <div
-          className={`${classes.expResult} ${
-            shouldSowPlaceholder && 'disable-exp'
-          }`}
-        >
-          {`${shouldSowPlaceholder ? 'Filter Expression' : filterExpression}`}
-          {!shouldSowPlaceholder && (
-            <CopyBtn label="copy expression" value={filterExpression} />
-          )}
-        </div>
         <DialogContent>
-          <div className={classes.expWrapper}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              ...(shouldSowPlaceholder && {
+                userSelect: 'none',
+                color: (theme: Theme) => theme.palette.text.secondary, // Changed for placeholder
+              }),
+              backgroundColor: (theme: Theme) => theme.palette.action.hover, // Changed for subtle background
+              minHeight: '32px',
+              fontSize: '13px',
+              fontFamily: 'monospace',
+              padding: (theme: Theme) => theme.spacing(1, 2),
+            }}
+          >
+            {`${shouldSowPlaceholder ? 'Filter Expression' : filterExpression}`}
+            {!shouldSowPlaceholder && (
+              <CopyBtn
+                label="copy expression"
+                value={filterExpression}
+                sx={{
+                  padding: (theme: Theme) => theme.spacing(0.25, 0.5),
+                  '& svg': {
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            )}
+          </Box>
+        </DialogContent>
+        <DialogContent>
+          <Box>
             <ConditionGroup
               fields={fields}
               handleConditions={handleConditions}
               conditions={flatConditions}
             />
-          </div>
+          </Box>
         </DialogContent>
-        <DialogActions className={classes.dialogActions}>
+        <DialogActions sx={{ justifyContent: 'space-between' }}>
           <CustomButton
             onClick={onReset}
             color="primary"
-            className={classes.resetBtn}
             size="small"
             startIcon={<ResetIcon />}
           >
@@ -103,7 +134,7 @@ const AdvancedDialog = (props: DialogProps) => {
               autoFocus
               onClick={onCancel}
               color="primary"
-              className={classes.cancelBtn}
+              sx={{ marginRight: (theme: Theme) => theme.spacing(1) }}
             >
               <Typography variant="button"> {btnTrans('cancel')}</Typography>
             </CustomButton>
@@ -112,7 +143,6 @@ const AdvancedDialog = (props: DialogProps) => {
               onClick={onSubmit}
               variant="contained"
               color="primary"
-              className={classes.applyBtn}
               disabled={!isLegal}
             >
               {btnTrans('applyFilter')}
@@ -120,97 +150,10 @@ const AdvancedDialog = (props: DialogProps) => {
           </div>
         </DialogActions>
       </Dialog>
-      {/* <DialogTemplate
-      title={title}
-      handleClose={onClose}
-      showCloseIcon
-      handleConfirm={onSubmit}
-      confirmLabel="Apply Filters"
-      confirmDisabled={!isLegal}
-      handleCancel={onCancel}
-      cancelLabel="Cancel"
-      leftActions={
-        <Button
-          onClick={onReset}
-          color="primary"
-          className={classes.resetBtn}
-          size="small"
-        >
-          <CachedIcon />
-          Reset
-        </Button>
-      }
-    >
-      <div
-        className={`${classes.expResult} ${
-          !isLegal && 'disable-exp'
-        } testcopy`}
-      >
-        {`${isLegal ? filterExpression : 'Filter Expression'}`}
-        {isLegal && (
-          <CopyBtn label="copy expression" value={filterExpression} />
-        )}
-      </div>
-      <div className={classes.expWrapper}>
-        <ConditionGroup
-          fields={fields}
-          handleConditions={handleConditions}
-          conditions={flatConditions}
-        />
-      </div>
-    </DialogTemplate> */}
     </>
   );
 };
 
 AdvancedDialog.displayName = 'AdvancedDialog';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {},
-  wrapper: {
-    '& .disable-exp': {
-      userSelect: 'none',
-      color: theme.palette.text.primary,
-    },
-  },
-  closeButton: {
-    color: theme.palette.text.primary,
-  },
-  dialogTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  dialogActions: {
-    justifyContent: 'space-between',
-  },
-  resetBtn: {},
-  cancelBtn: {
-    marginRight: theme.spacing(1),
-  },
-  applyBtn: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  copyButton: {},
-  expResult: {
-    background: theme.palette.background.paper,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    minHeight: '40px',
-    margin: theme.spacing(1, 4),
-    padding: theme.spacing(0, 2),
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: '16px',
-    lineHeight: '24px',
-  },
-  expWrapper: {
-    background: theme.palette.background.default,
-    minWidth: '480px',
-    minHeight: '104px',
-    padding: theme.spacing(1.5),
-  },
-}));
 
 export default AdvancedDialog;

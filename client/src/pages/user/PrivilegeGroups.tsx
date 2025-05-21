@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Theme, Chip } from '@mui/material';
+import { Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
 import { rootContext } from '@/context';
@@ -10,23 +10,11 @@ import Wrapper from '@/components/layout/Wrapper';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import UpdatePrivilegeGroupDialog from './dialogs/UpdatePrivilegeGroupDialog';
-import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: `calc(100vh - 160px)`,
-  },
-  chip: {
-    marginRight: theme.spacing(0.5),
-  },
-}));
-
 const PrivilegeGroups = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
-  // styles
-  const classes = useStyles();
 
   // ui states
   const [groups, setGroups] = useState<PrivilegeGroup[]>([]);
@@ -191,7 +179,7 @@ const PrivilegeGroups = () => {
               <Chip
                 key={index}
                 label={privilege.name}
-                className={classes.chip}
+                sx={{ mr: 0.5 }}
                 color="primary"
                 variant="filled"
               />
@@ -208,7 +196,10 @@ const PrivilegeGroups = () => {
   };
 
   return (
-    <Wrapper className={classes.wrapper} hasPermission={hasPermission}>
+    <Wrapper
+      sx={{ height: 'calc(100vh - 160px)' }}
+      hasPermission={hasPermission}
+    >
       <AttuGrid
         toolbarConfigs={[]}
         colDefinitions={colDefinitions}

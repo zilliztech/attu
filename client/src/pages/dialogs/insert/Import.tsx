@@ -1,106 +1,20 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Theme, Divider, Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import Uploader from '@/components/uploader/Uploader';
 import { INSERT_MAX_SIZE } from '@/consts';
 import { parseByte } from '@/utils';
-import { makeStyles } from '@mui/styles';
 import type { InsertImportProps } from './Types';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  tip: {
-    color: theme.palette.text.primary,
-    fontWeight: 500,
-    marginBottom: theme.spacing(1),
-  },
-  selectors: {
-    '& .selectorWrapper': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-
-      marginBottom: theme.spacing(3),
-
-      '& .selectLabel': {
-        fontSize: '14px',
-        lineHeight: '20px',
-        color: theme.palette.text.primary,
-      },
-
-      '& .divider': {
-        width: '20px',
-        margin: theme.spacing(0, 4),
-        backgroundcolor: theme.palette.text.secondary,
-      },
-    },
-
-    '& .selector': {
-      flexBasis: '40%',
-      minWidth: '256px',
-    },
-  },
-
-  uploadWrapper: {
-    marginTop: theme.spacing(3),
-    padding: theme.spacing(1),
-    backgroundColor: theme.palette.background.default,
-
-    '& .text': {
-      color: theme.palette.text.secondary,
-    },
-
-    '& .file': {
-      marginBottom: theme.spacing(1),
-    },
-
-    '& .uploaderWrapper': {
-      display: 'flex',
-      alignItems: 'center',
-
-      border: `1px solid ${theme.palette.divider}`,
-      padding: theme.spacing(1),
-
-      backgroundColor: theme.palette.background.paper,
-
-      '& .uploader': {
-        marginRight: theme.spacing(1),
-      },
-    },
-
-    '& .sampleWrapper': {
-      '& .sample': {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(2),
-        margin: theme.spacing(1, 0),
-      },
-    },
-
-    '& .title': {
-      marginTop: theme.spacing(1),
-    },
-
-    '& .noteList': {
-      marginTop: theme.spacing(1),
-      paddingLeft: theme.spacing(3),
-    },
-
-    '& .noteItem': {
-      maxWidth: '560px',
-    },
-  },
-}));
+import Box from '@mui/material/Box';
 
 const InsertImport: FC<InsertImportProps> = ({
   collectionOptions,
   partitionOptions,
-
   selectedCollection,
   selectedPartition,
-
   handleCollectionChange,
   handlePartitionChange,
-
   handleUploadedData,
   handleUploadFileChange,
   fileName,
@@ -109,58 +23,104 @@ const InsertImport: FC<InsertImportProps> = ({
   const { t: insertTrans } = useTranslation('insert');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: partitionTrans } = useTranslation('partition');
-  const classes = getStyles();
 
   return (
-    <section>
-      <Typography className={classes.tip}>
+    <Box>
+      <Typography
+        sx={theme => ({
+          color: theme.palette.text.primary,
+          fontWeight: 500,
+          mb: 1,
+        })}
+      >
         {insertTrans('targetTip')}
       </Typography>
 
-      <section className={classes.selectors}>
-        <div className="selectorWrapper">
-          <CustomSelector
-            options={collectionOptions}
-            disabled={collectionOptions.length === 0}
-            wrapperClass="selector"
-            labelClass="selectLabel"
-            value={selectedCollection}
-            variant="filled"
-            label={collectionTrans('collection')}
-            onChange={(e: { target: { value: unknown } }) => {
-              const collection = e.target.value;
-              handleCollectionChange &&
-                handleCollectionChange(collection as string);
-            }}
+      <Box sx={{ mb: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 3,
+          }}
+        >
+          <Box sx={{ flexBasis: '40%' }}>
+            <CustomSelector
+              options={collectionOptions}
+              disabled={collectionOptions.length === 0}
+              wrapperClass="selector"
+              labelClass="selectLabel"
+              value={selectedCollection}
+              variant="filled"
+              label={collectionTrans('collection')}
+              onChange={(e: { target: { value: unknown } }) => {
+                const collection = e.target.value;
+                handleCollectionChange &&
+                  handleCollectionChange(collection as string);
+              }}
+              sx={{
+                width: '100%',
+                minWidth: 256,
+              }}
+            />
+          </Box>
+          <Divider
+            sx={theme => ({
+              width: 20,
+              mx: 4,
+              bgcolor: theme.palette.text.secondary,
+            })}
           />
-          <Divider classes={{ root: 'divider' }} />
-          <CustomSelector
-            options={partitionOptions}
-            disabled={partitionOptions.length === 0}
-            wrapperClass="selector"
-            labelClass="selectLabel"
-            value={selectedPartition}
-            variant="filled"
-            label={partitionTrans('partition')}
-            onChange={(e: { target: { value: unknown } }) => {
-              const partition = e.target.value;
-              handlePartitionChange(partition as string);
-            }}
-          />
-        </div>
-      </section>
+          <Box sx={{ flexBasis: '40%' }}>
+            <CustomSelector
+              options={partitionOptions}
+              disabled={partitionOptions.length === 0}
+              wrapperClass="selector"
+              labelClass="selectLabel"
+              value={selectedPartition}
+              variant="filled"
+              label={partitionTrans('partition')}
+              onChange={(e: { target: { value: unknown } }) => {
+                const partition = e.target.value;
+                handlePartitionChange(partition as string);
+              }}
+              sx={{
+                width: '100%',
+                minWidth: 256,
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
 
-      <div className={classes.uploadWrapper}>
-        <Typography className="text file" variant="body1">
+      <Box
+        sx={theme => ({
+          mt: 3,
+          p: 1,
+          bgcolor: theme.palette.background.default,
+        })}
+      >
+        <Typography
+          sx={theme => ({ color: theme.palette.text.secondary, mb: 1 })}
+          variant="body1"
+        >
           {insertTrans('file')}
         </Typography>
-        <div className="uploaderWrapper">
+        <Box
+          sx={theme => ({
+            display: 'flex',
+            alignItems: 'center',
+            border: `1px solid ${theme.palette.divider}`,
+            p: 1,
+            gap: 1,
+            bgcolor: theme.palette.background.paper,
+          })}
+        >
           <Uploader
             btnClass="uploader"
             label={insertTrans('uploaderLabel')}
             accept=".csv,.json"
-            // selected collection will affect schema, which is required for uploaded data validation check
-            // so upload file should be disabled until user select one collection
             disabled={!selectedCollection}
             disableTooltip={insertTrans('uploadFileDisableTooltip')}
             setFileName={setFileName}
@@ -171,23 +131,28 @@ const InsertImport: FC<InsertImportProps> = ({
             })}
             handleUploadFileChange={handleUploadFileChange}
           />
-          <Typography className="text">
+          <Typography sx={theme => ({ color: theme.palette.text.secondary })}>
             {fileName || insertTrans('fileNamePlaceHolder')}
           </Typography>
-        </div>
+        </Box>
 
-        <Typography variant="body2" className="text title">
+        <Typography
+          variant="body2"
+          sx={theme => ({ color: theme.palette.text.secondary, mt: 1 })}
+        >
           {insertTrans('noteTitle')}
         </Typography>
-        <ul className="noteList">
-          {insertTrans('notes').map((note: string) => (
-            <li key={note} className="text noteItem">
-              <Typography>{note}</Typography>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+        <Box component="ul" sx={theme => ({ mt: 1, pl: 3 })}>
+          {(insertTrans('notes', { returnObjects: true }) as string[]).map(
+            (note: string) => (
+              <Box component="li" key={note} sx={{ maxWidth: 560 }}>
+                <Typography>{note}</Typography>
+              </Box>
+            )
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
