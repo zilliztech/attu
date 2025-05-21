@@ -1,40 +1,15 @@
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Theme } from '@mui/material';
 import { useNavigationHook } from '@/hooks';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import User from './User';
 import Roles from './Roles';
 import PrivilegeGroups from './PrivilegeGroups';
-import { makeStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
 import type { ITab } from '@/components/customTabList/Types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    flexDirection: 'row',
-    background: theme.palette.background.paper,
-    padding: theme.spacing(0.5, 2),
-    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
-    borderRadius: 8,
-    border: `1px solid ${theme.palette.divider}`,
-  },
-  card: {
-    boxShadow: 'none',
-    flexBasis: theme.spacing(28),
-    width: theme.spacing(28),
-    flexGrow: 0,
-    flexShrink: 0,
-  },
-  tab: {
-    flexGrow: 1,
-    flexShrink: 1,
-    overflowX: 'auto',
-  },
-}));
-
 const Users = () => {
-  const classes = useStyles();
   useNavigationHook(ALL_ROUTER_TYPES.USER);
 
   const location = useLocation();
@@ -63,13 +38,21 @@ const Users = () => {
   const activeTabIndex = tabs.findIndex(t => t.path === currentPath);
 
   return (
-    <section className={`page-wrapper ${classes.wrapper}`}>
-      <RouteTabList
-        tabs={tabs}
-        wrapperClass={classes.tab}
-        activeIndex={activeTabIndex}
-      />
-    </section>
+    <Box
+      component="section"
+      className="page-wrapper"
+      sx={theme => ({
+        display: 'flex',
+        flexDirection: 'row',
+        background: theme.palette.background.paper,
+        padding: theme.spacing(0.5, 2),
+        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
+        borderRadius: 2,
+        border: `1px solid ${theme.palette.divider}`,
+      })}
+    >
+      <RouteTabList tabs={tabs} activeIndex={activeTabIndex} />
+    </Box>
   );
 };
 
