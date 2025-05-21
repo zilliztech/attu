@@ -25,7 +25,6 @@ const DialogTemplate: FC<DialogContainerProps> = ({
   showCloseIcon = true,
   leftActions,
   showCode = false,
-  codeBlocksData = [],
   dialogClass = '',
   sx = {},
 }) => {

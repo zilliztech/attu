@@ -1,24 +1,9 @@
 import { FC, useState } from 'react';
-import { Theme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DialogTemplate from '@/components/customDialog/DialogTemplate';
-import { makeStyles } from '@mui/styles';
 
 import { JSONEditor } from '../play/JSONEditor';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  code: {
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 4,
-    overflow: 'auto',
-  },
-  tip: {
-    fontSize: 12,
-    marginBottom: 8,
-    width: 480,
-    lineHeight: '20px',
-  },
-}));
 
 type EditJSONDialogProps = {
   data: { [key: string]: any };
@@ -36,8 +21,8 @@ const EditJSONDialog: FC<EditJSONDialogProps> = props => {
   const [disabled, setDisabled] = useState(true);
   // translations
   const { t: btnTrans } = useTranslation('btn');
-  // styles
-  const classes = useStyles();
+  // theme
+  const theme = useTheme();
 
   const originalData = JSON.stringify(data, null, 2) + '\n';
   const [value, setValue] = useState(originalData);
@@ -51,7 +36,8 @@ const EditJSONDialog: FC<EditJSONDialogProps> = props => {
   const handleChange = (docValue: string) => {
     try {
       setValue(docValue);
-      const jsonValue = JSON.parse(docValue);
+      // Validate JSON parsing
+      JSON.parse(docValue);
       setDisabled(docValue === originalData);
     } catch (err) {
       setDisabled(true);
@@ -64,15 +50,26 @@ const EditJSONDialog: FC<EditJSONDialogProps> = props => {
       handleClose={handleCloseDialog}
       children={
         <>
-          <div
-            className={classes.tip}
+          <Box
+            sx={{
+              fontSize: 12,
+              marginBottom: 1, // theme.spacing(1)
+              width: 480,
+              lineHeight: '20px',
+            }}
             dangerouslySetInnerHTML={{
               __html: props.dialogTip,
             }}
-          ></div>
-          <div className={classes.code}>
+          ></Box>
+          <Box
+            sx={{
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: 1, // theme.shape.borderRadius
+              overflow: 'auto',
+            }}
+          >
             <JSONEditor value={originalData} onChange={handleChange} />
-          </div>
+          </Box>
         </>
       }
       confirmDisabled={disabled}

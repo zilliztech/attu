@@ -1,4 +1,4 @@
-import { useState, useMemo, ChangeEvent, useCallback, useContext } from 'react';
+import { useState, useMemo, ChangeEvent, useCallback } from 'react';
 import {
   Typography,
   Accordion,
@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { DataService, CollectionService } from '@/http';
-import { rootContext } from '@/context';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import Filter from '@/components/advancedSearch';
@@ -29,7 +28,6 @@ import {
   generateVectorsByField,
   saveCsvAs,
   buildSearchParams,
-  buildSearchCode,
   getColumnWidth,
 } from '@/utils';
 import SearchParams from '../../../search/SearchParams';
@@ -39,7 +37,6 @@ import {
   SearchSingleParams,
 } from '../../types';
 import { DYNAMIC_FIELD } from '@/consts';
-import CodeDialog from '@/pages/dialogs/CodeDialog';
 import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
 import type { GraphData, GraphNode } from '../../types';
@@ -68,9 +65,6 @@ const Search = (props: CollectionDataProps) => {
   const collection = collections.find(
     i => i.collection_name === collectionName
   ) as CollectionFullObject;
-
-  // context
-  const { setDialog } = useContext(rootContext);
 
   // UI states
   const [tableLoading, setTableLoading] = useState<boolean>();
@@ -596,27 +590,6 @@ const Search = (props: CollectionDataProps) => {
                   startIcon={<Icons.magic classes={{ root: 'icon' }} />}
                 >
                   {btnTrans('explore')}
-                </CustomButton>
-                <CustomButton
-                  className={classes.btn}
-                  disabled={disableSearch}
-                  onClick={() => {
-                    // open code dialog
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <CodeDialog
-                            data={buildSearchCode(searchParams, collection)}
-                          />
-                        ),
-                      },
-                    });
-                  }}
-                  startIcon={<Icons.code classes={{ root: 'icon' }} />}
-                >
-                  {btnTrans('Code')}
                 </CustomButton>
 
                 <CustomButton
