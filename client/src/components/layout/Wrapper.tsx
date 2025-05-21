@@ -2,26 +2,34 @@ import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import React from 'react';
 
+import type { SxProps, Theme } from '@mui/material';
+
 interface WrapperProps {
   hasPermission?: boolean;
   children?: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
+  sx?: SxProps<Theme>;
 }
 
 const Wrapper = ({
   hasPermission = true,
   children,
   className,
+  style,
+  sx,
 }: WrapperProps) => {
   const { t } = useTranslation();
 
   return (
     <Box
       className={className}
+      style={style}
       sx={{
         width: '100%',
         height: '100%',
         position: 'relative',
+        ...((Array.isArray(sx) ? Object.assign({}, ...sx) : sx) || {})
       }}
     >
       {children}
