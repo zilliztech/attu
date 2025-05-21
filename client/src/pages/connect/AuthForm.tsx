@@ -14,9 +14,12 @@ import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import CustomIconButton from '@/components/customButton/CustomIconButton';
-import { useStyles } from './style';
 import type { AuthReq } from '@server/types';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Box from '@mui/material/Box';
+import type { Theme } from '@mui/material';
+
+// Add Connection type definition back
 type Connection = AuthReq & {
   time: number;
 };
@@ -35,7 +38,7 @@ const DEFAULT_CONNECTION = {
 
 export const AuthForm = () => {
   // styles
-  const classes = useStyles();
+  // const classes = useStyles(); // Removed useStyles
 
   // context
   const { openSnackBar } = useContext(rootContext);
@@ -240,15 +243,32 @@ export const AuthForm = () => {
 
   return (
     <form onSubmit={handleConnect}>
-      <section className={classes.wrapper}>
-        <div className={classes.titleWrapper}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: (theme: Theme) => theme.spacing(0, 3),
+          position: 'relative',
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: 'left',
+            alignSelf: 'flex-start',
+            padding: (theme: Theme) => theme.spacing(3, 0),
+            '& svg': {
+              fontSize: 15,
+              marginLeft: (theme: Theme) => theme.spacing(0.5),
+            },
+          }}
+        >
           <Typography variant="h4" component="h4">
             {commonTrans('attu.connectTitle')}
             <CustomToolTip title={commonTrans('attu.connectionTip')}>
               <Icons.info />
             </CustomToolTip>
           </Typography>
-        </div>
+        </Box>
 
         {/* address  */}
         <CustomInput
@@ -259,13 +279,27 @@ export const AuthForm = () => {
             onChange: (val: string) =>
               handleInputChange('address', String(val)),
             variant: 'filled',
-            className: classes.input,
+            sx: {
+              margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
+              '& .MuiFilledInput-adornedEnd': {
+                paddingRight: 0,
+              },
+            },
             placeholder: commonTrans('attu.address'),
             fullWidth: true,
             InputProps: {
               endAdornment: (
                 <CustomIconButton
-                  className={classes.menuBtn}
+                  sx={{
+                    display: 'flex',
+                    paddingLeft: 1,
+                    paddingRight: 1,
+                    fontSize: 14,
+                    '& button': {
+                      width: 36,
+                      height: 36,
+                    },
+                  }}
                   onClick={handleMenuClick}
                 >
                   <Icons.link />
@@ -295,7 +329,12 @@ export const AuthForm = () => {
             key: 'database',
             onChange: (value: string) => handleInputChange('database', value),
             variant: 'filled',
-            className: classes.input,
+            sx: {
+              margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
+              '& .MuiFilledInput-adornedEnd': {
+                paddingRight: 0,
+              },
+            },
             placeholder: dbTrans('database'),
             fullWidth: true,
             value: authReq.database,
@@ -306,13 +345,19 @@ export const AuthForm = () => {
         />
 
         {/* toggle auth */}
-        <div className={classes.toggle}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'flex-start',
+          }}
+        >
           <CustomRadio
             checked={withPass}
             label={commonTrans('attu.authentication')}
             handleChange={handleEnableAuth}
           />
-        </div>
+        </Box>
 
         {/* token  */}
         {withPass && (
@@ -324,7 +369,12 @@ export const AuthForm = () => {
                 key: 'token',
                 onChange: (val: string) => handleInputChange('token', val),
                 variant: 'filled',
-                className: classes.input,
+                sx: {
+                  margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
+                  '& .MuiFilledInput-adornedEnd': {
+                    paddingRight: 0,
+                  },
+                },
                 placeholder: commonTrans('attu.token'),
                 fullWidth: true,
                 value: authReq.token,
@@ -342,7 +392,12 @@ export const AuthForm = () => {
                 onChange: (value: string) =>
                   handleInputChange('username', value),
                 variant: 'filled',
-                className: classes.input,
+                sx: {
+                  margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
+                  '& .MuiFilledInput-adornedEnd': {
+                    paddingRight: 0,
+                  },
+                },
                 placeholder: commonTrans('attu.username'),
                 fullWidth: true,
                 value: authReq.username,
@@ -360,7 +415,12 @@ export const AuthForm = () => {
                 onChange: (value: string) =>
                   handleInputChange('password', value),
                 variant: 'filled',
-                className: classes.input,
+                sx: {
+                  margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
+                  '& .MuiFilledInput-adornedEnd': {
+                    paddingRight: 0,
+                  },
+                },
                 placeholder: commonTrans('attu.password'),
                 fullWidth: true,
                 type: 'password',
@@ -374,7 +434,13 @@ export const AuthForm = () => {
         )}
 
         {/* SSL toggle */}
-        <div className={classes.toggle}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'flex-start',
+          }}
+        >
           <FormControlLabel
             control={
               <Checkbox
@@ -384,13 +450,28 @@ export const AuthForm = () => {
             }
             label={commonTrans('attu.ssl')}
           />
-        </div>
+        </Box>
 
         <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
           {btnTrans(isConnecting ? 'connecting' : 'connect')}
         </CustomButton>
 
-        <div className={classes.checkHealth}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            marginTop: 4,
+            '& .MuiCheckbox-root': {
+              margin: 0,
+              padding: '8px 4px 8px 0',
+            },
+            '& span': {
+              cursor: 'pointer',
+              fontSize: 12,
+              fontStyle: 'italic',
+            },
+          }}
+        >
           <label>
             <Checkbox
               size="small"
@@ -403,13 +484,20 @@ export const AuthForm = () => {
               {commonTrans('attu.checkHealth')}
             </Typography>
           </label>
-        </div>
-      </section>
+        </Box>
+      </Box>
 
       <Menu
         anchorEl={anchorEl}
         keepMounted
-        className={classes.menu}
+        sx={{
+          // Added sx prop
+          '& ul': {
+            padding: 0,
+            maxHeight: '400px',
+            overflowY: 'auto',
+          },
+        }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -422,15 +510,69 @@ export const AuthForm = () => {
         onClose={handleMenuClose}
       >
         {connections.map((connection, index) => (
-          <li
+          <Box
+            component="li"
             key={index}
-            className={classes.connection}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: '14px',
+              width: 380,
+              padding: `0 8px`,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: (theme: Theme) => theme.palette.action.hover,
+              },
+              '& .address': {
+                display: 'grid',
+                gridTemplateColumns: '24px 1fr',
+                gap: 4,
+                color: (theme: Theme) => theme.palette.text.primary,
+                fontSize: '14px',
+                padding: '12px 0',
+                '& .text': {
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  width: 200,
+                  wordWrap: 'break-word',
+                },
+              },
+              '& .icon': {
+                verticalAlign: '-3px',
+                marginRight: 8,
+                fontSize: '14px',
+              },
+              '& .time': {
+                color: (theme: Theme) => theme.palette.text.secondary,
+                fontSize: 11,
+                lineHeight: 1.5,
+                padding: '12px 0',
+                width: 130,
+                fontStyle: 'italic',
+              },
+              '& .deleteIconBtn': {
+                padding: '8px 0',
+                '& svg': {
+                  fontSize: '14px',
+                },
+                height: 16,
+                lineHeight: '16px',
+                margin: 0,
+              },
+            }}
             onClick={() => {
               handleClickOnHisotry(connection);
             }}
           >
             <div className="address">
-              <Icons.link className="icon"></Icons.link>
+              <Icons.link
+                // className="icon" // Removed className
+                sx={{
+                  // Added sx prop
+                  verticalAlign: '-5px',
+                  marginRight: (theme: Theme) => theme.spacing(1),
+                }}
+              ></Icons.link>
               <div className="text">
                 {connection.address}/{connection.database}
               </div>
@@ -454,7 +596,7 @@ export const AuthForm = () => {
                 </CustomIconButton>
               )}
             </div>
-          </li>
+          </Box>
         ))}
       </Menu>
     </form>
