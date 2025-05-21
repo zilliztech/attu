@@ -1,5 +1,4 @@
 import {
-  Theme,
   Checkbox,
   FormGroup,
   FormControlLabel,
@@ -12,25 +11,12 @@ import CustomInput from '@/components/customInput/CustomInput';
 import { authContext } from '@/context';
 import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
-import { makeStyles } from '@mui/styles';
 import type { CreateUserProps, CreateUserParams } from '../Types';
 import type { Option as RoleOption } from '@/components/customSelector/Types';
 import type {
   ITextfieldConfig,
   IValidation,
 } from '@/components/customInput/Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    margin: theme.spacing(1, 0, 0.5),
-  },
-  dialogWrapper: {
-    maxWidth: theme.spacing(70),
-    '& .MuiFormControlLabel-root': {
-      width: theme.spacing(20),
-    },
-  },
-}));
 
 const CreateUser: FC<CreateUserProps> = ({
   handleCreate,
@@ -58,9 +44,6 @@ const CreateUser: FC<CreateUserProps> = ({
   }, [form]);
 
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
-
-  // styles
-  const classes = useStyles();
 
   // UI handlers
   const handleInputChange = (key: 'username' | 'password', value: string) => {
@@ -107,13 +90,14 @@ const CreateUser: FC<CreateUserProps> = ({
     },
   ];
 
+  const inputSx = { mt: 1, mb: 0.5 };
   const createConfigs: ITextfieldConfig[] = [
     {
       label: commonTrans('attu.username'),
       key: 'username',
       onChange: (value: string) => handleInputChange('username', value),
       variant: 'filled',
-      className: classes.input,
+      sx: inputSx,
       placeholder: commonTrans('attu.username'),
       fullWidth: true,
       validations: [
@@ -135,7 +119,7 @@ const CreateUser: FC<CreateUserProps> = ({
       key: 'password',
       onChange: (value: string) => handleInputChange('password', value),
       variant: 'filled',
-      className: classes.input,
+      sx: inputSx,
       placeholder: commonTrans('attu.password'),
       fullWidth: true,
       type: 'password',
@@ -155,7 +139,12 @@ const CreateUser: FC<CreateUserProps> = ({
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateUser}
       confirmDisabled={disabled}
-      dialogClass={classes.dialogWrapper}
+      sx={{
+        maxWidth: theme => (theme as any).spacing(70),
+        '& .MuiFormControlLabel-root': {
+          width: (theme: any) => theme.spacing(20),
+        },
+      }}
     >
       <>
         {createConfigs.map(v => (
