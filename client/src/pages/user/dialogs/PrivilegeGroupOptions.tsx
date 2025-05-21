@@ -1,30 +1,15 @@
-import { Theme, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
+import { Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { FC } from 'react';
 import { PrivilegeGrpOptionsProps } from '../Types';
-import { makeStyles } from '@mui/styles';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  checkBox: {
-    width: theme.spacing(24),
-  },
-  formGrp: {
-    marginBottom: theme.spacing(2),
-  },
-  subTitle: {
-    marginBottom: theme.spacing(0.5),
-  },
-}));
 
 const PrivilegeGroupOptions: FC<PrivilegeGrpOptionsProps> = ({
   options,
   selection,
   onChange,
 }) => {
-  const classes = useStyles();
-
   return (
     <>
-      <FormGroup row className={classes.formGrp}>
+      <FormGroup row sx={{ mb: 2 }}>
         {options.map((r: string) => (
           <FormControlLabel
             control={
@@ -49,7 +34,7 @@ const PrivilegeGroupOptions: FC<PrivilegeGrpOptionsProps> = ({
             label={r}
             value={r}
             checked={selection.filter(s => s === r).length > 0 ? true : false}
-            className={classes.checkBox}
+            sx={{ width: theme => (theme as any).spacing(24) }}
           />
         ))}
       </FormGroup>
