@@ -113,9 +113,11 @@ const Condition: FC<ConditionProps> = props => {
     <Box
       sx={(theme: Theme) => ({
         background: theme.palette.background.paper,
-        p: theme.spacing(1.5, 2),
+        border: `1px solid ${theme.palette.divider}`,
+        p: theme.spacing(1, 2),
         display: 'flex',
         flexDirection: 'row',
+        borderRadius: 2,
         alignItems: 'center',
       })}
       className={className}
@@ -160,7 +162,7 @@ const Condition: FC<ConditionProps> = props => {
         error={!isValueLegal}
       />
       <IconButton aria-label="close" onClick={onDelete} size="small">
-        <CloseIcon />
+        <CloseIcon sx={{ fontSize: '14px' }} />
       </IconButton>
     </Box>
   );

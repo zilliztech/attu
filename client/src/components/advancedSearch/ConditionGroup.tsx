@@ -11,10 +11,11 @@ import type {
   BinaryLogicalOpProps,
   AddConditionProps,
 } from './Types';
+import { ThemeContext } from '@emotion/react';
 
 // "And & or" operator component.
 const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
-  const { onChange, className, initValue = 'and' } = props;
+  const { onChange, initValue = 'and' } = props;
   const [operator, setOperator] = useState(initValue);
   const handleChange = useCallback(
     (event: React.MouseEvent<HTMLElement>, newOp: string) => {
@@ -26,22 +27,60 @@ const BinaryLogicalOp: FC<BinaryLogicalOpProps> = props => {
     [onChange]
   );
   return (
-    <div className={`${className} op-${operator}`}>
+    <Box
+      sx={(theme: Theme) => ({
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: theme.palette.background.paper,
+      })}
+      className={`op-${operator}`}
+    >
       <ToggleButtonGroup
         value={operator}
         exclusive
         onChange={handleChange}
         aria-label="Binary Logical Operator"
       >
-        <ToggleButton value="and" aria-label="And">
+        <ToggleButton
+          value="and"
+          aria-label="And"
+          sx={(theme: Theme) => ({
+            borderRadius: 0,
+            width: 52,
+            borderTop:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+            borderBottom:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+          })}
+        >
           AND
         </ToggleButton>
-        <ToggleButton value="or" aria-label="Or">
+        <ToggleButton
+          value="or"
+          aria-label="Or"
+          sx={(theme: Theme) => ({
+            borderRadius: 0,
+            borderTop:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+            borderBottom:
+              operator === 'and'
+                ? 'none'
+                : `1px solid ${theme.palette.divider}`,
+          })}
+        >
           OR
         </ToggleButton>
       </ToggleButtonGroup>
       <div className="op-split" />
-    </div>
+    </Box>
   );
 };
 
@@ -57,6 +96,7 @@ const AddCondition: FC<AddConditionProps> = props => {
       color="primary"
       className={className}
       startIcon={<AddIcon />}
+      sx={{ margin: 1 }}
     >
       {searchTrans('addCondition')}
     </CustomButton>
@@ -77,19 +117,7 @@ const ConditionGroup = (props: ConditionGroupProps) => {
     updateConditionData,
   } = handleConditions;
 
-  const generateClassName = (conditions: any, currentIndex: number) => {
-    let className = '';
-    if (currentIndex === 0 || conditions[currentIndex - 1].type === 'break') {
-      className += 'radius-top';
-    }
-    if (
-      currentIndex === conditions.length - 1 ||
-      conditions[currentIndex + 1].type === 'break'
-    ) {
-      className ? (className = 'radius-all') : (className = 'radius-bottom');
-    }
-    return className;
-  };
+  // 已去除 generateClassName 逻辑
 
   // Generate condition items with operators and add condition btn.
   const generateConditionItems = (conditions: any[]) => {
@@ -106,7 +134,6 @@ const ConditionGroup = (props: ConditionGroupProps) => {
             fields={fields}
             triggerChange={updateConditionData}
             initData={condition?.data}
-            className={generateClassName(conditions, currentIndex)}
           />
         );
         prev.push(
@@ -147,7 +174,6 @@ const ConditionGroup = (props: ConditionGroupProps) => {
             fields={fields}
             triggerChange={updateConditionData}
             initData={condition?.data}
-            className={generateClassName(conditions, currentIndex)}
           />
         );
         prev.push(
@@ -171,8 +197,7 @@ const ConditionGroup = (props: ConditionGroupProps) => {
         flexDirection: 'column',
         alignItems: 'center',
         '& .op-or': {
-          backgroundColor: 'unset',
-          margin: '16px 0',
+          margin: '8px 0',
         },
       })}
     >
