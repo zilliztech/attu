@@ -318,6 +318,7 @@ const InsertContainer: FC<InsertContentProps> = ({
       const inserted = await DataService.insertData(collectionValue, param);
       if (inserted.status.error_code !== 'Success') {
         setInsertFailMsg(inserted.status.reason);
+        setInsertStatus(InsertStatusEnum.error);
       } else {
         await DataService.flush(collectionValue);
         // update collections
