@@ -1,6 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import icons from '../icons/Icons';
 import CustomIconButton from '../customButton/CustomIconButton';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +9,6 @@ const CopyIcon = icons.copyExpression;
 
 const CopyButton: FC<CopyButtonProps> = props => {
   const { label, icon, className, value = '', ...others } = props;
-  const classes = useStyles();
   const { t: commonTrans } = useTranslation();
   const [tooltipTitle, setTooltipTitle] = useState('Copy');
 
@@ -55,7 +52,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
     <CustomIconButton
       tooltip={tooltipTitle}
       aria-label={label}
-      className={`${classes.button} ${className}`}
+      className={className}
       onClick={event => handleClick(event, value || '')}
       {...others}
     >
@@ -66,9 +63,4 @@ const CopyButton: FC<CopyButtonProps> = props => {
 
 CopyButton.displayName = 'CopyButton';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {},
-  button: {},
-  tooltip: {},
-}));
 export default CopyButton;

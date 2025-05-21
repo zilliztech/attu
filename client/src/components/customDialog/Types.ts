@@ -1,6 +1,5 @@
 import { ReactElement } from 'react';
 import { DialogType } from '@/context';
-import { CodeViewData } from '../code/Types';
 import { SxProps, Theme } from '@mui/material';
 
 export type CustomDialogType = DialogType & {
@@ -40,7 +39,6 @@ export type DialogContainerProps = {
   leftActions?: ReactElement;
   // code mode requirement
   showCode?: boolean;
-  codeBlocksData?: CodeViewData[];
   children: ReactElement;
   dialogClass?: string;
   sx?: SxProps<Theme>;

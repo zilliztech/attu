@@ -11,61 +11,10 @@ import { IndexState } from '@/consts/Milvus';
 import { NONE_INDEXABLE_DATA_TYPES, DataTypeStringEnum } from '@/consts';
 import CreateIndexDialog from './CreateIndexDialog';
 import CustomButton from '@/components/customButton/CustomButton';
-import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material';
 import { isVectorType } from '@/utils';
 import type { FieldObject } from '@server/types';
 import { CollectionService } from '@/http';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    // give fixed width to prevent table cell stretching
-    width: 'auto',
-  },
-  item: {
-    paddingLeft: theme.spacing(1),
-  },
-  btn: {
-    display: 'flex',
-    alignItems: 'center',
-    whiteSpace: 'nowrap',
-    color: theme.palette.primary.main,
-    height: 26,
-    fontSize: 13,
-    border: `1px solid transparent`,
-    '&:hover': {
-      cursor: 'pointer',
-    },
-    '&.outline': {
-      border: `1px dashed ${theme.palette.primary.main}`,
-    },
-    '& svg': {
-      width: 15,
-    },
-  },
-  btnDisabled: {
-    color: theme.palette.text.secondary,
-    pointerEvents: 'none',
-
-    '&:hover': {
-      cursor: 'default',
-    },
-  },
-  chip: {
-    padding: theme.spacing(0.5),
-
-    '& .icon': {
-      width: '16px',
-      height: '16px',
-    },
-  },
-  chipLabel: {
-    fontSize: '12px',
-  },
-  addIcon: {
-    width: '20px',
-    height: '20px',
-  },
-}));
 
 const IndexTypeElement: FC<{
   field: FieldObject;
@@ -76,7 +25,7 @@ const IndexTypeElement: FC<{
 }> = ({ field, collectionName, cb, disabled }) => {
   const { fetchCollection } = useContext(dataContext);
 
-  const classes = useStyles();
+  const theme = useTheme();
   // set empty string as default status
   const { t: indexTrans } = useTranslation('index');
   const { t: dialogTrans } = useTranslation('dialog');
@@ -156,13 +105,17 @@ const IndexTypeElement: FC<{
 
   const chipComp = (
     text = field.index.indexType,
-    icon = <Icons.delete classes={{ root: 'icon' }} />,
+    icon = <Icons.delete sx={{ width: 16, height: 16 }} />,
     tooltip = ''
   ) => {
+    let labelText = text;
+    if (field.index && field.index.metricType) {
+      labelText = `${text}(${field.index.metricType})`;
+    }
     const IndexElem = () => (
       <Chip
-        label={text}
-        classes={{ root: classes.chip, label: classes.chipLabel }}
+        label={<span style={{ fontSize: 12 }}>{labelText}</span>}
+        sx={{ padding: theme.spacing(0.5) }}
         deleteIcon={icon}
         onDelete={handleDelete}
         disabled={disabled}
@@ -176,9 +129,9 @@ const IndexTypeElement: FC<{
 
     return tooltip ? (
       <Tooltip arrow title={tooltip} placement="top">
-        <div>
+        <span>
           <IndexElem />
-        </div>
+        </span>
       </Tooltip>
     ) : (
       <IndexElem />
@@ -191,7 +144,7 @@ const IndexTypeElement: FC<{
         field.data_type as DataTypeStringEnum
       ) !== -1
     ) {
-      return <div className={classes.item}>--</div>;
+      return <span style={{ paddingLeft: theme.spacing(1) }}>--</span>;
     }
 
     if (!field.index) {
@@ -199,7 +152,18 @@ const IndexTypeElement: FC<{
       return (
         <CustomButton
           startIcon={<Icons.addOutline />}
-          className={`${classes.btn}${isVector ? ' outline' : ''}`}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            whiteSpace: 'nowrap',
+            color: theme.palette.primary.main,
+            height: 26,
+            fontSize: 13,
+            border: isVector
+              ? `1px dashed ${theme.palette.primary.main}`
+              : '1px solid transparent',
+            '& svg': { width: 15 },
+          }}
           onClick={e => handleCreate(e)}
         >
           {btnTrans(isVector ? 'createVectorIndex' : 'createScalarIndex')}
@@ -224,12 +188,16 @@ const IndexTypeElement: FC<{
         /**
          * if creating finished, show chip that contains index type
          */
-        return chipComp(field.index.indexType);
+        return chipComp(`${field.index.indexType}`);
       }
     }
   };
 
-  return <div className={classes.wrapper}>{generateElement()}</div>;
+  return (
+    <span style={{ width: 'auto', display: 'inline-block' }}>
+      {generateElement()}
+    </span>
+  );
 };
 
 export default IndexTypeElement;

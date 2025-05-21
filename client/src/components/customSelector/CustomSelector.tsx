@@ -6,7 +6,9 @@ import Select from '@mui/material/Select';
 import { generateId } from '../../utils/Common';
 import type { CustomSelectorType } from './Types';
 
-const CustomSelector: FC<CustomSelectorType> = props => {
+const CustomSelector: FC<
+  CustomSelectorType & { style?: React.CSSProperties }
+> = props => {
   const {
     label,
     value,
@@ -17,12 +19,18 @@ const CustomSelector: FC<CustomSelectorType> = props => {
     wrapperClass = '',
     labelClass = '',
     size = 'medium',
+    style = {},
     ...others
   } = props;
   const id = generateId('selector');
 
   return (
-    <FormControl variant={variant} className={wrapperClass} size={size}>
+    <FormControl
+      variant={variant}
+      className={wrapperClass}
+      size={size}
+      style={style}
+    >
       {label && (
         <InputLabel classes={{ root: labelClass }} htmlFor={id}>
           {label}

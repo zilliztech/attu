@@ -736,7 +736,6 @@ export class CollectionsService {
         [];
 
       index.indexParameterPairs = [
-        ...metricTypePair,
         ...indexParams,
         ...params,
       ];

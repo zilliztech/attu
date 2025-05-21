@@ -1,9 +1,3 @@
-export interface CodeViewProps {
-  height?: number;
-  wrapperClass?: string;
-  data: CodeViewData[];
-}
-
 export enum CodeLanguageEnum {
   javascript = 'javascript',
   python = 'python',
@@ -16,8 +10,4 @@ export interface CodeBlockProps {
   language: string;
   wrapperClass?: string;
   style?: Record<string, React.CSSProperties>;
-}
-
-export interface CodeViewData extends CodeBlockProps {
-  label: string;
 }
