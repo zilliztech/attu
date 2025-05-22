@@ -25,7 +25,6 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   tableHeads,
   setTableHeads,
 }) => {
-  // Styles replaced with Box and sx below
   const { t: insertTrans } = useTranslation('insert');
 
   const ArrowIcon = icons.dropdown;
@@ -68,7 +67,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
                   paddingTop: '8px', // Reduce padding
                   paddingBottom: '8px', // Reduce padding
                 },
-                '&:hover': { backgroundColor: 'transparent' }, // Mimic SimpleMenu style
+                '&:hover': { backgroundColor: 'transparent' },
               }}
               renderValue={selected => {
                 if (!selected) {
@@ -86,7 +85,7 @@ const InsertPreview: FC<InsertPreviewProps> = ({
                   value={schema.label}
                   className={
                     head === schema.label ? 'menu-active' : 'menu-item'
-                  } // Keep similar class for potential existing styles
+                  }
                 >
                   {schema.label}
                 </MenuItem>
