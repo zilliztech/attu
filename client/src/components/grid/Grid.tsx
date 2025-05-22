@@ -4,62 +4,10 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import TablePagination from '@mui/material/TablePagination';
-import { makeStyles } from '@mui/styles';
 import CustomToolbar from './ToolBar';
 import Table from './Table';
 import TablePaginationActions from './TablePaginationActions';
-import type { Theme } from '@mui/material/styles/createTheme';
 import type { AttuGridType } from './Types';
-
-const userStyle = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: '100%',
-  },
-  container: {
-    flexWrap: 'nowrap',
-    flexDirection: 'column',
-  },
-  loading: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(20),
-    width: '100%',
-  },
-  tableTitle: {
-    '& .last': {
-      color: 'rgba(0, 0, 0, 0.54)',
-    },
-  },
-  pagenation: {
-    '& .MuiTablePagination-spacer': {
-      display: 'none',
-    },
-    '& .MuiTablePagination-toolbar': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      paddingLeft: 8,
-    },
-    '& .MuiTablePagination-caption': {
-      position: 'absolute',
-      left: 0,
-      bottom: 0,
-      top: 0,
-      display: 'flex',
-      alignItems: 'center',
-      '& .rows': {
-        color: 'rgba(0,0,0,0.33)',
-        marginLeft: theme.spacing(1),
-      },
-    },
-  },
-  noBottomPadding: {
-    paddingBottom: '0 !important',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-}));
 
 /**
  *
@@ -87,7 +35,7 @@ const userStyle = makeStyles((theme: Theme) => ({
  * @returns
  */
 const AttuGrid: FC<AttuGridType> = props => {
-  const classes = userStyle();
+  // const classes = userStyle();
   const tableRef = useRef<HTMLDivElement | null>(null);
 
   // i18n
@@ -209,11 +157,11 @@ const AttuGrid: FC<AttuGridType> = props => {
   return (
     <Grid
       container
-      classes={{ root: classes.wrapper, container: classes.container }}
+      sx={{ height: '100%', flexWrap: 'nowrap', flexDirection: 'column' }}
       ref={tableRef}
     >
       {title && (
-        <Grid item xs={12} className={classes.tableTitle}>
+        <Grid item xs={12} sx={{ '& .last': { color: 'rgba(0, 0, 0, 0.54)' } }}>
           <Breadcrumbs separator="›" aria-label="breadcrumb" role="breadcrumb">
             {title.map(
               (v: any, i: number) =>
@@ -242,7 +190,15 @@ const AttuGrid: FC<AttuGridType> = props => {
         </Grid>
       )}
 
-      <Grid item xs={12} className={classes.noBottomPadding}>
+      <Grid
+        item
+        xs={12}
+        sx={{
+          paddingBottom: '0 !important',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Table
           openCheckBox={openCheckBox}
           primaryKey={primaryKey}
@@ -274,7 +230,28 @@ const AttuGrid: FC<AttuGridType> = props => {
             rowsPerPage={rowsPerPage}
             rowsPerPageOptions={[]}
             onPageChange={onPageChange}
-            className={classes.pagenation}
+            sx={{
+              '& .MuiTablePagination-spacer': {
+                display: 'none',
+              },
+              '& .MuiTablePagination-toolbar': {
+                display: 'flex',
+                justifyContent: 'space-between',
+                paddingLeft: 0,
+              },
+              '& .MuiTablePagination-caption': {
+                position: 'absolute',
+                left: 0,
+                bottom: 0,
+                top: 0,
+                display: 'flex',
+                alignItems: 'center',
+                '& .rows': {
+                  color: 'rgba(0,0,0,0.33)',
+                  marginLeft: 1,
+                },
+              },
+            }}
             ActionsComponent={TablePaginationActions}
           />
         ) : null}

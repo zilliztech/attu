@@ -5,7 +5,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
-import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -17,81 +16,6 @@ import CopyButton from '../advancedSearch/CopyButton';
 import { useTranslation } from 'react-i18next';
 import type { Theme } from '@mui/material/styles';
 import type { TableType } from './Types';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    width: '100%',
-    flexGrow: 1,
-    color: theme.palette.text.primary,
-    backgroundColor: theme.palette.background.paper,
-  },
-  table: {
-    minWidth: '100%',
-  },
-  tableCell: {
-    padding: theme.spacing(1, 1.5),
-  },
-  cellContainer: {
-    display: 'flex',
-    whiteSpace: 'nowrap',
-  },
-  hoverActionCell: {
-    transition: '0.2s all',
-    padding: 0,
-    width: '50px',
-    '& span': {
-      opacity: 0,
-    },
-  },
-  checkbox: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  rowHover: {
-    '&:hover': {
-      '& td': {
-        background: 'inherit',
-      },
-
-      '& $hoverActionCell': {
-        '& span': {
-          opacity: 1,
-        },
-      },
-    },
-  },
-  selected: {
-    '& td': {
-      background: 'inherit',
-    },
-  },
-  cell: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-
-    '& p': {
-      display: 'inline-block',
-      verticalAlign: 'middle',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      maxWidth: (props: { tableCellMaxWidth: string }) =>
-        props.tableCellMaxWidth,
-      fontSize: '14px',
-      lineHeight: '20px',
-    },
-  },
-  noData: {
-    paddingTop: theme.spacing(6),
-    textAlign: 'center',
-    letterSpacing: '0.5px',
-    color: theme.palette.text.secondary,
-  },
-  copyBtn: {
-    '& svg': {
-      fontSize: '14px',
-    },
-    marginLeft: theme.spacing(0.5),
-  },
-}));
 
 const EnhancedTable: FC<TableType> = props => {
   let {
@@ -121,16 +45,24 @@ const EnhancedTable: FC<TableType> = props => {
     orderBy,
     rowDecorator = () => ({}),
   } = props;
-  const classes = useStyles({ tableCellMaxWidth });
   const { t: commonTrans } = useTranslation();
 
   return (
-    <TableContainer className={classes.root}>
+    <TableContainer
+      sx={theme => ({
+        width: '100%',
+        flexGrow: 1,
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.background.paper,
+      })}
+    >
       <Box height="100%">
         {!isLoading && (
           <Table
             stickyHeader
-            className={classes.table}
+            sx={{
+              minWidth: '100%',
+            }}
             aria-labelledby="tableTitle"
             size="medium"
             aria-label="enhanced table"
@@ -165,19 +97,36 @@ const EnhancedTable: FC<TableType> = props => {
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       selected={isItemSelected && !disableSelect}
-                      classes={{
-                        hover: classes.rowHover,
-                        selected:
-                          isItemSelected && !disableSelect
-                            ? classes.selected
-                            : undefined,
-                      }}
-                      sx={rowDecorator(row)}
+                      sx={
+                        [
+                          showHoverStyle && {
+                            '&:hover': {
+                              '& td': {
+                                background: 'inherit',
+                              },
+                              '& .hoverActionCell': {
+                                '& span': {
+                                  opacity: 1,
+                                },
+                              },
+                            },
+                          },
+                          isItemSelected &&
+                            !disableSelect && {
+                              '& td': {
+                                background: 'inherit',
+                              },
+                            },
+                          rowDecorator(row),
+                        ].filter(Boolean) as any
+                      }
                     >
                       {openCheckBox && (
                         <TableCell
                           padding="checkbox"
-                          className={classes.checkbox}
+                          sx={theme => ({
+                            borderBottom: `1px solid ${theme.palette.divider}`,
+                          })}
                         >
                           <Checkbox
                             checked={isItemSelected}
@@ -194,18 +143,44 @@ const EnhancedTable: FC<TableType> = props => {
                       {colDefinitions.map((colDef, i) => {
                         const { actionBarConfigs = [], needCopy = false } =
                           colDef;
-                        const cellStyle = colDef.getStyle
+                        const cellStyleFromDef = colDef.getStyle
                           ? colDef.getStyle(row[colDef.id])
                           : {};
                         return colDef.showActionCell ? (
                           <TableCell
-                            className={`${classes.cell} ${classes.tableCell} ${
-                              colDef.isHoverAction
-                                ? classes.hoverActionCell
-                                : ''
-                            }`}
+                            sx={
+                              [
+                                (theme: Theme) => ({
+                                  borderBottom: `1px solid ${theme.palette.divider}`,
+                                  '& p': {
+                                    display: 'inline-block',
+                                    verticalAlign: 'middle',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    maxWidth: tableCellMaxWidth,
+                                    fontSize: '14px',
+                                    lineHeight: '20px',
+                                  },
+                                }),
+                                (theme: Theme) => ({
+                                  padding: theme.spacing(1, 1.5),
+                                }),
+                                colDef.isHoverAction && {
+                                  transition: '0.2s all',
+                                  padding: 0,
+                                  width: '50px',
+                                  '& span': {
+                                    opacity: 0,
+                                  },
+                                },
+                                cellStyleFromDef,
+                              ].filter(Boolean) as any
+                            }
+                            className={
+                              colDef.isHoverAction ? 'hoverActionCell' : ''
+                            } // Keep class for targeting in rowHoverStyles
                             key={colDef.id}
-                            style={cellStyle}
                           >
                             <ActionBar
                               configs={actionBarConfigs}
@@ -216,12 +191,35 @@ const EnhancedTable: FC<TableType> = props => {
                         ) : (
                           <TableCell
                             key={'cell' + row[primaryKey] + i}
-                            // padding={i === 0 ? 'none' : 'default'}
                             align={colDef.align || 'left'}
-                            className={`${classes.cell} ${classes.tableCell}`}
-                            style={cellStyle}
+                            sx={
+                              [
+                                (theme: Theme) => ({
+                                  borderBottom: `1px solid ${theme.palette.divider}`,
+                                  '& p': {
+                                    display: 'inline-block',
+                                    verticalAlign: 'middle',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    maxWidth: tableCellMaxWidth,
+                                    fontSize: '14px',
+                                    lineHeight: '20px',
+                                  },
+                                }),
+                                (theme: Theme) => ({
+                                  padding: theme.spacing(1, 1.5),
+                                }),
+                                cellStyleFromDef,
+                              ].filter(Boolean) as any
+                            }
                           >
-                            <div className={classes.cellContainer}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
                               {typeof row[colDef.id] !== 'undefined' && (
                                 <>
                                   {colDef.onClick ? (
@@ -256,12 +254,17 @@ const EnhancedTable: FC<TableType> = props => {
                                       label={commonTrans('copy.label')}
                                       value={row[colDef.id]}
                                       size="small"
-                                      className={classes.copyBtn}
+                                      sx={theme => ({
+                                        '& svg': {
+                                          fontSize: '14px',
+                                        },
+                                        marginLeft: theme.spacing(0.5),
+                                      })}
                                     />
                                   )}
                                 </>
                               )}
-                            </div>
+                            </Box>
                           </TableCell>
                         );
                       })}
@@ -269,9 +272,14 @@ const EnhancedTable: FC<TableType> = props => {
                   );
                 })
               ) : (
-                <tr>
-                  <td
-                    className={classes.noData}
+                <TableRow>
+                  <TableCell
+                    sx={theme => ({
+                      paddingTop: theme.spacing(6),
+                      textAlign: 'center',
+                      letterSpacing: '0.5px',
+                      color: theme.palette.text.secondary,
+                    })}
                     colSpan={
                       openCheckBox
                         ? colDefinitions.length + 1
@@ -279,8 +287,8 @@ const EnhancedTable: FC<TableType> = props => {
                     }
                   >
                     {noData}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>

@@ -29,7 +29,7 @@ const Wrapper = ({
         width: '100%',
         height: '100%',
         position: 'relative',
-        ...((Array.isArray(sx) ? Object.assign({}, ...sx) : sx) || {})
+        ...((Array.isArray(sx) ? Object.assign({}, ...sx) : sx) || {}),
       }}
     >
       {children}

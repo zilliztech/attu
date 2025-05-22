@@ -1,3 +1,5 @@
+import { use } from 'i18next';
+
 const commonTrans = {
   attu: {
     admin: 'Attu',
@@ -33,6 +35,8 @@ const commonTrans = {
     action: 'action',
     noData: 'No Data',
     rows: 'Rows',
+    user: 'User',
+    users: 'Users',
     entity: 'Entity',
     entities: 'Entities',
     collection: 'Collection',

@@ -3,24 +3,8 @@ import React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import CustomButton from '../customButton/CustomButton';
-import { makeStyles } from '@mui/styles';
 import { generateId } from '../../utils/Common';
-import type { Theme } from '@mui/material/styles';
 import type { SimpleMenuType } from './Types';
-
-const getStyles = makeStyles((theme: Theme) => ({
-  menuPaper: {
-    boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.08)',
-  },
-  menuItem: {
-    minWidth: (props: { minWidth: string }) => props.minWidth,
-    padding: theme.spacing(1),
-
-    '&:hover': {
-      backgroundColor: '#f4f4f4',
-    },
-  },
-}));
 
 const SimpleMenu: FC<SimpleMenuType> = props => {
   const {
@@ -32,7 +16,6 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
   } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const classes = getStyles({ minWidth: menuItemWidth });
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,7 +42,11 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        classes={{ paper: classes.menuPaper }}
+        PaperProps={{
+          sx: {
+            boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.08)',
+          },
+        }}
         // anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         // transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
@@ -67,7 +54,13 @@ const SimpleMenu: FC<SimpleMenuType> = props => {
           {menuItems.map((v, i) =>
             typeof v.label === 'string' ? (
               <MenuItem
-                classes={{ root: classes.menuItem }}
+                sx={theme => ({
+                  minWidth: menuItemWidth,
+                  padding: theme.spacing(1),
+                  '&:hover': {
+                    backgroundColor: '#f4f4f4',
+                  },
+                })}
                 onClick={() => {
                   v.callback && v.callback();
                   handleClose();
