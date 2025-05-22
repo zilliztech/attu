@@ -47,6 +47,8 @@ const EnhancedTable: FC<TableType> = props => {
   } = props;
   const { t: commonTrans } = useTranslation();
 
+  const hasData = rows && rows.length > 0;
+
   return (
     <TableContainer
       sx={theme => ({
@@ -62,6 +64,7 @@ const EnhancedTable: FC<TableType> = props => {
             stickyHeader
             sx={{
               minWidth: '100%',
+              height: hasData ? 'auto' : '100%',
             }}
             aria-labelledby="tableTitle"
             size="medium"
@@ -84,7 +87,7 @@ const EnhancedTable: FC<TableType> = props => {
             )}
 
             <TableBody>
-              {rows && rows.length ? (
+              {hasData ? (
                 rows.map((row, index) => {
                   const isItemSelected = isSelected(row);
                   const labelId = `enhanced-table-checkbox-${index}`;
