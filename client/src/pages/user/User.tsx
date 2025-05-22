@@ -17,6 +17,7 @@ import UpdateUserRole from './dialogs/UpdateUserRole';
 import UpdateUser from './dialogs/UpdateUserPassDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import type { UserWithRoles } from '@server/types';
+import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
 const Users = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
@@ -34,6 +35,7 @@ const Users = () => {
   const { t: userTrans } = useTranslation('user');
   const { t: btnTrans } = useTranslation('btn');
   const { t: dialogTrans } = useTranslation('dialog');
+  const { t: commonTrans } = useTranslation();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -268,6 +270,7 @@ const Users = () => {
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
+        labelDisplayedRows={getLabelDisplayedRows(commonTrans('grid.users'))}
       />
     </Wrapper>
   );

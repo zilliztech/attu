@@ -32,6 +32,8 @@ const commonTrans = {
     action: '操作',
     noData: '无数据',
     rows: '行',
+    user: '用户',
+    users: '用户',
     entity: 'Entity',
     entities: 'Entities',
     collection: 'Collection',

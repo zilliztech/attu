@@ -1,11 +1,10 @@
 import { FC, useCallback, useMemo } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Select, MenuItem, FormControl } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { InsertPreviewProps } from './Types';
 import CustomSelector from '@/components/customSelector/CustomSelector';
 import AttuGrid from '@/components/grid/Grid';
 import { transferCsvArrayToTableData } from '@/utils';
-import SimpleMenu from '@/components/menu/SimpleMenu';
 import icons from '@/components/icons/Icons';
 import type { Option } from '@/components/customSelector/Types';
 import type { ColDefinitionsType } from '@/components/grid/Types';
@@ -25,7 +24,6 @@ const InsertPreview: FC<InsertPreviewProps> = ({
   handleIsContainedChange,
   tableHeads,
   setTableHeads,
-  file,
 }) => {
   // Styles replaced with Box and sx below
   const { t: insertTrans } = useTranslation('insert');
@@ -48,29 +46,53 @@ const InsertPreview: FC<InsertPreviewProps> = ({
       tableHeads.map((head: string, index: number) => ({
         value: head,
         component: (
-          <SimpleMenu
-            label={head || insertTrans('requiredFieldName')}
-            menuItems={schemaOptions.map(schema => ({
-              label: schema.label,
-              callback: () => handleTableHeadChange(index, schema.label),
-              wrapperClass: head === schema.label ? 'menu-active' : 'menu-item',
-            }))}
-            buttonProps={{
-              sx: {
-                display: 'flex',
-                justifyContent: 'space-between',
-                minWidth: 160,
-                color: theme => theme.palette.text.secondary,
-                backgroundColor: '#fff',
-                '&:hover': { backgroundColor: '#fff' },
-              },
-              endIcon: (
-                <ArrowIcon
-                  sx={{ color: theme => theme.palette.text.secondary }}
-                />
-              ),
+          <FormControl
+            sx={{
+              m: 0.5,
+              minWidth: 120,
+              backgroundColor: theme => theme.palette.background.paper,
             }}
-          ></SimpleMenu>
+          >
+            <Select
+              value={head || ''} // Ensure value is not undefined for Select
+              onChange={event =>
+                handleTableHeadChange(index, event.target.value as string)
+              }
+              displayEmpty
+              IconComponent={ArrowIcon}
+              sx={{
+                color: theme => theme.palette.text.secondary,
+                fontSize: '0.875rem', // Smaller font size
+                '& .MuiSelect-select': {
+                  paddingRight: '28px', // Adjust for custom icon and smaller size
+                  paddingTop: '8px', // Reduce padding
+                  paddingBottom: '8px', // Reduce padding
+                },
+                '&:hover': { backgroundColor: 'transparent' }, // Mimic SimpleMenu style
+              }}
+              renderValue={selected => {
+                if (!selected) {
+                  return <em>{insertTrans('requiredFieldName')}</em>;
+                }
+                return selected;
+              }}
+            >
+              <MenuItem disabled value="">
+                <em>{insertTrans('requiredFieldName')}</em>
+              </MenuItem>
+              {schemaOptions.map(schema => (
+                <MenuItem
+                  key={schema.label}
+                  value={schema.label}
+                  className={
+                    head === schema.label ? 'menu-active' : 'menu-item'
+                  } // Keep similar class for potential existing styles
+                >
+                  {schema.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         ),
       })),
     [tableHeads, ArrowIcon, schemaOptions, insertTrans, handleTableHeadChange]
