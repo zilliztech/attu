@@ -1,4 +1,4 @@
-import { Typography, Tooltip } from '@mui/material';
+import { Typography, Tooltip, Box } from '@mui/material';
 import { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
@@ -14,9 +14,11 @@ import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import {
   Wrapper,
   InfoWrapper,
-  CardWrapper,
   Card,
-  PrimaryKeyChip,
+  InfoRow,
+  InfoLabel,
+  InfoValue,
+  ActionWrapper,
   StyledChip,
   DataTypeChip,
   NameWrapper,
@@ -74,11 +76,7 @@ const Overview = () => {
         return (
           <NameWrapper>
             {f.name}
-            {f.is_primary_key && (
-              <PrimaryKeyChip title={collectionTrans('idFieldName')}>
-                <StyledChip size="small" label="ID" />
-              </PrimaryKeyChip>
-            )}
+            {f.is_primary_key && <StyledChip size="small" label="ID" />}
             {f.is_partition_key && (
               <StyledChip size="small" label="Partition key" />
             )}
@@ -292,149 +290,162 @@ const Overview = () => {
     <Wrapper>
       {collection && (
         <InfoWrapper>
-          <CardWrapper>
-            <Card>
-              <Typography variant="h5">{collectionTrans('name')}</Typography>
-              <Typography variant="h6">
-                <p title={collection.collection_name}>
-                  {collection.collection_name}
-                </p>
-                <RefreshButton
-                  sx={{
-                    position: 'relative',
-                    top: -1,
-                    '& svg': {
-                      width: 16,
-                      height: 16,
-                    },
-                  }}
-                  onClick={async () => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <RenameCollectionDialog
-                            collection={collection}
-                            cb={async newName => {
-                              await fetchCollection(newName);
-                              navigate(
-                                `/databases/${database}/${newName}/schema`
-                              );
-                            }}
-                          />
-                        ),
+          <Card>
+            <InfoRow>
+              <InfoLabel>{collectionTrans('name')}</InfoLabel>
+              <InfoValue>
+                <Tooltip title={collection.collection_name} arrow>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: 500 }}
+                    className="truncate"
+                  >
+                    {collection.collection_name}
+                  </Typography>
+                </Tooltip>
+                <ActionWrapper>
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
                       },
-                    });
-                  }}
-                  tooltip={btnTrans('rename')}
-                  icon={<Icons.edit />}
-                />
-                <CopyButton
-                  sx={{
-                    position: 'relative',
-                    top: -1,
-                    '& svg': {
-                      width: 16,
-                      height: 16,
-                    },
-                  }}
-                  copyValue={collection.collection_name}
-                />
-                <RefreshButton
-                  sx={{
-                    position: 'relative',
-                    top: -1,
-                    '& svg': {
-                      width: 16,
-                      height: 16,
-                    },
-                  }}
-                  onClick={async () => {
-                    const res =
-                      await CollectionService.describeCollectionUnformatted(
-                        collection.collection_name
-                      );
-                    const json = JSON.stringify(res, null, 2);
-                    const blob = new Blob([json], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${collection.collection_name}.json`;
-                    a.click();
-                  }}
-                  tooltip={btnTrans('downloadSchema')}
-                  icon={<Icons.download />}
-                />
-                <RefreshButton
-                  sx={{
-                    position: 'relative',
-                    top: -1,
-                    '& svg': {
-                      width: 16,
-                      height: 16,
-                    },
-                  }}
-                  onClick={() => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <DropCollectionDialog
-                            collections={[collection]}
-                            onDelete={() => {
-                              navigate(`/databases/${database}`);
-                            }}
-                          />
-                        ),
+                    }}
+                    onClick={async () => {
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <RenameCollectionDialog
+                              collection={collection}
+                              cb={async newName => {
+                                await fetchCollection(newName);
+                                navigate(
+                                  `/databases/${database}/${newName}/schema`
+                                );
+                              }}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                    tooltip={btnTrans('rename')}
+                    icon={<Icons.edit />}
+                  />
+                  <CopyButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
                       },
-                    });
-                  }}
-                  tooltip={btnTrans('drop')}
-                  icon={<Icons.cross />}
-                />
-                <RefreshButton
-                  sx={{
-                    position: 'relative',
-                    top: -1,
-                    '& svg': {
-                      width: 16,
-                      height: 16,
-                    },
-                  }}
-                  tooltip={btnTrans('refresh')}
-                  onClick={async () => {
-                    await fetchCollection(collectionName);
-                  }}
-                  icon={<Icons.refresh />}
-                />
-              </Typography>
-              <Typography variant="h5">
-                {collectionTrans('description')}
-              </Typography>
-              <Typography variant="h6">
-                {collection?.description || '--'}
-              </Typography>
-              <Typography variant="h5">
-                {collectionTrans('createdTime')}
-              </Typography>
-              <Typography variant="h6">
-                {new Date(collection.createdTime).toLocaleString()}
-              </Typography>
-            </Card>
+                    }}
+                    copyValue={collection.collection_name}
+                  />
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
+                      },
+                    }}
+                    onClick={async () => {
+                      const res =
+                        await CollectionService.describeCollectionUnformatted(
+                          collection.collection_name
+                        );
+                      const json = JSON.stringify(res, null, 2);
+                      const blob = new Blob([json], {
+                        type: 'application/json',
+                      });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${collection.collection_name}.json`;
+                      a.click();
+                    }}
+                    tooltip={btnTrans('downloadSchema')}
+                    icon={<Icons.download />}
+                  />
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
+                      },
+                    }}
+                    onClick={() => {
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <DropCollectionDialog
+                              collections={[collection]}
+                              onDelete={() => {
+                                navigate(`/databases/${database}`);
+                              }}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                    tooltip={btnTrans('drop')}
+                    icon={<Icons.cross />}
+                  />
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
+                      },
+                    }}
+                    tooltip={btnTrans('refresh')}
+                    onClick={async () => {
+                      await fetchCollection(collectionName);
+                    }}
+                    icon={<Icons.refresh />}
+                  />
+                </ActionWrapper>
+              </InfoValue>
+            </InfoRow>
 
-            <Card>
-              <Typography variant="h5">{collectionTrans('status')}</Typography>
-              <StatusAction
-                status={collection.status}
-                percentage={collection.loadedPercentage}
-                collection={collection}
-                showExtraAction={false}
-                showLoadButton={true}
-                createIndexElement={CreateIndexElement}
-              />
-              <Typography variant="h5">
+            <InfoRow>
+              <InfoLabel>{collectionTrans('description')}</InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {collection?.description || '--'}
+                </Typography>
+              </InfoValue>
+            </InfoRow>
+
+            <InfoRow>
+              <InfoLabel>{collectionTrans('createdTime')}</InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {new Date(collection.createdTime).toLocaleString()}
+                </Typography>
+              </InfoValue>
+            </InfoRow>
+          </Card>
+
+          <Card>
+            <InfoRow>
+              <InfoLabel>{collectionTrans('status')}</InfoLabel>
+              <InfoValue>
+                <StatusAction
+                  status={collection.status}
+                  percentage={collection.loadedPercentage}
+                  collection={collection}
+                  showExtraAction={false}
+                  showLoadButton={true}
+                  createIndexElement={CreateIndexElement}
+                />
+              </InfoValue>
+            </InfoRow>
+
+            <InfoRow>
+              <InfoLabel>
                 {collectionTrans('replica')}
                 <CustomToolTip title={collectionTrans('replicaTooltip')}>
                   <Icons.question
@@ -447,14 +458,14 @@ const Overview = () => {
                     }}
                   />
                 </CustomToolTip>
-              </Typography>
-              <Typography variant="h6">
-                {collection.loaded ? collection.replicas?.length : '...'}
+              </InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {collection.loaded ? collection.replicas?.length : '...'}
+                </Typography>
                 {collection.loaded && enableModifyReplica && (
                   <RefreshButton
                     sx={{
-                      position: 'relative',
-                      top: -1,
                       '& svg': {
                         width: 12,
                         height: 12,
@@ -478,9 +489,11 @@ const Overview = () => {
                     icon={<Icons.settings />}
                   />
                 )}
-              </Typography>
+              </InfoValue>
+            </InfoRow>
 
-              <Typography variant="h5">
+            <InfoRow>
+              <InfoLabel>
                 {collection.loaded ? (
                   collectionTrans('count')
                 ) : (
@@ -499,89 +512,85 @@ const Overview = () => {
                     </CustomToolTip>
                   </>
                 )}
-              </Typography>
-              <Typography variant="h6">
-                {formatNumber(Number(collection?.rowCount || '0'))}
-              </Typography>
-            </Card>
-            <Card>
-              <Typography variant="h5">
-                {collectionTrans('features')}
-              </Typography>
-              {isAutoIDEnabled ? (
-                <StyledChip
-                  sx={{ border: 'none', marginLeft: 0 }}
-                  label={collectionTrans('autoId')}
-                  size="small"
-                />
-              ) : null}
-              <Tooltip
-                title={
-                  consistencyTooltipsMap[collection.consistency_level!] || ''
-                }
-                placement="top"
-                arrow
-              >
-                <StyledChip
-                  sx={{ border: 'none', marginLeft: 0 }}
-                  label={`${collectionTrans('consistency')}: ${
-                    collection.consistency_level
-                  }`}
-                  size="small"
-                />
-              </Tooltip>
+              </InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {formatNumber(Number(collection?.rowCount || '0'))}
+                </Typography>
+              </InfoValue>
+            </InfoRow>
+          </Card>
 
-              {collection &&
-              collection.schema &&
-              collection.schema.enable_dynamic_field ? (
+          <Card>
+            <InfoRow>
+              <InfoLabel>{collectionTrans('features')}</InfoLabel>
+              <InfoValue>
                 <Tooltip
-                  title={collectionTrans('dynamicSchemaTooltip')}
-                  placement="top"
+                  title={[
+                    isAutoIDEnabled ? collectionTrans('autoId') : '',
+                    `${collectionTrans('consistency')}: ${collection.consistency_level}`,
+                    collection?.schema?.enable_dynamic_field
+                      ? collectionTrans('dynamicSchema')
+                      : '',
+                    collectionTrans('mmapSettings'),
+                  ]
+                    .filter(Boolean)
+                    .join(' | ')}
                   arrow
+                  enterDelay={300}
                 >
-                  <StyledChip
-                    label={collectionTrans('dynamicSchema')}
-                    size="small"
-                  />
-                </Tooltip>
-              ) : null}
-
-              <Tooltip
-                title={collectionTrans('mmapTooltip')}
-                placement="top"
-                arrow
-              >
-                <StyledChip
-                  label={collectionTrans('mmapSettings')}
-                  size="small"
-                  onDelete={async () => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <EditMmapDialog
-                            collection={collection}
-                            cb={async () => {
-                              fetchCollection(collectionName);
-                            }}
-                          />
-                        ),
-                      },
-                    });
-                  }}
-                  deleteIcon={
-                    <Icons.settings
-                      sx={{
-                        width: 12,
-                        height: 12,
-                      }}
+                  <Box className="features-wrapper">
+                    {isAutoIDEnabled && (
+                      <StyledChip
+                        sx={{ border: 'none' }}
+                        label={collectionTrans('autoId')}
+                        size="small"
+                      />
+                    )}
+                    <StyledChip
+                      sx={{ border: 'none' }}
+                      label={`${collectionTrans('consistency')}: ${collection.consistency_level}`}
+                      size="small"
                     />
-                  }
-                />
-              </Tooltip>
-            </Card>
-          </CardWrapper>
+                    {collection?.schema?.enable_dynamic_field && (
+                      <StyledChip
+                        label={collectionTrans('dynamicSchema')}
+                        size="small"
+                      />
+                    )}
+                    <StyledChip
+                      label={collectionTrans('mmapSettings')}
+                      size="small"
+                      onDelete={async () => {
+                        setDialog({
+                          open: true,
+                          type: 'custom',
+                          params: {
+                            component: (
+                              <EditMmapDialog
+                                collection={collection}
+                                cb={async () => {
+                                  fetchCollection(collectionName);
+                                }}
+                              />
+                            ),
+                          },
+                        });
+                      }}
+                      deleteIcon={
+                        <Icons.settings
+                          sx={{
+                            width: 12,
+                            height: 12,
+                          }}
+                        />
+                      }
+                    />
+                  </Box>
+                </Tooltip>
+              </InfoValue>
+            </InfoRow>
+          </Card>
         </InfoWrapper>
       )}
 
