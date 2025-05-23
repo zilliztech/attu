@@ -9,7 +9,6 @@ import EmptyCard from '@/components/cards/EmptyCard';
 import CustomButton from '@/components/customButton/CustomButton';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { useSearchResult, usePaginationHook } from '@/hooks';
-import { getQueryStyles } from './Styles';
 import SearchGlobalParams from './SearchGlobalParams';
 import VectorInputBox from './SearchInputBox';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
@@ -81,8 +80,6 @@ const Search = (props: CollectionDataProps) => {
   // translations
   const { t: searchTrans } = useTranslation('search');
   const { t: btnTrans } = useTranslation('btn');
-  // classes
-  const classes = getQueryStyles();
 
   // UI functions
   const handleExpand = useCallback(
@@ -440,9 +437,7 @@ const Search = (props: CollectionDataProps) => {
                       )}
                       <div className="label">
                         <Typography
-                          className={`field-name ${
-                            s.data.length > 0 ? 'bold' : ''
-                          }`}
+                          className={`field-name ${s.selected ? 'bold' : ''}`}
                         >
                           {field.is_function_output
                             ? `${field.name}<=${
@@ -465,12 +460,8 @@ const Search = (props: CollectionDataProps) => {
                       type={field.is_function_output ? 'text' : 'vector'}
                     />
 
-                    <Typography className="text">
-                      {searchTrans('thirdTip')}
-                    </Typography>
-
                     <SearchParams
-                      wrapperClass="paramsWrapper"
+                      sx={{ pt: 1 }}
                       consistency_level={'Strong'}
                       handleConsistencyChange={(level: string) => {}}
                       indexType={field.index.indexType}
@@ -520,6 +511,9 @@ const Search = (props: CollectionDataProps) => {
               size="small"
               disabled={false}
               className="genBtn"
+              sx={{
+                mb: 1,
+              }}
             >
               {btnTrans('example')}
             </CustomButton>
@@ -651,6 +645,7 @@ const Search = (props: CollectionDataProps) => {
                 page={currentPage}
                 tableHeaderHeight={46}
                 rowHeight={39}
+                openCheckBox={false}
                 onPageChange={handlePageChange}
                 rowsPerPage={pageSize}
                 setRowsPerPage={handlePageSize}

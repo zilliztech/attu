@@ -251,6 +251,7 @@ export const SelectedNodes = styled(Box)(({ theme }) => ({
 export const CheckboxRow = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
+  width: '100%',
   '& .MuiCheckbox-root': {
     padding: 0,
     marginRight: 4,
@@ -258,14 +259,19 @@ export const CheckboxRow = styled('div')(({ theme }) => ({
     position: 'relative',
     top: '2px',
   },
+  '& .label': {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
   '& .field-name': {
     fontSize: '13px',
     fontWeight: 400,
     lineHeight: '20px',
     wordBreak: 'break-all',
-  },
-  '& .bold': {
-    fontWeight: 600,
+    '&.bold': {
+      fontWeight: 600,
+    },
   },
   '& .vector-type': {
     color: theme.palette.text.secondary,

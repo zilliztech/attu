@@ -21,7 +21,7 @@ const SearchParams: FC<SearchParamsProps> = ({
   handleFormChange,
   topK,
   setParamsDisabled,
-  wrapperClass = '',
+  sx = {},
 }) => {
   const { t: warningTrans } = useTranslation('warning');
 
@@ -375,19 +375,48 @@ const SearchParams: FC<SearchParamsProps> = ({
   }, [disabled, setParamsDisabled]);
 
   return (
-    <Box className={wrapperClass}>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-        {/* dynamic params, now every type only has one param except metric type */}
-        {searchParams.map(param => (
-          <CustomInput
-            key={param}
-            type="text"
-            textConfig={getSearchInputConfig(param)}
-            checkValid={checkIsValid}
-            validInfo={validation}
-          />
-        ))}
-      </Box>
+    <Box
+      sx={{
+        ...sx,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        '& .inline-input': {
+          marginBottom: '20px',
+        },
+      }}
+    >
+      {/* dynamic params, now every type only has one param except metric type */}
+      {searchParams.map(param => (
+        <CustomInput
+          key={param}
+          type="text"
+          textConfig={{
+            ...getSearchInputConfig(param),
+            className: 'inline-input',
+            sx: {
+              width: '100%',
+              '& .MuiFormHelperText-root': {
+                position: 'absolute',
+                margin: 0,
+                padding: '0 14px',
+                fontSize: '0.75rem',
+                lineHeight: '1.66',
+                letterSpacing: '0.03333em',
+                textAlign: 'left',
+                marginTop: '3px',
+                marginRight: '14px',
+                marginBottom: '0',
+                marginLeft: '14px',
+              },
+            },
+            variant: 'outlined',
+            InputLabelProps: { shrink: true },
+          }}
+          checkValid={checkIsValid}
+          validInfo={validation}
+        />
+      ))}
     </Box>
   );
 };
