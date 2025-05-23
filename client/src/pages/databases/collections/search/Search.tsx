@@ -661,7 +661,11 @@ const Search = (props: CollectionDataProps) => {
               <EmptyCard
                 wrapperClass={`page-empty-card`}
                 icon={<Icons.search />}
-                text={searchTrans('noData')}
+                text={
+                  searchParams.searchResult !== null
+                    ? searchTrans('empty')
+                    : searchTrans('startTip')
+                }
               />
             )}
           </SearchResults>
