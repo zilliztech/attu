@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, MenuItem, Divider } from '@mui/material';
 
 export const CollectionNodeWrapper = styled(Box)({
   minHeight: '24px',
@@ -55,7 +55,11 @@ export const StatusDot = styled(Box, {
   })
 );
 
-export const MenuItem = styled(Box)(({ theme }) => ({
+export const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   fontSize: '14px',
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  padding: '6px 16px',
+}));
+
+export const StyledDivider = styled(Divider)(({ theme }) => ({
+  margin: 0,
 }));

@@ -6,9 +6,21 @@ import { linter } from '@codemirror/lint';
 import { githubLight } from '@ddietr/codemirror-themes/github-light';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 import { Compartment } from '@codemirror/state';
+import { styled } from '@mui/material/styles';
 
 import { useCodeMirror } from './hooks/use-codemirror';
-import { getCMStyle, getStyles } from './style';
+import { getCMStyle } from './style';
+
+const EditorContainer = styled('div')({
+  height: '100%',
+  overflow: 'auto',
+  '& .cm-editor': {
+    height: '100%',
+  },
+  '& .cm-scroller': {
+    overflow: 'auto',
+  },
+});
 
 type Props = {
   value: string;
@@ -21,7 +33,6 @@ export const JSONEditor: FC<Props> = props => {
   const theme = useTheme();
   const themeCompartment = new Compartment();
   const container = useRef<HTMLDivElement>(null);
-  const classes = getStyles();
 
   const isDarkMode = theme.palette.mode === 'dark';
 
@@ -43,5 +54,5 @@ export const JSONEditor: FC<Props> = props => {
     onChange,
   });
 
-  return <div ref={container} className={classes.editor}></div>;
+  return <EditorContainer ref={container} />;
 };
