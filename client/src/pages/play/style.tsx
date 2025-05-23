@@ -1,39 +1,4 @@
-import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
-
-export const getStyles = makeStyles((theme: Theme) => ({
-  root: {
-    margin: '0',
-    position: 'relative',
-    display: 'flex',
-    overflow: 'hidden',
-    borderRadius: 8,
-    height: '100vh',
-    padding: theme.spacing(2),
-  },
-  leftPane: {
-    flex: 1,
-    padding: 0,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  rightPane: {
-    flex: 1,
-    marginLeft: theme.spacing(2),
-    display: 'flex',
-    overflow: 'hidden',
-  },
-  editor: {
-    width: '100%',
-    height: '100%',
-    border: 'none',
-    outline: 'none',
-    resize: 'none',
-    fontSize: '16px',
-    fontFamily: 'monospace',
-    backgroundColor: 'transparent',
-  },
-}));
 
 export const getCMStyle = (theme: Theme) => {
   const isDark = theme.palette.mode === 'dark';
