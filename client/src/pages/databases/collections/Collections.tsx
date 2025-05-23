@@ -28,6 +28,7 @@ import type {
   ToolBarConfig,
 } from '@/components/grid/Types';
 import type { CollectionObject } from '@server/types';
+import { Root } from '../StyledComponents';
 
 const Collections = () => {
   const { isManaged } = useContext(authContext);
@@ -469,7 +470,7 @@ const Collections = () => {
   }, [collectionList, batchRefreshCollections]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Root sx={{ height: 'calc(100% - 24px)' }}>
       {collections.length > 0 || loading ? (
         <AttuGrid
           toolbarConfigs={toolbarConfigs}
@@ -514,7 +515,7 @@ const Collections = () => {
           />
         </>
       )}
-    </Box>
+    </Root>
   );
 };
 

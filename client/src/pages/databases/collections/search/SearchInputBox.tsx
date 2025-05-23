@@ -9,13 +9,32 @@ import { javascript } from '@codemirror/lang-javascript';
 import { linter, Diagnostic } from '@codemirror/lint';
 import { CollectionService } from '@/http';
 import { DataTypeStringEnum } from '@/consts';
-import { getQueryStyles } from './Styles';
 import { useTheme } from '@mui/material';
 import { githubLight } from '@ddietr/codemirror-themes/github-light';
 import { githubDark } from '@ddietr/codemirror-themes/github-dark';
 import { Validator } from './utils';
 import type { CollectionFullObject } from '@server/types';
 import type { SearchSingleParams } from '../../types';
+import { styled } from '@mui/material/styles';
+
+const SearchInputBoxWrapper = styled('div')(({ theme }) => ({
+  height: '124px',
+  margin: '0 0 8px 0',
+  overflow: 'auto',
+  backgroundColor: theme.palette.background.default,
+  cursor: 'text',
+  boxShadow: '0 1px 0 transparent',
+  transition: 'box-shadow 0.3s ease',
+  '&:hover': {
+    boxShadow: '0 1px 0 #000',
+  },
+  '&:active': {
+    boxShadow: `0 1px 0 ${theme.palette.primary.main}`,
+  },
+  '&.focused': {
+    boxShadow: `0 2px 0 ${theme.palette.primary.main}`,
+  },
+}));
 
 export type SearchInputBoxProps = {
   onChange: (anns_field: string, value: string) => void;
@@ -33,9 +52,6 @@ export default function SearchInputBox(props: SearchInputBoxProps) {
   // props
   const { searchParams, onChange, collection, type } = props;
   const { field, data } = searchParams;
-
-  // classes
-  const classes = getQueryStyles();
 
   // refs
   const editorEl = useRef<HTMLDivElement>(null);
@@ -238,5 +254,5 @@ export default function SearchInputBox(props: SearchInputBoxProps) {
     }
   }, [theme.palette.mode]);
 
-  return <div className={classes.searchInputBox} ref={editorEl}></div>;
+  return <SearchInputBoxWrapper ref={editorEl}></SearchInputBoxWrapper>;
 }

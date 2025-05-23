@@ -14,7 +14,7 @@ import CustomToolBar from '@/components/grid/ToolBar';
 import InsertDialog from '@/pages/dialogs/insert/Dialog';
 import EditJSONDialog from '@/pages/dialogs/EditJSONDialog';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
-import { getQueryStyles } from './Styles';
+import { Root, Toolbar } from '../../StyledComponents';
 import {
   DYNAMIC_FIELD,
   DataTypeStringEnum,
@@ -66,8 +66,6 @@ const CollectionData = (props: CollectionDataProps) => {
   const { t: collectionTrans } = useTranslation('collection');
   const { t: btnTrans } = useTranslation('btn');
   const { t: commonTrans } = useTranslation();
-  // classes
-  const classes = getQueryStyles();
 
   // UI ref
   const filterRef = useRef();
@@ -409,11 +407,11 @@ const CollectionData = (props: CollectionDataProps) => {
   }, [collection.collection_name]);
 
   return (
-    <div className={classes.root}>
+    <Root>
       {collection && (
         <>
           <CustomToolBar toolbarConfigs={toolbarConfigs} hideOnDisable={true} />
-          <div className={classes.toolbar}>
+          <Toolbar>
             <div className="left">
               <CustomInput
                 type="text"
@@ -463,7 +461,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 options={CONSISTENCY_LEVEL_OPTIONS}
                 value={queryState.consistencyLevel}
                 label={collectionTrans('consistency')}
-                wrapperClass={classes.selector}
+                wrapperClass="selector"
                 disabled={!collection.loaded}
                 variant="filled"
                 onChange={(e: { target: { value: unknown } }) => {
@@ -478,7 +476,7 @@ const CollectionData = (props: CollectionDataProps) => {
 
             <div className="right">
               <CustomMultiSelector
-                className={classes.outputs}
+                className="outputs"
                 options={queryState.fields.map(f => {
                   return {
                     label:
@@ -529,7 +527,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 }}
               />
               <CustomButton
-                className={classes.btn}
+                className="btn"
                 onClick={handleFilterReset}
                 disabled={!collection.loaded}
                 startIcon={<ResetIcon classes={{ root: 'icon' }} />}
@@ -537,7 +535,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 {btnTrans('reset')}
               </CustomButton>
               <CustomButton
-                className={classes.btn}
+                className="btn"
                 variant="contained"
                 onClick={() => {
                   setCurrentPage(0);
@@ -553,7 +551,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 {btnTrans('query')}
               </CustomButton>
             </div>
-          </div>
+          </Toolbar>
           <AttuGrid
             toolbarConfigs={[]}
             colDefinitions={queryState.outputFields.map(i => {
@@ -615,7 +613,7 @@ const CollectionData = (props: CollectionDataProps) => {
           />
         </>
       )}
-    </div>
+    </Root>
   );
 };
 
