@@ -1,4 +1,4 @@
-import { Typography, Chip, Tooltip } from '@mui/material';
+import { Typography, Tooltip } from '@mui/material';
 import { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
@@ -11,8 +11,18 @@ import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { useStyles } from './Styles';
-import CustomIconButton from '@/components/customButton/CustomIconButton';
+import {
+  Wrapper,
+  InfoWrapper,
+  CardWrapper,
+  Card,
+  PrimaryKeyChip,
+  StyledChip,
+  DataTypeChip,
+  NameWrapper,
+  ParamWrapper,
+  GridWrapper,
+} from './Styles';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import EditMmapDialog from '@/pages/dialogs/EditMmapDialog';
@@ -30,7 +40,6 @@ const Overview = () => {
 
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const navigate = useNavigate();
-  const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
@@ -63,37 +72,25 @@ const Overview = () => {
       disablePadding: true,
       formatter(f: FieldObject) {
         return (
-          <div className={classes.nameWrapper}>
+          <NameWrapper>
             {f.name}
-            {f.is_primary_key ? (
-              <div
-                className={classes.primaryKeyChip}
-                title={collectionTrans('idFieldName')}
-              >
-                <Chip className={classes.chip} size="small" label="ID" />
-              </div>
-            ) : null}
-            {f.is_partition_key ? (
-              <Chip
-                className={classes.chip}
-                size="small"
-                label="Partition key"
-              />
-            ) : null}
-            {findKeyValue(f.type_params, 'enable_match') ? (
-              <Chip
-                className={classes.chip}
-                size="small"
-                label={collectionTrans('enableMatch')}
-              />
-            ) : null}
-            {findKeyValue(f.type_params, 'enable_analyzer') === 'true' ? (
+            {f.is_primary_key && (
+              <PrimaryKeyChip title={collectionTrans('idFieldName')}>
+                <StyledChip size="small" label="ID" />
+              </PrimaryKeyChip>
+            )}
+            {f.is_partition_key && (
+              <StyledChip size="small" label="Partition key" />
+            )}
+            {findKeyValue(f.type_params, 'enable_match') && (
+              <StyledChip size="small" label={collectionTrans('enableMatch')} />
+            )}
+            {findKeyValue(f.type_params, 'enable_analyzer') === 'true' && (
               <Tooltip
                 title={findKeyValue(f.type_params, 'analyzer_params') as string}
                 arrow
               >
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   size="small"
                   label={collectionTrans('analyzer')}
                   onClick={() => {
@@ -101,23 +98,15 @@ const Overview = () => {
                       f.type_params,
                       'analyzer_params'
                     );
-                    navigator.clipboard
-                      .writeText(textToCopy as string)
-                      .then(() => {
-                        alert('Copied to clipboard!');
-                      })
-                      .catch(err => {
-                        alert('Failed to copy: ' + err);
-                      });
+                    navigator.clipboard.writeText(textToCopy as string);
                   }}
                 />
               </Tooltip>
-            ) : null}
-            {findKeyValue(f.type_params, 'mmap.enabled') === 'true' ||
-            isCollectionMmapEnabled ? (
+            )}
+            {(findKeyValue(f.type_params, 'mmap.enabled') === 'true' ||
+              isCollectionMmapEnabled) && (
               <Tooltip title={collectionTrans('mmapTooltip')} arrow>
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   size="small"
                   label={collectionTrans('mmapEnabled')}
                   onClick={() => {
@@ -138,12 +127,10 @@ const Overview = () => {
                   }}
                 />
               </Tooltip>
-            ) : null}
-
-            {f.function ? (
+            )}
+            {f.function && (
               <Tooltip title={JSON.stringify(f.function)} arrow>
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   size="small"
                   label={`
                     ${
@@ -153,19 +140,12 @@ const Overview = () => {
                     }`}
                   onClick={() => {
                     const textToCopy = JSON.stringify(f.function);
-                    navigator.clipboard
-                      .writeText(textToCopy as string)
-                      .then(() => {
-                        alert('Copied to clipboard!');
-                      })
-                      .catch(err => {
-                        alert('Failed to copy: ' + err);
-                      });
+                    navigator.clipboard.writeText(textToCopy as string);
                   }}
                 />
               </Tooltip>
-            ) : null}
-          </div>
+            )}
+          </NameWrapper>
         );
       },
       label: collectionTrans('fieldName'),
@@ -176,13 +156,7 @@ const Overview = () => {
       align: 'left',
       disablePadding: false,
       formatter(f) {
-        return (
-          <Chip
-            className={`${classes.chip} ${classes.dataTypeChip}`}
-            size="small"
-            label={formatFieldType(f)}
-          />
-        );
+        return <DataTypeChip size="small" label={formatFieldType(f)} />;
       },
       label: collectionTrans('fieldType'),
     },
@@ -193,9 +167,9 @@ const Overview = () => {
       label: collectionTrans('nullable'),
       formatter(f) {
         return f.nullable ? (
-          <Icons.check className={classes.smallIcon} />
+          <Icons.check sx={{ fontSize: '11px', ml: 0.5 }} />
         ) : (
-          <Icons.cross2 className={classes.smallIcon} />
+          <Icons.cross2 sx={{ fontSize: '11px', ml: 0.5 }} />
         );
       },
     },
@@ -243,7 +217,7 @@ const Overview = () => {
       notSort: true,
       formatter(f) {
         return f.index ? (
-          <div className={classes.paramWrapper}>
+          <ParamWrapper>
             {f.index.indexParameterPairs.length > 0 ? (
               f.index.indexParameterPairs.map((p: any) =>
                 p.value ? (
@@ -264,7 +238,7 @@ const Overview = () => {
             ) : (
               <>--</>
             )}
-          </div>
+          </ParamWrapper>
         ) : (
           <>--</>
         );
@@ -315,18 +289,25 @@ const Overview = () => {
 
   // get loading state label
   return (
-    <section className={classes.wrapper}>
+    <Wrapper>
       {collection && (
-        <section className={classes.infoWrapper}>
-          <div className={classes.cardWrapper}>
-            <div className={classes.card}>
+        <InfoWrapper>
+          <CardWrapper>
+            <Card>
               <Typography variant="h5">{collectionTrans('name')}</Typography>
               <Typography variant="h6">
                 <p title={collection.collection_name}>
                   {collection.collection_name}
                 </p>
                 <RefreshButton
-                  className={classes.extraBtn}
+                  sx={{
+                    position: 'relative',
+                    top: -1,
+                    '& svg': {
+                      width: 16,
+                      height: 16,
+                    },
+                  }}
                   onClick={async () => {
                     setDialog({
                       open: true,
@@ -337,8 +318,6 @@ const Overview = () => {
                             collection={collection}
                             cb={async newName => {
                               await fetchCollection(newName);
-
-                              // update collection name in the route url;
                               navigate(
                                 `/databases/${database}/${newName}/schema`
                               );
@@ -352,19 +331,30 @@ const Overview = () => {
                   icon={<Icons.edit />}
                 />
                 <CopyButton
-                  className={classes.extraBtn}
-                  label={collection.collection_name}
-                  value={collection.collection_name}
+                  sx={{
+                    position: 'relative',
+                    top: -1,
+                    '& svg': {
+                      width: 16,
+                      height: 16,
+                    },
+                  }}
+                  copyValue={collection.collection_name}
                 />
                 <RefreshButton
-                  className={classes.extraBtn}
+                  sx={{
+                    position: 'relative',
+                    top: -1,
+                    '& svg': {
+                      width: 16,
+                      height: 16,
+                    },
+                  }}
                   onClick={async () => {
                     const res =
                       await CollectionService.describeCollectionUnformatted(
                         collection.collection_name
                       );
-
-                    // download json file
                     const json = JSON.stringify(res, null, 2);
                     const blob = new Blob([json], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
@@ -376,9 +366,15 @@ const Overview = () => {
                   tooltip={btnTrans('downloadSchema')}
                   icon={<Icons.download />}
                 />
-                <CustomIconButton
-                  className={classes.extraBtn}
-                  tooltip={btnTrans('drop')}
+                <RefreshButton
+                  sx={{
+                    position: 'relative',
+                    top: -1,
+                    '& svg': {
+                      width: 16,
+                      height: 16,
+                    },
+                  }}
                   onClick={() => {
                     setDialog({
                       open: true,
@@ -395,16 +391,23 @@ const Overview = () => {
                       },
                     });
                   }}
-                >
-                  <Icons.cross />
-                </CustomIconButton>
-
+                  tooltip={btnTrans('drop')}
+                  icon={<Icons.cross />}
+                />
                 <RefreshButton
-                  className={classes.extraBtn}
+                  sx={{
+                    position: 'relative',
+                    top: -1,
+                    '& svg': {
+                      width: 16,
+                      height: 16,
+                    },
+                  }}
                   tooltip={btnTrans('refresh')}
                   onClick={async () => {
                     await fetchCollection(collectionName);
                   }}
+                  icon={<Icons.refresh />}
                 />
               </Typography>
               <Typography variant="h5">
@@ -419,9 +422,9 @@ const Overview = () => {
               <Typography variant="h6">
                 {new Date(collection.createdTime).toLocaleString()}
               </Typography>
-            </div>
+            </Card>
 
-            <div className={classes.card}>
+            <Card>
               <Typography variant="h5">{collectionTrans('status')}</Typography>
               <StatusAction
                 status={collection.status}
@@ -434,14 +437,29 @@ const Overview = () => {
               <Typography variant="h5">
                 {collectionTrans('replica')}
                 <CustomToolTip title={collectionTrans('replicaTooltip')}>
-                  <Icons.question classes={{ root: classes.questionIcon }} />
+                  <Icons.question
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      position: 'relative',
+                      top: '2px',
+                      right: '-4px',
+                    }}
+                  />
                 </CustomToolTip>
               </Typography>
               <Typography variant="h6">
                 {collection.loaded ? collection.replicas?.length : '...'}
                 {collection.loaded && enableModifyReplica && (
-                  <CustomIconButton
-                    className={classes.extraBtn}
+                  <RefreshButton
+                    sx={{
+                      position: 'relative',
+                      top: -1,
+                      '& svg': {
+                        width: 12,
+                        height: 12,
+                      },
+                    }}
                     tooltip={collectionTrans('modifyReplicaTooltip')}
                     onClick={() => {
                       setDialog({
@@ -457,9 +475,8 @@ const Overview = () => {
                         },
                       });
                     }}
-                  >
-                    <Icons.settings />
-                  </CustomIconButton>
+                    icon={<Icons.settings />}
+                  />
                 )}
               </Typography>
 
@@ -471,7 +488,13 @@ const Overview = () => {
                     {collectionTrans('rowCount')}
                     <CustomToolTip title={collectionTrans('entityCountInfo')}>
                       <Icons.question
-                        classes={{ root: classes.questionIcon }}
+                        sx={{
+                          width: 10,
+                          height: 10,
+                          position: 'relative',
+                          top: '6px',
+                          right: '-2px',
+                        }}
                       />
                     </CustomToolTip>
                   </>
@@ -480,14 +503,14 @@ const Overview = () => {
               <Typography variant="h6">
                 {formatNumber(Number(collection?.rowCount || '0'))}
               </Typography>
-            </div>
-            <div className={classes.card}>
+            </Card>
+            <Card>
               <Typography variant="h5">
                 {collectionTrans('features')}
               </Typography>
               {isAutoIDEnabled ? (
-                <Chip
-                  className={`${classes.chip} ${classes.featureChip}`}
+                <StyledChip
+                  sx={{ border: 'none', marginLeft: 0 }}
                   label={collectionTrans('autoId')}
                   size="small"
                 />
@@ -499,8 +522,8 @@ const Overview = () => {
                 placement="top"
                 arrow
               >
-                <Chip
-                  className={`${classes.chip} ${classes.featureChip}`}
+                <StyledChip
+                  sx={{ border: 'none', marginLeft: 0 }}
                   label={`${collectionTrans('consistency')}: ${
                     collection.consistency_level
                   }`}
@@ -516,8 +539,7 @@ const Overview = () => {
                   placement="top"
                   arrow
                 >
-                  <Chip
-                    className={`${classes.chip}`}
+                  <StyledChip
                     label={collectionTrans('dynamicSchema')}
                     size="small"
                   />
@@ -529,8 +551,7 @@ const Overview = () => {
                 placement="top"
                 arrow
               >
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   label={collectionTrans('mmapSettings')}
                   size="small"
                   onDelete={async () => {
@@ -549,17 +570,22 @@ const Overview = () => {
                       },
                     });
                   }}
-                  deleteIcon={<Icons.settings />}
+                  deleteIcon={
+                    <Icons.settings
+                      sx={{
+                        width: 12,
+                        height: 12,
+                      }}
+                    />
+                  }
                 />
               </Tooltip>
-            </div>
-          </div>
-        </section>
+            </Card>
+          </CardWrapper>
+        </InfoWrapper>
       )}
 
-      <section className={classes.gridWrapper}>
-        {/* <Typography variant="h5">{collectionTrans('schema')}</Typography> */}
-
+      <GridWrapper>
         <AttuGrid
           toolbarConfigs={[]}
           colDefinitions={colDefinitions}
@@ -574,8 +600,8 @@ const Overview = () => {
             commonTrans(`grid.${fields.length > 1 ? 'fields' : 'field'}`)
           )}
         />
-      </section>
-    </section>
+      </GridWrapper>
+    </Wrapper>
   );
 };
 
