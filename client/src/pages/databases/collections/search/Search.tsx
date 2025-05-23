@@ -1,11 +1,5 @@
 import { useState, useMemo, ChangeEvent, useCallback } from 'react';
-import {
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Checkbox,
-} from '@mui/material';
+import { Typography, AccordionSummary, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { DataService, CollectionService } from '@/http';
 import Icons from '@/components/icons/Icons';
@@ -46,6 +40,19 @@ import type {
   CollectionFullObject,
   VectorSearchResults,
 } from '@server/types';
+import {
+  SearchRoot,
+  InputArea,
+  AccordionsContainer,
+  StyledAccordion,
+  StyledAccordionDetails,
+  SearchControls,
+  SearchResults,
+  Toolbar,
+  Explorer,
+  CloseButton,
+  CheckboxRow,
+} from './StyledComponents';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -373,13 +380,13 @@ const Search = (props: CollectionDataProps) => {
 
   if (!hasVectorIndex || !loaded) {
     return (
-      <div className={classes.root}>
+      <SearchRoot>
         <EmptyCard
           wrapperClass={`page-empty-card`}
           icon={<Icons.load />}
           text={searchTrans('loadCollectionFirst')}
         />
-      </div>
+      </SearchRoot>
     );
   }
 
@@ -405,27 +412,25 @@ const Search = (props: CollectionDataProps) => {
   const enablePartitionsFilter = !collection.schema.enablePartitionKey;
 
   return (
-    <div className={classes.root}>
+    <SearchRoot>
       {collection && (
-        <div className={classes.inputArea}>
-          <div className={classes.accordions}>
+        <InputArea>
+          <AccordionsContainer>
             {searchParams.searchParams.map((s, index: number) => {
               const field = s.field;
               return (
-                <Accordion
+                <StyledAccordion
                   key={`${collection.collection_name}-${field.name}`}
                   expanded={s.expanded}
                   onChange={handleExpand(field.name)}
-                  className={`${classes.accordion} ${
-                    highlightField === field.name && 'highlight'
-                  }`}
+                  className={highlightField === field.name ? 'highlight' : ''}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls={`${field.name}-content`}
                     id={`${field.name}-header`}
                   >
-                    <div className={classes.checkbox}>
+                    <CheckboxRow>
                       {searchParams.searchParams.length > 1 && (
                         <Checkbox
                           size="small"
@@ -450,9 +455,9 @@ const Search = (props: CollectionDataProps) => {
                           <i>{field.index && field.index.metricType}</i>
                         </Typography>
                       </div>
-                    </div>
+                    </CheckboxRow>
                   </AccordionSummary>
-                  <AccordionDetails className={classes.accordionDetail}>
+                  <StyledAccordionDetails>
                     <VectorInputBox
                       searchParams={s}
                       onChange={onSearchInputChange}
@@ -481,8 +486,8 @@ const Search = (props: CollectionDataProps) => {
                         return false;
                       }}
                     />
-                  </AccordionDetails>
-                </Accordion>
+                  </StyledAccordionDetails>
+                </StyledAccordion>
               );
             })}
 
@@ -493,9 +498,9 @@ const Search = (props: CollectionDataProps) => {
                 setSelected={onPartitionsChange}
               />
             )}
-          </div>
+          </AccordionsContainer>
 
-          <div className={classes.searchControls}>
+          <SearchControls>
             <SearchGlobalParams
               onSlideChange={(field: string) => {
                 setHighlightField(field);
@@ -514,7 +519,7 @@ const Search = (props: CollectionDataProps) => {
               onClick={genRandomVectors}
               size="small"
               disabled={false}
-              className={classes.genBtn}
+              className="genBtn"
             >
               {btnTrans('example')}
             </CustomButton>
@@ -522,7 +527,7 @@ const Search = (props: CollectionDataProps) => {
             <CustomButton
               variant="contained"
               size="small"
-              className={classes.genBtn}
+              className="genBtn"
               disabled={disableSearch}
               tooltip={disableSearchTooltip}
               tooltipPlacement="top"
@@ -535,10 +540,10 @@ const Search = (props: CollectionDataProps) => {
                     : '',
               })}
             </CustomButton>
-          </div>
+          </SearchControls>
 
-          <div className={classes.searchResults}>
-            <section className={classes.toolbar}>
+          <SearchResults>
+            <Toolbar>
               <div className="left">
                 <CustomInput
                   type="text"
@@ -586,14 +591,14 @@ const Search = (props: CollectionDataProps) => {
                     !searchParams.searchResult ||
                     searchParams.searchResult!.length === 0
                   }
-                  className={classes.btn}
+                  className="btn"
                   startIcon={<Icons.magic classes={{ root: 'icon' }} />}
                 >
                   {btnTrans('explore')}
                 </CustomButton>
 
                 <CustomButton
-                  className={classes.btn}
+                  className="btn"
                   disabled={result.length === 0}
                   onClick={() => {
                     saveCsvAs(
@@ -606,7 +611,7 @@ const Search = (props: CollectionDataProps) => {
                   {btnTrans('export')}
                 </CustomButton>
                 <CustomButton
-                  className={classes.btn}
+                  className="btn"
                   onClick={
                     explorerOpen ? onExplorerResetClicked : onResetClicked
                   }
@@ -615,26 +620,25 @@ const Search = (props: CollectionDataProps) => {
                   {btnTrans('reset')}
                 </CustomButton>
               </div>
-            </section>
+            </Toolbar>
 
             {explorerOpen ? (
-              <div className={classes.explorer}>
+              <Explorer>
                 <DataExplorer
                   data={searchParams.graphData}
                   onNodeClick={onNodeClicked}
                 />
-                <CustomButton
+                <CloseButton
                   onClick={() => {
                     setExplorerOpen(false);
                   }}
                   size="small"
                   startIcon={<Icons.clear classes={{ root: 'icon' }} />}
-                  className={classes.closeBtn}
                   variant="contained"
                 >
                   {btnTrans('close')}
-                </CustomButton>
-              </div>
+                </CloseButton>
+              </Explorer>
             ) : (searchParams.searchResult &&
                 searchParams.searchResult.length > 0) ||
               tableLoading ? (
@@ -650,30 +654,25 @@ const Search = (props: CollectionDataProps) => {
                 onPageChange={handlePageChange}
                 rowsPerPage={pageSize}
                 setRowsPerPage={handlePageSize}
-                openCheckBox={false}
-                isLoading={tableLoading}
+                handleSort={handleGridSort}
                 orderBy={orderBy}
                 order={order}
                 labelDisplayedRows={getLabelDisplayedRows(
                   `(${searchParams.searchLatency} ms)`
                 )}
-                handleSort={handleGridSort}
+                isLoading={tableLoading}
               />
             ) : (
               <EmptyCard
                 wrapperClass={`page-empty-card`}
                 icon={<Icons.search />}
-                text={
-                  searchParams.searchResult !== null
-                    ? searchTrans('empty')
-                    : searchTrans('startTip')
-                }
+                text={searchTrans('noData')}
               />
             )}
-          </div>
-        </div>
+          </SearchResults>
+        </InputArea>
       )}
-    </div>
+    </SearchRoot>
   );
 };
 

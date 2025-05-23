@@ -1,44 +1,42 @@
 import { FC } from 'react';
-import { Theme, useTheme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Theme, useTheme, styled } from '@mui/material';
 import type { MiniTopoProps } from './Types';
 
-const getStyles = makeStyles((theme: Theme) => ({
-  container: {},
-  childNode: {
+const StyledSvg = styled('svg')(({ theme }: { theme: Theme }) => ({}));
+
+const StyledG = styled('g')(({ theme }: { theme: Theme }) => ({
+  transition: 'all .25s',
+  cursor: 'pointer',
+  transformOrigin: '50% 50%',
+  transformBox: 'fill-box',
+
+  '& circle': {
     transition: 'all .25s',
-    cursor: 'pointer',
-    transformOrigin: '50% 50%',
-    transformBox: 'fill-box',
+  },
+
+  '& text': {
+    transition: 'all .25s',
+  },
+
+  '&:hover, &:focus': {
+    transform: 'scale(1.1)',
+    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
+  },
+
+  '&:focus': {
+    outline: 'none',
+
+    '& svg path': {
+      fill: theme.palette.background.paper,
+    },
 
     '& circle': {
-      transition: 'all .25s',
+      fill: theme.palette.primary.main,
+      stroke: theme.palette.primary.main,
     },
 
     '& text': {
-      transition: 'all .25s',
-    },
-
-    '&:hover, &:focus': {
-      transform: 'scale(1.1)',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
-    },
-
-    '&:focus': {
-      outline: 'none',
-
-      '& svg path': {
-        fill: theme.palette.background.paper,
-      },
-
-      '& circle': {
-        fill: theme.palette.primary.main,
-        stroke: theme.palette.primary.main,
-      },
-
-      '& text': {
-        fill: theme.palette.background.paper,
-      },
+      fill: theme.palette.background.paper,
     },
   },
 }));
@@ -48,7 +46,6 @@ const capitalize = (s: string) => {
 };
 
 const MiniTopo: FC<MiniTopoProps> = props => {
-  const classes = getStyles();
   const theme = useTheme();
   const { selectedCord, selectedChildNode, setCord, setShowChildView } = props;
 
@@ -65,8 +62,8 @@ const MiniTopo: FC<MiniTopoProps> = props => {
     HEIGHT / 2 + LINE * Math.sin((ANGLE * Math.PI) / 180);
 
   return (
-    <svg
-      className={classes.container}
+    <StyledSvg
+      theme={theme}
       width={WIDTH}
       height={HEIGHT}
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -80,8 +77,8 @@ const MiniTopo: FC<MiniTopoProps> = props => {
         y2={childNodeCenterY}
         stroke={theme.palette.primary.main}
       />
-      <g
-        className={classes.childNode}
+      <StyledG
+        theme={theme}
         onClick={() => {
           setShowChildView(false);
         }}
@@ -104,7 +101,7 @@ const MiniTopo: FC<MiniTopoProps> = props => {
         >
           {selectedCord ? capitalize(selectedCord.infos?.name) : ''}
         </text>
-      </g>
+      </StyledG>
       <g>
         <svg
           width="60"
@@ -137,7 +134,7 @@ const MiniTopo: FC<MiniTopoProps> = props => {
           y={childNodeCenterY + 50}
         >{`${selectedChildNode ? selectedChildNode.infos?.name : ''}`}</text>
       </g>
-    </svg>
+    </StyledSvg>
   );
 };
 

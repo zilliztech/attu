@@ -1,14 +1,8 @@
-import { Theme, useTheme } from '@mui/material';
+import { Box, Theme, useTheme } from '@mui/material';
 import { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 
 const getStyles = makeStyles((theme: Theme) => ({
-  container: {
-    overflow: 'auto',
-    backgroundColor: theme.palette.background.paper,
-    // height: 'auto',
-    // width: '100%',
-  },
   rootNode: {
     transition: 'all .25s',
     cursor: 'pointer',
@@ -159,7 +153,13 @@ const Topo = (props: any) => {
   let centerNode: any;
 
   return (
-    <div className={classes.container}>
+    <Box
+      sx={{
+        display: 'flex',
+        overflow: 'auto',
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
       <svg
         width={WIDTH}
         height={HEIGHT}
@@ -556,7 +556,7 @@ const Topo = (props: any) => {
           </text>
         </g>
       </svg>
-    </div>
+    </Box>
   );
 };
 
