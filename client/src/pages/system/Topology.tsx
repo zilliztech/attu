@@ -1,102 +1,108 @@
 import { Box, Theme, useTheme } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
 
-const getStyles = makeStyles((theme: Theme) => ({
-  rootNode: {
+const RootNode = styled('g')(({ theme }) => ({
+  transition: 'all .25s',
+  cursor: 'pointer',
+  transformOrigin: '50% 50%',
+  transformBox: 'fill-box',
+
+  '& circle': {
     transition: 'all .25s',
-    cursor: 'pointer',
-    transformOrigin: '50% 50%',
-    transformBox: 'fill-box',
-
-    '& circle': {
-      transition: 'all .25s',
-    },
-
-    '& text': {
-      transition: 'all .25s',
-    },
-
-    '&:hover, &.selectedNode': {
-      transform: 'scale(1.1)',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
-      outline: 'none',
-    },
-
-    '&.selectedNode': {
-      '& circle': {
-        fill: theme.palette.primary.main,
-        stroke: theme.palette.primary.main,
-      },
-
-      '& text': {
-        fill: theme.palette.background.paper,
-      },
-    },
   },
-  childNode: {
+
+  '& text': {
     transition: 'all .25s',
-    cursor: 'pointer',
-    transformOrigin: '50% 50%',
-    transformBox: 'fill-box',
-
-    '& circle': {
-      transition: 'all .25s',
-    },
-
-    '& text': {
-      transition: 'all .25s',
-    },
-
-    '&:hover, &.selectedNode': {
-      transform: 'scale(1.1)',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
-      outline: 'none',
-    },
-
-    '&.selectedNode': {
-      '& svg path': {
-        fill: theme.palette.background.paper,
-      },
-
-      '& circle': {
-        fill: theme.palette.primary.main,
-        stroke: theme.palette.primary.main,
-      },
-
-      '& text': {
-        fill: theme.palette.background.paper,
-      },
-    },
   },
-  subChild: {
-    transition: 'all .25s',
-    cursor: 'pointer',
+
+  '&:hover, &.selectedNode': {
+    transform: 'scale(1.1)',
+    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
     outline: 'none',
+  },
+
+  '&.selectedNode': {
+    '& circle': {
+      fill: theme.palette.primary.main,
+      stroke: theme.palette.primary.main,
+    },
+
+    '& text': {
+      fill: theme.palette.background.paper,
+    },
+  },
+}));
+
+const ChildNode = styled('g')(({ theme }) => ({
+  transition: 'all .25s',
+  cursor: 'pointer',
+  transformOrigin: '50% 50%',
+  transformBox: 'fill-box',
+
+  '& circle': {
+    transition: 'all .25s',
+  },
+
+  '& text': {
+    transition: 'all .25s',
+  },
+
+  '&:hover, &.selectedNode': {
+    transform: 'scale(1.1)',
+    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
+    outline: 'none',
+  },
+
+  '&.selectedNode': {
+    '& svg path': {
+      fill: theme.palette.background.paper,
+    },
 
     '& circle': {
-      transition: 'all .25s',
+      fill: theme.palette.primary.main,
+      stroke: theme.palette.primary.main,
     },
+
+    '& text': {
+      fill: theme.palette.background.paper,
+    },
+  },
+}));
+
+const SubChild = styled('svg')(({ theme }) => ({
+  transition: 'all .25s',
+  cursor: 'pointer',
+  outline: 'none',
+
+  '& circle': {
+    transition: 'all .25s',
+  },
+
+  '& rect': {
+    transition: 'all .25s',
+  },
+
+  '&:hover, &:focus': {
+    transform: 'scale(1.05)',
+    transformOrigin: 'center',
+    filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
 
     '& rect': {
-      transition: 'all .25s',
+      opacity: 0,
     },
 
-    '&:hover, &:focus': {
-      transform: 'scale(1.05)',
-      transformOrigin: 'center',
-      filter: 'drop-shadow(3px 3px 5px rgba(0, 0, 0, .2))',
-
-      '& rect': {
-        opacity: 0,
-      },
-
-      '& .selected': {
-        opacity: 1,
-        transform: 'translate(-40px, -77px) scale(3)',
-      },
+    '& .selected': {
+      opacity: 1,
+      transform: 'translate(-40px, -77px) scale(3)',
     },
   },
+}));
+
+const Container = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  overflow: 'auto',
+  backgroundColor: theme.palette.background.paper,
 }));
 
 const capitalize = (s: string) => {
@@ -118,7 +124,6 @@ const setSelected = (el: any) => {
 };
 
 const Topo = (props: any) => {
-  const classes = getStyles();
   const theme = useTheme();
   const { nodes, setNode, setCord, setShowChildView } = props;
 
@@ -153,13 +158,7 @@ const Topo = (props: any) => {
   let centerNode: any;
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        overflow: 'auto',
-        backgroundColor: theme.palette.background.paper,
-      }}
-    >
+    <Container>
       <svg
         width={WIDTH}
         height={HEIGHT}
@@ -358,10 +357,9 @@ const Topo = (props: any) => {
                     stroke={theme.palette.primary.main}
                   />
                 )}
-                <g
-                  className={classes.childNode}
+                <ChildNode
                   tabIndex={0}
-                  onClick={e => {
+                  onClick={(e: React.MouseEvent) => {
                     setNode(node);
                     setSelected(e.target);
                   }}
@@ -395,18 +393,17 @@ const Topo = (props: any) => {
                   >
                     {capitalize(node?.infos?.name)}
                   </text>
-                </g>
+                </ChildNode>
 
                 {connectedLength && (
                   <>
-                    <svg
+                    <SubChild
                       tabIndex={0}
                       width="60"
                       height="60"
                       viewBox="0 0 60 60"
                       x={childNodeCenterX - 30}
                       y={childNodeCenterY - 30}
-                      className={classes.subChild}
                       onClick={() => {
                         setCord(node);
                         setShowChildView(true);
@@ -512,7 +509,7 @@ const Topo = (props: any) => {
                         height="6"
                         fill={theme.palette.primary.main}
                       />
-                    </svg>
+                    </SubChild>
                     <text
                       textAnchor="middle"
                       fill={theme.palette.text.primary}
@@ -527,11 +524,10 @@ const Topo = (props: any) => {
           }
           return null;
         })}
-        <g
+        <RootNode
           id="center"
-          className={classes.rootNode}
           tabIndex={0}
-          onClick={e => {
+          onClick={(e: React.MouseEvent) => {
             setNode(centerNode);
             setSelected(e.target);
           }}
@@ -554,9 +550,9 @@ const Topo = (props: any) => {
           >
             Milvus Proxy
           </text>
-        </g>
+        </RootNode>
       </svg>
-    </Box>
+    </Container>
   );
 };
 
