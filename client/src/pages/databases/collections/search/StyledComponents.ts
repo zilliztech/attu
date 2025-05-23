@@ -285,3 +285,36 @@ export const CheckboxRow = styled('div')(({ theme }) => ({
     },
   },
 }));
+
+export const DataExplorerRoot = styled(Box)(({ theme }) => ({
+  '& .nodeInfo': {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '8px',
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: 8,
+    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+    maxWidth: 240,
+    overflow: 'auto',
+    zIndex: 1,
+    '& .wrapper': {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 4,
+      justifyContent: 'center',
+      '& img': {
+        display: 'inline-block',
+        maxWidth: 120,
+        maxHeight: 120,
+        objectFit: 'contain',
+      },
+    },
+    '& .tip': {
+      color: theme.palette.text.secondary,
+      fontSize: 12,
+      textAlign: 'center',
+    },
+  },
+}));
