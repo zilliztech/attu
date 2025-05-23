@@ -275,6 +275,7 @@ const CustomInput = (props: ICustomInputProps) => {
     adornmentConfig,
     checkValid,
     validInfo,
+    ...others
   } = props;
 
   let template: ReactElement | null;

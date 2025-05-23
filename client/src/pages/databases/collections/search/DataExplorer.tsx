@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useTheme } from '@mui/material';
 import { cloneObj } from '@/utils';
-import { getDataExplorerStyle } from './Styles';
+import { DataExplorerRoot, SelectedNodes } from './StyledComponents';
 import DataPanel from './DataPanel';
 import type { GraphData, GraphNode, GraphLink } from '../../types';
 import type { SearchResultData } from '@server/types';
@@ -109,8 +109,6 @@ const DataExplorer = ({
   const [render, setRender] = useState<number>(0);
   // theme
   const theme = useTheme();
-  // classes
-  const classes = getDataExplorerStyle();
 
   // ref
   const rootRef = useRef<HTMLDivElement>(null);
@@ -285,21 +283,21 @@ const DataExplorer = ({
   }, [JSON.stringify(data), width, height, theme]);
 
   return (
-    <div className={classes.root} ref={rootRef}>
+    <DataExplorerRoot ref={rootRef}>
       <svg ref={svgRef} width={width} height={height}>
         <g ref={gRef} />
       </svg>
       {selectedNodesRef.current.length > 0 && (
-        <div className={classes.selectedNodes} data-render={render}>
+        <SelectedNodes data-render={render}>
           {selectedNodesRef.current.map(node => (
             <DataPanel key={node.id} node={node} color={color} />
           ))}
-        </div>
+        </SelectedNodes>
       )}
       {hoveredNode && (
         <DataPanel key={hoveredNode.id} node={hoveredNode} color={color} />
       )}
-    </div>
+    </DataExplorerRoot>
   );
 };
 

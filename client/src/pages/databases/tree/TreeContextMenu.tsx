@@ -10,8 +10,7 @@ import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import InsertDialog from '@/pages/dialogs/insert/Dialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
-import { MenuItem, Divider } from '@mui/material';
-import { useStyles } from './style';
+import { StyledMenuItem, StyledDivider } from './StyledComponents';
 import type { ContextMenu } from './types';
 import type { CollectionObject } from '@server/types';
 
@@ -24,7 +23,6 @@ export const TreeContextMenu = (props: {
   const { fetchCollection, database } = useContext(dataContext);
   const navigate = useNavigate();
 
-  const classes = useStyles();
   // props
   const { contextMenu, onClick } = props;
   // i18n
@@ -39,8 +37,7 @@ export const TreeContextMenu = (props: {
     case 'db':
       return (
         <>
-          <MenuItem
-            className={classes.menuItem}
+          <StyledMenuItem
             onClick={() => {
               setDialog({
                 open: true,
@@ -60,23 +57,14 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('createCollection')}
-          </MenuItem>
-          {/* 
-          <MenuItem
-            className={classes.menuItem}
-            disabled={true}
-            onClick={() => handleMenuClick('Delete')}
-          >
-            {actionTrans('dropDatabase')}
-          </MenuItem> */}
+          </StyledMenuItem>
         </>
       );
 
     case 'collection':
       return (
         <>
-          <MenuItem
-            className={classes.menuItem}
+          <StyledMenuItem
             disabled={(contextMenu.object as CollectionObject).loaded}
             onClick={() => {
               setDialog({
@@ -94,9 +82,8 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('loadCollection')}
-          </MenuItem>
-          <MenuItem
-            className={classes.menuItem}
+          </StyledMenuItem>
+          <StyledMenuItem
             disabled={!(contextMenu.object as CollectionObject).loaded}
             onClick={() => {
               setDialog({
@@ -114,9 +101,8 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('releaseCollection')}
-          </MenuItem>
-          <MenuItem
-            className={classes.menuItem}
+          </StyledMenuItem>
+          <StyledMenuItem
             onClick={() => {
               setDialog({
                 open: true,
@@ -138,10 +124,8 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('renameCollection')}
-          </MenuItem>
-
-          <MenuItem
-            className={classes.menuItem}
+          </StyledMenuItem>
+          <StyledMenuItem
             onClick={() => {
               setDialog({
                 open: true,
@@ -160,12 +144,9 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('dropCollection')}
-          </MenuItem>
-
-          <Divider />
-
-          <MenuItem
-            className={classes.menuItem}
+          </StyledMenuItem>
+          <StyledDivider />
+          <StyledMenuItem
             onClick={() => {
               const collection = contextMenu.object as CollectionObject;
               setDialog({
@@ -188,10 +169,8 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('importFile')}
-          </MenuItem>
-
-          <MenuItem
-            className={classes.menuItem}
+          </StyledMenuItem>
+          <StyledMenuItem
             onClick={() => {
               const collection = contextMenu.object as CollectionObject;
               setDialog({
@@ -211,10 +190,8 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('insertSampleData')}
-          </MenuItem>
-
-          <MenuItem
-            className={classes.menuItem}
+          </StyledMenuItem>
+          <StyledMenuItem
             onClick={() => {
               const collection = contextMenu.object as CollectionObject;
               setDialog({
@@ -234,7 +211,7 @@ export const TreeContextMenu = (props: {
             }}
           >
             {actionTrans('emptyCollection')}
-          </MenuItem>
+          </StyledMenuItem>
         </>
       );
   }

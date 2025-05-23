@@ -2,6 +2,7 @@ import { searchKeywordsType } from '@/consts';
 import { DataTypeEnum } from '@/consts';
 import type { FieldObject, KeyValuePair } from '@server/types';
 import type { Option } from '@/components/customSelector/Types';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 export interface SearchParamsProps {
   // default index type is FLAT
@@ -14,9 +15,9 @@ export interface SearchParamsProps {
   handleFormChange: (form: { [key in string]: number | string }) => void;
   topK: number;
   handleConsistencyChange: (type: string) => void;
-  wrapperClass?: string;
   setParamsDisabled: (isDisabled: boolean) => void;
   consistency_level: string;
+  sx: SxProps<Theme>;
 }
 
 export interface SearchResultView {

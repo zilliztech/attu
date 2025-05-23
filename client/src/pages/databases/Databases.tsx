@@ -6,69 +6,77 @@ import { dataContext } from '@/context';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ConsistencyLevelEnum, DYNAMIC_FIELD } from '@/consts';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
-import { makeStyles } from '@mui/styles';
 import { LoadingType } from '@/components/status/StatusIcon';
-import type { Theme } from '@mui/material/styles';
 import type { SearchParams, QueryState } from './types';
 import { DatabasesTab } from './DatabasesTab';
 import { CollectionsTabs } from './CollectionsTab';
+import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 
 const DEFAULT_TREE_WIDTH = 230;
 
-const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    flexDirection: 'row',
-    padding: theme.spacing(0),
-    '&.dragging': {
-      cursor: 'ew-resize',
-      '& $tree': {
-        pointerEvents: 'none',
-        userSelect: 'none',
-      },
-      '& $tab': {
-        pointerEvents: 'none',
-        userSelect: 'none',
-      },
-      '& $dragger': {
-        background: theme.palette.divider,
-      },
-    },
-  },
-  tree: {
-    boxShadow: 'none',
-    flexGrow: 0,
-    flexShrink: 0,
-    height: 'calc(100vh - 90px)',
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    boxSizing: 'border-box',
-    paddingRight: 8,
-    position: 'relative',
-  },
-  dragger: {
-    pointerEvents: 'auto',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 2,
-    height: '100%',
-    background: 'transparent',
+const PageWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  padding: theme.spacing(2),
+  height: 'calc(100vh - 64px)',
+  overflow: 'hidden',
+  '&.dragging': {
     cursor: 'ew-resize',
-    '&:hover': {
-      width: 2,
-      cursor: 'ew-resize',
+    '& .tree': {
+      pointerEvents: 'none',
+      userSelect: 'none',
+    },
+    '& .tab': {
+      pointerEvents: 'none',
+      userSelect: 'none',
+    },
+    '& .dragger': {
       background: theme.palette.divider,
     },
   },
-  tab: {
-    flexGrow: 1,
-    flexShrink: 1,
-    overflowX: 'auto',
-    padding: theme.spacing(0, 2),
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 8,
-    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+}));
+
+const TreeSection = styled(Box)(({ theme }) => ({
+  boxShadow: 'none',
+  flexGrow: 0,
+  flexShrink: 0,
+  height: '100%',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  boxSizing: 'border-box',
+  paddingRight: 8,
+  position: 'relative',
+}));
+
+const Dragger = styled(Box)(({ theme }) => ({
+  pointerEvents: 'auto',
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  width: 2,
+  height: '100%',
+  background: 'transparent',
+  cursor: 'ew-resize',
+  '&:hover': {
+    width: 2,
+    cursor: 'ew-resize',
+    background: theme.palette.divider,
   },
+}));
+
+const TabSection = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  flexShrink: 1,
+  overflow: 'hidden',
+  padding: theme.spacing(0, 2),
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: 8,
+  boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: theme.palette.background.paper,
 }));
 
 // Databases page(tree and tabs)
@@ -276,9 +284,6 @@ const Databases = () => {
     databasePage = '',
   } = params;
 
-  // get style
-  const classes = useStyles();
-
   // update navigation
   useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
     collectionName,
@@ -311,13 +316,9 @@ const Databases = () => {
 
   // render
   return (
-    <section
-      className={`page-wrapper ${classes.wrapper} ${
-        isDragging ? 'dragging' : ''
-      }`}
-    >
-      <section
-        className={classes.tree}
+    <PageWrapper className={isDragging ? 'dragging' : ''}>
+      <TreeSection
+        className="tree"
         ref={treeRef}
         style={{ width: ui.tree.width }}
       >
@@ -331,41 +332,45 @@ const Databases = () => {
             params={params}
           />
         )}
-        <div
-          className={classes.dragger}
+        <Dragger
+          className="dragger"
           data-id="dragger"
           onDoubleClick={handleDoubleClick}
           ref={draggerRef}
-        ></div>
-      </section>
-      {!collectionName && (
-        <DatabasesTab
-          databasePage={databasePage}
-          databaseName={databaseName}
-          tabClass={classes.tab}
         />
+      </TreeSection>
+      {!collectionName && (
+        <TabSection className="tab">
+          <DatabasesTab
+            databasePage={databasePage}
+            databaseName={databaseName}
+            tabClass="tab"
+          />
+        </TabSection>
       )}
       {collectionName && (
-        <CollectionsTabs
-          collectionPage={collectionPage}
-          collectionName={collectionName}
-          tabClass={classes.tab}
-          searchParams={
-            searchParams.find(
-              s => s.collection.collection_name === collectionName
-            )!
-          }
-          setSearchParams={setCollectionSearchParams}
-          queryState={
-            queryState.find(
-              q => q.collection.collection_name === collectionName
-            )!
-          }
-          setQueryState={setCollectionQueryState}
-          collections={collections}
-        />
+        <TabSection className="tab">
+          <CollectionsTabs
+            collectionPage={collectionPage}
+            collectionName={collectionName}
+            tabClass="tab"
+            searchParams={
+              searchParams.find(
+                s => s.collection.collection_name === collectionName
+              )!
+            }
+            setSearchParams={setCollectionSearchParams}
+            queryState={
+              queryState.find(
+                q => q.collection.collection_name === collectionName
+              )!
+            }
+            setQueryState={setCollectionQueryState}
+            collections={collections}
+          />
+        </TabSection>
       )}
-    </section>
+    </PageWrapper>
   );
 };
 

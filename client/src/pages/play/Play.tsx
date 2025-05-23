@@ -24,7 +24,7 @@ import { useCodelensShortcuts } from './hooks/use-codelens-shortcuts';
 import { Autocomplete } from './language/extensions/autocomplete';
 import { KeyMap } from './language/extensions/keymap';
 import { MilvusHTTP } from './language/milvus.http';
-import { getCMStyle, getStyles } from './style';
+import { getCMStyle } from './style';
 import { CustomEventNameEnum, PlaygroundCustomEventDetail } from './Types';
 import { DocumentEventManager } from './utils/event';
 import { JSONEditor } from './JSONEditor';
@@ -49,7 +49,6 @@ const Play: FC = () => {
   const { isManaged, authReq } = useContext(authContext);
 
   // styles
-  const classes = getStyles();
   const [code, setCode] = useState(() => {
     const savedCode = localStorage.getItem(ATTU_PLAY_CODE);
     return savedCode || DEFAULT_CODE_VALUE;
@@ -160,16 +159,51 @@ const Play: FC = () => {
   }, []);
 
   return (
-    <Box className={classes.root}>
-      <Paper elevation={0} className={classes.leftPane}>
-        <div
+    <Box
+      sx={{
+        margin: '0',
+        position: 'relative',
+        display: 'flex',
+        overflow: 'hidden',
+        borderRadius: 8,
+        height: '100vh',
+        padding: theme.spacing(2),
+      }}
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          flex: 1,
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Box
           ref={container}
           defaultValue={code}
-          className={classes.editor}
-        ></div>
+          sx={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            outline: 'none',
+            resize: 'none',
+            fontSize: '16px',
+            fontFamily: 'monospace',
+            backgroundColor: 'transparent',
+          }}
+        ></Box>
       </Paper>
 
-      <Paper elevation={0} className={classes.rightPane}>
+      <Paper
+        elevation={0}
+        sx={{
+          flex: 1,
+          marginLeft: theme.spacing(2),
+          display: 'flex',
+          overflow: 'hidden',
+        }}
+      >
         <JSONEditor value={content || `{}`} editable={false} />
       </Paper>
     </Box>

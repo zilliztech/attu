@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { SegmentService } from '@/http';
 import { usePaginationHook } from '@/hooks';
 import { rootContext } from '@/context';
@@ -8,7 +9,6 @@ import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
 import CompactDialog from '@/pages/dialogs/CompactDialog';
 import FlushDialog from '@/pages/dialogs/FlushDialog';
-import { getQueryStyles } from '../data/Styles';
 import { getLabelDisplayedRows } from '../../../search/Utils';
 import type { ColDefinitionsType } from '@/components/grid/Types';
 import type { ToolBarConfig } from '@/components/grid/Types';
@@ -16,7 +16,6 @@ import type { Segment } from './Types';
 
 const Segments = () => {
   const { collectionName = '' } = useParams<{ collectionName: string }>();
-  const classes = getQueryStyles();
   const { setDialog } = useContext(rootContext);
 
   const [segments, setSegments] = useState<Segment[]>([]);
@@ -213,7 +212,7 @@ const Segments = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <Box sx={{ width: '100%', height: '100%' }}>
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
 
       <AttuGrid
@@ -238,7 +237,7 @@ const Segments = () => {
           commonTrans(data.length > 1 ? 'grid.segments' : 'grid.segment')
         )}
       />
-    </div>
+    </Box>
   );
 };
 

@@ -19,9 +19,7 @@ import {
 } from '@mui/material'; // Added Box, IconButton
 import { useNavigate } from 'react-router-dom';
 import { CollectionObject } from '@server/types';
-import clcx from 'clsx';
 import { formatNumber } from '@/utils';
-import { useStyles } from './style';
 import {
   DatabaseTreeItem as OriginalDatabaseTreeItem, // Rename original type
   TreeNodeType,
@@ -32,6 +30,12 @@ import {
 import { TreeContextMenu } from './TreeContextMenu';
 import { useVirtualizer } from '@tanstack/react-virtual'; // Import virtualizer
 import { dataContext } from '@/context';
+import {
+  CollectionNodeWrapper,
+  CollectionNameWrapper,
+  Count,
+  StatusDot,
+} from './StyledComponents';
 
 // Define a type for the flattened list item
 interface FlatTreeItem {
@@ -47,15 +51,7 @@ interface FlatTreeItem {
 
 // ... existing CollectionNode component (can be reused or integrated) ...
 const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
-  // i18n collectionTrans
   const { t: commonTrans } = useTranslation();
-  const classes = useStyles();
-  const loadClass = clcx(classes.dot, {
-    [classes.loaded]: data.loaded,
-    [classes.unloaded]: !data.loaded,
-    [classes.loading]: data.status === 'loading',
-    [classes.noIndex]: !data.schema || !data.schema.hasVectorIndex,
-  });
   const hasIndex = data.schema && data.schema.hasVectorIndex;
   const loadStatus = hasIndex
     ? data.loaded
@@ -63,22 +59,26 @@ const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
       : commonTrans('status.unloaded')
     : commonTrans('status.noVectorIndex');
 
+  const getStatus = () => {
+    if (!data.schema || !data.schema.hasVectorIndex) return 'noIndex';
+    if (data.status === 'loading') return 'loading';
+    return data.loaded ? 'loaded' : 'unloaded';
+  };
+
   return (
-    <div className={classes.collectionNode}>
-      <div className={classes.collectionName}>
+    <CollectionNodeWrapper>
+      <CollectionNameWrapper>
         <Tooltip title={data.collection_name} placement="top">
           <Typography noWrap className="collectionName">
             {data.collection_name}
           </Typography>
         </Tooltip>
-        <span className={classes.count}>
-          ({formatNumber(data.rowCount || 0)})
-        </span>
-      </div>
+        <Count>({formatNumber(data.rowCount || 0)})</Count>
+      </CollectionNameWrapper>
       <Tooltip title={loadStatus} placement="top">
-        <div className={loadClass}></div>
+        <StatusDot status={getStatus()} />
       </Tooltip>
-    </div>
+    </CollectionNodeWrapper>
   );
 };
 
@@ -91,7 +91,6 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
   } = props;
 
   // context
-  const classes = useStyles();
   const navigate = useNavigate();
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const { batchRefreshCollections } = useContext(dataContext);
@@ -346,10 +345,16 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     <>
       <Box
         ref={parentRef}
-        className={classes.root} // Apply root styles (ensure height and overflow)
         sx={{
           height: treeHeight, // Adjust this height based on your layout requirements
           overflow: 'auto',
+          fontSize: '15px',
+          color: theme => theme.palette.text.primary,
+          backgroundColor: theme => theme.palette.background.default,
+          '& .MuiSvgIcon-root': {
+            fontSize: '14px',
+            color: theme => theme.palette.text.primary,
+          },
         }}
       >
         <Box
@@ -434,7 +439,7 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
                   <CollectionNode data={node.data as CollectionObject} />
                 ) : (
                   <Tooltip title={node.name} placement="top">
-                    <Typography noWrap className={classes.dbName}>
+                    <Typography noWrap sx={{ width: 'calc(100% - 30px)' }}>
                       {/* Reuse dbName style or create a generic one */}
                       {node.name}
                       {node.type === 'db' && (
