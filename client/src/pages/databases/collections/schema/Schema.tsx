@@ -502,11 +502,11 @@ const Overview = () => {
                     <CustomToolTip title={collectionTrans('entityCountInfo')}>
                       <Icons.question
                         sx={{
-                          width: 10,
-                          height: 10,
+                          width: 12,
+                          height: 12,
                           position: 'relative',
-                          top: '6px',
-                          right: '-2px',
+                          top: '2px',
+                          right: '-4px',
                         }}
                       />
                     </CustomToolTip>
@@ -525,39 +525,37 @@ const Overview = () => {
             <InfoRow>
               <InfoLabel>{collectionTrans('features')}</InfoLabel>
               <InfoValue>
-                <Tooltip
-                  title={[
-                    isAutoIDEnabled ? collectionTrans('autoId') : '',
-                    `${collectionTrans('consistency')}: ${collection.consistency_level}`,
-                    collection?.schema?.enable_dynamic_field
-                      ? collectionTrans('dynamicSchema')
-                      : '',
-                    collectionTrans('mmapSettings'),
-                  ]
-                    .filter(Boolean)
-                    .join(' | ')}
-                  arrow
-                  enterDelay={300}
-                >
-                  <Box className="features-wrapper">
-                    {isAutoIDEnabled && (
-                      <StyledChip
-                        sx={{ border: 'none' }}
-                        label={collectionTrans('autoId')}
-                        size="small"
-                      />
-                    )}
+                <Box className="features-wrapper">
+                  {isAutoIDEnabled && (
+                    <StyledChip
+                      sx={{ border: 'none' }}
+                      label={collectionTrans('autoId')}
+                      size="small"
+                    />
+                  )}
+                  <Tooltip
+                    title={
+                      collection.consistency_level
+                        ? consistencyTooltipsMap[
+                            collection.consistency_level
+                          ] || ''
+                        : ''
+                    }
+                    arrow
+                  >
                     <StyledChip
                       sx={{ border: 'none' }}
                       label={`${collectionTrans('consistency')}: ${collection.consistency_level}`}
                       size="small"
                     />
-                    {collection?.schema?.enable_dynamic_field && (
-                      <StyledChip
-                        label={collectionTrans('dynamicSchema')}
-                        size="small"
-                      />
-                    )}
+                  </Tooltip>
+                  {collection?.schema?.enable_dynamic_field && (
+                    <StyledChip
+                      label={collectionTrans('dynamicSchema')}
+                      size="small"
+                    />
+                  )}
+                  <Tooltip title={collectionTrans('mmapTooltip')} arrow>
                     <StyledChip
                       label={collectionTrans('mmapSettings')}
                       size="small"
@@ -586,8 +584,8 @@ const Overview = () => {
                         />
                       }
                     />
-                  </Box>
-                </Tooltip>
+                  </Tooltip>
+                </Box>
               </InfoValue>
             </InfoRow>
           </Card>

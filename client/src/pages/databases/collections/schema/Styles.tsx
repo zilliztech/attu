@@ -14,10 +14,12 @@ export const Wrapper = styled(Box)(({ theme }) => ({
 
 export const InfoWrapper = styled(Box)(({ theme }) => ({
   display: 'grid',
-  gridTemplateColumns:
-    'minmax(300px, 1.5fr) minmax(250px, 1fr) minmax(250px, 1fr)',
+  gridTemplateColumns: '1.2fr 1fr 1fr',
   gap: theme.spacing(2),
   width: '100%',
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: '1fr',
+  },
 }));
 
 export const Card = styled(Box)(({ theme }) => ({
@@ -30,6 +32,10 @@ export const Card = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
   width: '100%',
   minWidth: 0,
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1.5),
+    gap: theme.spacing(1.5),
+  },
 }));
 
 export const InfoRow = styled(Box)(({ theme }) => ({
@@ -37,8 +43,13 @@ export const InfoRow = styled(Box)(({ theme }) => ({
   alignItems: 'flex-start',
   gap: theme.spacing(2),
   '&:not(:last-child)': {
-    paddingBottom: theme.spacing(2),
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    paddingBottom: theme.spacing(1),
+  },
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(1),
+    '&:not(:last-child)': {
+      paddingBottom: theme.spacing(0.5),
+    },
   },
 }));
 
@@ -49,6 +60,10 @@ export const InfoLabel = styled(Box)(({ theme }) => ({
   minWidth: 80,
   flexShrink: 0,
   paddingTop: '2px',
+  [theme.breakpoints.down('md')]: {
+    minWidth: 70,
+    fontSize: 12,
+  },
 }));
 
 export const InfoValue = styled(Box)(({ theme }) => ({
@@ -61,6 +76,10 @@ export const InfoValue = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   flexWrap: 'nowrap',
+  [theme.breakpoints.down('md')]: {
+    fontSize: 13,
+    gap: theme.spacing(0.5),
+  },
   '& .truncate': {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -73,6 +92,9 @@ export const InfoValue = styled(Box)(({ theme }) => ({
     gap: theme.spacing(1),
     width: '100%',
     alignItems: 'flex-start',
+    [theme.breakpoints.down('md')]: {
+      gap: theme.spacing(0.5),
+    },
   },
 }));
 
@@ -81,6 +103,9 @@ export const ActionWrapper = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(0.5),
   marginLeft: 'auto',
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(0.25),
+  },
 }));
 
 export const StyledChip = styled(Chip)(({ theme }) => ({
@@ -90,6 +115,13 @@ export const StyledChip = styled(Chip)(({ theme }) => ({
   height: 24,
   '& .MuiChip-label': {
     padding: '0 8px',
+  },
+  [theme.breakpoints.down('md')]: {
+    height: 20,
+    fontSize: '11px',
+    '& .MuiChip-label': {
+      padding: '0 6px',
+    },
   },
 }));
 
