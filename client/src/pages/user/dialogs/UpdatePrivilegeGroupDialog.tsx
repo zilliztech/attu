@@ -5,6 +5,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Checkbox,
+  Box,
+  styled,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FC, useMemo, useState, useEffect } from 'react';
@@ -17,48 +19,51 @@ import { formatForm } from '@/utils';
 import { UserService } from '@/http';
 import { CreatePrivilegeGroupParams } from '../Types';
 import PrivilegeGroupOptions from './PrivilegeGroupOptions';
-import { makeStyles } from '@mui/styles';
 import { PrivilegeGroup } from '@server/types';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    margin: theme.spacing(1, 0, 0.5),
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  margin: 0,
+  '&.Mui-expanded': {
+    opacity: 1,
   },
-  dialogWrapper: {
-    maxWidth: theme.spacing(88),
-  },
-  checkBox: {
-    width: theme.spacing(24),
-  },
-  formGrp: {
-    marginBottom: theme.spacing(2),
-  },
-  subTitle: {
-    marginBottom: theme.spacing(0.5),
-  },
+  border: `1px solid ${theme.palette.divider}`,
+  borderBottom: 'none',
+}));
 
-  accordin: {
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  minHeight: '48px !important',
+  '& .MuiAccordionSummary-content': {
     margin: 0,
-    '&.Mui-expanded': {
-      opacity: 1,
-    },
-    border: `1px solid ${theme.palette.divider}`,
-    borderBottom: 'none',
+    alignItems: 'center',
+    position: 'relative',
+    left: -10,
   },
-  accordionSummary: {
-    backgroundColor: theme.palette.background.default,
-    minHeight: '48px !important',
-    '& .MuiAccordionSummary-content': {
-      margin: 0,
-      alignItems: 'center',
-      position: 'relative',
-      left: -10,
-    },
-  },
-  accordionDetail: {
-    backgroundColor: theme.palette.background.light,
-    borderTop: 'none',
-  },
+}));
+
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+  backgroundColor: theme.palette.background.light,
+  borderTop: 'none',
+}));
+
+const InputWrapper = styled(Box)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 0.5),
+}));
+
+const DialogWrapper = styled(Box)(({ theme }) => ({
+  maxWidth: theme.spacing(88),
+}));
+
+const CheckBoxWrapper = styled(Box)(({ theme }) => ({
+  width: theme.spacing(24),
+}));
+
+const FormGroup = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
+const SubTitle = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(0.5),
 }));
 
 export interface CreatePrivilegeGroupProps {
@@ -82,7 +87,6 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
 
   const fetchRBAC = async () => {
     const rbacOptions = await UserService.getAllPrivilegeGroups();
-
     setRbacOptions(rbacOptions);
   };
 
@@ -102,12 +106,9 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
   }, [form]);
   const { validation, checkIsValid, disabled } = useFormValidation(checkedForm);
 
-  const classes = useStyles();
-
   const handleInputChange = (key: 'group_name', value: string) => {
     setForm(v => {
       const newFrom = { ...v, [key]: value };
-
       return newFrom;
     });
   };
@@ -118,7 +119,7 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
       key: 'group_name',
       onChange: (value: string) => handleInputChange('group_name', value),
       variant: 'filled',
-      className: classes.input,
+      className: 'input',
       placeholder: userTrans('privilegeGroup'),
       fullWidth: true,
       validations: [
@@ -188,7 +189,7 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
       confirmLabel={btnTrans(isEditing ? 'update' : 'create')}
       handleConfirm={handleCreatePrivilegeGroup}
       confirmDisabled={disabled}
-      dialogClass={classes.dialogWrapper}
+      dialogClass="dialog-wrapper"
     >
       <>
         {createConfigs.map(v => (
@@ -200,9 +201,9 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
             key={v.label}
           />
         ))}
-        <Typography variant="h5" component="h5" className={classes.subTitle}>
+        <SubTitle variant="h5">
           {userTrans('privileges')}
-        </Typography>
+        </SubTitle>
 
         {rbacOptions.map((grp, index) => {
           const groupPrivileges = grp.privileges.map(p => p.name);
@@ -216,13 +217,11 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
           );
 
           return (
-            <Accordion
+            <StyledAccordion
               key={`${grp.group_name}-${index}`}
-              className={classes.accordin}
               elevation={0}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
+              <StyledAccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`${grp.group_name}-content`}
                 id={`${grp.group_name}-header`}
@@ -254,16 +253,16 @@ const UpdateRoleDialog: FC<CreatePrivilegeGroupProps> = ({
                   }
                   /{new Set(groupPrivileges).size})
                 </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetail}>
+              </StyledAccordionSummary>
+              <StyledAccordionDetails>
                 <PrivilegeGroupOptions
                   options={groupPrivileges}
                   selection={form.privileges}
                   group_name={grp.group_name}
                   onChange={onChange}
                 />
-              </AccordionDetails>
-            </Accordion>
+              </StyledAccordionDetails>
+            </StyledAccordion>
           );
         })}
       </>

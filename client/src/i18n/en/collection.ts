@@ -20,7 +20,7 @@ const collectionTrans = {
   // table
   id: 'ID',
   name: 'Name',
-  features: 'Collection Features',
+  features: 'Features',
   nameTip: 'Collection Name',
   status: 'Status',
   desc: 'Description',

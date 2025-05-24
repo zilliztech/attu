@@ -6,18 +6,87 @@ import {
   Tabs,
   Tab,
   Radio,
+  Box,
+  styled,
 } from '@mui/material';
 import { authContext } from '@/context';
 import Autocomplete from '@mui/material/Autocomplete';
 import { CollectionService } from '@/http';
 import { useTranslation } from 'react-i18next';
-import { useDBCollectionSelectorStyle } from './styles';
 import type {
   DBOption,
   CollectionOption,
   DBCollectionsSelectorProps,
 } from '../Types';
 import type { DBCollectionsPrivileges, RBACOptions } from '@server/types';
+
+const Root = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(1),
+  backgroundColor: theme.palette.background.paper,
+}));
+
+const DBCollections = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: theme.spacing(1),
+}));
+
+const SelectorDB = styled(Autocomplete<DBOption>)(({ theme }) => ({
+  flex: 1,
+  marginBottom: theme.spacing(2),
+}));
+
+const SelectorCollection = styled(Autocomplete<CollectionOption>)({
+  flex: 1,
+});
+
+const CategoryHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0.5),
+  backgroundColor: theme.palette.action.hover,
+  borderRadius: theme.shape.borderRadius,
+  marginBottom: 0,
+  '& .MuiTypography-root': {
+    fontSize: 14,
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+  },
+}));
+
+const CategoryBody = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(0.5, 1.5),
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.background.paper,
+}));
+
+const Privileges = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flex: 1,
+  flexDirection: 'column',
+  height: 'auto',
+  minHeight: 200,
+  width: '100%',
+  borderRadius: theme.shape.borderRadius,
+}));
+
+const PrivilegeBody = styled(FormControlLabel)({
+  minWidth: 200,
+});
+
+const ToggleContainer = styled(Box)(({ theme }) => ({
+  fontSize: 13,
+  '& .toggle-label': {
+    padding: 0,
+    marginRight: theme.spacing(1),
+    fontWeight: '400',
+  },
+  '& .MuiRadio-root': {
+    paddingRight: 8,
+  },
+}));
 
 export default function DBCollectionsSelector(
   props: DBCollectionsSelectorProps
@@ -26,7 +95,6 @@ export default function DBCollectionsSelector(
   const { selected, setSelected, options } = props;
   const { rbacOptions, dbOptions } = options;
   // Styles
-  const classes = useDBCollectionSelectorStyle();
   // i18n
   const { t: searchTrans } = useTranslation('search');
   const { t: userTrans } = useTranslation('user');
@@ -234,7 +302,7 @@ export default function DBCollectionsSelector(
 
   const rbacEntries = Object.entries(rbacOptions) as [
     keyof RBACOptions,
-    Record<string, string>
+    Record<string, string>,
   ][];
   const databasePrivilegeOptions = rbacEntries.filter(([category]) => {
     return (
@@ -264,9 +332,9 @@ export default function DBCollectionsSelector(
   });
 
   return (
-    <div className={classes.root}>
+    <Root>
       {/* Privilege type toggle */}
-      <div className={classes.toggle}>
+      <ToggleContainer>
         <label className="toggle-label">
           <Radio
             checked={privilegeOptionType === 'group'}
@@ -291,7 +359,7 @@ export default function DBCollectionsSelector(
             {userTrans('privileges')}
           </label>
         )}
-      </div>
+      </ToggleContainer>
       {/* Tabs for cluster, Database, Collection */}
       <Tabs
         value={tabValue}
@@ -319,8 +387,7 @@ export default function DBCollectionsSelector(
 
       {tabValue === 1 && (
         <div>
-          <Autocomplete
-            className={classes.selectorDB}
+          <SelectorDB
             options={dbOptions}
             loading={loading}
             value={selectedDB || null}
@@ -359,9 +426,8 @@ export default function DBCollectionsSelector(
 
       {tabValue === 0 && (
         <div>
-          <div className={classes.dbCollections}>
-            <Autocomplete
-              className={classes.selectorDB}
+          <DBCollections>
+            <SelectorDB
               options={dbOptions}
               loading={loading}
               value={selectedDB || null}
@@ -384,8 +450,7 @@ export default function DBCollectionsSelector(
                 loading ? searchTrans('loading') : searchTrans('noOptions')
               }
             />
-            <Autocomplete
-              className={classes.selectorCollection}
+            <SelectorCollection
               options={collectionOptions}
               loading={loading}
               value={
@@ -423,7 +488,7 @@ export default function DBCollectionsSelector(
                 loading ? searchTrans('loading') : searchTrans('noOptions')
               }
             />
-          </div>
+          </DBCollections>
 
           <PrivilegeSelector
             privilegeOptions={collectionPrivilegeOptions}
@@ -438,7 +503,7 @@ export default function DBCollectionsSelector(
           />
         </div>
       )}
-    </div>
+    </Root>
   );
 }
 
@@ -485,14 +550,11 @@ const PrivilegeSelector = (props: {
     privilegeOptionType,
   } = props;
 
-  // style
-  const classes = useDBCollectionSelectorStyle();
-
   // i18n
   const { t: userTrans } = useTranslation('user');
 
   return (
-    <div className={classes.privileges}>
+    <Privileges>
       {selectedDB && selectedCollection && (
         <div>
           {privilegeOptions
@@ -505,7 +567,7 @@ const PrivilegeSelector = (props: {
             })
             .map(([category, categoryPrivileges]) => (
               <div key={category}>
-                <div className={classes.categoryHeader}>
+                <CategoryHeader>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -528,21 +590,19 @@ const PrivilegeSelector = (props: {
                           )
                         }
                         size="small"
-                        className={classes.selectAllCheckbox}
+                        sx={{ marginLeft: 1 }}
                         title={userTrans('selectAll')}
                       />
                     }
                     label={userTrans(category)}
                   />
-                </div>
-                <div className={classes.categoryBody}>
+                </CategoryHeader>
+                <CategoryBody>
                   {Object.entries(categoryPrivileges).map(([privilegeName]) => (
-                    <FormControlLabel
-                      className={classes.privilegeBody}
+                    <PrivilegeBody
                       key={privilegeName}
                       control={
                         <Checkbox
-                          className={classes.checkbox}
                           checked={
                             (selected[selectedDB.value] &&
                               selected[selectedDB.value].collections &&
@@ -565,11 +625,11 @@ const PrivilegeSelector = (props: {
                       label={privilegeName}
                     />
                   ))}
-                </div>
+                </CategoryBody>
               </div>
             ))}
         </div>
       )}
-    </div>
+    </Privileges>
   );
 };

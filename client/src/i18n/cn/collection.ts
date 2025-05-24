@@ -20,7 +20,7 @@ const collectionTrans = {
   // table
   id: 'ID',
   name: '名称',
-  features: 'Collection 特性',
+  features: '特性',
   nameTip: 'Collection 名称',
   status: '状态',
   desc: '描述',

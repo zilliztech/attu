@@ -1,145 +1,169 @@
-import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Chip, Box } from '@mui/material';
 
-export const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
+export const Wrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  height: '100%',
+  overflow: 'auto',
+  gap: theme.spacing(2),
+  padding: theme.spacing(1, 0),
+  maxWidth: '100%',
+}));
+
+export const InfoWrapper = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '1.2fr 1fr 1fr',
+  gap: theme.spacing(2),
+  width: '100%',
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: '1fr',
+  },
+}));
+
+export const Card = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  borderRadius: 8,
+  padding: theme.spacing(2),
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  width: '100%',
+  minWidth: 0,
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1.5),
+    gap: theme.spacing(1.5),
+  },
+}));
+
+export const InfoRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: theme.spacing(2),
+  '&:not(:last-child)': {
+    paddingBottom: theme.spacing(1),
+  },
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(1),
+    '&:not(:last-child)': {
+      paddingBottom: theme.spacing(0.5),
+    },
+  },
+}));
+
+export const InfoLabel = styled(Box)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  fontSize: 13,
+  fontWeight: 400,
+  minWidth: 80,
+  flexShrink: 0,
+  paddingTop: '2px',
+  [theme.breakpoints.down('md')]: {
+    minWidth: 70,
+    fontSize: 12,
+  },
+}));
+
+export const InfoValue = styled(Box)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontSize: 14,
+  fontWeight: 500,
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: theme.spacing(1),
+  flex: 1,
+  minWidth: 0,
+  flexWrap: 'nowrap',
+  [theme.breakpoints.down('md')]: {
+    fontSize: 13,
+    gap: theme.spacing(0.5),
+  },
+  '& .truncate': {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: '100%',
+  },
+  '& .features-wrapper': {
     display: 'flex',
     flexDirection: 'column',
-    flexGrow: 1,
-    height: `100%`,
-    overflow: 'auto',
-    '& h5': {
-      color: theme.palette.text.secondary,
-      marginBottom: theme.spacing(0.5),
-      fontSize: 13,
-      fontWeight: 400,
+    gap: theme.spacing(1),
+    width: '100%',
+    alignItems: 'flex-start',
+    [theme.breakpoints.down('md')]: {
+      gap: theme.spacing(0.5),
     },
-    '& h6': {
-      fontSize: 14,
-      lineHeight: '20px',
-      display: 'flex',
-      color: theme.palette.text.primary,
-      marginBottom: theme.spacing(0.5),
+  },
+}));
 
-      '& p': {
-        margin: 0,
-        marginRight: 8,
-        textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        maxWidth: 150,
-        fontWeight: 700,
-      },
-    },
+export const ActionWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+  marginLeft: 'auto',
+  [theme.breakpoints.down('md')]: {
+    gap: theme.spacing(0.25),
   },
-  infoWrapper: {
-    marginBottom: theme.spacing(1.5),
-    paddingTop: theme.spacing(0.5),
-  },
-  cardWrapper: {
-    display: 'flex',
-    flexWrap: 'nowrap', // Changed from 'wrap' to 'nowrap'
-    overflowX: 'auto', // Add horizontal scrolling
-    '& > div:not(:last-child)': { marginRight: theme.spacing(1.5) },
-    height: 200,
-    // Optional: hide scrollbar for cleaner look (works in some browsers)
-    scrollbarWidth: 'none', // Firefox
-    '&::-webkit-scrollbar': {
-      // Chrome, Safari
-      display: 'none',
-    },
-  },
-  card: {
-    backgroundColor: theme.palette.background.default,
-    borderRadius: 8,
-    padding: theme.spacing(1.5, 2),
-    boxSizing: 'border-box',
-    flexGrow: 0, // Changed from 1 to prevent stretching
-    flexShrink: 0, // Changed from 1 to prevent shrinking
-    flexBasis: 'auto', // Changed from calc
-    width: 'calc(33.333% - 8px)', // Use width instead of flex-basis
-    minWidth: 200, // Minimum width for each card
-    height: '100%',
-  },
-  icon: {
-    fontSize: '20px',
-    marginLeft: theme.spacing(0.5),
-  },
-  extraBtn: {
-    position: 'relative',
-    top: -6,
-    '& svg': {
-      width: 15,
-      color: theme.palette.text.primary,
-    },
-  },
-  mmapExtraBtn: {
-    position: 'relative',
-    top: -2,
-    '& svg': {
-      width: 15,
-      color: theme.palette.text.primary,
-    },
-  },
-  smallIcon: {
-    fontSize: '13px',
-    marginLeft: theme.spacing(0.5),
-  },
+}));
 
-  questionIcon: {
-    width: 12,
-    position: 'relative',
-    top: '6px',
-    right: '-2px',
+export const StyledChip = styled(Chip)(({ theme }) => ({
+  fontSize: '12px',
+  color: theme.palette.text.primary,
+  cursor: 'normal',
+  height: 24,
+  '& .MuiChip-label': {
+    padding: '0 8px',
   },
-  primaryKeyChip: {
-    fontSize: '8px',
+  [theme.breakpoints.down('md')]: {
+    height: 20,
+    fontSize: '11px',
+    '& .MuiChip-label': {
+      padding: '0 6px',
+    },
   },
-  chip: {
-    fontSize: '12px',
-    color: theme.palette.text.primary,
-    cursor: 'normal',
-    marginRight: 4,
-    marginBottom: 4,
-    marginTop: 4,
+}));
+
+export const DataTypeChip = styled(Chip)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  border: `1px solid ${theme.palette.divider}`,
+  color: theme.palette.text.secondary,
+  fontSize: '12px',
+  height: 24,
+  '& .MuiChip-label': {
+    padding: '0 8px',
   },
-  dataTypeChip: {
-    backgroundColor: theme.palette.background.grey,
+}));
+
+export const NameWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+  '& .key': {
+    width: '16px',
+    height: '16px',
   },
-  featureChip: {
-    border: 'none',
-    marginLeft: 0,
-  },
-  nameWrapper: {
+}));
+
+export const ParamWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(1),
+  '& .param': {
     display: 'flex',
     alignItems: 'center',
-
+    gap: theme.spacing(0.5),
     '& .key': {
-      width: '16px',
-      height: '16px',
-      marginLeft: theme.spacing(0.5),
+      color: theme.palette.text.secondary,
+    },
+    '& .value': {
+      color: theme.palette.text.primary,
     },
   },
+}));
 
-  paramWrapper: {
-    // set min width to prevent other table cell stretching
-    minWidth: 180,
-
-    '& .param': {
-      marginRight: theme.spacing(2),
-
-      '& .key': {
-        color: theme.palette.text.secondary,
-        display: 'inline-block',
-        marginRight: theme.spacing(0.5),
-      },
-
-      '& .value': {
-        color: theme.palette.text.primary,
-      },
-    },
-  },
-
-  gridWrapper: {
-    paddingBottom: theme.spacing(2),
-  },
+export const GridWrapper = styled(Box)(({ theme }) => ({
+  flex: 1,
+  minHeight: 0,
 }));

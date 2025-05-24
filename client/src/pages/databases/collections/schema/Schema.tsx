@@ -1,4 +1,4 @@
-import { Typography, Chip, Tooltip } from '@mui/material';
+import { Typography, Tooltip, Box } from '@mui/material';
 import { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AttuGrid from '@/components/grid/Grid';
@@ -11,8 +11,20 @@ import IndexTypeElement from './IndexTypeElement';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import StatusAction from '@/pages/databases/collections/StatusAction';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import { useStyles } from './Styles';
-import CustomIconButton from '@/components/customButton/CustomIconButton';
+import {
+  Wrapper,
+  InfoWrapper,
+  Card,
+  InfoRow,
+  InfoLabel,
+  InfoValue,
+  ActionWrapper,
+  StyledChip,
+  DataTypeChip,
+  NameWrapper,
+  ParamWrapper,
+  GridWrapper,
+} from './Styles';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import EditMmapDialog from '@/pages/dialogs/EditMmapDialog';
@@ -30,7 +42,6 @@ const Overview = () => {
 
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const navigate = useNavigate();
-  const classes = useStyles();
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
   const { t: btnTrans } = useTranslation('btn');
@@ -63,37 +74,21 @@ const Overview = () => {
       disablePadding: true,
       formatter(f: FieldObject) {
         return (
-          <div className={classes.nameWrapper}>
+          <NameWrapper>
             {f.name}
-            {f.is_primary_key ? (
-              <div
-                className={classes.primaryKeyChip}
-                title={collectionTrans('idFieldName')}
-              >
-                <Chip className={classes.chip} size="small" label="ID" />
-              </div>
-            ) : null}
-            {f.is_partition_key ? (
-              <Chip
-                className={classes.chip}
-                size="small"
-                label="Partition key"
-              />
-            ) : null}
-            {findKeyValue(f.type_params, 'enable_match') ? (
-              <Chip
-                className={classes.chip}
-                size="small"
-                label={collectionTrans('enableMatch')}
-              />
-            ) : null}
-            {findKeyValue(f.type_params, 'enable_analyzer') === 'true' ? (
+            {f.is_primary_key && <StyledChip size="small" label="ID" />}
+            {f.is_partition_key && (
+              <StyledChip size="small" label="Partition key" />
+            )}
+            {findKeyValue(f.type_params, 'enable_match') && (
+              <StyledChip size="small" label={collectionTrans('enableMatch')} />
+            )}
+            {findKeyValue(f.type_params, 'enable_analyzer') === 'true' && (
               <Tooltip
                 title={findKeyValue(f.type_params, 'analyzer_params') as string}
                 arrow
               >
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   size="small"
                   label={collectionTrans('analyzer')}
                   onClick={() => {
@@ -101,23 +96,15 @@ const Overview = () => {
                       f.type_params,
                       'analyzer_params'
                     );
-                    navigator.clipboard
-                      .writeText(textToCopy as string)
-                      .then(() => {
-                        alert('Copied to clipboard!');
-                      })
-                      .catch(err => {
-                        alert('Failed to copy: ' + err);
-                      });
+                    navigator.clipboard.writeText(textToCopy as string);
                   }}
                 />
               </Tooltip>
-            ) : null}
-            {findKeyValue(f.type_params, 'mmap.enabled') === 'true' ||
-            isCollectionMmapEnabled ? (
+            )}
+            {(findKeyValue(f.type_params, 'mmap.enabled') === 'true' ||
+              isCollectionMmapEnabled) && (
               <Tooltip title={collectionTrans('mmapTooltip')} arrow>
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   size="small"
                   label={collectionTrans('mmapEnabled')}
                   onClick={() => {
@@ -138,12 +125,10 @@ const Overview = () => {
                   }}
                 />
               </Tooltip>
-            ) : null}
-
-            {f.function ? (
+            )}
+            {f.function && (
               <Tooltip title={JSON.stringify(f.function)} arrow>
-                <Chip
-                  className={classes.chip}
+                <StyledChip
                   size="small"
                   label={`
                     ${
@@ -153,19 +138,12 @@ const Overview = () => {
                     }`}
                   onClick={() => {
                     const textToCopy = JSON.stringify(f.function);
-                    navigator.clipboard
-                      .writeText(textToCopy as string)
-                      .then(() => {
-                        alert('Copied to clipboard!');
-                      })
-                      .catch(err => {
-                        alert('Failed to copy: ' + err);
-                      });
+                    navigator.clipboard.writeText(textToCopy as string);
                   }}
                 />
               </Tooltip>
-            ) : null}
-          </div>
+            )}
+          </NameWrapper>
         );
       },
       label: collectionTrans('fieldName'),
@@ -176,13 +154,7 @@ const Overview = () => {
       align: 'left',
       disablePadding: false,
       formatter(f) {
-        return (
-          <Chip
-            className={`${classes.chip} ${classes.dataTypeChip}`}
-            size="small"
-            label={formatFieldType(f)}
-          />
-        );
+        return <DataTypeChip size="small" label={formatFieldType(f)} />;
       },
       label: collectionTrans('fieldType'),
     },
@@ -193,9 +165,9 @@ const Overview = () => {
       label: collectionTrans('nullable'),
       formatter(f) {
         return f.nullable ? (
-          <Icons.check className={classes.smallIcon} />
+          <Icons.check sx={{ fontSize: '11px', ml: 0.5 }} />
         ) : (
-          <Icons.cross2 className={classes.smallIcon} />
+          <Icons.cross2 sx={{ fontSize: '11px', ml: 0.5 }} />
         );
       },
     },
@@ -243,7 +215,7 @@ const Overview = () => {
       notSort: true,
       formatter(f) {
         return f.index ? (
-          <div className={classes.paramWrapper}>
+          <ParamWrapper>
             {f.index.indexParameterPairs.length > 0 ? (
               f.index.indexParameterPairs.map((p: any) =>
                 p.value ? (
@@ -264,7 +236,7 @@ const Overview = () => {
             ) : (
               <>--</>
             )}
-          </div>
+          </ParamWrapper>
         ) : (
           <>--</>
         );
@@ -315,133 +287,190 @@ const Overview = () => {
 
   // get loading state label
   return (
-    <section className={classes.wrapper}>
+    <Wrapper>
       {collection && (
-        <section className={classes.infoWrapper}>
-          <div className={classes.cardWrapper}>
-            <div className={classes.card}>
-              <Typography variant="h5">{collectionTrans('name')}</Typography>
-              <Typography variant="h6">
-                <p title={collection.collection_name}>
-                  {collection.collection_name}
-                </p>
-                <RefreshButton
-                  className={classes.extraBtn}
-                  onClick={async () => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <RenameCollectionDialog
-                            collection={collection}
-                            cb={async newName => {
-                              await fetchCollection(newName);
-
-                              // update collection name in the route url;
-                              navigate(
-                                `/databases/${database}/${newName}/schema`
-                              );
-                            }}
-                          />
-                        ),
+        <InfoWrapper>
+          <Card>
+            <InfoRow>
+              <InfoLabel>{collectionTrans('name')}</InfoLabel>
+              <InfoValue>
+                <Tooltip title={collection.collection_name} arrow>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: 500 }}
+                    className="truncate"
+                  >
+                    {collection.collection_name}
+                  </Typography>
+                </Tooltip>
+                <ActionWrapper>
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
                       },
-                    });
-                  }}
-                  tooltip={btnTrans('rename')}
-                  icon={<Icons.edit />}
-                />
-                <CopyButton
-                  className={classes.extraBtn}
-                  label={collection.collection_name}
-                  value={collection.collection_name}
-                />
-                <RefreshButton
-                  className={classes.extraBtn}
-                  onClick={async () => {
-                    const res =
-                      await CollectionService.describeCollectionUnformatted(
-                        collection.collection_name
-                      );
-
-                    // download json file
-                    const json = JSON.stringify(res, null, 2);
-                    const blob = new Blob([json], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${collection.collection_name}.json`;
-                    a.click();
-                  }}
-                  tooltip={btnTrans('downloadSchema')}
-                  icon={<Icons.download />}
-                />
-                <CustomIconButton
-                  className={classes.extraBtn}
-                  tooltip={btnTrans('drop')}
-                  onClick={() => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <DropCollectionDialog
-                            collections={[collection]}
-                            onDelete={() => {
-                              navigate(`/databases/${database}`);
-                            }}
-                          />
-                        ),
+                    }}
+                    onClick={async () => {
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <RenameCollectionDialog
+                              collection={collection}
+                              cb={async newName => {
+                                await fetchCollection(newName);
+                                navigate(
+                                  `/databases/${database}/${newName}/schema`
+                                );
+                              }}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                    tooltip={btnTrans('rename')}
+                    icon={<Icons.edit />}
+                  />
+                  <CopyButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
                       },
-                    });
-                  }}
-                >
-                  <Icons.cross />
-                </CustomIconButton>
+                    }}
+                    copyValue={collection.collection_name}
+                  />
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
+                      },
+                    }}
+                    onClick={async () => {
+                      const res =
+                        await CollectionService.describeCollectionUnformatted(
+                          collection.collection_name
+                        );
+                      const json = JSON.stringify(res, null, 2);
+                      const blob = new Blob([json], {
+                        type: 'application/json',
+                      });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${collection.collection_name}.json`;
+                      a.click();
+                    }}
+                    tooltip={btnTrans('downloadSchema')}
+                    icon={<Icons.download />}
+                  />
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
+                      },
+                    }}
+                    onClick={() => {
+                      setDialog({
+                        open: true,
+                        type: 'custom',
+                        params: {
+                          component: (
+                            <DropCollectionDialog
+                              collections={[collection]}
+                              onDelete={() => {
+                                navigate(`/databases/${database}`);
+                              }}
+                            />
+                          ),
+                        },
+                      });
+                    }}
+                    tooltip={btnTrans('drop')}
+                    icon={<Icons.cross />}
+                  />
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 16,
+                        height: 16,
+                      },
+                    }}
+                    tooltip={btnTrans('refresh')}
+                    onClick={async () => {
+                      await fetchCollection(collectionName);
+                    }}
+                    icon={<Icons.refresh />}
+                  />
+                </ActionWrapper>
+              </InfoValue>
+            </InfoRow>
 
-                <RefreshButton
-                  className={classes.extraBtn}
-                  tooltip={btnTrans('refresh')}
-                  onClick={async () => {
-                    await fetchCollection(collectionName);
-                  }}
+            <InfoRow>
+              <InfoLabel>{collectionTrans('description')}</InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {collection?.description || '--'}
+                </Typography>
+              </InfoValue>
+            </InfoRow>
+
+            <InfoRow>
+              <InfoLabel>{collectionTrans('createdTime')}</InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {new Date(collection.createdTime).toLocaleString()}
+                </Typography>
+              </InfoValue>
+            </InfoRow>
+          </Card>
+
+          <Card>
+            <InfoRow>
+              <InfoLabel>{collectionTrans('status')}</InfoLabel>
+              <InfoValue>
+                <StatusAction
+                  status={collection.status}
+                  percentage={collection.loadedPercentage}
+                  collection={collection}
+                  showExtraAction={false}
+                  showLoadButton={true}
+                  createIndexElement={CreateIndexElement}
                 />
-              </Typography>
-              <Typography variant="h5">
-                {collectionTrans('description')}
-              </Typography>
-              <Typography variant="h6">
-                {collection?.description || '--'}
-              </Typography>
-              <Typography variant="h5">
-                {collectionTrans('createdTime')}
-              </Typography>
-              <Typography variant="h6">
-                {new Date(collection.createdTime).toLocaleString()}
-              </Typography>
-            </div>
+              </InfoValue>
+            </InfoRow>
 
-            <div className={classes.card}>
-              <Typography variant="h5">{collectionTrans('status')}</Typography>
-              <StatusAction
-                status={collection.status}
-                percentage={collection.loadedPercentage}
-                collection={collection}
-                showExtraAction={false}
-                showLoadButton={true}
-                createIndexElement={CreateIndexElement}
-              />
-              <Typography variant="h5">
+            <InfoRow>
+              <InfoLabel>
                 {collectionTrans('replica')}
                 <CustomToolTip title={collectionTrans('replicaTooltip')}>
-                  <Icons.question classes={{ root: classes.questionIcon }} />
+                  <Icons.question
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      position: 'relative',
+                      top: '2px',
+                      right: '-4px',
+                    }}
+                  />
                 </CustomToolTip>
-              </Typography>
-              <Typography variant="h6">
-                {collection.loaded ? collection.replicas?.length : '...'}
+              </InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {collection.loaded ? collection.replicas?.length : '...'}
+                </Typography>
                 {collection.loaded && enableModifyReplica && (
-                  <CustomIconButton
-                    className={classes.extraBtn}
+                  <RefreshButton
+                    sx={{
+                      '& svg': {
+                        width: 12,
+                        height: 12,
+                      },
+                    }}
                     tooltip={collectionTrans('modifyReplicaTooltip')}
                     onClick={() => {
                       setDialog({
@@ -457,13 +486,14 @@ const Overview = () => {
                         },
                       });
                     }}
-                  >
-                    <Icons.settings />
-                  </CustomIconButton>
+                    icon={<Icons.settings />}
+                  />
                 )}
-              </Typography>
+              </InfoValue>
+            </InfoRow>
 
-              <Typography variant="h5">
+            <InfoRow>
+              <InfoLabel>
                 {collection.loaded ? (
                   collectionTrans('count')
                 ) : (
@@ -471,95 +501,98 @@ const Overview = () => {
                     {collectionTrans('rowCount')}
                     <CustomToolTip title={collectionTrans('entityCountInfo')}>
                       <Icons.question
-                        classes={{ root: classes.questionIcon }}
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          position: 'relative',
+                          top: '2px',
+                          right: '-4px',
+                        }}
                       />
                     </CustomToolTip>
                   </>
                 )}
-              </Typography>
-              <Typography variant="h6">
-                {formatNumber(Number(collection?.rowCount || '0'))}
-              </Typography>
-            </div>
-            <div className={classes.card}>
-              <Typography variant="h5">
-                {collectionTrans('features')}
-              </Typography>
-              {isAutoIDEnabled ? (
-                <Chip
-                  className={`${classes.chip} ${classes.featureChip}`}
-                  label={collectionTrans('autoId')}
-                  size="small"
-                />
-              ) : null}
-              <Tooltip
-                title={
-                  consistencyTooltipsMap[collection.consistency_level!] || ''
-                }
-                placement="top"
-                arrow
-              >
-                <Chip
-                  className={`${classes.chip} ${classes.featureChip}`}
-                  label={`${collectionTrans('consistency')}: ${
-                    collection.consistency_level
-                  }`}
-                  size="small"
-                />
-              </Tooltip>
+              </InfoLabel>
+              <InfoValue>
+                <Typography variant="body1">
+                  {formatNumber(Number(collection?.rowCount || '0'))}
+                </Typography>
+              </InfoValue>
+            </InfoRow>
+          </Card>
 
-              {collection &&
-              collection.schema &&
-              collection.schema.enable_dynamic_field ? (
-                <Tooltip
-                  title={collectionTrans('dynamicSchemaTooltip')}
-                  placement="top"
-                  arrow
-                >
-                  <Chip
-                    className={`${classes.chip}`}
-                    label={collectionTrans('dynamicSchema')}
-                    size="small"
-                  />
-                </Tooltip>
-              ) : null}
-
-              <Tooltip
-                title={collectionTrans('mmapTooltip')}
-                placement="top"
-                arrow
-              >
-                <Chip
-                  className={classes.chip}
-                  label={collectionTrans('mmapSettings')}
-                  size="small"
-                  onDelete={async () => {
-                    setDialog({
-                      open: true,
-                      type: 'custom',
-                      params: {
-                        component: (
-                          <EditMmapDialog
-                            collection={collection}
-                            cb={async () => {
-                              fetchCollection(collectionName);
-                            }}
-                          />
-                        ),
-                      },
-                    });
-                  }}
-                  deleteIcon={<Icons.settings />}
-                />
-              </Tooltip>
-            </div>
-          </div>
-        </section>
+          <Card>
+            <InfoRow>
+              <InfoLabel>{collectionTrans('features')}</InfoLabel>
+              <InfoValue>
+                <Box className="features-wrapper">
+                  {isAutoIDEnabled && (
+                    <StyledChip
+                      sx={{ border: 'none' }}
+                      label={collectionTrans('autoId')}
+                      size="small"
+                    />
+                  )}
+                  <Tooltip
+                    title={
+                      collection.consistency_level
+                        ? consistencyTooltipsMap[
+                            collection.consistency_level
+                          ] || ''
+                        : ''
+                    }
+                    arrow
+                  >
+                    <StyledChip
+                      sx={{ border: 'none' }}
+                      label={`${collectionTrans('consistency')}: ${collection.consistency_level}`}
+                      size="small"
+                    />
+                  </Tooltip>
+                  {collection?.schema?.enable_dynamic_field && (
+                    <StyledChip
+                      label={collectionTrans('dynamicSchema')}
+                      size="small"
+                    />
+                  )}
+                  <Tooltip title={collectionTrans('mmapTooltip')} arrow>
+                    <StyledChip
+                      label={collectionTrans('mmapSettings')}
+                      size="small"
+                      onDelete={async () => {
+                        setDialog({
+                          open: true,
+                          type: 'custom',
+                          params: {
+                            component: (
+                              <EditMmapDialog
+                                collection={collection}
+                                cb={async () => {
+                                  fetchCollection(collectionName);
+                                }}
+                              />
+                            ),
+                          },
+                        });
+                      }}
+                      deleteIcon={
+                        <Icons.settings
+                          sx={{
+                            width: 12,
+                            height: 12,
+                          }}
+                        />
+                      }
+                    />
+                  </Tooltip>
+                </Box>
+              </InfoValue>
+            </InfoRow>
+          </Card>
+        </InfoWrapper>
       )}
 
-      <section className={classes.gridWrapper}>
-        {/* <Typography variant="h5">{collectionTrans('schema')}</Typography> */}
-
+      <GridWrapper>
         <AttuGrid
           toolbarConfigs={[]}
           colDefinitions={colDefinitions}
@@ -574,8 +607,8 @@ const Overview = () => {
             commonTrans(`grid.${fields.length > 1 ? 'fields' : 'field'}`)
           )}
         />
-      </section>
-    </section>
+      </GridWrapper>
+    </Wrapper>
   );
 };
 

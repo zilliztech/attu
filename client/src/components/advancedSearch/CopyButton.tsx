@@ -1,16 +1,19 @@
 import React, { useState, useCallback } from 'react';
-import icons from '../icons/Icons';
-import CustomIconButton from '../customButton/CustomIconButton';
+import { IconButton, Tooltip } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useTranslation } from 'react-i18next';
 import type { FC } from 'react';
-import type { CopyButtonProps } from './Types';
+import type { IconButtonProps } from '@mui/material';
 
-const CopyIcon = icons.copyExpression;
+interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
+  copyValue?: string | object;
+  tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
+}
 
 const CopyButton: FC<CopyButtonProps> = props => {
-  const { label, icon, className, value = '', ...others } = props;
+  const { copyValue = '', tooltipPlacement = 'top', ...others } = props;
   const { t: commonTrans } = useTranslation();
-  const [tooltipTitle, setTooltipTitle] = useState('Copy');
+  const [tooltipTitle, setTooltipTitle] = useState(commonTrans('copy.copy'));
 
   const unsecuredCopyToClipboard = useCallback((v: string) => {
     const textArea = document.createElement('textarea');
@@ -30,34 +33,44 @@ const CopyButton: FC<CopyButtonProps> = props => {
   }, []);
 
   const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>, v: string) => {
+    (event: React.MouseEvent<HTMLElement>) => {
       event.stopPropagation();
-      if (typeof v === 'object') {
-        v = JSON.stringify(v);
-      }
+      let textToCopy =
+        typeof copyValue === 'object' ? JSON.stringify(copyValue) : copyValue;
       setTooltipTitle(commonTrans('copy.copied'));
+
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(v);
+        navigator.clipboard.writeText(textToCopy);
       } else {
-        unsecuredCopyToClipboard(v);
+        unsecuredCopyToClipboard(textToCopy);
       }
+
       setTimeout(() => {
         setTooltipTitle(commonTrans('copy.copy'));
       }, 1000);
     },
-    [commonTrans, unsecuredCopyToClipboard]
+    [commonTrans, unsecuredCopyToClipboard, copyValue]
   );
 
   return (
-    <CustomIconButton
-      tooltip={tooltipTitle}
-      aria-label={label}
-      className={className}
-      onClick={event => handleClick(event, value || '')}
-      {...others}
-    >
-      {icon || <CopyIcon />}
-    </CustomIconButton>
+    <Tooltip title={tooltipTitle} arrow placement={tooltipPlacement}>
+      <IconButton
+        size="small"
+        onClick={handleClick}
+        sx={{
+          '& svg': {
+            width: 12,
+            height: 12,
+          },
+          display: 'inline-flex',
+          alignItems: 'center',
+          ...others.sx,
+        }}
+        {...others}
+      >
+        <ContentCopyIcon />
+      </IconButton>
+    </Tooltip>
   );
 };
 
