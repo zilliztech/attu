@@ -109,6 +109,66 @@ const indexTrans = {
       description: 'Whether to store raw data',
     },
   },
+  searchParams: {
+    nprobe: {
+      description: 'The number of probes to use for search',
+      helperText: 'Must be between 1 and 65536',
+    },
+    efConstruction: {
+      description: 'Controls search speed/build speed tradeoff.',
+      helperText:
+        'Increasing the efConstruction parameter may enhance index quality, but it also tends to lengthen the indexing time.',
+    },
+    max_empty_result_buckets: {
+      description:
+        'Maximum number of buckets not returning any search results. This is a range-search parameter and terminates the search process whilst the number of consecutive empty buckets reaches the specified value. Increasing this value can improve recall rate at the cost of increased search time.',
+      helperText: 'Must be between 1 and 65535',
+    },
+    reorder_k: {
+      description:
+        'The number of vectors to reorder during search. A larger value may improve search accuracy but will increase search time.',
+      helperText: 'Must be between 1 and 65536',
+    },
+    refine_k: {
+      description:
+        'The number of vectors to refine during search. A larger value may improve search accuracy but will increase search time.',
+      helperText: 'Must be between 1 and 65536',
+    },
+    itopk_size: {
+      description:
+        'Determines the size of intermediate results kept during the search. A larger value may improve recall at the expense of search performance. It should be at least equal to the final top-k (limit) value and is typically a power of 2 (e.g., 16, 32, 64, 128).',
+      helperText: 'Must be between 1 and 2147483647',
+    },
+    search_width: {
+      description:
+        'Specifies the number of entry points into the CAGRA graph during the search. Increasing this value can enhance recall but may impact search performance (e.g. 1, 2, 4, 8, 16, 32).',
+      helperText: 'Must be between 1 and 2147483647',
+    },
+    team_size: {
+      description:
+        'Specifies the number of CUDA threads used for calculating metric distance on the GPU. Common values are a power of 2 up to 32 (e.g. 2, 4, 8, 16, 32). It has a minor impact on search performance. The default value is 0, where Milvus automatically selects the team_size based on the vector dimension.',
+      helperText: 'Must be between 0 and 32',
+    },
+    min_iterations: {
+      description:
+        'Controls the minimum number of search iterations. By default, it is set to 0, and CAGRA automatically determines the number of iterations based on itopk_size and search_width. Adjusting this value manually can help balance performance and accuracy.',
+      helperText: 'Must be between 0 and 2147483647',
+    },
+    max_iterations: {
+      description:
+        'Controls the maximum number of search iterations. By default, it is set to 0, and CAGRA automatically determines the number of iterations based on itopk_size and search_width. Adjusting this value manually can help balance performance and accuracy.',
+      helperText: 'Must be between 0 and 2147483647',
+    },
+    radius: {
+      description:
+        'The radius of the search. A larger value may improve recall but will increase search time.',
+      helperText: 'Must be between 0 and 2147483647',
+    },
+    range_filter: {
+      description:
+        'The range of the search. A larger value may improve recall but will increase search time.',
+    },
+  },
 };
 
 export default indexTrans;

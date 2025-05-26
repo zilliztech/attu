@@ -4,16 +4,14 @@ import {
   FormControlLabel,
   FormHelperText,
   Box,
-  Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import type { IndexParamConfig } from './indexParamsConfig';
 
 interface IndexParamFieldProps {
   config: IndexParamConfig;
   value: string | number | boolean;
-  onChange: (key: string, value: string) => void;
+  onChange: (key: string, value: string | number | boolean) => void;
   error?: string;
 }
 
@@ -23,7 +21,6 @@ const IndexParamField = ({
   onChange,
   error,
 }: IndexParamFieldProps) => {
-  const theme = useTheme();
   const { t: indexTrans } = useTranslation('index');
 
   const renderField = () => {
@@ -33,10 +30,8 @@ const IndexParamField = ({
           <FormControlLabel
             control={
               <Switch
-                checked={value === 'true'}
-                onChange={e =>
-                  onChange(config.key, e.target.checked.toString())
-                }
+                checked={typeof value === 'boolean' ? value : value === 'true'}
+                onChange={e => onChange(config.key, e.target.checked)}
                 color="primary"
               />
             }
@@ -50,8 +45,18 @@ const IndexParamField = ({
             variant="filled"
             label={config.label}
             type="number"
-            value={value}
-            onChange={e => onChange(config.key, e.target.value)}
+            value={typeof value === 'number' ? value : value || ''}
+            onChange={e => {
+              const val = e.target.value;
+              if (val === '') {
+                onChange(config.key, '');
+              } else {
+                const num = Number(val);
+                if (!isNaN(num)) {
+                  onChange(config.key, num);
+                }
+              }
+            }}
             error={!!error}
             helperText={error}
             inputProps={{
@@ -70,14 +75,10 @@ const IndexParamField = ({
             fullWidth
             variant="filled"
             label={config.label}
-            value={value}
+            value={value || ''}
             onChange={e => onChange(config.key, e.target.value)}
             error={!!error}
             helperText={error}
-            inputProps={{
-              min: config.min,
-              max: config.max,
-            }}
             InputLabelProps={{
               shrink: true,
             }}

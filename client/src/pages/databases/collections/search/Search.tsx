@@ -23,7 +23,7 @@ import {
   buildSearchParams,
   getColumnWidth,
 } from '@/utils';
-import SearchParams from '../../../search/SearchParams';
+import SearchParams from './SearchParams';
 import DataExplorer, { formatMilvusData } from './DataExplorer';
 import {
   SearchParams as SearchParamsType,
@@ -461,14 +461,14 @@ const Search = (props: CollectionDataProps) => {
                     />
 
                     <SearchParams
-                      sx={{ pt: 1 }}
+                      sx={{ pt: 1, mb: 1 }}
                       consistency_level={'Strong'}
                       handleConsistencyChange={(level: string) => {}}
                       indexType={field.index.indexType}
                       indexParams={field.index_params}
                       searchParamsForm={s.params}
                       handleFormChange={(updates: {
-                        [key in string]: number | string;
+                        [key in string]: number | string | boolean;
                       }) => {
                         updateSearchParamCallback(updates as any, index);
                       }}

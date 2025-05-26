@@ -10,9 +10,9 @@ export interface SearchParamsProps {
   // index extra params, e.g. nlist
   indexParams?: KeyValuePair[];
   searchParamsForm: {
-    [key in string]: number | string;
+    [key in string]: number | string | boolean;
   };
-  handleFormChange: (form: { [key in string]: number | string }) => void;
+  handleFormChange: (form: { [key in string]: number | string | boolean }) => void;
   topK: number;
   handleConsistencyChange: (type: string) => void;
   setParamsDisabled: (isDisabled: boolean) => void;
