@@ -7,6 +7,7 @@ import {
   MetricType,
   ResStatus,
   ErrorCode,
+  DataType,
 } from '@zilliz/milvus2-sdk-node';
 import {
   CreateAliasDto,
@@ -225,18 +226,20 @@ export class CollectionController {
     if (createCollectionData.loadAfterCreate) {
       // build index_params for all fields
       const fields = createCollectionData.fields;
-      const index_params = fields.map((field: any) => {
-        const params: any = {
-          field_name: field.name,
-          index_type: IndexType.AUTOINDEX,
-        };
+      const index_params = fields
+        .filter((f: any) => f.data_type !== DataType.JSON)
+        .map((field: any) => {
+          const params: any = {
+            field_name: field.name,
+            index_type: IndexType.AUTOINDEX,
+          };
 
-        if (field.is_function_output) {
-          params.metric_type = MetricType.BM25;
-        }
+          if (field.is_function_output) {
+            params.metric_type = MetricType.BM25;
+          }
 
-        return params;
-      });
+          return params;
+        });
       createCollectionData.index_params = index_params;
     }
 
