@@ -99,8 +99,7 @@ const AdvancedDialog = (props: DialogProps) => {
             {`${shouldSowPlaceholder ? 'Filter Expression' : filterExpression}`}
             {!shouldSowPlaceholder && (
               <CopyBtn
-                label="copy expression"
-                value={filterExpression}
+                copyValue={filterExpression}
                 sx={{
                   padding: (theme: Theme) => theme.spacing(0.25, 0.5),
                   '& svg': {

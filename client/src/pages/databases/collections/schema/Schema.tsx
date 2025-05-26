@@ -33,7 +33,6 @@ import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
 import type { FieldObject } from '@server/types';
-import { DYNAMIC_FIELD } from '@/consts';
 
 const Overview = () => {
   const { fetchCollection, collections, loading, database } =

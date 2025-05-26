@@ -254,8 +254,7 @@ const EnhancedTable: FC<TableType> = props => {
 
                                   {needCopy && (
                                     <CopyButton
-                                      label={commonTrans('copy.label')}
-                                      value={row[colDef.id]}
+                                      copyValue={row[colDef.id]}
                                       size="small"
                                       sx={theme => ({
                                         '& svg': {

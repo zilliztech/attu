@@ -47,8 +47,7 @@ const DataListView = (props: DataListViewProps) => {
               >
                 {name}
                 <CopyButton
-                  value={row[name]}
-                  label={name}
+                  copyValue={row[name]}
                   sx={{ ml: 0, '& svg': { width: 15 } }}
                 />
               </Box>
