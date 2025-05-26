@@ -43,9 +43,9 @@ const getCommonThemes = (mode: PaletteMode) => ({
       dark: mode === 'light' ? '#08a568' : '#078b63',
     },
     secondary: {
-      light: mode === 'light' ? '#7EE3D0' : '#4DBB9C',
-      main: '#10C998',
-      dark: mode === 'light' ? '#0BA978' : '#08845B',
+      light: mode === 'light' ? '#E6F4FF' : '#003A8C',
+      main: '#1890FF',
+      dark: mode === 'light' ? '#096DD9' : '#0050B3',
     },
     error: {
       main: '#ff4605',
