@@ -33,6 +33,7 @@ import CopyButton from '@/components/advancedSearch/CopyButton';
 import RefreshButton from '@/components/customButton/RefreshButton';
 import { CollectionService } from '@/http';
 import type { FieldObject } from '@server/types';
+import { DYNAMIC_FIELD } from '@/consts';
 
 const Overview = () => {
   const { fetchCollection, collections, loading, database } =
@@ -75,7 +76,18 @@ const Overview = () => {
       formatter(f: FieldObject) {
         return (
           <NameWrapper>
-            {f.name}
+            <Typography
+              variant="body1"
+              sx={{
+                color: f.name === '$meta' ? 'secondary.dark' : 'inherit',
+                fontStyle: f.name === '$meta' ? 'italic' : 'inherit',
+              }}
+            >
+              {f.name}
+            </Typography>
+            {f.name === '$meta' && (
+              <StyledChip size="small" label="Dynamic field" />
+            )}
             {f.is_primary_key && <StyledChip size="small" label="ID" />}
             {f.is_partition_key && (
               <StyledChip size="small" label="Partition key" />
@@ -549,12 +561,6 @@ const Overview = () => {
                       size="small"
                     />
                   </Tooltip>
-                  {collection?.schema?.enable_dynamic_field && (
-                    <StyledChip
-                      label={collectionTrans('dynamicSchema')}
-                      size="small"
-                    />
-                  )}
                   <Tooltip title={collectionTrans('mmapTooltip')} arrow>
                     <StyledChip
                       label={collectionTrans('mmapSettings')}

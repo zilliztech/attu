@@ -174,12 +174,18 @@ export class CollectionsService {
             autoID: false,
             fieldID: '',
             state: '',
+            nullable: false,
+            default_value: null,
             dataType: DataType.JSON,
             is_function_output: false,
             is_primary_key: false,
           },
         ]
       : [];
+
+    if (res.schema.enable_dynamic_field) {
+      res.schema.fields.push(res.schema.dynamicFields[0]);
+    }
 
     return res;
   }
@@ -735,10 +741,7 @@ export class CollectionsService {
           getKeyValueListFromJsonString(paramsJSONstring as string)) ||
         [];
 
-      index.indexParameterPairs = [
-        ...indexParams,
-        ...params,
-      ];
+      index.indexParameterPairs = [...indexParams, ...params];
     });
 
     // Return the response from the Milvus SDK's describeIndex function
