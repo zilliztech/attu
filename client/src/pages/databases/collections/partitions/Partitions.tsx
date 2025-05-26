@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
@@ -181,6 +181,9 @@ const Partitions = () => {
       needCopy: true,
       disablePadding: false,
       label: t('id'),
+      formatter(data) {
+        return <Typography variant="body1">{data.id}</Typography>;
+      },
       getStyle: () => {
         return {
           width: 120,
@@ -196,19 +199,20 @@ const Partitions = () => {
       formatter({ name }) {
         const newName = name === '_default' ? 'Default partition' : name;
         return (
-          <Highlighter
-            textToHighlight={newName}
-            searchWords={[search]}
-            highlightStyle={{
-              color: '#1976d2',
-              backgroundColor: 'transparent',
-            }}
-          />
+          <Typography variant="body1">
+            <Highlighter
+              textToHighlight={newName}
+              searchWords={[search]}
+              highlightStyle={{
+                color: '#1976d2',
+                backgroundColor: 'transparent',
+              }}
+            />
+          </Typography>
         );
       },
       label: t('name'),
     },
-
     {
       id: 'rowCount',
       align: 'left',
@@ -226,39 +230,15 @@ const Partitions = () => {
         </Box>
       ),
       formatter(data) {
-        return formatNumber(Number(data.rowCount));
+        return <Typography variant="body1">{formatNumber(Number(data.rowCount))}</Typography>;
       },
     },
-    // {
-    //   id: 'action',
-    //   align: 'center',
-    //   disablePadding: false,
-    //   label: '',
-    //   showActionCell: true,
-    //   isHoverAction: true,
-    //   actionBarConfigs: [
-    //     {
-    //       onClick: (e: React.MouseEvent, row: PartitionView) => {
-    //         const cb =
-    //           row._status === StatusEnum.unloaded ? handleLoad : handleRelease;
-    //         handleAction(row, cb);
-    //       },
-    //       icon: 'load',
-    //       label: 'load',
-    //       showIconMethod: 'renderFn',
-    //       getLabel: (row: PartitionView) =>
-    //         row._status === StatusEnum.loaded ? 'release' : 'load',
-    //       renderIconFn: (row: PartitionView) =>
-    //         row._status === StatusEnum.loaded ? <ReleaseIcon /> : <LoadIcon />,
-    //     },
-    //   ],
-    // },
     {
       id: 'createdTime',
       align: 'left',
       disablePadding: false,
       formatter(data) {
-        return new Date(Number(data.createdTime)).toLocaleString();
+        return <Typography variant="body1">{new Date(Number(data.createdTime)).toLocaleString()}</Typography>;
       },
       label: t('createdTime'),
     },

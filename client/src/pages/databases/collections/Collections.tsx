@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
@@ -313,30 +313,32 @@ const Collections = () => {
       sortType: 'string',
       formatter({ collection_name }) {
         return (
-          <Link
-            to={`/databases/${database}/${collection_name}/overview`}
-            style={{
-              color: 'inherit',
-              display: 'inline-block',
-              wordBreak: 'break-all',
-              whiteSpace: 'nowrap',
-              width: 150,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              height: 20,
-              textDecoration: 'none',
-            }}
-            title={collection_name}
-          >
-            <Highlighter
-              textToHighlight={collection_name}
-              searchWords={[search]}
-              highlightStyle={{
-                color: '#1976d2',
-                backgroundColor: 'transparent',
+          <Typography variant="body1">
+            <Link
+              to={`/databases/${database}/${collection_name}/overview`}
+              style={{
+                color: 'inherit',
+                display: 'inline-block',
+                wordBreak: 'break-all',
+                whiteSpace: 'nowrap',
+                width: 150,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                height: 20,
+                textDecoration: 'none',
               }}
-            />
-          </Link>
+              title={collection_name}
+            >
+              <Highlighter
+                textToHighlight={collection_name}
+                searchWords={[search]}
+                highlightStyle={{
+                  color: '#1976d2',
+                  backgroundColor: 'transparent',
+                }}
+              />
+            </Link>
+          </Typography>
         );
       },
       getStyle: () => {
@@ -352,11 +354,13 @@ const Collections = () => {
       label: collectionTrans('status'),
       formatter(v) {
         return (
-          <StatusAction
-            status={v.status}
-            percentage={v.loadedPercentage}
-            collection={v}
-          />
+          <Typography variant="body1">
+            <StatusAction
+              status={v.status}
+              percentage={v.loadedPercentage}
+              collection={v}
+            />
+          </Typography>
         );
       },
       getStyle: () => {
@@ -381,7 +385,9 @@ const Collections = () => {
         </Box>
       ),
       formatter(v) {
-        return formatNumber(v.rowCount);
+        return (
+          <Typography variant="body1">{formatNumber(v.rowCount)}</Typography>
+        );
       },
       getStyle: () => {
         return { minWidth: '150px' };
@@ -401,7 +407,7 @@ const Collections = () => {
         </Box>
       ),
       formatter(v) {
-        return v.description || '--';
+        return <Typography variant="body1">{v.description || '--'}</Typography>;
       },
       getStyle: () => {
         return { minWidth: '150px' };
@@ -413,7 +419,11 @@ const Collections = () => {
       disablePadding: false,
       label: collectionTrans('createdTime'),
       formatter(data) {
-        return new Date(data.createdTime).toLocaleString();
+        return (
+          <Typography variant="body1">
+            {new Date(data.createdTime).toLocaleString()}
+          </Typography>
+        );
       },
       getStyle: () => {
         return { minWidth: '165px' };
@@ -439,7 +449,11 @@ const Collections = () => {
         </Box>
       ),
       formatter(v) {
-        return <Aliases aliases={v.aliases} collection={v} />;
+        return (
+          <Typography variant="body1">
+            <Aliases aliases={v.aliases} collection={v} />
+          </Typography>
+        );
       },
       getStyle: () => {
         return { minWidth: '120px' };

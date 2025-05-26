@@ -165,7 +165,7 @@ const Overview = () => {
       align: 'left',
       disablePadding: false,
       formatter(f) {
-        return <DataTypeChip size="small" label={formatFieldType(f)} />;
+        return <Typography variant="body1"><DataTypeChip size="small" label={formatFieldType(f)} /></Typography>;
       },
       label: collectionTrans('fieldType'),
     },
@@ -175,10 +175,14 @@ const Overview = () => {
       disablePadding: false,
       label: collectionTrans('nullable'),
       formatter(f) {
-        return f.nullable ? (
-          <Icons.check sx={{ fontSize: '11px', ml: 0.5 }} />
-        ) : (
-          <Icons.cross2 sx={{ fontSize: '11px', ml: 0.5 }} />
+        return (
+          <Typography variant="body1">
+            {f.nullable ? (
+              <Icons.check sx={{ fontSize: '11px', ml: 0.5 }} />
+            ) : (
+              <Icons.cross2 sx={{ fontSize: '11px', ml: 0.5 }} />
+            )}
+          </Typography>
         );
       },
     },
@@ -188,7 +192,7 @@ const Overview = () => {
       disablePadding: false,
       label: collectionTrans('defaultValue'),
       formatter(f) {
-        return f.default_value || '--';
+        return <Typography variant="body1">{f.default_value || '--'}</Typography>;
       },
     },
     {
@@ -197,7 +201,7 @@ const Overview = () => {
       disablePadding: true,
       label: indexTrans('indexName'),
       formatter(f) {
-        return f.index?.index_name;
+        return <Typography variant="body1">{f.index?.index_name}</Typography>;
       },
     },
     {
@@ -208,13 +212,15 @@ const Overview = () => {
       notSort: true,
       formatter(f) {
         return (
-          <IndexTypeElement
-            field={f}
-            collectionName={collectionName}
-            cb={async () => {
-              await fetchCollection(collectionName);
-            }}
-          />
+          <Typography variant="body1">
+            <IndexTypeElement
+              field={f}
+              collectionName={collectionName}
+              cb={async () => {
+                await fetchCollection(collectionName);
+              }}
+            />
+          </Typography>
         );
       },
     },
@@ -225,31 +231,35 @@ const Overview = () => {
       label: indexTrans('param'),
       notSort: true,
       formatter(f) {
-        return f.index ? (
-          <ParamWrapper>
-            {f.index.indexParameterPairs.length > 0 ? (
-              f.index.indexParameterPairs.map((p: any) =>
-                p.value ? (
-                  <div key={p.key + p.value}>
-                    <span className="param">
-                      <Typography variant="body1" className="key">
-                        {`${p.key}:`}
-                      </Typography>
-                      <Typography variant="body1" className="value">
-                        {p.value}
-                      </Typography>
-                    </span>
-                  </div>
+        return (
+          <Typography variant="body1">
+            {f.index ? (
+              <ParamWrapper>
+                {f.index.indexParameterPairs.length > 0 ? (
+                  f.index.indexParameterPairs.map((p: any) =>
+                    p.value ? (
+                      <div key={p.key + p.value}>
+                        <span className="param">
+                          <Typography variant="body1" className="key">
+                            {`${p.key}:`}
+                          </Typography>
+                          <Typography variant="body1" className="value">
+                            {p.value}
+                          </Typography>
+                        </span>
+                      </div>
+                    ) : (
+                      ''
+                    )
+                  )
                 ) : (
-                  ''
-                )
-              )
+                  <>--</>
+                )}
+              </ParamWrapper>
             ) : (
               <>--</>
             )}
-          </ParamWrapper>
-        ) : (
-          <>--</>
+          </Typography>
         );
       },
     },
@@ -258,6 +268,9 @@ const Overview = () => {
       align: 'left',
       disablePadding: false,
       label: indexTrans('desc'),
+      formatter(f) {
+        return <Typography variant="body1">{f.description || '--'}</Typography>;
+      },
     },
   ];
 

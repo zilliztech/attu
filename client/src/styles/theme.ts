@@ -5,52 +5,158 @@ import { ButtonProps } from '@mui/material/Button';
 
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
-    mono: true; // Custom variant
+    mono: true;
   }
 }
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
-    lightGrey?: string; // Adding the light property to the TypeBackground interface
+    lightGrey?: string;
     grey?: string;
     light?: string;
   }
   interface Palette {
-    background: TypeBackground; // Ensure the background interface uses the updated TypeBackground
+    background: TypeBackground;
   }
 }
 
-const getCommonThemes = (mode: PaletteMode) => ({
-  typography: {
-    fontFamily: [
-      'Inter',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
+const colors = {
+  primary: {
+    main: '#0ACE82',
+    light: {
+      light: '#f0fdf4',
+      dark: '#1b4332',
+    },
+    dark: {
+      light: '#08a568',
+      dark: '#078b63',
+    },
   },
+  secondary: {
+    main: '#1890FF',
+    light: {
+      light: '#E6F4FF',
+      dark: '#003A8C',
+    },
+    dark: {
+      light: '#096DD9',
+      dark: '#0050B3',
+    },
+  },
+  error: {
+    main: '#ff4605',
+    light: {
+      light: '#ff8f68',
+      dark: '#ff6a3a',
+    },
+    dark: {
+      light: '#cd3804',
+      dark: '#b33900',
+    },
+  },
+};
+
+const spacing = (factor: number) => `${8 * factor}px`;
+
+const typography = {
+  fontFamily: [
+    'Inter',
+    '-apple-system',
+    'BlinkMacSystemFont',
+    '"Segoe UI"',
+    '"Helvetica Neue"',
+    'Arial',
+    'sans-serif',
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"',
+  ].join(','),
+  h1: {
+    fontSize: '36px',
+    lineHeight: '42px',
+    fontWeight: 'bold',
+    letterSpacing: '-0.02em',
+  },
+  h2: {
+    lineHeight: '24px',
+    fontSize: '28px',
+    fontWeight: 'bold',
+  },
+  h3: {
+    lineHeight: '20px',
+    fontSize: '24px',
+    fontWeight: 'bold',
+  },
+  h4: {
+    fontWeight: 500,
+    lineHeight: '23px',
+    fontSize: '20px',
+    letterSpacing: '-0.02em',
+  },
+  h5: {
+    fontWeight: 'bold',
+    fontSize: '16px',
+    lineHeight: '24px',
+  },
+  h6: {
+    fontWeight: 'normal',
+    fontSize: '16px',
+    lineHeight: '24px',
+    letterSpacing: '-0.01em',
+  },
+  body1: {
+    fontSize: '14px',
+    lineHeight: 1.5,
+  },
+  body2: {
+    fontSize: '12px',
+    lineHeight: '16px',
+  },
+  caption: {
+    fontSize: '10px',
+    lineHeight: '12px',
+  },
+  mono: {
+    fontFamily: 'IBM Plex Mono, monospace',
+    fontSize: 12,
+    lineHeight: 1.5,
+  },
+  button: {
+    textTransform: 'initial',
+    lineHeight: '16px',
+    fontWeight: 'bold',
+  },
+};
+
+const getCommonThemes = (mode: PaletteMode) => ({
+  typography,
   palette: {
     mode,
     primary: {
-      main: '#0ACE82',
-      light: mode === 'light' ? '#f0fdf4' : '#1b4332',
-      dark: mode === 'light' ? '#08a568' : '#078b63',
+      main: colors.primary.main,
+      light:
+        mode === 'light'
+          ? colors.primary.light.light
+          : colors.primary.light.dark,
+      dark:
+        mode === 'light' ? colors.primary.dark.light : colors.primary.dark.dark,
     },
     secondary: {
-      light: mode === 'light' ? '#E6F4FF' : '#003A8C',
-      main: '#1890FF',
-      dark: mode === 'light' ? '#096DD9' : '#0050B3',
+      main: colors.secondary.main,
+      light:
+        mode === 'light'
+          ? colors.secondary.light.light
+          : colors.secondary.light.dark,
+      dark:
+        mode === 'light'
+          ? colors.secondary.dark.light
+          : colors.secondary.dark.dark,
     },
     error: {
-      main: '#ff4605',
-      light: mode === 'light' ? '#ff8f68' : '#ff6a3a',
-      dark: mode === 'light' ? '#cd3804' : '#b33900',
+      main: colors.error.main,
+      light:
+        mode === 'light' ? colors.error.light.light : colors.error.light.dark,
+      dark: mode === 'light' ? colors.error.dark.light : colors.error.dark.dark,
     },
     background: {
       default: mode === 'light' ? '#f5f5f5' : '#121212',
@@ -59,73 +165,19 @@ const getCommonThemes = (mode: PaletteMode) => ({
       lightGrey: mode === 'light' ? grey[100] : grey[800],
     },
   },
-  spacing: (factor: number) => `${8 * factor}px`,
+  spacing,
 });
 
 export const getAttuTheme = (mode: PaletteMode) => {
   const commonThemes = getCommonThemes(mode);
+  const isLight = mode === 'light';
 
   return {
     ...commonThemes,
     components: {
       MuiTypography: {
         styleOverrides: {
-          button: {
-            textTransform: 'initial',
-            lineHeight: '16px',
-            fontWeight: 'bold',
-            variants: [],
-          },
-          h1: {
-            fontSize: '36px',
-            lineHeight: '42px',
-            fontWeight: 'bold',
-            letterSpacing: '-0.02em',
-          },
-          h2: {
-            lineHeight: '24px',
-            fontSize: '28px',
-            fontWeight: 'bold',
-          },
-          h3: {
-            lineHeight: '20px',
-            fontSize: '24px',
-            fontWeight: 'bold',
-          },
-          h4: {
-            fontWeight: 500,
-            lineHeight: '23px',
-            fontSize: '20px',
-            letterSpacing: '-0.02em',
-          },
-          h5: {
-            fontWeight: 'bold',
-            fontSize: '16px',
-            lineHeight: '24px',
-          },
-          h6: {
-            fontWeight: 'normal',
-            fontSize: '16px',
-            lineHeight: '24px',
-            letterSpacing: '-0.01em',
-          },
-          body1: {
-            fontSize: '14px',
-            lineHeight: 1.5,
-          },
-          body2: {
-            fontSize: '12px',
-            lineHeight: '16px',
-          },
-          caption: {
-            fontSize: '10px',
-            lineHeight: '12px',
-          },
-          mono: {
-            fontFamily: 'IBM Plex Mono, monospace',
-            fontSize: 12,
-            lineHeight: 1.5,
-          },
+          ...typography,
         },
       },
       MuiButton: {
@@ -154,12 +206,13 @@ export const getAttuTheme = (mode: PaletteMode) => {
                 boxShadow: 'none',
                 backgroundColor:
                   ownerState.color === 'secondary'
-                    ? '#fc4c02'
+                    ? theme.palette.secondary.dark
                     : theme.palette.primary.dark,
               },
             }),
             ...(ownerState.disabled && {
               pointerEvents: 'none',
+              opacity: 0.6,
             }),
           }),
         },
@@ -173,10 +226,10 @@ export const getAttuTheme = (mode: PaletteMode) => {
           },
           {
             props: { variant: 'contained', color: 'secondary' },
-            style: {
-              backgroundColor: '#fc4c02',
-              color: '#fff',
-            },
+            style: ({ theme }: { theme: Theme }) => ({
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.background.paper,
+            }),
           },
         ],
       },
@@ -184,28 +237,29 @@ export const getAttuTheme = (mode: PaletteMode) => {
         styleOverrides: {
           paper: {
             borderRadius: 8,
+            boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.15)',
           },
         },
       },
       MuiDialogActions: {
         styleOverrides: {
           spacing: {
-            padding: commonThemes.spacing(4),
+            padding: spacing(4),
           },
         },
       },
       MuiDialogContent: {
         styleOverrides: {
           root: {
-            padding: `${commonThemes.spacing(1)} ${commonThemes.spacing(4)}`,
+            padding: `${spacing(1)} ${spacing(4)}`,
           },
         },
       },
       MuiDialogTitle: {
         styleOverrides: {
           root: {
-            padding: commonThemes.spacing(4),
-            paddingBottom: commonThemes.spacing(1),
+            padding: spacing(4),
+            paddingBottom: spacing(1),
           },
         },
       },
@@ -217,7 +271,17 @@ export const getAttuTheme = (mode: PaletteMode) => {
         },
       },
       MuiTextField: {
-        styleOverrides: {},
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              '&:hover fieldset': {
+                borderColor: isLight
+                  ? colors.primary.main
+                  : colors.primary.light.dark,
+              },
+            },
+          },
+        },
       },
       MuiFilledInput: {
         styleOverrides: {
@@ -244,24 +308,36 @@ export const getAttuTheme = (mode: PaletteMode) => {
       MuiChip: {
         styleOverrides: {
           root: {
-            backgroundColor: mode === 'light' ? '#f0fdf4' : '#1b4332',
-            color: mode === 'light' ? '#2a6f4e' : '#d8f3dc',
+            backgroundColor: isLight
+              ? colors.primary.light.light
+              : colors.primary.light.dark,
+            color: isLight
+              ? colors.primary.dark.light
+              : colors.primary.light.light,
             '& .MuiChip-label': {
               fontWeight: 500,
             },
           },
           outlined: {
-            borderColor: mode === 'light' ? '#94d2bd' : '#74c69d',
+            borderColor: isLight
+              ? colors.primary.main
+              : colors.primary.light.dark,
           },
           clickable: {
             '&:hover': {
-              backgroundColor: mode === 'light' ? '#d1fae5' : '#2d6a4f',
+              backgroundColor: isLight
+                ? colors.primary.light.light
+                : colors.primary.dark.dark,
             },
           },
           deleteIcon: {
-            color: mode === 'light' ? '#40916c' : '#b7e4c7',
+            color: isLight
+              ? colors.primary.dark.light
+              : colors.primary.light.light,
             '&:hover': {
-              color: mode === 'light' ? '#1b4332' : '#95d5b2',
+              color: isLight
+                ? colors.primary.dark.dark
+                : colors.primary.light.dark,
             },
           },
         },
@@ -270,11 +346,11 @@ export const getAttuTheme = (mode: PaletteMode) => {
         styleOverrides: {
           root: {
             fontSize: '15px',
-            color: commonThemes.palette.primary,
+            color: commonThemes.palette.primary.main,
             backgroundColor: commonThemes.palette.background.default,
             '& .MuiTreeItem-iconContainer': {
               width: 'auto',
-              color: '#666',
+              color: isLight ? '#666' : '#aaa',
             },
             '& .MuiTreeItem-group': {
               marginLeft: 0,
@@ -289,16 +365,24 @@ export const getAttuTheme = (mode: PaletteMode) => {
               width: 'auto',
               padding: '0',
               '&.Mui-focused': {
-                backgroundColor: 'rgba(10, 206, 130, 0.08)',
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.08)'
+                  : 'rgba(10, 206, 130, 0.16)',
               },
               '&.Mui-selected': {
-                backgroundColor: 'rgba(10, 206, 130, 0.28)',
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.28)'
+                  : 'rgba(10, 206, 130, 0.36)',
               },
               '&.Mui-focused.Mui-selected': {
-                backgroundColor: 'rgba(10, 206, 130, 0.28) !important',
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.28) !important'
+                  : 'rgba(10, 206, 130, 0.36) !important',
               },
               '&:hover': {
-                backgroundColor: 'rgba(10, 206, 130, 0.08)',
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.08)'
+                  : 'rgba(10, 206, 130, 0.16)',
               },
               '& .MuiTreeItem-label': {
                 background: 'none',
@@ -327,19 +411,25 @@ export const getAttuTheme = (mode: PaletteMode) => {
             minHeight: '36px',
             transition: 'background-color 0.2s ease',
             '&:hover': {
-              backgroundColor: 'rgba(10, 206, 130, 0.08)',
+              backgroundColor: isLight
+                ? 'rgba(10, 206, 130, 0.08)'
+                : 'rgba(10, 206, 130, 0.16)',
             },
             '&.Mui-selected': {
-              backgroundColor: 'rgba(10, 206, 130, 0.16)',
+              backgroundColor: isLight
+                ? 'rgba(10, 206, 130, 0.16)'
+                : 'rgba(10, 206, 130, 0.24)',
               '&:hover': {
-                backgroundColor: 'rgba(10, 206, 130, 0.24)',
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.24)'
+                  : 'rgba(10, 206, 130, 0.32)',
               },
             },
             '&.Mui-disabled': {
               opacity: 0.6,
             },
             '& .MuiListItemIcon-root': {
-              color: mode === 'light' ? '#666' : '#aaa',
+              color: isLight ? '#666' : '#aaa',
               minWidth: '36px',
             },
           },
