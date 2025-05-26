@@ -38,15 +38,10 @@ const CreateForm = (
     fieldType,
   } = props;
 
-  const { t: commonTrans } = useTranslation();
   const { t: indexTrans } = useTranslation('index');
 
-  const metricTypeDescriptions = {
-    IP: 'Inner Product: Measures similarity based on the dot product of vectors. Higher values indicate greater similarity.',
-    L2: 'Euclidean Distance: Measures similarity based on the straight-line distance between vectors. Lower values indicate greater similarity.',
-    COSINE:
-      'Cosine Similarity: Measures similarity based on the cosine of the angle between vectors. Values range from -1 to 1, with 1 indicating identical vectors.',
-    BM25: 'BM25: A ranking function used for text search, based on the probabilistic relevance framework.',
+  const getMetricDescription = (type: string) => {
+    return indexTrans(`metricType.${type}.description`);
   };
 
   const paramConfigs = useMemo(() => {
@@ -161,9 +156,7 @@ const CreateForm = (
             ))}
           </Select>
           <FormHelperText>
-            {metricTypeDescriptions[
-              formValue.metric_type as keyof typeof metricTypeDescriptions
-            ] || ''}
+            {getMetricDescription(formValue.metric_type)}
           </FormHelperText>
         </FormControl>
       )}

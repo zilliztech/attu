@@ -34,9 +34,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of clusters to create using k-means algorithm',
-          helperText:
-            'Larger values improve recall but increase index building time. Recommended range: [32, 4096]',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
         nbits: {
           label: 'nbits',
@@ -45,8 +44,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 16,
           defaultValue: '8',
-          description: 'Number of bits for quantization',
-          helperText: 'Must be between 1 and 16',
+          description: 'params.nbits.description',
+          helperText: 'params.nbits.helperText',
         },
       },
     },
@@ -61,8 +60,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 2,
           max: 2048,
-          description: 'Maximum number of connections per element',
-          helperText: 'Must be between 2 and 2048',
+          description: 'params.M.description',
+          helperText: 'params.M.helperText',
         },
         efConstruction: {
           label: 'efConstruction',
@@ -71,8 +70,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 2147483647,
-          description: 'Size of the dynamic candidate list',
-          helperText: 'Must be between 1 and 2147483647',
+          description: 'params.efConstruction.description',
+          helperText: 'params.efConstruction.helperText',
         },
       },
     },
@@ -87,8 +86,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of clusters',
-          helperText: 'Must be between 1 and 65536',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
       },
     },
@@ -103,9 +102,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of cluster units',
-          helperText:
-            'Larger values improve recall but increase index building time. Recommended range: [32, 4096]',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
         m: {
           label: 'm',
@@ -114,9 +112,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of factors of product quantization',
-          helperText:
-            'Must be a divisor of vector dimension (dim mod m == 0). Recommended: D/2, where D is vector dimension',
+          description: 'params.m.description',
+          helperText: 'params.m.helperText',
         },
         nbits: {
           label: 'nbits',
@@ -125,10 +122,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 64,
           defaultValue: '8',
-          description:
-            'Number of bits in which each low-dimensional vector is stored',
-          helperText:
-            'Determines codebook size (2^nbits centroids). Higher values improve accuracy but increase index size',
+          description: 'params.nbits.description',
+          helperText: 'params.nbits.helperText',
         },
       },
     },
@@ -143,16 +138,15 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of clusters to create using k-means algorithm',
-          helperText:
-            'Larger values improve recall but increase index building time. Recommended range: [32, 4096]',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
         with_raw_data: {
           label: 'with_raw_data',
           key: 'with_raw_data',
           type: 'bool',
           defaultValue: 'true',
-          description: 'Whether to store raw data',
+          description: 'params.with_raw_data.description',
         },
       },
     },
@@ -167,9 +161,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 2,
           max: 2048,
-          description: 'Maximum number of outgoing connections in the graph',
-          helperText:
-            'Higher M leads to higher accuracy/run_time at fixed ef/efConstruction. Must be between 2 and 2048',
+          description: 'params.M.description',
+          helperText: 'params.M.helperText',
         },
         efConstruction: {
           label: 'efConstruction',
@@ -178,9 +171,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 2147483647,
-          description: 'Controls index search speed/build speed tradeoff',
-          helperText:
-            'Increasing the efConstruction parameter may enhance index quality, but it also tends to lengthen the indexing time',
+          description: 'params.efConstruction.description',
+          helperText: 'params.efConstruction.helperText',
         },
         sq_type: {
           label: 'sq_type',
@@ -188,24 +180,23 @@ export const INDEX_PARAMS_CONFIG: Record<
           type: 'text',
           required: true,
           defaultValue: 'SQ8',
-          description: 'Scalar quantizer type',
-          helperText: 'Available options: SQ6, SQ8, BF16, FP16',
+          description: 'params.sq_type.description',
+          helperText: 'params.sq_type.helperText',
         },
         refine: {
           label: 'refine',
           key: 'refine',
           type: 'bool',
           defaultValue: 'false',
-          description: 'Whether refined data is reserved during index building',
-          helperText:
-            'If true, stores refined data for better accuracy but uses more memory',
+          description: 'params.refine.description',
+          helperText: 'params.refine.helperText',
         },
         refine_type: {
           label: 'refine_type',
           key: 'refine_type',
           type: 'text',
-          description: 'The data type of the refine index',
-          helperText: 'Available options: SQ6, SQ8, BF16, FP16, FP32',
+          description: 'params.refine_type.description',
+          helperText: 'params.refine_type.helperText',
         },
       },
     },
@@ -220,9 +211,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 2,
           max: 2048,
-          description: 'Maximum number of outgoing connections in the graph',
-          helperText:
-            'Higher M leads to higher accuracy/run_time at fixed ef/efConstruction. Must be between 2 and 2048',
+          description: 'params.M.description',
+          helperText: 'params.M.helperText',
         },
         efConstruction: {
           label: 'efConstruction',
@@ -231,9 +221,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 2147483647,
-          description: 'Controls index search speed/build speed tradeoff',
-          helperText:
-            'Increasing the efConstruction parameter may enhance index quality, but it also tends to lengthen the indexing time',
+          description: 'params.efConstruction.description',
+          helperText: 'params.efConstruction.helperText',
         },
         m: {
           label: 'm',
@@ -243,10 +232,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 65536,
           defaultValue: '32',
-          description:
-            'The number of sub-vector groups to split the vector into',
-          helperText:
-            'Must be a divisor of vector dimension. Recommended: D/2, where D is vector dimension',
+          description: 'params.m.description',
+          helperText: 'params.m.helperText',
         },
         nbits: {
           label: 'nbits',
@@ -256,26 +243,23 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 24,
           defaultValue: '8',
-          description:
-            'The number of bits into which each group of sub-vectors is quantized',
-          helperText:
-            'Determines codebook size (2^nbits centroids). Recommended range: [1, 16]',
+          description: 'params.nbits.description',
+          helperText: 'params.nbits.helperText',
         },
         refine: {
           label: 'refine',
           key: 'refine',
           type: 'bool',
           defaultValue: 'false',
-          description: 'Whether refined data is reserved during index building',
-          helperText:
-            'If true, stores refined data for better accuracy but uses more memory',
+          description: 'params.refine.description',
+          helperText: 'params.refine.helperText',
         },
         refine_type: {
           label: 'refine_type',
           key: 'refine_type',
           type: 'text',
-          description: 'The data type of the refine index',
-          helperText: 'Available options: SQ6, SQ8, BF16, FP16, FP32',
+          description: 'params.refine_type.description',
+          helperText: 'params.refine_type.helperText',
         },
       },
     },
@@ -290,9 +274,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 2,
           max: 2048,
-          description: 'Maximum number of outgoing connections in the graph',
-          helperText:
-            'Higher M leads to higher accuracy/run_time at fixed ef/efConstruction. Must be between 2 and 2048',
+          description: 'params.M.description',
+          helperText: 'params.M.helperText',
         },
         efConstruction: {
           label: 'efConstruction',
@@ -301,9 +284,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 2147483647,
-          description: 'Controls index search speed/build speed tradeoff',
-          helperText:
-            'Increasing the efConstruction parameter may enhance index quality, but it also tends to lengthen the indexing time',
+          description: 'params.efConstruction.description',
+          helperText: 'params.efConstruction.helperText',
         },
         m: {
           label: 'm',
@@ -313,10 +295,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 65536,
           defaultValue: '32',
-          description:
-            'The number of sub-vector groups to split the vector into',
-          helperText:
-            'Must be a divisor of vector dimension. Recommended: D/2, where D is vector dimension',
+          description: 'params.m.description',
+          helperText: 'params.m.helperText',
         },
         nbits: {
           label: 'nbits',
@@ -326,10 +306,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 24,
           defaultValue: '8',
-          description:
-            'The number of bits into which each group of sub-vectors is quantized',
-          helperText:
-            'Determines codebook size (2^nbits centroids). Recommended range: [1, 16]',
+          description: 'params.nbits.description',
+          helperText: 'params.nbits.helperText',
         },
         nrq: {
           label: 'nrq',
@@ -339,25 +317,23 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 16,
           defaultValue: '2',
-          description: 'The number of residual subquantizers',
-          helperText:
-            'Number of complete PQ quantizations to perform on residual vectors. Higher values improve accuracy but increase index size',
+          description: 'params.nrq.description',
+          helperText: 'params.nrq.helperText',
         },
         refine: {
           label: 'refine',
           key: 'refine',
           type: 'bool',
           defaultValue: 'false',
-          description: 'Whether refined data is reserved during index building',
-          helperText:
-            'If true, stores refined data for better accuracy but uses more memory',
+          description: 'params.refine.description',
+          helperText: 'params.refine.helperText',
         },
         refine_type: {
           label: 'refine_type',
           key: 'refine_type',
           type: 'text',
-          description: 'The data type of the refine index',
-          helperText: 'Available options: SQ6, SQ8, BF16, FP16, FP32',
+          description: 'params.refine_type.description',
+          helperText: 'params.refine_type.helperText',
         },
       },
     },
@@ -373,9 +349,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 1024,
           defaultValue: '128',
-          description: 'Graph degree before pruning',
-          helperText:
-            'Affects recall and build time. Recommended values: 32 or 64',
+          description: 'params.intermediate_graph_degree.description',
+          helperText: 'params.intermediate_graph_degree.helperText',
         },
         graph_degree: {
           label: 'graph_degree',
@@ -385,9 +360,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 1024,
           defaultValue: '64',
-          description: 'Graph degree after pruning',
-          helperText:
-            'Must be smaller than intermediate_graph_degree. Affects search performance and recall',
+          description: 'params.graph_degree.description',
+          helperText: 'params.graph_degree.helperText',
         },
         build_algo: {
           label: 'build_algo',
@@ -395,27 +369,24 @@ export const INDEX_PARAMS_CONFIG: Record<
           type: 'text',
           required: true,
           defaultValue: 'IVF_PQ',
-          description: 'Graph generation algorithm before pruning',
-          helperText:
-            'IVF_PQ: Higher quality but slower build time. NN_DESCENT: Quicker build with potentially lower recall',
+          description: 'params.build_algo.description',
+          helperText: 'params.build_algo.helperText',
         },
         cache_dataset_on_device: {
           label: 'cache_dataset_on_device',
           key: 'cache_dataset_on_device',
           type: 'bool',
           defaultValue: 'false',
-          description: 'Whether to cache the original dataset in GPU memory',
-          helperText:
-            'true: Enhances recall by refining search results. false: Saves GPU memory',
+          description: 'params.cache_dataset_on_device.description',
+          helperText: 'params.cache_dataset_on_device.helperText',
         },
         adapt_for_cpu: {
           label: 'adapt_for_cpu',
           key: 'adapt_for_cpu',
           type: 'bool',
           defaultValue: 'false',
-          description:
-            'Whether to use GPU for index-building and CPU for search',
-          helperText: 'If true, requires ef parameter in search requests',
+          description: 'params.adapt_for_cpu.description',
+          helperText: 'params.adapt_for_cpu.helperText',
         },
       },
     },
@@ -431,18 +402,16 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 65536,
           defaultValue: '128',
-          description: 'Number of cluster units',
-          helperText:
-            'Larger values improve recall but increase index building time. Recommended range: [32, 4096]',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
         cache_dataset_on_device: {
           label: 'cache_dataset_on_device',
           key: 'cache_dataset_on_device',
           type: 'bool',
           defaultValue: 'false',
-          description: 'Whether to cache the original dataset in GPU memory',
-          helperText:
-            'true: Enhances recall by refining search results. false: Saves GPU memory',
+          description: 'params.cache_dataset_on_device.description',
+          helperText: 'params.cache_dataset_on_device.helperText',
         },
       },
     },
@@ -458,9 +427,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 65536,
           defaultValue: '128',
-          description: 'Number of cluster units',
-          helperText:
-            'Larger values improve recall but increase index building time. Recommended range: [32, 4096]',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
         m: {
           label: 'm',
@@ -469,9 +437,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of factors of product quantization',
-          helperText:
-            'Must be a divisor of vector dimension (dim mod m == 0). Recommended: D/2, where D is vector dimension',
+          description: 'params.m.description',
+          helperText: 'params.m.helperText',
         },
         nbits: {
           label: 'nbits',
@@ -480,19 +447,16 @@ export const INDEX_PARAMS_CONFIG: Record<
           min: 1,
           max: 16,
           defaultValue: '8',
-          description:
-            'Number of bits in which each low-dimensional vector is stored',
-          helperText:
-            'Determines codebook size (2^nbits centroids). Higher values improve accuracy but increase index size',
+          description: 'params.nbits.description',
+          helperText: 'params.nbits.helperText',
         },
         cache_dataset_on_device: {
           label: 'cache_dataset_on_device',
           key: 'cache_dataset_on_device',
           type: 'bool',
           defaultValue: 'false',
-          description: 'Whether to cache the original dataset in GPU memory',
-          helperText:
-            'true: Enhances recall by refining search results. false: Saves GPU memory',
+          description: 'params.cache_dataset_on_device.description',
+          helperText: 'params.cache_dataset_on_device.helperText',
         },
       },
     },
@@ -509,9 +473,8 @@ export const INDEX_PARAMS_CONFIG: Record<
           required: true,
           min: 1,
           max: 65536,
-          description: 'Number of clusters to create using k-means algorithm',
-          helperText:
-            'Larger values improve recall but increase index building time. Recommended range: [32, 4096]',
+          description: 'params.nlist.description',
+          helperText: 'params.nlist.helperText',
         },
       },
     },

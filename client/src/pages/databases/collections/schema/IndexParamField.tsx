@@ -4,8 +4,10 @@ import {
   FormControlLabel,
   FormHelperText,
   Box,
+  Typography,
 } from '@mui/material';
 import { useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import type { IndexParamConfig } from './indexParamsConfig';
 
 interface IndexParamFieldProps {
@@ -22,6 +24,7 @@ const IndexParamField = ({
   error,
 }: IndexParamFieldProps) => {
   const theme = useTheme();
+  const { t: indexTrans } = useTranslation('index');
 
   const renderField = () => {
     switch (config.type) {
@@ -88,8 +91,17 @@ const IndexParamField = ({
     <Box sx={{ mb: 0 }}>
       {renderField()}
       {(config.helperText || error) && (
-        <FormHelperText error={!!error}>
-          {config.description}, {error || config.helperText}
+        <FormHelperText
+          error={!!error}
+          sx={{
+            mt: 0.5,
+            mb: 0,
+            fontSize: '0.75rem',
+            lineHeight: 1.2,
+          }}
+        >
+          {config.description && indexTrans(config.description)}
+          {error || (config.helperText ? indexTrans(config.helperText) : '')}
         </FormHelperText>
       )}
     </Box>
