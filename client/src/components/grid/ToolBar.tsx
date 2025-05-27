@@ -71,10 +71,15 @@ const CustomToolBar: FC<ToolBarType> = props => {
                 // use contained variant as default
                 variant={c.btnVariant || 'contained'}
                 tooltip={tooltip}
-                sx={theme => ({ marginRight: theme.spacing(0.5) })}
+                sx={theme => ({
+                  marginRight: theme.spacing(0.5),
+                  p: theme.spacing(1),
+                })}
                 role="button"
               >
-                <Typography variant="button">{c.label}</Typography>
+                <Typography variant="button" sx={{ fontSize: 13 }}>
+                  {c.label}
+                </Typography>
               </CustomButton>
             );
 

@@ -12,7 +12,6 @@ import { dataContext } from '@/context';
 
 const NavMenu: FC<NavMenuType> = props => {
   const { data, defaultActive = '', versionInfo } = props;
-  // Styles moved inline using sx prop
   const [active, setActive] = useState<string>(defaultActive);
 
   const { databases } = useContext(dataContext);
@@ -47,29 +46,55 @@ const NavMenu: FC<NavMenuType> = props => {
               disabled={disabled}
               sx={{
                 width: 'initial',
+                minWidth: 'auto',
+                padding: 0,
                 borderRadius: 1,
                 m: 0.5,
-                mb: 1.5,
+                mb: 1,
                 cursor: 'pointer',
-                '&:hover': {
-                  backgroundColor: theme => theme.palette.primary.main,
-                  color: '#fff',
-                  '& .icon': { color: '#fff' },
-                },
-                '&.attu .icon': {
-                  color: theme => theme.palette.primary.main,
-                  '&:hover': { color: '#fff' },
-                  '&.active:hover': { color: '#fff' },
-                },
+                display: 'flex',
+                justifyContent: 'center',
                 '& .itemIcon': {
-                  marginLeft: -1,
-                  minWidth: 24,
+                  minWidth: 'auto',
+                  margin: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: 32,
+                  height: 32,
+                  borderRadius: 1,
+                  transition: 'all 0.2s ease',
+                  '& .icon': {
+                    transform: 'scale(0.8)',
+                    color: theme => theme.palette.text.primary,
+                  },
+                },
+                '&:hover': {
+                  '& .itemIcon': {
+                    backgroundColor: theme => theme.palette.primary.main,
+                    '& .icon': {
+                      color: '#fff',
+                    },
+                  },
+                },
+                '&.attu .itemIcon': {
+                  '& .icon': {
+                    color: theme => theme.palette.primary.main,
+                  },
+                  '&:hover': {
+                    backgroundColor: theme => theme.palette.primary.main,
+                    '& .icon': {
+                      color: '#fff',
+                    },
+                  },
                 },
                 '&.active': {
-                  borderRadius: 1,
-                  backgroundColor: theme => theme.palette.primary.main,
-                  color: '#fff',
-                  '& .icon path': { fill: '#fff' },
+                  '& .itemIcon': {
+                    backgroundColor: theme => theme.palette.primary.main,
+                    '& .icon': {
+                      color: '#fff',
+                    },
+                  },
                 },
               }}
               className={clsx({
@@ -102,12 +127,11 @@ const NavMenu: FC<NavMenuType> = props => {
     <List
       component="nav"
       sx={{
-        boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
         borderRight: theme => `1px solid ${theme.palette.divider}`,
-        width: 48,
+        width: 46,
         pt: 0,
         color: theme => theme.palette.text.primary,
-        backgroundColor: theme => theme.palette.background.default,
+        backgroundColor: theme => theme.palette.background.paper,
         position: 'relative',
       }}
     >

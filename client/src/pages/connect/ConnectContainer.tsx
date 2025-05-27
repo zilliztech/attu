@@ -37,7 +37,6 @@ const ConnectContainer = () => {
           backgroundColor: 'background.default',
           border: (theme: Theme) => `1px solid ${theme.palette.divider}`,
           borderRadius: 2,
-          boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
           minHeight: 644,
         }}
       >
@@ -141,7 +140,6 @@ const ConnectContainer = () => {
             width: 481,
             borderRadius: 2,
             padding: (theme: Theme) => theme.spacing(5, 0),
-            boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
             backgroundColor: 'background.paper',
           }}
         >

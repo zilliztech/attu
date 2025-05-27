@@ -23,17 +23,6 @@ const SearchInputBoxWrapper = styled('div')(({ theme }) => ({
   overflow: 'auto',
   backgroundColor: theme.palette.background.default,
   cursor: 'text',
-  boxShadow: '0 1px 0 transparent',
-  transition: 'box-shadow 0.3s ease',
-  '&:hover': {
-    boxShadow: '0 1px 0 #000',
-  },
-  '&:active': {
-    boxShadow: `0 1px 0 ${theme.palette.primary.main}`,
-  },
-  '&.focused': {
-    boxShadow: `0 2px 0 ${theme.palette.primary.main}`,
-  },
 }));
 
 export type SearchInputBoxProps = {

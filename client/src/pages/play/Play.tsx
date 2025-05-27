@@ -177,6 +177,7 @@ const Play: FC = () => {
           padding: 0,
           display: 'flex',
           flexDirection: 'column',
+          border: `1px solid ${theme.palette.divider}`,
         }}
       >
         <Box
@@ -202,6 +203,7 @@ const Play: FC = () => {
           marginLeft: theme.spacing(2),
           display: 'flex',
           overflow: 'hidden',
+          border: `1px solid ${theme.palette.divider}`,
         }}
       >
         <JSONEditor value={content || `{}`} editable={false} />

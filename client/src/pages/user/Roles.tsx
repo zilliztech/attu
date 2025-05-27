@@ -229,7 +229,6 @@ const Roles = () => {
             height: 'calc(100vh - 200px)',
             overflow: 'auto',
             color: (theme as any).palette.text.primary,
-            boxShadow: (theme as any).shadows[1],
             minWidth: '200px',
           })}
         >

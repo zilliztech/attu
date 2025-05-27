@@ -121,6 +121,7 @@ const ScalarFieldRow: FC<ScalarFieldRowProps> = ({
           onChange={(id, max_capacity, isValid) => {
             onFieldChange(id, { max_capacity }, isValid);
           }}
+          label={collectionTrans('maxCapacity')}
         />
       )}
 

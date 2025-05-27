@@ -102,17 +102,6 @@ export const SearchInputBox = styled(Box)(({ theme }) => ({
   overflow: 'auto',
   backgroundColor: theme.palette.background.default,
   cursor: 'text',
-  boxShadow: '0 1px 0 transparent',
-  transition: 'box-shadow 0.3s ease',
-  '&:hover': {
-    boxShadow: '0 1px 0 #000',
-  },
-  '&:active': {
-    boxShadow: `0 1px 0 ${theme.palette.primary.main}`,
-  },
-  '&.focused': {
-    boxShadow: `0 2px 0 ${theme.palette.primary.main}`,
-  },
 }));
 
 export const SearchControls = styled(Box)(({ theme }) => ({
@@ -207,7 +196,6 @@ export const NodeInfo = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: 8,
-  boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
   maxWidth: 240,
   overflow: 'auto',
   zIndex: 1,
@@ -294,7 +282,6 @@ export const DataExplorerRoot = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 8,
-    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
     maxWidth: 240,
     overflow: 'auto',
     zIndex: 1,

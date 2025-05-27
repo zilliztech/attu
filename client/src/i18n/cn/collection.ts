@@ -11,10 +11,10 @@ const collectionTrans = {
   aliasTooltip: '请选择一个 Collection 创建别名',
   collection: 'Collection',
   entities: 'Entities',
-  mmapEnabled: '内存映射 (MMap)',
-  mmapSettings: 'MMap 设置',
-  collectionMMapSettingsLabel: '全局原始数据 MMap 设置',
-  rawData: '全局内存映射 (MMap) 的原始数据配置',
+  mmapEnabled: '内存映射 (mmap)',
+  mmapSettings: 'mmap 设置',
+  collectionMMapSettingsLabel: 'Collection 级别原始数据 mmap 设置',
+  rawData: '原始数据',
   functions: 'Functions',
 
   // table
@@ -26,6 +26,7 @@ const collectionTrans = {
   desc: '描述',
   createdTime: '创建时间',
   maxLength: '最大长度',
+  maxCapacity: '最大容量',
   dynamicSchema: '动态 Schema',
   function: 'Function',
   functionInput: 'Function 输入',

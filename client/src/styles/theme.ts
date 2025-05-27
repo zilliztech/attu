@@ -435,6 +435,54 @@ export const getAttuTheme = (mode: PaletteMode) => {
           },
         },
       },
+      MuiSnackbar: {
+        styleOverrides: {
+          root: {
+            '&.MuiSnackbar-anchorOriginTopCenter': {
+              top: { xs: 56, md: 72 },
+            },
+            '&.MuiSnackbar-anchorOriginTopRight': {
+              top: { xs: 56, md: 72 },
+              right: (theme: Theme) => theme.spacing(1),
+            },
+          },
+        },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          root: {
+            wordBreak: 'break-all',
+            boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.15)',
+            borderRadius: '8px',
+            alignItems: 'center',
+            '& .MuiAlert-icon': {
+              alignItems: 'center',
+              padding: '9px 0',
+            },
+            '& .MuiAlert-message': {
+              padding: '9px 0',
+              display: 'flex',
+              alignItems: 'center',
+            },
+          },
+          standardSuccess: {
+            backgroundColor: isLight ? colors.primary.light.light : colors.primary.light.dark,
+            color: isLight ? colors.primary.dark.light : colors.primary.light.light,
+          },
+          standardError: {
+            backgroundColor: isLight ? colors.error.light.light : colors.error.light.dark,
+            color: isLight ? colors.error.dark.light : colors.error.light.light,
+          },
+          standardInfo: {
+            backgroundColor: isLight ? colors.secondary.light.light : colors.secondary.light.dark,
+            color: isLight ? colors.secondary.dark.light : colors.secondary.light.light,
+          },
+          standardWarning: {
+            backgroundColor: isLight ? '#fff7e6' : '#2b2111',
+            color: isLight ? '#d46b08' : '#ffa940',
+          },
+        },
+      },
     },
   };
 };

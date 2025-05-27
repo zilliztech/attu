@@ -346,11 +346,10 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       <Box
         ref={parentRef}
         sx={{
-          height: treeHeight, // Adjust this height based on your layout requirements
+          height: treeHeight,
           overflow: 'auto',
           fontSize: '15px',
           color: theme => theme.palette.text.primary,
-          backgroundColor: theme => theme.palette.background.default,
           '& .MuiSvgIcon-root': {
             fontSize: '14px',
             color: theme => theme.palette.text.primary,
@@ -472,7 +471,7 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
         sx={{ pointerEvents: 'none' }}
         slotProps={{
           paper: {
-            sx: { pointerEvents: 'auto', boxShadow: 4, borderRadius: 2 },
+            sx: { pointerEvents: 'auto', borderRadius: 2 },
           },
         }}
       >

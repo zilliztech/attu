@@ -77,11 +77,9 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
           cursor: 'pointer',
           borderRadius: 2,
           '&:hover': {
-            boxShadow: '0px 0px 4px 0px #00000029',
             borderColor: theme => theme.palette.primary.main,
           },
           ...(isActive && {
-            boxShadow: '0px 0px 4px 0px #00000029',
             borderColor: theme => theme.palette.primary.main,
           }),
         }}

@@ -14,7 +14,7 @@ const dialogTrans = {
   editEntityTitle: `Edit Entity(JSON)`,
   editAnalyzerTitle: `Edit Analyzer`,
   modifyReplicaTitle: `Modify replica for {{type}}`,
-  manageMmapTitle: `Manage MMap settings for {{type}}`,
+  manageMmapTitle: `Manage mmap settings for {{type}}`,
 
   loadContent: `You are trying to load a {{type}} with data. Only loaded {{type}} can be searched.`,
   releaseContent: `You are trying to release {{type}} with data. Please be aware that the data will no longer be available for search.`,

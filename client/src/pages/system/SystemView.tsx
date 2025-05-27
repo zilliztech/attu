@@ -53,7 +53,6 @@ const SystemView: any = () => {
         overflow: 'hidden',
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: 2,
-        boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
       })}
     >
       <Box
@@ -69,7 +68,6 @@ const SystemView: any = () => {
             width: '70%',
             background: theme.palette.background.paper,
             borderRadius: 2,
-            boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
           })}
         >
           <Topo

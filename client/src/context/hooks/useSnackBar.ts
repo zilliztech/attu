@@ -6,7 +6,7 @@ const defaultSnackBar: SnackBarType = {
   type: 'success',
   message: '',
   vertical: 'top',
-  horizontal: 'right',
+  horizontal: 'center',
   autoHideDuration: 1000,
 };
 
@@ -18,7 +18,7 @@ export function useSnackBar(initial: SnackBarType = defaultSnackBar) {
       message = '',
       type = 'success',
       autoHideDuration: number | null | undefined = 5000,
-      position = { vertical: 'top', horizontal: 'right' }
+      position = { vertical: 'top', horizontal: 'center' }
     ) => {
       setSnackBar({
         open: true,

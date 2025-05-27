@@ -111,7 +111,7 @@ const Header: FC = () => {
       elevation={0}
       sx={{
         borderBottom: theme => `1px solid ${theme.palette.divider}`,
-        height: 48,
+        height: 45,
         justifyContent: 'center',
         backgroundColor: theme =>
           mode === 'dark' ? theme.palette.background.default : '#fff',
@@ -120,7 +120,7 @@ const Header: FC = () => {
       <Toolbar
         disableGutters
         sx={{
-          minHeight: 48,
+          minHeight: 45,
           px: 2,
           display: 'flex',
           justifyContent: 'space-between',
@@ -137,9 +137,9 @@ const Header: FC = () => {
             </IconButton>
           )}
           {navInfo.showDatabaseSelector && (
-            <Breadcrumbs aria-label="breadcrumb" sx={{ mx: 1 }}>
+            <Breadcrumbs aria-label="breadcrumb">
               <Typography
-                sx={{ cursor: 'pointer', fontWeight: 500 }}
+                sx={{ cursor: 'pointer', fontSize: 15, fontWeight: 500 }}
                 color="primary"
                 onClick={handleDbClick}
               >
@@ -171,16 +171,17 @@ const Header: FC = () => {
               </Menu>
             </Breadcrumbs>
           )}
-          <Typography variant="h5" color="text.primary">
+          <Typography
+            color="text.primary"
+            sx={{ fontSize: 15, fontWeight: 500, ml: 0 }}
+          >
             {navInfo.navTitle}
           </Typography>
           {navInfo.extra && (
             <Box
               sx={{
-                ml: 0.5,
                 display: 'flex',
                 alignItems: 'center',
-                '& svg': { fontSize: 15, color: 'primary.main' },
               }}
             >
               {navInfo.extra}
@@ -188,20 +189,25 @@ const Header: FC = () => {
           )}
         </Stack>
         <Stack direction="row" alignItems="center" spacing={1}>
-          <IconButton onClick={toggleColorMode} color="inherit" size="small">
+          <IconButton
+            onClick={toggleColorMode}
+            color="inherit"
+            size="small"
+            sx={{ '& svg': { fontSize: 14 } }}
+          >
             {mode === 'dark' ? <icons.night /> : <icons.day />}
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
             <Box sx={{ mr: 2 }}>
               <Typography
                 className="address"
-                sx={{ fontSize: 12, lineHeight: 1.3 }}
+                sx={{ fontSize: 11, lineHeight: 1.3 }}
               >
                 {address}
               </Typography>
               <Typography
                 className="status"
-                sx={{ fontSize: 12, lineHeight: 1.3, color: '#1ba954' }}
+                sx={{ fontSize: 11, lineHeight: 1.3, color: '#1ba954' }}
               >
                 {commonTrans('status.running')}
               </Typography>
@@ -212,7 +218,7 @@ const Header: FC = () => {
                   <IconButton
                     size="small"
                     onClick={handleUserMenuClick}
-                    sx={{ color: 'primary.main' }}
+                    sx={{ color: 'primary.main', '& svg': { fontSize: 16 } }}
                   >
                     <Avatar />
                   </IconButton>
@@ -239,7 +245,7 @@ const Header: FC = () => {
             <Tooltip title={'disconnect'}>
               <IconButton
                 size="small"
-                sx={{ color: 'primary.main' }}
+                sx={{ color: 'primary.main', '& svg': { fontSize: 16 } }}
                 onClick={handleLogout}
               >
                 <LogoutIcon />
