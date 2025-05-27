@@ -101,7 +101,9 @@ const IndexParamField = ({
             lineHeight: 1.2,
           }}
         >
-          {config.description && indexTrans(config.description)}
+          {!error && config.description && (
+            <>{indexTrans(config.description)}&nbsp;</>
+          )}
           {error || (config.helperText ? indexTrans(config.helperText) : '')}
         </FormHelperText>
       )}

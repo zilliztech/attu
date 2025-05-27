@@ -1,4 +1,4 @@
-import { MetricType, METRIC_TYPES_VALUES } from '@/consts';
+import { METRIC_TYPES_VALUES } from '@/consts';
 import type { CollectionObject } from '@server/types';
 
 export type ValidType =
@@ -38,7 +38,7 @@ export interface IExtraParam {
   type?: 'string' | 'number';
 
   // used for dimension
-  metricType?: MetricType;
+  metricType?: METRIC_TYPES_VALUES;
   multipleNumber?: number;
 
   // used for check start item
@@ -179,7 +179,7 @@ export const checkMultiple = (param: {
 
 export const checkDimension = (param: {
   value: string;
-  metricType?: MetricType;
+  metricType?: METRIC_TYPES_VALUES;
   multipleNumber?: number;
 }): boolean => {
   const { value, metricType, multipleNumber } = param;

@@ -462,19 +462,12 @@ const Search = (props: CollectionDataProps) => {
 
                     <SearchParams
                       sx={{ pt: 1, mb: 1 }}
-                      consistency_level={'Strong'}
-                      handleConsistencyChange={(level: string) => {}}
                       indexType={field.index.indexType}
-                      indexParams={field.index_params}
                       searchParamsForm={s.params}
                       handleFormChange={(updates: {
                         [key in string]: number | string | boolean;
                       }) => {
                         updateSearchParamCallback(updates as any, index);
-                      }}
-                      topK={searchParams.globalParams.topK}
-                      setParamsDisabled={() => {
-                        return false;
                       }}
                     />
                   </StyledAccordionDetails>

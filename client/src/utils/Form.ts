@@ -81,17 +81,7 @@ export const getMetricOptions = (
     case DataTypeStringEnum.BinaryVector:
       switch (indexType) {
         case 'BIN_FLAT':
-          return [
-            ...baseBinaryOptions,
-            {
-              value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-              label: 'SUBSTRUCTURE',
-            },
-            {
-              value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-              label: 'SUPERSTRUCTURE',
-            },
-          ];
+          return baseBinaryOptions;
         case 'BIN_IVF_FLAT':
           return baseBinaryOptions;
         default:

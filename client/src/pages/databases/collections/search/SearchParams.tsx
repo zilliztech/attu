@@ -1,36 +1,67 @@
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import Box from '@mui/material/Box';
-import { useFormValidation } from '@/hooks';
-import { formatForm } from '@/utils';
 import { INDEX_PARAMS_CONFIG } from '@/pages/databases/collections/schema/indexParamsConfig';
 import IndexParamField from '@/pages/databases/collections/schema/IndexParamField';
-import type { SearchParamsProps } from '../../../search/Types';
+import type { SearchParamsProps } from './Types';
+import type { IndexParamConfig } from '@/pages/databases/collections/schema/indexParamsConfig';
+
+const COMMON_PARAMS = ['radius', 'range_filter'] as const;
 
 const SearchParams: FC<SearchParamsProps> = ({
   indexType = '',
   searchParamsForm,
   handleFormChange,
-  topK,
-  setParamsDisabled,
   sx = {},
 }) => {
-  // Get search params based on index type
-  const searchParams = useMemo(() => {
+  // Get search params and their configs based on index type
+  const { paramList, paramConfigs } = useMemo(() => {
     // Common params that are always available
-    const commonParams = ['radius', 'range_filter'];
+    const commonParams: Record<string, IndexParamConfig> = {
+      radius: {
+        label: 'radius',
+        key: 'radius',
+        type: 'number',
+        required: false,
+      },
+      range_filter: {
+        label: 'range filter',
+        key: 'range_filter',
+        type: 'number',
+        required: false,
+      },
+    };
 
     // Get search params for the specific index type
-    const indexParams: string[] = [];
+    const indexParams: Record<string, IndexParamConfig> = {};
     Object.values(INDEX_PARAMS_CONFIG).forEach(dataTypeConfig => {
       const config = dataTypeConfig[indexType];
       if (config?.searchParams) {
-        Object.keys(config.searchParams).forEach(param => {
-          indexParams.push(param);
+        Object.entries(config.searchParams).forEach(([param, paramConfig]) => {
+          indexParams[param] = paramConfig;
         });
       }
     });
 
-    return [...indexParams, ...commonParams];
+    const allParams = { ...indexParams, ...commonParams };
+    const allParamKeys = Object.keys(allParams);
+
+    // Sort params to ensure common params are at the end
+    const sortedParamKeys = allParamKeys.sort((a, b) => {
+      const aIsCommon = COMMON_PARAMS.includes(
+        a as (typeof COMMON_PARAMS)[number]
+      );
+      const bIsCommon = COMMON_PARAMS.includes(
+        b as (typeof COMMON_PARAMS)[number]
+      );
+      if (aIsCommon && !bIsCommon) return 1;
+      if (!aIsCommon && bIsCommon) return -1;
+      return 0;
+    });
+
+    return {
+      paramList: sortedParamKeys,
+      paramConfigs: allParams,
+    };
   }, [indexType]);
 
   const handleInputChange = useCallback(
@@ -41,116 +72,9 @@ const SearchParams: FC<SearchParamsProps> = ({
       } else {
         form = { ...searchParamsForm, [key]: value };
       }
-      console.log('new form', form);
       handleFormChange(form);
     },
     [handleFormChange, searchParamsForm]
-  );
-
-  // Get search param config from INDEX_PARAMS_CONFIG
-  const getSearchParamConfig = useCallback(
-    (paramKey: string) => {
-      // For common params
-      if (paramKey === 'radius' || paramKey === 'range_filter') {
-        return {
-          label: paramKey === 'radius' ? 'radius' : 'range filter',
-          key: paramKey,
-          type: 'number' as const,
-          required: false,
-          description: `searchParams.${paramKey}.description`,
-          helperText: `searchParams.${paramKey}.helperText`,
-        };
-      }
-
-      // For index specific params
-      for (const dataTypeConfig of Object.values(INDEX_PARAMS_CONFIG)) {
-        const config = dataTypeConfig[indexType];
-        if (config?.searchParams?.[paramKey]) {
-          return config.searchParams[paramKey];
-        }
-      }
-
-      return null;
-    },
-    [indexType]
-  );
-
-  // Create validation rules for each param
-  const validationRules = useMemo(() => {
-    return searchParams.reduce<
-      Record<
-        string,
-        Array<{ rule: string; errorText: string; extraParam?: number }>
-      >
-    >((rules, param) => {
-      const config = getSearchParamConfig(param);
-      if (!config) return rules;
-
-      const paramRules = [];
-      if (config.required) {
-        paramRules.push({
-          rule: 'require',
-          errorText: 'This field is required',
-        });
-      }
-      if (config.type === 'number') {
-        if (config.min !== undefined) {
-          paramRules.push({
-            rule: 'min',
-            extraParam: config.min,
-            errorText: `Value must be greater than or equal to ${config.min}`,
-          });
-        }
-        if (config.max !== undefined) {
-          paramRules.push({
-            rule: 'max',
-            extraParam: config.max,
-            errorText: `Value must be less than or equal to ${config.max}`,
-          });
-        }
-      }
-      return { ...rules, [param]: paramRules };
-    }, {});
-  }, [searchParams, getSearchParamConfig]);
-
-  // Convert form to validation format
-  const formForValidation = useMemo(() => {
-    return searchParams.map(param => ({
-      key: param,
-      value: searchParamsForm[param] ?? '',
-      needCheck: true,
-    }));
-  }, [searchParams, searchParamsForm]);
-
-  console.log(formForValidation)
-
-  const { validation, checkIsValid, disabled } =
-    useFormValidation(formForValidation);
-
-  useEffect(() => {
-    setParamsDisabled(disabled);
-  }, [disabled, setParamsDisabled]);
-
-  // Handle validation on value change
-  const handleValueChange = useCallback(
-    (key: string, value: string | number | boolean) => {
-      handleInputChange(key, value);
-      const config = getSearchParamConfig(key);
-      if (!config) return;
-
-      // Convert value to number for number type fields
-      const valueToCheck =
-        config.type === 'number' ? Number(value) : String(value);
-
-      console.log('valueToCheck', valueToCheck, validationRules[key]);
-
-      checkIsValid({
-        key,
-        value: valueToCheck,
-        rules: validationRules[key] || [],
-      });
-    },
-    [handleInputChange, checkIsValid, validationRules, getSearchParamConfig]
   );
 
   return (
@@ -162,22 +86,19 @@ const SearchParams: FC<SearchParamsProps> = ({
         gap: 2,
       }}
     >
-      {searchParams.map(param => {
-        const config = getSearchParamConfig(param);
+      {paramList.map(param => {
+        const config = paramConfigs[param];
         if (!config) return null;
 
-        const error = validation[param];
         const value = searchParamsForm[param] ?? '';
-
-        console.log('error', error);
 
         return (
           <IndexParamField
             key={param}
             config={config}
             value={value}
-            onChange={handleValueChange}
-            error={error?.errText}
+            onChange={handleInputChange}
+            error={''}
           />
         );
       })}
