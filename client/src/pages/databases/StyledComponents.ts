@@ -37,15 +37,6 @@ export const Toolbar = styled(Box)(({ theme }) => ({
     gap: theme.spacing(1),
   },
 
-  '& .selector': {
-    width: 160,
-  },
-
-  '& .outputs': {
-    height: 56,
-    width: 140,
-  },
-
   '& .btn': {
     height: 56,
     width: 80,

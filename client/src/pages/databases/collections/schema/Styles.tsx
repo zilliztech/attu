@@ -76,6 +76,7 @@ export const InfoValue = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   flexWrap: 'nowrap',
+  overflow: 'hidden',
   [theme.breakpoints.down('md')]: {
     fontSize: 13,
     gap: theme.spacing(0.5),
@@ -102,6 +103,8 @@ export const ActionWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.5),
+  position: 'relative',
+  top: '-4px',
   marginLeft: 'auto',
   [theme.breakpoints.down('md')]: {
     gap: theme.spacing(0.25),

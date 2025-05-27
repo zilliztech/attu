@@ -21,12 +21,18 @@ import {
   CONSISTENCY_LEVEL_OPTIONS,
   ConsistencyLevelEnum,
 } from '@/consts';
-import CustomSelector from '@/components/customSelector/CustomSelector';
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Checkbox,
+  ListItemText,
+} from '@mui/material';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import CustomInput from '@/components/customInput/CustomInput';
-import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 import CollectionColHeader from '../CollectionColHeader';
 import DataView from '@/components/DataView/DataView';
 import DataListView from '@/components/DataListView/DataListView';
@@ -457,75 +463,116 @@ const CollectionData = (props: CollectionDataProps) => {
                 checkValid={() => true}
               />
 
-              <CustomSelector
-                options={CONSISTENCY_LEVEL_OPTIONS}
-                value={queryState.consistencyLevel}
-                label={collectionTrans('consistency')}
-                wrapperClass="selector"
-                disabled={!collection.loaded}
+              <FormControl
                 variant="filled"
-                onChange={(e: { target: { value: unknown } }) => {
-                  const consistency = e.target.value as string;
-                  setQueryState({
-                    ...queryState,
-                    consistencyLevel: consistency,
-                  });
-                }}
-              />
+                className="selector"
+                disabled={!collection.loaded}
+                sx={{ minWidth: 120 }}
+              >
+                <InputLabel>{collectionTrans('consistency')}</InputLabel>
+                <Select
+                  value={queryState.consistencyLevel}
+                  label={collectionTrans('consistency')}
+                  onChange={e => {
+                    const consistency = e.target.value as string;
+                    setQueryState({
+                      ...queryState,
+                      consistencyLevel: consistency,
+                    });
+                  }}
+                >
+                  {CONSISTENCY_LEVEL_OPTIONS.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </div>
 
             <div className="right">
-              <CustomMultiSelector
-                className="outputs"
-                options={queryState.fields.map(f => {
-                  return {
-                    label:
-                      f.name === DYNAMIC_FIELD
-                        ? searchTrans('dynamicFields')
-                        : f.name,
-                    value: f.name,
-                  };
-                })}
-                values={queryState.outputFields}
-                renderValue={selected => (
-                  <span>{`${(selected as string[]).length} ${commonTrans(
-                    (selected as string[]).length > 1
-                      ? 'grid.fields'
-                      : 'grid.field'
-                  )}`}</span>
-                )}
-                label={searchTrans('outputFields')}
-                wrapperClass="selector"
+              <FormControl
                 variant="filled"
-                onChange={(e: { target: { value: unknown } }) => {
-                  // add value to output fields if not exist, remove if exist
-                  const newOutputFields = [...queryState.outputFields];
-                  const values = e.target.value as string[];
-                  const newFields = values.filter(
-                    v => !newOutputFields.includes(v as string)
-                  );
-                  const removeFields = newOutputFields.filter(
-                    v => !values.includes(v as string)
-                  );
-                  newOutputFields.push(...newFields);
-                  removeFields.forEach(f => {
-                    const index = newOutputFields.indexOf(f);
-                    newOutputFields.splice(index, 1);
-                  });
-
-                  // sort output fields by schema order
-                  newOutputFields.sort(
-                    (a, b) =>
-                      queryState.fields.findIndex(f => f.name === a) -
-                      queryState.fields.findIndex(f => f.name === b)
-                  );
-
-                  setQueryState({
-                    ...queryState,
-                    outputFields: newOutputFields,
-                  });
+                className="outputs selector"
+                sx={{
+                  minWidth: 200,
+                  '& .MuiSelect-select': {
+                    fontSize: '14px',
+                  },
+                  '& .MuiInputLabel-root': {
+                    fontSize: '14px',
+                  },
+                  '& .MuiMenuItem-root': {
+                    padding: '2px 14px',
+                    minHeight: '32px',
+                    fontSize: '14px',
+                  },
+                  '& .MuiCheckbox-root': {
+                    padding: '4px',
+                  },
+                  '& .MuiListItemText-root': {
+                    margin: '0',
+                  },
                 }}
-              />
+              >
+                <InputLabel>{searchTrans('outputFields')}</InputLabel>
+                <Select
+                  multiple
+                  value={queryState.outputFields}
+                  label={searchTrans('outputFields')}
+                  onChange={e => {
+                    const values = e.target.value as string[];
+                    // sort output fields by schema order
+                    const newOutputFields = [...values].sort(
+                      (a, b) =>
+                        queryState.fields.findIndex(f => f.name === a) -
+                        queryState.fields.findIndex(f => f.name === b)
+                    );
+
+                    setQueryState({
+                      ...queryState,
+                      outputFields: newOutputFields,
+                    });
+                  }}
+                  renderValue={selected => (
+                    <span>{`${selected.length} ${commonTrans(
+                      selected.length > 1 ? 'grid.fields' : 'grid.field'
+                    )}`}</span>
+                  )}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300,
+                      },
+                    },
+                  }}
+                >
+                  {queryState.fields.map(field => (
+                    <MenuItem
+                      key={field.name}
+                      value={field.name}
+                      sx={{
+                        padding: '0 12px',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          queryState.outputFields.indexOf(field.name) > -1
+                        }
+                        size="small"
+                      />
+                      <ListItemText
+                        primary={
+                          field.name === DYNAMIC_FIELD
+                            ? searchTrans('dynamicFields')
+                            : field.name
+                        }
+                        primaryTypographyProps={{ fontSize: '14px' }}
+                      />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <CustomButton
                 className="btn"
                 onClick={handleFilterReset}

@@ -226,7 +226,7 @@ const Databases = () => {
       // if query state not found, and the schema is ready, create new query state
       if (!query && c.schema) {
         setQueryState(prevState => {
-          const fields = [...c.schema.fields, ...c.schema.dynamicFields].filter(
+          const fields = [...c.schema.fields].filter(
             f => !f.is_function_output
           );
           return [

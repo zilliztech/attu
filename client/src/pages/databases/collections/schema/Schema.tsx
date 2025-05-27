@@ -165,7 +165,11 @@ const Overview = () => {
       align: 'left',
       disablePadding: false,
       formatter(f) {
-        return <Typography variant="body1"><DataTypeChip size="small" label={formatFieldType(f)} /></Typography>;
+        return (
+          <Typography variant="body1" component="div">
+            <DataTypeChip size="small" label={formatFieldType(f)} />
+          </Typography>
+        );
       },
       label: collectionTrans('fieldType'),
     },
@@ -192,7 +196,9 @@ const Overview = () => {
       disablePadding: false,
       label: collectionTrans('defaultValue'),
       formatter(f) {
-        return <Typography variant="body1">{f.default_value || '--'}</Typography>;
+        return (
+          <Typography variant="body1">{f.default_value || '--'}</Typography>
+        );
       },
     },
     {
@@ -212,7 +218,7 @@ const Overview = () => {
       notSort: true,
       formatter(f) {
         return (
-          <Typography variant="body1">
+          <Typography variant="body1" component="div">
             <IndexTypeElement
               field={f}
               collectionName={collectionName}
@@ -232,7 +238,7 @@ const Overview = () => {
       notSort: true,
       formatter(f) {
         return (
-          <Typography variant="body1">
+          <Typography variant="body1" component="div">
             {f.index ? (
               <ParamWrapper>
                 {f.index.indexParameterPairs.length > 0 ? (
