@@ -107,15 +107,13 @@ export const getScalarIndexOption = (field: FieldObject): Option[] => {
   // Add options based on fieldType
   if (field.data_type === DataTypeStringEnum.VarChar) {
     options.push(
-      SCALAR_INDEX_OPTIONS.find(
-        opt => opt.value === INDEX_TYPES_ENUM.MARISA_TRIE
-      )!
+      SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.Trie)!
     );
   }
 
   if (isNumericType(field.data_type as DataTypeStringEnum)) {
     options.push(
-      SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.SORT)!
+      SCALAR_INDEX_OPTIONS.find(opt => opt.value === INDEX_TYPES_ENUM.STL_SORT)!
     );
   }
 

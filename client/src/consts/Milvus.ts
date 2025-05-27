@@ -58,8 +58,8 @@ export enum INDEX_TYPES_ENUM {
   BIN_IVF_FLAT = 'BIN_IVF_FLAT',
   // Scalar indexes
   INVERTED = 'INVERTED',
-  SORT = 'SORT',
-  MARISA_TRIE = 'MARISA_TRIE',
+  STL_SORT = 'STL_SORT',
+  Trie = 'Trie',
   BITMAP = 'BITMAP',
   // Sparse vector indexes
   SPARSE_INVERTED_INDEX = 'SPARSE_INVERTED_INDEX',
@@ -124,146 +124,6 @@ export const METRIC_TYPES = [
   },
 ];
 
-export type searchKeywordsType =
-  | 'nprobe' // IVF indexes
-  | 'ef' // HNSW indexes
-  | 'search_k' // ANNOY index
-  | 'search_length' // RNSG index
-  | 'level' // AUTOINDEX
-  | 'search_list' // DISKANN index
-  | 'drop_ratio_search' // Sparse vector indexes
-  | 'filter' // Common search parameter
-  | 'radius' // Range search
-  | 'range_filter'; // Range search filter
-
-export type indexConfigType = {
-  [x: string]: {
-    create: string[];
-    search: searchKeywordsType[];
-  };
-};
-
-// index configurations
-export const FLOAT_INDEX_CONFIG: indexConfigType = {
-  [INDEX_TYPES_ENUM.FLAT]: {
-    create: [],
-    search: ['filter'],
-  },
-  [INDEX_TYPES_ENUM.IVF_FLAT]: {
-    create: ['nlist'],
-    search: ['nprobe', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.IVF_SQ8]: {
-    create: ['nlist'],
-    search: ['nprobe', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.IVF_PQ]: {
-    create: ['nlist', 'm', 'nbits'],
-    search: ['nprobe', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.HNSW]: {
-    create: ['M', 'efConstruction'],
-    search: ['ef', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.HNSW_SQ]: {
-    create: ['M', 'efConstruction', 'sq_type'],
-    search: ['ef', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.HNSW_PQ]: {
-    create: ['M', 'efConstruction', 'm', 'nbits'],
-    search: ['ef', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.HNSW_PRQ]: {
-    create: ['M', 'efConstruction', 'm', 'nbits', 'nrq'],
-    search: ['ef', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.SCANN]: {
-    create: ['nlist'],
-    search: ['nprobe', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.DISKANN]: {
-    create: [],
-    search: ['search_list', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.GPU_CAGRA]: {
-    create: [
-      'intermediate_graph_degree',
-      'graph_degree',
-      'build_algo',
-      'cache_dataset_on_device',
-      'adapt_for_cpu',
-    ],
-    search: ['ef', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.GPU_IVF_FLAT]: {
-    create: ['nlist', 'cache_dataset_on_device'],
-    search: ['nprobe', 'filter'],
-  },
-  [INDEX_TYPES_ENUM.GPU_IVF_PQ]: {
-    create: ['nlist', 'm', 'nbits', 'cache_dataset_on_device'],
-    search: ['nprobe', 'filter'],
-  },
-};
-
-export const BINARY_INDEX_CONFIG: indexConfigType = {
-  [INDEX_TYPES_ENUM.BIN_FLAT]: {
-    create: [],
-    search: ['filter'],
-  },
-  [INDEX_TYPES_ENUM.BIN_IVF_FLAT]: {
-    create: ['nlist'],
-    search: ['nprobe', 'filter'],
-  },
-};
-
-export const SPARSE_INDEX_CONFIG: indexConfigType = {
-  [INDEX_TYPES_ENUM.SPARSE_INVERTED_INDEX]: {
-    create: ['inverted_index_algo', 'bm25_k1', 'bm25_b'],
-    search: ['drop_ratio_search', 'filter'],
-  },
-};
-
-export const SCALAR_INDEX_CONFIG: indexConfigType = {
-  [INDEX_TYPES_ENUM.INVERTED]: {
-    create: [],
-    search: ['filter'],
-  },
-  [INDEX_TYPES_ENUM.SORT]: {
-    create: [],
-    search: ['filter'],
-  },
-  [INDEX_TYPES_ENUM.MARISA_TRIE]: {
-    create: [],
-    search: ['filter'],
-  },
-  [INDEX_TYPES_ENUM.BITMAP]: {
-    create: [],
-    search: ['filter'],
-  },
-};
-
-export const INDEX_CONFIG: indexConfigType = {
-  ...FLOAT_INDEX_CONFIG,
-  ...BINARY_INDEX_CONFIG,
-  ...SPARSE_INDEX_CONFIG,
-  ...SCALAR_INDEX_CONFIG,
-};
-
-// Default search parameter values
-export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
-  [key in searchKeywordsType]?: number;
-} = {
-  nprobe: 16,
-  ef: 64,
-  search_k: 100,
-  search_length: 10,
-  level: 1,
-  search_list: 150,
-  drop_ratio_search: 0.2,
-};
-
-export const DEFAULT_NLIST_VALUE = 1024;
-
 export enum LOADING_STATE {
   LOADED = 'loaded',
   LOADING = 'loading',
@@ -276,10 +136,7 @@ export enum LOAD_STATE {
   LoadStateLoaded = 'LoadStateLoaded',
 }
 
-export const DEFAULT_VECTORS = 100000;
-export const DEFAULT_SEFMENT_FILE_SIZE = 1024;
 export const DEFAULT_MILVUS_PORT = 19530;
-export const DEFAULT_PROMETHEUS_PORT = 9090;
 
 export enum MILVUS_NODE_TYPE {
   ROOTCOORD = 'rootcoord',
@@ -487,7 +344,7 @@ export const INDEX_OPTIONS_MAP = {
 
 export const SCALAR_INDEX_OPTIONS = [
   { label: INDEX_TYPES_ENUM.INVERTED, value: INDEX_TYPES_ENUM.INVERTED },
-  { label: INDEX_TYPES_ENUM.SORT, value: INDEX_TYPES_ENUM.SORT },
-  { label: INDEX_TYPES_ENUM.MARISA_TRIE, value: INDEX_TYPES_ENUM.MARISA_TRIE },
+  { label: INDEX_TYPES_ENUM.STL_SORT, value: INDEX_TYPES_ENUM.STL_SORT },
+  { label: INDEX_TYPES_ENUM.Trie, value: INDEX_TYPES_ENUM.Trie },
   { label: INDEX_TYPES_ENUM.BITMAP, value: INDEX_TYPES_ENUM.BITMAP },
 ];

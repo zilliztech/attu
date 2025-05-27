@@ -83,7 +83,7 @@ const CreateIndex = (props: {
   // Form state for index creation
   const [indexSetting, setIndexSetting] = useState<{
     index_type: IndexType;
-    [x: string]: string;
+    [x: string]: string | number | boolean;
   }>({
     index_name: '',
     index_type: defaultIndexType,
@@ -116,7 +116,7 @@ const CreateIndex = (props: {
    * Combines index type, metric type, and other parameters
    */
   const extraParams = useMemo(() => {
-    const params: { [x: string]: string } = {};
+    const params: { [x: string]: string | number | boolean } = {};
     indexCreateParams.forEach(v => {
       params[v] = indexSetting[v];
     });
@@ -125,7 +125,7 @@ const CreateIndex = (props: {
 
     return {
       index_type,
-      metric_type,
+      metric_type: String(metric_type),
       params: JSON.stringify(params),
     };
   }, [indexCreateParams, indexSetting]);
@@ -259,7 +259,7 @@ const CreateIndex = (props: {
   /**
    * Update form field value
    */
-  const updateStepTwoForm = (type: string, value: string) => {
+  const updateForm = (type: string, value: string | number | boolean) => {
     setIndexSetting(v => ({ ...v, [type]: value }));
   };
 
@@ -275,7 +275,7 @@ const CreateIndex = (props: {
     // Create new form state with default values
     const newIndexSetting: {
       index_type: IndexType;
-      [key: string]: string;
+      [key: string]: string | number | boolean;
     } = {
       ...indexSetting,
       index_type: type as IndexType,
@@ -294,7 +294,7 @@ const CreateIndex = (props: {
     setIndexSetting(newIndexSetting);
 
     // Reset validation with new values
-    const paramsForm: { [key: string]: string } = {};
+    const paramsForm: { [key: string]: string | number | boolean } = {};
     [...config.required, ...config.optional].forEach(param => {
       paramsForm[param] = newIndexSetting[param];
     });
@@ -306,7 +306,7 @@ const CreateIndex = (props: {
    * Handle index creation
    */
   const handleCreateIndex = async () => {
-    await handleCreate(extraParams, indexSetting.index_name);
+    await handleCreate(extraParams, indexSetting.index_name as string);
   };
 
   return (
@@ -321,7 +321,7 @@ const CreateIndex = (props: {
       confirmDisabled={!isFormValid}
     >
       <CreateForm
-        updateForm={updateStepTwoForm}
+        updateForm={updateForm}
         metricOptions={metricOptions}
         indexOptions={indexOptions}
         formValue={indexSetting}

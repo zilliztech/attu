@@ -4,8 +4,8 @@ import type {
   InsertDataParam,
   DeleteEntitiesReq,
 } from '@/pages/databases/collections/Types';
-import type { VectorSearchParam } from '@/types/SearchTypes';
 import { MutationResult, type VectorSearchResults } from '@server/types';
+import { DataTypeEnum } from '@/consts';
 
 export class DataService extends BaseModel {
   static importSample(collectionName: string, param: LoadSampleParam) {
@@ -51,7 +51,23 @@ export class DataService extends BaseModel {
     });
   }
 
-  static vectorSearchData(collectionName: string, params: VectorSearchParam) {
+  static vectorSearchData(
+    collectionName: string,
+    params: {
+      expr?: string;
+      search_params: {
+        anns_field: string; // your vector field name
+        topk: string | number;
+        metric_type: string;
+        params: string;
+      };
+      vectors: any;
+      output_fields: string[];
+      vector_type: DataTypeEnum;
+      travel_timestamp?: string;
+      consistency_level?: string;
+    }
+  ) {
     return super.query<VectorSearchResults>({
       path: `/collections/${collectionName}/search`,
       data: params,

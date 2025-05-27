@@ -55,13 +55,6 @@ const CreateForm = (
     ];
   }, [fieldType, formValue.index_type]);
 
-  // Helper function to get error message
-  const getErrorMessage = (key: string) => {
-    const error = validation?.[key];
-    if (!error) return '';
-    return typeof error === 'string' ? error : error.errText || '';
-  };
-
   return (
     <Box
       className={wrapperClass || ''}
@@ -90,8 +83,14 @@ const CreateForm = (
             <ListSubheader
               key={`${group.label}-header-${groupIndex}`}
               sx={{
-                backgroundColor: theme.palette.grey[100],
-                color: theme.palette.text.primary,
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? theme.palette.grey[900]
+                    : theme.palette.grey[100],
+                color:
+                  theme.palette.mode === 'dark'
+                    ? theme.palette.common.white
+                    : theme.palette.text.primary,
                 fontWeight: 600,
                 fontSize: '13px',
                 lineHeight: '20px',
@@ -99,7 +98,10 @@ const CreateForm = (
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
                 '&:hover': {
-                  backgroundColor: theme.palette.grey[100],
+                  backgroundColor:
+                    theme.palette.mode === 'dark'
+                      ? theme.palette.grey[900]
+                      : theme.palette.grey[100],
                 },
               }}
             >
@@ -133,7 +135,11 @@ const CreateForm = (
         value={formValue.index_name}
         onChange={e => updateForm('index_name', e.target.value)}
         error={!!validation?.index_name}
-        helperText={getErrorMessage('index_name')}
+        helperText={''}
+        inputProps={{
+          pattern: '^[a-zA-Z_].*',
+          title: 'Index name must start with a letter or underscore',
+        }}
         InputLabelProps={{
           shrink: true,
         }}
@@ -169,7 +175,7 @@ const CreateForm = (
               config={config}
               value={formValue[config.key] || config.defaultValue || ''}
               onChange={updateForm}
-              error={getErrorMessage(config.key)}
+              error={''}
             />
           ))}
         </Box>

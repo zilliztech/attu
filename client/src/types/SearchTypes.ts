@@ -1,5 +1,5 @@
 import { Option } from '@/components/customSelector/Types';
-import { searchKeywordsType, DataTypeEnum } from '@/consts';
+import { DataTypeEnum } from '@/consts';
 import { FieldObject } from '@server/types';
 
 export interface SearchParamsProps {
@@ -31,20 +31,6 @@ export interface SearchResultView {
 export interface FieldOption extends Option {
   field: FieldObject;
 }
-
-export interface SearchParamInputConfig {
-  label: string;
-  key: searchKeywordsType;
-  min: number;
-  max: number;
-  isInt?: boolean;
-  // no value: empty string
-  value: number | string;
-  handleChange: (value: number) => void;
-  className?: string;
-}
-
-export type VectorSearchParam  = any
 
 export interface SearchResult {
   // dynamic field names
