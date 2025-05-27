@@ -26,6 +26,8 @@ const VectorTypeSelector: FC<VectorTypeSelectorProps> = ({
         display: 'flex',
         flexDirection: 'column',
         width: 140,
+        position: 'relative',
+        top: '-4px',
         ...sx,
       }}
     >

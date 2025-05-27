@@ -444,7 +444,7 @@ const CreateCollectionDialog: FC<CollectionCreateProps> = ({ onCreate }) => {
       confirmLabel={btnTrans('create')}
       handleConfirm={handleCreateCollection}
       confirmDisabled={disabled || !fieldsValidation}
-      sx={{ width: 900 }}
+      sx={{ width: 980 }}
     >
       <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
         <Box sx={{ display: 'flex', gap: 2, width: '100%' }}>

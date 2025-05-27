@@ -34,6 +34,8 @@ const ElementTypeSelector: FC<ElementTypeSelectorProps> = ({
         display: 'flex',
         flexDirection: 'column',
         width: 120,
+        position: 'relative',
+        top: '-4px',
         ...sx,
       }}
     >
