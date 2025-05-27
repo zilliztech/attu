@@ -1,14 +1,21 @@
-import { Theme, Typography } from '@mui/material';
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  ListSubheader,
+  Box,
+  TextField,
+  FormHelperText,
+} from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ITextfieldConfig } from '@/components/customInput/Types';
-import CustomInput from '@/components/customInput/CustomInput';
-import CustomSelector from '@/components/customSelector/CustomSelector';
-import CustomGroupedSelect from '@/components/customSelector/CustomGroupedSelect';
-import type { FormHelperType } from '../../../../types/Common';
-
 import { useTheme } from '@mui/material';
 import type { Option, GroupOption } from '@/components/customSelector/Types';
+import type { FormHelperType } from '../../../../types/Common';
+import { INDEX_PARAMS_CONFIG } from './indexParamsConfig';
+import IndexParamField from './IndexParamField';
+import { DataTypeEnum } from '@/consts';
 
 const CreateForm = (
   props: FormHelperType & {
@@ -16,248 +23,165 @@ const CreateForm = (
     indexOptions: GroupOption[];
     indexParams: string[];
     indexTypeChange?: (type: string) => void;
+    fieldType: DataTypeEnum;
   }
 ) => {
   const theme = useTheme();
   const {
     updateForm,
     formValue,
-    checkIsValid,
     validation,
-    indexParams,
     indexTypeChange,
     indexOptions,
     metricOptions,
     wrapperClass,
+    fieldType,
   } = props;
 
-  const { t: commonTrans } = useTranslation();
   const { t: indexTrans } = useTranslation('index');
-  const { t: warningTrans } = useTranslation('warning');
 
-  const paramsConfig: ITextfieldConfig[] = useMemo(() => {
-    const generateConfig = (props: {
-      label: string;
-      key: string;
-      min?: number;
-      max?: number;
-      type?: 'number' | 'text' | 'password' | 'bool';
-    }) => {
-      const { label, key, min, max, type = 'number' } = props;
-      const config: ITextfieldConfig = {
-        label,
-        key,
-        onChange: value => {
-          updateForm(key, value);
-        },
-        variant: 'filled',
-        fullWidth: true,
-        type: type,
-        value: formValue[key],
-        validations: [
-          {
-            rule: 'require',
-            errorText: warningTrans('required', { name: label }),
-          },
-        ],
-      };
-
-      if (type === 'number') {
-        config.validations!.push({
-          rule: 'number',
-          errorText: warningTrans('number', { name: label }),
-        });
-      }
-      if (
-        type === 'number' &&
-        typeof min === 'number' &&
-        typeof max === 'number'
-      ) {
-        config.validations!.push({
-          rule: 'range',
-          errorText: warningTrans('range', { min, max }),
-          extraParam: {
-            min,
-            max,
-            type: 'number',
-          },
-        });
-      }
-
-      if (type === 'bool') {
-        config.validations!.push({
-          rule: 'bool',
-          errorText: warningTrans('bool', { name: label }),
-        });
-      }
-      return config;
-    };
-
-    const paramsMap = {
-      nlist: generateConfig({
-        label: 'nlist',
-        key: 'nlist',
-        min: 1,
-        max: 65536,
-      }),
-      nbits: generateConfig({
-        label: 'nbits',
-        key: 'nbits',
-        min: 1,
-        max: 16,
-      }),
-      M: generateConfig({ label: 'M', key: 'M', min: 2, max: 2048 }),
-      efConstruction: generateConfig({
-        label: 'efConstruction',
-        key: 'efConstruction',
-        min: 1,
-        max: 2147483647,
-      }),
-      n_trees: generateConfig({
-        label: 'n_trees',
-        key: 'n_trees',
-        min: 1,
-        max: 1024,
-      }),
-      out_degree: generateConfig({
-        label: 'out_degree',
-        key: 'out_degree',
-        min: 5,
-        max: 300,
-      }),
-      candidate_pool_size: generateConfig({
-        label: 'candidate_pool_size',
-        key: 'candidate_pool_size',
-        min: 50,
-        max: 1000,
-      }),
-      search_length: generateConfig({
-        label: 'search_length',
-        key: 'search_length',
-        min: 10,
-        max: 300,
-      }),
-      knng: generateConfig({
-        label: 'knng',
-        key: 'knng',
-        min: 5,
-        max: 300,
-      }),
-      drop_ratio_build: generateConfig({
-        label: 'drop_ratio_build',
-        key: 'drop_ratio_build',
-        min: 0,
-        max: 1,
-      }),
-      with_raw_data: generateConfig({
-        label: 'with_raw_data',
-        key: 'with_raw_data',
-        type: 'bool',
-      }),
-      intermediate_graph_degree: generateConfig({
-        label: 'intermediate_graph_degree',
-        key: 'intermediate_graph_degree',
-      }),
-      graph_degree: generateConfig({
-        label: 'graph_degree',
-        key: 'graph_degree',
-      }),
-      build_algo: generateConfig({
-        label: 'build_algo',
-        key: 'build_algo',
-        type: 'text',
-      }),
-      cache_dataset_on_device: generateConfig({
-        label: 'cache_dataset_on_device',
-        key: 'cache_dataset_on_device',
-        type: 'bool',
-      }),
-    };
-
-    const result: ITextfieldConfig[] = [];
-
-    indexParams.forEach(param => {
-      if (paramsMap.hasOwnProperty(param)) {
-        result.push(paramsMap[param as keyof typeof paramsMap]);
-      }
-    });
-
-    return result;
-  }, [updateForm, warningTrans, indexParams, formValue]);
-
-  const indexNameConfig: ITextfieldConfig = {
-    label: indexTrans('indexName'),
-    key: 'index_name',
-    onChange: (value: string) => updateForm('index_name', value),
-    variant: 'filled',
-    fullWidth: true,
-    validations: [],
-    defaultValue: formValue.index_name,
+  const getMetricDescription = (type: string) => {
+    return indexTrans(`metricType.${type}.description`);
   };
 
+  const paramConfigs = useMemo(() => {
+    const config = INDEX_PARAMS_CONFIG[fieldType]?.[formValue.index_type];
+    if (!config) return [];
+
+    const { required, optional, params } = config;
+    return [
+      ...required.map(key => ({ ...params[key], required: true })),
+      ...optional.filter(key => key && params[key]).map(key => params[key]),
+    ];
+  }, [fieldType, formValue.index_type]);
+
   return (
-    <div className={`${wrapperClass || ''}`} style={{ maxWidth: 480 }}>
-      <CustomGroupedSelect
-        label={indexTrans('type')}
-        options={indexOptions}
-        value={formValue.index_type}
-        onChange={(e: { target: { value: unknown } }) => {
-          const type = e.target.value;
-          updateForm('index_type', type as string);
-          // reset metric type value
-          if (metricOptions[0]) {
-            updateForm('metric_type', metricOptions[0].value as string);
-          }
-          indexTypeChange && indexTypeChange(type as string);
-        }}
-        style={{ width: '100%', marginBottom: theme.spacing(2) }}
-      />
-      <CustomInput
-        type="text"
-        textConfig={indexNameConfig}
-        checkValid={checkIsValid}
-        validInfo={validation}
-      />
-      {metricOptions.length ? (
-        <Typography
-          style={{
-            margin: theme.spacing(2, 0),
-            color: theme.palette.text.secondary,
-            lineHeight: '20px',
-            fontSize: 14,
-          }}
-        >
-          {commonTrans('param')}
-        </Typography>
-      ) : null}
-
-      {metricOptions.length ? (
-        <CustomSelector
-          label={indexTrans('metric')}
-          value={formValue.metric_type}
-          options={metricOptions}
-          onChange={(e: { target: { value: unknown } }) => {
+    <Box
+      className={wrapperClass || ''}
+      sx={{
+        maxWidth: 480,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+      }}
+    >
+      <FormControl variant="filled" fullWidth>
+        <InputLabel>{indexTrans('type')}</InputLabel>
+        <Select
+          value={formValue.index_type}
+          onChange={e => {
             const type = e.target.value;
-            updateForm('metric_type', type as string);
+            updateForm('index_type', type as string);
+            if (metricOptions[0]) {
+              updateForm('metric_type', metricOptions[0].value as string);
+            }
+            indexTypeChange && indexTypeChange(type as string);
           }}
-          variant="filled"
-          wrapperClass=""
-          style={{ width: '100%', marginBottom: theme.spacing(2) }}
-        />
-      ) : null}
+          label={indexTrans('type')}
+        >
+          {indexOptions.map((group, groupIndex) => [
+            <ListSubheader
+              key={`${group.label}-header-${groupIndex}`}
+              sx={{
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? theme.palette.grey[900]
+                    : theme.palette.grey[100],
+                color:
+                  theme.palette.mode === 'dark'
+                    ? theme.palette.common.white
+                    : theme.palette.text.primary,
+                fontWeight: 600,
+                fontSize: '13px',
+                lineHeight: '20px',
+                padding: '6px 16px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                '&:hover': {
+                  backgroundColor:
+                    theme.palette.mode === 'dark'
+                      ? theme.palette.grey[900]
+                      : theme.palette.grey[100],
+                },
+              }}
+            >
+              {group.label}
+            </ListSubheader>,
+            ...(group.children || []).map((option: Option) => (
+              <MenuItem
+                key={`${group.label}-${option.value}-${groupIndex}`}
+                value={option.value}
+                sx={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  color: theme.palette.text.primary,
+                  '&:hover': {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                }}
+              >
+                {option.label}
+              </MenuItem>
+            )),
+          ])}
+        </Select>
+      </FormControl>
 
-      {paramsConfig.length
-        ? paramsConfig.map(v => (
-            <CustomInput
-              type="text"
-              textConfig={v}
-              checkValid={checkIsValid}
-              validInfo={validation}
-              key={v.label}
+      <TextField
+        fullWidth
+        variant="filled"
+        label={indexTrans('indexName')}
+        value={formValue.index_name}
+        onChange={e => updateForm('index_name', e.target.value)}
+        error={!!validation?.index_name}
+        helperText={''}
+        inputProps={{
+          pattern: '^[a-zA-Z_].*',
+          title: 'Index name must start with a letter or underscore',
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+
+      {metricOptions.length > 0 && (
+        <FormControl variant="filled" fullWidth>
+          <InputLabel>{indexTrans('metric')}</InputLabel>
+          <Select
+            value={formValue.metric_type}
+            onChange={e => {
+              updateForm('metric_type', e.target.value as string);
+            }}
+            label={indexTrans('metric')}
+          >
+            {metricOptions.map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>
+            {getMetricDescription(formValue.metric_type)}
+          </FormHelperText>
+        </FormControl>
+      )}
+
+      {paramConfigs.length > 0 && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {paramConfigs.map(config => (
+            <IndexParamField
+              key={config.key}
+              config={config}
+              value={formValue[config.key] || config.defaultValue || ''}
+              onChange={updateForm}
+              error={''}
             />
-          ))
-        : null}
-    </div>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
 };
+
 export default CreateForm;

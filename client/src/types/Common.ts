@@ -7,7 +7,7 @@ export interface LabelValuePair {
 
 export type FormHelperType = {
   formValue: { [x: string]: any };
-  updateForm: (type: string, value: string) => void;
+  updateForm: (type: string, value: string | number | boolean) => void;
   validation: { [key: string]: IValidationItem };
   checkIsValid: Function;
   wrapperClass?: string;

@@ -23,7 +23,7 @@ import {
   buildSearchParams,
   getColumnWidth,
 } from '@/utils';
-import SearchParams from '../../../search/SearchParams';
+import SearchParams from './SearchParams';
 import DataExplorer, { formatMilvusData } from './DataExplorer';
 import {
   SearchParams as SearchParamsType,
@@ -447,7 +447,10 @@ const Search = (props: CollectionDataProps) => {
                         </Typography>
                         <Typography className="vector-type">
                           {formatFieldType(field)}
-                          <i>{field.index && field.index.metricType}</i>
+                          <i>
+                            {field.index &&
+                              `${field.index.indexType}(${field.index.metricType})`}
+                          </i>
                         </Typography>
                       </div>
                     </CheckboxRow>
@@ -461,20 +464,13 @@ const Search = (props: CollectionDataProps) => {
                     />
 
                     <SearchParams
-                      sx={{ pt: 1 }}
-                      consistency_level={'Strong'}
-                      handleConsistencyChange={(level: string) => {}}
+                      sx={{ pt: 1, mb: 1 }}
                       indexType={field.index.indexType}
-                      indexParams={field.index_params}
                       searchParamsForm={s.params}
                       handleFormChange={(updates: {
-                        [key in string]: number | string;
+                        [key in string]: number | string | boolean;
                       }) => {
                         updateSearchParamCallback(updates as any, index);
-                      }}
-                      topK={searchParams.globalParams.topK}
-                      setParamsDisabled={() => {
-                        return false;
                       }}
                     />
                   </StyledAccordionDetails>

@@ -38,36 +38,46 @@ export const VectorTypes = [
 ];
 
 export enum INDEX_TYPES_ENUM {
-  AUTOINDEX = 'AUTOINDEX',
-  IVF_FLAT = 'IVF_FLAT',
-  IVF_PQ = 'IVF_PQ',
-  IVF_SQ8 = 'IVF_SQ8',
-  IVF_SQ8_HYBRID = 'IVF_SQ8_HYBRID',
+  // Vector indexes
   FLAT = 'FLAT',
+  IVF_FLAT = 'IVF_FLAT',
+  IVF_SQ8 = 'IVF_SQ8',
+  IVF_PQ = 'IVF_PQ',
   HNSW = 'HNSW',
-  ANNOY = 'ANNOY',
-  RNSG = 'RNSG',
-  BIN_IVF_FLAT = 'BIN_IVF_FLAT',
+  HNSW_SQ = 'HNSW_SQ',
+  HNSW_PQ = 'HNSW_PQ',
+  HNSW_PRQ = 'HNSW_PRQ',
+  SCANN = 'SCANN',
+  DISKANN = 'DISKANN',
+  // GPU indexes
+  GPU_CAGRA = 'GPU_CAGRA',
+  GPU_IVF_FLAT = 'GPU_IVF_FLAT',
+  GPU_IVF_PQ = 'GPU_IVF_PQ',
+  // Binary vector indexes
   BIN_FLAT = 'BIN_FLAT',
-  SORT = 'STL_SORT',
-  MARISA_TRIE = 'Trie',
-  // sparse
-  SPARSE_INVERTED_INDEX = 'SPARSE_INVERTED_INDEX',
-  SPARSE_WAND = 'SPARSE_WAND',
-  // inverted
+  BIN_IVF_FLAT = 'BIN_IVF_FLAT',
+  // Scalar indexes
   INVERTED = 'INVERTED',
+  STL_SORT = 'STL_SORT',
+  Trie = 'Trie',
   BITMAP = 'BITMAP',
+  // Sparse vector indexes
+  SPARSE_INVERTED_INDEX = 'SPARSE_INVERTED_INDEX',
+  // Auto index
+  AUTOINDEX = 'AUTOINDEX',
 }
 
 export enum METRIC_TYPES_VALUES {
+  // Vector metrics
   L2 = 'L2',
   IP = 'IP',
   COSINE = 'COSINE',
+  // Binary vector metrics
   HAMMING = 'HAMMING',
   JACCARD = 'JACCARD',
   TANIMOTO = 'TANIMOTO',
-  SUBSTRUCTURE = 'SUBSTRUCTURE',
-  SUPERSTRUCTURE = 'SUPERSTRUCTURE',
+  // Sparse vector metrics
+  IP_SPARSE = 'IP_SPARSE',
   BM25 = 'BM25',
 }
 
@@ -75,236 +85,44 @@ export const METRIC_TYPES = [
   {
     value: METRIC_TYPES_VALUES.L2,
     label: 'L2',
+    description: 'Euclidean distance',
   },
   {
     value: METRIC_TYPES_VALUES.IP,
     label: 'IP',
+    description: 'Inner product',
   },
   {
     value: METRIC_TYPES_VALUES.COSINE,
     label: 'COSINE',
-  },
-  {
-    value: METRIC_TYPES_VALUES.SUBSTRUCTURE,
-    label: 'SUBSTRUCTURE',
-  },
-  {
-    value: METRIC_TYPES_VALUES.SUPERSTRUCTURE,
-    label: 'SUPERSTRUCTURE',
+    description: 'Cosine similarity',
   },
   {
     value: METRIC_TYPES_VALUES.HAMMING,
     label: 'HAMMING',
+    description: 'Hamming distance',
   },
   {
     value: METRIC_TYPES_VALUES.JACCARD,
     label: 'JACCARD',
+    description: 'Jaccard distance',
   },
   {
     value: METRIC_TYPES_VALUES.TANIMOTO,
     label: 'TANIMOTO',
+    description: 'Tanimoto distance',
+  },
+  {
+    value: METRIC_TYPES_VALUES.IP_SPARSE,
+    label: 'IP_SPARSE',
+    description: 'Inner product for sparse vectors',
   },
   {
     value: METRIC_TYPES_VALUES.BM25,
     label: 'BM25',
+    description: 'BM25 scoring for sparse vectors',
   },
 ];
-
-export type MetricType =
-  | 'L2'
-  | 'IP'
-  | 'COSINE'
-  | 'HAMMING'
-  | 'SUBSTRUCTURE'
-  | 'SUPERSTRUCTURE'
-  | 'JACCARD'
-  | 'TANIMOTO';
-
-export type searchKeywordsType =
-  | 'nprobe'
-  | 'ef'
-  | 'search_k'
-  | 'search_length'
-  | 'round_decimal'
-  | 'level'
-  | 'search_list'
-  | 'radius'
-  | 'range_filter'
-  | 'drop_ratio_search'
-  | 'filter'
-  | 'itopk_size'
-  | 'search_width'
-  | 'min_iterations'
-  | 'max_iterations'
-  | 'team_size';
-
-export type indexConfigType = {
-  [x: string]: {
-    create: string[];
-    search: searchKeywordsType[];
-  };
-};
-
-// index
-const AUTOINDEX_CONFIG: indexConfigType = {
-  AUTOINDEX: {
-    create: [],
-    search: ['level'],
-  },
-};
-export const FLOAT_INDEX_CONFIG: indexConfigType = {
-  HNSW: {
-    create: ['M', 'efConstruction'],
-    search: ['ef'],
-  },
-  IVF_FLAT: {
-    create: ['nlist'],
-    search: ['nprobe'],
-  },
-  IVF_PQ: {
-    create: ['nlist', 'm', 'nbits'],
-    search: ['nprobe'],
-  },
-  IVF_SQ8: {
-    create: ['nlist'],
-    search: ['nprobe'],
-  },
-  FLAT: {
-    create: [],
-    search: ['nprobe'],
-  },
-  SCANN: {
-    create: ['nlist', 'with_raw_data'],
-    search: ['nprobe'],
-  },
-};
-
-export const DISK_INDEX_CONFIG: indexConfigType = {
-  DISKANN: {
-    create: [],
-    search: ['search_list'],
-  },
-};
-
-export const GPU_INDEX_CONFIG: indexConfigType = {
-  GPU_CAGRA: {
-    create: [
-      'intermediate_graph_degree',
-      'graph_degree',
-      'build_algo',
-      'cache_dataset_on_device',
-    ],
-    search: [
-      'itopk_size',
-      'search_width',
-      'min_iterations',
-      'max_iterations',
-      'team_size',
-    ],
-  },
-  GPU_IVF_FLAT: {
-    create: ['nlist'],
-    search: ['nprobe'],
-  },
-  GPU_IVF_PQ: {
-    create: ['nlist', 'm', 'nbits'],
-    search: ['nprobe'],
-  },
-  GPU_BRUTE_FORCE: {
-    create: [],
-    search: [],
-  },
-};
-
-export const BINARY_INDEX_CONFIG: indexConfigType = {
-  BIN_FLAT: {
-    create: [],
-    search: [],
-  },
-  BIN_IVF_FLAT: {
-    create: ['nlist'],
-    search: ['nprobe'],
-  },
-};
-
-export const SPARSE_INDEX_CONFIG: indexConfigType = {
-  SPARSE_INVERTED_INDEX: {
-    create: ['drop_ratio_build'],
-    search: ['drop_ratio_search'],
-  },
-  SPARSE_WAND: {
-    create: ['drop_ratio_build'],
-    search: ['drop_ratio_search'],
-  },
-};
-
-export const INDEX_CONFIG: indexConfigType = {
-  ...AUTOINDEX_CONFIG,
-  ...FLOAT_INDEX_CONFIG,
-  ...BINARY_INDEX_CONFIG,
-  ...SPARSE_INDEX_CONFIG,
-  ...DISK_INDEX_CONFIG,
-  ...GPU_INDEX_CONFIG,
-};
-
-export const COLLECTION_NAME_REGX = /^[0-9,a-z,A-Z$_]+$/;
-
-export const m_OPTIONS = [
-  { label: '64', value: 64 },
-  { label: '32', value: 32 },
-  { label: '16', value: 16 },
-  { label: '8', value: 8 },
-  { label: '4', value: 4 },
-];
-
-export const INDEX_OPTIONS_MAP = {
-  ['AUTOINDEX']: [{ label: 'AUTOINDEX', value: INDEX_TYPES_ENUM.AUTOINDEX }],
-  [DataTypeEnum.FloatVector]: Object.keys(FLOAT_INDEX_CONFIG).map(v => ({
-    label: v,
-    value: v,
-  })),
-  [DataTypeEnum.BinaryVector]: Object.keys(BINARY_INDEX_CONFIG).map(v => ({
-    label: v,
-    value: v,
-  })),
-  [DataTypeEnum.SparseFloatVector]: Object.keys(SPARSE_INDEX_CONFIG).map(v => ({
-    label: v,
-    value: v,
-  })),
-  ['DISK']: Object.keys(DISK_INDEX_CONFIG).map(v => ({
-    label: v,
-    value: v,
-  })),
-  ['GPU']: Object.keys(GPU_INDEX_CONFIG).map(v => ({
-    label: v,
-    value: v,
-  })),
-};
-
-export const SCALAR_INDEX_OPTIONS = [
-  { label: INDEX_TYPES_ENUM.INVERTED, value: INDEX_TYPES_ENUM.INVERTED },
-  { label: INDEX_TYPES_ENUM.SORT, value: INDEX_TYPES_ENUM.SORT },
-  { label: INDEX_TYPES_ENUM.MARISA_TRIE, value: INDEX_TYPES_ENUM.MARISA_TRIE },
-  { label: INDEX_TYPES_ENUM.BITMAP, value: INDEX_TYPES_ENUM.BITMAP },
-];
-
-// search params default value map
-export const DEFAULT_SEARCH_PARAM_VALUE_MAP: {
-  [key in searchKeywordsType]?: number;
-} = {
-  // range: [top_k, 32768]
-  ef: 250,
-  // range: [1, nlist]
-  nprobe: 1,
-  // range: {-1} ∪ [top_k, n × n_trees]
-  search_k: 250,
-  // range: [10, 300]
-  search_length: 10,
-  level: 1,
-  search_list: 150,
-};
-
-export const DEFAULT_NLIST_VALUE = 1024;
 
 export enum LOADING_STATE {
   LOADED = 'loaded',
@@ -318,10 +136,7 @@ export enum LOAD_STATE {
   LoadStateLoaded = 'LoadStateLoaded',
 }
 
-export const DEFAULT_VECTORS = 100000;
-export const DEFAULT_SEFMENT_FILE_SIZE = 1024;
 export const DEFAULT_MILVUS_PORT = 19530;
-export const DEFAULT_PROMETHEUS_PORT = 9090;
 
 export enum MILVUS_NODE_TYPE {
   ROOTCOORD = 'rootcoord',
@@ -491,3 +306,45 @@ export enum IndexState {
   Default = '',
   Delete = 'Delete',
 }
+
+export const INDEX_OPTIONS_MAP = {
+  ['AUTOINDEX']: [{ label: 'AUTOINDEX', value: INDEX_TYPES_ENUM.AUTOINDEX }],
+  [DataTypeEnum.FloatVector]: [
+    { label: INDEX_TYPES_ENUM.FLAT, value: INDEX_TYPES_ENUM.FLAT },
+    { label: INDEX_TYPES_ENUM.IVF_FLAT, value: INDEX_TYPES_ENUM.IVF_FLAT },
+    { label: INDEX_TYPES_ENUM.IVF_SQ8, value: INDEX_TYPES_ENUM.IVF_SQ8 },
+    { label: INDEX_TYPES_ENUM.IVF_PQ, value: INDEX_TYPES_ENUM.IVF_PQ },
+    { label: INDEX_TYPES_ENUM.HNSW, value: INDEX_TYPES_ENUM.HNSW },
+    { label: INDEX_TYPES_ENUM.HNSW_SQ, value: INDEX_TYPES_ENUM.HNSW_SQ },
+    { label: INDEX_TYPES_ENUM.HNSW_PQ, value: INDEX_TYPES_ENUM.HNSW_PQ },
+    { label: INDEX_TYPES_ENUM.HNSW_PRQ, value: INDEX_TYPES_ENUM.HNSW_PRQ },
+    { label: INDEX_TYPES_ENUM.SCANN, value: INDEX_TYPES_ENUM.SCANN },
+    { label: INDEX_TYPES_ENUM.DISKANN, value: INDEX_TYPES_ENUM.DISKANN },
+    { label: INDEX_TYPES_ENUM.GPU_CAGRA, value: INDEX_TYPES_ENUM.GPU_CAGRA },
+    {
+      label: INDEX_TYPES_ENUM.GPU_IVF_FLAT,
+      value: INDEX_TYPES_ENUM.GPU_IVF_FLAT,
+    },
+    { label: INDEX_TYPES_ENUM.GPU_IVF_PQ, value: INDEX_TYPES_ENUM.GPU_IVF_PQ },
+  ],
+  [DataTypeEnum.BinaryVector]: [
+    { label: INDEX_TYPES_ENUM.BIN_FLAT, value: INDEX_TYPES_ENUM.BIN_FLAT },
+    {
+      label: INDEX_TYPES_ENUM.BIN_IVF_FLAT,
+      value: INDEX_TYPES_ENUM.BIN_IVF_FLAT,
+    },
+  ],
+  [DataTypeEnum.SparseFloatVector]: [
+    {
+      label: INDEX_TYPES_ENUM.SPARSE_INVERTED_INDEX,
+      value: INDEX_TYPES_ENUM.SPARSE_INVERTED_INDEX,
+    },
+  ],
+};
+
+export const SCALAR_INDEX_OPTIONS = [
+  { label: INDEX_TYPES_ENUM.INVERTED, value: INDEX_TYPES_ENUM.INVERTED },
+  { label: INDEX_TYPES_ENUM.STL_SORT, value: INDEX_TYPES_ENUM.STL_SORT },
+  { label: INDEX_TYPES_ENUM.Trie, value: INDEX_TYPES_ENUM.Trie },
+  { label: INDEX_TYPES_ENUM.BITMAP, value: INDEX_TYPES_ENUM.BITMAP },
+];
