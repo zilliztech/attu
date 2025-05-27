@@ -114,7 +114,7 @@ const indexTrans = {
   },
   searchParams: {
     nprobe: {
-      description: 'The number of probes to use for search.',
+      description: 'The number of units to query.',
       helperText: 'Must be between 1 and 65536.',
     },
     efConstruction: {
@@ -163,18 +163,22 @@ const indexTrans = {
       helperText: 'Must be between 0 and 2147483647.',
     },
     radius: {
-      description:
-        'The radius of the search. A larger value may improve recall but will increase search time.',
-      helperText: 'Must be between 0 and 2147483647.',
+      description: 'The radius of the search.',
+      helperText: '',
     },
     range_filter: {
-      description:
-        'The range of the search. A larger value may improve recall but will increase search time.',
+      description: 'The range of the search.',
+      helperText: '',
     },
     search_list: {
       description:
-        'The number of vectors to search during the search. A larger value may improve recall but will increase search time.',
+        'Size of the candidate list, a larger size offers a higher recall rate with degraded performance.',
       helperText: 'Must be between TopK and 2147483647.',
+    },
+    level: {
+      description:
+        'Increasing the level parameter will result in a higher recall rate, but may also lead to degraded search performance.',
+      helperText: 'Must be between 1 and 10.',
     },
   },
 };

@@ -447,7 +447,10 @@ const Search = (props: CollectionDataProps) => {
                         </Typography>
                         <Typography className="vector-type">
                           {formatFieldType(field)}
-                          <i>{field.index && field.index.metricType}</i>
+                          <i>
+                            {field.index &&
+                              `${field.index.indexType}(${field.index.metricType})`}
+                          </i>
                         </Typography>
                       </div>
                     </CheckboxRow>

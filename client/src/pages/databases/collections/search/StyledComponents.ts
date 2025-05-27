@@ -17,7 +17,7 @@ export const InputArea = styled(Box)({
 
 export const AccordionsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  width: '230px',
+  width: '260px',
   flexDirection: 'column',
   flexShrink: 0,
   padding: '0 8px 8px 0',
@@ -279,7 +279,7 @@ export const CheckboxRow = styled('div')(({ theme }) => ({
     lineHeight: '20px',
     '& i': {
       marginLeft: '4px',
-      fontSize: '10px',
+      fontSize: '9px',
       fontWeight: 600,
       color: theme.palette.secondary.main,
     },

@@ -5,7 +5,7 @@ import IndexParamField from '@/pages/databases/collections/schema/IndexParamFiel
 import type { SearchParamsProps } from './Types';
 import type { IndexParamConfig } from '@/pages/databases/collections/schema/indexParamsConfig';
 
-const COMMON_PARAMS = ['radius', 'range_filter'] as const;
+const COMMON_PARAMS = ['level', 'radius', 'range_filter'] as const;
 
 const SearchParams: FC<SearchParamsProps> = ({
   indexType = '',
@@ -22,14 +22,31 @@ const SearchParams: FC<SearchParamsProps> = ({
         key: 'radius',
         type: 'number',
         required: false,
+        // description: 'searchParams.radius.description',
+        // helperText: 'searchParams.radius.helperText',
       },
       range_filter: {
         label: 'range filter',
         key: 'range_filter',
         type: 'number',
         required: false,
+        // helperText: 'searchParams.range_filter.helperText',
+        // description: 'searchParams.range_filter.description',
       },
     };
+
+    if (indexType === 'AUTOINDEX') {
+      commonParams.level = {
+        label: 'level',
+        key: 'level',
+        type: 'number',
+        required: false,
+        min: 1,
+        max: 10,
+        defaultValue: '1',
+        helperText: 'searchParams.level.description',
+      };
+    }
 
     // Get search params for the specific index type
     const indexParams: Record<string, IndexParamConfig> = {};
@@ -55,6 +72,12 @@ const SearchParams: FC<SearchParamsProps> = ({
       );
       if (aIsCommon && !bIsCommon) return 1;
       if (!aIsCommon && bIsCommon) return -1;
+      if (aIsCommon && bIsCommon) {
+        return (
+          COMMON_PARAMS.indexOf(a as (typeof COMMON_PARAMS)[number]) -
+          COMMON_PARAMS.indexOf(b as (typeof COMMON_PARAMS)[number])
+        );
+      }
       return 0;
     });
 
@@ -90,7 +113,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         const config = paramConfigs[param];
         if (!config) return null;
 
-        const value = searchParamsForm[param] ?? '';
+        const value = searchParamsForm[param] ?? config.defaultValue ?? '';
 
         return (
           <IndexParamField

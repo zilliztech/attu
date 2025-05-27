@@ -107,64 +107,69 @@ const indexTrans = {
   },
   searchParams: {
     nprobe: {
-      description: '搜索时使用的探测数量',
-      helperText: '必须在1到65536之间',
+      description: '查询的单元数量。',
+      helperText: '必须在1到65536之间。',
     },
     efConstruction: {
-      description: '控制搜索速度与索引构建速度的权衡',
+      description: '控制搜索速度与索引构建速度的权衡。',
       helperText:
-        '增加efConstruction参数可能提升索引质量，但也会延长构建时间',
+        '增加efConstruction参数可能提升索引质量，但也会延长构建时间。',
     },
     max_empty_result_buckets: {
       description:
         '连续未返回结果的桶数量上限（范围搜索参数）。当连续空桶数达到该值时终止搜索。增大此值可提高召回率，但会增加搜索耗时。',
-      helperText: '必须在1到65535之间',
+      helperText: '必须在1到65535之间。',
     },
     reorder_k: {
       description:
         '搜索过程中重排序的向量数量。增大该值可能提升搜索精度，但会增加搜索时间。',
-      helperText: '必须在1到65536之间',
+      helperText: '必须在1到65536之间。',
     },
     refine_k: {
       description:
         '搜索过程中优化的向量数量。增大该值可能提升搜索精度，但会增加搜索时间。',
-      helperText: '必须在1到65536之间',
+      helperText: '必须在1到65536之间。',
     },
     itopk_size: {
       description:
         '搜索过程中保留的中间结果数量。增大该值可能提升召回率，但会降低搜索性能。建议至少等于最终top-k(limit)值，通常取2的幂次方（如16/32/64/128）。',
-      helperText: '必须在1到2147483647之间',
+      helperText: '必须在1到2147483647之间。',
     },
     search_width: {
       description:
         '指定CAGRA图搜索时的入口点数量（如1/2/4/8/16/32）。增大该值可提高召回率，但可能影响搜索性能。',
-      helperText: '必须在1到2147483647之间',
+      helperText: '必须在1到2147483647之间。',
     },
     team_size: {
       description:
         '指定GPU上计算度量距离的CUDA线程数（建议取2的幂次方，最大32）。对搜索性能影响较小。默认值0表示由Milvus根据向量维度自动选择。',
-      helperText: '必须在0到32之间',
+      helperText: '必须在0到32之间。',
     },
     min_iterations: {
       description:
         '控制最小搜索迭代次数（默认0表示CAGRA根据itopk_size和search_width自动计算）。手动调整可平衡性能与精度。',
-      helperText: '必须在0到2147483647之间',
+      helperText: '必须在0到2147483647之间。',
     },
     max_iterations: {
       description:
         '控制最大搜索迭代次数（默认0表示CAGRA根据itopk_size和search_width自动计算）。手动调整可平衡性能与精度。',
-      helperText: '必须在0到2147483647之间',
+      helperText: '必须在0到2147483647之间。',
     },
     radius: {
-      description: '搜索半径。增大该值可能提升召回率，但会增加搜索时间。',
-      helperText: '必须在0到2147483647之间',
+      description: '搜索半径。',
+      helperText: '',
     },
     range_filter: {
-      description: '搜索范围。增大该值可能提升召回率，但会增加搜索时间。',
+      description: '搜索范围。',
+      helperText: '',
     },
     search_list: {
-      description: '搜索过程中要搜索的向量数量。增大该值可能提升召回率，但会增加搜索时间。',
-      helperText: '必须在TopK到2147483647之间',
+      description: '候选列表大小，较大的值可以提高召回率，但会降低搜索性能。',
+      helperText: '必须在TopK到2147483647之间。',
+    },
+    level: {
+      description: '增加level参数将提高召回率，但可能会降低搜索性能。',
+      helperText: '必须在1到10之间。',
     },
   },
 };
