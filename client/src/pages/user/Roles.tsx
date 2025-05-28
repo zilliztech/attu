@@ -212,20 +212,17 @@ const Roles = () => {
   };
 
   return (
-    <Wrapper
-      sx={{ display: 'flex', flexDirection: 'column', overflow: 'auto' }}
-      hasPermission={hasPermission}
-    >
+    <Wrapper hasPermission={hasPermission}>
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
         <Box
           sx={theme => ({
             borderRadius: theme.shape.borderRadius,
             backgroundColor: theme.palette.background.lightGrey,
             width: '16%',
             minWidth: '200px',
-            height: 'calc(100vh - 220px)',
+            height: 'calc(100vh - 202px)',
             overflow: 'auto',
             color: theme.palette.text.primary,
             padding: theme.spacing(1),
