@@ -124,7 +124,7 @@ const typography = {
   button: {
     textTransform: 'initial',
     lineHeight: '16px',
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
 };
 
@@ -466,16 +466,26 @@ export const getAttuTheme = (mode: PaletteMode) => {
             },
           },
           standardSuccess: {
-            backgroundColor: isLight ? colors.primary.light.light : colors.primary.light.dark,
-            color: isLight ? colors.primary.dark.light : colors.primary.light.light,
+            backgroundColor: isLight
+              ? colors.primary.light.light
+              : colors.primary.light.dark,
+            color: isLight
+              ? colors.primary.dark.light
+              : colors.primary.light.light,
           },
           standardError: {
-            backgroundColor: isLight ? colors.error.light.light : colors.error.light.dark,
+            backgroundColor: isLight
+              ? colors.error.light.light
+              : colors.error.light.dark,
             color: isLight ? colors.error.dark.light : colors.error.light.light,
           },
           standardInfo: {
-            backgroundColor: isLight ? colors.secondary.light.light : colors.secondary.light.dark,
-            color: isLight ? colors.secondary.dark.light : colors.secondary.light.light,
+            backgroundColor: isLight
+              ? colors.secondary.light.light
+              : colors.secondary.light.dark,
+            color: isLight
+              ? colors.secondary.dark.light
+              : colors.secondary.light.light,
           },
           standardWarning: {
             backgroundColor: isLight ? '#fff7e6' : '#2b2111',

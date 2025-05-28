@@ -359,6 +359,7 @@ const Collections = () => {
               status={v.status}
               percentage={v.loadedPercentage}
               collection={v}
+              showLoadButton={true}
             />
           </Typography>
         );

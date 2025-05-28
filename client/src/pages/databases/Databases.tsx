@@ -70,7 +70,7 @@ const TabSection = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   padding: theme.spacing(0, 2),
   border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 8,
+  borderRadius: 4,
   height: '100%',
   display: 'flex',
   flexDirection: 'column',

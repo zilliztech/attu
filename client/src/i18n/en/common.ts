@@ -1,5 +1,3 @@
-import { use } from 'i18next';
-
 const commonTrans = {
   attu: {
     admin: 'Attu',
@@ -24,8 +22,9 @@ const commonTrans = {
     version: 'Version',
   },
   status: {
-    loaded: 'loaded',
+    loaded: 'Loaded',
     unloaded: 'unloaded',
+    readyToLoad: 'Ready to load',
     error: 'error',
     running: 'running',
     loading: 'is loaded',

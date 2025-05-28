@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { Theme } from '@mui/material';
 import { List, ListItemButton, ListItemText, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserService } from '@/http';
@@ -219,17 +218,17 @@ const Roles = () => {
     >
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
         <Box
           sx={theme => ({
-            border: `1px solid ${(theme as any).palette.divider}`,
-            borderRadius: '8px',
-            backgroundColor: (theme as any).palette.background.light,
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: theme.palette.background.lightGrey,
             width: '16%',
-            height: 'calc(100vh - 200px)',
-            overflow: 'auto',
-            color: (theme as any).palette.text.primary,
             minWidth: '200px',
+            height: 'calc(100vh - 220px)',
+            overflow: 'auto',
+            color: theme.palette.text.primary,
+            padding: theme.spacing(1),
           })}
         >
           <List>
@@ -241,6 +240,10 @@ const Roles = () => {
                   selectedRole[0].roleName === role.roleName
                 }
                 onClick={() => handleRoleClick(role)}
+                sx={theme => ({
+                  borderRadius: theme.shape.borderRadius,
+                  mb: 0.5,
+                })}
               >
                 <ListItemText primary={role.roleName} />
               </ListItemButton>
@@ -251,6 +254,7 @@ const Roles = () => {
           sx={{
             overflow: 'auto',
             width: 'calc(84% - 16px)',
+            flexGrow: 1,
           }}
         >
           <D3PrivilegeTree

@@ -1,4 +1,3 @@
-import { Theme } from '@mui/material';
 import {
   FC,
   ReactElement,

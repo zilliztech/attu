@@ -40,7 +40,7 @@ export const StyledAccordion = styled(Accordion)(({ theme }) => ({
 
   '&.highlight': {
     border: `1px solid ${theme.palette.secondary.main}`,
-    borderRadius: 8,
+    borderRadius: 4,
   },
 
   '& .MuiAccordionSummary-root': {
@@ -195,7 +195,7 @@ export const NodeInfo = styled(Paper)(({ theme }) => ({
   padding: '8px',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 8,
+  borderRadius: 4,
   maxWidth: 240,
   overflow: 'auto',
   zIndex: 1,
@@ -225,7 +225,7 @@ export const SelectedNodes = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   top: 200,
   right: 36,
-  borderRadius: 8,
+  borderRadius: 4,
   gap: 8,
   height: '70%',
   overflow: 'auto',
@@ -281,7 +281,7 @@ export const DataExplorerRoot = styled(Box)(({ theme }) => ({
     padding: '8px',
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 8,
+    borderRadius: 4,
     maxWidth: 240,
     overflow: 'auto',
     zIndex: 1,

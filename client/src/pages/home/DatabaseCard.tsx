@@ -41,7 +41,6 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
   const theme = useTheme();
   const DbIcon = icons.database;
   const DeleteIcon = icons.delete;
-  const PlusIcon = icons.add;
   const ZillizIcon = icons.zilliz;
 
   const onClick = async () => {
@@ -72,8 +71,8 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
           color: theme => theme.palette.text.primary,
           padding: 2,
           border: theme => `1px solid ${theme.palette.divider}`,
-          minWidth: '168px',
-          minHeight: '168px',
+          minWidth: '128px',
+          minHeight: '128px',
           cursor: 'pointer',
           borderRadius: 2,
           '&:hover': {
@@ -92,9 +91,9 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
             sx={{
               fontSize: '20px',
               lineHeight: '24px',
-              fontWeight: 'bold',
+              fontWeight: '500',
               mb: 1,
-              maxWidth: '168px',
+              maxWidth: '128px',
               wordBreak: 'break-all',
               '& svg': {
                 verticalAlign: '-3px',

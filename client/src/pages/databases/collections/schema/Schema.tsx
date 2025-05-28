@@ -470,6 +470,10 @@ const Overview = () => {
                   showExtraAction={false}
                   showLoadButton={true}
                   createIndexElement={CreateIndexElement}
+                  sx={{
+                    position: 'relative',
+                    top: '-2px',
+                  }}
                 />
               </InfoValue>
             </InfoRow>
