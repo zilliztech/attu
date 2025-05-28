@@ -9,6 +9,8 @@ import type { SxProps, Theme } from '@mui/material/styles';
 const tabSx: SxProps<Theme> = {
   textTransform: 'capitalize',
   minWidth: 0,
+  fontSize: '13px',
+  fontWeight: 500,
 };
 
 const tabsSx: SxProps<Theme> = {
@@ -71,7 +73,6 @@ const RouteTabList: FC<ITabListProps> = props => {
     <Box sx={wrapperSx} className={wrapperClass}>
       <Tabs
         sx={tabsSx}
-        TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={activeIndex}
         onChange={handleChange}
         aria-label="tabs"

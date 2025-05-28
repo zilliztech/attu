@@ -181,6 +181,9 @@ export const getAttuTheme = (mode: PaletteMode) => {
         },
       },
       MuiButton: {
+        defaultProps: {
+          disableRipple: true,
+        },
         styleOverrides: {
           root: ({
             theme,
@@ -232,6 +235,11 @@ export const getAttuTheme = (mode: PaletteMode) => {
             }),
           },
         ],
+      },
+      MuiTab: {
+        defaultProps: {
+          disableRipple: true,
+        },
       },
       MuiDialog: {
         styleOverrides: {

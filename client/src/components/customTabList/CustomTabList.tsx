@@ -54,7 +54,6 @@ const CustomTabList: FC<ITabListProps> = props => {
             height: theme => theme.spacing(0.5),
           },
         }}
-        TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={value}
         onChange={handleChange}
         aria-label="tabs"
@@ -64,7 +63,7 @@ const CustomTabList: FC<ITabListProps> = props => {
             sx={{
               textTransform: 'capitalize',
               minWidth: 0,
-              marginRight: theme => theme.spacing(3),
+              fontSize: '13px',
             }}
             key={tab.label}
             label={tab.label}
