@@ -11,20 +11,27 @@ export const InputArea = styled(Box)({
   display: 'flex',
   flexDirection: 'row',
   width: '100%',
-  height: 'max-content',
+  height: '100%',
   padding: 0,
+  overflow: 'hidden',
 });
+
+export const LeftSection = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  position: 'relative',
+  paddingRight: '8px',
+  marginBottom: '8px',
+  borderRight: `1px solid ${theme.palette.divider}`,
+}));
 
 export const AccordionsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '260px',
   flexDirection: 'column',
   flexShrink: 0,
-  padding: '0 8px 8px 0',
-  minHeight: 'calc(100vh - 164px)',
-  height: 'calc(100vh - 164px)',
   overflow: 'auto',
-  borderRight: `1px solid ${theme.palette.divider}`,
+  maxHeight: '100%',
   '& .MuiAccordion-root.Mui-expanded': {
     margin: 0,
   },
@@ -36,7 +43,6 @@ export const AccordionsContainer = styled(Box)(({ theme }) => ({
 export const StyledAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
   padding: '0',
-  border: '1px solid transparent',
 
   '&.highlight': {
     border: `1px solid ${theme.palette.secondary.main}`,
@@ -100,7 +106,6 @@ export const SearchInputBox = styled(Box)(({ theme }) => ({
   height: '124px',
   margin: '0 0 8px 0',
   overflow: 'auto',
-  backgroundColor: theme.palette.background.default,
   cursor: 'text',
 }));
 
@@ -109,9 +114,10 @@ export const SearchControls = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   width: 120,
   minWidth: 120,
-  padding: '0 8px',
-  borderRight: `1px solid ${theme.palette.divider}`,
-
+  padding: '0',
+  height: 'fit-content',
+  alignSelf: 'flex-start',
+  marginLeft: '8px',
   '& .selector': {
     marginBottom: '8px',
   },
@@ -126,7 +132,7 @@ export const SearchResults = styled(Box)({
   flexDirection: 'column',
   flexGrow: 1,
   paddingLeft: 8,
-  overflow: 'auto',
+  overflow: 'hidden',
 });
 
 export const Toolbar = styled(Box)(({ theme }) => ({

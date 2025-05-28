@@ -114,7 +114,9 @@ const Databases = () => {
       // set dragging false
       setIsDragging(false);
       // highlight dragger alwasy if width === 1
-      draggerRef.current!.classList.toggle('tree-collapsed', treeWidth === 1);
+      if (draggerRef.current) {
+        draggerRef.current.classList.toggle('tree-collapsed', treeWidth === 1);
+      }
       document.removeEventListener('mousemove', handleMouseMove);
     };
 

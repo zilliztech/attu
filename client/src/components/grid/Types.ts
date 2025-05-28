@@ -157,6 +157,7 @@ export type AttuGridType = ToolBarType & {
   hideOnDisable?: boolean;
   pagerHeight?: number;
   rowDecorator?: (row: any) => SxProps<Theme> | React.CSSProperties;
+  sx?: SxProps<Theme>;
 };
 
 export type ActionBarType = {

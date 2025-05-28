@@ -51,6 +51,7 @@ import {
   Explorer,
   CloseButton,
   CheckboxRow,
+  LeftSection,
 } from './StyledComponents';
 
 export interface CollectionDataProps {
@@ -412,125 +413,127 @@ const Search = (props: CollectionDataProps) => {
     <SearchRoot>
       {collection && (
         <InputArea>
-          <AccordionsContainer>
-            {searchParams.searchParams.map((s, index: number) => {
-              const field = s.field;
-              return (
-                <StyledAccordion
-                  key={`${collection.collection_name}-${field.name}`}
-                  expanded={s.expanded}
-                  onChange={handleExpand(field.name)}
-                  className={highlightField === field.name ? 'highlight' : ''}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`${field.name}-content`}
-                    id={`${field.name}-header`}
+          <LeftSection>
+            <AccordionsContainer>
+              {searchParams.searchParams.map((s, index: number) => {
+                const field = s.field;
+                return (
+                  <StyledAccordion
+                    key={`${collection.collection_name}-${field.name}`}
+                    expanded={s.expanded}
+                    onChange={handleExpand(field.name)}
+                    className={highlightField === field.name ? 'highlight' : ''}
                   >
-                    <CheckboxRow>
-                      {searchParams.searchParams.length > 1 && (
-                        <Checkbox
-                          size="small"
-                          checked={s.selected}
-                          onChange={handleSelect(field.name)}
-                        />
-                      )}
-                      <div className="label">
-                        <Typography
-                          className={`field-name ${s.selected ? 'bold' : ''}`}
-                        >
-                          {field.is_function_output
-                            ? `${field.name}<=${
-                                field.function!.input_field_names[0]
-                              }`
-                            : field.name}
-                        </Typography>
-                        <Typography className="vector-type">
-                          {formatFieldType(field)}
-                          <i>
-                            {field.index &&
-                              `${field.index.indexType}(${field.index.metricType})`}
-                          </i>
-                        </Typography>
-                      </div>
-                    </CheckboxRow>
-                  </AccordionSummary>
-                  <StyledAccordionDetails>
-                    <VectorInputBox
-                      searchParams={s}
-                      onChange={onSearchInputChange}
-                      collection={collection}
-                      type={field.is_function_output ? 'text' : 'vector'}
-                    />
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={`${field.name}-content`}
+                      id={`${field.name}-header`}
+                    >
+                      <CheckboxRow>
+                        {searchParams.searchParams.length > 1 && (
+                          <Checkbox
+                            size="small"
+                            checked={s.selected}
+                            onChange={handleSelect(field.name)}
+                          />
+                        )}
+                        <div className="label">
+                          <Typography
+                            className={`field-name ${s.selected ? 'bold' : ''}`}
+                          >
+                            {field.is_function_output
+                              ? `${field.name}<=${
+                                  field.function!.input_field_names[0]
+                                }`
+                              : field.name}
+                          </Typography>
+                          <Typography className="vector-type">
+                            {formatFieldType(field)}
+                            <i>
+                              {field.index &&
+                                `${field.index.indexType}(${field.index.metricType})`}
+                            </i>
+                          </Typography>
+                        </div>
+                      </CheckboxRow>
+                    </AccordionSummary>
+                    <StyledAccordionDetails>
+                      <VectorInputBox
+                        searchParams={s}
+                        onChange={onSearchInputChange}
+                        collection={collection}
+                        type={field.is_function_output ? 'text' : 'vector'}
+                      />
 
-                    <SearchParams
-                      sx={{ pt: 1, mb: 1 }}
-                      indexType={field.index.indexType}
-                      searchParamsForm={s.params}
-                      handleFormChange={(updates: {
-                        [key in string]: number | string | boolean;
-                      }) => {
-                        updateSearchParamCallback(updates as any, index);
-                      }}
-                    />
-                  </StyledAccordionDetails>
-                </StyledAccordion>
-              );
-            })}
-
-            {enablePartitionsFilter && (
-              <PartitionsSelector
-                collectionName={collectionName}
-                selected={searchParams.partitions}
-                setSelected={onPartitionsChange}
-              />
-            )}
-          </AccordionsContainer>
-
-          <SearchControls>
-            <SearchGlobalParams
-              onSlideChange={(field: string) => {
-                setHighlightField(field);
-              }}
-              onSlideChangeCommitted={() => {
-                setHighlightField('');
-              }}
-              searchParams={searchParams}
-              handleFormChange={(params: any) => {
-                searchParams.globalParams = params;
-                setSearchParams({ ...searchParams });
-              }}
-            />
-
-            <CustomButton
-              onClick={genRandomVectors}
-              size="small"
-              disabled={false}
-              className="genBtn"
-              sx={{
-                mb: 1,
-              }}
-            >
-              {btnTrans('example')}
-            </CustomButton>
-
-            <CustomButton
-              variant="contained"
-              size="small"
-              className="genBtn"
-              disabled={disableSearch}
-              tooltip={disableSearchTooltip}
-              tooltipPlacement="top"
-              onClick={onSearchClicked}
-            >
-              {btnTrans('searchMulti', {
-                number:
-                  searchParams.collection.schema.vectorFields.length > 1
-                    ? `(${selectedFields.length})`
-                    : '',
+                      <SearchParams
+                        sx={{ pt: 1, mb: 1 }}
+                        indexType={field.index.indexType}
+                        searchParamsForm={s.params}
+                        handleFormChange={(updates: {
+                          [key in string]: number | string | boolean;
+                        }) => {
+                          updateSearchParamCallback(updates as any, index);
+                        }}
+                      />
+                    </StyledAccordionDetails>
+                  </StyledAccordion>
+                );
               })}
-            </CustomButton>
-          </SearchControls>
+
+              {enablePartitionsFilter && (
+                <PartitionsSelector
+                  collectionName={collectionName}
+                  selected={searchParams.partitions}
+                  setSelected={onPartitionsChange}
+                />
+              )}
+            </AccordionsContainer>
+
+            <SearchControls>
+              <SearchGlobalParams
+                onSlideChange={(field: string) => {
+                  setHighlightField(field);
+                }}
+                onSlideChangeCommitted={() => {
+                  setHighlightField('');
+                }}
+                searchParams={searchParams}
+                handleFormChange={(params: any) => {
+                  searchParams.globalParams = params;
+                  setSearchParams({ ...searchParams });
+                }}
+              />
+
+              <CustomButton
+                onClick={genRandomVectors}
+                size="small"
+                disabled={false}
+                className="genBtn"
+                sx={{
+                  mb: 1,
+                }}
+              >
+                {btnTrans('example')}
+              </CustomButton>
+
+              <CustomButton
+                variant="contained"
+                size="small"
+                className="genBtn"
+                disabled={disableSearch}
+                tooltip={disableSearchTooltip}
+                tooltipPlacement="top"
+                onClick={onSearchClicked}
+              >
+                {btnTrans('searchMulti', {
+                  number:
+                    searchParams.collection.schema.vectorFields.length > 1
+                      ? `(${selectedFields.length})`
+                      : '',
+                })}
+              </CustomButton>
+            </SearchControls>
+          </LeftSection>
 
           <SearchResults>
             <Toolbar>
@@ -633,6 +636,9 @@ const Search = (props: CollectionDataProps) => {
                 searchParams.searchResult.length > 0) ||
               tableLoading ? (
               <AttuGrid
+                sx={{
+                  height: 'calc(100% - 64px)',
+                }}
                 toolbarConfigs={[]}
                 colDefinitions={colDefinitions}
                 rows={result}
@@ -640,7 +646,7 @@ const Search = (props: CollectionDataProps) => {
                 primaryKey="rank"
                 page={currentPage}
                 tableHeaderHeight={46}
-                rowHeight={39}
+                rowHeight={41}
                 openCheckBox={false}
                 onPageChange={handlePageChange}
                 rowsPerPage={pageSize}

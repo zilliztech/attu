@@ -19,7 +19,7 @@ import { styled } from '@mui/material/styles';
 
 const SearchInputBoxWrapper = styled('div')(({ theme }) => ({
   height: '124px',
-  margin: '0 0 8px 0',
+  margin: 0,
   overflow: 'auto',
   backgroundColor: theme.palette.background.default,
   cursor: 'text',
