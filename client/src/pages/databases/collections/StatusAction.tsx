@@ -156,13 +156,14 @@ const StatusAction: FC<StatusActionType> = props => {
         }}
         label={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Typography component="span">{statusConfig.label}</Typography>
+            <Typography>{statusConfig.label}</Typography>
             {status === LOADING_STATE.LOADED && (
               <Icons.release
                 className="action-icon"
                 style={{
                   fontSize: '14px',
                   display: 'none',
+                  fontWeight: 500,
                   transition: 'all 0.2s',
                 }}
               />
@@ -171,6 +172,7 @@ const StatusAction: FC<StatusActionType> = props => {
               <Icons.load
                 style={{
                   fontSize: '14px',
+                  fontWeight: 500,
                   marginLeft: 2,
                 }}
               />
@@ -181,6 +183,7 @@ const StatusAction: FC<StatusActionType> = props => {
                 style={{
                   fontSize: '14px',
                   display: 'none',
+                  fontWeight: 500,
                   transition: 'all 0.2s',
                 }}
               />

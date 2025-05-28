@@ -87,7 +87,16 @@ const Overview = () => {
             {f.name === '$meta' && (
               <StyledChip size="small" label="Dynamic field" />
             )}
-            {f.is_primary_key && <StyledChip size="small" label="ID" />}
+            {f.is_primary_key && (
+              <StyledChip
+                size="small"
+                label="PK"
+                sx={{
+                  backgroundColor: 'primary.main',
+                  color: 'primary.contrastText',
+                }}
+              />
+            )}
             {f.is_partition_key && (
               <StyledChip size="small" label="Partition key" />
             )}

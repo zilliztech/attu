@@ -44,6 +44,7 @@ export const StyledAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
   padding: '0',
 
+  border: '1px solid transparent',
   '&.highlight': {
     border: `1px solid ${theme.palette.secondary.main}`,
     borderRadius: 4,
@@ -52,7 +53,7 @@ export const StyledAccordion = styled(Accordion)(({ theme }) => ({
   '& .MuiAccordionSummary-root': {
     minHeight: '48px',
     height: '48px',
-    padding: '0 12px 0 0',
+    padding: '0 8px',
     transition: 'none',
     '&.Mui-expanded': {
       minHeight: '48px',
