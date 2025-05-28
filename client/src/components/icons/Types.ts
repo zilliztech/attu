@@ -61,4 +61,5 @@ export type IconsType =
   | 'img'
   | 'file'
   | 'eye'
-  | 'newWindow';
+  | 'newWindow'
+  | 'caretSort';

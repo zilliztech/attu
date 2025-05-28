@@ -138,13 +138,20 @@ const Header: FC = () => {
           )}
           {navInfo.showDatabaseSelector && (
             <Breadcrumbs aria-label="breadcrumb">
-              <Typography
-                sx={{ cursor: 'pointer', fontSize: 15, fontWeight: 500 }}
-                color="primary"
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  color: 'primary.main',
+                }}
                 onClick={handleDbClick}
               >
-                {database}
-              </Typography>
+                <Typography sx={{ fontSize: 15, fontWeight: 500 }}>
+                  {database}
+                </Typography>
+                <icons.caretSort sx={{ fontSize: 16, ml: 0.5 }} />
+              </Box>
               <Menu
                 anchorEl={dbAnchorEl}
                 open={Boolean(dbAnchorEl)}

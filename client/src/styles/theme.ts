@@ -241,6 +241,41 @@ export const getAttuTheme = (mode: PaletteMode) => {
           disableRipple: true,
         },
       },
+      MuiMenuItem: {
+        defaultProps: {
+          disableRipple: true,
+        },
+        styleOverrides: {
+          root: {
+            fontSize: '14px',
+            padding: '8px 16px',
+            minHeight: '36px',
+            transition: 'background-color 0.2s ease',
+            '&:hover': {
+              backgroundColor: isLight
+                ? 'rgba(10, 206, 130, 0.08)'
+                : 'rgba(10, 206, 130, 0.16)',
+            },
+            '&.Mui-selected': {
+              backgroundColor: isLight
+                ? 'rgba(10, 206, 130, 0.16)'
+                : 'rgba(10, 206, 130, 0.24)',
+              '&:hover': {
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.24)'
+                  : 'rgba(10, 206, 130, 0.32)',
+              },
+            },
+            '&.Mui-disabled': {
+              opacity: 0.6,
+            },
+            '& .MuiListItemIcon-root': {
+              color: isLight ? '#666' : '#aaa',
+              minWidth: '36px',
+            },
+          },
+        },
+      },
       MuiDialog: {
         styleOverrides: {
           paper: {
@@ -408,38 +443,6 @@ export const getAttuTheme = (mode: PaletteMode) => {
           },
           list: {
             padding: '8px 0',
-          },
-        },
-      },
-      MuiMenuItem: {
-        styleOverrides: {
-          root: {
-            fontSize: '14px',
-            padding: '8px 16px',
-            minHeight: '36px',
-            transition: 'background-color 0.2s ease',
-            '&:hover': {
-              backgroundColor: isLight
-                ? 'rgba(10, 206, 130, 0.08)'
-                : 'rgba(10, 206, 130, 0.16)',
-            },
-            '&.Mui-selected': {
-              backgroundColor: isLight
-                ? 'rgba(10, 206, 130, 0.16)'
-                : 'rgba(10, 206, 130, 0.24)',
-              '&:hover': {
-                backgroundColor: isLight
-                  ? 'rgba(10, 206, 130, 0.24)'
-                  : 'rgba(10, 206, 130, 0.32)',
-              },
-            },
-            '&.Mui-disabled': {
-              opacity: 0.6,
-            },
-            '& .MuiListItemIcon-root': {
-              color: isLight ? '#666' : '#aaa',
-              minWidth: '36px',
-            },
           },
         },
       },

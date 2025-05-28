@@ -95,12 +95,6 @@ function Index() {
         <Box
           sx={{
             display: 'flex',
-            '& .active path': {
-              fill: theme => theme.palette.text.primary,
-            },
-            '& .normal path': {
-              fill: theme => theme.palette.primary.main,
-            },
           }}
         >
           <NavMenu
