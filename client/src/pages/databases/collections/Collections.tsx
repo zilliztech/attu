@@ -354,7 +354,7 @@ const Collections = () => {
       label: collectionTrans('status'),
       formatter(v) {
         return (
-          <Typography variant="body1">
+          <Typography variant="body1" component="div">
             <StatusAction
               status={v.status}
               percentage={v.loadedPercentage}
@@ -485,7 +485,7 @@ const Collections = () => {
   }, [collectionList, batchRefreshCollections]);
 
   return (
-    <Root sx={{ height: 'calc(100% - 24px)' }}>
+    <Root>
       {collections.length > 0 || loading ? (
         <AttuGrid
           toolbarConfigs={toolbarConfigs}
@@ -498,7 +498,7 @@ const Collections = () => {
           page={currentPage}
           onPageChange={handlePageChange}
           rowsPerPage={pageSize}
-          tableHeaderHeight={49}
+          tableHeaderHeight={46}
           rowHeight={43}
           setRowsPerPage={handlePageSize}
           isLoading={loading}

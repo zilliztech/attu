@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 export const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  height: 'calc(100% - 16px)',
+  height: 'calc(100%)',
 }));
 
 export const Toolbar = styled(Box)(({ theme }) => ({
