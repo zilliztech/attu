@@ -7,15 +7,15 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   height: '100%',
   overflow: 'auto',
-  gap: theme.spacing(2),
-  padding: theme.spacing(1, 0),
+  gap: theme.spacing(1.5),
+  padding: theme.spacing(0.5, 0),
   maxWidth: '100%',
 }));
 
 export const InfoWrapper = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: '1.2fr 1fr 1fr',
-  gap: theme.spacing(2),
+  gap: theme.spacing(1.5),
   width: '100%',
   [theme.breakpoints.down('md')]: {
     gridTemplateColumns: '1fr',
@@ -24,8 +24,8 @@ export const InfoWrapper = styled(Box)(({ theme }) => ({
 
 export const Card = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  borderRadius: 8,
-  padding: theme.spacing(2),
+  borderRadius: 2,
+  padding: theme.spacing(1.5),
   boxSizing: 'border-box',
   display: 'flex',
   flexDirection: 'column',
@@ -41,7 +41,7 @@ export const Card = styled(Box)(({ theme }) => ({
 export const InfoRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'flex-start',
-  gap: theme.spacing(2),
+  gap: theme.spacing(1.5),
   '&:not(:last-child)': {
     paddingBottom: theme.spacing(1),
   },

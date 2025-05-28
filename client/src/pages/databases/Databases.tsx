@@ -18,7 +18,7 @@ const DEFAULT_TREE_WIDTH = 230;
 const PageWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
-  padding: theme.spacing(2),
+  padding: theme.spacing(1.5),
   height: 'calc(100vh - 64px)',
   overflow: 'hidden',
   '&.dragging': {
@@ -68,7 +68,7 @@ const TabSection = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   flexShrink: 1,
   overflow: 'hidden',
-  padding: theme.spacing(0, 2),
+  padding: theme.spacing(0, 1.5),
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: 4,
   height: '100%',

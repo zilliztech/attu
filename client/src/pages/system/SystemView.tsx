@@ -46,7 +46,7 @@ const SystemView: any = () => {
   return (
     <Box
       sx={theme => ({
-        margin: '16px',
+        margin: '12px',
         position: 'relative',
         display: 'flex',
         height: 'calc(100vh - 80px)',

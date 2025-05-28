@@ -167,7 +167,7 @@ const Play: FC = () => {
         overflow: 'hidden',
         borderRadius: 8,
         height: '100vh',
-        padding: theme.spacing(2),
+        padding: theme.spacing(1.5),
       }}
     >
       <Paper
@@ -200,7 +200,7 @@ const Play: FC = () => {
         elevation={0}
         sx={{
           flex: 1,
-          marginLeft: theme.spacing(2),
+          marginLeft: theme.spacing(1.5),
           display: 'flex',
           overflow: 'hidden',
           border: `1px solid ${theme.palette.divider}`,

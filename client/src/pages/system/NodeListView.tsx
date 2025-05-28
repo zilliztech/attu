@@ -160,7 +160,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
     <Box
       sx={{
         overflow: 'hidden',
-        padding: '0 16px',
+        padding: '0 12px',
         display: 'flex',
         flexDirection: 'column',
         border: `1px solid ${theme.palette.divider}`,
@@ -188,7 +188,7 @@ const NodeListView: FC<NodeListViewProps> = props => {
       </Box>
       <Box
         sx={{
-          height: `calc(100vh - 120px)`,
+          height: `calc(100vh - 106px)`,
           display: 'flex',
           gap: 1, // theme.spacing(1) is 8px by default, so 1 means 8px
         }}

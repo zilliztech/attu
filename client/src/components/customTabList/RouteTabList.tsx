@@ -9,14 +9,10 @@ import type { SxProps, Theme } from '@mui/material/styles';
 const tabSx: SxProps<Theme> = {
   textTransform: 'capitalize',
   minWidth: 0,
-  marginRight: 3,
 };
 
 const tabsSx: SxProps<Theme> = {
   borderBottom: theme => `1px solid ${theme.palette.divider}`,
-  '& .MuiTabs-indicator': {
-    height: (theme: Theme) => theme.spacing(0.5),
-  },
 };
 
 const tabPanelSx: SxProps<Theme> = {
