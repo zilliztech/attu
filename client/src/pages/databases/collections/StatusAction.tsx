@@ -185,6 +185,7 @@ const StatusAction: FC<StatusActionType> = props => {
           ...chipStyles,
           cursor: 'default',
           fontSize: '12px',
+          borderStyle: 'dashed',
           borderColor:
             theme.palette.mode === 'dark'
               ? theme.palette.grey[600]
@@ -204,19 +205,11 @@ const StatusAction: FC<StatusActionType> = props => {
           cursor: 'pointer',
           fontSize: '12px',
           borderColor: theme.palette.primary.main,
-          backgroundColor:
-            theme.palette.mode === 'dark' ? theme.palette.primary.main : '#fff',
-          color:
-            theme.palette.mode === 'dark' ? '#fff' : theme.palette.primary.main,
+          backgroundColor: 'transparent',
+          color: theme.palette.primary.main,
           '&:hover': {
-            backgroundColor:
-              theme.palette.mode === 'dark'
-                ? theme.palette.primary.dark
-                : `${theme.palette.primary.main} !important`,
-            color: '#fff !important',
-            '& svg': {
-              color: '#fff !important',
-            },
+            backgroundColor: `${theme.palette.primary.main} !important`,
+            color: `#fff !important`,
           },
         };
       }
@@ -228,9 +221,8 @@ const StatusAction: FC<StatusActionType> = props => {
           fontSize: '12px',
           borderColor: 'transparent',
           backgroundColor: theme.palette.primary.light,
-          color: theme.palette.text.primary,
           '&:hover': {
-            borderColor: theme.palette.text.primary,
+            borderColor: theme.palette.primary.main,
             '& .action-icon': {
               display: 'inline-flex !important',
               color: theme.palette.text.primary,
