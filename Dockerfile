@@ -30,21 +30,19 @@ COPY --from=builder /app/client/build /app/build
 COPY --from=builder /app/server/package.json /app/package.json
 COPY --from=builder /app/server/yarn.lock /app/yarn.lock
 
-# Install git
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Install git and dependencies in a single layer, then remove git
+RUN apt-get update && \
+    apt-get install -y git && \
+    yarn install --production && \
+    yarn cache clean && \
+    apt-get remove -y git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# => Reinstall production dependencies and clean cache
-RUN yarn install --production && yarn cache clean
-
-# Remove git
-RUN apt-get remove -y git && rm -rf /var/lib/apt/lists/*
-
-# Make our shell script executable
-RUN chmod +x /app/build/env.sh
-
-# Make all files accessible such that the image supports arbitrary user ids
-RUN chgrp -R 0 /app && \
-  chmod -R g=u /app
+# Make our shell script executable and set permissions
+RUN chmod +x /app/build/env.sh && \
+    chgrp -R 0 /app && \
+    chmod -R g=u /app
 
 EXPOSE 3000
 
