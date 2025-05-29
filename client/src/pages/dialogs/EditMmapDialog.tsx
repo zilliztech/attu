@@ -32,21 +32,24 @@ interface FieldMmapState {
   hasIndex: boolean;
 }
 
-const EditMmapDialog: FC<EditMmapProps> = props => {
-  const { collection, cb } = props;
-
+const EditMmapDialog: FC<EditMmapProps> = ({ collection, cb }) => {
   const { handleCloseDialog, openSnackBar } = useContext(rootContext);
   const { fetchCollection } = useContext(dataContext);
-
   const { t: dialogTrans } = useTranslation('dialog');
   const { t: btnTrans } = useTranslation('btn');
   const { t: successTrans } = useTranslation('success');
   const { t: collectionTrans } = useTranslation('collection');
   const { t: indexTrans } = useTranslation('index');
 
-  // Current state of all fields (initial state)
-  const [fieldsState, setFieldsState] = useState<FieldMmapState[]>(() => {
-    return collection.schema!.fields.map(field => ({
+  const isCollectionMmapEnabled = collection?.properties!.some(
+    p => p.key === 'mmap.enabled' && p.value === 'true'
+  );
+  const [pendingCollectionMmap, setPendingCollectionMmap] = useState(
+    isCollectionMmapEnabled
+  );
+  const [pendingChanges, setPendingChanges] = useState<MmapChanges[]>([]);
+  const [fieldsState, setFieldsState] = useState<FieldMmapState[]>(() =>
+    collection.schema!.fields.map(field => ({
       id: field.fieldID as string,
       name: field.name,
       indexName: field.index?.index_name,
@@ -57,37 +60,22 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
         ? findKeyValue(field.index!.params, 'mmap.enabled') === 'true'
         : false,
       hasIndex: !!field.index,
-    }));
-  });
-
-  const isCollectionMmapEnabled = collection?.properties!.some((p: any) => {
-    return p.key === 'mmap.enabled' && p.value === 'true';
-  });
-
-  // Track changes that will be applied on confirm
-  const [pendingChanges, setPendingChanges] = useState<MmapChanges[]>([]);
-  const [pendingCollectionMmap, setPendingCollectionMmap] = useState<boolean>(
-    isCollectionMmapEnabled
+    }))
   );
 
   const handleRawMmapChange = (fieldId: string, enabled: boolean) => {
     const field = fieldsState.find(f => f.id === fieldId)!;
-
     setFieldsState(prev =>
       prev.map(f => (f.id === fieldId ? { ...f, rawMmapEnabled: enabled } : f))
     );
-
     setPendingChanges(prev => {
-      // Remove any existing changes for this field
       const filtered = prev.filter(change => change.fieldName !== field.name);
-      // Add the new change
       return [
         ...filtered,
         {
           fieldName: field.name,
           indexName: field.indexName,
           rawMmapEnabled: enabled,
-          // Preserve existing index change if it exists
           indexMmapEnabled: prev.find(c => c.fieldName === field.name)
             ?.indexMmapEnabled,
         },
@@ -97,23 +85,18 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
 
   const handleIndexMmapChange = (fieldId: string, enabled: boolean) => {
     const field = fieldsState.find(f => f.id === fieldId)!;
-
     setFieldsState(prev =>
       prev.map(f =>
         f.id === fieldId ? { ...f, indexMmapEnabled: enabled } : f
       )
     );
-
     setPendingChanges(prev => {
-      // Remove any existing changes for this field
       const filtered = prev.filter(change => change.fieldName !== field.name);
-      // Add the new change
       return [
         ...filtered,
         {
           fieldName: field.name,
           indexName: field.indexName,
-          // Preserve existing raw change if it exists
           rawMmapEnabled: prev.find(c => c.fieldName === field.name)
             ?.rawMmapEnabled,
           indexMmapEnabled: enabled,
@@ -123,7 +106,6 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
   };
 
   const handleConfirm = async () => {
-    // Make the API call to update mmap settings
     try {
       if (pendingCollectionMmap !== isCollectionMmapEnabled) {
         await CollectionService.setProperty(collection.collection_name, {
@@ -135,7 +117,6 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
           collection.collection_name,
           pendingChanges
         );
-
         openSnackBar(
           successTrans('updateMmap', { name: collection.collection_name }),
           'success'
@@ -157,24 +138,27 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
 
   return (
     <DialogTemplate
-      sx={{
-        minWidth: '600px',
-        maxWidth: '800px',
-      }}
+      sx={{ minWidth: '600px', maxWidth: '800px' }}
       title={dialogTrans('manageMmapTitle', {
         type: collection.collection_name,
       })}
       handleClose={handleCloseDialog}
+      confirmDisabled={noChange || notReleased}
+      confirmLabel={btnTrans('confirm')}
+      confirmDisabledTooltip={
+        notReleased ? collectionTrans('mmapCollectionNotReleasedTooltip') : ''
+      }
+      handleConfirm={handleConfirm}
       children={
         <Box>
           <Typography
             variant="body2"
-            sx={{ margin: '8px 0 16px 0', fontSize: '14px' }}
+            sx={{ m: '8px 0 16px', fontSize: '14px' }}
             dangerouslySetInnerHTML={{ __html: dialogTrans('editMmapInfo') }}
           />
           <Box
             sx={{
-              margin: '8px 0 0 0',
+              m: '8px 0 0',
               fontSize: '13px',
               fontWeight: 800,
               display: 'flex',
@@ -184,9 +168,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
             {collectionTrans('collectionMMapSettingsLabel')}
             <Switch
               checked={pendingCollectionMmap}
-              onChange={e => {
-                setPendingCollectionMmap(e.target.checked);
-              }}
+              onChange={e => setPendingCollectionMmap(e.target.checked)}
               color="primary"
               sx={{ ml: 1 }}
             />
@@ -194,34 +176,39 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
           <br />
           <Table
             sx={{
-              marginTop: 0,
+              mt: 0,
               '& th': { fontWeight: 'bold' },
+              '& .MuiTableRow-root': { height: '40px' },
             }}
           >
             <TableHead>
               <TableRow>
-                <TableCell>{collectionTrans('fieldName')}</TableCell>
-                <TableCell>{collectionTrans('rawData')}</TableCell>
-                <TableCell>{indexTrans('index')}</TableCell>
+                <TableCell sx={{ py: 1 }}>
+                  {collectionTrans('fieldName')}
+                </TableCell>
+                <TableCell sx={{ py: 1 }}>
+                  {collectionTrans('rawData')}
+                </TableCell>
+                <TableCell sx={{ py: 1 }}>{indexTrans('index')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {fieldsState.map(field => (
-                <TableRow key={field.id}>
-                  <TableCell>
+                <TableRow
+                  key={field.id}
+                  sx={{ '&:last-child td': { borderBottom: 0 } }}
+                >
+                  <TableCell sx={{ py: 1 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                       <span>{field.name}</span>
                       <span
-                        style={{
-                          color: 'rgba(0,0,0,0.6)',
-                          fontSize: '0.8rem',
-                        }}
+                        style={{ color: 'rgba(0,0,0,0.6)', fontSize: '0.8rem' }}
                       >
                         {field.dataType}
                       </span>
                     </Box>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ py: 1 }}>
                     <Tooltip
                       title={
                         pendingCollectionMmap
@@ -244,7 +231,7 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
                       </span>
                     </Tooltip>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ py: 1 }}>
                     {field.hasIndex ? (
                       <Switch
                         checked={field.indexMmapEnabled}
@@ -265,12 +252,6 @@ const EditMmapDialog: FC<EditMmapProps> = props => {
           </Table>
         </Box>
       }
-      confirmDisabled={noChange || notReleased}
-      confirmLabel={btnTrans('confirm')}
-      confirmDisabledTooltip={
-        notReleased ? collectionTrans('mmapCollectionNotReleasedTooltip') : ''
-      }
-      handleConfirm={handleConfirm}
     />
   );
 };

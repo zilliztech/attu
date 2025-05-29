@@ -13,7 +13,7 @@ const collectionTrans = {
   entities: 'entities',
   mmapEnabled: 'mmap enabled',
   mmapSettings: 'Mmap Settings',
-  collectionMMapSettingsLabel: 'Collection Level Raw Data mmap Settings',
+  collectionMMapSettingsLabel: 'Collection level raw data mmap settings',
   rawData: 'Raw Data',
   functions: 'Functions',
 
