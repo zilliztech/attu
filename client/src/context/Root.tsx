@@ -75,7 +75,7 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         open: false,
         type: 'success',
         message: '',
-        autoHideDuration: 3000,
+        autoHideDuration: 30000,
         vertical: 'top',
         horizontal: 'center',
       });

@@ -1,12 +1,13 @@
 import { forwardRef, FC } from 'react';
 import MuiAlert from '@mui/material/Alert';
+import Icons from '@/components/icons/Icons';
 import Snackbar from '@mui/material/Snackbar';
 import type { AlertProps } from '@mui/material/Alert';
 import type { CustomSnackBarType } from './Types';
 
 // Forward ref for Alert component
 const Alert = forwardRef<HTMLDivElement, AlertProps>((props, ref) => {
-  return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
+  return <MuiAlert ref={ref} elevation={0} variant="filled" {...props} />;
 });
 
 const CustomSnackBar: FC<CustomSnackBarType> = props => {
@@ -14,30 +15,28 @@ const CustomSnackBar: FC<CustomSnackBarType> = props => {
     vertical = 'top',
     horizontal = 'center',
     open,
-    autoHideDuration = 2500,
+    autoHideDuration = 3000,
     type,
     message,
     onClose,
   } = props;
 
-  const handleClose = (event: React.SyntheticEvent<any> | Event) => {
-    onClose && onClose();
-  };
-
   return (
     <Snackbar
-      anchorOrigin={{
-        vertical: vertical,
-        horizontal: horizontal,
-      }}
-      key={`${vertical}${horizontal}`}
+      anchorOrigin={{ vertical, horizontal }}
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       autoHideDuration={autoHideDuration}
     >
       <Alert
-        onClose={handleClose}
+        onClose={onClose}
         severity={type}
+        iconMapping={{
+          error: <Icons.error />,
+          info: <Icons.info />,
+          success: <Icons.check />,
+          warning: <Icons.cross />,
+        }}
       >
         {message}
       </Alert>

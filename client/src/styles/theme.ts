@@ -560,43 +560,21 @@ export const getAttuTheme = (mode: PaletteMode) => {
       MuiAlert: {
         styleOverrides: {
           root: {
-            wordBreak: 'break-all',
-            boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.15)',
-            borderRadius: '8px',
+            padding: '0 12px',
+            borderRadius: '4px',
+            display: 'flex',
             alignItems: 'center',
+            color: '#fff',
+            gap: '4px',
+            '& .MuiAlert-action': {
+              padding: '0',
+            },
             '& .MuiAlert-icon': {
-              alignItems: 'center',
-              padding: '9px 0',
+              marginRight: '4px',
             },
-            '& .MuiAlert-message': {
-              padding: '9px 0',
-              display: 'flex',
-              alignItems: 'center',
+            '& svg': {
+              fontSize: '16px',
             },
-          },
-          standardSuccess: {
-            backgroundColor: isLight
-              ? colors.primary.light.light
-              : colors.primary.light.dark,
-            color: isLight
-              ? colors.primary.dark.light
-              : colors.primary.light.light,
-          },
-          standardError: {
-            backgroundColor: isLight
-              ? colors.error.light.light
-              : colors.error.light.dark,
-            color: isLight ? colors.error.dark.light : colors.error.light.light,
-          },
-          standardInfo: {
-            backgroundColor: isLight
-              ? colors.info.light.light
-              : colors.info.light.dark,
-            color: isLight ? colors.info.dark.light : colors.info.light.light,
-          },
-          standardWarning: {
-            backgroundColor: isLight ? '#fff7e6' : '#2b2111',
-            color: isLight ? '#d46b08' : '#ffa940',
           },
         },
       },

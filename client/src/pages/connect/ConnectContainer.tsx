@@ -46,7 +46,7 @@ const ConnectContainer = () => {
             display: 'flex',
             flexDirection: 'column',
             padding: (theme: Theme) => theme.spacing(4, 3),
-            backgroundColor: (theme: Theme) => theme.palette.neutral[50],
+            backgroundColor: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.neutral[50],
             borderRadius: '12px 0 0 12px',
           }}
         >
@@ -63,7 +63,7 @@ const ConnectContainer = () => {
             variant="h5"
             sx={{
               fontWeight: 600,
-              color: 'primary.contrastText',
+              color: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
               marginTop: (theme: Theme) => theme.spacing(2),
               height: 32,
             }}
@@ -76,7 +76,7 @@ const ConnectContainer = () => {
               sx={{
                 marginTop: (theme: Theme) => theme.spacing(1),
                 fontSize: 13,
-                color: 'primary.contrastText',
+                color: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
                 opacity: 0.8,
                 height: 16,
               }}
@@ -95,8 +95,8 @@ const ConnectContainer = () => {
               width: '100%',
               gap: (theme: Theme) => theme.spacing(2),
               '& button': {
-                borderColor: 'primary.contrastText',
-                color: 'primary.contrastText',
+                borderColor: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
+                color: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
                 height: 40,
                 fontSize: 14,
                 '&:hover': {
