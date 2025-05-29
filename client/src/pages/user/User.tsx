@@ -249,10 +249,7 @@ const Users = () => {
   };
 
   return (
-    <Wrapper
-      sx={{ height: 'calc(100vh - 160px)' }}
-      hasPermission={hasPermission}
-    >
+    <Wrapper hasPermission={hasPermission}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}

@@ -6,6 +6,7 @@ export type CustomToolTipType = {
   placement?: placement;
   children: ReactElement<any, any>;
   leaveDelay?: number;
+  enterDelay?: number;
   sx?: SxProps<Theme>;
 };
 

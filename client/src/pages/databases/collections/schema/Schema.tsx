@@ -24,7 +24,7 @@ import {
   NameWrapper,
   ParamWrapper,
   GridWrapper,
-} from './Styles';
+} from './StyledComponents';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import EditMmapDialog from '@/pages/dialogs/EditMmapDialog';
@@ -87,7 +87,22 @@ const Overview = () => {
             {f.name === '$meta' && (
               <StyledChip size="small" label="Dynamic field" />
             )}
-            {f.is_primary_key && <StyledChip size="small" label="ID" />}
+            {f.is_primary_key && (
+              <StyledChip
+                size="small"
+                label="PK"
+                sx={{
+                  backgroundColor: theme => theme.palette.secondary.light,
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  height: '20px',
+                  '& .MuiChip-label': {
+                    px: 1,
+                  },
+                  border: theme => `1px solid ${theme.palette.secondary.main}`,
+                }}
+              />
+            )}
             {f.is_partition_key && (
               <StyledChip size="small" label="Partition key" />
             )}

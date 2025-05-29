@@ -8,7 +8,6 @@ import { MilvusService } from '@/http';
 import Box from '@mui/material/Box';
 import type { Theme } from '@mui/material/styles';
 
-// used for user connect process
 const ConnectContainer = () => {
   const [version, setVersion] = useState('loading');
   const { t: commonTrans } = useTranslation();
@@ -37,38 +36,36 @@ const ConnectContainer = () => {
           backgroundColor: 'background.default',
           border: (theme: Theme) => `1px solid ${theme.palette.divider}`,
           borderRadius: 2,
-          boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
-          minHeight: 644,
+          minHeight: 680,
         }}
       >
         <Box
           className="flex-center"
           sx={{
-            width: 299,
+            width: 320,
             display: 'flex',
             flexDirection: 'column',
-            padding: (theme: Theme) => theme.spacing(0, 3),
-            backgroundColor: 'background.default',
-            borderRadius: 2,
+            padding: (theme: Theme) => theme.spacing(4, 3),
+            backgroundColor: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.neutral[50],
+            borderRadius: '12px 0 0 12px',
           }}
         >
           <Icons.attu
             sx={{
-              width: 64,
+              width: 72,
               height: 'auto',
-              marginBottom: (theme: Theme) => theme.spacing(1),
+              marginBottom: (theme: Theme) => theme.spacing(2),
               display: 'block',
               color: 'primary.main',
             }}
           />
           <Typography
-            variant="body2"
+            variant="h5"
             sx={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              color: 'text.primary',
+              fontWeight: 600,
+              color: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
               marginTop: (theme: Theme) => theme.spacing(2),
-              height: 24,
+              height: 32,
             }}
           >
             {commonTrans('attu.admin')}
@@ -78,9 +75,10 @@ const ConnectContainer = () => {
               component="sub"
               sx={{
                 marginTop: (theme: Theme) => theme.spacing(1),
-                fontSize: 12,
-                color: 'text.secondary',
-                height: 12,
+                fontSize: 13,
+                color: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
+                opacity: 0.8,
+                height: 16,
               }}
             >
               {commonTrans('attu.version')}: {version}
@@ -89,15 +87,22 @@ const ConnectContainer = () => {
 
           <Box
             sx={{
-              marginTop: (theme: Theme) => theme.spacing(4),
+              marginTop: (theme: Theme) => theme.spacing(6),
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               width: '100%',
-              padding: (theme: Theme) => theme.spacing(2, 0),
+              gap: (theme: Theme) => theme.spacing(2),
               '& button': {
-                borderColor: 'transparent',
+                borderColor: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
+                color: (theme: Theme) => theme.palette.mode === 'dark' ? theme.palette.common.white : 'primary.contrastText',
+                height: 40,
+                fontSize: 14,
+                '&:hover': {
+                  backgroundColor: 'primary.main',
+                  borderColor: 'primary.main',
+                },
               },
             }}
           >
@@ -138,10 +143,9 @@ const ConnectContainer = () => {
         </Box>
         <Box
           sx={{
-            width: 481,
-            borderRadius: 2,
-            padding: (theme: Theme) => theme.spacing(5, 0),
-            boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+            width: 500,
+            borderRadius: '0 8px 8px 0',
+            padding: (theme: Theme) => theme.spacing(6, 0),
             backgroundColor: 'background.paper',
           }}
         >

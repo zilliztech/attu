@@ -3,7 +3,7 @@ import StatusIcon from '@/components/status/StatusIcon';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { styled, keyframes } from '@mui/system';
+import { styled } from '@mui/system';
 import { LOADING_STATE } from '@/consts';
 import { LoadingType } from '@/components/status/StatusIcon';
 

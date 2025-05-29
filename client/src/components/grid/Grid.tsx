@@ -78,6 +78,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     showPagination = true,
     hideOnDisable,
     rowDecorator = () => ({}),
+    sx = {},
   } = props;
 
   const _isSelected = (row: { [x: string]: any }) => {
@@ -157,7 +158,12 @@ const AttuGrid: FC<AttuGridType> = props => {
   return (
     <Grid
       container
-      sx={{ height: '100%', flexWrap: 'nowrap', flexDirection: 'column' }}
+      sx={{
+        height: '100%',
+        flexWrap: 'nowrap',
+        flexDirection: 'column',
+        ...sx,
+      }}
       ref={tableRef}
     >
       {title && (

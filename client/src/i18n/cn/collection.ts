@@ -11,10 +11,10 @@ const collectionTrans = {
   aliasTooltip: '请选择一个 Collection 创建别名',
   collection: 'Collection',
   entities: 'Entities',
-  mmapEnabled: '内存映射 (MMap)',
-  mmapSettings: 'MMap 设置',
-  collectionMMapSettingsLabel: '全局原始数据 MMap 设置',
-  rawData: '全局内存映射 (MMap) 的原始数据配置',
+  mmapEnabled: '内存映射开启 (mmap)',
+  mmapSettings: 'mmap 设置',
+  collectionMMapSettingsLabel: 'Collection 级别原始数据 mmap 设置',
+  rawData: '原始数据',
   functions: 'Functions',
 
   // table
@@ -26,6 +26,7 @@ const collectionTrans = {
   desc: '描述',
   createdTime: '创建时间',
   maxLength: '最大长度',
+  maxCapacity: '最大容量',
   dynamicSchema: '动态 Schema',
   function: 'Function',
   functionInput: 'Function 输入',
@@ -83,7 +84,8 @@ const collectionTrans = {
   loadCollectionAfterCreateTooltip:
     'Attu 将使用 AUTOINDEX 为所有字段创建 Index，然后加载 Collection。',
   addBm25Function: '添加 BM25 Function',
-  bm25NoVarcharAndSparse: '要创建 BM25 Function，请至少添加一个 VarChar 字段和一个 SparseFloatVector 字段。',
+  bm25NoVarcharAndSparse:
+    '要创建 BM25 Function，请至少添加一个 VarChar 字段和一个 SparseFloatVector 字段。',
   bm25NoVarchar: '要创建 BM25 Function，请至少添加一个 VarChar 字段。',
   bm25NoSparse: '要创建 BM25 Function，请至少添加一个 SparseFloatVector 字段。',
   bm25InputVarChar: '输入 VarChar 字段',
@@ -159,7 +161,7 @@ const collectionTrans = {
     '确保在同一会话中所有数据写入可以立即在读取中感知。',
   consistencyEventuallyTooltip:
     '不保证读写的顺序，副本最终会在没有进一步写操作的情况下收敛到相同的状态。',
-  noVectorIndexTooltip: '请保证所有向量列都有 Index。',
+  noVectorIndexTooltip: '请保证所有向量列都有索引。',
   mmapTooltip: `内存映射文件允许将原始数据和 Index 文件直接映射到内存中。此功能提高了内存效率，尤其是在可用内存稀缺但无法完全加载数据的情况下。`,
   mmapFieldSettingDisabledTooltip: `此设置已禁用，因为 Collection 级别的 mmap 配置覆盖了字段级别的设置。`,
   mmapCollectionNotReleasedTooltip: `Collection 没有释放，无法更新 mmap 配置。`,
@@ -167,7 +169,7 @@ const collectionTrans = {
   clickToLoad: '点击加载 Collection',
   clickToRelease: '点击释放 Collection',
   clickToSearch: '点击执行向量搜索',
-  clickToCreateVectorIndex: '点击创建向量 Index',
+  clickToCreateVectorIndex: '点击创建向量索引',
   collectionIsLoading: 'Collection 正在加载...',
 };
 

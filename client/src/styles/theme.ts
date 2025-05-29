@@ -1,5 +1,4 @@
 import { PaletteMode } from '@mui/material';
-import { grey } from '@mui/material/colors';
 import { Theme } from '@mui/material/styles';
 import { ButtonProps } from '@mui/material/Button';
 
@@ -17,43 +16,110 @@ declare module '@mui/material/styles' {
   }
   interface Palette {
     background: TypeBackground;
+    neutral: {
+      50: string;
+      100: string;
+      200: string;
+      300: string;
+      400: string;
+      500: string;
+      600: string;
+      700: string;
+      800: string;
+      900: string;
+    };
   }
 }
 
 const colors = {
   primary: {
-    main: '#0ACE82',
+    main: '#09B572',
     light: {
       light: '#f0fdf4',
       dark: '#1b4332',
     },
     dark: {
-      light: '#08a568',
-      dark: '#078b63',
+      light: '#07925E',
+      dark: '#067A50',
     },
   },
   secondary: {
-    main: '#1890FF',
+    main: '#1272CC',
     light: {
       light: '#E6F4FF',
       dark: '#003A8C',
     },
     dark: {
-      light: '#096DD9',
-      dark: '#0050B3',
+      light: '#0D5AA3',
+      dark: '#0A4680',
     },
   },
   error: {
-    main: '#ff4605',
+    main: '#D93C00',
     light: {
-      light: '#ff8f68',
-      dark: '#ff6a3a',
+      light: '#FFEBE6',
+      dark: '#7A1C00',
     },
     dark: {
-      light: '#cd3804',
-      dark: '#b33900',
+      light: '#B33200',
+      dark: '#8A2700',
     },
   },
+  warning: {
+    main: '#FF9800',
+    light: {
+      light: '#FFF4E5',
+      dark: '#7A4A00',
+    },
+    dark: {
+      light: '#E68A00',
+      dark: '#B36B00',
+    },
+  },
+  info: {
+    main: '#2196F3',
+    light: {
+      light: '#E6F4FF',
+      dark: '#0D3C61',
+    },
+    dark: {
+      light: '#1A7BC9',
+      dark: '#145FA0',
+    },
+  },
+  success: {
+    main: '#4CAF50',
+    light: {
+      light: '#E8F5E9',
+      dark: '#1B5E20',
+    },
+    dark: {
+      light: '#3D8B40',
+      dark: '#2E7D32',
+    },
+  },
+  neutral: {
+    50: '#F9FAFB',
+    100: '#F3F4F6',
+    200: '#E5E7EB',
+    300: '#D1D5DB',
+    400: '#9CA3AF',
+    500: '#6B7280',
+    600: '#4B5563',
+    700: '#374151',
+    800: '#1F2937',
+    900: '#111827',
+  },
+  background: {
+    default: '#F3F4F6',
+    paper: '#FFFFFF',
+  },
+  text: {
+    primary: '#111827',
+    secondary: '#4B5563',
+    disabled: '#9CA3AF',
+  },
+  divider: '#E5E7EB',
 };
 
 const spacing = (factor: number) => `${8 * factor}px`;
@@ -124,7 +190,7 @@ const typography = {
   button: {
     textTransform: 'initial',
     lineHeight: '16px',
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
 };
 
@@ -158,12 +224,44 @@ const getCommonThemes = (mode: PaletteMode) => ({
         mode === 'light' ? colors.error.light.light : colors.error.light.dark,
       dark: mode === 'light' ? colors.error.dark.light : colors.error.dark.dark,
     },
-    background: {
-      default: mode === 'light' ? '#f5f5f5' : '#121212',
-      paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
-      grey: mode === 'light' ? grey[200] : grey[800],
-      lightGrey: mode === 'light' ? grey[100] : grey[800],
+    warning: {
+      main: colors.warning.main,
+      light:
+        mode === 'light'
+          ? colors.warning.light.light
+          : colors.warning.light.dark,
+      dark:
+        mode === 'light' ? colors.warning.dark.light : colors.warning.dark.dark,
     },
+    info: {
+      main: colors.info.main,
+      light:
+        mode === 'light' ? colors.info.light.light : colors.info.light.dark,
+      dark: mode === 'light' ? colors.info.dark.light : colors.info.dark.dark,
+    },
+    success: {
+      main: colors.success.main,
+      light:
+        mode === 'light'
+          ? colors.success.light.light
+          : colors.success.light.dark,
+      dark:
+        mode === 'light' ? colors.success.dark.light : colors.success.dark.dark,
+    },
+    neutral: colors.neutral,
+    background: {
+      default:
+        mode === 'light' ? colors.background.default : colors.neutral[900],
+      paper: mode === 'light' ? colors.background.paper : colors.neutral[800],
+      grey: mode === 'light' ? colors.neutral[200] : colors.neutral[700],
+      lightGrey: mode === 'light' ? colors.neutral[100] : colors.neutral[800],
+    },
+    text: {
+      primary: mode === 'light' ? colors.text.primary : colors.neutral[50],
+      secondary: mode === 'light' ? colors.text.secondary : colors.neutral[400],
+      disabled: mode === 'light' ? colors.text.disabled : colors.neutral[600],
+    },
+    divider: mode === 'light' ? colors.divider : colors.neutral[700],
   },
   spacing,
 });
@@ -181,6 +279,9 @@ export const getAttuTheme = (mode: PaletteMode) => {
         },
       },
       MuiButton: {
+        defaultProps: {
+          disableRipple: true,
+        },
         styleOverrides: {
           root: ({
             theme,
@@ -232,6 +333,46 @@ export const getAttuTheme = (mode: PaletteMode) => {
             }),
           },
         ],
+      },
+      MuiTab: {
+        defaultProps: {
+          disableRipple: true,
+        },
+      },
+      MuiMenuItem: {
+        defaultProps: {
+          disableRipple: true,
+        },
+        styleOverrides: {
+          root: {
+            fontSize: '14px',
+            padding: '8px 16px',
+            minHeight: '36px',
+            transition: 'background-color 0.2s ease',
+            '&:hover': {
+              backgroundColor: isLight
+                ? 'rgba(10, 206, 130, 0.08)'
+                : 'rgba(10, 206, 130, 0.16)',
+            },
+            '&.Mui-selected': {
+              backgroundColor: isLight
+                ? 'rgba(10, 206, 130, 0.16)'
+                : 'rgba(10, 206, 130, 0.24)',
+              '&:hover': {
+                backgroundColor: isLight
+                  ? 'rgba(10, 206, 130, 0.24)'
+                  : 'rgba(10, 206, 130, 0.32)',
+              },
+            },
+            '&.Mui-disabled': {
+              opacity: 0.6,
+            },
+            '& .MuiListItemIcon-root': {
+              color: isLight ? '#666' : '#aaa',
+              minWidth: '36px',
+            },
+          },
+        },
       },
       MuiDialog: {
         styleOverrides: {
@@ -403,34 +544,36 @@ export const getAttuTheme = (mode: PaletteMode) => {
           },
         },
       },
-      MuiMenuItem: {
+      MuiSnackbar: {
         styleOverrides: {
           root: {
-            fontSize: '14px',
-            padding: '8px 16px',
-            minHeight: '36px',
-            transition: 'background-color 0.2s ease',
-            '&:hover': {
-              backgroundColor: isLight
-                ? 'rgba(10, 206, 130, 0.08)'
-                : 'rgba(10, 206, 130, 0.16)',
+            '&.MuiSnackbar-anchorOriginTopCenter': {
+              top: { xs: 56, md: 72 },
             },
-            '&.Mui-selected': {
-              backgroundColor: isLight
-                ? 'rgba(10, 206, 130, 0.16)'
-                : 'rgba(10, 206, 130, 0.24)',
-              '&:hover': {
-                backgroundColor: isLight
-                  ? 'rgba(10, 206, 130, 0.24)'
-                  : 'rgba(10, 206, 130, 0.32)',
-              },
+            '&.MuiSnackbar-anchorOriginTopRight': {
+              top: { xs: 56, md: 72 },
+              right: (theme: Theme) => theme.spacing(1),
             },
-            '&.Mui-disabled': {
-              opacity: 0.6,
+          },
+        },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          root: {
+            padding: '0 12px',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            color: '#fff',
+            gap: '4px',
+            '& .MuiAlert-action': {
+              padding: '0',
             },
-            '& .MuiListItemIcon-root': {
-              color: isLight ? '#666' : '#aaa',
-              minWidth: '36px',
+            '& .MuiAlert-icon': {
+              marginRight: '4px',
+            },
+            '& svg': {
+              fontSize: '16px',
             },
           },
         },

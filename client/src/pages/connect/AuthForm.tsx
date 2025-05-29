@@ -249,20 +249,30 @@ export const AuthForm = () => {
           flexDirection: 'column',
           padding: (theme: Theme) => theme.spacing(0, 3),
           position: 'relative',
+          height: '100%',
         }}
       >
         <Box
           sx={{
             textAlign: 'left',
             alignSelf: 'flex-start',
-            padding: (theme: Theme) => theme.spacing(3, 0),
+            padding: (theme: Theme) => theme.spacing(2, 0, 1.5),
             '& svg': {
-              fontSize: 15,
+              fontSize: 16,
               marginLeft: (theme: Theme) => theme.spacing(0.5),
+              color: 'primary.main',
             },
           }}
         >
-          <Typography variant="h4" component="h4">
+          <Typography
+            variant="h4"
+            component="h4"
+            sx={{
+              fontSize: 20,
+              fontWeight: 600,
+              color: 'text.primary',
+            }}
+          >
             {commonTrans('attu.connectTitle')}
             <CustomToolTip title={commonTrans('attu.connectionTip')}>
               <Icons.info />
@@ -280,9 +290,18 @@ export const AuthForm = () => {
               handleInputChange('address', String(val)),
             variant: 'filled',
             sx: {
-              margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
+              margin: (theme: Theme) => theme.spacing(0.5, 0),
               '& .MuiFilledInput-adornedEnd': {
                 paddingRight: 0,
+              },
+              '& .MuiFilledInput-root': {
+                backgroundColor: 'background.default',
+                '&:hover': {
+                  backgroundColor: 'action.hover',
+                },
+                '&.Mui-focused': {
+                  backgroundColor: 'background.default',
+                },
               },
             },
             placeholder: commonTrans('attu.address'),
@@ -298,6 +317,7 @@ export const AuthForm = () => {
                     '& button': {
                       width: 36,
                       height: 36,
+                      color: 'primary.main',
                     },
                   }}
                   onClick={handleMenuClick}
@@ -330,9 +350,15 @@ export const AuthForm = () => {
             onChange: (value: string) => handleInputChange('database', value),
             variant: 'filled',
             sx: {
-              margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
-              '& .MuiFilledInput-adornedEnd': {
-                paddingRight: 0,
+              margin: (theme: Theme) => theme.spacing(0.5, 0),
+              '& .MuiFilledInput-root': {
+                backgroundColor: 'background.default',
+                '&:hover': {
+                  backgroundColor: 'action.hover',
+                },
+                '&.Mui-focused': {
+                  backgroundColor: 'background.default',
+                },
               },
             },
             placeholder: dbTrans('database'),
@@ -350,6 +376,7 @@ export const AuthForm = () => {
             display: 'flex',
             width: '100%',
             justifyContent: 'flex-start',
+            marginTop: (theme: Theme) => theme.spacing(1),
           }}
         >
           <CustomRadio
@@ -370,9 +397,15 @@ export const AuthForm = () => {
                 onChange: (val: string) => handleInputChange('token', val),
                 variant: 'filled',
                 sx: {
-                  margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
-                  '& .MuiFilledInput-adornedEnd': {
-                    paddingRight: 0,
+                  margin: (theme: Theme) => theme.spacing(0.5, 0),
+                  '& .MuiFilledInput-root': {
+                    backgroundColor: 'background.default',
+                    '&:hover': {
+                      backgroundColor: 'action.hover',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: 'background.default',
+                    },
                   },
                 },
                 placeholder: commonTrans('attu.token'),
@@ -393,9 +426,15 @@ export const AuthForm = () => {
                   handleInputChange('username', value),
                 variant: 'filled',
                 sx: {
-                  margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
-                  '& .MuiFilledInput-adornedEnd': {
-                    paddingRight: 0,
+                  margin: (theme: Theme) => theme.spacing(0.5, 0),
+                  '& .MuiFilledInput-root': {
+                    backgroundColor: 'background.default',
+                    '&:hover': {
+                      backgroundColor: 'action.hover',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: 'background.default',
+                    },
                   },
                 },
                 placeholder: commonTrans('attu.username'),
@@ -416,9 +455,15 @@ export const AuthForm = () => {
                   handleInputChange('password', value),
                 variant: 'filled',
                 sx: {
-                  margin: (theme: Theme) => theme.spacing(0.5, 0, 0),
-                  '& .MuiFilledInput-adornedEnd': {
-                    paddingRight: 0,
+                  margin: (theme: Theme) => theme.spacing(0.5, 0),
+                  '& .MuiFilledInput-root': {
+                    backgroundColor: 'background.default',
+                    '&:hover': {
+                      backgroundColor: 'action.hover',
+                    },
+                    '&.Mui-focused': {
+                      backgroundColor: 'background.default',
+                    },
                   },
                 },
                 placeholder: commonTrans('attu.password'),
@@ -433,57 +478,96 @@ export const AuthForm = () => {
           </>
         )}
 
-        {/* SSL toggle */}
         <Box
           sx={{
-            display: 'flex',
-            width: '100%',
-            justifyContent: 'flex-start',
+            marginTop: 'auto',
+            padding: (theme: Theme) => theme.spacing(2, 0),
           }}
         >
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={authReq.ssl}
-                onChange={e => handleInputChange('ssl', e.target.checked)}
-              />
-            }
-            label={commonTrans('attu.ssl')}
-          />
-        </Box>
-
-        <CustomButton type="submit" variant="contained" disabled={btnDisabled}>
-          {btnTrans(isConnecting ? 'connecting' : 'connect')}
-        </CustomButton>
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            marginTop: 4,
-            '& .MuiCheckbox-root': {
-              margin: 0,
-              padding: '8px 4px 8px 0',
-            },
-            '& span': {
-              cursor: 'pointer',
-              fontSize: 12,
-              fontStyle: 'italic',
-            },
-          }}
-        >
-          <label>
-            <Checkbox
-              size="small"
-              checked={authReq.checkHealth}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                handleInputChange('checkHealth', e.target.checked);
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: (theme: Theme) => theme.spacing(2),
+            }}
+          >
+            <CustomButton 
+              type="submit" 
+              variant="contained" 
+              disabled={btnDisabled}
+              sx={{
+                height: 36,
+                fontSize: 14,
+                fontWeight: 500,
+                flex: 1,
               }}
-            />
-            <Typography component="span">
-              {commonTrans('attu.checkHealth')}
-            </Typography>
-          </label>
+            >
+              {btnTrans(isConnecting ? 'connecting' : 'connect')}
+            </CustomButton>
+
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: (theme: Theme) => theme.spacing(1),
+                borderLeft: (theme: Theme) => `1px solid ${theme.palette.divider}`,
+                paddingLeft: (theme: Theme) => theme.spacing(2),
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={authReq.ssl}
+                    onChange={e => handleInputChange('ssl', e.target.checked)}
+                    sx={{
+                      padding: '4px',
+                      '&.Mui-checked': {
+                        color: 'primary.main',
+                      },
+                    }}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: 13,
+                      color: 'text.secondary',
+                    }}
+                  >
+                    {commonTrans('attu.ssl')}
+                  </Typography>
+                }
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size="small"
+                    checked={authReq.checkHealth}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleInputChange('checkHealth', e.target.checked);
+                    }}
+                    sx={{
+                      padding: '4px',
+                      '&.Mui-checked': {
+                        color: 'primary.main',
+                      },
+                    }}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: 13,
+                      color: 'text.secondary',
+                    }}
+                  >
+                    {commonTrans('attu.checkHealth')}
+                  </Typography>
+                }
+              />
+            </Box>
+          </Box>
         </Box>
       </Box>
 

@@ -19,6 +19,7 @@ const CustomSelector: FC<CustomMultiSelectorType> = props => {
     labelClass = '',
     size = 'small',
     renderValue = selected => <>selected</>,
+    sx,
     ...others
   } = props;
 
@@ -29,7 +30,7 @@ const CustomSelector: FC<CustomMultiSelectorType> = props => {
       variant={variant}
       className={wrapperClass}
       size={size}
-      sx={{ minWidth: 120 }}
+      sx={{ ...sx }}
     >
       {label && (
         <InputLabel className={labelClass} htmlFor={id}>
@@ -38,7 +39,6 @@ const CustomSelector: FC<CustomMultiSelectorType> = props => {
       )}
       <Select
         className={classes?.root}
-        {...others}
         multiple
         value={values}
         onChange={onChange}
@@ -46,25 +46,29 @@ const CustomSelector: FC<CustomMultiSelectorType> = props => {
           id,
         }}
         renderValue={renderValue}
-        sx={{
-          '& .MuiSelect-multiple': {
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 0.5,
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 300,
+            },
           },
         }}
+        {...others}
       >
         {options.map(v => (
           <MenuItem
             key={v.value}
             value={v.value}
             sx={{
-              minHeight: 'auto',
-              px: 1,
-              fontSize: '0.875rem',
+              padding: '4px',
+              fontSize: '12px',
             }}
           >
-            <Checkbox checked={values.indexOf(v.value as string) !== -1} />
+            <Checkbox
+              checked={values.indexOf(v.value as string) !== -1}
+              size="small"
+              sx={{ padding: '4px' }}
+            />
             {v.label}
           </MenuItem>
         ))}

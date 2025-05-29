@@ -9,14 +9,12 @@ import type { SxProps, Theme } from '@mui/material/styles';
 const tabSx: SxProps<Theme> = {
   textTransform: 'capitalize',
   minWidth: 0,
-  marginRight: 3,
+  fontSize: '13px',
+  fontWeight: 500,
 };
 
 const tabsSx: SxProps<Theme> = {
   borderBottom: theme => `1px solid ${theme.palette.divider}`,
-  '& .MuiTabs-indicator': {
-    height: (theme: Theme) => theme.spacing(0.5),
-  },
 };
 
 const tabPanelSx: SxProps<Theme> = {
@@ -75,7 +73,6 @@ const RouteTabList: FC<ITabListProps> = props => {
     <Box sx={wrapperSx} className={wrapperClass}>
       <Tabs
         sx={tabsSx}
-        TabIndicatorProps={{ children: <div className="tab-indicator" /> }}
         value={activeIndex}
         onChange={handleChange}
         aria-label="tabs"

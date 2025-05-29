@@ -46,14 +46,13 @@ const SystemView: any = () => {
   return (
     <Box
       sx={theme => ({
-        margin: '16px',
+        margin: '12px',
         position: 'relative',
         display: 'flex',
         height: 'calc(100vh - 80px)',
         overflow: 'hidden',
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: 2,
-        boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
       })}
     >
       <Box
@@ -69,7 +68,6 @@ const SystemView: any = () => {
             width: '70%',
             background: theme.palette.background.paper,
             borderRadius: 2,
-            boxShadow: '0 0 10px 0 rgba(0,0,0,0.1)',
           })}
         >
           <Topo

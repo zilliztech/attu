@@ -1,7 +1,7 @@
 import { FC, useContext, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import Chip from '@mui/material/Chip';
-import { Theme, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { IndexCreateParam, IndexExtraParam, IndexManageParam } from './Types';
 import { rootContext, dataContext } from '@/context';
 import Icons from '@/components/icons/Icons';
@@ -105,7 +105,15 @@ const IndexTypeElement: FC<{
 
   const chipComp = (
     text = field.index.indexType,
-    icon = <Icons.delete sx={{ width: 16, height: 16 }} />,
+    icon = (
+      <Icons.delete
+        sx={{
+          width: 16,
+          height: 16,
+          color: theme => theme.palette.secondary.dark,
+        }}
+      />
+    ),
     tooltip = ''
   ) => {
     let labelText = text;
@@ -115,7 +123,34 @@ const IndexTypeElement: FC<{
     const IndexElem = () => (
       <Chip
         label={<span style={{ fontSize: 12 }}>{labelText}</span>}
-        sx={{ padding: theme.spacing(0.5) }}
+        sx={{
+          backgroundColor: theme => theme.palette.secondary.light,
+          color: theme =>
+            theme.palette.mode === 'light'
+              ? theme.palette.secondary.main
+              : '#fff',
+          height: '20px',
+          '& .MuiChip-label': {
+            px: 1,
+          },
+          border: '1px solid transparent',
+          '& .MuiChip-deleteIcon': {
+            color: theme =>
+              theme.palette.mode === 'light'
+                ? theme.palette.secondary.main
+                : '#fff',
+            '&:hover': {
+              color: theme =>
+                theme.palette.mode === 'light'
+                  ? theme.palette.secondary.main
+                  : '#fff',
+            },
+          },
+          '&:hover': {
+            border: theme => `1px solid ${theme.palette.secondary.main}`,
+            backgroundColor: theme => theme.palette.secondary.light,
+          },
+        }}
         deleteIcon={icon}
         onDelete={handleDelete}
         disabled={disabled}
@@ -156,13 +191,27 @@ const IndexTypeElement: FC<{
             display: 'flex',
             alignItems: 'center',
             whiteSpace: 'nowrap',
-            color: theme.palette.primary.main,
-            height: 26,
-            fontSize: 13,
-            border: isVector
-              ? `1px dashed ${theme.palette.primary.main}`
-              : '1px solid transparent',
-            '& svg': { width: 15 },
+            backgroundColor: 'transparent',
+            borderRadius: 8,
+            color: theme => theme.palette.secondary.main,
+            fontWeight: 600,
+            fontSize: '12px',
+            height: '20px',
+            border: theme =>
+              isVector
+                ? `1px dashed ${theme.palette.secondary.main}`
+                : `1px solid ${theme.palette.secondary.main}`,
+            '& svg': {
+              width: 15,
+              color: theme => theme.palette.secondary.main,
+            },
+            '&:hover': {
+              backgroundColor: theme => theme.palette.secondary.main,
+              color: theme => theme.palette.secondary.contrastText,
+              '& svg': {
+                color: theme => theme.palette.secondary.contrastText,
+              },
+            },
           }}
           onClick={e => handleCreate(e)}
         >
@@ -194,7 +243,14 @@ const IndexTypeElement: FC<{
   };
 
   return (
-    <span style={{ width: 'auto', display: 'inline-block' }}>
+    <span
+      style={{
+        width: 'auto',
+        display: 'inline-flex',
+        alignItems: 'center',
+        height: '100%',
+      }}
+    >
       {generateElement()}
     </span>
   );

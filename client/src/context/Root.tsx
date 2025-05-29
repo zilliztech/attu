@@ -30,12 +30,7 @@ const DefaultDrawerConfigs: DrawerType = {
 };
 
 export const rootContext = React.createContext<RootContextType>({
-  openSnackBar: (
-    message,
-    type = 'success',
-    autoHideDuration,
-    position = { vertical: 'top', horizontal: 'right' }
-  ) => {},
+  openSnackBar: (message, type = 'success', autoHideDuration, position) => {},
   dialog: DefaultDialogConfigs,
   dialog2: DefaultDialogConfigs,
   setDialog: params => {},
@@ -80,9 +75,9 @@ export const RootProvider = (props: { children: React.ReactNode }) => {
         open: false,
         type: 'success',
         message: '',
+        autoHideDuration: 30000,
         vertical: 'top',
-        horizontal: 'right',
-        autoHideDuration: 3000,
+        horizontal: 'center',
       });
       // hide dialog
       setDialog({

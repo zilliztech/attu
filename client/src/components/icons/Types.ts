@@ -10,7 +10,6 @@ export type IconsType =
   | 'copy'
   | 'error'
   | 'clear'
-  | 'app'
   | 'navOverview'
   | 'navCollection'
   | 'navConsole'
@@ -60,7 +59,7 @@ export type IconsType =
   | 'day'
   | 'night'
   | 'img'
-  | 'fileplus'
   | 'file'
   | 'eye'
-  | 'newWindow';
+  | 'newWindow'
+  | 'caretSort';

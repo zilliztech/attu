@@ -46,30 +46,29 @@ const btnTrans = {
   downloadChart: 'Download Chart',
   EditDefaultValue: 'Edit Default Value',
   viewData: 'View Data',
-  mmapSetting: 'MMap Settings',
+  mmapSetting: 'Mmap Settings',
   importFromJSON: 'Import from JSON',
 
   // tips
-  loadColTooltip: 'Load Collection',
-  releaseColTooltip: 'Release Collection',
-  importFileTooltip: 'Import JSON or CSV file',
-  importSampleDataTooltip: 'Insert sample data into the current collection',
-  exportTooltip: 'Export selected data to csv',
-  copyJsonTooltip: 'Copy selected data as JSON format',
-  emptyTooltip: 'Empty all data in the collection',
+  loadColTooltip: 'Load collection into memory',
+  releaseColTooltip: 'Release collection from memory',
+  importFileTooltip: 'Import data from JSON or CSV file',
+  importSampleDataTooltip: 'Insert sample data into this collection',
+  exportTooltip: 'Export selected data to CSV file',
+  copyJsonTooltip: 'Copy selected data in JSON format',
+  emptyTooltip: 'Remove all data from this collection',
   deleteTooltip: 'Delete selected data',
-  deleteColTooltip: 'Drop selected collection',
-  duplicateTooltip: 'Duplicate selected collection without data',
-  renameTooltip: 'Rename collection',
-  editEntityTooltip: 'Edit entity(JSON)',
-  viewDataTooltip: 'View data detail',
+  deleteColTooltip: 'Delete selected collection',
+  duplicateTooltip: 'Create a copy of this collection (without data)',
+  renameTooltip: 'Rename this collection',
+  editEntityTooltip: 'Edit entity in JSON format',
+  viewDataTooltip: 'View detailed data information',
 
   // disable tooltip
-  downloadDisabledTooltip: 'Please select data before exporting',
-  deleteDisableTooltip: 'Please select at least one item to delete.',
-  editEntityDisabledTooltip: 'Only one entity can be edited at a time.',
-  editEntityDisabledTooltipAutoId:
-    'The auto-generated ID entity cannot be edited.',
+  downloadDisabledTooltip: 'Please select data to export',
+  deleteDisableTooltip: 'Please select at least one item to delete',
+  editEntityDisabledTooltip: 'You can only edit one entity at a time',
+  editEntityDisabledTooltipAutoId: 'Auto-generated ID entities cannot be edited',
 };
 
 export default btnTrans;

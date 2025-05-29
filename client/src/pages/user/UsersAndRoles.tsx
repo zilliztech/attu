@@ -45,8 +45,7 @@ const Users = () => {
         display: 'flex',
         flexDirection: 'row',
         background: theme.palette.background.paper,
-        padding: theme.spacing(0.5, 2),
-        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.1)',
+        padding: theme.spacing(0.5, 1.5),
         borderRadius: 2,
         border: `1px solid ${theme.palette.divider}`,
       })}

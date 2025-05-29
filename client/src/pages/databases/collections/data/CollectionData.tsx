@@ -38,6 +38,7 @@ import DataView from '@/components/DataView/DataView';
 import DataListView from '@/components/DataListView/DataListView';
 import type { QueryState } from '../../types';
 import { CollectionFullObject } from '@server/types';
+import CustomMultiSelector from '../../../../components/customSelector/CustomMultiSelector';
 
 export interface CollectionDataProps {
   queryState: QueryState;
@@ -491,13 +492,44 @@ const CollectionData = (props: CollectionDataProps) => {
             </div>
 
             <div className="right">
-              <FormControl
+              <CustomMultiSelector
+                options={queryState.fields.map(field => ({
+                  label:
+                    field.name === DYNAMIC_FIELD
+                      ? searchTrans('dynamicFields')
+                      : field.name,
+                  value: field.name,
+                }))}
+                values={queryState.outputFields}
+                label={searchTrans('outputFields')}
                 variant="filled"
-                className="outputs selector"
+                wrapperClass="outputs selector"
+                onChange={(e: { target: { value: unknown } }) => {
+                  const values = e.target.value as string[];
+                  // sort output fields by schema order
+                  const newOutputFields = [...values].sort(
+                    (a, b) =>
+                      queryState.fields.findIndex(f => f.name === a) -
+                      queryState.fields.findIndex(f => f.name === b)
+                  );
+
+                  setQueryState({
+                    ...queryState,
+                    outputFields: newOutputFields,
+                  });
+                }}
+                renderValue={(selected: unknown) => {
+                  const selectedArray = selected as string[];
+                  return (
+                    <span>{`${selectedArray.length} ${commonTrans(
+                      selectedArray.length > 1 ? 'grid.fields' : 'grid.field'
+                    )}`}</span>
+                  );
+                }}
                 sx={{
-                  minWidth: 200,
                   '& .MuiSelect-select': {
                     fontSize: '14px',
+                    minHeight: '28px',
                   },
                   '& .MuiInputLabel-root': {
                     fontSize: '14px',
@@ -514,65 +546,7 @@ const CollectionData = (props: CollectionDataProps) => {
                     margin: '0',
                   },
                 }}
-              >
-                <InputLabel>{searchTrans('outputFields')}</InputLabel>
-                <Select
-                  multiple
-                  value={queryState.outputFields}
-                  label={searchTrans('outputFields')}
-                  onChange={e => {
-                    const values = e.target.value as string[];
-                    // sort output fields by schema order
-                    const newOutputFields = [...values].sort(
-                      (a, b) =>
-                        queryState.fields.findIndex(f => f.name === a) -
-                        queryState.fields.findIndex(f => f.name === b)
-                    );
-
-                    setQueryState({
-                      ...queryState,
-                      outputFields: newOutputFields,
-                    });
-                  }}
-                  renderValue={selected => (
-                    <span>{`${selected.length} ${commonTrans(
-                      selected.length > 1 ? 'grid.fields' : 'grid.field'
-                    )}`}</span>
-                  )}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        maxHeight: 300,
-                      },
-                    },
-                  }}
-                >
-                  {queryState.fields.map(field => (
-                    <MenuItem
-                      key={field.name}
-                      value={field.name}
-                      sx={{
-                        padding: '0 12px',
-                      }}
-                    >
-                      <Checkbox
-                        checked={
-                          queryState.outputFields.indexOf(field.name) > -1
-                        }
-                        size="small"
-                      />
-                      <ListItemText
-                        primary={
-                          field.name === DYNAMIC_FIELD
-                            ? searchTrans('dynamicFields')
-                            : field.name
-                        }
-                        primaryTypographyProps={{ fontSize: '14px' }}
-                      />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              />
               <CustomButton
                 className="btn"
                 onClick={handleFilterReset}

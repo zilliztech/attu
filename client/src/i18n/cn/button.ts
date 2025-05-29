@@ -46,7 +46,7 @@ const btnTrans = {
   downloadChart: '下载图表',
   editDefaultValue: '编辑默认值',
   viewData: '查看数据',
-  mmapSetting: '内存映射 (MMap) 设置',
+  mmapSetting: '内存映射 (mmap) 设置',
   importFromJSON: '从 JSON 导入',
 
   // tips

@@ -106,7 +106,7 @@ const SearchParams: FC<SearchParamsProps> = ({
         ...sx,
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
+        gap: 1.5,
       }}
     >
       {paramList.map(param => {

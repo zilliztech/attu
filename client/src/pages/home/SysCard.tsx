@@ -21,9 +21,6 @@ const SysCard = (data: {
         flexDirection: 'column',
         alignItems: 'flex-start',
         transition: 'box-shadow 0.2s',
-        '&:hover': {
-          boxShadow: '0px 0px 4px 0px #00000029',
-        },
         '& a': {
           textDecoration: 'none',
           color: theme.palette.text.primary,

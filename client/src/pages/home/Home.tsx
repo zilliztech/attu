@@ -16,6 +16,7 @@ import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import icons from '@/components/icons/Icons';
 import SysCard from './SysCard';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import Wrapper from '@/components/layout/Wrapper';
 
 const Home = () => {
   useNavigationHook(ALL_ROUTER_TYPES.HOME);
@@ -83,7 +84,7 @@ const Home = () => {
   };
 
   return (
-    <Box className="page-wrapper" sx={{ color: 'inherit' }}>
+    <Wrapper className="page-wrapper">
       <Box
         sx={{
           width: '90%',
@@ -140,7 +141,7 @@ const Home = () => {
               display: 'flex',
               flexWrap: 'wrap',
               flexGrow: 0,
-              gap: 2,
+              gap: 1.5,
             }}
           >
             {databases.map(db => {
@@ -248,7 +249,7 @@ const Home = () => {
           )}
         </>
       )}
-    </Box>
+    </Wrapper>
   );
 };
 

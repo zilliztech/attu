@@ -11,20 +11,27 @@ export const InputArea = styled(Box)({
   display: 'flex',
   flexDirection: 'row',
   width: '100%',
-  height: 'max-content',
+  height: '100%',
   padding: 0,
+  overflow: 'hidden',
 });
+
+export const LeftSection = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  position: 'relative',
+  paddingRight: '8px',
+  marginBottom: '8px',
+  borderRight: `1px solid ${theme.palette.divider}`,
+}));
 
 export const AccordionsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '260px',
   flexDirection: 'column',
   flexShrink: 0,
-  padding: '0 8px 8px 0',
-  minHeight: 'calc(100vh - 164px)',
-  height: 'calc(100vh - 164px)',
   overflow: 'auto',
-  borderRight: `1px solid ${theme.palette.divider}`,
+  maxHeight: '100%',
   '& .MuiAccordion-root.Mui-expanded': {
     margin: 0,
   },
@@ -36,17 +43,17 @@ export const AccordionsContainer = styled(Box)(({ theme }) => ({
 export const StyledAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
   padding: '0',
-  border: '1px solid transparent',
 
+  border: '1px solid transparent',
   '&.highlight': {
     border: `1px solid ${theme.palette.secondary.main}`,
-    borderRadius: 8,
+    borderRadius: 4,
   },
 
   '& .MuiAccordionSummary-root': {
     minHeight: '48px',
     height: '48px',
-    padding: '0 12px 0 0',
+    padding: '0 8px',
     transition: 'none',
     '&.Mui-expanded': {
       minHeight: '48px',
@@ -100,19 +107,7 @@ export const SearchInputBox = styled(Box)(({ theme }) => ({
   height: '124px',
   margin: '0 0 8px 0',
   overflow: 'auto',
-  backgroundColor: theme.palette.background.default,
   cursor: 'text',
-  boxShadow: '0 1px 0 transparent',
-  transition: 'box-shadow 0.3s ease',
-  '&:hover': {
-    boxShadow: '0 1px 0 #000',
-  },
-  '&:active': {
-    boxShadow: `0 1px 0 ${theme.palette.primary.main}`,
-  },
-  '&.focused': {
-    boxShadow: `0 2px 0 ${theme.palette.primary.main}`,
-  },
 }));
 
 export const SearchControls = styled(Box)(({ theme }) => ({
@@ -120,9 +115,10 @@ export const SearchControls = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   width: 120,
   minWidth: 120,
-  padding: '0 8px',
-  borderRight: `1px solid ${theme.palette.divider}`,
-
+  padding: '0',
+  height: 'fit-content',
+  alignSelf: 'flex-start',
+  marginLeft: '8px',
   '& .selector': {
     marginBottom: '8px',
   },
@@ -137,7 +133,7 @@ export const SearchResults = styled(Box)({
   flexDirection: 'column',
   flexGrow: 1,
   paddingLeft: 8,
-  overflow: 'auto',
+  overflow: 'hidden',
 });
 
 export const Toolbar = styled(Box)(({ theme }) => ({
@@ -206,8 +202,7 @@ export const NodeInfo = styled(Paper)(({ theme }) => ({
   padding: '8px',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 8,
-  boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+  borderRadius: 4,
   maxWidth: 240,
   overflow: 'auto',
   zIndex: 1,
@@ -237,7 +232,7 @@ export const SelectedNodes = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   top: 200,
   right: 36,
-  borderRadius: 8,
+  borderRadius: 4,
   gap: 8,
   height: '70%',
   overflow: 'auto',
@@ -293,8 +288,7 @@ export const DataExplorerRoot = styled(Box)(({ theme }) => ({
     padding: '8px',
     backgroundColor: theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,
-    borderRadius: 8,
-    boxShadow: '0px 6px 30px rgba(0, 0, 0, 0.1)',
+    borderRadius: 4,
     maxWidth: 240,
     overflow: 'auto',
     zIndex: 1,

@@ -318,7 +318,8 @@ const Collections = () => {
               to={`/databases/${database}/${collection_name}/overview`}
               style={{
                 color: 'inherit',
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
                 wordBreak: 'break-all',
                 whiteSpace: 'nowrap',
                 width: 150,
@@ -354,11 +355,12 @@ const Collections = () => {
       label: collectionTrans('status'),
       formatter(v) {
         return (
-          <Typography variant="body1">
+          <Typography variant="body1" component="div">
             <StatusAction
               status={v.status}
               percentage={v.loadedPercentage}
               collection={v}
+              showLoadButton={true}
             />
           </Typography>
         );
@@ -484,7 +486,7 @@ const Collections = () => {
   }, [collectionList, batchRefreshCollections]);
 
   return (
-    <Root sx={{ height: 'calc(100% - 24px)' }}>
+    <Root>
       {collections.length > 0 || loading ? (
         <AttuGrid
           toolbarConfigs={toolbarConfigs}
@@ -497,7 +499,7 @@ const Collections = () => {
           page={currentPage}
           onPageChange={handlePageChange}
           rowsPerPage={pageSize}
-          tableHeaderHeight={49}
+          tableHeaderHeight={46}
           rowHeight={43}
           setRowsPerPage={handlePageSize}
           isLoading={loading}
