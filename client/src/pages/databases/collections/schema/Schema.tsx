@@ -92,8 +92,15 @@ const Overview = () => {
                 size="small"
                 label="PK"
                 sx={{
-                  backgroundColor: 'primary.main',
-                  color: 'primary.contrastText',
+                  backgroundColor: theme => theme.palette.secondary.light,
+                  color: theme => theme.palette.secondary.dark,
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  height: '20px',
+                  '& .MuiChip-label': {
+                    px: 1,
+                  },
+                  border: theme => `1px solid ${theme.palette.secondary.main}`,
                 }}
               />
             )}

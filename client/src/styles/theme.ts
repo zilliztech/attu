@@ -40,7 +40,7 @@ const colors = {
     },
     dark: {
       light: '#096DD9',
-      dark: '#0050B3',
+      dark: '#E6F4FF',
     },
   },
   error: {
