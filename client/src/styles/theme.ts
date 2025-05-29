@@ -111,7 +111,7 @@ const colors = {
     900: '#111827',
   },
   background: {
-    default: '#F9FAFB',
+    default: '#F3F4F6',
     paper: '#FFFFFF',
   },
   text: {

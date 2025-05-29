@@ -85,12 +85,16 @@ const DatabaseCard: FC<DatabaseCardProps> = ({
         onClick={onClick}
       >
         <>
-          {isManaged ? <ZillizIcon /> : <DbIcon />}
+          {isManaged ? (
+            <ZillizIcon />
+          ) : (
+            <DbIcon sx={{ width: 24, height: 24 }} />
+          )}
           <Typography
             variant="h3"
             sx={{
-              fontSize: '20px',
-              lineHeight: '24px',
+              fontSize: '16px',
+              lineHeight: '1.3',
               fontWeight: '500',
               mb: 1,
               maxWidth: '128px',

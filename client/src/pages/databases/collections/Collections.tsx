@@ -318,7 +318,8 @@ const Collections = () => {
               to={`/databases/${database}/${collection_name}/overview`}
               style={{
                 color: 'inherit',
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
                 wordBreak: 'break-all',
                 whiteSpace: 'nowrap',
                 width: 150,
