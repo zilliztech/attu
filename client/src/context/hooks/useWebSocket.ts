@@ -31,14 +31,20 @@ export const useWebSocket = ({
       const extraHeaders = {
         'milvus-client-id': clientId,
       };
-      const ioParams = { extraHeaders, query: extraHeaders };
 
       // Ensure previous connection is cleaned up before creating a new one
       if (socket.current) {
         clearSocket();
       }
 
-      socket.current = isElectron ? io(url as string, ioParams) : io(ioParams);
+      // For Electron, use default config, for web use path configuration
+      socket.current = isElectron
+        ? io(url as string, { extraHeaders, query: extraHeaders })
+        : io(url as string, {
+            extraHeaders,
+            query: extraHeaders,
+            path: '/socket.io', // Add path configuration for proxy usage
+          });
 
       socket.current.on('connect', () => {
         // console.info('--- ws connected ---', clientId);
