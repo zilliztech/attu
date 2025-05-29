@@ -11,7 +11,7 @@ const collectionTrans = {
   aliasTooltip: '请选择一个 Collection 创建别名',
   collection: 'Collection',
   entities: 'Entities',
-  mmapEnabled: '内存映射 (mmap)',
+  mmapEnabled: '内存映射开启 (mmap)',
   mmapSettings: 'mmap 设置',
   collectionMMapSettingsLabel: 'Collection 级别原始数据 mmap 设置',
   rawData: '原始数据',
@@ -84,7 +84,8 @@ const collectionTrans = {
   loadCollectionAfterCreateTooltip:
     'Attu 将使用 AUTOINDEX 为所有字段创建 Index，然后加载 Collection。',
   addBm25Function: '添加 BM25 Function',
-  bm25NoVarcharAndSparse: '要创建 BM25 Function，请至少添加一个 VarChar 字段和一个 SparseFloatVector 字段。',
+  bm25NoVarcharAndSparse:
+    '要创建 BM25 Function，请至少添加一个 VarChar 字段和一个 SparseFloatVector 字段。',
   bm25NoVarchar: '要创建 BM25 Function，请至少添加一个 VarChar 字段。',
   bm25NoSparse: '要创建 BM25 Function，请至少添加一个 SparseFloatVector 字段。',
   bm25InputVarChar: '输入 VarChar 字段',

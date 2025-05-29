@@ -93,7 +93,6 @@ const Overview = () => {
                 label="PK"
                 sx={{
                   backgroundColor: theme => theme.palette.secondary.light,
-                  color: theme => theme.palette.secondary.dark,
                   fontWeight: 600,
                   fontSize: '12px',
                   height: '20px',

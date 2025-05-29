@@ -122,20 +122,28 @@ const IndexTypeElement: FC<{
     }
     const IndexElem = () => (
       <Chip
-        label={<span style={{ fontSize: 11 }}>{labelText}</span>}
+        label={<span style={{ fontSize: 12 }}>{labelText}</span>}
         sx={{
           backgroundColor: theme => theme.palette.secondary.light,
-          color: theme => theme.palette.secondary.dark,
-          fontSize: '12px',
+          color: theme =>
+            theme.palette.mode === 'light'
+              ? theme.palette.secondary.main
+              : '#fff',
           height: '20px',
           '& .MuiChip-label': {
             px: 1,
           },
           border: '1px solid transparent',
           '& .MuiChip-deleteIcon': {
-            color: theme => theme.palette.secondary.dark,
+            color: theme =>
+              theme.palette.mode === 'light'
+                ? theme.palette.secondary.main
+                : '#fff',
             '&:hover': {
-              color: theme => theme.palette.secondary.dark,
+              color: theme =>
+                theme.palette.mode === 'light'
+                  ? theme.palette.secondary.main
+                  : '#fff',
             },
           },
           '&:hover': {
@@ -185,7 +193,7 @@ const IndexTypeElement: FC<{
             whiteSpace: 'nowrap',
             backgroundColor: 'transparent',
             borderRadius: 8,
-            color: theme => theme.palette.secondary.dark,
+            color: theme => theme.palette.secondary.main,
             fontWeight: 600,
             fontSize: '12px',
             height: '20px',
@@ -195,7 +203,7 @@ const IndexTypeElement: FC<{
                 : `1px solid ${theme.palette.secondary.main}`,
             '& svg': {
               width: 15,
-              color: theme => theme.palette.secondary.dark,
+              color: theme => theme.palette.secondary.main,
             },
             '&:hover': {
               backgroundColor: theme => theme.palette.secondary.main,
