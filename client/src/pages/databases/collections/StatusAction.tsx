@@ -1,13 +1,12 @@
 import { FC, useMemo, useContext } from 'react';
 import { StatusActionType } from '@/components/status/Types';
 import { useTranslation } from 'react-i18next';
-import { Typography, useTheme, Chip, Box } from '@mui/material';
+import { useTheme, Chip, Box } from '@mui/material';
 import { rootContext } from '@/context';
 import { LOADING_STATE } from '@/consts';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
-import CustomButton from '@/components/customButton/CustomButton';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
 
@@ -43,10 +42,8 @@ const StatusAction: FC<StatusActionType> = props => {
   const { setDialog } = useContext(rootContext);
   const { t: commonTrans } = useTranslation();
   const { t: collectionTrans } = useTranslation('collection');
-  const { t: btnTrans } = useTranslation('btn');
 
   const chipStyles = {
-    border: 'none',
     paddingLeft: theme.spacing(0.5),
   };
 
@@ -66,6 +63,52 @@ const StatusAction: FC<StatusActionType> = props => {
   const noIndexIcon = <StatusIndicator color={theme.palette.text.disabled} />;
   const noIndexTooltip = collectionTrans('noVectorIndexTooltip');
 
+  type IconConfig = {
+    icon: JSX.Element | null;
+    show: boolean;
+  };
+
+  const getIconConfig = (
+    status: (typeof LOADING_STATE)[keyof typeof LOADING_STATE]
+  ): IconConfig => {
+    const iconConfigs: Partial<
+      Record<(typeof LOADING_STATE)[keyof typeof LOADING_STATE], IconConfig>
+    > = {
+      [LOADING_STATE.LOADED]: {
+        icon: (
+          <Icons.release
+            className="action-icon"
+            style={{
+              fontSize: '14px',
+              display: 'none',
+              fontWeight: 500,
+              transition: 'all 0.2s',
+              color: 'inherit',
+            }}
+          />
+        ),
+        show: true,
+      },
+      [LOADING_STATE.UNLOADED]: {
+        icon: noIndex ? null : (
+          <Icons.load
+            style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              marginLeft: showLoadButton ? 2 : 0,
+              display: showLoadButton ? 'inline' : 'none',
+              color: 'inherit',
+            }}
+            className={!showLoadButton ? 'action-icon' : ''}
+          />
+        ),
+        show: !noIndex,
+      },
+    };
+
+    return iconConfigs[status] || { icon: null, show: false };
+  };
+
   const statusConfig = useMemo(() => {
     const baseConfig = {
       icon: <StatusIndicator color={theme.palette.primary.main} />,
@@ -74,60 +117,55 @@ const StatusAction: FC<StatusActionType> = props => {
       onClick: undefined as (() => void) | undefined,
     };
 
-    switch (status) {
-      case LOADING_STATE.UNLOADED:
-        return {
-          ...baseConfig,
-          label: commonTrans(
-            noIndex ? 'status.unloaded' : 'status.readyToLoad'
-          ),
-          tooltip: collectionTrans('clickToLoad'),
-          onClick: () => {
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component: <LoadCollectionDialog collection={collection} />,
-              },
-            });
-          },
-        };
+    const configs = {
+      [LOADING_STATE.UNLOADED]: {
+        ...baseConfig,
+        label: commonTrans(
+          noIndex ? 'status.noVectorIndex' : 'status.readyToLoad'
+        ),
+        tooltip: collectionTrans('clickToLoad'),
+        variant: 'outlined' as const,
+        onClick: () => {
+          setDialog({
+            open: true,
+            type: 'custom',
+            params: {
+              component: <LoadCollectionDialog collection={collection} />,
+            },
+          });
+        },
+      },
+      [LOADING_STATE.LOADED]: {
+        ...baseConfig,
+        label: commonTrans('status.loaded'),
+        tooltip: collectionTrans('clickToRelease'),
+        icon: <StatusIndicator color={theme.palette.primary.main} filled />,
+        onClick: () => {
+          setDialog({
+            open: true,
+            type: 'custom',
+            params: {
+              component: <ReleaseCollectionDialog collection={collection} />,
+            },
+          });
+        },
+      },
+      [LOADING_STATE.LOADING]: {
+        ...baseConfig,
+        label: `${percentage}% ${commonTrans('status.loading')}`,
+        tooltip: collectionTrans('collectionIsLoading'),
+        icon: <LoadingIndicator />,
+      },
+    };
 
-      case LOADING_STATE.LOADED:
-        return {
-          ...baseConfig,
-          label: commonTrans('status.loaded'),
-          tooltip: collectionTrans('clickToRelease'),
-          icon: <StatusIndicator color={theme.palette.primary.main} filled />,
-          variant: 'filled' as const,
-          onClick: () => {
-            setDialog({
-              open: true,
-              type: 'custom',
-              params: {
-                component: <ReleaseCollectionDialog collection={collection} />,
-              },
-            });
-          },
-        };
-
-      case LOADING_STATE.LOADING:
-        return {
-          ...baseConfig,
-          label: `${percentage}% ${commonTrans('status.loading')}`,
-          tooltip: collectionTrans('collectionIsLoading'),
-          icon: <LoadingIndicator />,
-          color: 'default' as const,
-        };
-
-      default:
-        return {
-          ...baseConfig,
-          label: status,
-          tooltip: '',
-          icon: <span />,
-        };
-    }
+    return (
+      configs[status] || {
+        ...baseConfig,
+        label: status,
+        tooltip: '',
+        icon: <span />,
+      }
+    );
   }, [
     status,
     percentage,
@@ -138,82 +176,107 @@ const StatusAction: FC<StatusActionType> = props => {
     setDialog,
   ]);
 
-  const renderStatusChip = () => (
-    <CustomToolTip
-      title={noIndex ? noIndexTooltip : statusConfig.tooltip}
-      placement="top"
-      enterDelay={1000}
-      leaveDelay={0}
-    >
-      <Chip
-        sx={{
-          ...chipStyles,
-          cursor: statusConfig.onClick ? 'pointer' : 'default',
-          position: 'relative',
-          '&:hover .action-icon': {
-            display: 'inline-flex !important',
-          },
-        }}
-        label={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Typography>{statusConfig.label}</Typography>
-            {status === LOADING_STATE.LOADED && (
-              <Icons.release
-                className="action-icon"
-                style={{
-                  fontSize: '14px',
-                  display: 'none',
-                  fontWeight: 500,
-                  transition: 'all 0.2s',
-                }}
-              />
-            )}
-            {status === LOADING_STATE.UNLOADED && showLoadButton && (
-              <Icons.load
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  marginLeft: 2,
-                }}
-              />
-            )}
-            {status === LOADING_STATE.UNLOADED && !showLoadButton && (
-              <Icons.load
-                className="action-icon"
-                style={{
-                  fontSize: '14px',
-                  display: 'none',
-                  fontWeight: 500,
-                  transition: 'all 0.2s',
-                }}
-              />
-            )}
-          </Box>
-        }
-        onClick={statusConfig.onClick}
-        disabled={noIndex || !statusConfig.onClick}
-        variant={statusConfig.variant}
-        color={statusConfig.color}
-        size="small"
-        icon={noIndex ? noIndexIcon : statusConfig.icon}
-      />
-    </CustomToolTip>
-  );
+  const renderStatusChip = () => {
+    const iconConfig = getIconConfig(status);
 
-  const renderSearchButton = () =>
-    status === LOADING_STATE.LOADED && (
-      <CustomButton
-        startIcon={<Icons.navSearch />}
-        sx={{ height: 24, padding: '0 8px' }}
-        tooltip={collectionTrans('clickToSearch')}
-        onClick={() => {
-          const newHash = window.location.hash.replace('schema', 'search');
-          window.location.hash = newHash;
-        }}
+    const getChipStyles = () => {
+      if (noIndex) {
+        return {
+          ...chipStyles,
+          cursor: 'default',
+          fontSize: '12px',
+          borderColor:
+            theme.palette.mode === 'dark'
+              ? theme.palette.grey[600]
+              : theme.palette.text.disabled,
+          backgroundColor:
+            theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#fff',
+          color:
+            theme.palette.mode === 'dark'
+              ? theme.palette.grey[400]
+              : theme.palette.text.disabled,
+        };
+      }
+
+      if (status === LOADING_STATE.UNLOADED) {
+        return {
+          ...chipStyles,
+          cursor: 'pointer',
+          fontSize: '12px',
+          borderColor: theme.palette.primary.main,
+          backgroundColor:
+            theme.palette.mode === 'dark' ? theme.palette.primary.main : '#fff',
+          color:
+            theme.palette.mode === 'dark' ? '#fff' : theme.palette.primary.main,
+          '&:hover': {
+            backgroundColor:
+              theme.palette.mode === 'dark'
+                ? theme.palette.primary.dark
+                : `${theme.palette.primary.main} !important`,
+            color: '#fff !important',
+            '& svg': {
+              color: '#fff !important',
+            },
+          },
+        };
+      }
+
+      if (status === LOADING_STATE.LOADED) {
+        return {
+          ...chipStyles,
+          cursor: 'pointer',
+          fontSize: '12px',
+          borderColor: 'transparent',
+          backgroundColor: theme.palette.primary.light,
+          color: theme.palette.text.primary,
+          '&:hover': {
+            borderColor: theme.palette.text.primary,
+            '& .action-icon': {
+              display: 'inline-flex !important',
+              color: theme.palette.text.primary,
+            },
+          },
+        };
+      }
+
+      return {
+        ...chipStyles,
+        cursor: 'default',
+        fontSize: '12px',
+      };
+    };
+
+    return (
+      <CustomToolTip
+        title={noIndex ? noIndexTooltip : statusConfig.tooltip}
+        placement="top"
+        enterDelay={1000}
+        leaveDelay={0}
       >
-        {btnTrans('vectorSearch')}
-      </CustomButton>
+        <Chip
+          sx={getChipStyles()}
+          label={
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+              }}
+            >
+              {statusConfig.label}
+              {iconConfig.show && iconConfig.icon}
+            </Box>
+          }
+          onClick={statusConfig.onClick}
+          disabled={noIndex}
+          variant={statusConfig.variant}
+          color={statusConfig.color}
+          size="small"
+          icon={noIndex ? noIndexIcon : statusConfig.icon}
+        />
+      </CustomToolTip>
     );
+  };
 
   return (
     <Box
@@ -225,12 +288,10 @@ const StatusAction: FC<StatusActionType> = props => {
       }}
     >
       {renderStatusChip()}
-      {showExtraAction && collection.schema && (
-        <>
-          {renderSearchButton()}
-          {!collection.schema.hasVectorIndex && createIndexElement}
-        </>
-      )}
+      {showExtraAction &&
+        collection.schema &&
+        !collection.schema.hasVectorIndex &&
+        createIndexElement}
     </Box>
   );
 };

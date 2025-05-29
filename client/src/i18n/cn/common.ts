@@ -27,7 +27,7 @@ const commonTrans = {
     error: '错误',
     running: '运行中',
     loading: '正在加载',
-    noVectorIndex: '向量 Index 不存在',
+    noVectorIndex: '向量索引不存在',
   },
   grid: {
     action: '操作',

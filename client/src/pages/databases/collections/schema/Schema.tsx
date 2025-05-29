@@ -24,7 +24,7 @@ import {
   NameWrapper,
   ParamWrapper,
   GridWrapper,
-} from './Styles';
+} from './StyledComponents';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import RenameCollectionDialog from '@/pages/dialogs/RenameCollectionDialog';
 import EditMmapDialog from '@/pages/dialogs/EditMmapDialog';
@@ -479,10 +479,6 @@ const Overview = () => {
                   showExtraAction={false}
                   showLoadButton={true}
                   createIndexElement={CreateIndexElement}
-                  sx={{
-                    position: 'relative',
-                    top: '-2px',
-                  }}
                 />
               </InfoValue>
             </InfoRow>

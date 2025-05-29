@@ -49,7 +49,6 @@ interface FlatTreeItem {
   originalNode: OriginalDatabaseTreeItem; // Keep original node ref if needed
 }
 
-// ... existing CollectionNode component (can be reused or integrated) ...
 const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
   const { t: commonTrans } = useTranslation();
   const hasIndex = data.schema && data.schema.hasVectorIndex;
