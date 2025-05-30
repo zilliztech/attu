@@ -313,18 +313,16 @@ const Collections = () => {
       sortType: 'string',
       formatter({ collection_name }) {
         return (
-          <Typography variant="body1">
+          <Typography variant="body1" sx={{ width: '10vw' }}>
             <Link
               to={`/databases/${database}/${collection_name}/overview`}
               style={{
                 color: 'inherit',
-                display: 'inline-flex',
-                alignItems: 'center',
-                wordBreak: 'break-all',
-                whiteSpace: 'nowrap',
-                width: 150,
+                display: 'block',
                 overflow: 'hidden',
+                width: '100%',
                 textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
                 textDecoration: 'none',
               }}
               title={collection_name}
@@ -342,7 +340,7 @@ const Collections = () => {
         );
       },
       getStyle: () => {
-        return { minWidth: '200px' };
+        return { minWidth: '10vw' };
       },
       label: collectionTrans('name'),
     },
@@ -391,7 +389,7 @@ const Collections = () => {
         );
       },
       getStyle: () => {
-        return { minWidth: '150px' };
+        return { minWidth: '100px' };
       },
     },
     {
@@ -411,7 +409,7 @@ const Collections = () => {
         return <Typography variant="body1">{v.description || '--'}</Typography>;
       },
       getStyle: () => {
-        return { minWidth: '150px' };
+        return { minWidth: '120px' };
       },
     },
     {
@@ -457,7 +455,7 @@ const Collections = () => {
         );
       },
       getStyle: () => {
-        return { minWidth: '120px' };
+        return { minWidth: '100px' };
       },
     });
   }

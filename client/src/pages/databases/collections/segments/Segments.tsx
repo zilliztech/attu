@@ -111,7 +111,7 @@ const Segments = () => {
       label: 'ID',
       getStyle: () => {
         return {
-          minWidth: 190,
+          minWidth: 155,
         };
       },
     },
@@ -121,7 +121,9 @@ const Segments = () => {
       disablePadding: false,
       label: 'Level',
       getStyle: () => {
-        return {};
+        return {
+          minWidth: 15,
+        };
       },
     },
     {
@@ -132,7 +134,7 @@ const Segments = () => {
       label: collectionTrans('partitionID'),
       getStyle: () => {
         return {
-          minWidth: 190,
+          minWidth: 160,
         };
       },
     },
@@ -143,7 +145,7 @@ const Segments = () => {
       label: collectionTrans('segPState'),
       getStyle: () => {
         return {
-          minWidth: 200,
+          minWidth: 160,
         };
       },
     },
@@ -154,7 +156,7 @@ const Segments = () => {
       label: collectionTrans('num_rows'),
       getStyle: () => {
         return {
-          minWidth: 100,
+          minWidth: 74,
         };
       },
     },
@@ -168,7 +170,7 @@ const Segments = () => {
       },
       getStyle: () => {
         return {
-          minWidth: 140,
+          minWidth: 40,
         };
       },
     },
@@ -179,7 +181,7 @@ const Segments = () => {
       label: collectionTrans('q_state'),
       getStyle: () => {
         return {
-          minWidth: 200,
+          minWidth: 80,
         };
       },
     },

@@ -68,7 +68,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
     <TableHead>
       <StyledTableRow>
         {openCheckBox && (
-          <TableCell padding="checkbox" role="cell">
+          <TableCell padding="checkbox" role="cell" sx={{ width: '38px' }}>
             <Checkbox
               color="primary"
               size="small"

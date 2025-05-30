@@ -224,6 +224,7 @@ const AttuGrid: FC<AttuGridType> = props => {
           handleSort={handleSort}
           order={order}
           orderBy={orderBy}
+          rowHeight={rowHeight}
           rowDecorator={rowDecorator}
         ></Table>
         {rowCount && showPagination ? (

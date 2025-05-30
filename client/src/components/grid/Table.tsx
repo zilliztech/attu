@@ -43,6 +43,7 @@ const EnhancedTable: FC<TableType> = props => {
     order,
     orderBy,
     rowDecorator = () => ({}),
+    rowHeight = 41,
   } = props;
 
   const hasData = rows && rows.length > 0;
@@ -126,6 +127,7 @@ const EnhancedTable: FC<TableType> = props => {
                         <TableCell
                           padding="checkbox"
                           sx={theme => ({
+                            width: '38px',
                             borderBottom: `1px solid ${theme.palette.divider}`,
                           })}
                         >
@@ -195,6 +197,7 @@ const EnhancedTable: FC<TableType> = props => {
                             sx={
                               [
                                 (theme: Theme) => ({
+                                  minHeight: rowHeight,
                                   borderBottom: `1px solid ${theme.palette.divider}`,
                                   '& p': {
                                     display: 'inline-block',
@@ -216,6 +219,7 @@ const EnhancedTable: FC<TableType> = props => {
                               sx={{
                                 display: 'flex',
                                 whiteSpace: 'nowrap',
+                                minHeight: 24,
                               }}
                             >
                               {typeof row[colDef.id] !== 'undefined' && (
