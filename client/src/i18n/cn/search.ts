@@ -30,7 +30,7 @@ const searchTrans = {
   textPlaceHolder: '请在此输入您的文本',
   partitionFilter: '分区过滤',
   loading: '加载中...',
-  duplicateDataWarning: '警告：结果可能包含重复数据',
+  duplicateDataWarning: '注意：当页数据可能包含重复数据。',
 };
 
 export default searchTrans;
