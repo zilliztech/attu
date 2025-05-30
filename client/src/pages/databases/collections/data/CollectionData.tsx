@@ -412,8 +412,6 @@ const CollectionData = (props: CollectionDataProps) => {
     setExprInput(queryState.expr);
   }, [collection.collection_name]);
 
-  console.log(queryResult.data.length, total, currentPage, pageSize);
-
   return (
     <Root>
       {collection && (
