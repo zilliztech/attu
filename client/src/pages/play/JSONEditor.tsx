@@ -13,6 +13,7 @@ import { getCMStyle } from './style';
 
 const EditorContainer = styled('div')({
   height: '100%',
+  width: '100%',
   overflow: 'auto',
   '& .cm-editor': {
     height: '100%',
