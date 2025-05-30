@@ -1,5 +1,6 @@
 const electron = require('electron');
 const fs = require('fs');
+const Store = require('electron-store').default;
 // setup server port in order to avoid port conflict
 process.env.SERVER_PORT = 3080;
 // launch server
@@ -13,21 +14,41 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
 
+// Initialize store for window settings
+const store = new Store();
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 function createWindow() {
+  // Get saved window size or use default
+  const windowState = store.get('windowState', {
+    width: 1200,
+    height: 800
+  });
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    ...windowState,
     webPreferences: {
       // devTools: true,
       webSecurity: false,
       nodeIntegration: true,
       enableRemoteModule: true,
     },
+  });
+
+  // Save window size when resized
+  mainWindow.on('resize', () => {
+    const { width, height } = mainWindow.getBounds();
+    store.set('windowState', { width, height });
+  });
+
+  // Save window position when moved
+  mainWindow.on('move', () => {
+    const { x, y } = mainWindow.getBounds();
+    store.set('windowState', { ...store.get('windowState'), x, y });
   });
 
   // replace IS_ELECTRON  to yes, beacause axios relative url
