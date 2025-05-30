@@ -26,6 +26,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Typography,
 } from '@mui/material';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
@@ -525,6 +526,7 @@ const CollectionData = (props: CollectionDataProps) => {
                   );
                 }}
                 sx={{
+                  width: '120px',
                   '& .MuiSelect-select': {
                     fontSize: '14px',
                     minHeight: '28px',
@@ -624,7 +626,42 @@ const CollectionData = (props: CollectionDataProps) => {
               commonTrans(
                 queryResult.data.length > 1 ? 'grid.entities' : 'grid.entity'
               ),
-              `(${queryResult.latency || ''} ms)`
+              <>
+                <Typography
+                  component="span"
+                  sx={{
+                    fontSize: '0.75rem',
+                    lineHeight: 1,
+                  }}
+                >
+                  ({queryResult.latency || ''} ms)
+                </Typography>
+                {currentPage * pageSize + pageSize < total &&
+                queryResult.data.length < pageSize ? (
+                  <Typography
+                    component="span"
+                    sx={{
+                      color: 'warning.main',
+                      fontWeight: 500,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontSize: '0.75rem',
+                      lineHeight: 1,
+                      marginLeft: '4px',
+                    }}
+                  >
+                    <icons.info
+                      sx={{
+                        fontSize: '12px',
+                        color: 'warning.main',
+                        marginTop: '1px',
+                      }}
+                    />
+                    {searchTrans('duplicateDataWarning')}
+                  </Typography>
+                ) : null}
+              </>
             )}
             noData={searchTrans(
               `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
