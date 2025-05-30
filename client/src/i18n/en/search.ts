@@ -30,6 +30,7 @@ const searchTrans = {
   textPlaceHolder: 'Please input your text here',
   partitionFilter: 'Partition Filter',
   loading: 'Loading...',
+  duplicateDataWarning: 'Warning: Results may contain duplicate data',
 };
 
 export default searchTrans;
