@@ -18,6 +18,7 @@ import UpdateUser from './dialogs/UpdateUserPassDialog';
 import { ALL_ROUTER_TYPES } from '@/router/consts';
 import type { UserWithRoles } from '@server/types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import { Typography } from '@mui/material';
 
 const Users = () => {
   useNavigationHook(ALL_ROUTER_TYPES.USER);
@@ -228,10 +229,14 @@ const Users = () => {
       disablePadding: true,
       label: userTrans('role'),
       formatter(rowData, cellData) {
-        return rowData.username === 'root' ? 'admin' : cellData.join(', ');
+        return (
+          <Typography variant="body1">
+            {rowData.username === 'root' ? 'admin' : cellData.join(', ')}
+          </Typography>
+        );
       },
       getStyle: () => {
-        return { width: '80%' };
+        return { width: '80%', maxWidth: '80%' };
       },
     },
   ];
@@ -260,6 +265,7 @@ const Users = () => {
         selected={selectedUser}
         tableHeaderHeight={46}
         rowHeight={39}
+        tableCellMaxWidth="100%"
         setSelected={handleSelectChange}
         page={currentPage}
         onPageChange={handlePageChange}

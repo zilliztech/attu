@@ -35,7 +35,6 @@ const StyledTableHeader = styled(Typography)(({ theme }) => ({
   maxHeight: 45,
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  width: '100%',
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({

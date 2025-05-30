@@ -301,7 +301,7 @@ export const getColumnWidth = (field: FieldObject): number => {
       return width > 350 ? 350 : width;
 
     default:
-      return 350;
+      return 100;
   }
 };
 
