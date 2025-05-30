@@ -134,6 +134,7 @@ const EnhancedTable: FC<TableType> = props => {
                           <Checkbox
                             checked={isItemSelected}
                             color="primary"
+                            size="small"
                             disabled={disableSelect}
                             inputProps={{
                               'aria-labelledby': labelId,
@@ -162,8 +163,6 @@ const EnhancedTable: FC<TableType> = props => {
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     maxWidth: tableCellMaxWidth,
-                                    fontSize: '14px',
-                                    lineHeight: '20px',
                                   },
                                 }),
                                 (theme: Theme) => ({
@@ -206,8 +205,6 @@ const EnhancedTable: FC<TableType> = props => {
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'nowrap',
                                     maxWidth: tableCellMaxWidth,
-                                    fontSize: '14px',
-                                    lineHeight: '20px',
                                   },
                                 }),
                                 (theme: Theme) => ({

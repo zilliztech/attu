@@ -66,6 +66,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
           <TableCell padding="checkbox" role="cell">
             <Checkbox
               color="primary"
+              size="small"
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}

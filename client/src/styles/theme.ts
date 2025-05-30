@@ -184,8 +184,8 @@ const typography = {
   },
   mono: {
     fontFamily: 'IBM Plex Mono, monospace',
-    fontSize: 12,
-    lineHeight: 1.5,
+    fontSize: 13,
+    lineHeight: 1.8,
   },
   button: {
     textTransform: 'initial',

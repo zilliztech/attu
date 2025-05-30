@@ -325,7 +325,6 @@ const Collections = () => {
                 width: 150,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                height: 20,
                 textDecoration: 'none',
               }}
               title={collection_name}
@@ -452,7 +451,7 @@ const Collections = () => {
       ),
       formatter(v) {
         return (
-          <Typography variant="body1">
+          <Typography variant="body1" component="div">
             <Aliases aliases={v.aliases} collection={v} />
           </Typography>
         );
@@ -500,7 +499,7 @@ const Collections = () => {
           onPageChange={handlePageChange}
           rowsPerPage={pageSize}
           tableHeaderHeight={46}
-          rowHeight={43}
+          rowHeight={41}
           setRowsPerPage={handlePageSize}
           isLoading={loading}
           handleSort={handleGridSort}

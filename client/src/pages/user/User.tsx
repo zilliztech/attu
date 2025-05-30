@@ -258,6 +258,8 @@ const Users = () => {
         primaryKey="username"
         showPagination={true}
         selected={selectedUser}
+        tableHeaderHeight={46}
+        rowHeight={39}
         setSelected={handleSelectChange}
         page={currentPage}
         onPageChange={handlePageChange}

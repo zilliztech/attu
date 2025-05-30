@@ -26,8 +26,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Checkbox,
-  ListItemText,
 } from '@mui/material';
 import EmptyDataDialog from '@/pages/dialogs/EmptyDataDialog';
 import ImportSampleDialog from '@/pages/dialogs/ImportSampleDialog';
@@ -615,7 +613,7 @@ const CollectionData = (props: CollectionDataProps) => {
             rows={queryResult.data}
             rowCount={total}
             tableHeaderHeight={46}
-            rowHeight={43}
+            rowHeight={41}
             selected={selectedData}
             setSelected={onSelectChange}
             page={currentPage}
