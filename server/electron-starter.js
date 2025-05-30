@@ -1,6 +1,6 @@
 const electron = require('electron');
 const fs = require('fs');
-const Store = require('electron-store').default;
+const Store = require('electron-store');
 // setup server port in order to avoid port conflict
 process.env.SERVER_PORT = 3080;
 // launch server
