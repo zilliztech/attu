@@ -13,7 +13,6 @@ import EditableTableHead from './TableEditableHead';
 import ActionBar from './ActionBar';
 import LoadingTable from './LoadingTable';
 import CopyButton from '../advancedSearch/CopyButton';
-import { useTranslation } from 'react-i18next';
 import type { Theme } from '@mui/material/styles';
 import type { TableType } from './Types';
 
@@ -45,7 +44,6 @@ const EnhancedTable: FC<TableType> = props => {
     orderBy,
     rowDecorator = () => ({}),
   } = props;
-  const { t: commonTrans } = useTranslation();
 
   const hasData = rows && rows.length > 0;
 
@@ -59,33 +57,33 @@ const EnhancedTable: FC<TableType> = props => {
       })}
     >
       <Box height="100%">
-        {!isLoading && (
-          <Table
-            stickyHeader
-            sx={{
-              minWidth: '100%',
-              height: hasData ? 'auto' : '100%',
-            }}
-            aria-labelledby="tableTitle"
-            size="medium"
-            aria-label="enhanced table"
-          >
-            {!headEditable ? (
-              <EnhancedTableHead
-                colDefinitions={colDefinitions}
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={onSelectedAll}
-                handleSort={handleSort}
-                rowCount={rows.length}
-                openCheckBox={openCheckBox}
-                disableSelect={disableSelect}
-              />
-            ) : (
-              <EditableTableHead editHeads={editHeads} />
-            )}
+        <Table
+          stickyHeader
+          sx={{
+            minWidth: '100%',
+            height: hasData ? 'auto' : '100%',
+          }}
+          aria-labelledby="tableTitle"
+          size="medium"
+          aria-label="enhanced table"
+        >
+          {!headEditable ? (
+            <EnhancedTableHead
+              colDefinitions={colDefinitions}
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={onSelectedAll}
+              handleSort={handleSort}
+              rowCount={rows.length}
+              openCheckBox={openCheckBox}
+              disableSelect={disableSelect}
+            />
+          ) : (
+            <EditableTableHead editHeads={editHeads} />
+          )}
 
+          {!isLoading ? (
             <TableBody>
               {hasData ? (
                 rows.map((row, index) => {
@@ -290,10 +288,28 @@ const EnhancedTable: FC<TableType> = props => {
                 </TableRow>
               )}
             </TableBody>
-          </Table>
-        )}
-
-        {isLoading && <LoadingTable />}
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  sx={theme => ({
+                    paddingTop: theme.spacing(6),
+                    textAlign: 'center',
+                    letterSpacing: '0.5px',
+                    color: theme.palette.text.secondary,
+                  })}
+                  colSpan={
+                    openCheckBox
+                      ? colDefinitions.length + 1
+                      : colDefinitions.length
+                  }
+                >
+                  <LoadingTable />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
+        </Table>
       </Box>
     </TableContainer>
   );

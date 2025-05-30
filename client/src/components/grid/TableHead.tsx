@@ -23,6 +23,10 @@ const VisuallyHiddenTypography = styled(Typography)(({ theme }) => ({
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: 0,
+  minWidth: '120px',
+  '&:first-of-type': {
+    minWidth: '50px',
+  },
 }));
 
 const StyledTableHeader = styled(Typography)(({ theme }) => ({
@@ -31,6 +35,7 @@ const StyledTableHeader = styled(Typography)(({ theme }) => ({
   maxHeight: 45,
   overflow: 'hidden',
   whiteSpace: 'nowrap',
+  width: '100%',
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -107,8 +112,9 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
                     orderBy === (headCell.sortBy || headCell.id) ? order : 'asc'
                   }
                   onClick={createSortHandler(headCell.sortBy || headCell.id)}
+                  sx={cellStyle}
                 >
-                  <StyledTableHeader variant="body1">
+                  <StyledTableHeader variant="body1" sx={cellStyle}>
                     {headerFormatter(headCell)}
                   </StyledTableHeader>
 
@@ -121,7 +127,7 @@ const EnhancedTableHead: FC<TableHeadType> = props => {
                   ) : null}
                 </TableSortLabel>
               ) : (
-                <StyledTableHeader variant="body1">
+                <StyledTableHeader variant="body1" sx={cellStyle}>
                   {headerFormatter(headCell)}
                 </StyledTableHeader>
               )}
