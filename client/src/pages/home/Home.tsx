@@ -10,7 +10,7 @@ import {
 } from '@/context';
 import { MILVUS_DEPLOY_MODE } from '@/consts';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import DatabaseCard from './DatabaseCard';
 import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import icons from '@/components/icons/Icons';
@@ -19,7 +19,7 @@ import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import Wrapper from '@/components/layout/Wrapper';
 
 const Home = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.HOME);
+  useNavigationHook(ROUTE_PATHS.HOME);
   const {
     databases,
     database,

@@ -13,7 +13,7 @@ import {
 import { ATTU_PLAY_CODE, ATTU_PLAY_RESULT } from '@/consts';
 import { authContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import {
   DEFAULT_CODE_VALUE,
   DEFAULT_FOLD_LINE_RANGES,
@@ -39,7 +39,7 @@ import {
 const Play: FC = () => {
   // hooks
   const theme = useTheme();
-  useNavigationHook(ALL_ROUTER_TYPES.PLAY);
+  useNavigationHook(ROUTE_PATHS.PLAY);
   const [result, setResult] = useState(() => {
     const savedResult = localStorage.getItem(ATTU_PLAY_RESULT);
     return savedResult || '{}';

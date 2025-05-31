@@ -5,7 +5,7 @@ import DatabaseTree from '@/pages/databases/tree';
 import { dataContext } from '@/context';
 import StatusIcon from '@/components/status/StatusIcon';
 import { ConsistencyLevelEnum, DYNAMIC_FIELD } from '@/consts';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import { LoadingType } from '@/components/status/StatusIcon';
 import type { SearchParams, QueryState } from './types';
 import { DatabasesTab } from './DatabasesTab';
@@ -285,7 +285,7 @@ const Databases = () => {
   } = params;
 
   // update navigation
-  useNavigationHook(ALL_ROUTER_TYPES.DATABASES, {
+  useNavigationHook(ROUTE_PATHS.DATABASES, {
     collectionName,
     databaseName,
   });

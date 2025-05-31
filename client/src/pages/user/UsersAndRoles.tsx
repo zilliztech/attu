@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import User from './User';
 import Roles from './Roles';
@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import type { ITab } from '@/components/customTabList/Types';
 
 const Users = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.USER);
+  useNavigationHook(ROUTE_PATHS.USERS);
 
   const location = useLocation();
   const currentPath = location.pathname.slice(1);

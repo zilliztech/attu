@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
 import { useNavigationHook, useInterval } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import { MilvusService } from '@/http';
 import { parseJson } from '@/utils';
 import Topo from './Topology';
@@ -9,7 +9,7 @@ import NodeListView from './NodeListView';
 import DataCard from './DataCard';
 
 const SystemView: any = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
+  useNavigationHook(ROUTE_PATHS.SYSTEM);
   // const { t } = useTranslation('systemView');
 
   const INTERVAL = 60000;
