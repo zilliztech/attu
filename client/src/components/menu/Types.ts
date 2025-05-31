@@ -2,19 +2,21 @@ type CustomIcon = (
   props?: any
 ) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 
-export type NavMenuItem = {
-  icon: CustomIcon;
+export interface NavMenuItem {
+  icon: any;
+  label: string;
+  key?: string;
+  onClick?: () => void;
   iconActiveClass?: string;
   iconNormalClass?: string;
-  label: string;
-  onClick?: () => void;
-  children?: NavMenuItem[];
-};
+}
 
-export type NavMenuType = {
-  defaultActive?: string;
-  defaultOpen?: { [x: string]: boolean };
-  width: string;
+export interface NavMenuType {
   data: NavMenuItem[];
-  versionInfo: { attu: string; sdk: string };
-};
+  defaultActive?: string;
+  defaultOpen?: Record<string, boolean>;
+  width?: string;
+  versionInfo: {
+    attu: string;
+  };
+}

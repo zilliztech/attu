@@ -1,45 +1,33 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useContext } from 'react';
 import { authContext } from '@/context';
-import Databases from '@/pages/databases/Databases';
 import Connect from '@/pages/connect/Connect';
-import Users from '@/pages/user/UsersAndRoles';
 import Index from '@/pages/index';
-import System from '@/pages/system/SystemView';
-import Play from '@/pages/play/Play';
+import { getRoutes } from '@/config/routes';
 
 const RouterComponent = () => {
   const { isManaged, isDedicated } = useContext(authContext);
 
-  const enableManageUsers = !isManaged || isDedicated;
+  const routes = getRoutes(isManaged, isDedicated);
+
+  const renderRoutes = (routes: any[]) => {
+    return routes.map(route => {
+      const Element = route.element;
+      return (
+        <Route key={route.path} path={route.path} element={<Element />}>
+          {route.children && renderRoutes(route.children)}
+        </Route>
+      );
+    });
+  };
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Index />}>
-          <Route path="databases" element={<Databases />} />
-          <Route path="databases/:databaseName" element={<Databases />} />
-          <Route
-            path="databases/:databaseName/:databasePage"
-            element={<Databases />}
-          />
-
-          <Route
-            path="databases/:databaseName/:collectionName/:collectionPage"
-            element={<Databases />}
-          />
-
-          {enableManageUsers && (
-            <>
-              <Route path="users" element={<Users />} />
-              <Route path="roles" element={<Users />} />
-              <Route path="privilege-groups" element={<Users />} />
-            </>
-          )}
-          <Route path="play" element={<Play />} />
-          {!isManaged && <Route path="system" element={<System />} />}
-        </Route>
         <Route path="connect" element={<Connect />} />
+        <Route path="/" element={<Index />}>
+          {renderRoutes(routes)}
+        </Route>
       </Routes>
     </Router>
   );
