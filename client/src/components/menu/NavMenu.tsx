@@ -151,5 +151,4 @@ const NavMenu: FC<NavMenuType> = props => {
     </List>
   );
 };
-
 export default NavMenu;

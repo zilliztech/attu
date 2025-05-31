@@ -5,7 +5,7 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType } from '@/components/grid/Types';
 import { useNavigationHook } from '@/hooks';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import MiniTopo from './MiniTopology';
 import { getByteString, formatByteSize } from '@/utils';
 import DataCard from './DataCard';
@@ -26,7 +26,7 @@ type GridNode = {
 };
 
 const NodeListView: FC<NodeListViewProps> = props => {
-  useNavigationHook(ALL_ROUTER_TYPES.SYSTEM);
+  useNavigationHook(ROUTE_PATHS.SYSTEM);
   const { t } = useTranslation('systemView');
   const { t: commonTrans } = useTranslation();
   const capacityTrans: { [key in string]: string } = commonTrans(

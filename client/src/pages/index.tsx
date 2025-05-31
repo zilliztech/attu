@@ -4,11 +4,10 @@ import { useTranslation } from 'react-i18next';
 import GlobalEffect from '@/components/layout/GlobalEffect';
 import Header from '@/components/layout/Header';
 import NavMenu from '@/components/menu/NavMenu';
-import { NavMenuItem } from '@/components/menu/Types';
-import icons from '@/components/icons/Icons';
 import { authContext, rootContext, dataContext } from '@/context';
 import Overview from '@/pages/home/Home';
 import Box from '@mui/material/Box';
+import { getMenuItems } from '@/config/routes';
 
 function Index() {
   const { isAuth, isManaged, isDedicated, authReq } = useContext(authContext);
@@ -18,67 +17,20 @@ function Index() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navMap = [
-    { key: 'databases', label: 'database' },
-    { key: 'search', label: 'search' },
-    { key: 'system', label: 'system' },
-    { key: 'users', label: 'user' },
-    { key: 'roles', label: 'user' },
-    { key: 'privilege-groups', label: 'user' },
-    { key: 'play', label: 'play' },
-  ];
+  const menuItems = getMenuItems(
+    isManaged,
+    isDedicated,
+    database,
+    navTrans,
+    navigate,
+    authReq
+  );
+
   const defaultActive = useMemo(() => {
-    const found = navMap.find(item => location.pathname.includes(item.key));
-    return navTrans(found?.label || 'overview');
-  }, [location.pathname, navTrans]);
-
-  const baseMenu: NavMenuItem[] = [
-    {
-      icon: icons.attu,
-      label: navTrans('overview'),
-      onClick: () => navigate('/'),
-    },
-    {
-      icon: icons.database,
-      label: navTrans('database'),
-      onClick: () => navigate(`/databases/${database}/collections`),
-    },
-    {
-      icon: icons.code,
-      label: navTrans('play'),
-      onClick: () => navigate('/play'),
-    },
-  ];
-
-  const menuItems = [...baseMenu];
-
-  if (!isManaged || isDedicated) {
-    menuItems.push({
-      icon: icons.navPerson,
-      label: navTrans('user'),
-      onClick: () => navigate('/users'),
-    });
-  }
-
-  if (!isManaged) {
-    menuItems.push(
-      {
-        icon: icons.navSystem,
-        label: navTrans('system'),
-        onClick: () => navigate('/system'),
-      },
-      {
-        icon: icons.newWindow,
-        label: 'Milvus WebUI',
-        onClick: () => {
-          window.open(
-            `http://${authReq.address.split(':')[0]}:9091/webui`,
-            '_blank'
-          );
-        },
-      }
-    );
-  }
+    const path = location.pathname.split('/')[1] || 'overview';
+    const menuItem = menuItems.find(item => item.key === path);
+    return menuItem?.label || navTrans('overview');
+  }, [location.pathname, menuItems, navTrans]);
 
   if (!isAuth) {
     return <Navigate to="/connect" />;

@@ -6,7 +6,7 @@ import { rootContext, dataContext } from '@/context';
 import { useNavigationHook } from '@/hooks';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
 import UpdateRoleDialog from './dialogs/UpdateRoleDialog';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import CustomToolBar from '@/components/grid/ToolBar';
 import type { ToolBarConfig } from '@/components/grid/Types';
 import Wrapper from '@/components/layout/Wrapper';
@@ -15,7 +15,7 @@ import type { RolesWithPrivileges, RBACOptions } from '@server/types';
 import D3PrivilegeTree from './D3PrivilegeTree';
 
 const Roles = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.USER);
+  useNavigationHook(ROUTE_PATHS.USERS);
   // context
   const { database } = useContext(dataContext);
   const { setDialog, handleCloseDialog, openSnackBar } =

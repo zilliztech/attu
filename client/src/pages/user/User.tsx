@@ -15,13 +15,13 @@ import { useNavigationHook, usePaginationHook } from '@/hooks';
 import CreateUser from './dialogs/CreateUserDialog';
 import UpdateUserRole from './dialogs/UpdateUserRole';
 import UpdateUser from './dialogs/UpdateUserPassDialog';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import type { UserWithRoles } from '@server/types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 import { Typography } from '@mui/material';
 
 const Users = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.USER);
+  useNavigationHook(ROUTE_PATHS.USERS);
 
   // ui states
   const [users, setUsers] = useState<UserWithRoles[]>([]);

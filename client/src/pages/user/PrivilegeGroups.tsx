@@ -8,13 +8,13 @@ import AttuGrid from '@/components/grid/Grid';
 import { ColDefinitionsType, ToolBarConfig } from '@/components/grid/Types';
 import Wrapper from '@/components/layout/Wrapper';
 import DeleteTemplate from '@/components/customDialog/DeleteDialogTemplate';
-import { ALL_ROUTER_TYPES } from '@/router/consts';
+import { ROUTE_PATHS } from '@/config/routes';
 import UpdatePrivilegeGroupDialog from './dialogs/UpdatePrivilegeGroupDialog';
 import { PrivilegeGroup } from '@server/types';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
 
 const PrivilegeGroups = () => {
-  useNavigationHook(ALL_ROUTER_TYPES.USER);
+  useNavigationHook(ROUTE_PATHS.USERS);
 
   // ui states
   const [groups, setGroups] = useState<PrivilegeGroup[]>([]);
