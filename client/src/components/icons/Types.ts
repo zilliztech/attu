@@ -62,4 +62,5 @@ export type IconsType =
   | 'file'
   | 'eye'
   | 'newWindow'
-  | 'caretSort';
+  | 'caretSort'
+  | 'chat';

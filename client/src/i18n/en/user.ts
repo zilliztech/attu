@@ -72,6 +72,11 @@ const userTrans = {
   DatabasePrivilegeGroups: 'Built-in Groups',
   ClusterPrivilegeGroups: 'Built-in Groups',
   CustomPrivilegeGroups: 'User-defined Groups',
+
+  // API Key
+  setApiKey: 'Set OpenAI API Key',
+  apiKey: 'OpenAI API Key',
+  apiKeyHelper: 'Enter your OpenAI API key to enable AI chat features',
 };
 
 export default userTrans;

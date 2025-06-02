@@ -29,6 +29,7 @@
     "lru-cache": "^10.2.0",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
+    "openai": "^5.0.1",
     "socket.io": "^4.8.1"
   },
   "jest": {

@@ -68,6 +68,11 @@ const userTrans = {
   DatabasePrivilegeGroups: '内置权限组',
   ClusterPrivilegeGroups: '内置权限组',
   CustomPrivilegeGroups: '用户定义权限组',
+
+  // API Key
+  setApiKey: '设置 OpenAI API Key',
+  apiKey: 'OpenAI API Key',
+  apiKeyHelper: '输入您的 OpenAI API key 以启用 AI 聊天功能',
 };
 
 export default userTrans;

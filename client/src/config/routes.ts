@@ -6,6 +6,7 @@ import Users from '@/pages/user/UsersAndRoles';
 import System from '@/pages/system/SystemView';
 import Play from '@/pages/play/Play';
 import Overview from '@/pages/home/Home';
+import AIChat from '@/pages/ai/AIChat';
 
 // Route path constants
 export const ROUTE_PATHS = {
@@ -19,6 +20,7 @@ export const ROUTE_PATHS = {
   PLAY: 'play',
   SYSTEM: 'system',
   CONNECT: 'connect',
+  AI_CHAT: 'ai-chat',
 } as const;
 
 export type RoutePath = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
@@ -201,6 +203,20 @@ const otherRoutes: RouteItem[] = [
     showInMenu: false,
     requiresAuth: false,
     routerType: ROUTE_PATHS.HOME,
+  },
+  {
+    path: ROUTE_PATHS.AI_CHAT,
+    element: AIChat,
+    showInMenu: true,
+    menuConfig: {
+      icon: icons.chat,
+      label: 'aiChat',
+      key: 'ai-chat',
+    },
+    routerType: ROUTE_PATHS.AI_CHAT,
+    navConfig: {
+      navTitleKey: 'aiChat',
+    },
   },
 ];
 

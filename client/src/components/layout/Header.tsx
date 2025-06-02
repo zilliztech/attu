@@ -21,6 +21,7 @@ import {
 } from '@/context';
 import { MilvusService } from '@/http';
 import UpdateUser from '@/pages/user/dialogs/UpdateUserPassDialog';
+import UpdateApiKeyDialog from '@/pages/user/dialogs/UpdateApiKeyDialog';
 import icons from '../icons/Icons';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 
@@ -87,6 +88,26 @@ const Header: FC = () => {
               logout();
             }}
             handleClose={handleCloseDialog}
+          />
+        ),
+      },
+    });
+  };
+
+  const handleSetApiKey = () => {
+    setUserAnchorEl(null);
+    setDialog({
+      open: true,
+      type: 'custom',
+      params: {
+        component: (
+          <UpdateApiKeyDialog
+            open={true}
+            onClose={handleCloseDialog}
+            onSave={(apiKey) => {
+              openSnackBar(successTrans('apiKeySaved'));
+              handleCloseDialog();
+            }}
           />
         ),
       },
@@ -245,6 +266,9 @@ const Header: FC = () => {
                 >
                   <MenuItem onClick={handleChangePassword}>
                     {userTrans('changePassword')}
+                  </MenuItem>
+                  <MenuItem onClick={handleSetApiKey}>
+                    {userTrans('setApiKey')}
                   </MenuItem>
                 </Menu>
               </>

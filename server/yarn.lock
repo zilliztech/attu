@@ -4590,6 +4590,11 @@ onetime@^5.1.0, onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
+openai@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/openai/-/openai-5.0.1.tgz#c7cabc4cb13554f8506158364566c16514d051fe"
+  integrity sha512-Do6vxhbDv7cXhji/4ct1lrpZYMAOmjYbhyA9LJTuG7OfpbWMpuS+EIXkRT7R+XxpRB1OZhU/op4FU3p3uxU6gw==
+
 ora@^5.1.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/ora/-/ora-5.4.1.tgz#1b2678426af4ac4a509008e5e4ac9e9959db9e18"
