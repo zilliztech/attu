@@ -3,18 +3,21 @@ import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
-  Chip,
-  Stack,
   useTheme,
   TextField,
   Button,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import icons from '@/components/icons/Icons';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { markdownStyles } from './styles/markdown';
+import CopyButton from '../../components/advancedSearch/CopyButton';
+import { useNavigationHook } from '@/hooks/Navigation';
 
 interface Message {
   id: string;
@@ -31,12 +34,107 @@ const AIChat: FC = () => {
   const { t } = useTranslation('ai');
   const theme = useTheme();
   const apiKey = localStorage.getItem('attu.ui.openai_api_key');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const savedMessages = localStorage.getItem('attu.ui.chat');
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [title, setTitle] = useState('');
   const eventSourceRef = useRef<EventSource | null>(null);
   const currentMessageRef = useRef<Message | null>(null);
   const accumulatedContentRef = useRef('');
+
+  useNavigationHook('ai-chat');
+
+  // Generate title from first user message
+  useEffect(() => {
+    const firstUserMessage = messages.find(m => m.role === 'user')?.content;
+    if (firstUserMessage && !title) {
+      const generateTitle = async () => {
+        try {
+          // First, send the initial request with headers
+          const response = await fetch('/api/v1/ai/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-openai-api-key': apiKey || '',
+            },
+            body: JSON.stringify({
+              messages: [
+                {
+                  role: 'system',
+                  content: 'Generate a very short title (max 20 characters) for this question. Only return the title, no other text.',
+                },
+                {
+                  role: 'user',
+                  content: firstUserMessage,
+                },
+              ],
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          // Then create EventSource for streaming
+          const eventSource = new EventSource(
+            `/api/v1/ai/chat?messages=${encodeURIComponent(
+              JSON.stringify([
+                {
+                  role: 'system',
+                  content: 'Generate a very short title (max 20 characters) for this question. Only return the title, no other text.',
+                },
+                {
+                  role: 'user',
+                  content: firstUserMessage,
+                },
+              ])
+            )}&x-openai-api-key=${encodeURIComponent(apiKey || '')}`
+          );
+
+          let accumulatedTitle = '';
+          eventSource.onmessage = event => {
+            if (event.data === '[DONE]') {
+              eventSource.close();
+              return;
+            }
+
+            try {
+              const data = JSON.parse(event.data);
+              if (data.value?.parts?.[0]?.text) {
+                accumulatedTitle += data.value.parts[0].text;
+                setTitle(accumulatedTitle.trim());
+              }
+            } catch (error) {
+              console.error('Error parsing message:', error);
+            }
+          };
+
+          eventSource.onerror = error => {
+            console.error('EventSource error:', error);
+            eventSource.close();
+          };
+        } catch (error) {
+          console.error('Error generating title:', error);
+        }
+      };
+
+      generateTitle();
+    }
+  }, [messages, title, apiKey]);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('attu.ui.chat', JSON.stringify(messages));
+  }, [messages]);
+
+  const handleClearChat = () => {
+    setMessages([]);
+    setTitle('');
+    localStorage.removeItem('attu.ui.chat');
+  };
 
   const components = {
     code({ node, inline, className, children, ...props }: any) {
@@ -221,6 +319,8 @@ const AIChat: FC = () => {
       sx={{
         height: 'calc(100vh - 45px)',
         display: 'flex',
+        backgroundColor: 'background.paper',
+        color: 'text.primary',
         flexDirection: 'column',
       }}
     >
@@ -230,8 +330,42 @@ const AIChat: FC = () => {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          maxWidth: 800,
+          width: '100%',
+          mx: 'auto',
         }}
       >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            p: 1,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            sx={{
+              maxWidth: 'calc(100% - 40px)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {title || t('aiChat')}
+          </Typography>
+          <Tooltip title={t('clearChat')}>
+            <IconButton
+              onClick={handleClearChat}
+              disabled={messages.length === 0 || isLoading}
+              size="small"
+            >
+              <icons.cross sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
         <Box
           sx={{
             flex: 1,
@@ -250,28 +384,24 @@ const AIChat: FC = () => {
                 flexDirection: 'column',
                 alignItems: message.role === 'user' ? 'flex-end' : 'flex-start',
                 mb: 2,
+                width: '100%',
               }}
             >
               <Box
                 sx={{
                   p: 2,
-                  maxWidth: '80%',
+                  maxWidth: '75%',
                   borderRadius: 2,
                   backgroundColor:
                     message.role === 'user'
                       ? theme.palette.mode === 'dark'
                         ? 'primary.dark'
-                        : 'primary.main'
-                      : theme.palette.mode === 'dark'
-                        ? 'grey.800'
-                        : 'white',
+                        : 'primary.light'
+                      : 'transparent',
                   color:
                     message.role === 'user'
                       ? 'primary.contrastText'
-                      : theme.palette.mode === 'dark'
-                        ? 'grey.100'
-                        : 'text.primary',
-                  boxShadow: theme.palette.mode === 'dark' ? 2 : 1,
+                      : 'text.primary',
                   overflow: 'hidden',
                   ...markdownStyles(theme),
                 }}
@@ -320,6 +450,29 @@ const AIChat: FC = () => {
                   </Typography>
                 )}
               </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  mt: 0.5,
+                  width: '75%',
+                }}
+              >
+                <CopyButton
+                  copyValue={message.content}
+                  tooltipPlacement="top"
+                  sx={{
+                    color: 'text.secondary',
+                    '& svg': {
+                      fontSize: 14,
+                    },
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      color: 'text.primary',
+                    },
+                  }}
+                />
+              </Box>
             </Box>
           ))}
           {isLoading && (
@@ -330,28 +483,6 @@ const AIChat: FC = () => {
             </Box>
           )}
         </Box>
-
-        {/* <Box
-          sx={{
-            p: 2,
-            borderTop: '1px solid',
-            borderColor: 'divider',
-          }}
-        >
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            {t('suggestions.title')}
-          </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            {suggestedCommands.map((command, index) => (
-              <Chip
-                key={index}
-                label={command}
-                onClick={() => setInput(command)}
-                sx={{ mb: 1 }}
-              />
-            ))}
-          </Stack>
-        </Box> */}
 
         <Box
           component="form"
