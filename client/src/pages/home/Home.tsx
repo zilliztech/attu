@@ -16,7 +16,6 @@ import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import icons from '@/components/icons/Icons';
 import SysCard from './SysCard';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
-import Wrapper from '@/components/layout/Wrapper';
 
 const Home = () => {
   useNavigationHook(ROUTE_PATHS.HOME);
@@ -84,11 +83,21 @@ const Home = () => {
   };
 
   return (
-    <Wrapper className="page-wrapper">
+    <Box
+      sx={theme => ({
+        margin: '12px',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        height: 'calc(100vh - 80px)',
+        borderRadius: 2,
+      })}
+    >
       <Box
         sx={{
-          width: '90%',
           mb: 2,
+          px: 2,
+          maxWidth: '90%',
         }}
       >
         <Box display="flex" alignItems="center" mb={2}>
@@ -166,8 +175,8 @@ const Home = () => {
         <>
           <Box
             sx={{
-              width: '90%',
-              marginBottom: 2,
+              mb: 2,
+              px: 2,
             }}
           >
             <Typography
@@ -217,8 +226,8 @@ const Home = () => {
           {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED && (
             <Box
               sx={{
-                width: '90%',
-                marginBottom: 2,
+                mb: 2,
+                px: 2,
               }}
             >
               <Box
@@ -249,7 +258,7 @@ const Home = () => {
           )}
         </>
       )}
-    </Wrapper>
+    </Box>
   );
 };
 
