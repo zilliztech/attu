@@ -1,10 +1,24 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Typography, Chip, Stack } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Chip,
+  Stack,
+  useTheme,
+  TextField,
+  Button,
+} from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { markdownStyles } from './styles/markdown';
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
   createdAt: string;
   parts?: Array<{
@@ -15,6 +29,7 @@ interface Message {
 
 const AIChat: FC = () => {
   const { t } = useTranslation('ai');
+  const theme = useTheme();
   const apiKey = localStorage.getItem('attu.ui.openai_api_key');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -22,6 +37,26 @@ const AIChat: FC = () => {
   const eventSourceRef = useRef<EventSource | null>(null);
   const currentMessageRef = useRef<Message | null>(null);
   const accumulatedContentRef = useRef('');
+
+  const components = {
+    code({ node, inline, className, children, ...props }: any) {
+      const match = /language-(\w+)/.exec(className || '');
+      return !inline && match ? (
+        <SyntaxHighlighter
+          style={theme.palette.mode === 'dark' ? vscDarkPlus : oneLight}
+          language={match[1]}
+          PreTag="div"
+          {...props}
+        >
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    },
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +88,15 @@ const AIChat: FC = () => {
           'x-openai-api-key': apiKey || '',
         },
         body: JSON.stringify({
-          messages: [...messages, userMessage],
+          messages: [
+            {
+              role: 'system',
+              content:
+                'You are a helpful AI assistant specialized in Milvus and vector databases. You should only answer questions related to Milvus, vector databases, and vector search. For any other topics, please politely decline to answer and suggest asking about Milvus or vector databases instead.',
+            },
+            ...messages,
+            userMessage,
+          ],
         }),
       });
 
@@ -63,7 +106,17 @@ const AIChat: FC = () => {
 
       // Then create EventSource for streaming
       const eventSource = new EventSource(
-        `/api/v1/ai/chat?messages=${encodeURIComponent(JSON.stringify([...messages, userMessage]))}&x-openai-api-key=${encodeURIComponent(apiKey || '')}`
+        `/api/v1/ai/chat?messages=${encodeURIComponent(
+          JSON.stringify([
+            {
+              role: 'system',
+              content:
+                'You are a helpful AI assistant specialized in Milvus and vector databases. You should only answer questions related to Milvus, vector databases, and vector search. For any other topics, please politely decline to answer and suggest asking about Milvus or vector databases instead.',
+            },
+            ...messages,
+            userMessage,
+          ])
+        )}&x-openai-api-key=${encodeURIComponent(apiKey || '')}`
       );
       eventSourceRef.current = eventSource;
 
@@ -165,139 +218,176 @@ const AIChat: FC = () => {
 
   return (
     <Box
-      sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}
+      sx={{
+        height: 'calc(100vh - 45px)',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
     >
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ mb: 2 }}
-      >
-        <Typography variant="h5">{t('title')}</Typography>
-        <Chip label={t('status.connected')} color="success" size="small" />
-      </Stack>
-
       <Box
         sx={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
-          mb: 2,
-          overflowY: 'auto',
+          overflow: 'hidden',
         }}
       >
-        {messages.map(message => (
-          <Box
-            key={message.id}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: message.role === 'user' ? 'flex-end' : 'flex-start',
-            }}
-          >
-            <Box
-              sx={{
-                p: 2,
-                maxWidth: '80%',
-                borderRadius: 2,
-                backgroundColor:
-                  message.role === 'user' ? 'primary.main' : 'background.paper',
-                color:
-                  message.role === 'user'
-                    ? 'primary.contrastText'
-                    : 'text.primary',
-                boxShadow: 1,
-              }}
-            >
-              {message.role === 'assistant' &&
-              message.id === currentMessageRef.current?.id ? (
-                <Typography variant="body1">{message.content || ''}</Typography>
-              ) : (
-                <Typography variant="body1">
-                  {message.parts?.map((part, index) => {
-                    if (part.type === 'text') {
-                      return <span key={index}>{part.text || ''}</span>;
-                    }
-                    return null;
-                  }) ||
-                    message.content ||
-                    ''}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        ))}
-        {isLoading && (
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              {t('status.thinking')}
-            </Typography>
-          </Box>
-        )}
-      </Box>
-
-      {/* Suggested Commands */}
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2" sx={{ mb: 1 }}>
-          {t('suggestions.title')}
-        </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-          {suggestedCommands.map((command, index) => (
-            <Chip
-              key={index}
-              label={command}
-              onClick={() => setInput(command)}
-              sx={{ mb: 1 }}
-            />
-          ))}
-        </Stack>
-      </Box>
-
-      {/* Input Area */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          p: 2,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          backgroundColor: 'background.paper',
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 1,
-        }}
-      >
-        <input
-          value={input}
-          onChange={handleInputChange}
-          placeholder={t('inputPlaceholder')}
-          disabled={isLoading}
-          style={{
+        <Box
+          sx={{
             flex: 1,
-            padding: '8px 12px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            backgroundColor: 'var(--mui-palette-background-default)',
-            color: 'var(--mui-palette-text-primary)',
-          }}
-        />
-        <button
-          type="submit"
-          disabled={isLoading || !input.trim()}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: 'var(--mui-palette-primary-main)',
-            color: 'var(--mui-palette-primary-contrastText)',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            opacity: isLoading || !input.trim() ? 0.5 : 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            p: 2,
+            overflowY: 'auto',
           }}
         >
-          {t('send')}
-        </button>
+          {messages.map(message => (
+            <Box
+              key={message.id}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: message.role === 'user' ? 'flex-end' : 'flex-start',
+                mb: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  p: 2,
+                  maxWidth: '80%',
+                  borderRadius: 2,
+                  backgroundColor:
+                    message.role === 'user'
+                      ? theme.palette.mode === 'dark'
+                        ? 'primary.dark'
+                        : 'primary.main'
+                      : theme.palette.mode === 'dark'
+                        ? 'grey.800'
+                        : 'white',
+                  color:
+                    message.role === 'user'
+                      ? 'primary.contrastText'
+                      : theme.palette.mode === 'dark'
+                        ? 'grey.100'
+                        : 'text.primary',
+                  boxShadow: theme.palette.mode === 'dark' ? 2 : 1,
+                  overflow: 'hidden',
+                  ...markdownStyles(theme),
+                }}
+              >
+                {message.role === 'assistant' &&
+                message.id === currentMessageRef.current?.id ? (
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    className="markdown-body"
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={components}
+                    >
+                      {message.content || ''}
+                    </ReactMarkdown>
+                  </Typography>
+                ) : (
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    className="markdown-body"
+                  >
+                    {message.parts?.map((part, index) => {
+                      if (part.type === 'text') {
+                        return (
+                          <ReactMarkdown
+                            key={index}
+                            remarkPlugins={[remarkGfm]}
+                            components={components}
+                          >
+                            {part.text || ''}
+                          </ReactMarkdown>
+                        );
+                      }
+                      return null;
+                    }) || (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={components}
+                      >
+                        {message.content || ''}
+                      </ReactMarkdown>
+                    )}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          ))}
+          {isLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                {t('status.thinking')}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+
+        {/* <Box
+          sx={{
+            p: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            {t('suggestions.title')}
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            {suggestedCommands.map((command, index) => (
+              <Chip
+                key={index}
+                label={command}
+                onClick={() => setInput(command)}
+                sx={{ mb: 1 }}
+              />
+            ))}
+          </Stack>
+        </Box> */}
+
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            p: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            backgroundColor: 'background.paper',
+            borderTop: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <TextField
+            value={input}
+            onChange={handleInputChange}
+            placeholder={t('inputPlaceholder')}
+            disabled={isLoading}
+            fullWidth
+            size="small"
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: 'background.default',
+              },
+            }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading || !input.trim()}
+            size="small"
+          >
+            {t('send')}
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

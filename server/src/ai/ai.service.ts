@@ -11,17 +11,15 @@ export class AIService {
         throw new Error('API key is required');
       }
 
-      // Initialize OpenAI client with DeepSeek configuration
+      // Initialize OpenAI client
       this.openai = new OpenAI({
-        baseURL: 'https://api.deepseek.com',
         apiKey: apiKey,
       });
 
       const stream = await this.openai.chat.completions.create({
-        model: 'deepseek-chat',
+        model: 'gpt-4.1-nano',
         messages: chatRequest.messages,
         stream: true,
-        max_tokens: 4096, // Default max output tokens for deepseek-chat
       });
 
       // Set headers for SSE
@@ -66,13 +64,13 @@ export class AIService {
       res.write('data: [DONE]\n\n');
       res.end();
     } catch (error) {
-      console.error('DeepSeek API error:', error);
+      console.error('API provider error:', error);
       if (!res.headersSent) {
         res.status(500).json({
           error:
             error instanceof Error
               ? error.message
-              : 'Failed to get response from DeepSeek',
+              : 'Failed to get response from API provider',
         });
       }
     }
