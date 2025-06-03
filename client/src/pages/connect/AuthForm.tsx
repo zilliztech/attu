@@ -37,6 +37,22 @@ const DEFAULT_CONNECTION = {
   clientId: '',
 };
 
+// Add fixed connections list
+const FIXED_CONNECTIONS: Connection[] = [
+  {
+    address: 'localhost:19530',
+    database: 'default',
+    token: '',
+    username: '',
+    password: '',
+    ssl: false,
+    checkHealth: true,
+    time: -1,
+    clientId: '',
+  },
+  // Add more fixed connections here
+];
+
 export const AuthForm = () => {
   // context
   const { openSnackBar } = useContext(rootContext);
@@ -176,6 +192,13 @@ export const AuthForm = () => {
   };
 
   const handleDeleteConnection = (connection: Connection) => {
+    // Don't allow deletion of fixed connections
+    if (FIXED_CONNECTIONS.some(fixed => 
+      fixed.address === connection.address && fixed.database === connection.database
+    )) {
+      return;
+    }
+
     const history = JSON.parse(
       window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
     ) as Connection[];
@@ -196,7 +219,8 @@ export const AuthForm = () => {
     newHistory.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
-    setConnections(newHistory);
+    // Combine fixed and history connections
+    setConnections([...FIXED_CONNECTIONS, ...newHistory]);
   };
 
   // Add clear all history handler
@@ -204,7 +228,8 @@ export const AuthForm = () => {
     // Save only the default connection
     const newHistory = [DEFAULT_CONNECTION];
     window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
-    setConnections(newHistory);
+    // Combine fixed and history connections
+    setConnections([...FIXED_CONNECTIONS, ...newHistory]);
     // Reset the form to default values
     setAuthReq(DEFAULT_CONNECTION);
   };
@@ -214,20 +239,23 @@ export const AuthForm = () => {
 
   // load connection from local storage
   useEffect(() => {
-    const connections: Connection[] = JSON.parse(
+    const historyConnections: Connection[] = JSON.parse(
       window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
     );
 
-    if (connections.length === 0) {
-      connections.push(DEFAULT_CONNECTION);
+    if (historyConnections.length === 0) {
+      historyConnections.push(DEFAULT_CONNECTION);
     }
 
+    // Combine fixed and history connections
+    const allConnections = [...FIXED_CONNECTIONS, ...historyConnections];
+
     // sort by time
-    connections.sort((a, b) => {
+    allConnections.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
 
-    setConnections(connections);
+    setConnections(allConnections);
   }, []);
 
   // UI effect
@@ -366,50 +394,36 @@ export const AuthForm = () => {
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontSize: '14px',
-                      padding: (theme: Theme) => theme.spacing(1.5, 2),
                       '&:hover': {
                         backgroundColor: (theme: Theme) =>
                           theme.palette.action.hover,
                       },
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: 1,
-                        minWidth: 0,
-                        flex: 1,
-                      }}
-                    >
-                      <Icons.link
-                        sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }}
-                      />
-                      <Typography
-                        sx={{
-                          wordBreak: 'break-all',
-                          lineHeight: 1.5,
-                        }}
-                      >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Icons.link sx={{ fontSize: 16 }} />
+                      <Typography>
                         {option.address}/{option.database}
                       </Typography>
+                      {(option.username || option.password || option.token) && (
+                        <Icons.key
+                          sx={{
+                            fontSize: 14,
+                            color: 'text.secondary',
+                            ml: 0.5
+                          }}
+                        />
+                      )}
                     </Box>
-                    {option.time !== -1 && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          minWidth: 200,
-                          justifyContent: 'flex-end',
-                        }}
-                      >
+                    {option.time !== -1 && !FIXED_CONNECTIONS.some(fixed => 
+                      fixed.address === option.address && fixed.database === option.database
+                    ) && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography
                           sx={{
                             fontSize: 11,
                             color: 'text.secondary',
                             fontStyle: 'italic',
-                            whiteSpace: 'nowrap',
                           }}
                         >
                           {new Date(option.time).toLocaleString()}
@@ -419,10 +433,7 @@ export const AuthForm = () => {
                             e.stopPropagation();
                             handleDeleteConnection(option);
                           }}
-                          sx={{
-                            padding: '4px',
-                            marginLeft: 1,
-                          }}
+                          sx={{ padding: '4px' }}
                         >
                           <Icons.cross sx={{ fontSize: 14 }} />
                         </CustomIconButton>
@@ -493,6 +504,15 @@ export const AuthForm = () => {
                   >
                     {option.address}/{option.database}
                   </Typography>
+                  {(option.username || option.password || option.token) && (
+                    <Icons.key
+                      sx={{
+                        fontSize: 14,
+                        color: 'text.secondary',
+                        ml: 0.5
+                      }}
+                    />
+                  )}
                 </Box>
                 {option.time !== -1 && (
                   <Box
