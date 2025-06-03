@@ -19,6 +19,7 @@ const commonTrans = {
     connectionTip: '支持自托管 Milvus 或 Zilliz 云专用集群。',
     checkHealth: '检查健康状态',
     version: '版本',
+    clearHistory: '清空所有历史',
   },
   status: {
     loaded: '已加载',

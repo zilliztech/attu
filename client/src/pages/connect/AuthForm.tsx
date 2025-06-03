@@ -199,6 +199,16 @@ export const AuthForm = () => {
     setConnections(newHistory);
   };
 
+  // Add clear all history handler
+  const handleClearAllHistory = () => {
+    // Save only the default connection
+    const newHistory = [DEFAULT_CONNECTION];
+    window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
+    setConnections(newHistory);
+    // Reset the form to default values
+    setAuthReq(DEFAULT_CONNECTION);
+  };
+
   // is button should be disabled
   const btnDisabled = authReq.address.trim().length === 0 || isConnecting;
 
@@ -294,6 +304,17 @@ export const AuthForm = () => {
           onInputChange={(event, newInputValue) => {
             handleInputChange('address', newInputValue);
           }}
+          filterOptions={(options, state) => {
+            // Only filter when there's input text
+            if (!state.inputValue) {
+              return options;
+            }
+            return options.filter(option =>
+              `${option.address}/${option.database}`
+                .toLowerCase()
+                .includes(state.inputValue.toLowerCase())
+            );
+          }}
           renderInput={params => (
             <TextField
               {...params}
@@ -316,50 +337,200 @@ export const AuthForm = () => {
               }}
             />
           )}
-          renderOption={(props, option) => (
-            <Box
-              component="li"
-              {...props}
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '14px',
-                padding: '8px 16px',
-                '&:hover': {
-                  backgroundColor: (theme: Theme) => theme.palette.action.hover,
+          ListboxProps={{
+            sx: {
+              '& .MuiAutocomplete-listbox': {
+                padding: 0,
+                '& li': {
+                  padding: (theme: Theme) => theme.spacing(1.5, 2),
+                  '&:not(:last-child)': {
+                    borderBottom: (theme: Theme) =>
+                      `1px solid ${theme.palette.divider}`,
+                  },
                 },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Icons.link sx={{ fontSize: 16 }} />
-                <Typography>
-                  {option.address}/{option.database}
-                </Typography>
-              </Box>
-              {option.time !== -1 && (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              },
+            },
+          }}
+          renderOption={(props, option) => {
+            // If it's the last option and there are multiple connections, add clear history option
+            if (
+              option === connections[connections.length - 1] &&
+              connections.length > 1
+            ) {
+              return (
+                <>
+                  <Box
+                    component="li"
+                    {...props}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '14px',
+                      padding: (theme: Theme) => theme.spacing(1.5, 2),
+                      '&:hover': {
+                        backgroundColor: (theme: Theme) =>
+                          theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 1,
+                        minWidth: 0,
+                        flex: 1,
+                      }}
+                    >
+                      <Icons.link
+                        sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }}
+                      />
+                      <Typography
+                        sx={{
+                          wordBreak: 'break-all',
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {option.address}/{option.database}
+                      </Typography>
+                    </Box>
+                    {option.time !== -1 && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          minWidth: 200,
+                          justifyContent: 'flex-end',
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: 11,
+                            color: 'text.secondary',
+                            fontStyle: 'italic',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {new Date(option.time).toLocaleString()}
+                        </Typography>
+                        <CustomIconButton
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleDeleteConnection(option);
+                          }}
+                          sx={{
+                            padding: '4px',
+                            marginLeft: 1,
+                          }}
+                        >
+                          <Icons.cross sx={{ fontSize: 14 }} />
+                        </CustomIconButton>
+                      </Box>
+                    )}
+                  </Box>
+                  <Box
+                    component="li"
+                    onClick={handleClearAllHistory}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      fontSize: '12px',
+                      borderTop: (theme: Theme) =>
+                        `1px solid ${theme.palette.divider}`,
+                      color: 'error.main',
+                      cursor: 'pointer',
+                      padding: (theme: Theme) => theme.spacing(1),
+                      marginTop: (theme: Theme) => theme.spacing(1),
+                      backgroundColor: (theme: Theme) =>
+                        theme.palette.background.default,
+                      '&:hover': {
+                        backgroundColor: (theme: Theme) =>
+                          theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <Icons.delete sx={{ fontSize: 14 }} />
+                    <Typography sx={{ fontWeight: 500 }}>
+                      {commonTrans('attu.clearHistory')}
+                    </Typography>
+                  </Box>
+                </>
+              );
+            }
+            // Regular connection option
+            return (
+              <Box
+                component="li"
+                {...props}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '14px',
+                  padding: (theme: Theme) => theme.spacing(1.5, 2),
+                  '&:hover': {
+                    backgroundColor: (theme: Theme) =>
+                      theme.palette.action.hover,
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 1,
+                    minWidth: 0,
+                    flex: 1,
+                  }}
+                >
+                  <Icons.link sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
                   <Typography
                     sx={{
-                      fontSize: 11,
-                      color: 'text.secondary',
-                      fontStyle: 'italic',
+                      wordBreak: 'break-all',
+                      lineHeight: 1.5,
                     }}
                   >
-                    {new Date(option.time).toLocaleString()}
+                    {option.address}/{option.database}
                   </Typography>
-                  <CustomIconButton
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleDeleteConnection(option);
-                    }}
-                    sx={{ padding: '4px' }}
-                  >
-                    <Icons.cross sx={{ fontSize: 14 }} />
-                  </CustomIconButton>
                 </Box>
-              )}
-            </Box>
-          )}
+                {option.time !== -1 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      minWidth: 200,
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: 11,
+                        color: 'text.secondary',
+                        fontStyle: 'italic',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {new Date(option.time).toLocaleString()}
+                    </Typography>
+                    <CustomIconButton
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleDeleteConnection(option);
+                      }}
+                      sx={{
+                        padding: '4px',
+                        marginLeft: 1,
+                      }}
+                    >
+                      <Icons.cross sx={{ fontSize: 14 }} />
+                    </CustomIconButton>
+                  </Box>
+                )}
+              </Box>
+            );
+          }}
         />
 
         {/* db  */}
