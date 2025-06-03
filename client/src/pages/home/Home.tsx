@@ -90,13 +90,12 @@ const Home = () => {
         display: 'flex',
         flexDirection: 'column',
         height: 'calc(100vh - 80px)',
-        borderRadius: 2,
       })}
     >
       <Box
         sx={{
           mb: 2,
-          px: 2,
+          px: 0.5,
           maxWidth: '90%',
         }}
       >
@@ -176,7 +175,7 @@ const Home = () => {
           <Box
             sx={{
               mb: 2,
-              px: 2,
+              px: 0.5,
             }}
           >
             <Typography
