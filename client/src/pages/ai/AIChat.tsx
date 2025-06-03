@@ -140,14 +140,32 @@ const AIChat: FC = () => {
     code({ node, inline, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || '');
       return !inline && match ? (
-        <SyntaxHighlighter
-          style={theme.palette.mode === 'dark' ? vscDarkPlus : oneLight}
-          language={match[1]}
-          PreTag="div"
-          {...props}
-        >
-          {String(children).replace(/\n$/, '')}
-        </SyntaxHighlighter>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <CopyButton
+              copyValue={String(children).replace(/\n$/, '')}
+              tooltipPlacement="top"
+              sx={{
+                color: 'text.secondary',
+                '& svg': {
+                  fontSize: 14,
+                },
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  color: 'text.primary',
+                },
+              }}
+            />
+          </Box>
+          <SyntaxHighlighter
+            style={theme.palette.mode === 'dark' ? vscDarkPlus : oneLight}
+            language={match[1]}
+            PreTag="div"
+            {...props}
+          >
+            {String(children).replace(/\n$/, '')}
+          </SyntaxHighlighter>
+        </Box>
       ) : (
         <code className={className} {...props}>
           {children}
