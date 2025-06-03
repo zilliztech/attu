@@ -20,6 +20,7 @@ const commonTrans = {
       'Self-hosted Milvus or Zilliz Cloud Dedicated cluster are supported.',
     checkHealth: 'Check Health',
     version: 'Version',
+    clearHistory: 'Clear All History',
   },
   status: {
     loaded: 'Loaded',

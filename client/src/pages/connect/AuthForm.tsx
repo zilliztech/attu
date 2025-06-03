@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
 import Checkbox from '@mui/material/Checkbox';
 import { useTranslation } from 'react-i18next';
 import CustomButton from '@/components/customButton/CustomButton';
@@ -18,6 +17,8 @@ import type { AuthReq } from '@server/types';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
 import type { Theme } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 // Add Connection type definition back
 type Connection = AuthReq & {
@@ -36,10 +37,23 @@ const DEFAULT_CONNECTION = {
   clientId: '',
 };
 
-export const AuthForm = () => {
-  // styles
-  // const classes = useStyles(); // Removed useStyles
+// Add fixed connections list
+const FIXED_CONNECTIONS: Connection[] = [
+  {
+    address: 'localhost:19530',
+    database: 'default',
+    token: '',
+    username: '',
+    password: '',
+    ssl: false,
+    checkHealth: true,
+    time: -1,
+    clientId: '',
+  },
+  // Add more fixed connections here
+];
 
+export const AuthForm = () => {
   // context
   const { openSnackBar } = useContext(rootContext);
   const { authReq, setAuthReq, login } = useContext(authContext);
@@ -48,15 +62,14 @@ export const AuthForm = () => {
   // i18n
   const { t: commonTrans } = useTranslation();
   const { t: btnTrans } = useTranslation('btn');
-  const { t: warningTrans } = useTranslation('warning');
   const { t: successTrans } = useTranslation('success');
   const { t: dbTrans } = useTranslation('database');
+
   // hooks
   const navigate = useNavigate();
 
   // UI states
   const [withPass, setWithPass] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -80,20 +93,19 @@ export const AuthForm = () => {
       | 'checkHealth',
     value: string | boolean
   ) => {
-    // set database to default if empty
-    // if (key === 'database' && value === '') {
-    //   value = MILVUS_DATABASE;
-    // }
+    if (key === 'address' && typeof value === 'string') {
+      // Check if address contains database name (format: address/database)
+      const parts = value.split('/');
+      if (parts.length === 2) {
+        setAuthReq(v => ({
+          ...v,
+          address: parts[0],
+          database: parts[1],
+        }));
+        return;
+      }
+    }
     setAuthReq(v => ({ ...v, [key]: value }));
-  };
-  // handle menu clicked
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  // handle menu close
-  const handleMenuClose = () => {
-    setAnchorEl(null);
   };
 
   // handle auth toggle
@@ -177,11 +189,16 @@ export const AuthForm = () => {
   const handleClickOnHisotry = (connection: Connection) => {
     // set auth request
     setAuthReq(connection);
-    // close menu
-    handleMenuClose();
   };
 
   const handleDeleteConnection = (connection: Connection) => {
+    // Don't allow deletion of fixed connections
+    if (FIXED_CONNECTIONS.some(fixed => 
+      fixed.address === connection.address && fixed.database === connection.database
+    )) {
+      return;
+    }
+
     const history = JSON.parse(
       window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
     ) as Connection[];
@@ -202,7 +219,19 @@ export const AuthForm = () => {
     newHistory.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
-    setConnections(newHistory);
+    // Combine fixed and history connections
+    setConnections([...FIXED_CONNECTIONS, ...newHistory]);
+  };
+
+  // Add clear all history handler
+  const handleClearAllHistory = () => {
+    // Save only the default connection
+    const newHistory = [DEFAULT_CONNECTION];
+    window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
+    // Combine fixed and history connections
+    setConnections([...FIXED_CONNECTIONS, ...newHistory]);
+    // Reset the form to default values
+    setAuthReq(DEFAULT_CONNECTION);
   };
 
   // is button should be disabled
@@ -210,20 +239,23 @@ export const AuthForm = () => {
 
   // load connection from local storage
   useEffect(() => {
-    const connections: Connection[] = JSON.parse(
+    const historyConnections: Connection[] = JSON.parse(
       window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
     );
 
-    if (connections.length === 0) {
-      connections.push(DEFAULT_CONNECTION);
+    if (historyConnections.length === 0) {
+      historyConnections.push(DEFAULT_CONNECTION);
     }
 
+    // Combine fixed and history connections
+    const allConnections = [...FIXED_CONNECTIONS, ...historyConnections];
+
     // sort by time
-    connections.sort((a, b) => {
+    allConnections.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
 
-    setConnections(connections);
+    setConnections(allConnections);
   }, []);
 
   // UI effect
@@ -280,65 +312,245 @@ export const AuthForm = () => {
           </Typography>
         </Box>
 
-        {/* address  */}
-        <CustomInput
-          type="text"
-          textConfig={{
-            label: commonTrans('attu.address'),
-            key: 'address',
-            onChange: (val: string) =>
-              handleInputChange('address', String(val)),
-            variant: 'filled',
-            sx: {
-              margin: (theme: Theme) => theme.spacing(0.5, 0),
-              '& .MuiFilledInput-adornedEnd': {
-                paddingRight: 0,
-              },
-              '& .MuiFilledInput-root': {
-                backgroundColor: 'background.default',
-                '&:hover': {
-                  backgroundColor: 'action.hover',
-                },
-                '&.Mui-focused': {
+        {/* Replace address input with Autocomplete */}
+        <Autocomplete
+          freeSolo
+          options={connections}
+          getOptionLabel={option =>
+            typeof option === 'string'
+              ? option
+              : `${option.address}/${option.database}`
+          }
+          value={authReq.address}
+          onChange={(event, newValue) => {
+            if (typeof newValue === 'string') {
+              handleInputChange('address', newValue);
+            } else if (newValue) {
+              handleClickOnHisotry(newValue);
+            }
+          }}
+          onInputChange={(event, newInputValue) => {
+            handleInputChange('address', newInputValue);
+          }}
+          filterOptions={(options, state) => {
+            // Only filter when there's input text
+            if (!state.inputValue) {
+              return options;
+            }
+            return options.filter(option =>
+              `${option.address}/${option.database}`
+                .toLowerCase()
+                .includes(state.inputValue.toLowerCase())
+            );
+          }}
+          renderInput={params => (
+            <TextField
+              {...params}
+              label={commonTrans('attu.address')}
+              variant="filled"
+              required
+              error={validation.address?.result}
+              helperText={validation.address?.errText}
+              sx={{
+                margin: (theme: Theme) => theme.spacing(0.5, 0),
+                '& .MuiFilledInput-root': {
                   backgroundColor: 'background.default',
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                  '&.Mui-focused': {
+                    backgroundColor: 'background.default',
+                  },
+                },
+              }}
+            />
+          )}
+          ListboxProps={{
+            sx: {
+              '& .MuiAutocomplete-listbox': {
+                padding: 0,
+                '& li': {
+                  padding: (theme: Theme) => theme.spacing(1.5, 2),
+                  '&:not(:last-child)': {
+                    borderBottom: (theme: Theme) =>
+                      `1px solid ${theme.palette.divider}`,
+                  },
                 },
               },
             },
-            placeholder: commonTrans('attu.address'),
-            fullWidth: true,
-            InputProps: {
-              endAdornment: (
-                <CustomIconButton
+          }}
+          renderOption={(props, option) => {
+            // If it's the last option and there are multiple connections, add clear history option
+            if (
+              option === connections[connections.length - 1] &&
+              connections.length > 1
+            ) {
+              return (
+                <>
+                  <Box
+                    component="li"
+                    {...props}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '14px',
+                      '&:hover': {
+                        backgroundColor: (theme: Theme) =>
+                          theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Icons.link sx={{ fontSize: 16 }} />
+                      <Typography>
+                        {option.address}/{option.database}
+                      </Typography>
+                      {(option.username || option.password || option.token) && (
+                        <Icons.key
+                          sx={{
+                            fontSize: 14,
+                            color: 'text.secondary',
+                            ml: 0.5
+                          }}
+                        />
+                      )}
+                    </Box>
+                    {option.time !== -1 && !FIXED_CONNECTIONS.some(fixed => 
+                      fixed.address === option.address && fixed.database === option.database
+                    ) && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography
+                          sx={{
+                            fontSize: 11,
+                            color: 'text.secondary',
+                            fontStyle: 'italic',
+                          }}
+                        >
+                          {new Date(option.time).toLocaleString()}
+                        </Typography>
+                        <CustomIconButton
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleDeleteConnection(option);
+                          }}
+                          sx={{ padding: '4px' }}
+                        >
+                          <Icons.cross sx={{ fontSize: 14 }} />
+                        </CustomIconButton>
+                      </Box>
+                    )}
+                  </Box>
+                  <Box
+                    component="li"
+                    onClick={handleClearAllHistory}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      fontSize: '12px',
+                      borderTop: (theme: Theme) =>
+                        `1px solid ${theme.palette.divider}`,
+                      color: 'error.main',
+                      cursor: 'pointer',
+                      padding: (theme: Theme) => theme.spacing(1),
+                      marginTop: (theme: Theme) => theme.spacing(1),
+                      backgroundColor: (theme: Theme) =>
+                        theme.palette.background.default,
+                      '&:hover': {
+                        backgroundColor: (theme: Theme) =>
+                          theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <Icons.delete sx={{ fontSize: 14 }} />
+                    <Typography sx={{ fontWeight: 500 }}>
+                      {commonTrans('attu.clearHistory')}
+                    </Typography>
+                  </Box>
+                </>
+              );
+            }
+            // Regular connection option
+            return (
+              <Box
+                component="li"
+                {...props}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '14px',
+                  padding: (theme: Theme) => theme.spacing(1.5, 2),
+                  '&:hover': {
+                    backgroundColor: (theme: Theme) =>
+                      theme.palette.action.hover,
+                  },
+                }}
+              >
+                <Box
                   sx={{
                     display: 'flex',
-                    paddingLeft: 1,
-                    paddingRight: 1,
-                    fontSize: 14,
-                    '& button': {
-                      width: 36,
-                      height: 36,
-                      color: 'primary.main',
-                    },
+                    alignItems: 'flex-start',
+                    gap: 1,
+                    minWidth: 0,
+                    flex: 1,
                   }}
-                  onClick={handleMenuClick}
                 >
-                  <Icons.link />
-                </CustomIconButton>
-              ),
-            },
-            validations: [
-              {
-                rule: 'require',
-                errorText: warningTrans('required', {
-                  name: commonTrans('attu.address'),
-                }),
-              },
-            ],
-            value: authReq.address,
+                  <Icons.link sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
+                  <Typography
+                    sx={{
+                      wordBreak: 'break-all',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {option.address}/{option.database}
+                  </Typography>
+                  {(option.username || option.password || option.token) && (
+                    <Icons.key
+                      sx={{
+                        fontSize: 14,
+                        color: 'text.secondary',
+                        ml: 0.5
+                      }}
+                    />
+                  )}
+                </Box>
+                {option.time !== -1 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      minWidth: 200,
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: 11,
+                        color: 'text.secondary',
+                        fontStyle: 'italic',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {new Date(option.time).toLocaleString()}
+                    </Typography>
+                    <CustomIconButton
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleDeleteConnection(option);
+                      }}
+                      sx={{
+                        padding: '4px',
+                        marginLeft: 1,
+                      }}
+                    >
+                      <Icons.cross sx={{ fontSize: 14 }} />
+                    </CustomIconButton>
+                  </Box>
+                )}
+              </Box>
+            );
           }}
-          checkValid={checkIsValid}
-          validInfo={validation}
-          key={commonTrans('attu.address')}
         />
 
         {/* db  */}
@@ -491,9 +703,9 @@ export const AuthForm = () => {
               gap: (theme: Theme) => theme.spacing(2),
             }}
           >
-            <CustomButton 
-              type="submit" 
-              variant="contained" 
+            <CustomButton
+              type="submit"
+              variant="contained"
               disabled={btnDisabled}
               sx={{
                 height: 36,
@@ -510,7 +722,8 @@ export const AuthForm = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: (theme: Theme) => theme.spacing(1),
-                borderLeft: (theme: Theme) => `1px solid ${theme.palette.divider}`,
+                borderLeft: (theme: Theme) =>
+                  `1px solid ${theme.palette.divider}`,
                 paddingLeft: (theme: Theme) => theme.spacing(2),
               }}
             >
@@ -570,119 +783,6 @@ export const AuthForm = () => {
           </Box>
         </Box>
       </Box>
-
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        sx={{
-          // Added sx prop
-          '& ul': {
-            padding: 0,
-            maxHeight: '400px',
-            overflowY: 'auto',
-          },
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        {connections.map((connection, index) => (
-          <Box
-            component="li"
-            key={index}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '14px',
-              width: 380,
-              padding: `0 8px`,
-              cursor: 'pointer',
-              '&:hover': {
-                backgroundColor: (theme: Theme) => theme.palette.action.hover,
-              },
-              '& .address': {
-                display: 'grid',
-                gridTemplateColumns: '24px 1fr',
-                gap: 4,
-                color: (theme: Theme) => theme.palette.text.primary,
-                fontSize: '14px',
-                padding: '12px 0',
-                '& .text': {
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  width: 200,
-                  wordWrap: 'break-word',
-                },
-              },
-              '& .icon': {
-                verticalAlign: '-3px',
-                marginRight: 8,
-                fontSize: '14px',
-              },
-              '& .time': {
-                color: (theme: Theme) => theme.palette.text.secondary,
-                fontSize: 11,
-                lineHeight: 1.5,
-                padding: '12px 0',
-                width: 130,
-                fontStyle: 'italic',
-              },
-              '& .deleteIconBtn': {
-                padding: '8px 0',
-                '& svg': {
-                  fontSize: '14px',
-                },
-                height: 16,
-                lineHeight: '16px',
-                margin: 0,
-              },
-            }}
-            onClick={() => {
-              handleClickOnHisotry(connection);
-            }}
-          >
-            <div className="address">
-              <Icons.link
-                // className="icon" // Removed className
-                sx={{
-                  // Added sx prop
-                  verticalAlign: '-5px',
-                  marginRight: (theme: Theme) => theme.spacing(1),
-                }}
-              ></Icons.link>
-              <div className="text">
-                {connection.address}/{connection.database}
-              </div>
-            </div>
-            <div className="time">
-              {connection.time !== -1
-                ? new Date(connection.time).toLocaleString()
-                : '--'}
-            </div>
-
-            <div>
-              {connection.time !== -1 && (
-                <CustomIconButton
-                  className="deleteIconBtn"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteConnection(connection);
-                  }}
-                >
-                  <Icons.cross></Icons.cross>
-                </CustomIconButton>
-              )}
-            </div>
-          </Box>
-        ))}
-      </Menu>
     </form>
   );
 };
