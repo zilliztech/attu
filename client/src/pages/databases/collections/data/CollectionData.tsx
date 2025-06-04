@@ -527,6 +527,7 @@ const CollectionData = (props: CollectionDataProps) => {
                 }}
                 sx={{
                   width: '120px',
+                  height: 'auto',
                   '& .MuiSelect-select': {
                     fontSize: '14px',
                     minHeight: '28px',
