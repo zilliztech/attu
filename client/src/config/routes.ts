@@ -230,7 +230,7 @@ export const getMenuItems = (
   navigate: (path: string) => void,
   authReq?: { address: string }
 ): NavMenuItem[] => {
-  return routes
+  const menuItems = routes
     .filter(route => {
       if (!route.showInMenu) return false;
       if (route.showWhenNotManagedOrDedicated && !(!isManaged || isDedicated))
@@ -253,6 +253,22 @@ export const getMenuItems = (
       };
       return menuItem;
     });
+
+  // Add Milvus WebUI menu item for non-managed instances
+  if (!isManaged && authReq?.address) {
+    menuItems.push({
+      icon: icons.newWindow,
+      label: 'Milvus WebUI',
+      onClick: () => {
+        window.open(
+          `http://${authReq.address.split(':')[0]}:9091/webui`,
+          '_blank'
+        );
+      },
+    });
+  }
+
+  return menuItems;
 };
 
 export const getRoutes = (
