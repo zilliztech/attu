@@ -4,6 +4,9 @@ export const MILVUS_URL =
 export const MILVUS_DATABASE =
   ((window as any)._env_ && (window as any)._env_.DATABASE) || 'default';
 
+export const MILVUS_SERVERS =
+  ((window as any)._env_ && (window as any)._env_.MILVUS_SERVERS) || '';
+
 export const DYNAMIC_FIELD = `$meta`;
 
 export enum DataTypeEnum {

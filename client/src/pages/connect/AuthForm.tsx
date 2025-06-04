@@ -8,7 +8,12 @@ import { useFormValidation } from '@/hooks';
 import { formatForm } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { rootContext, authContext, dataContext } from '@/context';
-import { ATTU_AUTH_HISTORY, MILVUS_DATABASE, MILVUS_URL } from '@/consts';
+import {
+  ATTU_AUTH_HISTORY,
+  MILVUS_DATABASE,
+  MILVUS_SERVERS,
+  MILVUS_URL,
+} from '@/consts';
 import { CustomRadio } from '@/components/customRadio/CustomRadio';
 import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
@@ -25,33 +30,48 @@ type Connection = AuthReq & {
   time: number;
 };
 
-const DEFAULT_CONNECTION = {
-  address: MILVUS_URL || '127.0.0.1:19530',
-  database: MILVUS_DATABASE,
-  token: '',
-  username: '',
-  password: '',
-  ssl: false,
-  checkHealth: true,
-  time: -1,
-  clientId: '',
+// Parse server list from environment variables
+const parseFixedConnections = (): Connection[] => {
+  const serverList = MILVUS_SERVERS || '';
+  const defaultUrl = MILVUS_URL || '127.0.0.1:19530';
+  const defaultDatabase = MILVUS_DATABASE;
+
+  // If MILVUS_SERVERS exists and is not empty, parse it
+  if (serverList && serverList.trim() !== '') {
+    return serverList.split(',').map((server: string) => {
+      const [address, database] = server.trim().split('/');
+      return {
+        address: address.trim(),
+        database: database?.trim() || defaultDatabase,
+        token: '',
+        username: '',
+        password: '',
+        ssl: false,
+        checkHealth: true,
+        time: -1,
+        clientId: '',
+      };
+    });
+  }
+
+  // If MILVUS_SERVERS is empty or doesn't exist, use MILVUS_URL
+  return [
+    {
+      address: defaultUrl,
+      database: defaultDatabase,
+      token: '',
+      username: '',
+      password: '',
+      ssl: false,
+      checkHealth: true,
+      time: -1,
+      clientId: '',
+    },
+  ];
 };
 
-// Add fixed connections list
-const FIXED_CONNECTIONS: Connection[] = [
-  {
-    address: 'localhost:19530',
-    database: 'default',
-    token: '',
-    username: '',
-    password: '',
-    ssl: false,
-    checkHealth: true,
-    time: -1,
-    clientId: '',
-  },
-  // Add more fixed connections here
-];
+// Get fixed connections from environment variables
+const FIXED_CONNECTIONS: Connection[] = parseFixedConnections();
 
 export const AuthForm = () => {
   // context
@@ -193,9 +213,13 @@ export const AuthForm = () => {
 
   const handleDeleteConnection = (connection: Connection) => {
     // Don't allow deletion of fixed connections
-    if (FIXED_CONNECTIONS.some(fixed => 
-      fixed.address === connection.address && fixed.database === connection.database
-    )) {
+    if (
+      FIXED_CONNECTIONS.some(
+        fixed =>
+          fixed.address === connection.address &&
+          fixed.database === connection.database
+      )
+    ) {
       return;
     }
 
@@ -210,7 +234,7 @@ export const AuthForm = () => {
     );
 
     if (newHistory.length === 0) {
-      newHistory.push(DEFAULT_CONNECTION);
+      newHistory.push(FIXED_CONNECTIONS[0]);
     }
 
     // save to local storage
@@ -226,12 +250,12 @@ export const AuthForm = () => {
   // Add clear all history handler
   const handleClearAllHistory = () => {
     // Save only the default connection
-    const newHistory = [DEFAULT_CONNECTION];
+    const newHistory = [FIXED_CONNECTIONS[0]];
     window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
     // Combine fixed and history connections
     setConnections([...FIXED_CONNECTIONS, ...newHistory]);
     // Reset the form to default values
-    setAuthReq(DEFAULT_CONNECTION);
+    setAuthReq(FIXED_CONNECTIONS[0]);
   };
 
   // is button should be disabled
@@ -243,14 +267,21 @@ export const AuthForm = () => {
       window.localStorage.getItem(ATTU_AUTH_HISTORY) || '[]'
     );
 
-    if (historyConnections.length === 0) {
-      historyConnections.push(DEFAULT_CONNECTION);
-    }
+    // Start with fixed connections
+    const allConnections = [...FIXED_CONNECTIONS];
 
-    // Combine fixed and history connections
-    const allConnections = [...FIXED_CONNECTIONS, ...historyConnections];
+    // Add history connections, filtering out any that match fixed connections
+    const uniqueHistoryConnections = historyConnections.filter(
+      historyConn =>
+        !FIXED_CONNECTIONS.some(
+          fixedConn =>
+            fixedConn.address === historyConn.address &&
+            fixedConn.database === historyConn.database
+        )
+    );
+    allConnections.push(...uniqueHistoryConnections);
 
-    // sort by time
+    // Sort by time
     allConnections.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
@@ -314,23 +345,47 @@ export const AuthForm = () => {
 
         {/* Replace address input with Autocomplete */}
         <Autocomplete
-          freeSolo
+          freeSolo={true}
           options={connections}
           getOptionLabel={option =>
             typeof option === 'string'
               ? option
               : `${option.address}/${option.database}`
           }
-          value={authReq.address}
+          value={connections.find(c => c.address === authReq.address) || null}
           onChange={(event, newValue) => {
-            if (typeof newValue === 'string') {
-              handleInputChange('address', newValue);
-            } else if (newValue) {
-              handleClickOnHisotry(newValue);
+            if (newValue) {
+              if (typeof newValue === 'string') {
+                // Handle free text input
+                const [address, database] = newValue.split('/');
+                setAuthReq(v => ({
+                  ...v,
+                  address: address.trim(),
+                  database: database?.trim() || MILVUS_DATABASE,
+                }));
+              } else {
+                handleClickOnHisotry(newValue);
+              }
             }
           }}
           onInputChange={(event, newInputValue) => {
-            handleInputChange('address', newInputValue);
+            // Only update if the input matches a valid connection
+            const matchingConnection = connections.find(
+              c =>
+                `${c.address}/${c.database}`.toLowerCase() ===
+                newInputValue.toLowerCase()
+            );
+            if (matchingConnection) {
+              handleClickOnHisotry(matchingConnection);
+            } else if (newInputValue) {
+              // Handle free text input
+              const [address, database] = newInputValue.split('/');
+              setAuthReq(v => ({
+                ...v,
+                address: address.trim(),
+                database: database?.trim() || MILVUS_DATABASE,
+              }));
+            }
           }}
           filterOptions={(options, state) => {
             // Only filter when there's input text
@@ -380,16 +435,19 @@ export const AuthForm = () => {
             },
           }}
           renderOption={(props, option) => {
+            // Extract key from props
+            const { key, ...otherProps } = props;
+
             // If it's the last option and there are multiple connections, add clear history option
             if (
               option === connections[connections.length - 1] &&
               connections.length > 1
             ) {
               return (
-                <>
+                <React.Fragment key={`${option.address}-${option.database}`}>
                   <Box
                     component="li"
-                    {...props}
+                    {...otherProps}
                     sx={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -410,35 +468,40 @@ export const AuthForm = () => {
                           sx={{
                             fontSize: 14,
                             color: 'text.secondary',
-                            ml: 0.5
+                            ml: 0.5,
                           }}
                         />
                       )}
                     </Box>
-                    {option.time !== -1 && !FIXED_CONNECTIONS.some(fixed => 
-                      fixed.address === option.address && fixed.database === option.database
-                    ) && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography
-                          sx={{
-                            fontSize: 11,
-                            color: 'text.secondary',
-                            fontStyle: 'italic',
-                          }}
+                    {option.time !== -1 &&
+                      !FIXED_CONNECTIONS.some(
+                        fixed =>
+                          fixed.address === option.address &&
+                          fixed.database === option.database
+                      ) && (
+                        <Box
+                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                         >
-                          {new Date(option.time).toLocaleString()}
-                        </Typography>
-                        <CustomIconButton
-                          onClick={e => {
-                            e.stopPropagation();
-                            handleDeleteConnection(option);
-                          }}
-                          sx={{ padding: '4px' }}
-                        >
-                          <Icons.cross sx={{ fontSize: 14 }} />
-                        </CustomIconButton>
-                      </Box>
-                    )}
+                          <Typography
+                            sx={{
+                              fontSize: 11,
+                              color: 'text.secondary',
+                              fontStyle: 'italic',
+                            }}
+                          >
+                            {new Date(option.time).toLocaleString()}
+                          </Typography>
+                          <CustomIconButton
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleDeleteConnection(option);
+                            }}
+                            sx={{ padding: '4px' }}
+                          >
+                            <Icons.cross sx={{ fontSize: 14 }} />
+                          </CustomIconButton>
+                        </Box>
+                      )}
                   </Box>
                   <Box
                     component="li"
@@ -467,14 +530,15 @@ export const AuthForm = () => {
                       {commonTrans('attu.clearHistory')}
                     </Typography>
                   </Box>
-                </>
+                </React.Fragment>
               );
             }
             // Regular connection option
             return (
               <Box
                 component="li"
-                {...props}
+                key={`${option.address}-${option.database}`}
+                {...otherProps}
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -489,7 +553,7 @@ export const AuthForm = () => {
                 <Box
                   sx={{
                     display: 'flex',
-                    alignItems: 'flex-start',
+                    alignItems: 'center',
                     gap: 1,
                     minWidth: 0,
                     flex: 1,
@@ -500,19 +564,22 @@ export const AuthForm = () => {
                     sx={{
                       wordBreak: 'break-all',
                       lineHeight: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
                     }}
                   >
                     {option.address}/{option.database}
+                    {(option.username || option.password || option.token) && (
+                      <Icons.key
+                        sx={{
+                          fontSize: 14,
+                          color: 'text.secondary',
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
                   </Typography>
-                  {(option.username || option.password || option.token) && (
-                    <Icons.key
-                      sx={{
-                        fontSize: 14,
-                        color: 'text.secondary',
-                        ml: 0.5
-                      }}
-                    />
-                  )}
                 </Box>
                 {option.time !== -1 && (
                   <Box
@@ -730,7 +797,7 @@ export const AuthForm = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={authReq.ssl}
+                    checked={authReq?.ssl ?? false}
                     onChange={e => handleInputChange('ssl', e.target.checked)}
                     sx={{
                       padding: '4px',
@@ -756,7 +823,7 @@ export const AuthForm = () => {
                 control={
                   <Checkbox
                     size="small"
-                    checked={authReq.checkHealth}
+                    checked={authReq?.checkHealth ?? true}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       handleInputChange('checkHealth', e.target.checked);
                     }}
