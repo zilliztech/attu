@@ -1,18 +1,13 @@
 # Attu
 
-Attu is an all-in-one milvus administration tool.
-
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
 ![License](https://img.shields.io/github/license/zilliztech/attu)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
 ![GitHub last commit](https://img.shields.io/github/last-commit/zilliztech/attu)
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
-
-<div style="display: flex; justify-content: space-between; gap: 8px;">
-  <img src="./.github/images/screenshot.png" width="45%" alt="attu home view" />
-  <img src="./.github/images/data_explorer.png" width="45%" alt="attu data explorer" />
-</div>
+[![Contributors](https://img.shields.io/github/contributors/zilliztech/attu)](https://github.com/zilliztech/attu/graphs/contributors)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zilliztech/attu/pulls)
 
 Attu is designed to manage and interact with Milvus, offering features such as:
 
@@ -22,6 +17,99 @@ Attu is designed to manage and interact with Milvus, offering features such as:
 - **User and Role Management:** Easily manage Milvus permissions and security.
 - **Viewing System Topology:** Visualize Milvus system architecture for better management and optimization.
 
+## Table of Contents
+
+- [Features](#features)
+- [System Requirements](#system-requirements)
+- [Quick Start](#quick-start)
+- [Installation Guides](#installation-guides)
+  - [Compatibility](#compatibility)
+  - [Running Attu from Docker](#running-attu-from-docker)
+  - [Running Attu within Kubernetes](#running-attu-within-kubernetes)
+  - [Running Attu behind a nginx proxy](#running-attu-behind-a-nginx-proxy)
+  - [Install Desktop application](#install-desktop-application)
+- [Development](#development)
+- [Contributing](#contributing)
+- [FAQ](#faq)
+- [More Screenshots](#more-screenshots)
+- [Useful Examples](#useful-examples)
+- [Milvus Links](#milvus-links)
+- [Community](#community)
+
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px;">
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Home View</h4>
+    <img src="./.github/images/connect.png" width="100%" alt="attu home view" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Data Explorer</h4>
+    <img src="./.github/images/screenshot.png" width="100%" alt="attu data explorer" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Collection Management</h4>
+    <img src="./.github/images/data_explorer.png" width="100%" alt="attu data explorer" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Create Collection</h4>
+    <img src="./.github/images/create_collection.png" width="100%" alt="attu create collection dialog" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Collection Tree</h4>
+    <img src="./.github/images/collections.png" width="100%" alt="attu collections" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Collection Overview</h4>
+    <img src="./.github/images/collection_overview.png" width="100%" alt="attu collection view" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Data View</h4>
+    <img src="./.github/images/data_preview.png" width="100%" alt="attu data view" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Vector Search</h4>
+    <img src="./.github/images/vector_search.png" width="100%" alt="attu vector search" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>System View</h4>
+    <img src="./.github/images/system_view.png" width="100%" alt="attu system view" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Role Chart (Light)</h4>
+    <img src="./.github/images/role_chart.png" width="100%" alt="attu role chart" />
+  </div>
+  <div style="flex: 1; min-width: 300px;">
+    <h4>Role Chart (Dark)</h4>
+    <img src="./.github/images/role_chart_night.png" width="100%" alt="attu role chart" />
+  </div>
+</div>
+<br />
+
+## System Requirements
+
+- Docker 20.10.0 or later
+- Kubernetes 1.19 or later (if using K8s deployment)
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- For desktop application:
+  - Windows 10/11
+  - macOS 10.15 or later
+  - Linux (Ubuntu 20.04 or later)
+
+## Quick Start
+
+1. Start Milvus server (if not already running):
+
+```bash
+docker run -d --name milvus_standalone -p 19530:19530 -p 9091:9091 milvusdb/milvus:latest
+```
+
+2. Start Attu:
+
+```bash
+docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
+```
+
+3. Open your browser and navigate to `http://localhost:8000`
+
 ## Installation Guides
 
 Before you begin, make sure that you have Milvus installed on either [Zilliz Cloud](https://cloud.zilliz.com/signup) or [your own server](https://milvus.io/docs/install_standalone-docker.md).
@@ -30,7 +118,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                           |
 | -------------- | ------------------------------------------------------------------ |
-| 2.5.x          | [v2.5.6](https://github.com/zilliztech/attu/releases/tag/v2.5.6)   |
+| 2.5.x          | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
 | 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
@@ -118,16 +206,63 @@ If you prefer to use a desktop application, you can download the [desktop versio
   sudo xattr -rd com.apple.quarantine /Applications/attu.app
 ```
 
+## Development
+
+### Prerequisites
+
+- Node.js 16.x or later
+- Yarn package manager
+- Docker (for local development)
+
+### Setup Development Environment
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/zilliztech/attu.git
+cd attu
+```
+
+2. Install dependencies:
+
+```bash
+yarn install
+```
+
+3. Start development server:
+
+```bash
+yarn start
+```
+
 ### Build Docker Image Locally
 
 - Dev: `yarn run build:dev`
 - Release: `yarn run build:release`
+
+### Running Tests
+
+```bash
+yarn test
+```
+
+## Contributing
+
+We welcome contributions from the community! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+
+### Code of Conduct
+
+Please read our [Code of Conduct](CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
 
 ## FAQ
 
 - I can't log into the system
   > Make sure that the IP address of the Milvus server can be accessed from the Attu container. [#161](https://github.com/zilliztech/attu/issues/161)
 - If you encounter issues installing the desktop app on Mac OS, refer to the note under [Install Desktop application](#install-desktop-application).
+- How to update Attu?
+  > For Docker users, simply pull the latest image and restart the container. For desktop users, download the latest release from our [releases page](https://github.com/zilliztech/attu/releases).
+- How to backup my Attu configuration?
+  > Attu configurations are stored in your browser's local storage. You can export them from the settings page.
 
 ## More Screenshots
 
@@ -139,43 +274,11 @@ If you prefer to use a desktop application, you can download the [desktop versio
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | <img src="./.github/images/collection_overview.png" alt="attu" width="800" alt="attu collection view" /> | <img src="./.github/images/data_preview.png" alt="attu" width="800" alt="attu data view" /> |
 
-| vector search                                                                         | system view                                                                       |
-| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| <img src="./.github/images/vector_search.png" width="800" alt="attu vector search" /> | <img src="./.github/images/system_view.png" width="800" alt="attu system view" /> |
-| role chart                                                                            |                                                                                   |
-| <img src="./.github/images/role_chart.png" width="800" alt="attu role chart" />       | <img src="./.github/images/role_chart_night.png" width="800" alt="attu role chart" />   |
-
-## ✨ Contributing Code
-
-Thank you for your interest in contributing to Attu! Here's how you can build Attu locally to contribute code, test out the latest features, or try out an open PR:
-
-### Build the Server
-
-1. Fork and clone the Attu repository.
-2. Navigate to the server directory by running `cd server` in the terminal.
-3. Install dependencies by running `yarn install`.
-4. To start the server in development mode, run `yarn start`.
-5. Create a new branch for your PR by running `git checkout -b my-branch`.
-
-### Build the Client
-
-1. Fork and clone the Attu repository.
-2. Navigate to the client directory by running `cd client` in the terminal.
-3. Install dependencies by running `yarn install`.
-4. To start the server in development mode, run `yarn start`.
-5. Create a new branch for your PR by running `git checkout -b my-branch`.
-
-### Submitting a Pull Request
-
-1. Make changes and ensure that tests pass.
-2. Commit changes and push to your fork.
-3. Create a Pull Request targeting the main branch of Attu.
-
-We appreciate your contributions to Attu, regardless of size. Thanks for supporting the project!
-
-#### ❓ Do you have any questions or problems?
-
-If you encounter any bugs or want to request a new feature, please create a [GitHub issue](https://github.com/zilliztech/attu/issues/new/choose). It's important to check if someone else has already created an issue for the same problem before submitting a new one.
+| vector search                                                                         | system view                                                                           |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| <img src="./.github/images/vector_search.png" width="800" alt="attu vector search" /> | <img src="./.github/images/system_view.png" width="800" alt="attu system view" />     |
+| role chart                                                                            |                                                                                       |
+| <img src="./.github/images/role_chart.png" width="800" alt="attu role chart" />       | <img src="./.github/images/role_chart_night.png" width="800" alt="attu role chart" /> |
 
 ### Useful Examples
 
@@ -187,7 +290,7 @@ If you encounter any bugs or want to request a new feature, please create a [Git
 | [semantic-image-search](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search)               |                                                        | clip-vit-base-patch16 |
 | [semantic-image-search-client](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search-client) | https://zilliz-semantic-image-search-client.vercel.app | clip-vit-base-patch16 |
 
-### Userful links
+### Milvus links
 
 Here are some helpful resources to get you started with Milvus:
 
@@ -203,3 +306,11 @@ Here are some helpful resources to get you started with Milvus:
 💬 Join our vibrant community on the Milvus Discord where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
 
 <a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
+
+## License
+
+Attu is licensed under the [Apache License 2.0](LICENSE). See the LICENSE file for details.
+
+## Changelog
+
+See our [CHANGELOG.md](CHANGELOG.md) for a list of changes between versions.
