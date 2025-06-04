@@ -553,7 +553,7 @@ export const AuthForm = () => {
                 <Box
                   sx={{
                     display: 'flex',
-                    alignItems: 'flex-start',
+                    alignItems: 'center',
                     gap: 1,
                     minWidth: 0,
                     flex: 1,
@@ -564,19 +564,22 @@ export const AuthForm = () => {
                     sx={{
                       wordBreak: 'break-all',
                       lineHeight: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
                     }}
                   >
                     {option.address}/{option.database}
+                    {(option.username || option.password || option.token) && (
+                      <Icons.key
+                        sx={{
+                          fontSize: 14,
+                          color: 'text.secondary',
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
                   </Typography>
-                  {(option.username || option.password || option.token) && (
-                    <Icons.key
-                      sx={{
-                        fontSize: 14,
-                        color: 'text.secondary',
-                        ml: 0.5,
-                      }}
-                    />
-                  )}
                 </Box>
                 {option.time !== -1 && (
                   <Box
@@ -794,7 +797,7 @@ export const AuthForm = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={authReq.ssl}
+                    checked={authReq?.ssl ?? false}
                     onChange={e => handleInputChange('ssl', e.target.checked)}
                     sx={{
                       padding: '4px',
@@ -820,7 +823,7 @@ export const AuthForm = () => {
                 control={
                   <Checkbox
                     size="small"
-                    checked={authReq.checkHealth}
+                    checked={authReq?.checkHealth ?? true}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       handleInputChange('checkHealth', e.target.checked);
                     }}
