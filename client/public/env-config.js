@@ -3,8 +3,5 @@ window._env_ = {
   HOST_URL: '',
   IS_ELECTRON: '{{IS_ELECTRON}}',
   DATBASE: 'default',
-  WITH_PROMETHEUS: '',
-  PROMETHEUS_ADDRESS: '',
-  PROMETHEUS_INSTANCE_NAME: '',
-  PROMETHEUS_NAMESPACE: ''
+  MILVUS_SERVERS: '',
 };
