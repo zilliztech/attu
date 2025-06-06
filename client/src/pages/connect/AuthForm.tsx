@@ -233,27 +233,38 @@ export const AuthForm = () => {
         item.database !== connection.database
     );
 
-    if (newHistory.length === 0) {
-      newHistory.push(FIXED_CONNECTIONS[0]);
-    }
-
     // save to local storage
     window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
+
+    // Start with fixed connections
+    const allConnections = [...FIXED_CONNECTIONS];
+
+    // Add history connections, filtering out any that match fixed connections
+    const uniqueHistoryConnections = newHistory.filter(
+      historyConn =>
+        !FIXED_CONNECTIONS.some(
+          fixedConn =>
+            fixedConn.address === historyConn.address &&
+            fixedConn.database === historyConn.database
+        )
+    );
+    allConnections.push(...uniqueHistoryConnections);
+
     // sort by time
-    newHistory.sort((a, b) => {
+    allConnections.sort((a, b) => {
       return new Date(b.time).getTime() - new Date(a.time).getTime();
     });
-    // Combine fixed and history connections
-    setConnections([...FIXED_CONNECTIONS, ...newHistory]);
+
+    // Update connections
+    setConnections(allConnections);
   };
 
   // Add clear all history handler
   const handleClearAllHistory = () => {
-    // Save only the default connection
-    const newHistory = [FIXED_CONNECTIONS[0]];
-    window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify(newHistory));
-    // Combine fixed and history connections
-    setConnections([...FIXED_CONNECTIONS, ...newHistory]);
+    // Clear all history, only keep empty array
+    window.localStorage.setItem(ATTU_AUTH_HISTORY, JSON.stringify([]));
+    // Set connections to only fixed connections
+    setConnections([...FIXED_CONNECTIONS]);
     // Reset the form to default values
     setAuthReq(FIXED_CONNECTIONS[0]);
   };
@@ -434,75 +445,104 @@ export const AuthForm = () => {
               },
             },
           }}
-          renderOption={(props, option) => {
+          renderOption={(props, option, { index }) => {
             // Extract key from props
             const { key, ...otherProps } = props;
 
-            // If it's the last option and there are multiple connections, add clear history option
-            if (
-              option === connections[connections.length - 1] &&
-              connections.length > 1
-            ) {
-              return (
-                <React.Fragment key={`${option.address}-${option.database}`}>
+            const isLastOption = index === connections.length - 1;
+            const hasMultipleConnections = connections.length > 1;
+
+            return (
+              <React.Fragment key={`${option.address}-${option.database}`}>
+                {/* Regular connection option */}
+                <Box
+                  component="li"
+                  {...otherProps}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '14px',
+                    padding: (theme: Theme) => theme.spacing(1.5, 2),
+                    '&:hover': {
+                      backgroundColor: (theme: Theme) =>
+                        theme.palette.action.hover,
+                    },
+                  }}
+                >
                   <Box
-                    component="li"
-                    {...otherProps}
                     sx={{
                       display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '14px',
-                      '&:hover': {
-                        backgroundColor: (theme: Theme) =>
-                          theme.palette.action.hover,
-                      },
+                      alignItems: 'center',
+                      gap: 1,
+                      minWidth: 0,
+                      flex: 1,
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Icons.link sx={{ fontSize: 16 }} />
-                      <Typography>
-                        {option.address}/{option.database}
-                      </Typography>
+                    <Icons.link sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
+                    <Typography
+                      sx={{
+                        wordBreak: 'break-all',
+                        lineHeight: 1.5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.5,
+                      }}
+                    >
+                      {option.address}/{option.database}
                       {(option.username || option.password || option.token) && (
                         <Icons.key
                           sx={{
                             fontSize: 14,
                             color: 'text.secondary',
-                            ml: 0.5,
+                            flexShrink: 0,
                           }}
                         />
                       )}
-                    </Box>
-                    {option.time !== -1 &&
-                      !FIXED_CONNECTIONS.some(
-                        fixed =>
-                          fixed.address === option.address &&
-                          fixed.database === option.database
-                      ) && (
-                        <Box
-                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                        >
-                          <Typography
-                            sx={{
-                              fontSize: 11,
-                              color: 'text.secondary',
-                              fontStyle: 'italic',
-                            }}
-                          >
-                            {new Date(option.time).toLocaleString()}
-                          </Typography>
-                          <CustomIconButton
-                            onClick={e => {
-                              e.stopPropagation();
-                              handleDeleteConnection(option);
-                            }}
-                            sx={{ padding: '4px' }}
-                          >
-                            <Icons.cross sx={{ fontSize: 14 }} />
-                          </CustomIconButton>
-                        </Box>
-                      )}
+                    </Typography>
                   </Box>
+                  {option.time !== -1 &&
+                    !FIXED_CONNECTIONS.some(
+                      fixed =>
+                        fixed.address === option.address &&
+                        fixed.database === option.database
+                    ) && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 2,
+                          minWidth: 200,
+                          justifyContent: 'flex-end',
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: 11,
+                            color: 'text.secondary',
+                            fontStyle: 'italic',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {new Date(option.time).toLocaleString()}
+                        </Typography>
+                        <CustomIconButton
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleDeleteConnection(option);
+                          }}
+                          sx={{
+                            padding: '4px',
+                            marginLeft: 1,
+                          }}
+                        >
+                          <Icons.cross sx={{ fontSize: 14 }} />
+                        </CustomIconButton>
+                      </Box>
+                    )}
+                </Box>
+
+                {/* Add clear history option after the last connection */}
+                {isLastOption && hasMultipleConnections && (
                   <Box
                     component="li"
                     onClick={handleClearAllHistory}
@@ -530,92 +570,8 @@ export const AuthForm = () => {
                       {commonTrans('attu.clearHistory')}
                     </Typography>
                   </Box>
-                </React.Fragment>
-              );
-            }
-            // Regular connection option
-            return (
-              <Box
-                component="li"
-                key={`${option.address}-${option.database}`}
-                {...otherProps}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: '14px',
-                  padding: (theme: Theme) => theme.spacing(1.5, 2),
-                  '&:hover': {
-                    backgroundColor: (theme: Theme) =>
-                      theme.palette.action.hover,
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    minWidth: 0,
-                    flex: 1,
-                  }}
-                >
-                  <Icons.link sx={{ fontSize: 16, flexShrink: 0, mt: 0.5 }} />
-                  <Typography
-                    sx={{
-                      wordBreak: 'break-all',
-                      lineHeight: 1.5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                    }}
-                  >
-                    {option.address}/{option.database}
-                    {(option.username || option.password || option.token) && (
-                      <Icons.key
-                        sx={{
-                          fontSize: 14,
-                          color: 'text.secondary',
-                          flexShrink: 0,
-                        }}
-                      />
-                    )}
-                  </Typography>
-                </Box>
-                {option.time !== -1 && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 2,
-                      minWidth: 200,
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: 11,
-                        color: 'text.secondary',
-                        fontStyle: 'italic',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {new Date(option.time).toLocaleString()}
-                    </Typography>
-                    <CustomIconButton
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleDeleteConnection(option);
-                      }}
-                      sx={{
-                        padding: '4px',
-                        marginLeft: 1,
-                      }}
-                    >
-                      <Icons.cross sx={{ fontSize: 14 }} />
-                    </CustomIconButton>
-                  </Box>
                 )}
-              </Box>
+              </React.Fragment>
             );
           }}
         />
