@@ -214,7 +214,14 @@ const Segments = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', height: '100%' }}>
+    <Box
+      sx={{
+        width: '100%',
+        height: 'calc(100vh - 128px)',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <CustomToolBar toolbarConfigs={toolbarConfigs} />
 
       <AttuGrid
