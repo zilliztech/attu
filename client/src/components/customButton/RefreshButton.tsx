@@ -44,11 +44,23 @@ const RefreshButton = ({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
+        minWidth: '32px',
+        minHeight: '32px',
         ...otherProps.sx,
       }}
       {...otherProps}
     >
-      {isLoading ? <CircularProgress size={16} /> : icon || <RefreshIcon />}
+      <div
+        style={{
+          width: 16,
+          height: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {isLoading ? <CircularProgress size={16} /> : icon || <RefreshIcon />}
+      </div>
     </IconButton>
   );
 

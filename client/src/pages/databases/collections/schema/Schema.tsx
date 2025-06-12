@@ -81,6 +81,7 @@ const Overview = () => {
                 color: f.name === '$meta' ? 'secondary.dark' : 'inherit',
                 fontStyle: f.name === '$meta' ? 'italic' : 'inherit',
               }}
+              component="div"
             >
               {f.name}
             </Typography>
@@ -352,8 +353,8 @@ const Overview = () => {
                   <RefreshButton
                     sx={{
                       '& svg': {
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                       },
                     }}
                     onClick={async () => {
@@ -381,17 +382,18 @@ const Overview = () => {
                   <CopyButton
                     sx={{
                       '& svg': {
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                       },
                     }}
-                    copyValue={collection.collection_name}
+                    copyValue={collection.id}
+                    copyLabel={`${collectionTrans('collectionId')}: ${collection.id}`}
                   />
                   <RefreshButton
                     sx={{
                       '& svg': {
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                       },
                     }}
                     onClick={async () => {
@@ -415,8 +417,8 @@ const Overview = () => {
                   <RefreshButton
                     sx={{
                       '& svg': {
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                       },
                     }}
                     onClick={() => {
@@ -441,8 +443,8 @@ const Overview = () => {
                   <RefreshButton
                     sx={{
                       '& svg': {
-                        width: 16,
-                        height: 16,
+                        width: 14,
+                        height: 14,
                       },
                     }}
                     tooltip={btnTrans('refresh')}
