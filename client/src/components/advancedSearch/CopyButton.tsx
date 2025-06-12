@@ -8,12 +8,19 @@ import type { IconButtonProps } from '@mui/material';
 interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
   copyValue?: string | object;
   tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
+  copyLabel?: string;
 }
 
 const CopyButton: FC<CopyButtonProps> = props => {
-  const { copyValue = '', tooltipPlacement = 'top', ...others } = props;
+  const {
+    copyValue = '',
+    tooltipPlacement = 'top',
+    copyLabel,
+    ...others
+  } = props;
   const { t: commonTrans } = useTranslation();
-  const [tooltipTitle, setTooltipTitle] = useState(commonTrans('copy.copy'));
+  const copyTooltip = commonTrans('copy.copy') + (copyLabel ? ` ${copyLabel}` : '');
+  const [tooltipTitle, setTooltipTitle] = useState(copyTooltip);
 
   const unsecuredCopyToClipboard = useCallback((v: string) => {
     const textArea = document.createElement('textarea');
@@ -46,7 +53,7 @@ const CopyButton: FC<CopyButtonProps> = props => {
       }
 
       setTimeout(() => {
-        setTooltipTitle(commonTrans('copy.copy'));
+        setTooltipTitle(copyTooltip);
       }, 1000);
     },
     [commonTrans, unsecuredCopyToClipboard, copyValue]

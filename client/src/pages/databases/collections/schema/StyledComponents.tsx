@@ -40,10 +40,10 @@ export const Card = styled(Box)(({ theme }) => ({
 
 export const InfoRow = styled(Box)(({ theme }) => ({
   display: 'flex',
-  alignItems: 'flex-start',
+  alignItems: 'center',
   gap: theme.spacing(1.5),
   '&:not(:last-child)': {
-    paddingBottom: theme.spacing(1),
+    padding: theme.spacing(0.5, 0),
   },
   [theme.breakpoints.down('md')]: {
     gap: theme.spacing(1),
@@ -59,7 +59,8 @@ export const InfoLabel = styled(Box)(({ theme }) => ({
   fontWeight: 400,
   minWidth: 80,
   flexShrink: 0,
-  paddingTop: '2px',
+  display: 'flex',
+  alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     minWidth: 70,
     fontSize: 12,
@@ -71,12 +72,11 @@ export const InfoValue = styled(Box)(({ theme }) => ({
   fontSize: 14,
   fontWeight: 500,
   display: 'flex',
-  alignItems: 'flex-start',
+  alignItems: 'center',
   gap: theme.spacing(1),
   flex: 1,
   minWidth: 0,
   flexWrap: 'nowrap',
-  overflow: 'hidden',
   [theme.breakpoints.down('md')]: {
     fontSize: 13,
     gap: theme.spacing(0.5),
@@ -102,10 +102,10 @@ export const InfoValue = styled(Box)(({ theme }) => ({
 export const ActionWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(0.5),
+  gap: theme.spacing(0.25),
   position: 'relative',
-  top: '-4px',
   marginLeft: 'auto',
+  height: '100%',
   [theme.breakpoints.down('md')]: {
     gap: theme.spacing(0.25),
   },
