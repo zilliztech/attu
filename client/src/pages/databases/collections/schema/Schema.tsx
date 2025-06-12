@@ -387,7 +387,7 @@ const Overview = () => {
                       },
                     }}
                     copyValue={collection.id}
-                    copyLabel={collectionTrans('collectionId')}
+                    copyLabel={`${collectionTrans('collectionId')}: ${collection.id}`}
                   />
                   <RefreshButton
                     sx={{
