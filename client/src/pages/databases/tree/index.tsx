@@ -7,111 +7,84 @@ import React, {
   useContext,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import icons from '@/components/icons/Icons';
-import {
-  Tooltip,
-  Typography,
-  Grow,
-  Popover,
-  Box,
-  IconButton,
-} from '@mui/material'; // Added Box, IconButton
-import { useNavigate } from 'react-router-dom';
+import { Grow, Popover, Box, IconButton, Fade } from '@mui/material';
 import { CollectionObject } from '@server/types';
-import { formatNumber } from '@/utils';
 import {
-  DatabaseTreeItem as OriginalDatabaseTreeItem, // Rename original type
+  DatabaseTreeItem as OriginalDatabaseTreeItem,
   TreeNodeType,
   DatabaseTreeProps,
   ContextMenu,
   TreeNodeObject,
 } from './types';
 import { TreeContextMenu } from './TreeContextMenu';
-import { useVirtualizer } from '@tanstack/react-virtual'; // Import virtualizer
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { dataContext } from '@/context';
+import CollectionNode from './CollectionNode';
+import DatabaseNode from './DatabaseNode';
+import SearchBox from './SearchBox';
 import {
-  CollectionNodeWrapper,
-  CollectionNameWrapper,
-  Count,
-  StatusDot,
+  TreeContainer,
+  TreeContent,
+  NoResultsBox,
+  TreeNodeBox,
+  SearchBoxContainer,
 } from './StyledComponents';
 
-// Define a type for the flattened list item
 interface FlatTreeItem {
   id: string;
   name: string;
   depth: number;
   type: TreeNodeType;
-  data: TreeNodeObject | null; // Allow null for DB node
-  isExpanded: boolean; // Track if the node itself is expanded
-  hasChildren: boolean; // Does it have children?
-  originalNode: OriginalDatabaseTreeItem; // Keep original node ref if needed
+  data: TreeNodeObject | null;
+  isExpanded: boolean;
+  hasChildren: boolean;
+  originalNode: OriginalDatabaseTreeItem;
 }
 
-const CollectionNode: React.FC<{ data: CollectionObject }> = ({ data }) => {
-  const { t: commonTrans } = useTranslation();
-  const hasIndex = data.schema && data.schema.hasVectorIndex;
-  const loadStatus = hasIndex
-    ? data.loaded
-      ? commonTrans('status.loaded')
-      : commonTrans('status.unloaded')
-    : commonTrans('status.noVectorIndex');
-
-  const getStatus = () => {
-    if (!data.schema || !data.schema.hasVectorIndex) return 'noIndex';
-    if (data.status === 'loading') return 'loading';
-    return data.loaded ? 'loaded' : 'unloaded';
-  };
-
-  return (
-    <CollectionNodeWrapper>
-      <CollectionNameWrapper>
-        <Tooltip title={data.collection_name} placement="top">
-          <Typography noWrap className="collectionName">
-            {data.collection_name}
-          </Typography>
-        </Tooltip>
-        <Count>({formatNumber(data.rowCount || 0)})</Count>
-      </CollectionNameWrapper>
-      <Tooltip title={loadStatus} placement="top">
-        <StatusDot status={getStatus()} />
-      </Tooltip>
-    </CollectionNodeWrapper>
-  );
-};
-
 const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
-  const {
-    database,
-    collections,
-    params,
-    treeHeight = 'calc(100vh - 64px)',
-  } = props;
+  const { database, collections, params } = props;
 
-  // context
   const navigate = useNavigate();
   const { collectionName = '' } = useParams<{ collectionName: string }>();
   const { batchRefreshCollections } = useContext(dataContext);
+  const { t } = useTranslation();
 
-  // State
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
     new Set([database])
-  ); // Start with DB expanded
+  );
   const [selectedItemId, setSelectedItemId] = useState<string | null>(
     params.collectionName ? `c_${params.collectionName}` : database
   );
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Ref for the scrollable element
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // Icons
-  const DatabaseIcon = icons.database;
-  const CollectionIcon = icons.navCollection;
   const ExpandIcon = icons.rightArrow;
 
-  // --- Tree Flattening Logic ---
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchQuery]);
+
+  const filteredCollections = useMemo(() => {
+    if (!debouncedSearchQuery) return collections;
+    const query = debouncedSearchQuery.toLowerCase();
+    return collections.filter(c =>
+      c.collection_name.toLowerCase().includes(query)
+    );
+  }, [collections, debouncedSearchQuery]);
+
   const flattenTree = useCallback(
     (
       node: OriginalDatabaseTreeItem,
@@ -144,39 +117,39 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     []
   );
 
-  // --- Memoized Flattened Data ---
   const flattenedNodes = useMemo(() => {
-    // Rebuild the tree structure in the format needed for flattenTree
-    const children = collections.map(c => ({
+    const children = filteredCollections.map(c => ({
       id: `c_${c.collection_name}`,
       name: c.collection_name,
       type: 'collection' as TreeNodeType,
       data: c,
-      children: [], // Collections don't have children in this structure
-      expanded: false, // Not relevant for leaf nodes here
+      children: [],
+      expanded: false,
     }));
 
     const tree: OriginalDatabaseTreeItem = {
       id: database,
       name: database,
-      expanded: expandedItems.has(database), // Use state here
+      expanded: expandedItems.has(database),
       type: 'db',
       children: children,
-      data: undefined, // DB node has no specific data object here
+      data: undefined,
     };
 
-    return flattenTree(tree, 0, expandedItems);
-  }, [database, collections, expandedItems, flattenTree]); // Dependencies
+    const allNodes = flattenTree(tree, 0, expandedItems);
 
-  // --- Virtualizer Instance ---
+    return allNodes.filter(
+      node => node.type !== 'db' && node.type !== 'search'
+    );
+  }, [database, filteredCollections, expandedItems, flattenTree, isSearchOpen]);
+
   const rowVirtualizer = useVirtualizer({
     count: flattenedNodes.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 30, // Adjust this based on your average item height
-    overscan: 5, // Render items slightly outside the viewport
+    estimateSize: () => 30,
+    overscan: 5,
   });
 
-  // --- Event Handlers ---
   const handleToggleExpand = (nodeId: string) => {
     setExpandedItems(prev => {
       const newSet = new Set(prev);
@@ -187,15 +160,12 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       }
       return newSet;
     });
-    // Close context menu on expand/collapse
     setContextMenu(null);
   };
 
-  // Scroll to the selected item
   const skipNextScrollRef = useRef(false);
 
   const handleNodeClick = (node: FlatTreeItem) => {
-    // flag to skip the next scroll
     skipNextScrollRef.current = true;
 
     setSelectedItemId(node.id);
@@ -209,10 +179,7 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     setContextMenu(null);
   };
 
-  const handleContextMenu = (
-    event: React.MouseEvent, // Use React.MouseEvent
-    node: FlatTreeItem
-  ) => {
+  const handleContextMenu = (event: React.MouseEvent, node: FlatTreeItem) => {
     event.preventDefault();
     event.stopPropagation();
     setContextMenu({
@@ -220,7 +187,7 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       mouseY: event.clientY - 4,
       nodeId: node.id,
       nodeType: node.type,
-      object: node.data, // Pass the data associated with the flat node
+      object: node.data,
     });
   };
 
@@ -228,7 +195,6 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     setContextMenu(null);
   };
 
-  // Effect for closing context menu on outside click
   useEffect(() => {
     document.addEventListener('click', handleCloseContextMenu);
     return () => {
@@ -236,19 +202,15 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     };
   }, []);
 
-  // Track visible items for refreshing
   useEffect(() => {
     if (!collections.length) return;
 
-    // Track whether we're currently scrolling
     let isScrolling = false;
     let scrollTimeoutId: NodeJS.Timeout | null = null;
 
-    // Save references to stable values to avoid dependency changes
     const currentFlattenedNodes = flattenedNodes;
 
     const refreshVisibleCollections = () => {
-      // Early return if the component is unmounted
       if (!parentRef.current) return;
 
       const visibleItems = rowVirtualizer.getVirtualItems();
@@ -268,41 +230,33 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       }
     };
 
-    // This will be called when scrolling starts
     const handleScrollStart = () => {
       if (!isScrolling) {
         isScrolling = true;
-        // Execute on scroll start
         refreshVisibleCollections();
       }
 
-      // Clear any existing timeout
       if (scrollTimeoutId) {
         clearTimeout(scrollTimeoutId);
       }
 
-      // Set a new timeout for scroll end detection
       scrollTimeoutId = setTimeout(() => {
         isScrolling = false;
-        // Execute on scroll end
         refreshVisibleCollections();
         scrollTimeoutId = null;
-      }, 500); // Wait for scrolling to stop for 300ms
+      }, 500);
     };
 
-    // Initial refresh when component mounts - with delay to ensure UI is ready
     const initialRefreshTimeout = setTimeout(() => {
       refreshVisibleCollections();
     }, 100);
 
-    // Setup scroll listener
     const scrollElement = parentRef.current;
     if (scrollElement) {
       scrollElement.addEventListener('scroll', handleScrollStart);
 
       return () => {
         scrollElement.removeEventListener('scroll', handleScrollStart);
-        // Clear timeout on cleanup
         if (scrollTimeoutId) {
           clearTimeout(scrollTimeoutId);
         }
@@ -316,7 +270,12 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
       }
       clearTimeout(initialRefreshTimeout);
     };
-  }, [collections.length, batchRefreshCollections, rowVirtualizer]);
+  }, [
+    collections.length,
+    batchRefreshCollections,
+    rowVirtualizer,
+    debouncedSearchQuery,
+  ]);
 
   useEffect(() => {
     if (skipNextScrollRef.current) {
@@ -339,123 +298,198 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
     }
   }, [collectionName]);
 
-  // --- Rendering ---
+  // Add scroll handler for scroll-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!parentRef.current) return;
+      const scrollTop = parentRef.current.scrollTop;
+      setShowScrollTop(scrollTop > 200); // Show button when scrolled more than 200px
+    };
+
+    const scrollElement = parentRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScroll);
+      return () => scrollElement.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  const handleScrollToTop = () => {
+    if (parentRef.current) {
+      parentRef.current.scrollTo({
+        top: 0,
+        // behavior: 'smooth',
+      });
+    }
+  };
+
   return (
     <>
-      <Box
-        ref={parentRef}
-        sx={{
-          height: treeHeight,
-          overflow: 'auto',
-          fontSize: '15px',
-          color: theme => theme.palette.text.primary,
-          '& .MuiSvgIcon-root': {
-            fontSize: '14px',
-            color: theme => theme.palette.text.primary,
-          },
-        }}
-      >
-        <Box
+      <TreeContainer ref={parentRef}>
+        {isSearchOpen ? (
+          <SearchBoxContainer
+            sx={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 2,
+              backgroundColor: 'inherit',
+            }}
+          >
+            <SearchBox
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onClose={() => {
+                setSearchQuery('');
+                setIsSearchOpen(false);
+              }}
+            />
+          </SearchBoxContainer>
+        ) : (
+          <DatabaseNode
+            database={database}
+            collectionCount={collections.length}
+            isSelected={selectedItemId === database}
+            isContextMenuTarget={contextMenu?.nodeId === database}
+            onNodeClick={() =>
+              handleNodeClick({
+                id: database,
+                name: database,
+                depth: 0,
+                type: 'db',
+                data: null,
+                isExpanded: false,
+                hasChildren: false,
+                originalNode: {
+                  id: database,
+                  name: database,
+                  type: 'db',
+                  children: [],
+                  expanded: false,
+                },
+              })
+            }
+            onContextMenu={e =>
+              handleContextMenu(e, {
+                id: database,
+                name: database,
+                depth: 0,
+                type: 'db',
+                data: null,
+                isExpanded: false,
+                hasChildren: false,
+                originalNode: {
+                  id: database,
+                  name: database,
+                  type: 'db',
+                  children: [],
+                  expanded: false,
+                },
+              })
+            }
+            onSearchClick={e => {
+              e.stopPropagation();
+              setIsSearchOpen(!isSearchOpen);
+            }}
+          />
+        )}
+
+        <TreeContent
           sx={{
             height: `${rowVirtualizer.getTotalSize()}px`,
-            width: '100%',
-            position: 'relative',
-            overflow: 'hidden',
+            marginTop: 0,
           }}
         >
-          {rowVirtualizer.getVirtualItems().map(virtualItem => {
-            const node = flattenedNodes[virtualItem.index];
-            if (!node) return null; // Should not happen
+          {flattenedNodes.length === 0 ? (
+            <NoResultsBox>{t('search.noResults')}</NoResultsBox>
+          ) : (
+            rowVirtualizer.getVirtualItems().map(virtualItem => {
+              const node = flattenedNodes[virtualItem.index];
+              if (!node) return null;
 
-            const isSelected = node.id === selectedItemId;
-            const isContextMenuTarget = contextMenu?.nodeId === node.id;
-            const isCollectionNoSchema =
-              node.type === 'collection' &&
-              (!node.data || !(node.data as CollectionObject).schema);
+              const isSelected = node.id === selectedItemId;
+              const isContextMenuTarget = contextMenu?.nodeId === node.id;
+              const isCollectionNoSchema =
+                node.type === 'collection' &&
+                (!node.data || !(node.data as CollectionObject).schema);
 
-            return (
-              <Box
-                key={node.id}
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: `calc(100% - ${node.depth * 20}px)`, // Adjust for padding
-                  height: `${virtualItem.size}px`,
-                  transform: `translateY(${virtualItem.start}px)`,
-                  display: 'flex',
-                  flex: 1,
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  paddingLeft: `${node.depth * 20}px`, // Indent based on depth
-                  // Apply selection/hover styles based on the original classes
-                  backgroundColor: isSelected
-                    ? 'rgba(10, 206, 130, 0.28)'
-                    : isContextMenuTarget
-                      ? 'rgba(10, 206, 130, 0.08)'
-                      : 'transparent',
-                  '&:hover': {
-                    backgroundColor: isSelected
-                      ? 'rgba(10, 206, 130, 0.28)'
-                      : 'rgba(10, 206, 130, 0.08)',
-                  },
-                  opacity: isCollectionNoSchema ? 0.5 : 1,
-                  color: isCollectionNoSchema ? 'text.disabled' : 'inherit',
-                  pointerEvents: isCollectionNoSchema ? 'none' : 'auto',
-                }}
-                onClick={() => handleNodeClick(node)}
-                onContextMenu={e => handleContextMenu(e, node)}
-              >
-                {/* Expand/Collapse Icon */}
-                {node.hasChildren ? (
-                  <IconButton
-                    size="small"
-                    onClick={e => {
-                      e.stopPropagation();
-                      handleToggleExpand(node.id);
-                    }}
-                    sx={{ mr: 0 }}
-                  >
-                    {node.isExpanded ? (
-                      <ExpandIcon sx={{ transform: `rotate(90deg)` }} />
-                    ) : (
-                      <ExpandIcon />
-                    )}
-                  </IconButton>
-                ) : (
-                  // Placeholder for alignment if needed
-                  <Box sx={{ width: 0, mr: 0.5 }} /> // Adjust width to match IconButton
-                )}
-
-                {/* Node Type Icon */}
-                <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                  {node.type === 'db' ? <DatabaseIcon /> : <CollectionIcon />}
-                </Box>
-
-                {/* Label */}
-                {node.type === 'collection' && node.data ? (
-                  <CollectionNode data={node.data as CollectionObject} />
-                ) : (
-                  <Tooltip title={node.name} placement="top">
-                    <Typography noWrap sx={{ width: 'calc(100% - 30px)' }}>
-                      {/* Reuse dbName style or create a generic one */}
-                      {node.name}
-                      {node.type === 'db' && (
-                        <span
-                          style={{ marginLeft: 8, color: '#888', fontSize: 12 }}
-                        >
-                          ({collections.length})
-                        </span>
+              return (
+                <TreeNodeBox
+                  key={node.id}
+                  isSelected={isSelected}
+                  isContextMenuTarget={isContextMenuTarget}
+                  isCollectionNoSchema={isCollectionNoSchema}
+                  depth={node.depth}
+                  sx={{
+                    transform: `translateY(${virtualItem.start}px)`,
+                  }}
+                  onClick={() => handleNodeClick(node)}
+                  onContextMenu={e => handleContextMenu(e, node)}
+                >
+                  {node.hasChildren && node.type !== 'db' ? (
+                    <IconButton
+                      size="small"
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleToggleExpand(node.id);
+                      }}
+                      sx={{ mr: 0 }}
+                    >
+                      {node.isExpanded ? (
+                        <ExpandIcon sx={{ transform: `rotate(90deg)` }} />
+                      ) : (
+                        <ExpandIcon />
                       )}
-                    </Typography>
-                  </Tooltip>
-                )}
-              </Box>
-            );
-          })}
-        </Box>
-      </Box>
-      {/* Context Menu Popover (keep existing) */}
+                    </IconButton>
+                  ) : (
+                    <Box sx={{ width: 0 }} />
+                  )}
+
+                  {node.type === 'collection' && node.data && (
+                    <CollectionNode
+                      data={node.data as CollectionObject}
+                      highlight={debouncedSearchQuery}
+                      isSelected={isSelected}
+                      isContextMenuTarget={isContextMenuTarget}
+                      hasChildren={node.hasChildren}
+                      isExpanded={node.isExpanded}
+                      depth={node.depth}
+                      onToggleExpand={e => {
+                        e.stopPropagation();
+                        handleToggleExpand(node.id);
+                      }}
+                      onClick={() => handleNodeClick(node)}
+                      onContextMenu={e => handleContextMenu(e, node)}
+                    />
+                  )}
+                </TreeNodeBox>
+              );
+            })
+          )}
+        </TreeContent>
+      </TreeContainer>
+
+      <Fade in={showScrollTop}>
+        <IconButton
+          onClick={handleScrollToTop}
+          size="small"
+          sx={{
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 1)',
+            },
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            zIndex: 1000,
+            width: 32,
+            height: 32,
+            border: '1px solid rgba(0,0,0,0.1)',
+          }}
+        >
+          <ExpandIcon sx={{ transform: 'rotate(-90deg)', fontSize: 20 }} />
+        </IconButton>
+      </Fade>
+
       <Popover
         open={Boolean(contextMenu)}
         onClose={handleCloseContextMenu}
@@ -474,7 +508,6 @@ const DatabaseTree: React.FC<DatabaseTreeProps> = props => {
           },
         }}
       >
-        {/* Pass the correct contextMenu object */}
         <TreeContextMenu
           onClick={handleCloseContextMenu}
           contextMenu={contextMenu!}
