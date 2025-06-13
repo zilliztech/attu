@@ -33,12 +33,12 @@ export const Toolbar = styled(Box)(({ theme }) => ({
   '& .right': {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: theme.spacing(1),
   },
 
   '& .btn': {
-    height: 56,
+    height: 53,
     width: 80,
   },
 }));

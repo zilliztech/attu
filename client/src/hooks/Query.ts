@@ -126,12 +126,19 @@ export const useQuery = (params: {
       return;
     }
     const count = 'count(*)';
-    const res = await CollectionService.queryData(collection.collection_name, {
-      expr: expr,
-      output_fields: [count],
-      consistency_level,
-    });
-    setTotal(Number(res.data[0][count]));
+    try {
+      const res = await CollectionService.queryData(
+        collection.collection_name,
+        {
+          expr: expr,
+          output_fields: [count],
+          consistency_level,
+        }
+      );
+      setTotal(Number(res.data[0][count]));
+    } catch (error) {
+      setTotal(0);
+    }
   };
 
   // reset
