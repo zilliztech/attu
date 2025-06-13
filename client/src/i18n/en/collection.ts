@@ -2,6 +2,7 @@ const collectionTrans = {
   noLoadData: 'No Loaded Collection',
   noData: 'No Collection',
   collectionId: 'Collection ID',
+  searchCollections: 'Search collections',
 
   rowCount: 'Approx Count',
   count: 'Entity Count',

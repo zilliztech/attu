@@ -28,6 +28,10 @@ declare module '@mui/material/styles' {
       800: string;
       900: string;
     };
+    highlight: {
+      light: string;
+      dark: string;
+    };
   }
 }
 
@@ -120,6 +124,10 @@ const colors = {
     disabled: '#9CA3AF',
   },
   divider: '#E5E7EB',
+  highlight: {
+    light: '#FFE082',
+    dark: '#003A8C',
+  },
 };
 
 const spacing = (factor: number) => `${8 * factor}px`;
@@ -262,6 +270,10 @@ const getCommonThemes = (mode: PaletteMode) => ({
       disabled: mode === 'light' ? colors.text.disabled : colors.neutral[600],
     },
     divider: mode === 'light' ? colors.divider : colors.neutral[700],
+    highlight: {
+      light: colors.highlight.light,
+      dark: colors.highlight.dark,
+    },
   },
   spacing,
 });

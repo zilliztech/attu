@@ -2,6 +2,7 @@ const collectionTrans = {
   noLoadData: '没有加载的 Collection',
   noData: '没有 Collection',
   collectionId: 'Collection ID',
+  searchCollections: '搜索 Collection',
 
   rowCount: 'Entity 数量（大约）',
   count: 'Entity 数量',
