@@ -229,11 +229,7 @@ const Users = () => {
       disablePadding: true,
       label: userTrans('role'),
       formatter(rowData, cellData) {
-        return (
-          <Typography variant="body1">
-            {rowData.username === 'root' ? 'admin' : cellData.join(', ')}
-          </Typography>
-        );
+        return rowData.username === 'root' ? 'admin' : cellData.join(', ');
       },
       getStyle: () => {
         return { width: '80%', maxWidth: '80%' };

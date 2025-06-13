@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
@@ -181,9 +181,6 @@ const Partitions = () => {
       needCopy: true,
       disablePadding: false,
       label: t('id'),
-      formatter(data) {
-        return <Typography variant="body1">{data.id}</Typography>;
-      },
       getStyle: () => {
         return {
           width: 120,
@@ -199,16 +196,14 @@ const Partitions = () => {
       formatter({ name }) {
         const newName = name === '_default' ? 'Default partition' : name;
         return (
-          <Typography variant="body1">
-            <Highlighter
-              textToHighlight={newName}
-              searchWords={[search]}
-              highlightStyle={{
-                color: '#1976d2',
-                backgroundColor: 'transparent',
-              }}
-            />
-          </Typography>
+          <Highlighter
+            textToHighlight={newName}
+            searchWords={[search]}
+            highlightStyle={{
+              color: '#1976d2',
+              backgroundColor: 'transparent',
+            }}
+          />
         );
       },
       label: t('name'),
@@ -230,7 +225,7 @@ const Partitions = () => {
         </Box>
       ),
       formatter(data) {
-        return <Typography variant="body1">{formatNumber(Number(data.rowCount))}</Typography>;
+        return formatNumber(Number(data.rowCount));
       },
     },
     {
@@ -238,7 +233,7 @@ const Partitions = () => {
       align: 'left',
       disablePadding: false,
       formatter(data) {
-        return <Typography variant="body1">{new Date(Number(data.createdTime)).toLocaleString()}</Typography>;
+        return new Date(Number(data.createdTime)).toLocaleString();
       },
       label: t('createdTime'),
     },
