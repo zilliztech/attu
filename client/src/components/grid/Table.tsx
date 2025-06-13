@@ -43,7 +43,7 @@ const EnhancedTable: FC<TableType> = props => {
     order,
     orderBy,
     rowDecorator = () => ({}),
-    rowHeight = 41,
+    rowHeight,
   } = props;
 
   const hasData = rows && rows.length > 0;
@@ -197,7 +197,7 @@ const EnhancedTable: FC<TableType> = props => {
                             sx={
                               [
                                 (theme: Theme) => ({
-                                  minHeight: rowHeight,
+                                  overflow: 'hidden',
                                   borderBottom: `1px solid ${theme.palette.divider}`,
                                   '& p': {
                                     display: 'inline-block',
@@ -209,7 +209,7 @@ const EnhancedTable: FC<TableType> = props => {
                                   },
                                 }),
                                 (theme: Theme) => ({
-                                  padding: theme.spacing(1, 1.5),
+                                  padding: theme.spacing(1),
                                 }),
                                 cellStyleFromDef,
                               ].filter(Boolean) as any
@@ -219,12 +219,50 @@ const EnhancedTable: FC<TableType> = props => {
                               sx={{
                                 display: 'flex',
                                 whiteSpace: 'nowrap',
-                                minHeight: 24,
+                                alignItems: 'center',
+                                minHeight: rowHeight - 16, // 16 is the padding of the table cell
                               }}
                             >
                               {typeof row[colDef.id] !== 'undefined' && (
                                 <>
-                                  {colDef.onClick ? (
+                                  {colDef.formatter ? (
+                                    colDef.onClick ? (
+                                      <Button
+                                        color="primary"
+                                        data-data={row[colDef.id]}
+                                        data-index={index}
+                                        size="small"
+                                        onClick={e => {
+                                          colDef.onClick &&
+                                            colDef.onClick(e, row);
+                                        }}
+                                      >
+                                        <Typography
+                                          component="div"
+                                          variant="body2"
+                                          title={row[colDef.id]}
+                                        >
+                                          {colDef.formatter(
+                                            row,
+                                            row[colDef.id],
+                                            i
+                                          )}
+                                        </Typography>
+                                      </Button>
+                                    ) : (
+                                      <Typography
+                                        component="div"
+                                        title={row[colDef.id]}
+                                        variant="body2"
+                                      >
+                                        {colDef.formatter(
+                                          row,
+                                          row[colDef.id],
+                                          i
+                                        )}
+                                      </Typography>
+                                    )
+                                  ) : colDef.onClick ? (
                                     <Button
                                       color="primary"
                                       data-data={row[colDef.id]}
@@ -235,18 +273,20 @@ const EnhancedTable: FC<TableType> = props => {
                                           colDef.onClick(e, row);
                                       }}
                                     >
-                                      {colDef.formatter ? (
-                                        colDef.formatter(row, row[colDef.id], i)
-                                      ) : (
-                                        <Typography title={row[colDef.id]}>
-                                          {row[colDef.id]}
-                                        </Typography>
-                                      )}
+                                      <Typography
+                                        component="div"
+                                        title={row[colDef.id]}
+                                        variant="body2"
+                                      >
+                                        {row[colDef.id]}
+                                      </Typography>
                                     </Button>
-                                  ) : colDef.formatter ? (
-                                    colDef.formatter(row, row[colDef.id], i)
                                   ) : (
-                                    <Typography title={row[colDef.id]}>
+                                    <Typography
+                                      component="div"
+                                      title={row[colDef.id]}
+                                      variant="body2"
+                                    >
                                       {row[colDef.id]}
                                     </Typography>
                                   )}
@@ -257,7 +297,7 @@ const EnhancedTable: FC<TableType> = props => {
                                       size="small"
                                       sx={theme => ({
                                         '& svg': {
-                                          fontSize: '14px',
+                                          fontSize: '13px',
                                         },
                                         marginLeft: theme.spacing(0.5),
                                       })}

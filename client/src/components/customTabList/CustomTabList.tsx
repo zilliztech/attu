@@ -82,7 +82,6 @@ const CustomTabList: FC<ITabListProps> = props => {
             flexBasis: 0,
             flexGrow: 1,
             marginTop: 8,
-            overflow: 'hidden',
           }}
         >
           {tab.component}

@@ -103,7 +103,7 @@ export default function Aliases(props: AliasesProps) {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+    <Box sx={{ display: 'flex', gap: 1 }}>
       {aliases.map(a => (
         <Chip
           key={a}
@@ -117,7 +117,6 @@ export default function Aliases(props: AliasesProps) {
           onDelete={() => {
             _onDelete({ collection, alias: a });
           }}
-          sx={{ mb: 0.5 }}
         />
       ))}
       <IconButton

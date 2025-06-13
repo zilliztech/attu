@@ -44,8 +44,8 @@ const AttuGrid: FC<AttuGridType> = props => {
   const {
     rowCount = 20,
     rowsPerPage = 10,
-    tableHeaderHeight = 46,
-    rowHeight = 43,
+    tableHeaderHeight = 43.5,
+    rowHeight = 41,
     pagerHeight = 52,
     primaryKey = 'id',
     showToolbar = false,

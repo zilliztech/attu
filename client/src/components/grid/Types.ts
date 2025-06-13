@@ -81,7 +81,7 @@ export type TableType = {
   onSelected: (e: React.MouseEvent, row: any) => void;
   isSelected: (data: any[]) => boolean;
   onSelectedAll: (e: React.ChangeEvent) => void;
-  rowHeight?: number;
+  rowHeight: number;
   rows?: any[];
   colDefinitions: ColDefinitionsType[];
   primaryKey: string;

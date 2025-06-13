@@ -384,9 +384,7 @@ const Collections = () => {
         </Box>
       ),
       formatter(v) {
-        return (
-          <Typography variant="body1">{formatNumber(v.rowCount)}</Typography>
-        );
+        return formatNumber(v.rowCount);
       },
       getStyle: () => {
         return { minWidth: '100px' };
@@ -406,7 +404,7 @@ const Collections = () => {
         </Box>
       ),
       formatter(v) {
-        return <Typography variant="body1">{v.description || '--'}</Typography>;
+        return v.description || '--';
       },
       getStyle: () => {
         return { minWidth: '120px' };
@@ -418,11 +416,7 @@ const Collections = () => {
       disablePadding: false,
       label: collectionTrans('createdTime'),
       formatter(data) {
-        return (
-          <Typography variant="body1">
-            {new Date(data.createdTime).toLocaleString()}
-          </Typography>
-        );
+        return new Date(data.createdTime).toLocaleString();
       },
       getStyle: () => {
         return { minWidth: '165px' };
@@ -448,11 +442,7 @@ const Collections = () => {
         </Box>
       ),
       formatter(v) {
-        return (
-          <Typography variant="body1" component="div">
-            <Aliases aliases={v.aliases} collection={v} />
-          </Typography>
-        );
+        return <Aliases aliases={v.aliases} collection={v} />;
       },
       getStyle: () => {
         return { minWidth: '100px' };

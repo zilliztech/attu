@@ -183,8 +183,8 @@ const typography = {
     lineHeight: 1.5,
   },
   body2: {
-    fontSize: '12px',
-    lineHeight: '16px',
+    fontSize: '13px',
+    lineHeight: 1.5,
   },
   caption: {
     fontSize: '10px',

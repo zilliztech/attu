@@ -156,7 +156,7 @@ const Segments = () => {
       label: collectionTrans('num_rows'),
       getStyle: () => {
         return {
-          minWidth: 74,
+          minWidth: 70,
         };
       },
     },
@@ -170,7 +170,7 @@ const Segments = () => {
       },
       getStyle: () => {
         return {
-          minWidth: 40,
+          minWidth: 35,
         };
       },
     },
@@ -181,7 +181,7 @@ const Segments = () => {
       label: collectionTrans('q_state'),
       getStyle: () => {
         return {
-          minWidth: 80,
+          minWidth: 70,
         };
       },
     },
@@ -233,8 +233,6 @@ const Segments = () => {
         showPagination={true}
         openCheckBox={false}
         page={currentPage}
-        tableHeaderHeight={46}
-        rowHeight={40}
         onPageChange={handlePageChange}
         rowsPerPage={pageSize}
         setRowsPerPage={handlePageSize}
