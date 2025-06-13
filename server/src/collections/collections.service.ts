@@ -612,9 +612,12 @@ export class CollectionsService {
       collection_name,
       db_name,
     });
+
+    const BATCH_SIZE = 1000;
+    const totalSize = parseInt(size, 10);
     const fields_data = genRows(
       collectionInfo.schema.fields,
-      parseInt(size, 10),
+      totalSize,
       collectionInfo.schema.enable_dynamic_field
     );
 
@@ -627,12 +630,31 @@ export class CollectionsService {
       // If download is true, return the generated data directly
       return { sampleFile };
     } else {
-      // Otherwise, insert the data into the collection
-      return await this.insert(clientId, {
-        collection_name,
-        fields_data,
-        db_name,
-      });
+      // Handle insertion in batches if size > 1000
+      if (totalSize <= BATCH_SIZE) {
+        return await this.insert(clientId, {
+          collection_name,
+          fields_data,
+          db_name,
+        });
+      }
+
+      const results = [];
+      for (let i = 0; i < totalSize; i += BATCH_SIZE) {
+        const batchData = fields_data.slice(i, i + BATCH_SIZE);
+        const result = await this.insert(clientId, {
+          collection_name,
+          fields_data: batchData,
+          db_name,
+        });
+        results.push(result);
+      }
+
+      return {
+        status: 'success',
+        message: `Successfully inserted ${totalSize} records in ${Math.ceil(totalSize / BATCH_SIZE)} batches`,
+        results,
+      };
     }
   }
 
