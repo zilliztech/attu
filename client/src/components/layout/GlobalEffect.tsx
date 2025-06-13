@@ -39,9 +39,12 @@ const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
             response.data &&
             response.data.data &&
             ((typeof response.data.data.error_code === 'string' &&
-              response.data.data.error_code !== 'Success') ||
+              response.data.data.error_code !== 'Success' &&
+              response.data.data.error_code !== '') ||
               (response.data.data.status &&
-                response.data.data.status.error_code !== 'Success'));
+                response.data.data.status.error_code &&
+                response.data.data.status.error_code !== 'Success' &&
+                response.data.data.status.error_code !== ''));
 
           if (isHttpError) {
             openSnackBar(response.data.message, 'warning');
