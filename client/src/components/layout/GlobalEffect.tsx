@@ -38,8 +38,10 @@ const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
           const isResStatusError =
             response.data &&
             response.data.data &&
-            typeof response.data.data.error_code === 'string' &&
-            response.data.data.error_code !== 'Success';
+            ((typeof response.data.data.error_code === 'string' &&
+              response.data.data.error_code !== 'Success') ||
+              (response.data.data.status &&
+                response.data.data.status.error_code !== 'Success'));
 
           if (isHttpError) {
             openSnackBar(response.data.message, 'warning');
@@ -47,8 +49,10 @@ const GlobalEffect = ({ children }: { children: React.ReactNode }) => {
           }
 
           if (isResStatusError) {
-            openSnackBar(response.data.data.reason, 'error');
-            return Promise.reject(response.data.data.reason);
+            const errorMessage =
+              response.data.data.reason || response.data.data.status.detail;
+            openSnackBar(errorMessage, 'error');
+            return Promise.reject(errorMessage);
           }
 
           return response;

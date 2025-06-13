@@ -37,7 +37,7 @@ import DataView from '@/components/DataView/DataView';
 import DataListView from '@/components/DataListView/DataListView';
 import type { QueryState } from '../../types';
 import { CollectionFullObject } from '@server/types';
-import CustomMultiSelector from '../../../../components/customSelector/CustomMultiSelector';
+import CustomMultiSelector from '@/components/customSelector/CustomMultiSelector';
 
 export interface CollectionDataProps {
   queryState: QueryState;
@@ -87,10 +87,7 @@ const CollectionData = (props: CollectionDataProps) => {
     setQueryState({
       ...queryState,
       expr: '',
-      outputFields: [
-        ...collection.schema.fields,
-        ...collection.schema.dynamicFields,
-      ].map(f => f.name),
+      outputFields: [...collection.schema.fields].map(f => f.name),
       tick: queryState.tick + 1,
     });
 
@@ -505,6 +502,10 @@ const CollectionData = (props: CollectionDataProps) => {
                 wrapperClass="outputs selector"
                 onChange={(e: { target: { value: unknown } }) => {
                   const values = e.target.value as string[];
+                  // prevent deselecting the last option
+                  if (values.length === 0) {
+                    return;
+                  }
                   // sort output fields by schema order
                   const newOutputFields = [...values].sort(
                     (a, b) =>
@@ -525,19 +526,20 @@ const CollectionData = (props: CollectionDataProps) => {
                     )}`}</span>
                   );
                 }}
+                disabled={!collection.loaded}
                 sx={{
                   width: '120px',
-                  height: 'auto',
+                  marginTop: '1px',
                   '& .MuiSelect-select': {
                     fontSize: '14px',
-                    minHeight: '28px',
+                    height: '28px',
+                    lineHeight: '28px',
                   },
                   '& .MuiInputLabel-root': {
                     fontSize: '14px',
                   },
                   '& .MuiMenuItem-root': {
                     padding: '2px 14px',
-                    minHeight: '32px',
                     fontSize: '14px',
                   },
                   '& .MuiCheckbox-root': {
@@ -615,14 +617,13 @@ const CollectionData = (props: CollectionDataProps) => {
             isLoading={tableLoading}
             rows={queryResult.data}
             rowCount={total}
-            tableHeaderHeight={46}
-            rowHeight={41}
             selected={selectedData}
             setSelected={onSelectChange}
             page={currentPage}
             onPageChange={handlePageChange}
             setRowsPerPage={setPageSize}
             rowsPerPage={pageSize}
+            showPagination={!tableLoading && collection.loaded}
             labelDisplayedRows={getLabelDisplayedRows(
               commonTrans(
                 queryResult.data.length > 1 ? 'grid.entities' : 'grid.entity'
