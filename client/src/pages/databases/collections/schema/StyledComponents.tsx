@@ -40,7 +40,7 @@ export const Card = styled(Box)(({ theme }) => ({
 
 export const InfoRow = styled(Box)(({ theme }) => ({
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   gap: theme.spacing(1.5),
   '&:not(:last-child)': {
     padding: theme.spacing(0.5, 0),
@@ -61,9 +61,11 @@ export const InfoLabel = styled(Box)(({ theme }) => ({
   flexShrink: 0,
   display: 'flex',
   alignItems: 'center',
+  height: '24px',
   [theme.breakpoints.down('md')]: {
     minWidth: 70,
     fontSize: 12,
+    height: '20px',
   },
 }));
 
@@ -77,9 +79,11 @@ export const InfoValue = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   flexWrap: 'nowrap',
+  minHeight: '24px',
   [theme.breakpoints.down('md')]: {
     fontSize: 13,
     gap: theme.spacing(0.5),
+    minHeight: '20px',
   },
   '& .truncate': {
     overflow: 'hidden',
@@ -96,6 +100,9 @@ export const InfoValue = styled(Box)(({ theme }) => ({
     [theme.breakpoints.down('md')]: {
       gap: theme.spacing(0.5),
     },
+  },
+  '& .MuiTypography-root': {
+    lineHeight: 1.5,
   },
 }));
 
@@ -166,7 +173,4 @@ export const ParamWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const GridWrapper = styled(Box)(({ theme }) => ({
-  flex: 1,
-  minHeight: 0,
-}));
+export const GridWrapper = styled(Box)(({ theme }) => ({}));

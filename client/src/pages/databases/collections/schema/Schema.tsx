@@ -460,7 +460,7 @@ const Overview = () => {
             <InfoRow>
               <InfoLabel>{collectionTrans('description')}</InfoLabel>
               <InfoValue>
-                <Typography variant="body1">
+                <Typography variant="body2">
                   {collection?.description || '--'}
                 </Typography>
               </InfoValue>
@@ -469,7 +469,7 @@ const Overview = () => {
             <InfoRow>
               <InfoLabel>{collectionTrans('createdTime')}</InfoLabel>
               <InfoValue>
-                <Typography variant="body1">
+                <Typography variant="body2">
                   {new Date(collection.createdTime).toLocaleString()}
                 </Typography>
               </InfoValue>
@@ -507,7 +507,7 @@ const Overview = () => {
                 </CustomToolTip>
               </InfoLabel>
               <InfoValue>
-                <Typography variant="body1">
+                <Typography variant="body2">
                   {collection.loaded ? collection.replicas?.length : '...'}
                 </Typography>
                 {collection.loaded && enableModifyReplica && (
@@ -561,7 +561,7 @@ const Overview = () => {
                 )}
               </InfoLabel>
               <InfoValue>
-                <Typography variant="body1">
+                <Typography variant="body2">
                   {formatNumber(Number(collection?.rowCount || '0'))}
                 </Typography>
               </InfoValue>
