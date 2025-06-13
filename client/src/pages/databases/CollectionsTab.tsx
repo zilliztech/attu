@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import RouteTabList from '@/components/customTabList/RouteTabList';
 import Partitions from './collections/partitions/Partitions';
 import Schema from './collections/schema/Schema';
-import Data from './collections/data/CollectionData';
+import CollectionData from './collections/data/CollectionData';
 import Segments from './collections/segments/Segments';
 import Properties from './collections/properties/Properties';
 import Search from './collections/search/Search';
@@ -65,7 +65,9 @@ export const CollectionsTabs = (props: {
     },
     {
       label: collectionTrans('dataTab'),
-      component: <Data queryState={queryState} setQueryState={setQueryState} />,
+      component: (
+        <CollectionData queryState={queryState} setQueryState={setQueryState} />
+      ),
       path: `data`,
     },
     {

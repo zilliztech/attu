@@ -7,7 +7,7 @@ export const getLabelDisplayedRows =
     const { t: commonTrans } = useTranslation();
 
     return (
-      <div
+      <span
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -34,6 +34,6 @@ export const getLabelDisplayedRows =
             {info}
           </span>
         )}
-      </div>
+      </span>
     );
   };
