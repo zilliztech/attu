@@ -133,50 +133,19 @@ const CreateFields: FC<CreateFieldsProps> = ({
     updateValidationStatus();
   };
 
-  const getShortTypeName = (type: DataTypeEnum) => {
-    switch (type) {
-      case DataTypeEnum.Int8:
-      case DataTypeEnum.Int16:
-      case DataTypeEnum.Int32:
-      case DataTypeEnum.Int64:
-        return 'int';
-      case DataTypeEnum.Float:
-        return 'float';
-      case DataTypeEnum.Double:
-        return 'double';
-      case DataTypeEnum.VarChar:
-        return 'varchar';
-      case DataTypeEnum.Bool:
-        return 'bool';
-      case DataTypeEnum.BinaryVector:
-      case DataTypeEnum.FloatVector:
-      case DataTypeEnum.Float16Vector:
-      case DataTypeEnum.BFloat16Vector:
-      case DataTypeEnum.SparseFloatVector:
-        return 'vec';
-      case DataTypeEnum.Array:
-        return 'array';
-      case DataTypeEnum.JSON:
-        return 'json';
-      default:
-        return 'field';
-    }
-  };
-
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
     const id = generateId();
-    const shortType = getShortTypeName(type);
 
-    let sameTypeCount = fields.filter(
-      f => getShortTypeName(f.data_type) === shortType
+    // Count existing scalar fields to generate new index
+    let scalarFieldCount = fields.filter(
+      f => !f.is_primary_key && !VectorTypes.includes(f.data_type)
     ).length;
-    let name =
-      sameTypeCount === 0 ? shortType : `${shortType}_${sameTypeCount + 1}`;
+    let name = `scalar_field_${scalarFieldCount}`;
 
     const existingNames = new Set(fields.map(f => f.name));
     while (existingNames.has(name)) {
-      sameTypeCount += 1;
-      name = `${shortType}_${sameTypeCount}`;
+      scalarFieldCount += 1;
+      name = `scalar_field_${scalarFieldCount}`;
     }
 
     const newDefaultItem: FieldType = {
