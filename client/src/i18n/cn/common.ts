@@ -3,6 +3,7 @@ const commonTrans = {
     admin: 'Attu',
     address: 'Milvus 地址',
     fileIssue: '提交问题',
+    fileMilvusIssue: '提交 Milvus 问题',
     discord: 'Discord',
     token: 'Token',
     authentication: '认证',
@@ -20,6 +21,9 @@ const commonTrans = {
     checkHealth: '检查健康状态',
     version: '版本',
     clearHistory: '清空所有历史',
+    officeHours: 'Office Hours',
+    docs: 'Docs',
+    community: '社区',
   },
   status: {
     loaded: '已加载',

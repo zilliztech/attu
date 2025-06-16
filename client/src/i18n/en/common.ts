@@ -3,6 +3,7 @@ const commonTrans = {
     admin: 'Attu',
     address: 'Milvus Address',
     fileIssue: 'Open an Issue',
+    fileMilvusIssue: 'Open a Milvus Issue',
     discord: 'Discord',
     token: 'token',
     authentication: 'Authentication',
@@ -21,6 +22,9 @@ const commonTrans = {
     checkHealth: 'Check Health',
     version: 'Version',
     clearHistory: 'Clear All History',
+    officeHours: 'Office Hours',
+    docs: 'Docs',
+    community: 'Community',
   },
   status: {
     loaded: 'Loaded',
