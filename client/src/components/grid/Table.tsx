@@ -240,7 +240,7 @@ const EnhancedTable: FC<TableType> = props => {
                                         <Typography
                                           component="div"
                                           variant="body2"
-                                          title={row[colDef.id]}
+                                          title={String(row[colDef.id])}
                                         >
                                           {colDef.formatter(
                                             row,
@@ -252,7 +252,7 @@ const EnhancedTable: FC<TableType> = props => {
                                     ) : (
                                       <Typography
                                         component="div"
-                                        title={row[colDef.id]}
+                                        title={String(row[colDef.id])}
                                         variant="body2"
                                       >
                                         {colDef.formatter(
@@ -275,7 +275,7 @@ const EnhancedTable: FC<TableType> = props => {
                                     >
                                       <Typography
                                         component="div"
-                                        title={row[colDef.id]}
+                                        title={String(row[colDef.id])}
                                         variant="body2"
                                       >
                                         {row[colDef.id]}
@@ -284,7 +284,7 @@ const EnhancedTable: FC<TableType> = props => {
                                   ) : (
                                     <Typography
                                       component="div"
-                                      title={row[colDef.id]}
+                                      title={String(row[colDef.id])}
                                       variant="body2"
                                     >
                                       {row[colDef.id]}
