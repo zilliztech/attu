@@ -16,6 +16,7 @@ import CreateDatabaseDialog from '../dialogs/CreateDatabaseDialog';
 import icons from '@/components/icons/Icons';
 import SysCard from './SysCard';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
+import CommunityLinks from '@/pages/home/CommunityLinks';
 
 const Home = () => {
   useNavigationHook(ROUTE_PATHS.HOME);
@@ -88,147 +89,114 @@ const Home = () => {
         margin: '12px',
         position: 'relative',
         display: 'flex',
-        flexDirection: 'column',
+        gap: 2,
         height: 'calc(100vh - 80px)',
+        pr: 2,
+        overflow: 'hidden',
       })}
     >
+      {/* Main content */}
       <Box
         sx={{
-          mb: 2,
-          px: 0.5,
-          maxWidth: '90%',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          overflow: 'auto',
         }}
       >
-        <Box display="flex" alignItems="center" mb={2}>
-          <Box display="flex" alignItems="center">
-            <Typography
-              variant="h4"
+        <Box
+          sx={{
+            mb: 1.5,
+            px: 0.5,
+            maxWidth: '100%',
+          }}
+        >
+          <Box display="flex" alignItems="center" mb={2}>
+            <Box display="flex" alignItems="center">
+              <Typography
+                variant="h4"
+                sx={{
+                  mr: 1,
+                  position: 'relative',
+                  top: 8,
+                  mb: 2,
+                  color: theme => theme.palette.text.primary,
+                }}
+              >
+                {databaseTrans('databases')}
+              </Typography>
+              <Typography
+                component="span"
+                variant="subtitle1"
+                color="textSecondary"
+                sx={{ position: 'relative', top: 1, mr: 2 }}
+              >
+                ({databases.length})
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleCreateDbClick}
               sx={{
-                mr: 1,
-                position: 'relative',
-                top: 8,
-                mb: 2,
-                color: theme => theme.palette.text.primary,
+                ml: 0,
+                minWidth: 24,
+                width: 24,
+                height: 24,
+                p: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              {databaseTrans('databases')}
-            </Typography>
-            <Typography
-              component="span"
-              variant="subtitle1"
-              color="textSecondary"
-              sx={{ position: 'relative', top: 1, mr: 2 }}
-            >
-              ({databases.length})
-            </Typography>
+              <PlusIcon sx={{ fontSize: 20 }} />
+            </Button>
           </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={handleCreateDbClick}
-            sx={{
-              ml: 0,
-              minWidth: 24,
-              width: 24,
-              height: 24,
-              p: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <PlusIcon sx={{ fontSize: 20 }} />
-          </Button>
-        </Box>
-        {loadingDatabases ? (
-          <StatusIcon type={LoadingType.CREATING} />
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              flexGrow: 0,
-              gap: 1.5,
-            }}
-          >
-            {databases.map(db => {
-              if (db.name === database) {
-                db.collections = collections.map(c => c.collection_name);
-              }
-              return (
-                <DatabaseCard
-                  database={db}
-                  isActive={db.name === database}
-                  setDatabase={setDatabase}
-                  fetchDatabases={fetchDatabases}
-                  key={db.name}
-                />
-              );
-            })}
-          </Box>
-        )}
-      </Box>
-
-      {data?.systemInfo && (
-        <>
-          <Box
-            sx={{
-              mb: 2,
-              px: 0.5,
-            }}
-          >
-            <Typography
-              variant="h4"
-              sx={{ mb: 2, color: theme => theme.palette.text.primary }}
-            >
-              {homeTrans('sysInfo')}
-            </Typography>
+          {loadingDatabases ? (
+            <StatusIcon type={LoadingType.CREATING} />
+          ) : (
             <Box
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
                 flexGrow: 0,
-                gap: 2,
+                gap: 1.5,
               }}
             >
-              <SysCard
-                title={'Milvus Version'}
-                count={data?.systemInfo?.build_version}
-                link="system"
-              />
-
-              <SysCard
-                title={homeTrans('deployMode')}
-                count={data?.deployMode}
-                link="system"
-              />
-              <SysCard
-                title={homeTrans('upTime')}
-                count={duration}
-                link="system"
-              />
-
-              <SysCard
-                title={homeTrans('users')}
-                count={data?.users?.length}
-                link="users"
-              />
-              <SysCard
-                title={homeTrans('roles')}
-                count={data?.roles?.length}
-                link="roles"
-              />
+              {databases.map(db => {
+                if (db.name === database) {
+                  db.collections = collections.map(c => c.collection_name);
+                }
+                return (
+                  <DatabaseCard
+                    database={db}
+                    isActive={db.name === database}
+                    setDatabase={setDatabase}
+                    fetchDatabases={fetchDatabases}
+                    key={db.name}
+                  />
+                );
+              })}
             </Box>
-          </Box>
+          )}
+        </Box>
 
-          {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED && (
+        {data?.systemInfo && (
+          <>
             <Box
               sx={{
-                mb: 2,
-                px: 2,
+                mb: 1.5,
+                px: 0.5,
               }}
             >
+              <Typography
+                variant="h4"
+                sx={{ mb: 2, color: theme => theme.palette.text.primary }}
+              >
+                {homeTrans('sysInfo')}
+              </Typography>
               <Box
                 sx={{
                   display: 'flex',
@@ -238,25 +206,83 @@ const Home = () => {
                 }}
               >
                 <SysCard
-                  title={homeTrans('dataNodes')}
-                  count={data?.dataNodes?.length}
+                  title={'Milvus Version'}
+                  count={data?.systemInfo?.build_version}
+                  link="system"
+                />
+
+                <SysCard
+                  title={homeTrans('deployMode')}
+                  count={data?.deployMode}
                   link="system"
                 />
                 <SysCard
-                  title={homeTrans('indexNodes')}
-                  count={data?.indexNodes?.length}
+                  title={homeTrans('upTime')}
+                  count={duration}
                   link="system"
                 />
+
                 <SysCard
-                  title={homeTrans('queryNodes')}
-                  count={data?.queryNodes?.length}
-                  link="system"
+                  title={homeTrans('users')}
+                  count={data?.users?.length}
+                  link="users"
+                />
+                <SysCard
+                  title={homeTrans('roles')}
+                  count={data?.roles?.length}
+                  link="roles"
                 />
               </Box>
             </Box>
-          )}
-        </>
-      )}
+
+            {data?.deployMode === MILVUS_DEPLOY_MODE.DISTRIBUTED && (
+              <Box
+                sx={{
+                  mb: 1.5,
+                  px: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    flexGrow: 0,
+                    gap: 2,
+                  }}
+                >
+                  <SysCard
+                    title={homeTrans('dataNodes')}
+                    count={data?.dataNodes?.length}
+                    link="system"
+                  />
+                  <SysCard
+                    title={homeTrans('indexNodes')}
+                    count={data?.indexNodes?.length}
+                    link="system"
+                  />
+                  <SysCard
+                    title={homeTrans('queryNodes')}
+                    count={data?.queryNodes?.length}
+                    link="system"
+                  />
+                </Box>
+              </Box>
+            )}
+          </>
+        )}
+      </Box>
+
+      {/* Right sidebar */}
+      <Box
+        sx={{
+          width: 280,
+          flexShrink: 0,
+          display: { xs: 'none', md: 'block' },
+          height: 'fit-content',
+        }}
+      >
+        <CommunityLinks />
+      </Box>
     </Box>
   );
 };

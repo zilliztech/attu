@@ -9,6 +9,12 @@ import Box from '@mui/material/Box';
 import type { Theme } from '@mui/material/styles';
 import { ColorModeContext } from '@/context';
 import { IconButton } from '@mui/material';
+import {
+  ATTU_SOURCE_CODE,
+  ATTU_ISSUES,
+  ATTU_DISCORD,
+  ATTU_OFFICE_HOURS,
+} from '@/consts/link';
 
 const ConnectContainer = () => {
   const [version, setVersion] = useState('loading');
@@ -142,9 +148,7 @@ const ConnectContainer = () => {
               startIcon={<Icons.star />}
               fullWidth={true}
               variant="outlined"
-              onClick={() =>
-                window.open('https://github.com/zilliztech/attu', '_blank')
-              }
+              onClick={() => window.open(ATTU_SOURCE_CODE, '_blank')}
             >
               {btnTrans('star')}
             </CustomButton>
@@ -153,12 +157,7 @@ const ConnectContainer = () => {
               startIcon={<Icons.github />}
               fullWidth={true}
               variant="outlined"
-              onClick={() =>
-                window.open(
-                  'https://github.com/zilliztech/attu/issues',
-                  '_blank'
-                )
-              }
+              onClick={() => window.open(ATTU_ISSUES, '_blank')}
             >
               {commonTrans('attu.fileIssue')}
             </CustomButton>
@@ -166,7 +165,7 @@ const ConnectContainer = () => {
             <CustomButton
               startIcon={<Icons.discord />}
               variant="outlined"
-              onClick={() => window.open('https://milvus.io/discord', '_blank')}
+              onClick={() => window.open(ATTU_DISCORD, '_blank')}
               fullWidth={true}
             >
               {commonTrans('attu.discord')}
@@ -175,7 +174,7 @@ const ConnectContainer = () => {
             <CustomButton
               startIcon={<Icons.calendar />}
               variant="outlined"
-              onClick={() => window.open('https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md', '_blank')}
+              onClick={() => window.open(ATTU_OFFICE_HOURS, '_blank')}
               fullWidth={true}
             >
               {commonTrans('attu.officeHours')}
