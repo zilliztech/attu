@@ -20,6 +20,7 @@ const commonTrans = {
     checkHealth: '检查健康状态',
     version: '版本',
     clearHistory: '清空所有历史',
+    officeHours: 'Office Hours',
   },
   status: {
     loaded: '已加载',

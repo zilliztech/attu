@@ -21,6 +21,7 @@ const commonTrans = {
     checkHealth: 'Check Health',
     version: 'Version',
     clearHistory: 'Clear All History',
+    officeHours: 'Office Hours',
   },
   status: {
     loaded: 'Loaded',

@@ -171,6 +171,15 @@ const ConnectContainer = () => {
             >
               {commonTrans('attu.discord')}
             </CustomButton>
+
+            <CustomButton
+              startIcon={<Icons.calendar />}
+              variant="outlined"
+              onClick={() => window.open('https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md', '_blank')}
+              fullWidth={true}
+            >
+              {commonTrans('attu.officeHours')}
+            </CustomButton>
           </Box>
         </Box>
         <Box
