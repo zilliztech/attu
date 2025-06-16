@@ -14,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
 const DEFAULT_TREE_WIDTH = 230;
+const MAX_TREE_WIDTH = 500; // Maximum width the tree can be dragged to
 
 const PageWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -102,7 +103,7 @@ const Databases = () => {
         let mouseX = e.clientX - treeRef.current!.offsetLeft;
 
         // set min and max width
-        treeWidth = Math.max(1, Math.min(mouseX, DEFAULT_TREE_WIDTH));
+        treeWidth = Math.max(1, Math.min(mouseX, MAX_TREE_WIDTH));
 
         // set tree width
         setUIPref({ tree: { width: treeWidth } });
