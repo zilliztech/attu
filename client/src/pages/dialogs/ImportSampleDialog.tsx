@@ -33,7 +33,13 @@ const sizeOptions = [
     label: '10k',
     value: '10000',
   },
+  {
+    label: '100k',
+    value: '100000',
+  },
 ];
+
+const biggestSize = Number(sizeOptions[sizeOptions.length - 1].value);
 
 const ImportSampleDialog: FC<{
   collection: CollectionObject;
@@ -189,7 +195,7 @@ const ImportSampleDialog: FC<{
               value={size}
               onChange={(event: any, newValue: string | null) => {
                 if (newValue && /^\d+$/.test(newValue)) {
-                  const val = Math.min(Number(newValue), 10000).toString();
+                  const val = Math.min(Number(newValue), biggestSize).toString();
                   setSize(val);
                   setCsvFileName(
                     `${collection.collection_name}.sample.${val}.csv`
@@ -203,7 +209,7 @@ const ImportSampleDialog: FC<{
                 if (/^\d*$/.test(newInputValue)) {
                   let val = newInputValue;
                   if (val) {
-                    val = Math.min(Number(val), 10000).toString();
+                    val = Math.min(Number(val), biggestSize).toString();
                   }
                   setSize(val);
                   setCsvFileName(

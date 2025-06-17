@@ -61,4 +61,5 @@ export interface InsertPreviewProps {
 export interface InsertStatusProps {
   status: InsertStatusEnum;
   failMsg: string;
+  importingCount: number;
 }

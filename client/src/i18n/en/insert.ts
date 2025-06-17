@@ -7,10 +7,10 @@ const insertTrans = {
   sample: 'CSV Sample',
   noteTitle: 'Note',
   notes: [
-    `CSV or JSON file is supported`,
-    `Ensure data column names match field label names in Schema.`,
-    `Data should be <150MB and <100,000 rows for proper import.`,
-    `"Import File" only appends new records; it doesn't update existing ones.`,
+    `CSV or JSON file is supported.`,
+    `Ensure CSV column names or JSON key values match schema field names.`,
+    `File size should be <256MB.`,
+    `"Import File" only inserts new data; it doesn't support upsert.`,
   ],
   overSizeWarning: 'File data size should less than {{size}}MB',
   isContainFieldNames: 'First row contains field names?',
@@ -25,8 +25,9 @@ const insertTrans = {
   previewTipAction: '*Change header cell selector value to edit field name',
   requiredFieldName: 'Field Name*',
 
-  statusLoading: 'Your data is importing now...It may take few minutes',
-  statusLoadingTip: 'Please wait patiently, thank you',
+  statusLoading: 'Importing your data... This may take a few minutes.',
+  importingRecords:
+    'Importing {{count}} records... This may take a few minutes.',
   statusSuccess: 'Import File Successfully!',
   statusError: 'Import File Failed!',
 

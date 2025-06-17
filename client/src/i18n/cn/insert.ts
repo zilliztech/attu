@@ -7,9 +7,10 @@ const insertTrans = {
   sample: '样本',
   noteTitle: '注意',
   notes: [
-    `确保数据中的列名与 Schema 中的字段标签名相同。`,
-    `数据大小应小于 150MB，行数应小于 100000，以便正确导入数据。`,
-    `"导入数据" 选项只会添加新记录。您不能使用此选项更新现有记录。`,
+    `支持 CSV 或者 JSON 文件。`,
+    `确保 CSV 列名或 JSON key值与 Schema 字段名一致`,
+    `文件大小不能超过 256MB。`,
+    `"导入数据" 只会插入新数据，不支持 upsert。`,
   ],
   overSizeWarning: '文件数据大小应小于 {{size}}MB',
   isContainFieldNames: '第一行包含字段名？',
@@ -22,8 +23,8 @@ const insertTrans = {
   previewTipAction: '*更改标题单元格选择器值以编辑字段名',
   requiredFieldName: '字段名*',
 
-  statusLoading: '您的数据正在导入中...可能需要几分钟',
-  statusLoadingTip: '请耐心等待，谢谢',
+  statusLoading: '您的数据正在导入中...可能需要几分钟.',
+  importingRecords: '正在导入 {{count}} 条数据...可能需要几分钟.',
   statusSuccess: '数据导入成功！',
   statusError: '数据导入失败！',
 

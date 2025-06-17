@@ -5,30 +5,41 @@ import type { InsertStatusProps } from './Types';
 import successPath from '@/assets/imgs/insert/success.png';
 import failPath from '@/assets/imgs/insert/fail.png';
 import { InsertStatusEnum } from './consts';
-
 import Box from '@mui/material/Box';
 
-const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
+const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg, importingCount }) => {
   const { t: insertTrans } = useTranslation('insert');
 
-  const textSx = (theme: Theme) => ({ marginTop: theme.spacing(3) });
-  const loadingTipSx = (theme: Theme) => ({ marginBottom: theme.spacing(6) });
-  const loadingSvgSx = (theme: Theme) => ({
-    color: theme.palette.primary.main,
+  const iconSx = {
+    width: '64px',
+    height: '64px',
+    marginBottom: 2,
+  };
+
+  const textSx = (theme: Theme) => ({
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
   });
+
+  const errorTextSx = (theme: Theme) => ({
+    ...textSx(theme),
+    color: theme.palette.error.main,
+  });
+
   const wrapperSx = (theme: Theme) => ({
-    width: '75vw',
-    height: status === InsertStatusEnum.loading ? '288px' : '200px',
+    width: '40vw',
+    minHeight: '200px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: theme.spacing(4),
   });
 
   const InsertSuccess = () => (
     <>
-      <img src={successPath} alt="insert success" />
-      <Typography variant="h4" sx={textSx}>
+      <img src={successPath} alt="insert success" style={iconSx} />
+      <Typography variant="h5" sx={textSx}>
         {insertTrans('statusSuccess')}
       </Typography>
     </>
@@ -36,25 +47,24 @@ const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
 
   const InsertLoading = () => (
     <>
-      <CircularProgress size={64} thickness={5} sx={loadingSvgSx} />
-      <Typography variant="h4" sx={textSx}>
-        {insertTrans('statusLoading')}
-      </Typography>
-      <Typography
-        variant="h5"
-        sx={theme => ({ ...textSx(theme), ...loadingTipSx(theme) })}
-      >
-        {insertTrans('statusLoadingTip')}
+      <CircularProgress size={64} thickness={4} sx={{ marginBottom: 2 }} />
+      <Typography variant="h5" sx={textSx}>
+        {insertTrans('importingRecords', { count: importingCount })}
       </Typography>
     </>
   );
+
   const InsertError = () => (
     <>
-      <img src={failPath} alt="insert error" />
-      <Typography variant="h4" sx={textSx}>
+      <img src={failPath} alt="insert error" style={iconSx} />
+      <Typography variant="h5" sx={errorTextSx}>
         {insertTrans('statusError')}
       </Typography>
-      {failMsg && <Typography sx={textSx}>{failMsg}</Typography>}
+      {failMsg && (
+        <Typography variant="body1" sx={errorTextSx}>
+          {failMsg}
+        </Typography>
+      )}
     </>
   );
 
@@ -64,7 +74,6 @@ const InsertStatus: FC<InsertStatusProps> = ({ status, failMsg }) => {
         return <InsertLoading />;
       case InsertStatusEnum.success:
         return <InsertSuccess />;
-      // status error or init as default
       default:
         return <InsertError />;
     }
