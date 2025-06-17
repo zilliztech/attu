@@ -264,22 +264,6 @@ Please read our [Code of Conduct](CODE_OF_CONDUCT.md) to keep our community appr
 - How to backup my Attu configuration?
   > Attu configurations are stored in your browser's local storage. You can export them from the settings page.
 
-## More Screenshots
-
-| create collection                                                                                    | collection tree                                                                              |
-| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| <img src="./.github/images/create_collection.png" width="800" alt="attu create collection dialog" /> | <img src="./.github/images/collections.png" alt="attu" width="800" alt="attu collections" /> |
-
-| collection overview                                                                                      | data view                                                                                   |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| <img src="./.github/images/collection_overview.png" alt="attu" width="800" alt="attu collection view" /> | <img src="./.github/images/data_preview.png" alt="attu" width="800" alt="attu data view" /> |
-
-| vector search                                                                         | system view                                                                           |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| <img src="./.github/images/vector_search.png" width="800" alt="attu vector search" /> | <img src="./.github/images/system_view.png" width="800" alt="attu system view" />     |
-| role chart                                                                            |                                                                                       |
-| <img src="./.github/images/role_chart.png" width="800" alt="attu role chart" />       | <img src="./.github/images/role_chart_night.png" width="800" alt="attu role chart" /> |
-
 ### Useful Examples
 
 [Milvus Typescript Examples](https://github.com/zilliztech/zilliz-cloud-typescript-example):This repo provides some simple React apps based on Next.js.
