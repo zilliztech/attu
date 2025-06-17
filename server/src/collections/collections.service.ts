@@ -30,6 +30,7 @@ import {
   LoadState,
   AlterCollectionFieldPropertiesReq,
   AlterIndexReq,
+  ErrorCode,
 } from '@zilliz/milvus2-sdk-node';
 import { Parser } from '@json2csv/plainjs';
 import {
@@ -284,8 +285,30 @@ export class CollectionsService {
 
   async insert(clientId: string, data: InsertReq) {
     const { milvusClient } = clientCache.get(clientId);
-    const res = await milvusClient.insert(data);
-    return res;
+    const BATCH_SIZE = 1000;
+    const fields_data = data.fields_data || data.data;
+
+    // If data size is less than or equal to batch size, insert directly
+    if (!fields_data || fields_data.length <= BATCH_SIZE) {
+      const res = await milvusClient.insert(data);
+      return res;
+    }
+
+    // Handle insertion in batches
+    const results = [];
+    for (let i = 0; i < fields_data.length; i += BATCH_SIZE) {
+      const batchData = fields_data.slice(i, i + BATCH_SIZE);
+      // Create a new request with only the necessary fields
+      const batchRequest = { ...data, fields_data: batchData } as InsertReq;
+      const result = await milvusClient.insert(batchRequest);
+
+      if (result.status.error_code !== ErrorCode.SUCCESS) {
+        throw new Error(result.status.reason);
+      }
+      results.push(result);
+    }
+
+    return results[0];
   }
 
   async upsert(clientId: string, data: InsertReq) {
@@ -613,7 +636,6 @@ export class CollectionsService {
       db_name,
     });
 
-    const BATCH_SIZE = 1000;
     const totalSize = parseInt(size, 10);
     const fields_data = genRows(
       collectionInfo.schema.fields,
@@ -630,31 +652,12 @@ export class CollectionsService {
       // If download is true, return the generated data directly
       return { sampleFile };
     } else {
-      // Handle insertion in batches if size > 1000
-      if (totalSize <= BATCH_SIZE) {
-        return await this.insert(clientId, {
-          collection_name,
-          fields_data,
-          db_name,
-        });
-      }
-
-      const results = [];
-      for (let i = 0; i < totalSize; i += BATCH_SIZE) {
-        const batchData = fields_data.slice(i, i + BATCH_SIZE);
-        const result = await this.insert(clientId, {
-          collection_name,
-          fields_data: batchData,
-          db_name,
-        });
-        results.push(result);
-      }
-
-      return {
-        status: 'success',
-        message: `Successfully inserted ${totalSize} records in ${Math.ceil(totalSize / BATCH_SIZE)} batches`,
-        results,
-      };
+      // Insert all data at once, batch handling is now in insert method
+      return await this.insert(clientId, {
+        collection_name,
+        fields_data,
+        db_name,
+      });
     }
   }
 

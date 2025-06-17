@@ -71,7 +71,7 @@ app.use(
   })
 );
 // limit json file size
-app.use(express.json({ limit: '150MB' }));
+app.use(express.json({ limit: '256MB' }));
 // TransformResInterceptor
 app.use(TransformResMiddleware);
 // LoggingInterceptor

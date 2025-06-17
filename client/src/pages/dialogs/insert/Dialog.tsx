@@ -48,6 +48,7 @@ const InsertContainer: FC<InsertContentProps> = ({
     InsertStatusEnum.init
   );
   const [insertFailMsg, setInsertFailMsg] = useState<string>('');
+  const [importingCount, setImportingCount] = useState<number>(0);
 
   const [nextDisabled, setNextDisabled] = useState<boolean>(false);
 
@@ -308,6 +309,9 @@ const InsertContainer: FC<InsertContentProps> = ({
             fields!
           );
 
+    // Set the number of records being imported
+    setImportingCount(data.length);
+
     const param: InsertDataParam = {
       partition_name: partitionValue,
       fields_data: data,
@@ -325,13 +329,9 @@ const InsertContainer: FC<InsertContentProps> = ({
         setInsertStatus(InsertStatusEnum.success);
       }
     } catch (err: any) {
-      const {
-        response: {
-          data: { message },
-        },
-      } = err;
-      setInsertFailMsg(message);
-      setInsertStatus(InsertStatusEnum.error);
+      // back to import step
+      setInsertStatus(InsertStatusEnum.init);
+      setActiveStep(InsertStepperEnum.import);
     }
   };
 
@@ -409,7 +409,13 @@ const InsertContainer: FC<InsertContentProps> = ({
         );
       // default represents InsertStepperEnum.status
       default:
-        return <InsertStatus status={insertStatus} failMsg={insertFailMsg} />;
+        return (
+          <InsertStatus
+            status={insertStatus}
+            failMsg={insertFailMsg}
+            importingCount={importingCount}
+          />
+        );
     }
   };
 
