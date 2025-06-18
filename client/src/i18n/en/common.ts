@@ -25,6 +25,7 @@ const commonTrans = {
     officeHours: 'Office Hours',
     docs: 'Docs',
     community: 'Community',
+    dockerWarning: 'Attu is running in a container, "127.0.0.1" or "localhost" refers to the Attu container itself. Please use the IP address or hostname of the Milvus server that Attu can access.',
   },
   status: {
     loaded: 'Loaded',

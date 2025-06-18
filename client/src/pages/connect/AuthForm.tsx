@@ -24,6 +24,7 @@ import Box from '@mui/material/Box';
 import type { Theme } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { isElectron } from '@/http/Axios';
 
 // Add Connection type definition back
 type Connection = AuthReq & {
@@ -353,6 +354,38 @@ export const AuthForm = () => {
             </CustomToolTip>
           </Typography>
         </Box>
+
+        {!isElectron &&
+          (authReq.address.toLowerCase().includes('127.0.0.1') ||
+            authReq.address.toLowerCase().includes('localhost')) && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1,
+                padding: (theme: Theme) => theme.spacing(1, 2),
+                marginBottom: (theme: Theme) => theme.spacing(2),
+                backgroundColor: (theme: Theme) => theme.palette.warning.light,
+                borderRadius: 1,
+                '& svg': {
+                  color: (theme: Theme) => theme.palette.warning.main,
+                  fontSize: 20,
+                  marginTop: 0.5,
+                },
+              }}
+            >
+              <Icons.error />
+              <Typography
+                sx={{
+                  fontSize: 13,
+                  color: (theme: Theme) => theme.palette.warning.dark,
+                  lineHeight: 1.5,
+                }}
+              >
+                {commonTrans('attu.dockerWarning')}
+              </Typography>
+            </Box>
+          )}
 
         {/* Replace address input with Autocomplete */}
         <Autocomplete
