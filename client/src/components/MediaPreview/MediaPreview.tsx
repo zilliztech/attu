@@ -46,7 +46,7 @@ const MediaPreview = (props: { value: string }) => {
   }, []);
 
   const loadImageWithCache = (imageSrc: string) => {
-    console.log('Loading image:', imageSrc); // Debug log
+    // console.log('Loading image:', imageSrc); // Debug log
 
     // Check if image is already cached
     if (imageCache.has(imageSrc)) {
@@ -55,12 +55,12 @@ const MediaPreview = (props: { value: string }) => {
         width: cachedImg.naturalWidth,
         height: cachedImg.naturalHeight,
       });
-      console.log(
-        'Image loaded from cache:',
-        cachedImg.naturalWidth,
-        'x',
-        cachedImg.naturalHeight
-      );
+      // console.log(
+      //   'Image loaded from cache:',
+      //   cachedImg.naturalWidth,
+      //   'x',
+      //   cachedImg.naturalHeight
+      // );
       return;
     }
 
@@ -71,12 +71,12 @@ const MediaPreview = (props: { value: string }) => {
     // The browser will handle CORS automatically if the server allows it
 
     img.onload = () => {
-      console.log(
-        'Image loaded successfully:',
-        img.naturalWidth,
-        'x',
-        img.naturalHeight
-      );
+      // console.log(
+      //   'Image loaded successfully:',
+      //   img.naturalWidth,
+      //   'x',
+      //   img.naturalHeight
+      // );
       // Cache the loaded image
       setImageCache(prev => new Map(prev).set(imageSrc, img));
 
@@ -87,7 +87,7 @@ const MediaPreview = (props: { value: string }) => {
     };
 
     img.onerror = () => {
-      console.warn('Failed to load image:', imageSrc);
+      // console.warn('Failed to load image:', imageSrc);
       setImageError(true);
       // Set default dimensions if image fails to load
       setImageDimensions({
@@ -237,12 +237,12 @@ const MediaPreview = (props: { value: string }) => {
                 minHeight: '50px',
               }}
               onLoad={e => {
-                console.log(
-                  'Preview image loaded:',
-                  e.currentTarget.naturalWidth,
-                  'x',
-                  e.currentTarget.naturalHeight
-                );
+                // console.log(
+                //   'Preview image loaded:',
+                //   e.currentTarget.naturalWidth,
+                //   'x',
+                //   e.currentTarget.naturalHeight
+                // );
               }}
               onError={e => {
                 console.warn('Failed to display image:', image);
