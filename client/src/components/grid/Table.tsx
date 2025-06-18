@@ -62,7 +62,7 @@ const EnhancedTable: FC<TableType> = props => {
           stickyHeader
           sx={{
             minWidth: '100%',
-            height: hasData ? 'auto' : '100%',
+            height: hasData ? 'auto' : 'fit-content',
           }}
           aria-labelledby="tableTitle"
           size="medium"

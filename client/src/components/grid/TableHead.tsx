@@ -33,6 +33,7 @@ const StyledTableHeader = styled(Typography)(({ theme }) => ({
   padding: theme.spacing(1.5, 1),
   fontWeight: 500,
   maxHeight: 45,
+  minHeight: 20,
   fontSize: 13,
   overflow: 'hidden',
   whiteSpace: 'nowrap',

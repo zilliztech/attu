@@ -41,7 +41,32 @@ export const makeRandomSparse = (dim: number) => {
   return sparseObject;
 };
 
+export const makeImageUrl = (): string => {
+  const sizes = [
+    '200x150',
+    '300x200', 
+    '400x300',
+    '500x400',
+    '600x450',
+    '800x600',
+    '1024x768',
+    '1200x800'
+  ];
+  
+  const formats = ['jpg', 'png', 'gif'];
+  
+  const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+  const randomFormat = formats[Math.floor(Math.random() * formats.length)];
+  
+  return `https://dummyimage.com/${randomSize}.${randomFormat}`;
+};
+
 export const makeRandomVarChar = (maxLength: number) => {
+  // 20% 的几率返回图片URL
+  if (Math.random() < 0.2) {
+    return makeImageUrl();
+  }
+
   const words = [
     'quick',
     'brown',

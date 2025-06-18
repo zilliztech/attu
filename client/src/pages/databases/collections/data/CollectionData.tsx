@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { dataContext } from '@/context';
 import { useQuery } from '@/hooks';
-import { getColumnWidth } from '@/utils';
 import icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
 import CustomToolBar from '@/components/grid/ToolBar';
@@ -38,6 +37,7 @@ const CollectionData = (props: CollectionDataProps) => {
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const exprInputRef = useRef<string>(queryState.expr);
   const [, forceUpdate] = useState({});
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // UI functions
   const { fetchCollection } = useContext(dataContext);
@@ -63,13 +63,27 @@ const CollectionData = (props: CollectionDataProps) => {
   } = useQuery({
     collection,
     onQueryStart: (expr: string = '') => {
-      setTableLoading(true);
+      // Clear any existing timeout
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+
+      // Set a timeout to show loading after 100ms
+      loadingTimeoutRef.current = setTimeout(() => {
+        setTableLoading(true);
+      }, 100);
+
       if (expr === '') {
         handleFilterReset();
         return;
       }
     },
     onQueryFinally: () => {
+      // Clear the timeout if it exists
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
       setTableLoading(false);
     },
     queryState: queryState,
@@ -212,7 +226,25 @@ const CollectionData = (props: CollectionDataProps) => {
     setSelectedData([]);
     exprInputRef.current = queryState.expr;
     forceUpdate({});
+
+    // Clean up timeout on unmount or when collection changes
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    };
   }, [collection.collection_name, queryState.expr]);
+
+  // Cleanup timeout on component unmount
+  useEffect(() => {
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <Root>
@@ -252,17 +284,6 @@ const CollectionData = (props: CollectionDataProps) => {
                     <CollectionColHeader def={v} collection={collection} />
                   );
                 },
-                getStyle: d => {
-                  const field = collection.schema.fields.find(
-                    f => f.name === i
-                  );
-                  if (!d || !field) {
-                    return {};
-                  }
-                  return {
-                    minWidth: getColumnWidth(field),
-                  };
-                },
                 label: i === DYNAMIC_FIELD ? searchTrans('dynamicFields') : i,
               };
             })}
@@ -272,6 +293,8 @@ const CollectionData = (props: CollectionDataProps) => {
             rows={queryResult.data}
             rowCount={total}
             selected={selectedData}
+            tableHeaderHeight={43.5}
+            rowHeight={43}
             setSelected={onSelectChange}
             page={currentPage}
             onPageChange={handlePageChange}
