@@ -313,7 +313,7 @@ const Collections = () => {
       sortType: 'string',
       formatter({ collection_name }) {
         return (
-          <Typography variant="body1" sx={{ width: '10vw' }}>
+          <Box sx={{ maxWidth: '120px' }}>
             <Link
               to={`/databases/${database}/${collection_name}/overview`}
               style={{
@@ -336,11 +336,8 @@ const Collections = () => {
                 }}
               />
             </Link>
-          </Typography>
+          </Box>
         );
-      },
-      getStyle: () => {
-        return { minWidth: '10vw' };
       },
       label: collectionTrans('name'),
     },
@@ -361,9 +358,6 @@ const Collections = () => {
             />
           </Typography>
         );
-      },
-      getStyle: () => {
-        return { minWidth: '130px' };
       },
     },
     {
@@ -386,9 +380,6 @@ const Collections = () => {
       formatter(v) {
         return formatNumber(v.rowCount);
       },
-      getStyle: () => {
-        return { minWidth: '100px' };
-      },
     },
     {
       id: 'description',
@@ -406,9 +397,6 @@ const Collections = () => {
       formatter(v) {
         return v.description || '--';
       },
-      getStyle: () => {
-        return { minWidth: '120px' };
-      },
     },
     {
       id: 'createdTime',
@@ -417,9 +405,6 @@ const Collections = () => {
       label: collectionTrans('createdTime'),
       formatter(data) {
         return new Date(data.createdTime).toLocaleString();
-      },
-      getStyle: () => {
-        return { minWidth: '165px' };
       },
     },
   ];
@@ -443,9 +428,6 @@ const Collections = () => {
       ),
       formatter(v) {
         return <Aliases aliases={v.aliases} collection={v} />;
-      },
-      getStyle: () => {
-        return { minWidth: '100px' };
       },
     });
   }

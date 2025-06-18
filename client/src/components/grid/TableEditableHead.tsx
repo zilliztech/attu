@@ -7,6 +7,8 @@ import type { TableEditableHeadType } from './Types';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   paddingLeft: theme.spacing(2),
+  minHeight: 40,
+  maxHeight: 60,
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
