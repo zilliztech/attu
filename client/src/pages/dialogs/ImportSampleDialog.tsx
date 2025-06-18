@@ -195,7 +195,10 @@ const ImportSampleDialog: FC<{
               value={size}
               onChange={(event: any, newValue: string | null) => {
                 if (newValue && /^\d+$/.test(newValue)) {
-                  const val = Math.min(Number(newValue), biggestSize).toString();
+                  const val = Math.min(
+                    Number(newValue),
+                    biggestSize
+                  ).toString();
                   setSize(val);
                   setCsvFileName(
                     `${collection.collection_name}.sample.${val}.csv`
@@ -229,13 +232,13 @@ const ImportSampleDialog: FC<{
                     ...params.inputProps,
                     inputMode: 'numeric',
                     pattern: '[0-9]*',
-                    max: 10000,
+                    max: biggestSize,
                   }}
                   onInput={e => {
                     const input = e.target as HTMLInputElement;
                     let val = input.value.replace(/[^0-9]/g, '');
                     if (val) {
-                      val = Math.min(Number(val), 10000).toString();
+                      val = Math.min(Number(val), biggestSize).toString();
                     }
                     input.value = val;
                   }}
