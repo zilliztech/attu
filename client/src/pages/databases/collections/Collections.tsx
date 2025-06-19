@@ -39,6 +39,7 @@ const Collections = () => {
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
+    isBatchRefreshing,
   } = useContext(dataContext);
 
   const navigate = useNavigate();
@@ -289,7 +290,7 @@ const Collections = () => {
         }
       },
       disabled: () => {
-        return loading;
+        return loading || isBatchRefreshing;
       },
       label: btnTrans('refresh'),
     },

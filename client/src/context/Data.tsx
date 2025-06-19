@@ -19,6 +19,7 @@ export const dataContext = createContext<DataContextType>({
   fetchCollections: async () => {},
   fetchCollection: async () => {},
   batchRefreshCollections: async () => {},
+  isBatchRefreshing: false,
   ui: {
     tree: {
       width: DEFAULT_TREE_WIDTH,
@@ -49,6 +50,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
     fetchCollection,
     batchRefreshCollections,
     updateCollections,
+    isBatchRefreshing,
   } = useCollectionsManagement(database);
 
   // WebSocket Hook
@@ -82,6 +84,7 @@ export const DataProvider = (props: { children: React.ReactNode }) => {
         fetchDatabases,
         fetchCollections,
         batchRefreshCollections,
+        isBatchRefreshing,
         ui,
         setUIPref,
       }}
