@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { DataService, CollectionService } from '@/http';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
-import Filter from '@/components/advancedSearch';
 import EmptyCard from '@/components/cards/EmptyCard';
 import CustomButton from '@/components/customButton/CustomButton';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
@@ -13,7 +12,7 @@ import SearchGlobalParams from './SearchGlobalParams';
 import VectorInputBox from './SearchInputBox';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CustomInput from '@/components/customInput/CustomInput';
+import OptimizedInput from '../data/OptimizedInput';
 import PartitionsSelector from './PartitionsSelector';
 import {
   formatFieldType,
@@ -21,7 +20,6 @@ import {
   generateVectorsByField,
   saveCsvAs,
   buildSearchParams,
-  getColumnWidth,
 } from '@/utils';
 import SearchParams from './SearchParams';
 import DataExplorer, { formatMilvusData } from './DataExplorer';
@@ -527,40 +525,20 @@ const Search = (props: CollectionDataProps) => {
           <SearchResults>
             <Toolbar>
               <div className="left">
-                <CustomInput
-                  type="text"
-                  textConfig={{
-                    label: searchTrans('filterExpr'),
-                    key: 'advFilter',
-                    className: 'textarea',
-                    onChange: onFilterChange,
-                    value: searchParams.globalParams.filter,
-                    disabled: explorerOpen,
-                    variant: 'filled',
-                    required: false,
-                    InputLabelProps: { shrink: true },
-                    InputProps: {
-                      endAdornment: (
-                        <Filter
-                          title={''}
-                          showTitle={false}
-                          fields={collection.schema.scalarFields}
-                          filterDisabled={explorerOpen}
-                          onSubmit={(value: string) => {
-                            onFilterChange(value);
-                          }}
-                          showTooltip={false}
-                        />
-                      ),
-                    },
-                    onKeyDown: (e: any) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        onSearchClicked();
-                      }
-                    },
+                <OptimizedInput
+                  value={searchParams.globalParams.filter}
+                  onChange={onFilterChange}
+                  onKeyDown={(e: any) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      onSearchClicked();
+                    }
                   }}
-                  checkValid={() => true}
+                  disabled={explorerOpen}
+                  fields={collection.schema.scalarFields}
+                  onSubmit={(expression: string) => {
+                    onFilterChange(expression);
+                  }}
                 />
               </div>
               <div className="right">
