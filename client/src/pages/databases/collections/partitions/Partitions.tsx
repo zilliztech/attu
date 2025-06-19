@@ -181,11 +181,6 @@ const Partitions = () => {
       needCopy: true,
       disablePadding: false,
       label: t('id'),
-      getStyle: () => {
-        return {
-          width: 120,
-        };
-      },
     },
     {
       id: 'name',
@@ -256,13 +251,23 @@ const Partitions = () => {
   };
 
   return (
-    <Box sx={{ height: '100%' }}>
+    <Box
+      sx={{
+        width: '100%',
+        height: 'calc(100vh - 128px)',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {' '}
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
         colDefinitions={colDefinitions}
         rows={partitionList}
         rowCount={total}
         primaryKey="id"
+        rowHeight={43}
+        tableHeaderHeight={44}
         selected={selectedPartitions}
         setSelected={handleSelectChange}
         page={currentPage}

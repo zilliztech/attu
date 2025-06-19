@@ -231,9 +231,6 @@ const Users = () => {
       formatter(rowData, cellData) {
         return rowData.username === 'root' ? 'admin' : cellData.join(', ');
       },
-      getStyle: () => {
-        return { width: '80%', maxWidth: '80%' };
-      },
     },
   ];
 
@@ -259,8 +256,8 @@ const Users = () => {
         primaryKey="username"
         showPagination={true}
         selected={selectedUser}
-        tableHeaderHeight={46}
-        rowHeight={39}
+        tableHeaderHeight={44}
+        rowHeight={40}
         tableCellMaxWidth="100%"
         setSelected={handleSelectChange}
         page={currentPage}

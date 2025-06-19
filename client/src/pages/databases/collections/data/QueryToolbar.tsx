@@ -19,6 +19,7 @@ interface QueryToolbarProps {
   handleFilterSubmit: (expression: string) => Promise<void>;
   handleFilterReset: () => Promise<void>;
   setCurrentPage: (page: number) => void;
+  forceDisabled?: boolean;
 }
 
 const QueryToolbar = (props: QueryToolbarProps) => {
@@ -32,6 +33,7 @@ const QueryToolbar = (props: QueryToolbarProps) => {
     handleFilterSubmit,
     handleFilterReset,
     setCurrentPage,
+    forceDisabled = false,
   } = props;
 
   // translations
@@ -50,7 +52,7 @@ const QueryToolbar = (props: QueryToolbarProps) => {
           value={exprInputRef.current}
           onChange={handleExprChange}
           onKeyDown={handleExprKeyDown}
-          disabled={!collection.loaded}
+          disabled={!collection.loaded || forceDisabled}
           fields={collection.schema.scalarFields}
           onSubmit={handleFilterSubmit}
         />
@@ -58,7 +60,7 @@ const QueryToolbar = (props: QueryToolbarProps) => {
         <FormControl
           variant="filled"
           className="selector"
-          disabled={!collection.loaded}
+          disabled={!collection.loaded || forceDisabled}
           sx={{ minWidth: 120 }}
         >
           <InputLabel>{collectionTrans('consistency')}</InputLabel>
@@ -121,7 +123,7 @@ const QueryToolbar = (props: QueryToolbarProps) => {
               )}`}</span>
             );
           }}
-          disabled={!collection.loaded}
+          disabled={!collection.loaded || forceDisabled}
           sx={{
             width: '120px',
             marginTop: '1px',
@@ -148,7 +150,7 @@ const QueryToolbar = (props: QueryToolbarProps) => {
         <CustomButton
           className="btn"
           onClick={handleFilterReset}
-          disabled={!collection.loaded}
+          disabled={!collection.loaded || forceDisabled}
           startIcon={<ResetIcon classes={{ root: 'icon' }} />}
         >
           {btnTrans('reset')}
@@ -165,7 +167,7 @@ const QueryToolbar = (props: QueryToolbarProps) => {
               tick: queryState.tick + 1,
             });
           }}
-          disabled={!collection.loaded}
+          disabled={!collection.loaded || forceDisabled}
         >
           {btnTrans('query')}
         </CustomButton>

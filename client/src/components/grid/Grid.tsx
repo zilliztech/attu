@@ -32,6 +32,7 @@ import type { AttuGridType } from './Types';
  * @param handlesort how to sort table, if it's undefined, then you can not sort table
  * @param order 'desc' | 'asc'. sort direction
  * @param order order by which table field
+ * @param addSpacerColumn control spacer column display. default is false
  * @returns
  */
 const AttuGrid: FC<AttuGridType> = props => {
@@ -44,8 +45,8 @@ const AttuGrid: FC<AttuGridType> = props => {
   const {
     rowCount = 20,
     rowsPerPage = 10,
-    tableHeaderHeight = 43.5,
-    rowHeight = 41,
+    tableHeaderHeight = 44,
+    rowHeight = 42,
     pagerHeight = 52,
     primaryKey = 'id',
     showToolbar = false,
@@ -79,6 +80,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     hideOnDisable,
     rowDecorator = () => ({}),
     sx = {},
+    addSpacerColumn = false,
   } = props;
 
   const _isSelected = (row: { [x: string]: any }) => {
@@ -131,7 +133,7 @@ const AttuGrid: FC<AttuGridType> = props => {
         containerHeight -
         tableHeaderHeight -
         (showPagination ? pagerHeight : 0) -
-        (hasToolbar ? 47 : 0);
+        (hasToolbar ? 42 : 0);
 
       const rowCount = Math.floor(totalHeight / rowHeight);
 
@@ -226,6 +228,7 @@ const AttuGrid: FC<AttuGridType> = props => {
           orderBy={orderBy}
           rowHeight={rowHeight}
           rowDecorator={rowDecorator}
+          addSpacerColumn={addSpacerColumn}
         ></Table>
         {rowCount && showPagination ? (
           <TablePagination

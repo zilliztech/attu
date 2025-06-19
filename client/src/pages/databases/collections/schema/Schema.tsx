@@ -622,6 +622,8 @@ const Overview = () => {
           primaryKey="fieldID"
           showHoverStyle={false}
           isLoading={loading}
+          rowHeight={44}
+          tableHeaderHeight={44}
           openCheckBox={false}
           showPagination={false}
           labelDisplayedRows={getLabelDisplayedRows(

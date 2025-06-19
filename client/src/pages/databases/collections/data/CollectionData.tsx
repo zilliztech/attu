@@ -33,11 +33,13 @@ const CollectionData = (props: CollectionDataProps) => {
   }
 
   // UI state
-  const [tableLoading, setTableLoading] = useState<boolean>();
+  const [tableLoading, setTableLoading] = useState<boolean>(false);
   const [selectedData, setSelectedData] = useState<any[]>([]);
   const exprInputRef = useRef<string>(queryState.expr);
   const [, forceUpdate] = useState({});
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isCollectionSwitching, setIsCollectionSwitching] =
+    useState<boolean>(false);
 
   // UI functions
   const { fetchCollection } = useContext(dataContext);
@@ -68,10 +70,10 @@ const CollectionData = (props: CollectionDataProps) => {
         clearTimeout(loadingTimeoutRef.current);
       }
 
-      // Set a timeout to show loading after 100ms
+      // Set a timeout to show loading after 200ms to avoid flickering for fast queries
       loadingTimeoutRef.current = setTimeout(() => {
         setTableLoading(true);
-      }, 100);
+      }, 200);
 
       if (expr === '') {
         handleFilterReset();
@@ -85,6 +87,7 @@ const CollectionData = (props: CollectionDataProps) => {
         loadingTimeoutRef.current = null;
       }
       setTableLoading(false);
+      setIsCollectionSwitching(false);
     },
     queryState: queryState,
     setQueryState: setQueryState,
@@ -143,15 +146,12 @@ const CollectionData = (props: CollectionDataProps) => {
       tick: queryState.tick + 1,
     });
     forceUpdate({});
-
-    // ensure not loading
-    setTableLoading(false);
   }, [collection.schema.fields, queryState, setQueryState]);
 
   const handlePageChange = useCallback(
     async (e: any, page: number) => {
       // do the query
-      await query(page, queryState.consistencyLevel);
+      await query(page, queryState);
       // update page number
       setCurrentPage(page);
     },
@@ -170,7 +170,7 @@ const CollectionData = (props: CollectionDataProps) => {
     // update count
     count(ConsistencyLevelEnum.Strong);
     // update query
-    query(0, ConsistencyLevelEnum.Strong);
+    query(0, { ...queryState, consistencyLevel: ConsistencyLevelEnum.Strong });
   }, [count, query, reset]);
 
   const onInsert = useCallback(
@@ -227,6 +227,9 @@ const CollectionData = (props: CollectionDataProps) => {
     exprInputRef.current = queryState.expr;
     forceUpdate({});
 
+    // Set collection switching state when collection changes
+    setIsCollectionSwitching(true);
+
     // Clean up timeout on unmount or when collection changes
     return () => {
       if (loadingTimeoutRef.current) {
@@ -261,20 +264,50 @@ const CollectionData = (props: CollectionDataProps) => {
             handleFilterSubmit={handleFilterSubmit}
             handleFilterReset={handleFilterReset}
             setCurrentPage={setCurrentPage}
+            forceDisabled={isCollectionSwitching}
           />
           <AttuGrid
             toolbarConfigs={[]}
+            addSpacerColumn={true}
+            rowHeight={43}
+            tableHeaderHeight={44}
             colDefinitions={queryState.outputFields.map(i => {
+              const field = collection.schema.fields.find(f => f.name === i);
+
+              // if field is function output, return a special col definition
+              if (field?.is_function_output) {
+                const inputFields = collection.schema.functions.find(fn =>
+                  fn.output_field_names?.includes(i)
+                )?.input_field_names;
+
+                return {
+                  id: collection.schema.primaryField.name,
+                  align: 'left',
+                  disablePadding: false,
+                  needCopy: false,
+                  label: i,
+                  formatter: () => (
+                    <Typography
+                      variant="body2"
+                      sx={{ color: theme => theme.palette.text.disabled }}
+                    >
+                      auto-generated from {inputFields?.join(', ')}
+                    </Typography>
+                  ),
+                  headerFormatter: v => {
+                    return (
+                      <CollectionColHeader def={v} collection={collection} />
+                    );
+                  },
+                };
+              }
+
               return {
                 id: i,
                 align: 'left',
                 disablePadding: false,
                 needCopy: true,
                 formatter(_: any, cellData: any) {
-                  const field = collection.schema.fields.find(
-                    f => f.name === i
-                  );
-
                   const fieldType = field?.data_type || 'JSON'; // dynamic
 
                   return <DataView type={fieldType} value={cellData} />;
@@ -289,18 +322,20 @@ const CollectionData = (props: CollectionDataProps) => {
             })}
             primaryKey={collection.schema.primaryField.name}
             openCheckBox={true}
-            isLoading={tableLoading}
+            isLoading={
+              tableLoading || (isCollectionSwitching && collection.loaded)
+            }
             rows={queryResult.data}
             rowCount={total}
             selected={selectedData}
-            tableHeaderHeight={43.5}
-            rowHeight={43}
             setSelected={onSelectChange}
             page={currentPage}
             onPageChange={handlePageChange}
             setRowsPerPage={setPageSize}
             rowsPerPage={pageSize}
-            showPagination={!tableLoading && collection.loaded}
+            showPagination={
+              !tableLoading && !isCollectionSwitching && collection.loaded
+            }
             labelDisplayedRows={getLabelDisplayedRows(
               commonTrans(
                 queryResult.data.length > 1 ? 'grid.entities' : 'grid.entity'
@@ -343,7 +378,7 @@ const CollectionData = (props: CollectionDataProps) => {
               </>
             )}
             noData={searchTrans(
-              `${collection.loaded ? 'empty' : 'collectionNotLoaded'}`
+              !collection.loaded ? 'collectionNotLoaded' : 'empty'
             )}
           />
         </>
