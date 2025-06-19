@@ -292,7 +292,7 @@ export const getAttuTheme = (mode: PaletteMode) => {
       },
       MuiButton: {
         defaultProps: {
-          disableRipple: true,
+          disableRipple: false,
         },
         styleOverrides: {
           root: ({
@@ -305,12 +305,16 @@ export const getAttuTheme = (mode: PaletteMode) => {
             padding: theme.spacing(1, 3),
             textTransform: 'initial',
             fontWeight: 'bold',
+            transition: 'all 0.2s ease-in-out',
             ...(ownerState.variant === 'text' && {
               padding: theme.spacing(1),
               color: theme.palette.primary.main,
               '&:hover': {
                 backgroundColor: theme.palette.primary.main,
                 color: theme.palette.background.paper,
+              },
+              '&:active': {
+                backgroundColor: theme.palette.primary.dark,
               },
             }),
             ...(ownerState.variant === 'contained' && {
@@ -322,10 +326,27 @@ export const getAttuTheme = (mode: PaletteMode) => {
                     ? theme.palette.secondary.dark
                     : theme.palette.primary.dark,
               },
+              '&:active': {
+                backgroundColor:
+                  ownerState.color === 'secondary'
+                    ? theme.palette.secondary.dark
+                    : theme.palette.primary.dark,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              },
+            }),
+            ...(ownerState.variant === 'outlined' && {
+              '&:hover': {
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.background.paper,
+              },
+              '&:active': {
+                backgroundColor: theme.palette.primary.dark,
+              },
             }),
             ...(ownerState.disabled && {
               pointerEvents: 'none',
               opacity: 0.6,
+              transform: 'none !important',
             }),
           }),
         },

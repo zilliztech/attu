@@ -99,6 +99,8 @@ export type TableType = {
   order?: SortDirection;
   orderBy?: string;
   ref?: Ref<HTMLDivElement>;
+  // whether to add a spacer column to control space distribution
+  addSpacerColumn?: boolean;
 };
 
 export type ColDefinitionsType = {
@@ -159,6 +161,8 @@ export type AttuGridType = ToolBarType & {
   pagerHeight?: number;
   rowDecorator?: (row: any) => SxProps<Theme> | React.CSSProperties;
   sx?: SxProps<Theme>;
+  // whether to add a spacer column to control space distribution
+  addSpacerColumn?: boolean;
 };
 
 export type ActionBarType = {

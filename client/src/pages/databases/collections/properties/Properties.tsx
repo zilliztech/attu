@@ -150,11 +150,6 @@ const Properties = (props: PropertiesProps) => {
       disablePadding: false,
       label: t('property'),
       needCopy: true,
-      getStyle: () => {
-        return {
-          minWidth: 150,
-        };
-      },
     },
     {
       id: 'value',
@@ -167,11 +162,6 @@ const Properties = (props: PropertiesProps) => {
         } else {
           return obj.type === 'number' ? formatNumber(obj.value) : obj.value;
         }
-      },
-      getStyle: () => {
-        return {
-          minWidth: 450,
-        };
       },
     },
   ];

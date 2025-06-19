@@ -59,23 +59,24 @@ export const useQuery = (params: {
   };
 
   // query function
-  const query = async (
-    page: number = currentPage,
-    consistency_level = queryState.consistencyLevel,
-    _outputFields = queryState.outputFields,
-    expr = queryState.expr
-  ) => {
+  const query = async (page: number = currentPage, queryState: QueryState) => {
     if (!collection || !collection.loaded) return;
-    const _expr = getPageExpr(page, expr);
+    const _expr = getPageExpr(page, queryState.expr);
 
     onQueryStart(_expr);
+
+    // each queryState.outputFields can not be a function output
+    const outputFields = queryState.outputFields.filter(
+      f =>
+        !collection.schema.fields.find(ff => ff.name === f)?.is_function_output
+    );
 
     try {
       const queryParams = {
         expr: _expr,
-        output_fields: _outputFields,
+        output_fields: outputFields,
         limit: pageSize || 10,
-        consistency_level,
+        consistency_level: queryState.consistencyLevel,
         // travel_timestamp: timeTravelInfo.timestamp,
       };
 
@@ -111,7 +112,7 @@ export const useQuery = (params: {
 
       onQueryEnd?.(res);
     } catch (e: any) {
-      reset();
+      reset(true);
     } finally {
       onQueryFinally?.();
     }
@@ -142,9 +143,11 @@ export const useQuery = (params: {
   };
 
   // reset
-  const reset = () => {
+  const reset = (clearData = false) => {
     setCurrentPage(0);
-    setQueryResult({ data: [], latency: 0 });
+    if (clearData) {
+      setQueryResult({ data: [], latency: 0 });
+    }
 
     pageCache.current.clear();
   };
@@ -166,12 +169,7 @@ export const useQuery = (params: {
     count(queryState.consistencyLevel, queryState.expr);
 
     // Then fetch actual data
-    query(
-      currentPage,
-      queryState.consistencyLevel,
-      queryState.outputFields,
-      queryState.expr
-    );
+    query(currentPage, queryState);
   }, [
     pageSize,
     queryState.outputFields,
@@ -180,6 +178,19 @@ export const useQuery = (params: {
     queryState.expr,
     queryState.tick,
   ]);
+
+  // Reset state when collection changes
+  useEffect(() => {
+    // Immediately reset when collection changes to avoid showing stale data
+    setQueryResult({ data: [], latency: 0 });
+    setCurrentPage(0);
+    pageCache.current.clear();
+
+    // Set total to collection row count as fallback
+    if (collection) {
+      setTotal(collection.rowCount || 0);
+    }
+  }, [collection.collection_name]);
 
   return {
     // total query count

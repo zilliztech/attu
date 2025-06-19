@@ -109,22 +109,12 @@ const Segments = () => {
       disablePadding: false,
       needCopy: true,
       label: 'ID',
-      getStyle: () => {
-        return {
-          minWidth: 155,
-        };
-      },
     },
     {
       id: 'level',
       align: 'left',
       disablePadding: false,
       label: 'Level',
-      getStyle: () => {
-        return {
-          minWidth: 15,
-        };
-      },
     },
     {
       id: 'partitionID',
@@ -132,33 +122,18 @@ const Segments = () => {
       disablePadding: false,
       needCopy: true,
       label: collectionTrans('partitionID'),
-      getStyle: () => {
-        return {
-          minWidth: 160,
-        };
-      },
     },
     {
       id: 'state',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('segPState'),
-      getStyle: () => {
-        return {
-          minWidth: 160,
-        };
-      },
     },
     {
       id: 'num_rows',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('num_rows'),
-      getStyle: () => {
-        return {
-          minWidth: 70,
-        };
-      },
     },
     {
       id: 'q_nodeIds',
@@ -168,22 +143,12 @@ const Segments = () => {
       formatter(data, cellData, cellIndex) {
         return cellData.join(',');
       },
-      getStyle: () => {
-        return {
-          minWidth: 35,
-        };
-      },
     },
     {
       id: 'q_state',
       align: 'left',
       disablePadding: false,
       label: collectionTrans('q_state'),
-      getStyle: () => {
-        return {
-          minWidth: 70,
-        };
-      },
     },
     // {
     //   id: 'q_index_name',
@@ -228,6 +193,8 @@ const Segments = () => {
         toolbarConfigs={[]}
         colDefinitions={colDefinitions}
         rows={data}
+        rowHeight={43}
+        tableHeaderHeight={45}
         rowCount={total}
         primaryKey="name"
         showPagination={true}

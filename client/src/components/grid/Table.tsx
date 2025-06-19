@@ -16,6 +16,26 @@ import CopyButton from '../advancedSearch/CopyButton';
 import type { Theme } from '@mui/material/styles';
 import type { TableType } from './Types';
 
+/**
+ * Enhanced Table Component
+ *
+ * Usage example with spacer column:
+ * <AttuGrid
+ *   colDefinitions={[
+ *     { id: 'name', label: 'Name', disablePadding: false },
+ *     { id: 'age', label: 'Age', disablePadding: false }
+ *   ]}
+ *   addSpacerColumn={true} // This will add a spacer column that absorbs remaining space
+ *   // ... other props
+ * />
+ *
+ * The spacer column will:
+ * - Have width: 'auto' and minWidth: 'auto'
+ * - Display no content
+ * - Naturally absorb remaining horizontal space without forcing table width
+ * - Prevent unnecessary horizontal scrollbars
+ */
+
 const EnhancedTable: FC<TableType> = props => {
   let {
     selected,
@@ -44,9 +64,29 @@ const EnhancedTable: FC<TableType> = props => {
     orderBy,
     rowDecorator = () => ({}),
     rowHeight,
+    // whether to add a spacer column to control space distribution
+    addSpacerColumn = false,
   } = props;
 
   const hasData = rows && rows.length > 0;
+
+  // Add spacer column definition if needed
+  const finalColDefinitions = addSpacerColumn
+    ? [
+        ...colDefinitions,
+        {
+          id: '__spacer__',
+          align: 'left' as const,
+          disablePadding: false,
+          label: '',
+          getStyle: () => ({
+            width: '66.7%',
+            minWidth: 'auto',
+          }),
+          formatter: () => null,
+        },
+      ]
+    : colDefinitions;
 
   return (
     <TableContainer
@@ -70,7 +110,7 @@ const EnhancedTable: FC<TableType> = props => {
         >
           {!headEditable ? (
             <EnhancedTableHead
-              colDefinitions={colDefinitions}
+              colDefinitions={finalColDefinitions}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -144,12 +184,30 @@ const EnhancedTable: FC<TableType> = props => {
                         </TableCell>
                       )}
 
-                      {colDefinitions.map((colDef, i) => {
+                      {finalColDefinitions.map((colDef, i) => {
                         const { actionBarConfigs = [], needCopy = false } =
                           colDef;
                         const cellStyleFromDef = colDef.getStyle
                           ? colDef.getStyle(row[colDef.id])
                           : {};
+
+                        // Skip rendering for spacer column
+                        if (colDef.id === '__spacer__') {
+                          return (
+                            <TableCell
+                              key={colDef.id}
+                              sx={[
+                                (theme: Theme) => ({
+                                  borderBottom: `1px solid ${theme.palette.divider}`,
+                                }),
+                                cellStyleFromDef,
+                              ]}
+                            >
+                              {/* Empty content for spacer column */}
+                            </TableCell>
+                          );
+                        }
+
                         return colDef.showActionCell ? (
                           <TableCell
                             sx={
@@ -323,8 +381,8 @@ const EnhancedTable: FC<TableType> = props => {
                     })}
                     colSpan={
                       openCheckBox
-                        ? colDefinitions.length + 1
-                        : colDefinitions.length
+                        ? finalColDefinitions.length + 1
+                        : finalColDefinitions.length
                     }
                   >
                     {noData}
@@ -344,8 +402,8 @@ const EnhancedTable: FC<TableType> = props => {
                   })}
                   colSpan={
                     openCheckBox
-                      ? colDefinitions.length + 1
-                      : colDefinitions.length
+                      ? finalColDefinitions.length + 1
+                      : finalColDefinitions.length
                   }
                 >
                   <LoadingTable />

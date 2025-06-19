@@ -341,17 +341,6 @@ const Search = (props: CollectionDataProps) => {
                   />
                 );
               },
-              getStyle: d => {
-                const field = collection.schema.fields.find(
-                  f => f.name === key
-                );
-                if (!d || !field) {
-                  return {};
-                }
-                return {
-                  minWidth: getColumnWidth(field),
-                };
-              },
             };
           })
       : [];
@@ -645,8 +634,8 @@ const Search = (props: CollectionDataProps) => {
                 rowCount={total}
                 primaryKey="rank"
                 page={currentPage}
-                tableHeaderHeight={46}
-                rowHeight={41}
+                tableHeaderHeight={45}
+                rowHeight={42}
                 openCheckBox={false}
                 onPageChange={handlePageChange}
                 rowsPerPage={pageSize}
