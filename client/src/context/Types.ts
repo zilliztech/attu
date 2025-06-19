@@ -107,6 +107,7 @@ export type DataContextType = {
 
   setCollections: Dispatch<SetStateAction<CollectionObject[]>>;
   setDatabase: Dispatch<SetStateAction<string>>;
+  isBatchRefreshing: boolean;
   batchRefreshCollections: (
     collectionNames: string[],
     key?: string

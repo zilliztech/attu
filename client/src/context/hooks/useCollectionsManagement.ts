@@ -10,6 +10,7 @@ export function useCollectionsManagement(database: string) {
   const { isAuth } = useContext(authContext);
 
   const [loading, setLoading] = useState(true);
+  const [isBatchRefreshing, setIsBatchRefreshing] = useState(false);
   const requestIdRef = useRef(0);
   const databaseRef = useRef(database);
 
@@ -109,6 +110,7 @@ export function useCollectionsManagement(database: string) {
       ref.timer = null;
     });
     refreshCollectionsDebounceMapRef.current.clear();
+    setIsBatchRefreshing(false);
   }
 
   useEffect(() => {
@@ -177,12 +179,21 @@ export function useCollectionsManagement(database: string) {
       if (ref.timer) {
         clearTimeout(ref.timer);
       }
+      
+      // Set batch refreshing to true if we have collections to refresh
+      if (filteredCollectionNames.length > 0) {
+        setIsBatchRefreshing(true);
+      }
+      
       function getRandomBatchSize() {
         const weights = [2, 2, 2, 3, 3, 3, 4, 4, 5];
         return weights[Math.floor(Math.random() * weights.length)];
       }
       ref.timer = setTimeout(async () => {
-        if (ref!.names.length === 0) return;
+        if (ref!.names.length === 0) {
+          setIsBatchRefreshing(false);
+          return;
+        }
         try {
           while (ref!.names.length > 0) {
             const batchSize = getRandomBatchSize();
@@ -210,6 +221,14 @@ export function useCollectionsManagement(database: string) {
         }
         ref!.names = [];
         ref!.timer = null;
+        
+        // Check if all maps are empty and set batch refreshing to false
+        const hasActiveRefreshes = Array.from(refreshCollectionsDebounceMapRef.current.values()).some(
+          ref => ref.names.length > 0 || ref.timer !== null
+        );
+        if (!hasActiveRefreshes) {
+          setIsBatchRefreshing(false);
+        }
       }, 200);
     },
     [collections, updateCollections, isAuth] // Removed database dependency
@@ -219,6 +238,7 @@ export function useCollectionsManagement(database: string) {
     collections,
     setCollections,
     loading,
+    isBatchRefreshing,
     fetchCollections,
     fetchCollection,
     batchRefreshCollections,
