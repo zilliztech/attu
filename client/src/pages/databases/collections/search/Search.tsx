@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useContext,
 } from 'react';
 import { Typography, AccordionSummary, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -58,6 +59,7 @@ import {
   CheckboxRow,
   LeftSection,
 } from './StyledComponents';
+import { authContext } from '@/context/Auth';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -72,6 +74,9 @@ const emptyExplorerData: GraphData = {
 };
 
 const Search = (props: CollectionDataProps) => {
+  // context
+  const { isManaged } = useContext(authContext);
+
   // props
   const { collections, collectionName, searchParams, setSearchParams } = props;
   const collection = collections.find(
@@ -507,6 +512,7 @@ const Search = (props: CollectionDataProps) => {
                         }) => {
                           updateSearchParamCallback(updates as any, index);
                         }}
+                        isManaged={isManaged}
                       />
                     </StyledAccordionDetails>
                   </StyledAccordion>

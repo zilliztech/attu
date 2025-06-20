@@ -12,6 +12,7 @@ export interface SearchParamsProps {
     [key in string]: number | string | boolean;
   }) => void;
   sx?: SxProps<Theme>;
+  isManaged: boolean;
 }
 
 export interface SearchResultView {

@@ -11,6 +11,7 @@ const SearchParams: FC<SearchParamsProps> = ({
   indexType = '',
   searchParamsForm,
   handleFormChange,
+  isManaged,
   sx = {},
 }) => {
   // Get search params and their configs based on index type
@@ -35,7 +36,7 @@ const SearchParams: FC<SearchParamsProps> = ({
       },
     };
 
-    if (indexType === 'AUTOINDEX') {
+    if (indexType === 'AUTOINDEX' && isManaged) {
       commonParams.level = {
         label: 'level',
         key: 'level',
