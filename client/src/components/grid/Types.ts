@@ -65,6 +65,7 @@ export type TableHeadType = {
   handleSort?: (e: any, p: string, col?: ColDefinitionsType) => void;
   openCheckBox?: boolean;
   disableSelect?: boolean;
+  enableSelectAll?: boolean;
 };
 
 export type TableEditableHeadType = {
@@ -87,6 +88,7 @@ export type TableType = {
   primaryKey: string;
   openCheckBox?: boolean;
   disableSelect?: boolean;
+  enableSelectAll?: boolean;
   rowDecorator?: (row: any) => SxProps<Theme> | React.CSSProperties;
   noData?: string;
   showHoverStyle?: boolean;
@@ -146,6 +148,7 @@ export type AttuGridType = ToolBarType & {
   title?: string[];
   openCheckBox?: boolean;
   disableSelect?: boolean;
+  enableSelectAll?: boolean;
   noData?: string;
   showHoverStyle?: boolean;
   headEditable?: boolean;

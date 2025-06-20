@@ -24,6 +24,7 @@ import type { AttuGridType } from './Types';
  * @param title  Render breadcrumbs
  * @param openCheckBox control checkbox display. default is true
  * @param disableSelect disable table row select. default false
+ * @param enableSelectAll control select all checkbox display. default true
  * @param noData when table is empty, what tip we need to show.
  * @param showHoverStyle control table row hover style display
  * @param headEditable if true, user can edit header.
@@ -65,6 +66,7 @@ const AttuGrid: FC<AttuGridType> = props => {
     title,
     openCheckBox = true,
     disableSelect = false,
+    enableSelectAll = true,
     noData = commonTrans('grid.noData'),
     showHoverStyle = true,
     headEditable = false,
@@ -229,6 +231,7 @@ const AttuGrid: FC<AttuGridType> = props => {
           rowHeight={rowHeight}
           rowDecorator={rowDecorator}
           addSpacerColumn={addSpacerColumn}
+          enableSelectAll={enableSelectAll}
         ></Table>
         {rowCount && showPagination ? (
           <TablePagination
