@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
+import { forwardRef, useState, useEffect, useImperativeHandle, useRef } from 'react';
 import Chip from '@mui/material/Chip';
 import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
@@ -30,6 +30,9 @@ const Filter = forwardRef((props: FilterProps, ref) => {
   const [initConditions, setInitConditions] = useState<any[]>([]);
   const [isConditionsLegal, setIsConditionsLegal] = useState(false);
   const [filterExpression, setFilterExpression] = useState('');
+  
+  // Use ref to track previous expression to prevent unnecessary updates
+  const prevExpressionRef = useRef<string>('');
 
   const FilterIcon = icons.filter;
 
@@ -57,7 +60,11 @@ const Filter = forwardRef((props: FilterProps, ref) => {
       }
     }
     setIsConditionsLegal(true);
-    generateExpression(flatConditions, setFilterExpression);
+    
+    // Only generate expression if conditions are legal
+    if (flatConditions.length > 0) {
+      generateExpression(flatConditions, setFilterExpression);
+    }
   }, [flatConditions]);
 
   const setFilteredFlatConditions = (conditions: any[]) => {

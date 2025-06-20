@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import CustomInput from '@/components/customInput/CustomInput';
 import Filter from '@/components/advancedSearch';
@@ -24,6 +24,24 @@ const OptimizedInput = ({
   const { t: collectionTrans } = useTranslation('collection');
   const [localValue, setLocalValue] = useState(value);
 
+  // Use refs to stabilize function calls
+  const onChangeRef = useRef(onChange);
+  const onSubmitRef = useRef(onSubmit);
+  const onKeyDownRef = useRef(onKeyDown);
+
+  // Update refs when props change
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    onSubmitRef.current = onSubmit;
+  }, [onSubmit]);
+
+  useEffect(() => {
+    onKeyDownRef.current = onKeyDown;
+  }, [onKeyDown]);
+
   useEffect(() => {
     setLocalValue(value);
   }, [value]);
@@ -31,25 +49,25 @@ const OptimizedInput = ({
   const handleChange = useCallback(
     (newValue: string) => {
       setLocalValue(newValue);
-      onChange(newValue);
+      onChangeRef.current(newValue);
     },
-    [onChange]
+    [] // Remove dependencies since we use refs
   );
 
   const handleKeyDown = useCallback(
     (e: any) => {
-      onKeyDown(e);
+      onKeyDownRef.current(e);
     },
-    [onKeyDown]
+    [] // Remove dependencies since we use refs
   );
 
   const handleFilterSubmit = useCallback(
     (expression: string) => {
       setLocalValue(expression);
-      onChange(expression);
-      onSubmit(expression);
+      onChangeRef.current(expression);
+      onSubmitRef.current(expression);
     },
-    [onChange, onSubmit]
+    [] // Remove dependencies since we use refs
   );
 
   return (

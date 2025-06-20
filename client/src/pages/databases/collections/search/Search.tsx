@@ -1,17 +1,10 @@
-import {
-  useState,
-  useMemo,
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useContext,
-} from 'react';
+import { useState, useMemo, ChangeEvent, useCallback, useContext } from 'react';
 import { Typography, AccordionSummary, Checkbox } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { DataService, CollectionService } from '@/http';
 import Icons from '@/components/icons/Icons';
 import AttuGrid from '@/components/grid/Grid';
+import Filter from '@/components/advancedSearch';
 import EmptyCard from '@/components/cards/EmptyCard';
 import CustomButton from '@/components/customButton/CustomButton';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
@@ -20,7 +13,7 @@ import SearchGlobalParams from './SearchGlobalParams';
 import VectorInputBox from './SearchInputBox';
 import StatusIcon, { LoadingType } from '@/components/status/StatusIcon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import OptimizedInput from '../data/OptimizedInput';
+import CustomInput from '@/components/customInput/CustomInput';
 import PartitionsSelector from './PartitionsSelector';
 import {
   formatFieldType,
@@ -28,6 +21,7 @@ import {
   generateVectorsByField,
   saveCsvAs,
   buildSearchParams,
+  getColumnWidth,
 } from '@/utils';
 import SearchParams from './SearchParams';
 import DataExplorer, { formatMilvusData } from './DataExplorer';
@@ -59,7 +53,7 @@ import {
   CheckboxRow,
   LeftSection,
 } from './StyledComponents';
-import { authContext } from '@/context/Auth';
+import { authContext } from '@/context';
 
 export interface CollectionDataProps {
   collectionName: string;
@@ -74,7 +68,7 @@ const emptyExplorerData: GraphData = {
 };
 
 const Search = (props: CollectionDataProps) => {
-  // context
+  // auth context
   const { isManaged } = useContext(authContext);
 
   // props
@@ -87,45 +81,15 @@ const Search = (props: CollectionDataProps) => {
   const [tableLoading, setTableLoading] = useState<boolean>();
   const [highlightField, setHighlightField] = useState<string>('');
   const [explorerOpen, setExplorerOpen] = useState<boolean>(false);
-  const [localFilterValue, setLocalFilterValue] = useState<string>('');
-
-  // Use ref to track searchParams changes without causing re-renders
-  const searchParamsRef = useRef(searchParams);
-  searchParamsRef.current = searchParams;
-
-  // Memoize collection to avoid unnecessary re-renders
-  const memoizedCollection = useMemo(
-    () => collection,
-    [collection?.collection_name]
-  );
-
-  // Memoize selected fields to avoid recalculation
-  const selectedFields = useMemo(
-    () => searchParams.searchParams.filter(s => s.selected),
-    [searchParams.searchParams]
-  );
-
-  // Memoize enablePartitionsFilter
-  const enablePartitionsFilter = useMemo(
-    () => !collection.schema.enablePartitionKey,
-    [collection.schema.enablePartitionKey]
-  );
 
   // translations
   const { t: searchTrans } = useTranslation('search');
   const { t: btnTrans } = useTranslation('btn');
 
-  // Sync local filter value with searchParams on mount and when searchParams change
-  useEffect(() => {
-    if (searchParams?.globalParams?.filter !== undefined) {
-      setLocalFilterValue(searchParams.globalParams.filter);
-    }
-  }, [searchParams?.globalParams?.filter]);
-
-  // UI functions - optimized with better dependencies
+  // UI functions
   const handleExpand = useCallback(
     (panel: string) => (event: ChangeEvent<{}>, expanded: boolean) => {
-      const s = cloneObj(searchParamsRef.current);
+      const s = cloneObj(searchParams);
       const target = s.searchParams.find((sp: SearchSingleParams) => {
         return sp.field.name === panel;
       });
@@ -135,54 +99,54 @@ const Search = (props: CollectionDataProps) => {
         setSearchParams({ ...s });
       }
     },
-    [setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
   const handleSelect = useCallback(
     (panel: string) => (event: ChangeEvent<{}>) => {
-      const s = cloneObj(searchParamsRef.current) as SearchParamsType;
+      const s = cloneObj(searchParams) as SearchParamsType;
       const target = s.searchParams.find(sp => {
         return sp.field.name === panel;
       });
       if (target) {
         target.selected = !target.selected;
+
         setSearchParams({ ...s });
       }
     },
-    [setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
   // update search params
   const updateSearchParamCallback = useCallback(
     (updates: SearchSingleParams, index: number) => {
-      const currentParams = searchParamsRef.current;
       if (
         JSON.stringify(updates) !==
-        JSON.stringify(currentParams.searchParams[index].params)
+        JSON.stringify(searchParams.searchParams[index].params)
       ) {
-        const s = cloneObj(currentParams);
+        const s = cloneObj(searchParams);
         // update the searchParams
         s.searchParams[index].params = updates;
         setSearchParams({ ...s });
       }
     },
-    [setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
   // generate random vectors
   const genRandomVectors = useCallback(() => {
-    const s = cloneObj(searchParamsRef.current) as SearchParamsType;
+    const s = cloneObj(searchParams) as SearchParamsType;
     s.searchParams.forEach((sp: SearchSingleParams) => {
       sp.data = generateVectorsByField(sp.field) as any;
     });
 
     setSearchParams({ ...s });
-  }, [setSearchParams]);
+  }, [JSON.stringify(searchParams)]);
 
   // on vector input change, update the search params
   const onSearchInputChange = useCallback(
     (anns_field: string, value: string) => {
-      const s = cloneObj(searchParamsRef.current) as SearchParamsType;
+      const s = cloneObj(searchParams) as SearchParamsType;
       const target = s.searchParams.find((sp: SearchSingleParams) => {
         return sp.anns_field === anns_field;
       });
@@ -192,29 +156,36 @@ const Search = (props: CollectionDataProps) => {
         setSearchParams({ ...s });
       }
     },
-    [setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
-  // on filter change - only update local state, not searchParams
-  const onFilterChange = useCallback((value: string) => {
-    setLocalFilterValue(value);
-  }, []);
+  // on filter change
+  const onFilterChange = useCallback(
+    (value: string) => {
+      const s = cloneObj(searchParams) as SearchParamsType;
+      s.globalParams.filter = value;
+      setSearchParams({ ...s });
+
+      return s;
+    },
+    [JSON.stringify(searchParams)]
+  );
 
   // on partitions change
   const onPartitionsChange = useCallback(
     (value: any) => {
-      const s = cloneObj(searchParamsRef.current) as SearchParamsType;
+      const s = cloneObj(searchParams) as SearchParamsType;
       s.partitions = value;
       setSearchParams({ ...s });
     },
-    [setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
   // set search result
   const setSearchResult = useCallback(
     (props: VectorSearchResults) => {
       const { results, latency } = props;
-      const s = cloneObj(searchParamsRef.current) as SearchParamsType;
+      const s = cloneObj(searchParams) as SearchParamsType;
       s.searchResult = results;
       s.searchLatency = latency;
       const newGraphData = formatMilvusData(
@@ -226,25 +197,18 @@ const Search = (props: CollectionDataProps) => {
 
       setSearchParams({ ...s });
     },
-    [setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
   // execute search
   const onSearchClicked = useCallback(async () => {
-    // Create a copy of current searchParams and update with current filter value
-    const s = cloneObj(searchParamsRef.current) as SearchParamsType;
-    s.globalParams.filter = localFilterValue;
-
-    // Update searchParams for future use
-    setSearchParams({ ...s });
-
-    const params = buildSearchParams(s);
+    const params = buildSearchParams(searchParams);
     setExplorerOpen(false);
 
     setTableLoading(true);
     try {
       const res = await DataService.vectorSearchData(
-        s.collection.collection_name,
+        searchParams.collection.collection_name,
         params
       );
 
@@ -253,12 +217,12 @@ const Search = (props: CollectionDataProps) => {
     } catch (err) {
       setTableLoading(false);
     }
-  }, [localFilterValue, setSearchParams, setSearchResult]);
+  }, [JSON.stringify(searchParams)]);
 
   // execute explore
-  const onExploreClicked = useCallback(() => {
+  const onExploreClicked = () => {
     setExplorerOpen(explorerOpen => !explorerOpen);
-  }, []);
+  };
 
   const onNodeClicked = useCallback(
     async (node: GraphNode) => {
@@ -268,8 +232,8 @@ const Search = (props: CollectionDataProps) => {
       setExplorerOpen(true);
       setTableLoading(false);
 
-      const s = cloneObj(searchParamsRef.current);
-      const params = cloneObj(buildSearchParams(searchParamsRef.current));
+      const s = cloneObj(searchParams);
+      const params = cloneObj(buildSearchParams(searchParams));
 
       try {
         const query = await CollectionService.queryData(collectionName, {
@@ -297,7 +261,7 @@ const Search = (props: CollectionDataProps) => {
         console.log('err', err);
       }
     },
-    [collectionName, setSearchParams]
+    [JSON.stringify(searchParams)]
   );
 
   const searchResultMemo = useSearchResult(
@@ -321,20 +285,18 @@ const Search = (props: CollectionDataProps) => {
 
   // reset
   const onResetClicked = useCallback(() => {
-    const s = cloneObj(searchParamsRef.current) as SearchParamsType;
+    const s = cloneObj(searchParams) as SearchParamsType;
     s.searchResult = null;
 
     setSearchParams({ ...s });
     setCurrentPage(0);
-    setLocalFilterValue(''); // Also reset local filter value
-  }, [setSearchParams, setCurrentPage]);
+  }, [JSON.stringify(searchParams), setCurrentPage]);
 
   const onExplorerResetClicked = useCallback(() => {
     onSearchClicked();
     onExploreClicked();
-  }, [onSearchClicked, onExploreClicked]);
+  }, [onSearchClicked, onSearchClicked]);
 
-  // Memoize colDefinitions with better dependencies
   const colDefinitions: ColDefinitionsType[] = useMemo(() => {
     if (!searchParams || !searchParams.collection) {
       return [];
@@ -369,15 +331,10 @@ const Search = (props: CollectionDataProps) => {
               label: key === DYNAMIC_FIELD ? searchTrans('dynamicFields') : key,
               needCopy: key !== 'score',
               headerFormatter: v => {
-                return (
-                  <CollectionColHeader
-                    def={v}
-                    collection={memoizedCollection}
-                  />
-                );
+                return <CollectionColHeader def={v} collection={collection} />;
               },
               formatter(_: any, cellData: any) {
-                const field = memoizedCollection.schema.fields.find(
+                const field = collection.schema.fields.find(
                   f => f.name === key
                 );
 
@@ -388,42 +345,30 @@ const Search = (props: CollectionDataProps) => {
                   />
                 );
               },
+              getStyle: d => {
+                const field = collection.schema.fields.find(
+                  f => f.name === key
+                );
+                if (!d || !field) {
+                  return {};
+                }
+                return {
+                  minWidth: getColumnWidth(field),
+                };
+              },
             };
           })
       : [];
   }, [
-    searchParams?.searchResult,
-    searchParams?.globalParams?.output_fields,
-    searchTrans,
-    memoizedCollection,
+    JSON.stringify({
+      searchParams,
+    }),
   ]);
 
-  // Memoize disable search logic
-  const { disableSearch, disableSearchTooltip } = useMemo(() => {
-    let disableSearch = false;
-    let disableSearchTooltip = '';
-
-    if (selectedFields.length === 0) {
-      disableSearch = true;
-      disableSearchTooltip = searchTrans('noSelectedVectorField');
-    }
-
-    const noDataInSelected = selectedFields.some(s => s.data === '');
-    if (noDataInSelected) {
-      disableSearch = true;
-      disableSearchTooltip = searchTrans('noVectorToSearch');
-    }
-
-    return { disableSearch, disableSearchTooltip };
-  }, [selectedFields, searchTrans]);
-
   // methods
-  const handlePageChange = useCallback(
-    (e: any, page: number) => {
-      handleCurrentPage(page);
-    },
-    [handleCurrentPage]
-  );
+  const handlePageChange = (e: any, page: number) => {
+    handleCurrentPage(page);
+  };
 
   // collection is not found or collection full object is not ready
   if (
@@ -446,6 +391,27 @@ const Search = (props: CollectionDataProps) => {
       </SearchRoot>
     );
   }
+
+  // disable search button
+  let disableSearch = false;
+  let disableSearchTooltip = '';
+  // has selected vector fields
+  const selectedFields = searchParams.searchParams.filter(s => s.selected);
+
+  if (selectedFields.length === 0) {
+    disableSearch = true;
+    disableSearchTooltip = searchTrans('noSelectedVectorField');
+  }
+  // has vector data to search
+  const noDataInSelected = selectedFields.some(s => s.data === '');
+
+  if (noDataInSelected) {
+    disableSearch = true;
+    disableSearchTooltip = searchTrans('noVectorToSearch');
+  }
+
+  // enable partition filter
+  const enablePartitionsFilter = !collection.schema.enablePartitionKey;
 
   return (
     <SearchRoot>
@@ -499,7 +465,7 @@ const Search = (props: CollectionDataProps) => {
                       <VectorInputBox
                         searchParams={s}
                         onChange={onSearchInputChange}
-                        collection={memoizedCollection}
+                        collection={collection}
                         type={field.is_function_output ? 'text' : 'vector'}
                       />
 
@@ -538,9 +504,8 @@ const Search = (props: CollectionDataProps) => {
                 }}
                 searchParams={searchParams}
                 handleFormChange={(params: any) => {
-                  const s = cloneObj(searchParamsRef.current);
-                  s.globalParams = params;
-                  setSearchParams({ ...s });
+                  searchParams.globalParams = params;
+                  setSearchParams({ ...searchParams });
                 }}
               />
 
@@ -578,26 +543,47 @@ const Search = (props: CollectionDataProps) => {
           <SearchResults>
             <Toolbar>
               <div className="left">
-                <OptimizedInput
-                  value={localFilterValue}
-                  onChange={onFilterChange}
-                  onKeyDown={(e: any) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      onSearchClicked();
-                    }
+                <CustomInput
+                  type="text"
+                  textConfig={{
+                    label: searchTrans('filterExpr'),
+                    key: 'advFilter',
+                    className: 'textarea',
+                    onChange: onFilterChange,
+                    value: searchParams.globalParams.filter,
+                    disabled: explorerOpen,
+                    variant: 'filled',
+                    required: false,
+                    InputLabelProps: { shrink: true },
+                    InputProps: {
+                      endAdornment: (
+                        <Filter
+                          title={''}
+                          showTitle={false}
+                          fields={collection.schema.scalarFields}
+                          filterDisabled={explorerOpen}
+                          onSubmit={(value: string) => {
+                            onFilterChange(value);
+                          }}
+                          showTooltip={false}
+                        />
+                      ),
+                    },
+                    onKeyDown: (e: any) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        onSearchClicked();
+                      }
+                    },
                   }}
-                  disabled={explorerOpen}
-                  fields={memoizedCollection.schema.scalarFields}
-                  onSubmit={(expression: string) => {
-                    setLocalFilterValue(expression);
-                    // Don't immediately update searchParams, wait for search
-                  }}
+                  checkValid={() => true}
                 />
               </div>
               <div className="right">
                 <CustomButton
-                  onClick={onExploreClicked}
+                  onClick={() => {
+                    onExploreClicked();
+                  }}
                   size="small"
                   disabled={
                     !searchParams.searchResult ||
@@ -664,8 +650,8 @@ const Search = (props: CollectionDataProps) => {
                 rowCount={total}
                 primaryKey="rank"
                 page={currentPage}
-                tableHeaderHeight={45}
-                rowHeight={42}
+                tableHeaderHeight={46}
+                rowHeight={41}
                 openCheckBox={false}
                 onPageChange={handlePageChange}
                 rowsPerPage={pageSize}
