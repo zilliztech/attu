@@ -44,27 +44,32 @@ export const makeRandomSparse = (dim: number) => {
 export const makeImageUrl = (): string => {
   const sizes = [
     '200x150',
-    '300x200', 
+    '300x200',
     '400x300',
     '500x400',
     '600x450',
     '800x600',
     '1024x768',
-    '1200x800'
+    '1200x800',
   ];
-  
+
   const formats = ['jpg', 'png', 'gif'];
-  
+
   const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
   const randomFormat = formats[Math.floor(Math.random() * formats.length)];
-  
+
   return `https://dummyimage.com/${randomSize}.${randomFormat}`;
 };
 
 export const makeRandomVarChar = (maxLength: number) => {
-  // 20% 的几率返回图片URL
+  // Check if we should generate URL (20% chance)
   if (Math.random() < 0.2) {
-    return makeImageUrl();
+    const imageUrl = makeImageUrl();
+    // Only return URL if it fits within maxLength
+    if (imageUrl.length <= maxLength) {
+      return imageUrl;
+    }
+    // If URL is too long, fall through to generate text instead
   }
 
   const words = [

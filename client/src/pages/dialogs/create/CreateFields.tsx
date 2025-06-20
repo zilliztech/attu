@@ -136,16 +136,36 @@ const CreateFields: FC<CreateFieldsProps> = ({
   const handleAddNewField = (index: number, type = DataTypeEnum.Int16) => {
     const id = generateId();
 
-    // Count existing scalar fields to generate new index
-    let scalarFieldCount = fields.filter(
-      f => !f.is_primary_key && !VectorTypes.includes(f.data_type)
-    ).length;
-    let name = `scalar_field_${scalarFieldCount}`;
+    // Determine field type and generate appropriate name prefix
+    const isVector = VectorTypes.includes(type);
+    const isPrimaryKey = false; // New fields are never primary keys by default
+    
+    let fieldTypePrefix: string;
+    if (isPrimaryKey) {
+      fieldTypePrefix = 'primary_key';
+    } else if (isVector) {
+      fieldTypePrefix = 'vector';
+    } else {
+      fieldTypePrefix = 'scalar';
+    }
+
+    // Count existing fields of the same type to generate new index
+    let fieldCount = fields.filter(f => {
+      if (isPrimaryKey) {
+        return f.is_primary_key;
+      } else if (isVector) {
+        return VectorTypes.includes(f.data_type);
+      } else {
+        return !f.is_primary_key && !VectorTypes.includes(f.data_type);
+      }
+    }).length;
+    
+    let name = `${fieldTypePrefix}_${fieldCount}`;
 
     const existingNames = new Set(fields.map(f => f.name));
     while (existingNames.has(name)) {
-      scalarFieldCount += 1;
-      name = `scalar_field_${scalarFieldCount}`;
+      fieldCount += 1;
+      name = `${fieldTypePrefix}_${fieldCount}`;
     }
 
     const newDefaultItem: FieldType = {
