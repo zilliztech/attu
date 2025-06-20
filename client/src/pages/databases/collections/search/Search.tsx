@@ -345,17 +345,6 @@ const Search = (props: CollectionDataProps) => {
                   />
                 );
               },
-              getStyle: d => {
-                const field = collection.schema.fields.find(
-                  f => f.name === key
-                );
-                if (!d || !field) {
-                  return {};
-                }
-                return {
-                  minWidth: getColumnWidth(field),
-                };
-              },
             };
           })
       : [];
@@ -644,6 +633,7 @@ const Search = (props: CollectionDataProps) => {
                 sx={{
                   height: 'calc(100% - 64px)',
                 }}
+                addSpacerColumn={true}
                 toolbarConfigs={[]}
                 colDefinitions={colDefinitions}
                 rows={result}
