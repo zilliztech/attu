@@ -49,6 +49,7 @@ const EnhancedTable: FC<TableType> = props => {
     // set true as default
     openCheckBox = true,
     disableSelect,
+    enableSelectAll = true,
     noData,
     // whether change table row background color when mouse hover
     // set true as default
@@ -119,6 +120,7 @@ const EnhancedTable: FC<TableType> = props => {
               rowCount={rows.length}
               openCheckBox={openCheckBox}
               disableSelect={disableSelect}
+              enableSelectAll={enableSelectAll}
             />
           ) : (
             <EditableTableHead editHeads={editHeads} />

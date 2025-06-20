@@ -203,6 +203,7 @@ const Properties = (props: PropertiesProps) => {
         order={order}
         orderBy={orderBy}
         handleSort={handleGridSort}
+        enableSelectAll={false}
         labelDisplayedRows={getLabelDisplayedRows(
           commonTrans(data.length > 1 ? 'grid.properties' : 'grid.property')
         )}
