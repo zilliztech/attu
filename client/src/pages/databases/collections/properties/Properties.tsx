@@ -188,6 +188,7 @@ const Properties = (props: PropertiesProps) => {
     <Box sx={{ height: '100%' }}>
       <AttuGrid
         toolbarConfigs={toolbarConfigs}
+        addSpacerColumn={true}
         colDefinitions={colDefinitions}
         rows={data}
         rowCount={total}

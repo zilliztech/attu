@@ -253,6 +253,7 @@ const Users = () => {
         colDefinitions={colDefinitions}
         rows={result}
         rowCount={total}
+        addSpacerColumn={true}
         primaryKey="username"
         showPagination={true}
         selected={selectedUser}
