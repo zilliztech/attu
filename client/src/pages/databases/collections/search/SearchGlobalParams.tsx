@@ -199,7 +199,6 @@ const SearchGlobalParams = (props: SearchGlobalProps) => {
                     }),
                   },
                 ],
-                defaultValue: 60,
                 value: searchGlobalParams.rrfParams!.k,
               }}
               checkValid={() => true}
