@@ -31,6 +31,12 @@ type Connection = AuthReq & {
   time: number;
 };
 
+// Utility function to clean address by preserving protocol prefixes
+const cleanAddress = (address: string): string => {
+  // Keep http:// or https:// prefixes, just trim whitespace
+  return address.trim();
+};
+
 // Parse server list from environment variables
 const parseFixedConnections = (): Connection[] => {
   const serverList = MILVUS_SERVERS || '';
@@ -115,16 +121,46 @@ export const AuthForm = () => {
     value: string | boolean
   ) => {
     if (key === 'address' && typeof value === 'string') {
+      // Clean the address by preserving protocol prefixes
+      const cleanedAddress = cleanAddress(value);
+
       // Check if address contains database name (format: address/database)
-      const parts = value.split('/');
-      if (parts.length === 2) {
-        setAuthReq(v => ({
-          ...v,
-          address: parts[0],
-          database: parts[1],
-        }));
-        return;
+      // Handle URLs with protocols like http://127.0.0.1:19530/default
+      if (
+        cleanedAddress.includes('/') &&
+        !cleanedAddress.startsWith('http://') &&
+        !cleanedAddress.startsWith('https://')
+      ) {
+        // Simple format without protocol: address/database
+        const parts = cleanedAddress.split('/');
+        if (parts.length === 2) {
+          setAuthReq(v => ({
+            ...v,
+            address: parts[0],
+            database: parts[1],
+          }));
+          return;
+        }
+      } else if (
+        cleanedAddress.includes('/') &&
+        (cleanedAddress.startsWith('http://') ||
+          cleanedAddress.startsWith('https://'))
+      ) {
+        // URL format with protocol: http://address:port/database or https://address:port/database
+        const urlMatch = cleanedAddress.match(/^(https?:\/\/[^\/]+)\/(.+)$/);
+        if (urlMatch) {
+          setAuthReq(v => ({
+            ...v,
+            address: urlMatch[1],
+            database: urlMatch[2],
+          }));
+          return;
+        }
       }
+
+      // Set the cleaned address without database parsing
+      setAuthReq(v => ({ ...v, address: cleanedAddress }));
+      return;
     }
     setAuthReq(v => ({ ...v, [key]: value }));
   };
@@ -401,12 +437,50 @@ export const AuthForm = () => {
             if (newValue) {
               if (typeof newValue === 'string') {
                 // Handle free text input
-                const [address, database] = newValue.split('/');
-                setAuthReq(v => ({
-                  ...v,
-                  address: address.trim(),
-                  database: database?.trim() || MILVUS_DATABASE,
-                }));
+                const cleanedValue = cleanAddress(newValue);
+
+                // Handle URLs with protocols like http://127.0.0.1:19530/default
+                if (
+                  cleanedValue.includes('/') &&
+                  !cleanedValue.startsWith('http://') &&
+                  !cleanedValue.startsWith('https://')
+                ) {
+                  // Simple format without protocol: address/database
+                  const [address, database] = cleanedValue.split('/');
+                  setAuthReq(v => ({
+                    ...v,
+                    address: address.trim(),
+                    database: database?.trim() || MILVUS_DATABASE,
+                  }));
+                } else if (
+                  cleanedValue.includes('/') &&
+                  (cleanedValue.startsWith('http://') ||
+                    cleanedValue.startsWith('https://'))
+                ) {
+                  // URL format with protocol: http://address:port/database or https://address:port/database
+                  const urlMatch = cleanedValue.match(
+                    /^(https?:\/\/[^\/]+)\/(.+)$/
+                  );
+                  if (urlMatch) {
+                    setAuthReq(v => ({
+                      ...v,
+                      address: urlMatch[1],
+                      database: urlMatch[2],
+                    }));
+                  } else {
+                    setAuthReq(v => ({
+                      ...v,
+                      address: cleanedValue,
+                      database: MILVUS_DATABASE,
+                    }));
+                  }
+                } else {
+                  setAuthReq(v => ({
+                    ...v,
+                    address: cleanedValue,
+                    database: MILVUS_DATABASE,
+                  }));
+                }
               } else {
                 handleClickOnHisotry(newValue);
               }
@@ -423,12 +497,50 @@ export const AuthForm = () => {
               handleClickOnHisotry(matchingConnection);
             } else if (newInputValue) {
               // Handle free text input
-              const [address, database] = newInputValue.split('/');
-              setAuthReq(v => ({
-                ...v,
-                address: address.trim(),
-                database: database?.trim() || MILVUS_DATABASE,
-              }));
+              const cleanedValue = cleanAddress(newInputValue);
+
+              // Handle URLs with protocols like http://127.0.0.1:19530/default
+              if (
+                cleanedValue.includes('/') &&
+                !cleanedValue.startsWith('http://') &&
+                !cleanedValue.startsWith('https://')
+              ) {
+                // Simple format without protocol: address/database
+                const [address, database] = cleanedValue.split('/');
+                setAuthReq(v => ({
+                  ...v,
+                  address: address.trim(),
+                  database: database?.trim() || MILVUS_DATABASE,
+                }));
+              } else if (
+                cleanedValue.includes('/') &&
+                (cleanedValue.startsWith('http://') ||
+                  cleanedValue.startsWith('https://'))
+              ) {
+                // URL format with protocol: http://address:port/database or https://address:port/database
+                const urlMatch = cleanedValue.match(
+                  /^(https?:\/\/[^\/]+)\/(.+)$/
+                );
+                if (urlMatch) {
+                  setAuthReq(v => ({
+                    ...v,
+                    address: urlMatch[1],
+                    database: urlMatch[2],
+                  }));
+                } else {
+                  setAuthReq(v => ({
+                    ...v,
+                    address: cleanedValue,
+                    database: MILVUS_DATABASE,
+                  }));
+                }
+              } else {
+                setAuthReq(v => ({
+                  ...v,
+                  address: cleanedValue,
+                  database: MILVUS_DATABASE,
+                }));
+              }
             }
           }}
           filterOptions={(options, state) => {

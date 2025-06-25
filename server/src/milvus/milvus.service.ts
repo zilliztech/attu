@@ -39,13 +39,29 @@ export class MilvusService {
     // Format the address to remove the http prefix
     const milvusAddress = MilvusService.formatAddress(address);
 
-    // if client exists, return the client
+    // if client exists, validate the connection before returning
     if (clientCache.has(clientId)) {
       const cache = clientCache.get(clientId);
-      return {
-        clientId: cache.milvusClient.clientId,
-        database: cache.database,
-      };
+      try {
+        // validate the cached client is still connected and healthy
+        if (checkHealth) {
+          const healthRes = await cache.milvusClient.checkHealth();
+          if (!healthRes.isHealthy) {
+            // remove unhealthy client from cache
+            clientCache.delete(clientId);
+            throw new Error('Cached client is not healthy');
+          }
+        }
+
+        return {
+          clientId: cache.milvusClient.clientId,
+          database: cache.database,
+        };
+      } catch (error) {
+        // if cached client validation fails, remove it and continue with new connection
+        clientCache.delete(clientId);
+        console.warn(`Cached client validation failed for ${clientId}, creating new connection`);
+      }
     }
 
     try {
@@ -120,7 +136,9 @@ export class MilvusService {
         await milvusClient.use({ db_name: db });
         await milvusClient.listDatabases();
       } catch (e) {
+        // ensure proper cleanup on permission failure
         await milvusClient.closeConnection();
+        clientCache.delete(milvusClient.clientId);
         throw HttpErrors(
           HTTP_STATUS_CODE.FORBIDDEN,
           `You don't have permission to access the database: ${db}.`
