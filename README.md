@@ -1,14 +1,20 @@
 # Attu
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
-![License](https://img.shields.io/github/license/zilliztech/attu)
-[![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
-![GitHub last commit](https://img.shields.io/github/last-commit/zilliztech/attu)
-![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
-[![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
-[![Contributors](https://img.shields.io/github/contributors/zilliztech/attu)](https://github.com/zilliztech/attu/graphs/contributors)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zilliztech/attu/pulls)
+## 📢 License and Open Source Status
 
+Attu was open source under the **Apache License 2.0** up to version `v2.5.12`.
+
+Starting from **version `v2.6.0`**, Attu is no longer open source. The source code is no longer publicly available, and development has moved to a closed-source model.
+
+You can still:
+
+- Use and fork versions up to and including `v2.5.12`;
+- Download and use binaries for future releases;
+- Report bugs or suggest features via GitHub issues.
+
+🔒 For details, see [`LICENSE_PROPRIETARY.txt`](./LICENSE_PROPRIETARY.txt).
+
+## Documentation
 Attu is designed to manage and interact with Milvus, offering features such as:
 
 - **Database, Collection, and Partition Management:** Efficiently organize and manage your Milvus setup.
@@ -105,7 +111,7 @@ docker run -d --name milvus_standalone -p 19530:19530 -p 9091:9091 milvusdb/milv
 2. Start Attu:
 
 ```bash
-docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
+docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.6
 ```
 
 3. Open your browser and navigate to `http://localhost:8000`
@@ -118,6 +124,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                           |
 | -------------- | ------------------------------------------------------------------ |
+| 2.6.x          | [v2.6.0](https://github.com/zilliztech/attu/releases/tag/v2.6.0)   |
 | 2.5.x          | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
@@ -129,7 +136,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 Here are the steps to start a container for running Attu:
 
 ```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.5
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.6
 ```
 
 Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
@@ -161,7 +168,7 @@ docker run -p 8000:3000 \
 -e PRIVATE_KEY_PATH=/app/tls/client.key \
 -e CERT_CHAIN_PATH=/app/tls/client.pem \
 -e SERVER_NAME=your_server_name \
-zilliz/attu:v2.5
+zilliz/attu:v2.6
 ```
 
 #### Custom Server Port Example
@@ -175,7 +182,7 @@ docker run --network host \
 -e ATTU_LOG_LEVEL=info  \
 -e SERVER_NAME=your_server_name \
 -e SERVER_PORT=8080 \
-zilliz/attu:v2.5
+zilliz/attu:v2.6
 ```
 
 ### Running Attu within Kubernetes
@@ -205,54 +212,6 @@ If you prefer to use a desktop application, you can download the [desktop versio
 ```shell
   sudo xattr -rd com.apple.quarantine /Applications/attu.app
 ```
-
-## Development
-
-### Prerequisites
-
-- Node.js 16.x or later
-- Yarn package manager
-- Docker (for local development)
-
-### Setup Development Environment
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/zilliztech/attu.git
-cd attu
-```
-
-2. Install dependencies:
-
-```bash
-yarn install
-```
-
-3. Start development server:
-
-```bash
-yarn start
-```
-
-### Build Docker Image Locally
-
-- Dev: `yarn run build:dev`
-- Release: `yarn run build:release`
-
-### Running Tests
-
-```bash
-yarn test
-```
-
-## Contributing
-
-We welcome contributions from the community! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
-
-### Code of Conduct
-
-Please read our [Code of Conduct](CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
 
 ## FAQ
 
@@ -290,10 +249,6 @@ Here are some helpful resources to get you started with Milvus:
 💬 Join our vibrant community on the Milvus Discord where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
 
 <a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
-
-## License
-
-Attu is licensed under the [Apache License 2.0](LICENSE). See the LICENSE file for details.
 
 ## Changelog
 
