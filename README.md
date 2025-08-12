@@ -195,7 +195,7 @@ Here are the steps to start a container for running Attu:
 kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s-deploy.yaml
 ```
 
-Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
+Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example](https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml) for details.
 
 ### Running Attu behind a nginx proxy
 
@@ -253,3 +253,4 @@ Here are some helpful resources to get you started with Milvus:
 ## Changelog
 
 See our [CHANGELOG.md](CHANGELOG.md) for a list of changes between versions.
+
