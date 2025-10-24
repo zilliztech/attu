@@ -1,27 +1,17 @@
 # Attu
 
-## 📢 License and Open Source Status
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
+[![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
+![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
+[![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu was open source under the **Apache License 2.0** up to version `v2.5.12`.
-
-Starting from **version `v2.6.0`**, Attu is no longer open source. The source code is no longer publicly available, and development has moved to a closed-source model.
-
-You can still:
-
-- Use and fork versions up to and including `v2.5.12`;
-- Download and use binaries for future releases;
-- Report bugs or suggest features via GitHub issues.
-
-🔒 For details, see [`LICENSE_PROPRIETARY.txt`](./LICENSE_PROPRIETARY.txt).
-
-## Documentation
 Attu is designed to manage and interact with Milvus, offering features such as:
 
 - **Database, Collection, and Partition Management:** Efficiently organize and manage your Milvus setup.
 - **Insertion, Indexing, and Querying of Vector Embeddings:** Easily handle Milvus vector data operations.
 - **Performing Vector Search:** Rapidly validate your results using the vector search feature.
 - **User and Role Management:** Easily manage Milvus permissions and security.
-- **Viewing System Topology:** Visualize Milvus system architecture for better management and optimization.
+- **Viewing System Information:** View system configurations, monitor slow requests, and track various system tasks and performance metrics.
 
 ## Table of Contents
 
@@ -124,7 +114,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                           |
 | -------------- | ------------------------------------------------------------------ |
-| 2.6.x          | [v2.6.0](https://github.com/zilliztech/attu/releases/tag/v2.6.0)   |
+| 2.6.x          | [v2.6.0](https://github.com/zilliztech/attu/releases/tag/v2.6.1)   |
 | 2.5.x          | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
@@ -223,16 +213,6 @@ If you prefer to use a desktop application, you can download the [desktop versio
 - How to backup my Attu configuration?
   > Attu configurations are stored in your browser's local storage. You can export them from the settings page.
 
-### Useful Examples
-
-[Milvus Typescript Examples](https://github.com/zilliztech/zilliz-cloud-typescript-example):This repo provides some simple React apps based on Next.js.
-
-| Name                                                                                                                                   | Demo                                                   | Model                 |
-| -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------------- |
-| [semantic-search-example](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-search-example)           | https://zilliz-semantic-search-example.vercel.app      | all-MiniLM-L6-v2      |
-| [semantic-image-search](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search)               |                                                        | clip-vit-base-patch16 |
-| [semantic-image-search-client](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search-client) | https://zilliz-semantic-image-search-client.vercel.app | clip-vit-base-patch16 |
-
 ### Milvus links
 
 Here are some helpful resources to get you started with Milvus:
@@ -250,6 +230,7 @@ Here are some helpful resources to get you started with Milvus:
 
 <a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
 
-## Changelog
+## License
 
-See our [CHANGELOG.md](CHANGELOG.md) for a list of changes between versions.
+Attu was open source under the Apache License 2.0 up to version v2.5.12.
+Starting from version v2.6.0, Attu is no longer open source.

@@ -1,15 +1,17 @@
 # Attu
 
-Attu 是一个全方位的 Milvus 管理工具。
-
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
-![License](https://img.shields.io/github/license/zilliztech/attu)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
 ![GitHub last commit](https://img.shields.io/github/last-commit/zilliztech/attu)
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
-[![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
-[![Contributors](https://img.shields.io/github/contributors/zilliztech/attu)](https://github.com/zilliztech/attu/graphs/contributors)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zilliztech/attu/pulls)
+
+Attu 提供以下功能：
+
+- **数据库、集合和分区管理：** 只需点击几下鼠标即可高效地组织和管理您的数据库、集合和分区，帮助用户快速构建和导航 Milvus 设置。
+- **向量数据的插入、索引和查询：** 通过简单的图形界面无缝插入、索引和查询向量，使用户能够高效地处理向量数据。
+- **高级搜索视图：** 只需点击几下鼠标即可进行高性能的向量搜索，快速找到相似项，帮助用户迅速进行功能验证。
+- **用户和角色管理：** 管理用户和角色，以确保安全和受控的访问权限，使用户能够快速管理权限和安全设置。
+- **查看系统信息：** 可查看系统配置、监控慢请求，并跟踪各类系统任务和性能指标。
 
 ## 目录
 
@@ -78,13 +80,7 @@ Attu 是一个全方位的 Milvus 管理工具。
 </div>
 <br />
 
-Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统，提供以下功能：
 
-- **数据库、集合和分区管理：** 只需点击几下鼠标即可高效地组织和管理您的数据库、集合和分区，帮助用户快速构建和导航 Milvus 设置。
-- **向量的插入、索引和查询：** 通过简单的图形界面无缝插入、索引和查询向量，使用户能够高效地处理向量数据。
-- **执行向量搜索：** 只需点击几下鼠标即可进行高性能的向量搜索，快速找到相似项，帮助用户迅速进行功能验证。
-- **用户和角色管理：** 管理用户和角色，以确保安全和受控的访问权限，使用户能够快速管理权限和安全设置。
-- **查看系统拓扑：** 可视化系统架构以实现更好的监督和管理，使用户能够迅速了解和优化他们的系统设置。
 
 ## 系统要求
 
@@ -99,11 +95,13 @@ Attu 是一个通过用户友好的图形界面管理和操作 Milvus 的系统�
 ## 快速开始
 
 1. 启动 Milvus 服务器（如果尚未运行）：
+
 ```bash
 docker run -d --name milvus_standalone -p 19530:19530 -p 9091:9091 milvusdb/milvus:latest
 ```
 
 2. 启动 Attu：
+
 ```bash
 docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
 ```
@@ -118,6 +116,7 @@ docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
 
 | Milvus 版本 | 推荐的 Attu 版本                                                   |
 | ----------- | ------------------------------------------------------------------ |
+| 2.6.x       | [v2.6.1](https://github.com/zilliztech/attu/releases/tag/v2.6.1)   |
 | 2.5.x       | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x       | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
@@ -214,17 +213,20 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 ### 设置开发环境
 
 1. 克隆仓库：
+
 ```bash
 git clone https://github.com/zilliztech/attu.git
 cd attu
 ```
 
 2. 安装依赖：
+
 ```bash
 yarn install
 ```
 
 3. 启动开发服务器：
+
 ```bash
 yarn start
 ```
@@ -240,14 +242,6 @@ yarn start
 yarn test
 ```
 
-## 贡献
-
-我们欢迎社区贡献！在提交拉取请求之前，请阅读我们的[贡献指南](CONTRIBUTING.md)。
-
-### 行为准则
-
-请阅读我们的[行为准则](CODE_OF_CONDUCT.md)，以保持我们的社区友好和受人尊敬。
-
 ## 常见问题
 
 - 无法登录系统
@@ -257,16 +251,6 @@ yarn test
   > 对于 Docker 用户，只需拉取最新镜像并重启容器。对于桌面用户，从我们的[发布页面](https://github.com/zilliztech/attu/releases)下载最新版本。
 - 如何备份我的 Attu 配置？
   > Attu 配置存储在浏览器的本地存储中。您可以从设置页面导出它们。
-
-## 使用示例
-
-[Milvus Typescript 示例](https://github.com/zilliztech/zilliz-cloud-typescript-example)：此仓库提供了一些基于 Next.js 的简单 React 应用程序。
-
-| 名称                                                                                                                         | 演示                                              | 模型                  |
-| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | --------------------- |
-| [semantic-search-example](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-search-example) | https://zilliz-semantic-search-example.vercel.app | all-MiniLM-L6-v2      |
-| [semantic-image-search](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search)     |                                                   | clip-vit-base-patch16 |
-| [semantic-image-search-client](https://github.com/zilliztech/zilliz-cloud-typescript-example/tree/master/semantic-image-search-client) | https://zilliz-semantic-image-search-client.vercel.app | clip-vit-base-patch16 |
 
 ## Milvus 相关链接
 
@@ -287,7 +271,8 @@ yarn test
 
 ## 许可证
 
-Attu 采用 [Apache License 2.0](LICENSE) 许可证。详情请参阅 LICENSE 文件。
+Attu 2.5 采用 [Apache License 2.0](LICENSE) 许可证。详情请参阅 LICENSE 文件。
+Attu 2.6 闭源。
 
 ## 更新日志
 
