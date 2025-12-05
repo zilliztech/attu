@@ -2,16 +2,30 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
 [![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
-![GitHub last commit](https://img.shields.io/github/last-commit/zilliztech/attu)
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
+[![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu 提供以下功能：
+Attu 是 Milvus 的首选管理工具。从可视化模式设计到企业级监控，轻松管理您的向量数据库。
 
-- **数据库、集合和分区管理：** 只需点击几下鼠标即可高效地组织和管理您的数据库、集合和分区，帮助用户快速构建和导航 Milvus 设置。
-- **向量数据的插入、索引和查询：** 通过简单的图形界面无缝插入、索引和查询向量，使用户能够高效地处理向量数据。
-- **高级搜索视图：** 只需点击几下鼠标即可进行高性能的向量搜索，快速找到相似项，帮助用户迅速进行功能验证。
-- **用户和角色管理：** 管理用户和角色，以确保安全和受控的访问权限，使用户能够快速管理权限和安全设置。
-- **查看系统信息：** 可查看系统配置、监控慢请求，并跟踪各类系统任务和性能指标。
+**全面的数据与模式管理**
+
+- **可视化模式设计器：** 通过直观的可视化界面设计、查看和修改集合模式。一目了然地访问完整的属性详情。
+- **全生命周期控制：** 轻松管理多个数据库、集合及其属性。即时克隆、无缝配置和简化操作。
+- **智能数据操作：** 强大的数据管理功能，包括智能过滤器、语法高亮、完整数据查看、内联编辑和无缝导入/导出功能。
+
+**交互式开发工具包**
+
+- 带可视化的交互式向量相似度搜索
+- 基于表达式的快速数据查询
+- 集成的 RESTful API 编辑器
+- 对 Milvus 的无缝支持
+
+**企业安全与监控**
+
+- 可视化的 RBAC 和权限组管理
+- 实时节点、段和任务监控
+- 慢查询分析和系统诊断
+- 详细的段查询和检查
 
 ## 目录
 
@@ -38,7 +52,7 @@ Attu 提供以下功能：
     <img src="./.github/images/connect.png" width="100%" alt="attu home view" />
   </div>
   <div style="flex: 1; min-width: 300px;">
-    <h4>数据浏览器</h4>
+    <h4>数据库管理</h4>
     <img src="./.github/images/screenshot.png" width="100%" alt="attu data explorer" />
   </div>
   <div style="flex: 1; min-width: 300px;">
@@ -50,16 +64,12 @@ Attu 提供以下功能：
     <img src="./.github/images/create_collection.png" width="100%" alt="attu create collection dialog" />
   </div>
   <div style="flex: 1; min-width: 300px;">
-    <h4>集合树</h4>
-    <img src="./.github/images/collections.png" width="100%" alt="attu collections" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
     <h4>集合概览</h4>
     <img src="./.github/images/collection_overview.png" width="100%" alt="attu collection view" />
   </div>
   <div style="flex: 1; min-width: 300px;">
     <h4>数据视图</h4>
-    <img src="./.github/images/data_preview.png" width="100%" alt="attu data view" />
+    <img src="./.github/images/data.jpeg" width="100%" alt="attu data view" />
   </div>
   <div style="flex: 1; min-width: 300px;">
     <h4>向量搜索</h4>
@@ -71,16 +81,10 @@ Attu 提供以下功能：
   </div>
   <div style="flex: 1; min-width: 300px;">
     <h4>角色图表（浅色）</h4>
-    <img src="./.github/images/role_chart.png" width="100%" alt="attu role chart" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>角色图表（深色）</h4>
     <img src="./.github/images/role_chart_night.png" width="100%" alt="attu role chart" />
   </div>
 </div>
 <br />
-
-
 
 ## 系统要求
 
@@ -103,7 +107,7 @@ docker run -d --name milvus_standalone -p 19530:19530 -p 9091:9091 milvusdb/milv
 2. 启动 Attu：
 
 ```bash
-docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
+docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.6
 ```
 
 3. 打开浏览器并访问 `http://localhost:8000`
@@ -116,7 +120,7 @@ docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
 
 | Milvus 版本 | 推荐的 Attu 版本                                                   |
 | ----------- | ------------------------------------------------------------------ |
-| 2.6.x       | [v2.6.1](https://github.com/zilliztech/attu/releases/tag/v2.6.1)   |
+| 2.6.x       | [v2.6.3](https://github.com/zilliztech/attu/releases/tag/v2.6.3)   |
 | 2.5.x       | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x       | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x       | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
@@ -127,8 +131,8 @@ docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.5
 
 以下是运行 Attu 容器的步骤：
 
-```bash
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.5
+```code
+docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.6
 ```
 
 确保 Attu 容器可以访问 Milvus IP 地址。启动容器后，在您的浏览器中输入 `http://{ Attu IP }:8000` 以查看 Attu GUI。
@@ -148,6 +152,8 @@ docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.5
 
 > 请注意，`MILVUS_URL` 应为 Attu Docker 容器可访问的地址，因此 "127.0.0.1" 或 "localhost" 将无法使用。
 
+要使用这些环境变量运行 Docker 容器，请使用以下命令：
+
 #### Attu SSL 示例
 
 ```bash
@@ -158,7 +164,7 @@ docker run -p 8000:3000 \
 -e PRIVATE_KEY_PATH=/app/tls/client.key \
 -e CERT_CHAIN_PATH=/app/tls/client.pem \
 -e SERVER_NAME=your_server_name \
-zilliz/attu:v2.5
+zilliz/attu:v2.6
 ```
 
 #### 自定义服务器端口示例
@@ -171,7 +177,7 @@ docker run --network host \
 -e ATTU_LOG_LEVEL=info  \
 -e SERVER_NAME=your_server_name \
 -e SERVER_PORT=8080 \
-zilliz/attu:v2.5
+zilliz/attu:v2.6
 ```
 
 ### 在 Kubernetes 中运行 Attu
@@ -180,7 +186,7 @@ zilliz/attu:v2.5
 
 以下是运行 Attu 容器的步骤：
 
-```bash
+```code
 kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s-deploy.yaml
 ```
 
@@ -202,46 +208,6 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
   sudo xattr -rd com.apple.quarantine /Applications/attu.app
 ```
 
-## 开发
-
-### 前提条件
-
-- Node.js 16.x 或更高版本
-- Yarn 包管理器
-- Docker（用于本地开发）
-
-### 设置开发环境
-
-1. 克隆仓库：
-
-```bash
-git clone https://github.com/zilliztech/attu.git
-cd attu
-```
-
-2. 安装依赖：
-
-```bash
-yarn install
-```
-
-3. 启动开发服务器：
-
-```bash
-yarn start
-```
-
-### 本地构建 Docker 镜像
-
-- 开发版：`yarn run build:dev`
-- 发布版：`yarn run build:release`
-
-### 运行测试
-
-```bash
-yarn test
-```
-
 ## 常见问题
 
 - 无法登录系统
@@ -252,7 +218,7 @@ yarn test
 - 如何备份我的 Attu 配置？
   > Attu 配置存储在浏览器的本地存储中。您可以从设置页面导出它们。
 
-## Milvus 相关链接
+### Milvus 相关链接
 
 以下是一些有助于您入门 Milvus 的资源：
 
@@ -271,9 +237,5 @@ yarn test
 
 ## 许可证
 
-Attu 2.5 采用 [Apache License 2.0](LICENSE) 许可证。详情请参阅 LICENSE 文件。
-Attu 2.6 闭源。
-
-## 更新日志
-
-查看我们的 [CHANGELOG.md](CHANGELOG.md) 了解版本之间的变更。
+Attu 在 v2.5.12 及之前版本采用 Apache License 2.0 开源。
+从 v2.6.0 版本开始，Attu 不再开源。

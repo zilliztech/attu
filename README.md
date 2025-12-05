@@ -5,13 +5,27 @@
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu is designed to manage and interact with Milvus, offering features such as:
+Attu is the premier administration tool for Milvus. From visual schema design to enterprise-grade monitoring, manage your vector database with ease.
 
-- **Database, Collection, and Partition Management:** Efficiently organize and manage your Milvus setup.
-- **Insertion, Indexing, and Querying of Vector Embeddings:** Easily handle Milvus vector data operations.
-- **Performing Vector Search:** Rapidly validate your results using the vector search feature.
-- **User and Role Management:** Easily manage Milvus permissions and security.
-- **Viewing System Information:** View system configurations, monitor slow requests, and track various system tasks and performance metrics.
+**Comprehensive Data & Schema Management**
+
+- **Visual Schema Designer:** Design, view, and modify collection schemas with an intuitive visual interface. Access full property details at a glance.
+- **Full Lifecycle Control:** Effortlessly manage multiple databases, collections, and their properties at scale. Instant cloning, seamless configuration, and streamlined operations.
+- **Smart Data Operations:** Powerful data management with smart filters, syntax highlighting, complete data viewing, inline editing, and seamless import/export capabilities.
+
+**Interactive Development Toolkit**
+
+- Interactive Vector Similarity Search with Visualization
+- Fast Expression-based Data Querying
+- Integrated RESTful API Editor
+- Seamless Support for Milvus
+
+**Enterprise Security & Monitoring**
+
+- Visualized RBAC & Privilege Group Management
+- Real-time Node, Segment & Task Monitoring
+- Slow Query Analysis & System Diagnostics
+- Detailed Segment Query & Inspection
 
 ## Table of Contents
 
@@ -38,7 +52,7 @@ Attu is designed to manage and interact with Milvus, offering features such as:
     <img src="./.github/images/connect.png" width="100%" alt="attu home view" />
   </div>
   <div style="flex: 1; min-width: 300px;">
-    <h4>Data Explorer</h4>
+    <h4>Database Management</h4>
     <img src="./.github/images/screenshot.png" width="100%" alt="attu data explorer" />
   </div>
   <div style="flex: 1; min-width: 300px;">
@@ -50,16 +64,12 @@ Attu is designed to manage and interact with Milvus, offering features such as:
     <img src="./.github/images/create_collection.png" width="100%" alt="attu create collection dialog" />
   </div>
   <div style="flex: 1; min-width: 300px;">
-    <h4>Collection Tree</h4>
-    <img src="./.github/images/collections.png" width="100%" alt="attu collections" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
     <h4>Collection Overview</h4>
     <img src="./.github/images/collection_overview.png" width="100%" alt="attu collection view" />
   </div>
   <div style="flex: 1; min-width: 300px;">
     <h4>Data View</h4>
-    <img src="./.github/images/data_preview.png" width="100%" alt="attu data view" />
+    <img src="./.github/images/data.jpeg" width="100%" alt="attu data view" />
   </div>
   <div style="flex: 1; min-width: 300px;">
     <h4>Vector Search</h4>
@@ -71,10 +81,6 @@ Attu is designed to manage and interact with Milvus, offering features such as:
   </div>
   <div style="flex: 1; min-width: 300px;">
     <h4>Role Chart (Light)</h4>
-    <img src="./.github/images/role_chart.png" width="100%" alt="attu role chart" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Role Chart (Dark)</h4>
     <img src="./.github/images/role_chart_night.png" width="100%" alt="attu role chart" />
   </div>
 </div>
@@ -114,7 +120,7 @@ Before you begin, make sure that you have Milvus installed on either [Zilliz Clo
 
 | Milvus Version | Recommended Attu Version                                           |
 | -------------- | ------------------------------------------------------------------ |
-| 2.6.x          | [v2.6.0](https://github.com/zilliztech/attu/releases/tag/v2.6.1)   |
+| 2.6.x          | [v2.6.3](https://github.com/zilliztech/attu/releases/tag/v2.6.3)   |
 | 2.5.x          | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
