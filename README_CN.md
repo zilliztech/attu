@@ -194,7 +194,7 @@ kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s
 
 ### 在 nginx 代理后运行 Attu
 
-[在 nginx 代理后运行 Attu](https://github.com/zilliztech/attu/blob/main/doc/use-attu-behind-proxy.md)
+[在 nginx 代理后运行 Attu](https://github.com/zilliztech/attu/blob/main/deploy/nginx/README_CN.md)
 
 ### 安装桌面应用程序
 

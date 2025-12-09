@@ -195,7 +195,7 @@ Make sure that the Attu pod can access the Milvus service. In the example provid
 
 ### Running Attu behind a nginx proxy
 
-[Running Attu behind a nginx proxy](https://github.com/zilliztech/attu/blob/main/doc/use-attu-behind-proxy.md)
+[Running Attu behind a nginx proxy](https://github.com/zilliztech/attu/tree/main/deploy/nginx)
 
 ### Install Desktop application
 
