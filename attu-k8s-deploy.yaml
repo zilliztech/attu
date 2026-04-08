@@ -32,12 +32,12 @@ spec:
     spec:
       containers:
       - name: attu
-        image: zilliz/attu:v2.6
+        image: zilliz/attu:v3.0.0-beta.1
         imagePullPolicy: IfNotPresent
         ports:
         - name: attu
           containerPort: 3000
           protocol: TCP
         env:
-        - name: MILVUS_URL
+        - name: MILVUS_ADDRESS
           value: "my-release-milvus:19530"
