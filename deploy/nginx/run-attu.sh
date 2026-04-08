@@ -16,9 +16,9 @@ docker run -d \
   --name attu-test \
   --network attu-network \
   -p 3000:3000 \
-  -e MILVUS_URL=localhost:19530 \
-  -e HOST_URL=/attu \
-  zilliz/attu:v2.6.3
+  -e MILVUS_ADDRESS=host.docker.internal:19530 \
+  -v attu-data:/data \
+  zilliz/attu:v3.0.0-beta.1
 
 # Wait for attu to be ready
 echo "Waiting for attu to be ready..."
@@ -36,7 +36,7 @@ docker run -d \
 echo ""
 echo "Setup complete!"
 echo "Attu is running at: http://localhost:3000"
-echo "Attu behind nginx is running at: http://localhost:8080/attu"
+echo "Attu behind nginx is running at: http://localhost:8080"
 echo ""
 echo "To view logs:"
 echo "  docker logs -f attu-test"
@@ -45,4 +45,3 @@ echo ""
 echo "To stop:"
 echo "  docker stop attu-test nginx-attu"
 echo "  docker rm attu-test nginx-attu"
-
