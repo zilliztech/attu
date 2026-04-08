@@ -5,7 +5,7 @@
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu is a modern, AI-native management tool for [Milvus](https://milvus.io) vector databases. Manage schemas, explore data, run vector searches, monitor clusters, and automate tasks with a built-in AI agent — all from a single interface.
+Attu is a modern, AI-native management tool for [Milvus](https://milvus.io) vector databases. Connect to multiple Milvus clusters from a single instance — manage schemas, explore data, run vector searches, monitor health, and automate tasks with a built-in AI agent.
 
 Available as a **web app** (Docker / Kubernetes) or **desktop app** (macOS, Linux, Windows).
 
@@ -17,6 +17,7 @@ Available as a **web app** (Docker / Kubernetes) or **desktop app** (macOS, Linu
 
 Attu v3 is a ground-up rewrite with a modern full-stack architecture (React 19, TanStack Start, Vite).
 
+- **Multi-Cluster Management** — Connect to and switch between multiple Milvus instances from a single Attu deployment. Each connection maintains its own context, agent sessions, and preferences.
 - **AI Agent** — Chat-driven Milvus management with 50+ tools. Supports OpenAI, Anthropic, DeepSeek, Google Gemini, and custom endpoints.
 - **REST API Playground** — Interactive API editor with collection-scoped context.
 - **Backup & Restore** — Full and incremental backups with S3, MinIO, GCS, and Azure Blob support.
@@ -93,6 +94,10 @@ Download the latest release for your platform:
 ---
 
 ## Features
+
+### Multi-Cluster Management
+
+Connect to multiple Milvus instances from a single Attu deployment. Add, edit, and switch between connections in the sidebar. Each cluster has its own dedicated workspace with independent monitoring, agent sessions, and preferences — ideal for managing dev, staging, and production environments side by side.
 
 ### Data Explorer
 
