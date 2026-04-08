@@ -1,242 +1,236 @@
-# Attu
+# Attu — The AI Workbench for Milvus
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/zilliztech/attu)
-[![downloads](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
+![GitHub release](https://img.shields.io/github/v/release/zilliztech/attu)
+[![Docker pulls](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu is the premier administration tool for Milvus. From visual schema design to enterprise-grade monitoring, manage your vector database with ease.
+Attu is a modern, AI-native management tool for [Milvus](https://milvus.io) vector databases. Manage schemas, explore data, run vector searches, monitor clusters, and automate tasks with a built-in AI agent — all from a single interface.
 
-**Comprehensive Data & Schema Management**
+Available as a **web app** (Docker / Kubernetes) or **desktop app** (macOS, Linux, Windows).
 
-- **Visual Schema Designer:** Design, view, and modify collection schemas with an intuitive visual interface. Access full property details at a glance.
-- **Full Lifecycle Control:** Effortlessly manage multiple databases, collections, and their properties at scale. Instant cloning, seamless configuration, and streamlined operations.
-- **Smart Data Operations:** Powerful data management with smart filters, syntax highlighting, complete data viewing, inline editing, and seamless import/export capabilities.
+![Attu Home](.github/images/v3/01-home.png)
 
-**Interactive Development Toolkit**
+---
 
-- Interactive Vector Similarity Search with Visualization
-- Fast Expression-based Data Querying
-- Integrated RESTful API Editor
-- Seamless Support for Milvus
+## What's New in v3
 
-**Enterprise Security & Monitoring**
+Attu v3 is a ground-up rewrite with a modern full-stack architecture (React 19, TanStack Start, Vite).
 
-- Visualized RBAC & Privilege Group Management
-- Real-time Node, Segment & Task Monitoring
-- Slow Query Analysis & System Diagnostics
-- Detailed Segment Query & Inspection
+- **AI Agent** — Chat-driven Milvus management with 50+ tools. Supports OpenAI, Anthropic, DeepSeek, Google Gemini, and custom endpoints.
+- **REST API Playground** — Interactive API editor with collection-scoped context.
+- **Backup & Restore** — Full and incremental backups with S3, MinIO, GCS, and Azure Blob support.
+- **Prometheus Metrics Dashboard** — 16+ real-time metrics with sparkline visualizations.
+- **Cluster Topology** — Interactive node visualization powered by ReactFlow.
+- **Slow Request Analysis** — Identify and diagnose slow queries across nodes.
+- **Desktop App with Auto-Update** — Native Electron app with automatic update delivery.
+- **Dark Mode** — Full light/dark theme support.
 
-## Table of Contents
-
-- [Features](#features)
-- [System Requirements](#system-requirements)
-- [Quick Start](#quick-start)
-- [Installation Guides](#installation-guides)
-  - [Compatibility](#compatibility)
-  - [Running Attu from Docker](#running-attu-from-docker)
-  - [Running Attu within Kubernetes](#running-attu-within-kubernetes)
-  - [Running Attu behind a nginx proxy](#running-attu-behind-a-nginx-proxy)
-  - [Install Desktop application](#install-desktop-application)
-- [Development](#development)
-- [Contributing](#contributing)
-- [FAQ](#faq)
-- [More Screenshots](#more-screenshots)
-- [Useful Examples](#useful-examples)
-- [Milvus Links](#milvus-links)
-- [Community](#community)
-
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px;">
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Home View</h4>
-    <img src="./.github/images/connect.png" width="100%" alt="attu home view" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Database Management</h4>
-    <img src="./.github/images/screenshot.png" width="100%" alt="attu data explorer" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Collection Management</h4>
-    <img src="./.github/images/data_explorer.png" width="100%" alt="attu data explorer" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Create Collection</h4>
-    <img src="./.github/images/create_collection.png" width="100%" alt="attu create collection dialog" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Collection Overview</h4>
-    <img src="./.github/images/collection_overview.png" width="100%" alt="attu collection view" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Data View</h4>
-    <img src="./.github/images/data.jpeg" width="100%" alt="attu data view" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Vector Search</h4>
-    <img src="./.github/images/vector_search.png" width="100%" alt="attu vector search" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>System View</h4>
-    <img src="./.github/images/system_view.png" width="100%" alt="attu system view" />
-  </div>
-  <div style="flex: 1; min-width: 300px;">
-    <h4>Role Chart (Light)</h4>
-    <img src="./.github/images/role_chart_night.png" width="100%" alt="attu role chart" />
-  </div>
-</div>
-<br />
-
-## System Requirements
-
-- Docker 20.10.0 or later
-- Kubernetes 1.19 or later (if using K8s deployment)
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- For desktop application:
-  - Windows 10/11
-  - macOS 10.15 or later
-  - Linux (Ubuntu 20.04 or later)
+---
 
 ## Quick Start
 
-1. Start Milvus server (if not already running):
+### Docker (recommended)
 
 ```bash
-docker run -d --name milvus_standalone -p 19530:19530 -p 9091:9091 milvusdb/milvus:latest
+docker run -d --name attu \
+  -p 3000:3000 \
+  -e MILVUS_ADDRESS=host.docker.internal:19530 \
+  -v attu-data:/data \
+  zilliz/attu:v3.0.0-beta.1
 ```
 
-2. Start Attu:
+Open http://localhost:3000.
+
+### Docker Compose (Milvus + Attu)
+
+```yaml
+services:
+  milvus:
+    image: milvusdb/milvus:latest
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    command: milvus run standalone
+    volumes:
+      - milvus-data:/var/lib/milvus
+
+  attu:
+    image: zilliz/attu:v3.0.0-beta.1
+    ports:
+      - "3000:3000"
+    environment:
+      - MILVUS_ADDRESS=milvus:19530
+    volumes:
+      - attu-data:/data
+    depends_on:
+      - milvus
+
+volumes:
+  milvus-data:
+  attu-data:
+```
 
 ```bash
-docker run -p 8000:3000 -e MILVUS_URL=localhost:19530 zilliz/attu:v2.6
+docker compose up -d
 ```
 
-3. Open your browser and navigate to `http://localhost:8000`
+### Desktop App
 
-## Installation Guides
+Download the latest release for your platform:
 
-Before you begin, make sure that you have Milvus installed on either [Zilliz Cloud](https://cloud.zilliz.com/signup) or [your own server](https://milvus.io/docs/install_standalone-docker.md).
+| Platform | Download |
+|----------|----------|
+| macOS (Apple Silicon) | [.dmg](https://github.com/zilliztech/attu/releases/latest) |
+| Linux | [.AppImage](https://github.com/zilliztech/attu/releases/latest) / [.deb](https://github.com/zilliztech/attu/releases/latest) |
+| Windows | [.exe](https://github.com/zilliztech/attu/releases/latest) |
 
-### Compatibility
+> **macOS note:** If you see "attu.app is damaged and cannot be opened", run:
+> ```bash
+> sudo xattr -rd com.apple.quarantine /Applications/Attu.app
+> ```
 
-| Milvus Version | Recommended Attu Version                                           |
-| -------------- | ------------------------------------------------------------------ |
-| 2.6.x          | [v2.6.3](https://github.com/zilliztech/attu/releases/tag/v2.6.3)   |
-| 2.5.x          | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
-| 2.4.x          | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
-| 2.3.x          | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5)   |
-| 2.2.x          | [v2.2.8](https://github.com/zilliztech/attu/releases/tag/v2.2.8)   |
-| 2.1.x          | [v2.2.2](https://github.com/zilliztech/attu/releases/tag/v2.2.2)   |
+---
 
-### Running Attu from Docker
+## Features
 
-Here are the steps to start a container for running Attu:
+### Data Explorer
 
-```code
-docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.6
-```
+Browse databases and collections, view and edit data inline, import/export in CSV, JSON, and Parquet formats.
 
-Make sure that the Attu container can access the Milvus IP address. After starting the container, open your web browser and enter `http://{ Attu IP }:8000` to view the Attu GUI.
+![Explorer](.github/images/v3/03-explorer.png)
 
-#### Optional Environment Variables for Running Attu Docker
+### Vector Search
 
-| Parameter        | Example              | Required | Description                             |
-| :--------------- | :------------------- | :------: | --------------------------------------- |
-| MILVUS_URL       | 192.168.0.1:19530    |  false   | Optional, Milvus server URL             |
-| DATABASE         | your database        |  false   | Optional, default database name         |
-| ATTU_LOG_LEVEL   | info                 |  false   | Optional, sets the log level for Attu   |
-| ROOT_CERT_PATH   | /path/to/root/cert   |  false   | Optional, path to the root certificate  |
-| PRIVATE_KEY_PATH | /path/to/private/key |  false   | Optional, path to the private key       |
-| CERT_CHAIN_PATH  | /path/to/cert/chain  |  false   | Optional, path to the certificate chain |
-| SERVER_NAME      | your_server_name     |  false   | Optional, name of your server           |
-| SERVER_PORT      | Server listen port   |  false   | Optional, 3000 by default if unset      |
+Interactive vector similarity search with configurable embedding providers (OpenAI, Cohere, Jina, VoyageAI, and more).
 
-> Please note that the `MILVUS_URL` should be an address that the Attu Docker container can access. Therefore, "127.0.0.1" or "localhost" will not work.
+![Search](.github/images/v3/19-collection-search.png)
 
-To run the Docker container with these environment variables, use the following command:
+### AI Agent
 
-#### Attu SSL Example
+Chat-driven Milvus management with 50+ tools. Create collections, run queries, manage users, analyze performance — all through natural language.
+
+Supports: OpenAI, Anthropic Claude, DeepSeek, Google Gemini, OpenRouter, and custom API endpoints.
+
+![Agent](.github/images/v3/16-agent.png)
+
+### Cluster Overview & Monitoring
+
+Real-time cluster health, Prometheus metrics dashboard with 16+ metrics, and interactive topology visualization.
+
+![Overview](.github/images/v3/02-overview.png)
+
+![Metrics](.github/images/v3/06-metrics.png)
+
+![Topology](.github/images/v3/07-topology.png)
+
+### Backup & Restore
+
+Full and incremental backups with support for S3, MinIO, GCS, and Azure Blob Storage. Download backups as ZIP or restore from uploaded archives.
+
+![Backups](.github/images/v3/13-backups.png)
+
+### REST API Playground
+
+Interactive API testing environment scoped to your connection, database, and collection.
+
+![Playground](.github/images/v3/14-playground.png)
+
+### And More
+
+- **RBAC Management** — Create and manage users, roles, and privilege groups.
+- **Resource Groups** — Configure resource allocation across nodes.
+- **Slow Request Analysis** — Identify bottlenecks with cluster-wide slow query inspection.
+- **Configuration & Environment Viewer** — Inspect runtime configs and environment variables.
+- **Task Queue** — Monitor background operations (imports, backups, compactions).
+- **Internationalization** — English and Chinese language support.
+
+---
+
+## Deployment
+
+### Environment Variables
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `MILVUS_ADDRESS` | `milvus:19530` | Milvus gRPC endpoint |
+| `MILVUS_NAME` | `My Cluster` | Display name in the connection list |
+| `MILVUS_DATABASE` | `default` | Default database |
+| `MILVUS_USERNAME` | `root` | Auth username |
+| `MILVUS_PASSWORD` | `milvus` | Auth password |
+| `MILVUS_TOKEN` | `token` | Auth token (alternative to username/password) |
+| `MILVUS_SSL` | `true` | Enable TLS connection |
+| `PORT` | `3000` | Server listen port (default: 3000) |
+| `ATTU_DB_PATH` | `/data/attu.db` | SQLite database path for connections and preferences |
+
+When `MILVUS_ADDRESS` is set, Attu will automatically create a connection on first launch.
+
+> **Note:** `MILVUS_ADDRESS` must be reachable from the Attu container. `127.0.0.1` or `localhost` will not work — use the container/service name or `host.docker.internal`.
+
+### TLS / SSL
+
+Mount your certificate files and set the corresponding environment variables:
 
 ```bash
-docker run -p 8000:3000 \
--v /your-tls-file-path:/app/tls \
--e ATTU_LOG_LEVEL=info  \
--e ROOT_CERT_PATH=/app/tls/ca.pem \
--e PRIVATE_KEY_PATH=/app/tls/client.key \
--e CERT_CHAIN_PATH=/app/tls/client.pem \
--e SERVER_NAME=your_server_name \
-zilliz/attu:v2.6
+docker run -d --name attu \
+  -p 3000:3000 \
+  -v /path/to/certs:/certs \
+  -e MILVUS_ADDRESS=milvus:19530 \
+  -e MILVUS_SSL=true \
+  zilliz/attu:v3.0.0-beta.1
 ```
 
-#### Custom Server Port Example
-
-_This command lets you run the docker container with host networking, specifying a custom port for
-the server to listen on_
+### Kubernetes
 
 ```bash
-docker run --network host \
--v /your-tls-file-path:/app/tls \
--e ATTU_LOG_LEVEL=info  \
--e SERVER_NAME=your_server_name \
--e SERVER_PORT=8080 \
-zilliz/attu:v2.6
+kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/deploy/attu-k8s-deploy.yaml
 ```
 
-### Running Attu within Kubernetes
+Edit the YAML to set `MILVUS_ADDRESS` to your Milvus service name (e.g., `my-release-milvus:19530`).
 
-Before you begin, make sure that you have Milvus installed and running within your [K8's Cluster](https://milvus.io/docs/install_cluster-milvusoperator.md). Note that Attu only supports Milvus 2.x.
+### Nginx Reverse Proxy
 
-Here are the steps to start a container for running Attu:
+See the [nginx deployment guide](https://github.com/zilliztech/attu/tree/main/deploy/nginx).
 
-```code
-kubectl apply -f https://raw.githubusercontent.com/zilliztech/attu/main/attu-k8s-deploy.yaml
-```
+---
 
-Make sure that the Attu pod can access the Milvus service. In the example provided this connects directly to `my-release-milvus:19530`. Change this based on the Milvus service name. A more flexible way to achieve this would be to introduce a `ConfigMap`. See this [example]("https://raw.githubusercontent.com/zilliztech/attu/main/examples/attu-k8s-deploy-ConfigMap.yaml") for details.
+## Compatibility
 
-### Running Attu behind a nginx proxy
+| Milvus Version | Attu Version |
+|----------------|-------------|
+| 2.5.x – 2.6.x | [v3.0.0-beta.1](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.1) |
+| 2.6.x | [v2.6.5](https://github.com/zilliztech/attu/releases/tag/v2.6.5) |
+| 2.5.x | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
+| 2.4.x | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
+| 2.3.x | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
 
-[Running Attu behind a nginx proxy](https://github.com/zilliztech/attu/tree/main/deploy/nginx)
-
-### Install Desktop application
-
-If you prefer to use a desktop application, you can download the [desktop version of Attu](https://github.com/zilliztech/attu/releases/).
-
-> Note:
->
-> - Mac M chip install app failed: attu.app is damaged and cannot be opened.
-
-```shell
-  sudo xattr -rd com.apple.quarantine /Applications/attu.app
-```
+---
 
 ## FAQ
 
-- I can't log into the system
-  > Make sure that the IP address of the Milvus server can be accessed from the Attu container. [#161](https://github.com/zilliztech/attu/issues/161)
-- If you encounter issues installing the desktop app on Mac OS, refer to the note under [Install Desktop application](#install-desktop-application).
-- How to update Attu?
-  > For Docker users, simply pull the latest image and restart the container. For desktop users, download the latest release from our [releases page](https://github.com/zilliztech/attu/releases).
-- How to backup my Attu configuration?
-  > Attu configurations are stored in your browser's local storage. You can export them from the settings page.
+**I can't connect to Milvus from Docker**
+> Make sure `MILVUS_ADDRESS` is reachable from inside the container. Use the Docker service name, not `localhost`. See [#161](https://github.com/zilliztech/attu/issues/161).
 
-### Milvus links
+**macOS says the app is damaged**
+> Run `sudo xattr -rd com.apple.quarantine /Applications/Attu.app` in Terminal.
 
-Here are some helpful resources to get you started with Milvus:
+**How do I update?**
+> Docker: pull the latest image and restart. Desktop: the app checks for updates automatically on launch.
 
-- [Milvus documentation](https://milvus.io/docs): Here, you can find detailed information on how to use Milvus, including installation instructions, tutorials, and API documentation.
-- [Milvus python SDK](https://github.com/milvus-io/pymilvus): The Python SDK allows you to interact with Milvus using Python. It provides a simple and intuitive interface for creating and querying vectors.
-- [Milvus Java SDK](https://github.com/milvus-io/milvus-sdk-java): The Java SDK is similar to the Python SDK but designed for Java developers. It also provides a simple and intuitive interface for creating and querying vectors.
-- [Milvus Go SDK](https://github.com/milvus-io/milvus-sdk-go): The Go SDK provides a Go API for Milvus. If you're a Go developer, this is the SDK for you.
-- [Milvus Node SDK](https://github.com/milvus-io/milvus-sdk-node): The Node SDK provides a Node.js API for Milvus. If you're a Node.js developer, this is the SDK for you.
-- [Feder](https://github.com/zilliztech/feder): Feder is a JavaScript tool designed to aid in the comprehension of embedding vectors.
+---
+
+## Resources
+
+- [Milvus Documentation](https://milvus.io/docs)
+- [Milvus Python SDK](https://github.com/milvus-io/pymilvus)
+- [Milvus Java SDK](https://github.com/milvus-io/milvus-sdk-java)
+- [Milvus Go SDK](https://github.com/milvus-io/milvus-sdk-go)
+- [Milvus Node.js SDK](https://github.com/milvus-io/milvus-sdk-node)
 
 ## Community
 
-💬 Join our vibrant community on the Milvus Discord where you can share your knowledge, ask questions and engage in meaningful conversations. It's not just about coding, it's about connecting with other like-minded individuals. Click the link below to join now!
-
-<a href="https://discord.com/invite/8uyFbECzPX"><img style="display:block; margin: '8px';" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg" alt="license"/></a>
+Join the [Milvus Discord](https://discord.com/invite/8uyFbECzPX) to ask questions, share feedback, and connect with other users.
 
 ## License
 
-Attu was open source under the Apache License 2.0 up to version v2.5.12.
-Starting from version v2.6.0, Attu is no longer open source.
+Attu was open source under the Apache License 2.0 through version v2.5.12. Starting from version v2.6.0, Attu is proprietary software. See [LICENSE_PROPRIETARY.txt](./LICENSE_PROPRIETARY.txt) for details.
