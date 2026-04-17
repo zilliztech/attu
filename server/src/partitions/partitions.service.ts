@@ -5,8 +5,10 @@ import {
   LoadPartitionsReq,
   ReleasePartitionsReq,
   ShowPartitionsReq,
+  GetLoadStateReq,
+  LoadState,
 } from '@zilliz/milvus2-sdk-node';
-import { findKeyValue } from '../utils/Helper';
+import { findKeyValue } from '../utils';
 import { ROW_COUNT } from '../utils';
 import { clientCache } from '../app';
 import { PartitionData } from '../types';
@@ -24,11 +26,20 @@ export class PartitionsService {
           ...data,
           partition_name: name,
         });
+
+        const { status, loadedPercentage } = await this.getPartitionLoadState(
+          clientId,
+          data.collection_name,
+          name
+        );
+
         result.push({
           name,
           id: res.partitionIDs[index],
           rowCount: findKeyValue(statistics.stats, ROW_COUNT),
           createdTime: res.created_utc_timestamps[index],
+          status,
+          loadedPercentage,
         });
       }
     }
@@ -78,5 +89,40 @@ export class PartitionsService {
 
     const res = await milvusClient.releasePartitions(data);
     return res;
+  }
+
+  async getLoadState(clientId: string, data: GetLoadStateReq) {
+    const { milvusClient } = clientCache.get(clientId);
+    const res = await milvusClient.getLoadState(data);
+    return res;
+  }
+
+  // 提取的获取分区加载状态方法
+  async getPartitionLoadState(
+    clientId: string,
+    collectionName: string,
+    partitionName: string
+  ): Promise<{ status: 'loaded' | 'loading' | 'unloaded'; loadedPercentage: number }> {
+    let status: 'loaded' | 'loading' | 'unloaded' = 'unloaded';
+    let loadedPercentage = 0;
+
+    try {
+      const loadStateRes = await this.getLoadState(clientId, {
+        collection_name: collectionName,
+        partition_names: [partitionName],
+      });
+
+      if (loadStateRes.state === LoadState.LoadStateLoaded) {
+        status = 'loaded';
+        loadedPercentage = 100;
+      } else if (loadStateRes.state === LoadState.LoadStateLoading) {
+        status = 'loading';
+        loadedPercentage = 50;
+      }
+    } catch (error) {
+      console.log('Failed to get partition load state:', error);
+    }
+
+    return { status, loadedPercentage };
   }
 }

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
@@ -15,6 +15,7 @@ import CreatePartitionDialog from '@/pages/dialogs/CreatePartitionDialog';
 import DropPartitionDialog from '@/pages/dialogs/DropPartitionDialog';
 import { formatNumber } from '@/utils';
 import { getLabelDisplayedRows } from '@/pages/search/Utils';
+import StatusAction from '@/pages/databases/collections/StatusAction';
 import type { PartitionData, ResStatus } from '@server/types';
 
 const Partitions = () => {
@@ -55,6 +56,19 @@ const Partitions = () => {
   useEffect(() => {
     fetchPartitions(collectionName);
   }, [collectionName]);
+
+  // 当有分区处于加载状态时，自动轮询刷新
+  useEffect(() => {
+    const hasLoadingPartition = partitions.some(p => p.status === 'loading');
+    
+    if (hasLoadingPartition) {
+      const interval = setInterval(() => {
+        fetchPartitions(collectionName);
+      }, 2000); // 每2秒刷新一次
+
+      return () => clearInterval(interval);
+    }
+  }, [partitions, collectionName]);
 
   const list = search
     ? partitions.filter(p => p.name.includes(search))
@@ -202,6 +216,51 @@ const Partitions = () => {
         );
       },
       label: t('name'),
+    },
+    {
+      id: 'status',
+      align: 'left',
+      disablePadding: false,
+      label: '状态',
+      formatter(partition) {
+        const partitionAsCollection = {
+          collection_name: collectionName,
+          schema: {
+            hasVectorIndex: true,
+            fields: [],
+            primaryField: {} as any,
+            vectorFields: [],
+            scalarFields: [],
+            dynamicFields: [],
+            functionFields: [],
+            enablePartitionKey: false,
+          },
+          rowCount: 0,
+          createdTime: 0,
+          aliases: [],
+          description: '',
+          autoID: false,
+          id: String(partition.id),
+          loadedPercentage: partition.loadedPercentage || 0,
+          consistency_level: 'Bounded',
+          replicas: [],
+          status: partition.status || 'unloaded',
+          loaded: partition.status === 'loaded',
+          properties: [],
+          db_name: 'default',
+        } as any;
+
+        return (
+          <StatusAction
+            status={partition.status || 'unloaded'}
+            percentage={partition.loadedPercentage || 0}
+            collection={partitionAsCollection}
+            partition={partition}
+            showLoadButton={true}
+            onRefresh={() => fetchPartitions(collectionName)}
+          />
+        );
+      },
     },
     {
       id: 'rowCount',

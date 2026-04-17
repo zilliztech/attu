@@ -9,6 +9,15 @@ import Icons from '@/components/icons/Icons';
 import CustomToolTip from '@/components/customToolTip/CustomToolTip';
 import LoadCollectionDialog from '@/pages/dialogs/LoadCollectionDialog';
 import ReleaseCollectionDialog from '@/pages/dialogs/ReleaseCollectionDialog';
+import LoadPartitionDialog from '@/pages/dialogs/LoadPartitionDialog';
+import ReleasePartitionDialog from '@/pages/dialogs/ReleasePartitionDialog';
+import type { PartitionData } from '@server/types';
+
+// 扩展类型，添加 partition 和 onRefresh 属性
+type ExtendedStatusActionType = StatusActionType & {
+  partition?: PartitionData;
+  onRefresh?: () => void;
+};
 
 const StatusIndicator: FC<{ color: string; filled?: boolean }> = ({
   color,
@@ -27,7 +36,7 @@ const StatusIndicator: FC<{ color: string; filled?: boolean }> = ({
   />
 );
 
-const StatusAction: FC<StatusActionType> = props => {
+const StatusAction: FC<ExtendedStatusActionType> = props => {
   const {
     status,
     percentage = 0,
@@ -36,6 +45,8 @@ const StatusAction: FC<StatusActionType> = props => {
     showLoadButton,
     createIndexElement,
     sx,
+    partition,
+    onRefresh,
   } = props;
 
   const theme = useTheme();
@@ -46,6 +57,8 @@ const StatusAction: FC<StatusActionType> = props => {
   const chipStyles = {
     paddingLeft: theme.spacing(0.5),
   };
+
+  const isPartition = !!partition;
 
   const LoadingIndicator = () => (
     <span
@@ -126,13 +139,29 @@ const StatusAction: FC<StatusActionType> = props => {
         tooltip: collectionTrans('clickToLoad'),
         variant: 'outlined' as const,
         onClick: () => {
-          setDialog({
-            open: true,
-            type: 'custom',
-            params: {
-              component: <LoadCollectionDialog collection={collection} />,
-            },
-          });
+          if (isPartition && partition) {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: (
+                  <LoadPartitionDialog
+                    partitions={[partition]}
+                    collectionName={collection.collection_name}
+                    onRefresh={onRefresh}
+                  />
+                ),
+              },
+            });
+          } else {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: <LoadCollectionDialog collection={collection} />,
+              },
+            });
+          }
         },
       },
       [LOADING_STATE.LOADED]: {
@@ -141,13 +170,29 @@ const StatusAction: FC<StatusActionType> = props => {
         tooltip: collectionTrans('clickToRelease'),
         icon: <StatusIndicator color={theme.palette.primary.main} filled />,
         onClick: () => {
-          setDialog({
-            open: true,
-            type: 'custom',
-            params: {
-              component: <ReleaseCollectionDialog collection={collection} />,
-            },
-          });
+          if (isPartition && partition) {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: (
+                  <ReleasePartitionDialog
+                    partitions={[partition]}
+                    collectionName={collection.collection_name}
+                    onRefresh={onRefresh}
+                  />
+                ),
+              },
+            });
+          } else {
+            setDialog({
+              open: true,
+              type: 'custom',
+              params: {
+                component: <ReleaseCollectionDialog collection={collection} />,
+              },
+            });
+          }
         },
       },
       [LOADING_STATE.LOADING]: {
@@ -174,6 +219,9 @@ const StatusAction: FC<StatusActionType> = props => {
     commonTrans,
     collection,
     setDialog,
+    isPartition,
+    partition,
+    onRefresh,
   ]);
 
   const renderStatusChip = () => {
