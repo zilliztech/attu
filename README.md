@@ -179,11 +179,17 @@ Mount your certificate files and set the corresponding environment variables:
 ```bash
 docker run -d --name attu \
   -p 3000:3000 \
-  -v /path/to/certs:/certs \
+  -v /path/to/certs:/etc/attu/certs:ro \
   -e MILVUS_ADDRESS=milvus:19530 \
   -e MILVUS_SSL=true \
-  zilliz/attu:v3.0.0-beta.1
+  -e MILVUS_TLS_ROOT_CERT_PATH=/etc/attu/certs/ca.pem \
+  -e MILVUS_TLS_PRIVATE_KEY_PATH=/etc/attu/certs/client.key \
+  -e MILVUS_TLS_CERT_CHAIN_PATH=/etc/attu/certs/client.pem \
+  -e MILVUS_TLS_SERVER_NAME=milvus \
+  zilliz/attu:v3.0.0-beta.4
 ```
+
+See [Run Attu with local Milvus mutual TLS in Docker](./docs/milvus-mtls-local-docker.md) for a complete local mTLS setup, including certificate generation, Milvus Docker Compose configuration, and verification.
 
 ### Kubernetes
 
