@@ -43,6 +43,8 @@ docker run -d --name attu \
 
 Open http://localhost:3000.
 
+The Docker image stores its SQLite database at `/data/attu.db` by default. The `-v attu-data:/data` volume persists your saved connections, agent conversations, and preferences across container restarts.
+
 ### Docker Compose (Milvus + Attu)
 
 ```yaml
@@ -166,7 +168,7 @@ Interactive API testing environment scoped to your connection, database, and col
 | `MILVUS_TOKEN` | `token` | Auth token (alternative to username/password) |
 | `MILVUS_SSL` | `true` | Enable TLS connection |
 | `PORT` | `3000` | Server listen port (default: 3000) |
-| `ATTU_DB_PATH` | `/data/attu.db` | SQLite database path for connections and preferences |
+| `ATTU_DB_PATH` | `/data/attu.db` | Override the SQLite database path for connections and preferences |
 
 When `MILVUS_ADDRESS` is set, Attu will automatically create a connection on first launch.
 
