@@ -310,6 +310,7 @@ See the [nginx deployment guide](https://github.com/zilliztech/attu/tree/main/de
 
 | Milvus Version | Attu Version |
 |----------------|-------------|
+| 3.0.0-beta.x | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
 | 2.5.x - 2.6.x | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
 | 2.6.x | [v2.6.5](https://github.com/zilliztech/attu/releases/tag/v2.6.5) |
 | 2.5.x | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |

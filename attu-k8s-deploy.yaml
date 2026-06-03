@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: attu
-        image: zilliz/attu:v3.0.0-beta.1
+        image: zilliz/attu:v3.0.0-beta.6
         imagePullPolicy: IfNotPresent
         ports:
         - name: attu
@@ -41,3 +41,23 @@ spec:
         env:
         - name: MILVUS_ADDRESS
           value: "my-release-milvus:19530"
+        volumeMounts:
+        - name: attu-data
+          mountPath: /data
+      volumes:
+      - name: attu-data
+        persistentVolumeClaim:
+          claimName: attu-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: attu-data
+  labels:
+    app: attu
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
