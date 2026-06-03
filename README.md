@@ -1,11 +1,11 @@
-# Attu — The AI Workbench for Milvus
+# Attu - The AI Workbench for Milvus
 
 ![GitHub release](https://img.shields.io/github/v/release/zilliztech/attu)
 [![Docker pulls](https://img.shields.io/docker/pulls/zilliz/attu)](https://hub.docker.com/r/zilliz/attu/tags)
 ![GitHub stars](https://img.shields.io/github/stars/zilliztech/attu)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](./README_CN.md)
 
-Attu is a modern, AI-native management tool for [Milvus](https://milvus.io) vector databases. Connect to multiple Milvus clusters from a single instance — manage schemas, explore data, run vector searches, monitor health, and automate tasks with a built-in AI agent.
+Attu is an AI-native management tool for [Milvus](https://milvus.io) vector databases. Connect to multiple Milvus clusters from a single instance, browse collections, run vector searches, manage backups, monitor health, and chat with an AI agent that understands your data.
 
 Available as a **web app** (Docker / Kubernetes) or **desktop app** (macOS, Linux, Windows).
 
@@ -15,17 +15,16 @@ Available as a **web app** (Docker / Kubernetes) or **desktop app** (macOS, Linu
 
 ## What's New in v3
 
-Attu v3 is a ground-up rewrite with a modern full-stack architecture (React 19, TanStack Start, Vite).
+Attu v3 is a ground-up rewrite with a modern stack (TanStack Start, React 19, Tailwind CSS v4, shadcn/ui) and major new capabilities:
 
-- **Multi-Cluster Management** — Connect to and switch between multiple Milvus instances from a single Attu deployment. Each connection maintains its own context, agent sessions, and preferences.
-- **AI Agent** — Chat-driven Milvus management with 50+ tools. Supports OpenAI, Anthropic, DeepSeek, Google Gemini, and custom endpoints.
-- **REST API Playground** — Interactive API editor with collection-scoped context.
-- **Backup & Restore** — Full and incremental backups with S3, MinIO, GCS, and Azure Blob support.
-- **Prometheus Metrics Dashboard** — 16+ real-time metrics with sparkline visualizations.
-- **Cluster Topology** — Interactive node visualization powered by ReactFlow.
-- **Slow Request Analysis** — Identify and diagnose slow queries across nodes.
-- **Desktop App with Auto-Update** — Native Electron app with automatic update delivery.
-- **Dark Mode** — Full light/dark theme support.
+- **AI Agent** - Chat with an LLM-powered assistant that can query collections, manage schemas, and execute Milvus operations through natural language. Supports custom skills and tool-call approval workflows.
+- **Backup & Restore** - Create full or incremental backups, download as ZIP, upload to restore. Supports S3, MinIO, GCS, and Azure Blob Storage.
+- **Tasks & Data Movement** - Track long-running import, export, backup, restore, and copy tasks with retry/cancel controls.
+- **Embedding Configuration** - Configure embedding providers directly in Attu for vector search with text input.
+- **REST API Playground** - Interactive API testing with database/collection context pickers.
+- **Redesigned Explorer** - Hierarchical database/collection browser with schema builder, data import/export (CSV, JSON, Parquet), vector search, snapshots, external collections, partition management, and segment viewer.
+- **Cluster Administration** - Topology visualization, role-based access control with cross-cluster role copying, scoped collection access, user management, configuration viewer, metrics, slow request analysis, diagnostics, environments, and resource groups.
+- **Dark/Light Theme** - Geist font, Attu green primary palette, designed for long working sessions.
 
 ---
 
@@ -38,10 +37,10 @@ docker run -d --name attu \
   -p 3000:3000 \
   -e MILVUS_ADDRESS=host.docker.internal:19530 \
   -v attu-data:/data \
-  zilliz/attu:v3.0.0-beta.1
+  zilliz/attu:v3.0.0-beta.6
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000 and connect to your Milvus instance.
 
 The Docker image stores its SQLite database at `/data/attu.db` by default. The `-v attu-data:/data` volume persists your saved connections, agent conversations, and preferences across container restarts.
 
@@ -59,7 +58,7 @@ services:
       - milvus-data:/var/lib/milvus
 
   attu:
-    image: zilliz/attu:v3.0.0-beta.1
+    image: zilliz/attu:v3.0.0-beta.6
     ports:
       - "3000:3000"
     environment:
@@ -99,7 +98,7 @@ Download the latest release for your platform:
 
 ### Multi-Cluster Management
 
-Connect to multiple Milvus instances from a single Attu deployment. Add, edit, and switch between connections in the sidebar. Each cluster has its own dedicated workspace with independent monitoring, agent sessions, and preferences — ideal for managing dev, staging, and production environments side by side.
+Connect to multiple Milvus instances from a single Attu deployment. Add, edit, and switch between connections in the sidebar. Each cluster has its own dedicated workspace with independent monitoring, agent sessions, and preferences, ideal for managing dev, staging, and production environments side by side.
 
 ### Data Explorer
 
@@ -115,7 +114,7 @@ Interactive vector similarity search with configurable embedding providers (Open
 
 ### AI Agent
 
-Chat-driven Milvus management with 50+ tools. Create collections, run queries, manage users, analyze performance — all through natural language.
+Chat-driven Milvus management with 50+ tools. Create collections, run queries, manage users, and analyze performance through natural language.
 
 Supports: OpenAI, Anthropic Claude, DeepSeek, Google Gemini, OpenRouter, and custom API endpoints.
 
@@ -145,50 +144,150 @@ Interactive API testing environment scoped to your connection, database, and col
 
 ### And More
 
-- **RBAC Management** — Create and manage users, roles, and privilege groups.
-- **Resource Groups** — Configure resource allocation across nodes.
-- **Slow Request Analysis** — Identify bottlenecks with cluster-wide slow query inspection.
-- **Configuration & Environment Viewer** — Inspect runtime configs and environment variables.
-- **Task Queue** — Monitor background operations (imports, backups, compactions).
-- **Internationalization** — English and Chinese language support.
+- **RBAC Management** - Create and manage users, roles, and privilege groups.
+- **Resource Groups** - Configure resource allocation across nodes.
+- **Slow Request Analysis** - Identify bottlenecks with cluster-wide slow query inspection.
+- **Configuration & Environment Viewer** - Inspect runtime configs and environment variables.
+- **Task Queue** - Monitor background operations for imports, exports, backups, restores, and copy jobs.
+- **Audit Logs** - Review write operations initiated from the Attu UI or server functions.
+- **Internationalization** - English and Chinese language support.
 
 ---
 
 ## Deployment
 
-### Environment Variables
+### Runtime Configuration
 
-| Variable | Example | Description |
-|----------|---------|-------------|
-| `MILVUS_ADDRESS` | `milvus:19530` | Milvus gRPC endpoint |
-| `MILVUS_NAME` | `My Cluster` | Display name in the connection list |
-| `MILVUS_DATABASE` | `default` | Default database |
-| `MILVUS_USERNAME` | `root` | Auth username |
-| `MILVUS_PASSWORD` | `milvus` | Auth password |
-| `MILVUS_TOKEN` | `token` | Auth token (alternative to username/password) |
-| `MILVUS_SSL` | `true` | Enable TLS connection |
-| `PORT` | `3000` | Server listen port (default: 3000) |
-| `ATTU_DB_PATH` | `/data/attu.db` | Override the SQLite database path for connections and preferences |
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `ATTU_DB_PATH` | No | Docker: `/data/attu.db`; server: `attu.db` | SQLite database path for Attu app data |
+| `ATTU_AUDIT_RETENTION_DAYS` | No | `90` | Audit log retention in days; `0` or less disables pruning |
+| `LOG_LEVEL` | No | `info` | Server log level supported by Pino |
+| `MILVUS_GRPC_TIMEOUT` | No | `15000` | Milvus gRPC request timeout in milliseconds |
 
-When `MILVUS_ADDRESS` is set, Attu will automatically create a connection on first launch.
+### Pre-configured Connection
 
-> **Note:** `MILVUS_ADDRESS` must be reachable from the Attu container. `127.0.0.1` or `localhost` will not work — use the container/service name or `host.docker.internal`.
+Set `MILVUS_ADDRESS` to automatically create a default connection on startup. This is useful for Kubernetes and Docker Compose deployments where Attu is co-deployed with Milvus.
+
+```bash
+docker run -d \
+  --name attu \
+  -p 3000:3000 \
+  -v attu-data:/data \
+  -e MILVUS_ADDRESS=milvus:19530 \
+  zilliz/attu:v3.0.0-beta.6
+```
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `MILVUS_ADDRESS` | Yes | - | Milvus gRPC endpoint, for example `milvus:19530` |
+| `MILVUS_NAME` | No | Same as address | Display name shown in the connection list |
+| `MILVUS_DATABASE` | No | `default` | Target database |
+| `MILVUS_TOKEN` | No | - | Auth token; use a Kubernetes Secret for sensitive values |
+| `MILVUS_USERNAME` | No | - | Username |
+| `MILVUS_PASSWORD` | No | - | Password; use a Kubernetes Secret for sensitive values |
+| `MILVUS_SSL` | No | `false` | Set to `true` to enable TLS |
+| `MILVUS_TLS_ROOT_CERT_PATH` | No | - | CA/root certificate path for TLS |
+| `MILVUS_TLS_PRIVATE_KEY_PATH` | No | - | Client private key path for mutual TLS |
+| `MILVUS_TLS_CERT_CHAIN_PATH` | No | - | Client certificate chain path for mutual TLS |
+| `MILVUS_TLS_ROOT_CERT` | No | - | Inline CA/root certificate PEM stored in the connection record |
+| `MILVUS_TLS_PRIVATE_KEY` | No | - | Inline client private key PEM stored in the connection record |
+| `MILVUS_TLS_CERT_CHAIN` | No | - | Inline client certificate chain PEM stored in the connection record |
+| `MILVUS_TLS_SERVER_NAME` | No | - | Override TLS verification/SNI server name |
+| `MILVUS_TLS_SKIP_CERT_CHECK` | No | `false` | Skip certificate verification; insecure and for testing only |
+
+`MILVUS_SSL` is enabled automatically when any `MILVUS_TLS_*` certificate, server name, or skip-check variable is set.
+
+`MILVUS_ADDRESS` must be reachable from the Attu container. `127.0.0.1` or `localhost` usually points to the container itself, so use a Docker service name, Kubernetes service name, or `host.docker.internal`.
+
+### Local Login
+
+Attu server deployments run with local login enabled by default. The first visit shows a one-time setup form for creating the first admin account. Desktop/Electron builds run in single-user mode and do not support Attu multi-user login.
+
+```bash
+ATTU_ADMIN_USER=admin \
+ATTU_ADMIN_PASSWORD='Change-me-please-123' \
+pnpm --filter @attu/app dev --host 127.0.0.1
+```
+
+Set `ATTU_AUTH_MODE=none` to keep a server deployment in single-user mode. This is intended for local development or deployments protected by another access layer.
+
+If the only admin password is lost, restart Attu once with a recovery password:
+
+```bash
+ATTU_ADMIN_RESET_USER=admin \
+ATTU_ADMIN_RESET_PASSWORD='New-change-me-123' \
+pnpm --filter @attu/app start
+```
+
+When exactly one active admin exists, `ATTU_ADMIN_RESET_USER` can be omitted. Remove the reset variables after signing in because Attu applies them on startup and clears existing sessions for that admin.
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ATTU_RUNTIME` | No | Set to `desktop` to force single-user mode. Electron sets this automatically. Server/Docker deployments should leave it unset. |
+| `ATTU_AUTH_MODE` | No | Server override: `local` enables Attu login; `none` disables it. Defaults to `local` for server/Docker and `none` for desktop. |
+| `ATTU_AUTH_ENABLED` | No | Legacy boolean alias. `true` maps to `ATTU_AUTH_MODE=local`; `false` maps to `none`. |
+| `ATTU_ADMIN_USER` | Optional | Bootstrap admin username or email created on startup when no users exist. |
+| `ATTU_ADMIN_PASSWORD` | Optional | Bootstrap admin password. Must be set with `ATTU_ADMIN_USER` to create the bootstrap admin. |
+| `ATTU_ADMIN_EMAIL` | No | Optional email stored on the bootstrap admin. |
+| `ATTU_ADMIN_NAME` | No | Optional display name for the bootstrap admin. Defaults to `ATTU_ADMIN_USER`. |
+| `ATTU_ADMIN_RESET_USER` | No | Existing local admin username or email to reset. Required when more than one active admin exists. |
+| `ATTU_ADMIN_RESET_PASSWORD` | Optional | One-time startup password reset for the selected local admin. Must satisfy the password policy. Remove after recovery. |
+| `ATTU_AUTH_SESSION_DAYS` | No | Session lifetime in days. Defaults to `30`. |
+| `ATTU_SESSION_DAYS` | No | Legacy alias for `ATTU_AUTH_SESSION_DAYS`. |
+| `ATTU_AUTH_COOKIE_SECURE` | No | Overrides session cookie `Secure`. By default Attu enables it for HTTPS or `X-Forwarded-Proto: https`; set `false` only for local HTTP testing. |
+
+### Audit Logs
+
+Attu records audit logs for write operations initiated from the Attu UI or server functions. These logs are stored in Attu's SQLite database and are separate from Milvus native logs. Read-only browsing, search, and query operations are not audited.
+
+Audited actions include connection management, database and collection management, schema and metadata changes, data writes, index and partition operations, user and role administration, resource group changes, AI configuration changes, and import/export/backup/restore task starts.
+
+Each audit record includes the connection, actor, action, resource type/name, database name, success/failure status, error message, metadata, and timestamp. Sensitive metadata fields are redacted before storage when their key contains values such as `password`, `token`, `secret`, `apiKey`, `privateKey`, `cert`, `certificate`, or `credential`.
+
+Audit retention defaults to 90 days. Set `ATTU_AUDIT_RETENTION_DAYS` to change the retention window; set it to `0` or a negative value to disable automatic pruning.
 
 ### TLS / SSL
 
-Mount your certificate files and set the corresponding environment variables:
+Attu supports one-way TLS and mutual TLS (mTLS) for Milvus gRPC connections.
+
+- **One-way TLS**: Attu verifies the Milvus server certificate. A custom CA/root certificate is optional.
+- **Mutual TLS (mTLS)**: Attu verifies the Milvus server certificate and sends a client certificate/key to Milvus.
+- **Server name override**: Set `MILVUS_TLS_SERVER_NAME` or the UI field when the certificate hostname differs from the address host.
+- **Skip certificate verification**: `MILVUS_TLS_SKIP_CERT_CHECK=true` is insecure and intended only for local testing. It is not supported with mTLS.
+
+You can configure TLS certificates in the Attu UI by uploading PEM files or by entering paths readable by the Attu server/container. Uploaded PEM content is stored in Attu's SQLite connection record, so Docker and Kubernetes deployments do not need certificate volume mounts for that flow.
+
+One-way TLS with mounted certificate paths:
 
 ```bash
-docker run -d --name attu \
+docker run -d \
+  --name attu \
   -p 3000:3000 \
-  -v /path/to/certs:/etc/attu/certs:ro \
-  -e MILVUS_ADDRESS=milvus:19530 \
+  -v attu-data:/data \
+  -v "$PWD/certs:/etc/attu/certs:ro" \
+  -e MILVUS_ADDRESS=milvus.example.com:19530 \
+  -e MILVUS_SSL=true \
+  -e MILVUS_TLS_ROOT_CERT_PATH=/etc/attu/certs/ca.pem \
+  -e MILVUS_TLS_SERVER_NAME=milvus.example.com \
+  zilliz/attu:v3.0.0-beta.6
+```
+
+Mutual TLS with mounted certificate paths:
+
+```bash
+docker run -d \
+  --name attu \
+  -p 3000:3000 \
+  -v attu-data:/data \
+  -v "$PWD/certs:/etc/attu/certs:ro" \
+  -e MILVUS_ADDRESS=milvus.example.com:19530 \
   -e MILVUS_SSL=true \
   -e MILVUS_TLS_ROOT_CERT_PATH=/etc/attu/certs/ca.pem \
   -e MILVUS_TLS_PRIVATE_KEY_PATH=/etc/attu/certs/client.key \
   -e MILVUS_TLS_CERT_CHAIN_PATH=/etc/attu/certs/client.pem \
-  -e MILVUS_TLS_SERVER_NAME=milvus \
-  zilliz/attu:v3.0.0-beta.4
+  -e MILVUS_TLS_SERVER_NAME=milvus.example.com \
+  zilliz/attu:v3.0.0-beta.6
 ```
 
 See [Run Attu with local Milvus mutual TLS in Docker](./docs/milvus-mtls-local-docker.md) for a complete local mTLS setup, including certificate generation, Milvus Docker Compose configuration, and verification.
@@ -211,7 +310,7 @@ See the [nginx deployment guide](https://github.com/zilliztech/attu/tree/main/de
 
 | Milvus Version | Attu Version |
 |----------------|-------------|
-| 2.5.x – 2.6.x | [v3.0.0-beta.1](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.1) |
+| 2.5.x - 2.6.x | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
 | 2.6.x | [v2.6.5](https://github.com/zilliztech/attu/releases/tag/v2.6.5) |
 | 2.5.x | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
