@@ -40,7 +40,7 @@ docker run -d --name attu \
   zilliz/attu:v3.0.0-beta.6
 ```
 
-Open http://localhost:3000 and connect to your Milvus instance.
+Open http://localhost:3000 and connect to Zilliz Cloud or your open-source Milvus 3.x instance.
 
 The Docker image stores its SQLite database at `/data/attu.db` by default. The `-v attu-data:/data` volume persists your saved connections, agent conversations, and preferences across container restarts.
 
@@ -49,7 +49,8 @@ The Docker image stores its SQLite database at `/data/attu.db` by default. The `
 ```yaml
 services:
   milvus:
-    image: milvusdb/milvus:latest
+    # Attu v3.0 supports open-source Milvus 3.x. Do not use Milvus 2.6.x here.
+    image: milvusdb/milvus:<supported-3.x-tag>
     ports:
       - "19530:19530"
       - "9091:9091"
@@ -76,6 +77,8 @@ volumes:
 ```bash
 docker compose up -d
 ```
+
+The Docker Compose example is for open-source Milvus 3.x compatibility validation. Attu v3.0 also supports Zilliz Cloud, but it does not support open-source Milvus 2.6.x or earlier Milvus 2.x releases.
 
 ### Desktop App
 
@@ -308,10 +311,12 @@ See the [nginx deployment guide](https://github.com/zilliztech/attu/tree/main/de
 
 ## Compatibility
 
+Attu v3.0 supports Zilliz Cloud and open-source Milvus 3.x. Open-source Milvus 2.6.x and earlier Milvus 2.x releases are not supported by Attu v3.0.
+
 | Milvus Version | Attu Version |
 |----------------|-------------|
+| Zilliz Cloud | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
 | 3.0.0-beta.x | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
-| 2.5.x - 2.6.x | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
 | 2.6.x | [v2.6.5](https://github.com/zilliztech/attu/releases/tag/v2.6.5) |
 | 2.5.x | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
