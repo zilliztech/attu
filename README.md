@@ -7,24 +7,24 @@
 
 Attu is an AI-native management tool for [Milvus](https://milvus.io) vector databases. Connect to multiple Milvus clusters from a single instance, browse collections, run vector searches, manage backups, monitor health, and chat with an AI agent that understands your data.
 
-Available as a **web app** (Docker / Kubernetes) or **desktop app** (macOS, Linux, Windows).
+Available as a **web app** (Docker, Kubernetes, or a standalone server package) or **desktop app** (macOS, Linux, Windows).
 
 ![Attu Home](.github/images/v3/01-home.png)
 
 ---
 
-## What's New in v3
+## What's New in v3.0
 
-Attu v3 is a ground-up rewrite with a modern stack (TanStack Start, React 19, Tailwind CSS v4, shadcn/ui) and major new capabilities:
+Attu 3.0 expands the visual experience for Milvus 3.0 while retaining compatibility with Milvus 2.6.0+ and Zilliz Cloud. Highlights include:
 
-- **AI Agent** - Chat with an LLM-powered assistant that can query collections, manage schemas, and execute Milvus operations through natural language. Supports custom skills and tool-call approval workflows.
-- **Backup & Restore** - Create full or incremental backups, download as ZIP, upload to restore. Supports S3, MinIO, GCS, and Azure Blob Storage.
-- **Tasks & Data Movement** - Track long-running import, export, backup, restore, and copy tasks with retry/cancel controls.
-- **Embedding Configuration** - Configure embedding providers directly in Attu for vector search with text input.
-- **REST API Playground** - Interactive API testing with database/collection context pickers.
-- **Redesigned Explorer** - Hierarchical database/collection browser with schema builder, data import/export (CSV, JSON, Parquet), vector search, snapshots, external collections, partition management, and segment viewer.
-- **Cluster Administration** - Topology visualization, role-based access control with cross-cluster role copying, scoped collection access, user management, configuration viewer, metrics, slow request analysis, diagnostics, environments, and resource groups.
-- **Dark/Light Theme** - Geist font, Attu green primary palette, designed for long working sessions.
+- **External Collections and Snapshots** - Explore Parquet and Iceberg data without copying it into Milvus, refresh external schemas and data, and browse or restore Collection Snapshots.
+- **Text and Schema Evolution** - Work with Milvus `TEXT` fields, add or remove supported fields, edit descriptions, and manage Function Fields from the Schema page.
+- **Search and Analytics** - Run Query and Search aggregations, group and order results, paginate large result sets, and apply Function Score reranking.
+- **MinHash Deduplication** - Configure MinHash Function Fields and `MINHASH_LSH` indexes to find near-duplicate documents from raw text.
+- **Analyzers and File Resources** - Register reusable dictionaries, stop-word lists, synonym lists, and tokenizer resources.
+- **Collection and Data Management** - Load or release individual partitions, configure entity-level TTL, export complete Collections, and import large files in chunks.
+
+See the [Attu v3.0.0 release notes](https://github.com/zilliztech/attu/releases/tag/v3.0.0) for details.
 
 ---
 
@@ -37,10 +37,10 @@ docker run -d --name attu \
   -p 3000:3000 \
   -e MILVUS_ADDRESS=host.docker.internal:19530 \
   -v attu-data:/data \
-  zilliz/attu:v3.0.0-beta.6
+  zilliz/attu:v3.0.0
 ```
 
-Open http://localhost:3000 and connect to Zilliz Cloud or your open-source Milvus 3.x instance.
+Open http://localhost:3000 and connect to Zilliz Cloud or an open-source Milvus 2.6.0+ or 3.x instance.
 
 The Docker image stores its SQLite database at `/data/attu.db` by default. The `-v attu-data:/data` volume persists your saved connections, agent conversations, and preferences across container restarts.
 
@@ -49,8 +49,8 @@ The Docker image stores its SQLite database at `/data/attu.db` by default. The `
 ```yaml
 services:
   milvus:
-    # Attu v3.0 supports open-source Milvus 3.x. Do not use Milvus 2.6.x here.
-    image: milvusdb/milvus:<supported-3.x-tag>
+    # Use a supported Milvus 2.6.x or 3.x image.
+    image: milvusdb/milvus:<supported-tag>
     ports:
       - "19530:19530"
       - "9091:9091"
@@ -59,7 +59,7 @@ services:
       - milvus-data:/var/lib/milvus
 
   attu:
-    image: zilliz/attu:v3.0.0-beta.6
+    image: zilliz/attu:v3.0.0
     ports:
       - "3000:3000"
     environment:
@@ -78,7 +78,7 @@ volumes:
 docker compose up -d
 ```
 
-The Docker Compose example is for open-source Milvus 3.x compatibility validation. Attu v3.0 also supports Zilliz Cloud, but it does not support open-source Milvus 2.6.x or earlier Milvus 2.x releases.
+Attu v3.0 supports Zilliz Cloud and open-source Milvus 2.6.0+ and 3.x. Milvus 2.5.x and earlier are not supported.
 
 ### Desktop App
 
@@ -94,6 +94,19 @@ Download the latest release for your platform:
 > ```bash
 > sudo xattr -rd com.apple.quarantine /Applications/Attu.app
 > ```
+
+### Standalone Server Package
+
+The v3.0.0 release includes a non-Docker, non-Electron server package for Linux x64. It requires Node.js 24.x and includes the Attu server bundle and `bin/milvus-backup`.
+
+```bash
+curl -LO https://github.com/zilliztech/attu/releases/download/v3.0.0/attu-server-3.0.0-linux-x64-node24.tar.gz
+tar -xzf attu-server-3.0.0-linux-x64-node24.tar.gz
+cd attu-server-3.0.0-linux-x64-node24
+./bin/attu-server
+```
+
+Open <http://localhost:3080>. The launcher defaults to `0.0.0.0:3080`. Set `HOST`, `PORT`, `ATTU_DATA_DIR`, or `ATTU_DB_PATH` to customize the runtime paths and listener.
 
 ---
 
@@ -178,7 +191,7 @@ docker run -d \
   -p 3000:3000 \
   -v attu-data:/data \
   -e MILVUS_ADDRESS=milvus:19530 \
-  zilliz/attu:v3.0.0-beta.6
+  zilliz/attu:v3.0.0
 ```
 
 | Variable | Required | Default | Description |
@@ -273,7 +286,7 @@ docker run -d \
   -e MILVUS_SSL=true \
   -e MILVUS_TLS_ROOT_CERT_PATH=/etc/attu/certs/ca.pem \
   -e MILVUS_TLS_SERVER_NAME=milvus.example.com \
-  zilliz/attu:v3.0.0-beta.6
+  zilliz/attu:v3.0.0
 ```
 
 Mutual TLS with mounted certificate paths:
@@ -290,7 +303,7 @@ docker run -d \
   -e MILVUS_TLS_PRIVATE_KEY_PATH=/etc/attu/certs/client.key \
   -e MILVUS_TLS_CERT_CHAIN_PATH=/etc/attu/certs/client.pem \
   -e MILVUS_TLS_SERVER_NAME=milvus.example.com \
-  zilliz/attu:v3.0.0-beta.6
+  zilliz/attu:v3.0.0
 ```
 
 See [Run Attu with local Milvus mutual TLS in Docker](./docs/milvus-mtls-local-docker.md) for a complete local mTLS setup, including certificate generation, Milvus Docker Compose configuration, and verification.
@@ -311,13 +324,17 @@ See the [nginx deployment guide](https://github.com/zilliztech/attu/tree/main/de
 
 ## Compatibility
 
-Attu v3.0 supports Zilliz Cloud and open-source Milvus 3.x. Open-source Milvus 2.6.x and earlier Milvus 2.x releases are not supported by Attu v3.0.
+Attu v3.0 supports Zilliz Cloud and open-source Milvus 2.6.0+ and 3.x. Milvus 2.5.x and earlier are not supported.
+
+External Collections, Snapshots, `TEXT` fields, MinHash, entity-level TTL, aggregation, ordering, and some schema operations require Milvus 3.x. Attu adapts the available actions to the connected Milvus version and configuration.
+
+`TEXT` fields and External Collections require Storage V3. If Storage V3 is disabled, set `common.storage.useLoonFFI=true` in Milvus and restart the service. External Collection data remains read-only in Attu.
 
 | Milvus Version | Attu Version |
 |----------------|-------------|
-| Zilliz Cloud | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
-| 3.0.0-beta.x | [v3.0.0-beta.6](https://github.com/zilliztech/attu/releases/tag/v3.0.0-beta.6) |
-| 2.6.x | [v2.6.5](https://github.com/zilliztech/attu/releases/tag/v2.6.5) |
+| Zilliz Cloud | [v3.0.0](https://github.com/zilliztech/attu/releases/tag/v3.0.0) |
+| 3.x | [v3.0.0](https://github.com/zilliztech/attu/releases/tag/v3.0.0) |
+| 2.6.x | [v3.0.0](https://github.com/zilliztech/attu/releases/tag/v3.0.0) |
 | 2.5.x | [v2.5.10](https://github.com/zilliztech/attu/releases/tag/v2.5.10) |
 | 2.4.x | [v2.4.12](https://github.com/zilliztech/attu/releases/tag/v2.4.12) |
 | 2.3.x | [v2.3.5](https://github.com/zilliztech/attu/releases/tag/v2.3.5) |
