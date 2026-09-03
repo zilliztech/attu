@@ -9,7 +9,7 @@ Attu is an AI-native management tool for [Milvus](https://milvus.io) vector data
 
 Available as a **web app** (Docker, Kubernetes, or a standalone server package) or **desktop app** (macOS, Linux, Windows).
 
-![Attu Home](.github/images/v3/01-home.png)
+![Attu 3.0 cluster overview](.github/images/v3/01-overview.png)
 
 ---
 
@@ -23,6 +23,11 @@ Attu 3.0 expands the visual experience for Milvus 3.0 while retaining compatibil
 - **MinHash Deduplication** - Configure MinHash Function Fields and `MINHASH_LSH` indexes to find near-duplicate documents from raw text.
 - **Analyzers and File Resources** - Register reusable dictionaries, stop-word lists, synonym lists, and tokenizer resources.
 - **Collection and Data Management** - Load or release individual partitions, configure entity-level TTL, export complete Collections, and import large files in chunks.
+
+<p align="center">
+  <img src=".github/images/v3/02-ai-research-schema.png" alt="Attu 3.0 AI research schema with TEXT and BM25 fields" width="49%" />
+  <img src=".github/images/v3/08-minhash-schema.png" alt="Attu 3.0 MinHash document deduplication schema" width="49%" />
+</p>
 
 See the [Attu v3.0.0 release notes](https://github.com/zilliztech/attu/releases/tag/v3.0.0) for details.
 
@@ -120,13 +125,13 @@ Connect to multiple Milvus instances from a single Attu deployment. Add, edit, a
 
 Browse databases and collections, view and edit data inline, import/export in CSV, JSON, and Parquet formats.
 
-![Explorer](.github/images/v3/03-explorer.png)
+![Data Explorer with a populated AI research collection](.github/images/v3/03-ai-research-data.png)
 
 ### Vector Search
 
 Interactive vector similarity search with configurable embedding providers (OpenAI, Cohere, Jina, VoyageAI, and more).
 
-![Search](.github/images/v3/19-collection-search.png)
+![BM25 full-text search over an AI research collection](.github/images/v3/04-hybrid-search.png)
 
 ### AI Agent
 
@@ -134,29 +139,23 @@ Chat-driven Milvus management with 50+ tools. Create collections, run queries, m
 
 Supports: OpenAI, Anthropic Claude, DeepSeek, Google Gemini, OpenRouter, and custom API endpoints.
 
-![Agent](.github/images/v3/16-agent.png)
+![Built-in AI Agent skills](.github/images/v3/05-agent-skills.png)
 
 ### Cluster Overview & Monitoring
 
 Real-time cluster health, Prometheus metrics dashboard with 16+ metrics, and interactive topology visualization.
 
-![Overview](.github/images/v3/02-overview.png)
-
-![Metrics](.github/images/v3/06-metrics.png)
-
-![Topology](.github/images/v3/07-topology.png)
+![Interactive Milvus cluster topology](.github/images/v3/06-cluster-topology.png)
 
 ### Backup & Restore
 
 Full and incremental backups with support for S3, MinIO, GCS, and Azure Blob Storage. Download backups as ZIP or restore from uploaded archives.
 
-![Backups](.github/images/v3/13-backups.png)
-
 ### REST API Playground
 
 Interactive API testing environment scoped to your connection, database, and collection.
 
-![Playground](.github/images/v3/14-playground.png)
+![HTTP API Playground with a live collection-list response](.github/images/v3/07-api-playground.png)
 
 ### And More
 
