@@ -49,6 +49,15 @@ Open http://localhost:3000 and connect to Zilliz Cloud or an open-source Milvus 
 
 The Docker image stores its SQLite database at `/data/attu.db` by default. The `-v attu-data:/data` volume persists your saved connections, agent conversations, and preferences across container restarts.
 
+The image runs as the non-root `node` user (`uid=1000`, `gid=1000`), so named volumes are recommended. If you use a host bind mount such as `./attu-data:/data`, prepare the directory before starting Attu:
+
+```bash
+mkdir -p ./attu-data
+sudo chown -R 1000:1000 ./attu-data
+```
+
+On SELinux-enabled hosts, also add the `:Z` mount option: `./attu-data:/data:Z`.
+
 ### Docker Compose (Milvus + Attu)
 
 ```yaml
