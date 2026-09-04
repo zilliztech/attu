@@ -30,9 +30,15 @@ spec:
       labels:
         app: attu
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containers:
       - name: attu
-        image: zilliz/attu:v3.0.0-beta.6
+        image: zilliz/attu:v3.0.0
         imagePullPolicy: IfNotPresent
         ports:
         - name: attu
