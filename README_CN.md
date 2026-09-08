@@ -270,6 +270,77 @@ Attu 记录从界面或服务端函数发起的写操作，日志保存在 Attu 
 
 默认保留 90 天。通过 `ATTU_AUDIT_RETENTION_DAYS` 调整保留时间，设为 `0` 或负数可禁用自动清理。
 
+### 出站请求与 SSRF 防护
+
+Attu 在保存或测试向量化、LLM 服务配置时校验 HTTP/HTTPS 目标地址，并在发送请求时再次校验。因此，安全策略可能在实际调用服务之前就拒绝操作。
+
+Docker 和独立服务端在生产环境下默认启用严格的 SSRF 防护。私有地址和回环地址，包括 `10.0.0.0/8`、`172.16.0.0/12`、`192.168.0.0/16`、`127.0.0.0/8` 及 IPv6 私有地址，都需要显式放行。域名会按解析出的 IP 地址检查，使用内网域名不会绕过限制。
+
+桌面端的行为取决于安装版本。如果本机或局域网服务被拦截，可按下文放行指定主机。**截至 2026 年 9 月 8 日，桌面端默认允许访问本机和局域网服务的改动尚未发布，请勿认为已发布的 v3.0.0 安装包包含该改动。** 此改动也覆盖解析到内网地址的域名；显式设置严格模式时，仍以严格模式为准。
+
+云元数据专用域名及元数据／链路本地地址（例如 `metadata.google.internal`、`169.254.169.254`）始终禁止访问，即使加入白名单也不能放行。仅接受 HTTP 和 HTTPS 地址，不允许在 URL 中嵌入用户名和密码。
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `ATTU_SSRF_ALLOWLIST` | 空 | 部署层私有地址策略允许访问的主机名、IP 或 CIDR 网段，多个值用逗号分隔。填写主机，不带协议、端口或路径。 |
+| `ATTU_SSRF_PROTECTION` | 非开发环境默认严格；桌面端例外取决于版本 | 设置为 `strict` 可显式启用私有地址检查，对桌面端同样有效。 |
+
+例如，`ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100` 会放行这两个主机。优先指定实际服务主机；仅在确实需要访问整个网段时使用 CIDR。
+
+#### Docker
+
+将白名单加入 Attu 容器的环境变量，并使用原有数据卷重建容器：
+
+```bash
+docker run -d --name attu \
+  -p 3000:3000 \
+  -v attu-data:/data \
+  -e ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100 \
+  zilliz/attu:v3.0.0
+```
+
+该示例会新建容器；若存在同名旧容器，需先停止并移除旧容器，保留数据卷。Docker Compose 或 Kubernetes 部署可在 Attu 服务／容器的环境变量中设置同一变量，然后重建或滚动更新。
+
+服务还必须能从容器内部访问。如果使用 `host.docker.internal`，应将该主机名加入白名单；Linux Docker Engine 通常还需添加 `--add-host=host.docker.internal:host-gateway`。白名单只改变访问权限，不会修复 DNS 解析或网络路由。
+
+#### 桌面端
+
+完全退出 Attu（包括后台运行的实例），再带环境变量启动。将主机和程序路径替换为实际值。
+
+macOS：
+
+```bash
+ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100 \
+/Applications/Attu.app/Contents/MacOS/Attu
+```
+
+Windows PowerShell：
+
+```powershell
+$env:ATTU_SSRF_ALLOWLIST = "embedding.company.local,192.168.1.100"
+& "C:\path\to\Attu.exe"
+```
+
+Linux AppImage：
+
+```bash
+ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100 \
+./attu-3.0.0-x86_64.AppImage
+```
+
+这些示例仅对从该终端环境启动的应用生效，之后直接点击应用图标启动不会保留此设置。独立服务端安装包可在执行 `./bin/attu-server` 前设置相同变量。
+
+#### 排障
+
+| 错误信息 | 含义与处理方法 |
+|----------|----------------|
+| `Resolved address is not allowed: ...` | 解析后的 IP 被部署策略拦截。将实际服务主机加入白名单并重启 Attu。 |
+| `Private target is not allowed for this tenant` | 组织／租户策略也禁止访问该目标。需由管理员在该租户的出站策略中，为 `embedding` 或 `llm` 用途放行主机及端口；仅配置部署层白名单不够。 |
+| `Metadata service hostnames are not allowed` / `Metadata or link-local address is not allowed: ...` | 目标属于不可放行的地址，请改用实际服务端点。 |
+| `URL hostname could not be resolved` | 请修复 Attu 运行环境中的 DNS 解析。 |
+
+默认组织继承部署层权限，额外创建的组织可能有更严格的私有地址策略。服务端日志会以 `Blocked outbound request` 记录拦截事件，包含请求上下文、目标主机／端口和原因。向量化配置操作对应的上下文为 `embedding_config.create`、`embedding_config.update` 或 `embedding_config.test`。
+
 ### TLS / SSL
 
 Attu 支持 Milvus gRPC 连接的单向 TLS 和双向 TLS（mTLS）。

@@ -271,6 +271,77 @@ Each audit record includes the connection, actor, action, resource type/name, da
 
 Audit retention defaults to 90 days. Set `ATTU_AUDIT_RETENTION_DAYS` to change the retention window; set it to `0` or a negative value to disable automatic pruning.
 
+### Outbound Requests and SSRF Protection
+
+Attu validates outbound HTTP/HTTPS targets when saving or testing embedding and LLM service configurations, and again when sending requests. A security-policy rejection can therefore happen before the service is contacted.
+
+Docker and standalone server deployments enforce SSRF protection by default in production. Private and loopback addresses, including `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `127.0.0.0/8`, and private IPv6 addresses, require explicit permission. Domains are checked against their resolved IP addresses, so an internal DNS name does not bypass the policy.
+
+Desktop behavior depends on the installed version. If a local or LAN service is blocked, use the per-host allowlist below. **As of September 8, 2026, the change to allow local and LAN services by default on desktop has not been released; do not assume the published v3.0.0 build includes it.** That change also covers domains resolving to private addresses; explicitly configured strict mode will still take precedence.
+
+Metadata service hostnames and metadata/link-local addresses, such as `metadata.google.internal` and `169.254.169.254`, remain blocked even when allowlisted. Only HTTP and HTTPS URLs are accepted, and credentials embedded in URLs are rejected.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ATTU_SSRF_ALLOWLIST` | Empty | Comma-separated hostnames, IP addresses, or CIDR ranges permitted by the deployment's private-address policy. Use hosts only, without a URL scheme, port, or path. |
+| `ATTU_SSRF_PROTECTION` | Strict outside development, with version-dependent desktop exceptions | Set to `strict` to explicitly enforce private-address checks, including on desktop. |
+
+For example, `ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100` permits either host. Prefer specific hosts; use a CIDR range only when the whole range is intended to be accessible.
+
+#### Docker
+
+Add the allowlist to the Attu container's environment and recreate the container with its existing data volume:
+
+```bash
+docker run -d --name attu \
+  -p 3000:3000 \
+  -v attu-data:/data \
+  -e ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100 \
+  zilliz/attu:v3.0.0
+```
+
+The example starts a new container; stop and remove the previous container of the same name first, retaining its data volume. For Docker Compose or Kubernetes, set the same variable in the Attu service/container environment and recreate or roll out the workload.
+
+The service must also be reachable from inside the container. If using `host.docker.internal`, allowlist that hostname; Linux Docker Engine typically also requires `--add-host=host.docker.internal:host-gateway`. An allowlist changes permission, not DNS resolution or network routing.
+
+#### Desktop
+
+Fully quit Attu, including any running background instance, then launch it with the environment variable. Replace the host and executable path with your actual values.
+
+macOS:
+
+```bash
+ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100 \
+/Applications/Attu.app/Contents/MacOS/Attu
+```
+
+Windows PowerShell:
+
+```powershell
+$env:ATTU_SSRF_ALLOWLIST = "embedding.company.local,192.168.1.100"
+& "C:\path\to\Attu.exe"
+```
+
+Linux AppImage:
+
+```bash
+ATTU_SSRF_ALLOWLIST=embedding.company.local,192.168.1.100 \
+./attu-3.0.0-x86_64.AppImage
+```
+
+These examples apply to launches from that terminal environment; launching Attu later from its usual icon does not retain the setting. For the standalone server package, set the same variable before running `./bin/attu-server`.
+
+#### Troubleshooting
+
+| Error | Meaning / next step |
+|-------|---------------------|
+| `Resolved address is not allowed: ...` | The resolved IP is blocked by the deployment policy. Allowlist the intended service host and restart Attu. |
+| `Private target is not allowed for this tenant` | The organization/tenant policy also blocks the target. An administrator must permit the host and port for the `embedding` or `llm` purpose in that tenant's egress policy; deployment-level permission alone is insufficient. |
+| `Metadata service hostnames are not allowed` / `Metadata or link-local address is not allowed: ...` | The target is hard-blocked and cannot be permitted by the allowlist. Use the actual service endpoint. |
+| `URL hostname could not be resolved` | Fix DNS resolution in the environment running Attu. |
+
+The default organization inherits deployment permission; additional organizations can have stricter private-target policies. Server logs record rejections as `Blocked outbound request`, with the request context, target host/port, and reason. For embedding configuration operations, the context is `embedding_config.create`, `embedding_config.update`, or `embedding_config.test`.
+
 ### TLS / SSL
 
 Attu supports one-way TLS and mutual TLS (mTLS) for Milvus gRPC connections.
